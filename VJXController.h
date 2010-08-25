@@ -31,4 +31,6 @@
 
 - (void)addOutput:(id)output;
 
+- (IBAction)addMovieLayer;
+
 @end

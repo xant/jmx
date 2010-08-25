@@ -80,6 +80,19 @@
     worker = nil;
 }
 
+- (IBAction)addMovieLayer
+{
+    VJXMovieLayer *layer = [[VJXMovieLayer alloc] init];
+
+    // Notify listeners we'll change the "layers" property.
+    [self willChangeValueForKey:@"layers"];
+    [self.layers addObject:layer];
+
+    // Notify listeners we did change the "layers" property.
+    [self didChangeValueForKey:@"layers"];
+    [layer release];
+}
+
 - (void)nextFrame:(id)userInfo
 {
     static uint64_t maxDelta = 1e9 / 24;

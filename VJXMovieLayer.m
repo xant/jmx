@@ -11,12 +11,13 @@
 
 @implementation VJXMovieLayer
 
-@synthesize movie, moviePath;
+@synthesize movie, moviePath, paused, stopped, lastFrame, lastTimeValue;
 
 - (id)init
 {
     if ((self = [super init])) {
         movie = nil;
+        lastFrame = nil;
         moviePath = nil;
         timeScale = 600;
         previousTimeStamp = 0;
@@ -42,26 +43,38 @@
 }
 
 - (void)dealloc {
+    [lastFrame release];
     [movie release];
     [super dealloc];
 }
 
 - (CIImage *)frameImageForTime:(uint64_t)timeStamp
 {
+    QTTime now = [movie currentTime];
+
+    if ([self paused]) {
+        return self.lastFrame;
+    }
+
     // Find out the difference between the last time an image was
     // requested and the current time. Since we prevent this to be
     // called too often, we should get approximatelly 24fps.
     uint64_t delta = (previousTimeStamp > 0 ? timeStamp - previousTimeStamp : 0);
 
-    QTTime now = [movie currentTime];
-
     // Calculate the position of the next frame, based on the pre-
     // calculated delta and the timeScale we provide. Please note
     // the delta is in nanoseconds, hence the 1e9.
-    now.timeValue += (delta * now.timeScale) / 1e9;
+    // now.timeValue += (delta * now.timeScale) / 1e9;
 
-    // We want our timeScale, not QTMovie defaults.
-    // now.timeScale = timeScale;
+    // Set the timeValue to the last timeValue we've seen, since this isn't a
+    // real video stream, and we can "pause" the video.
+    now.timeValue = self.lastTimeValue;
+
+    // Calculate the next frame - I don't know yet how to do this.
+    now.timeValue += now.timeScale / 23; // 24fps
+
+    // Remember the timeValue.
+    self.lastTimeValue = now.timeValue;
 
     // Move the frame to the time we specified, so we don't need to
     // keep track of the movie's position ourselves.
@@ -98,6 +111,8 @@
         // Return the new frame. It should be retained by the user.
         transformedFrame = [colorFilter valueForKey:@"outputImage"];
     }
+
+    self.lastFrame = transformedFrame;
 
     return transformedFrame;
 }

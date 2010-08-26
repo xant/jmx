@@ -10,8 +10,10 @@
 
 @interface VeeJayAppDelegate : NSObject <NSApplicationDelegate> {
     NSWindow *window;
+    NSTableView *layersTableView;
 }
 
 @property (assign) IBOutlet NSWindow *window;
+@property (assign) IBOutlet NSTableView *layersTableView;
 
 @end

@@ -8,6 +8,7 @@
 
 #import "VJXController.h"
 #import "VJXMovieLayer.h"
+#import "VJXImageLayer.h"
 
 @implementation VJXController
 
@@ -51,15 +52,21 @@
 {
     CIImage *resultingImage = nil;
     for (VJXMovieLayer *layer in [layers reverseObjectEnumerator]) {
+        if (![layer active])
+            continue;
+
         if (!resultingImage) {
             resultingImage = [layer frameImageForTime:timeStamp];
         }
         else {
-            CIFilter *blendScreenFilter = [CIFilter filterWithName:@"CIScreenBlendMode"];
-            [blendScreenFilter setDefaults];
-            [blendScreenFilter setValue:[layer frameImageForTime:timeStamp] forKey:@"inputImage"];
-            [blendScreenFilter setValue:resultingImage forKey:@"inputBackgroundImage"];
-            resultingImage = [blendScreenFilter valueForKey:@"outputImage"];
+            CIImage *layerImage = [layer frameImageForTime:timeStamp];
+            if (layerImage) {
+                CIFilter *blendScreenFilter = [CIFilter filterWithName:@"CIScreenBlendMode"];
+                [blendScreenFilter setDefaults];
+                [blendScreenFilter setValue:layerImage forKey:@"inputImage"];
+                [blendScreenFilter setValue:resultingImage forKey:@"inputBackgroundImage"];
+                resultingImage = [blendScreenFilter valueForKey:@"outputImage"];
+            }
         }
     }
     return resultingImage;
@@ -83,12 +90,17 @@
 - (IBAction)addMovieLayer
 {
     VJXMovieLayer *layer = [[VJXMovieLayer alloc] init];
-
-    // Notify listeners we'll change the "layers" property.
     [self willChangeValueForKey:@"layers"];
     [self.layers addObject:layer];
+    [self didChangeValueForKey:@"layers"];
+    [layer release];
+}
 
-    // Notify listeners we did change the "layers" property.
+- (IBAction)addImageLayer
+{
+    VJXImageLayer *layer = [[VJXImageLayer alloc] init];
+    [self willChangeValueForKey:@"layers"];
+    [self.layers addObject:layer];
     [self didChangeValueForKey:@"layers"];
     [layer release];
 }

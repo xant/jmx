@@ -11,10 +11,10 @@
 
 @interface VJXLayer : NSObject {
     NSString *name;
-
     float saturation;
     float brightness;
     float contrast;
+    BOOL active;
 
 }
 
@@ -22,6 +22,7 @@
 @property (assign) float saturation;
 @property (assign) float brightness;
 @property (assign) float contrast;
+@property (assign) BOOL active;
 
 - (CIImage *)frameImageForTime:(uint64_t)timeStamp;
 

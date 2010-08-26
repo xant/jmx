@@ -11,7 +11,7 @@
 
 @implementation VJXLayer
 
-@synthesize name, saturation, brightness, contrast;
+@synthesize name, saturation, brightness, contrast, active;
 
 - (id)init
 {
@@ -20,6 +20,7 @@
         saturation = 1.0;
         brightness = 0.0;
         contrast = 1.0;
+        active = NO;
     }
 
     return self;

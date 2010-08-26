@@ -10,9 +10,14 @@
 
 @implementation VeeJayAppDelegate
 
-@synthesize window;
+@synthesize window, layersTableView;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+}
+
+- (void)awakeFromNib
+{
+    [layersTableView registerForDraggedTypes:[NSArray arrayWithObject:@"LayerTableViewDataType"]];
 }
 
 @end

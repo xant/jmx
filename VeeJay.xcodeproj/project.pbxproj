@@ -18,6 +18,11 @@
 		82456BCC1223DCA700236FE4 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BCB1223DCA700236FE4 /* QuartzCore.framework */; };
 		82456FE912256A4A00236FE4 /* VJXImageLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 82456FE812256A4A00236FE4 /* VJXImageLayer.m */; };
 		824570181225914B00236FE4 /* VJXLayerArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 824570171225914B00236FE4 /* VJXLayerArrayController.m */; };
+		824576451227DF5800236FE4 /* VJXBoardEntityPin.m in Sources */ = {isa = PBXBuildFile; fileRef = 8245763D1227DF5800236FE4 /* VJXBoardEntityPin.m */; };
+		824576461227DF5800236FE4 /* VJXBoardEntityConnector.m in Sources */ = {isa = PBXBuildFile; fileRef = 8245763F1227DF5800236FE4 /* VJXBoardEntityConnector.m */; };
+		824576471227DF5800236FE4 /* VJXBoardEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 824576411227DF5800236FE4 /* VJXBoardEntity.m */; };
+		824576481227DF5800236FE4 /* VJXBoard.m in Sources */ = {isa = PBXBuildFile; fileRef = 824576431227DF5800236FE4 /* VJXBoard.m */; };
+		8245765A1227E0A400236FE4 /* VJXBoardDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 824576591227E0A400236FE4 /* VJXBoardDelegate.m */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -49,6 +54,16 @@
 		82456FE812256A4A00236FE4 /* VJXImageLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXImageLayer.m; sourceTree = "<group>"; };
 		824570161225914B00236FE4 /* VJXLayerArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXLayerArrayController.h; sourceTree = "<group>"; };
 		824570171225914B00236FE4 /* VJXLayerArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXLayerArrayController.m; sourceTree = "<group>"; };
+		8245763D1227DF5800236FE4 /* VJXBoardEntityPin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXBoardEntityPin.m; sourceTree = "<group>"; };
+		8245763E1227DF5800236FE4 /* VJXBoardEntityPin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXBoardEntityPin.h; sourceTree = "<group>"; };
+		8245763F1227DF5800236FE4 /* VJXBoardEntityConnector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXBoardEntityConnector.m; sourceTree = "<group>"; };
+		824576401227DF5800236FE4 /* VJXBoardEntityConnector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXBoardEntityConnector.h; sourceTree = "<group>"; };
+		824576411227DF5800236FE4 /* VJXBoardEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXBoardEntity.m; sourceTree = "<group>"; };
+		824576421227DF5800236FE4 /* VJXBoardEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXBoardEntity.h; sourceTree = "<group>"; };
+		824576431227DF5800236FE4 /* VJXBoard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXBoard.m; sourceTree = "<group>"; };
+		824576441227DF5800236FE4 /* VJXBoard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXBoard.h; sourceTree = "<group>"; };
+		824576581227E0A400236FE4 /* VJXBoardDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXBoardDelegate.h; sourceTree = "<group>"; };
+		824576591227E0A400236FE4 /* VJXBoardDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXBoardDelegate.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* VeeJay-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "VeeJay-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* VeeJay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VeeJay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -71,6 +86,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				8245763C1227DF2900236FE4 /* GUI */,
 				82456BB61223DBE100236FE4 /* VJXMovieLayer.m */,
 				82456BB71223DBE100236FE4 /* VJXMovieLayer.h */,
 				82456BB81223DBE100236FE4 /* VJXOpenGLView.m */,
@@ -158,6 +174,23 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		8245763C1227DF2900236FE4 /* GUI */ = {
+			isa = PBXGroup;
+			children = (
+				8245763D1227DF5800236FE4 /* VJXBoardEntityPin.m */,
+				8245763E1227DF5800236FE4 /* VJXBoardEntityPin.h */,
+				8245763F1227DF5800236FE4 /* VJXBoardEntityConnector.m */,
+				824576401227DF5800236FE4 /* VJXBoardEntityConnector.h */,
+				824576411227DF5800236FE4 /* VJXBoardEntity.m */,
+				824576421227DF5800236FE4 /* VJXBoardEntity.h */,
+				824576431227DF5800236FE4 /* VJXBoard.m */,
+				824576441227DF5800236FE4 /* VJXBoard.h */,
+				824576581227E0A400236FE4 /* VJXBoardDelegate.h */,
+				824576591227E0A400236FE4 /* VJXBoardDelegate.m */,
+			);
+			name = GUI;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -224,6 +257,11 @@
 				82456BBB1223DBE100236FE4 /* VJXOpenGLView.m in Sources */,
 				82456FE912256A4A00236FE4 /* VJXImageLayer.m in Sources */,
 				824570181225914B00236FE4 /* VJXLayerArrayController.m in Sources */,
+				824576451227DF5800236FE4 /* VJXBoardEntityPin.m in Sources */,
+				824576461227DF5800236FE4 /* VJXBoardEntityConnector.m in Sources */,
+				824576471227DF5800236FE4 /* VJXBoardEntity.m in Sources */,
+				824576481227DF5800236FE4 /* VJXBoard.m in Sources */,
+				8245765A1227E0A400236FE4 /* VJXBoardDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

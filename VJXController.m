@@ -66,9 +66,22 @@
                 [blendScreenFilter setValue:layerImage forKey:@"inputImage"];
                 [blendScreenFilter setValue:resultingImage forKey:@"inputBackgroundImage"];
                 resultingImage = [blendScreenFilter valueForKey:@"outputImage"];
+
+                CIFilter *filter = [CIFilter filterWithName:@"CIAffineTransform"];
+                CGRect imageRect = [resultingImage extent];
+                float xScale = 640 / imageRect.size.width;
+                float yScale = 480 / imageRect.size.height;
+                NSAffineTransform *transform = [NSAffineTransform transform];
+                [transform scaleXBy:xScale yBy:yScale];
+                [filter setDefaults];
+                [filter setValue:transform forKey:@"inputTransform"];
+                [filter setValue:resultingImage forKey:@"inputImage"];
+
+                resultingImage = [filter valueForKey:@"outputImage"];
             }
         }
     }
+
     return resultingImage;
 }
 

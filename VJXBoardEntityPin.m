@@ -10,12 +10,20 @@
 
 @implementation VJXBoardEntityPin
 
+@synthesize connector;
+
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code here.
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [self setConnector:nil];
+    [super dealloc];
 }
 
 - (void)drawRect:(NSRect)dirtyRect {
@@ -26,6 +34,23 @@
     [thePath appendBezierPathWithOvalInRect:[self bounds]];
     [thePath fill];
     [thePath release];
+
+    VJXBoardEntityPin *origin = [connector origin];
+    VJXBoardEntityPin *destination = [connector destination];
+
+    NSPoint originPoint = [connector.superview.superview convertPoint:origin.frame.origin fromView:origin];
+    NSPoint destinationPoint = [connector.superview.superview convertPoint:destination.frame.origin fromView:destination];
+
+    float x = MIN(originPoint.x, destinationPoint.x);
+    float y = MIN(originPoint.y, destinationPoint.y);
+    float w = abs(originPoint.x - destinationPoint.x);
+    float h = abs(originPoint.y - destinationPoint.y);
+
+    NSLog(@"%f:%f:%f:%f", x, y, w, h);
+
+    NSRect connectorFrame = NSMakeRect(x, y, w, h);
+    [connector setFrame:connectorFrame];
+//    [connector setNeedsDisplay:YES];
 }
 
 - (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
@@ -46,6 +71,7 @@
 {
     if (!connector) {
         connector = [[VJXBoardEntityConnector alloc] init];
+        [connector setOrigin:self];
         [self.superview.superview addSubview:connector positioned:0 relativeTo:nil];
     }
 
@@ -94,12 +120,16 @@
     NSView *view = [self.superview.superview hitTest:currentLocation];
     NSLog(@"View: %@", view);
 
-    if (!view) {
+    if ((!view) || (![view isKindOfClass:[VJXBoardEntityPin class]])) {
         [connector removeFromSuperview];
         [connector release];
         connector = nil;
+        return;
     }
 
+    VJXBoardEntityPin *pin = (VJXBoardEntityPin *)view;
+    [pin setConnector:connector];
+    [connector setDestination:pin];
 }
 
 @end

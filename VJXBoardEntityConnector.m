@@ -11,7 +11,7 @@
 
 @implementation VJXBoardEntityConnector
 
-@synthesize direction;
+@synthesize direction, origin, destination;
 
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
@@ -19,6 +19,13 @@
         // Initialization code here.
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [self setOrigin:nil];
+    [self setDestination:nil];
+    [super dealloc];
 }
 
 - (void)drawRect:(NSRect)dirtyRect {

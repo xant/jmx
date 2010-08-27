@@ -7,12 +7,18 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "VJXBoardEntityPin.h"
 
+@class VJXBoardEntityPin;
 
 @interface VJXBoardEntityConnector : NSView {
     NSUInteger direction;
+    VJXBoardEntityPin *origin;
+    VJXBoardEntityPin *destination;
 }
 
 @property (assign) NSUInteger direction;
+@property (nonatomic,retain) VJXBoardEntityPin *origin;
+@property (nonatomic,retain) VJXBoardEntityPin *destination;
 
 @end

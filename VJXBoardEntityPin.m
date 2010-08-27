@@ -45,9 +45,8 @@
 - (void)mouseDragged:(NSEvent *)theEvent
 {
     if (!connector) {
-        NSLog(@"connector created");
         connector = [[VJXBoardEntityConnector alloc] init];
-        [self.superview.superview addSubview:connector];
+        [self.superview.superview addSubview:connector positioned:0 relativeTo:nil];
     }
 
     NSPoint locationInWindow = [theEvent locationInWindow];
@@ -83,9 +82,6 @@
         connector.direction = NORTHEAST;
     }
 
-    NSLog(@"direction:%i", connector.direction);
-
-
     NSRect frame = NSMakeRect(minX, minY, width, height);
     [connector setFrame:frame];
     [self.superview setNeedsDisplay:YES];
@@ -94,9 +90,16 @@
 
 - (void)mouseUp:(NSEvent *)theEvent
 {
-    [connector removeFromSuperview];
-    [connector release];
-    connector = nil;
+    NSPoint currentLocation = [theEvent locationInWindow];
+    NSView *view = [self.superview.superview hitTest:currentLocation];
+    NSLog(@"View: %@", view);
+
+    if (!view) {
+        [connector removeFromSuperview];
+        [connector release];
+        connector = nil;
+    }
+
 }
 
 @end

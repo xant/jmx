@@ -15,7 +15,6 @@
     NSUInteger timeScale;
     uint64_t previousTimeStamp;
     NSString *moviePath;
-    CIImage *lastFrame;
     float lastTimeValue;
 
     BOOL paused;
@@ -26,7 +25,6 @@
 @property (nonatomic, copy) NSString *moviePath;
 @property (nonatomic, assign) BOOL paused;
 @property (nonatomic, assign) BOOL stopped;
-@property (nonatomic, retain) CIImage *lastFrame;
 @property (nonatomic, assign) float lastTimeValue;
 
 - (void)loadMovie;

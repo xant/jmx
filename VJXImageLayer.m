@@ -27,27 +27,29 @@
 {
     NSData *imageData = [[NSData alloc] initWithContentsOfFile:self.imagePath];
     CIImage *image_ = [CIImage imageWithData:imageData];
-    if (image_) {
+    if (image_)
         self.image = image_;
-    }
 }
 
 - (CIImage *)frameImageForTime:(uint64_t)timeStamp
 {
-    if (!self.image)
-        [self load];
-
-    if (!self.image)
-        return nil;
-
-    CIFilter *colorFilter = [CIFilter filterWithName:@"CIColorControls"];
-    [colorFilter setDefaults];
-    [colorFilter setValue:self.saturation forKey:@"inputSaturation"];
-    [colorFilter setValue:self.brightness forKey:@"inputBrightness"];
-    [colorFilter setValue:self.contrast forKey:@"inputContrast"];
-    [colorFilter setValue:self.image forKey:@"inputImage"];
-    CIImage *transformedFrame = [colorFilter valueForKey:@"outputImage"];
-    return transformedFrame;
+    @synchronized(self) {
+        if (!self.image)
+            [self load];
+        // XXX - it's useless to render the image each time ... 
+        //       it should be done only if image parameters have changed
+        if (self.image) {
+            CIFilter *colorFilter = [CIFilter filterWithName:@"CIColorControls"];
+            [colorFilter setDefaults];
+            [colorFilter setValue:self.saturation forKey:@"inputSaturation"];
+            [colorFilter setValue:self.brightness forKey:@"inputBrightness"];
+            [colorFilter setValue:self.contrast forKey:@"inputContrast"];
+            [colorFilter setValue:self.image forKey:@"inputImage"];
+            CIImage *transformedFrame = [colorFilter valueForKey:@"outputImage"];
+            self.lastFrame = transformedFrame;
+        }
+    }
+    return [super frameImageForTime:timeStamp];
 }
 
 @end

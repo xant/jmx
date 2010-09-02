@@ -23,7 +23,11 @@
     NSSize   size;
     
     BOOL active;
+    
+    CIImage *lastFrame;
 
+@private
+    VJXPin *outputFramePin;
 }
 
 @property (retain) NSNumber *alpha;
@@ -35,6 +39,7 @@
 @property (assign) NSPoint origin;
 @property (assign) NSSize size;
 @property (retain) NSNumber *fps;
+@property (retain) CIImage *lastFrame;
 
 @property (assign) BOOL active;
 

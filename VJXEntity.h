@@ -27,6 +27,7 @@
 - (void)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType;
 - (void)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(SEL)selector;
 
+- (void)signalOutput:(id)data;
 
 
 @property (readonly) NSMutableArray *inputPins;

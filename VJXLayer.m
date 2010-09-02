@@ -11,11 +11,13 @@
 @implementation VJXLayer
 
 @synthesize alpha, saturation, brightness, contrast, fps,
-            rotation, origin, size, scaleRatio, active;
+            rotation, origin, size, scaleRatio, active, lastFrame;
 
 - (id)init
 {
     if (self = [super init]) {
+        lastFrame = nil;
+
         name = @"Untitled";
         self.saturation = [NSNumber numberWithFloat:1.0];
         self.brightness = [NSNumber numberWithFloat:0.0];
@@ -36,6 +38,7 @@
 
         // we output at least 1 image
         [self registerOutputPin:@"outputFrame" withType:KVJXImagePin];
+        outputFramePin = [outputPins lastObject]; // save the output pin to signal data when available
         
         // and 'effective' fps , only for debugging purposes
         [self registerOutputPin:@"outputFps" withType:kVJXNumberPin];
@@ -46,20 +49,28 @@
 
 - (void)setOriginPin:(NSData *)newOrigin
 {
-    // we can trust type-checking done by the VJXPin->signal() method
-    memcpy(&origin, [newOrigin bytes], sizeof(origin));
+    @synchronized(self) {
+        // we can trust type-checking done by the VJXPin->signal() method
+        memcpy(&origin, [newOrigin bytes], sizeof(origin));
+    }
 }
 
 - (void)setSizePin:(NSData *)newSize
 {
-    // we can trust type-checking done by the VJXPin->signal() method
-    memcpy(&size, [newSize bytes], sizeof(size));
+    @synchronized(self) {
+        // we can trust type-checking done by the VJXPin->signal() method
+        memcpy(&size, [newSize bytes], sizeof(size));
+    }
 }
 
 - (CIImage *)frameImageForTime:(uint64_t)timeStamp
 {
-    [NSException raise:@"Abstract method" format:@"Subclass must implement '%s'", _cmd];
-    return nil;
+    @synchronized(self) {
+        [outputFramePin signal:lastFrame];
+    }
+    // TODO - compute the effective fps and send it to an output pin 
+    //        for debugging purposes
+    return lastFrame;
 }
 
 @end

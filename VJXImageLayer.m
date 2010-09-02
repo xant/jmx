@@ -42,9 +42,9 @@
 
     CIFilter *colorFilter = [CIFilter filterWithName:@"CIColorControls"];
     [colorFilter setDefaults];
-    [colorFilter setValue:[NSNumber numberWithFloat:self.saturation] forKey:@"inputSaturation"];
-    [colorFilter setValue:[NSNumber numberWithFloat:self.brightness] forKey:@"inputBrightness"];
-    [colorFilter setValue:[NSNumber numberWithFloat:self.contrast] forKey:@"inputContrast"];
+    [colorFilter setValue:self.saturation forKey:@"inputSaturation"];
+    [colorFilter setValue:self.brightness forKey:@"inputBrightness"];
+    [colorFilter setValue:self.contrast forKey:@"inputContrast"];
     [colorFilter setValue:self.image forKey:@"inputImage"];
     CIImage *transformedFrame = [colorFilter valueForKey:@"outputImage"];
     return transformedFrame;

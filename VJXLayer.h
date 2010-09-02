@@ -7,21 +7,35 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "VJXEntity.h"
 
 
-@interface VJXLayer : NSObject {
-    NSString *name;
-    float saturation;
-    float brightness;
-    float contrast;
+@interface VJXLayer : VJXEntity {
+@protected
+    NSNumber *saturation;
+    NSNumber *brightness;
+    NSNumber *contrast;
+    NSNumber *alpha;
+    NSNumber *rotation;
+    NSNumber *scaleRatio;
+    NSNumber *fps;
+    NSPoint  origin;
+    NSSize   size;
+    
     BOOL active;
 
 }
 
-@property (nonatomic,copy) NSString *name;
-@property (assign) float saturation;
-@property (assign) float brightness;
-@property (assign) float contrast;
+@property (retain) NSNumber *alpha;
+@property (retain) NSNumber *saturation;
+@property (retain) NSNumber *brightness;
+@property (retain) NSNumber *contrast;
+@property (retain) NSNumber *rotation;
+@property (retain) NSNumber *scaleRatio;
+@property (assign) NSPoint origin;
+@property (assign) NSSize size;
+@property (retain) NSNumber *fps;
+
 @property (assign) BOOL active;
 
 - (CIImage *)frameImageForTime:(uint64_t)timeStamp;

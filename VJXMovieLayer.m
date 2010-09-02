@@ -38,7 +38,6 @@
             NSLog(@"Got error: %@", error);
         }
         NSLog(@"movie: %@", movie);
-
     }
 }
 
@@ -53,13 +52,14 @@
     QTTime now = [movie currentTime];
 
     if ([self paused]) {
-        return self.lastFrame;
+        return lastFrame;
     }
 
     // Find out the difference between the last time an image was
     // requested and the current time. Since we prevent this to be
     // called too often, we should get approximatelly 24fps.
-    uint64_t delta = (previousTimeStamp > 0 ? timeStamp - previousTimeStamp : 0);
+    
+    //uint64_t delta = (previousTimeStamp > 0 ? timeStamp - previousTimeStamp : 0);
 
     // Calculate the position of the next frame, based on the pre-
     // calculated delta and the timeScale we provide. Please note
@@ -68,13 +68,13 @@
 
     // Set the timeValue to the last timeValue we've seen, since this isn't a
     // real video stream, and we can "pause" the video.
-    now.timeValue = self.lastTimeValue;
+    now.timeValue = lastTimeValue;
 
     // Calculate the next frame - I don't know yet how to do this.
     now.timeValue += now.timeScale / 23; // 24fps
 
     // Remember the timeValue.
-    self.lastTimeValue = now.timeValue;
+    lastTimeValue = now.timeValue;
 
     // Move the frame to the time we specified, so we don't need to
     // keep track of the movie's position ourselves.
@@ -103,18 +103,18 @@
         // Apply some basic filters.
         CIFilter *colorFilter = [CIFilter filterWithName:@"CIColorControls"];
         [colorFilter setDefaults];
-        [colorFilter setValue:[NSNumber numberWithFloat:saturation] forKey:@"inputSaturation"];
-        [colorFilter setValue:[NSNumber numberWithFloat:brightness] forKey:@"inputBrightness"];
-        [colorFilter setValue:[NSNumber numberWithFloat:contrast] forKey:@"inputContrast"];
+        [colorFilter setValue:saturation forKey:@"inputSaturation"];
+        [colorFilter setValue:brightness forKey:@"inputBrightness"];
+        [colorFilter setValue:contrast forKey:@"inputContrast"];
         [colorFilter setValue:newFrame forKey:@"inputImage"];
 
         // Return the new frame. It should be retained by the user.
         transformedFrame = [colorFilter valueForKey:@"outputImage"];
     }
 
-    self.lastFrame = transformedFrame;
+    lastFrame = transformedFrame;
 
-    return transformedFrame;
+    return lastFrame;
 }
 
 @end

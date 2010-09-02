@@ -26,6 +26,8 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		AA0F48A8122E7503005A1C95 /* VJXEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = AA0F48A7122E7503005A1C95 /* VJXEntity.m */; };
+		AA0F48AB12302BBA005A1C95 /* VJXPin.m in Sources */ = {isa = PBXBuildFile; fileRef = AA0F48AA12302BBA005A1C95 /* VJXPin.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,6 +68,10 @@
 		824576591227E0A400236FE4 /* VJXBoardDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXBoardDelegate.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* VeeJay-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "VeeJay-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* VeeJay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VeeJay.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA0F48A6122E7503005A1C95 /* VJXEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXEntity.h; sourceTree = "<group>"; };
+		AA0F48A7122E7503005A1C95 /* VJXEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXEntity.m; sourceTree = "<group>"; };
+		AA0F48A912302BBA005A1C95 /* VJXPin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXPin.h; sourceTree = "<group>"; };
+		AA0F48AA12302BBA005A1C95 /* VJXPin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXPin.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +107,10 @@
 				82456FE812256A4A00236FE4 /* VJXImageLayer.m */,
 				824570161225914B00236FE4 /* VJXLayerArrayController.h */,
 				824570171225914B00236FE4 /* VJXLayerArrayController.m */,
+				AA0F48A6122E7503005A1C95 /* VJXEntity.h */,
+				AA0F48A7122E7503005A1C95 /* VJXEntity.m */,
+				AA0F48A912302BBA005A1C95 /* VJXPin.h */,
+				AA0F48AA12302BBA005A1C95 /* VJXPin.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -262,6 +272,8 @@
 				824576471227DF5800236FE4 /* VJXBoardEntity.m in Sources */,
 				824576481227DF5800236FE4 /* VJXBoard.m in Sources */,
 				8245765A1227E0A400236FE4 /* VJXBoardDelegate.m in Sources */,
+				AA0F48A8122E7503005A1C95 /* VJXEntity.m in Sources */,
+				AA0F48AB12302BBA005A1C95 /* VJXPin.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

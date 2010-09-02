@@ -10,6 +10,7 @@
 #import "VJXLayer.h"
 
 @interface VJXImageLayer : VJXLayer {
+@private
     CIImage *image;
     NSString *imagePath;
 }

@@ -11,12 +11,12 @@
 @implementation VJXLayer
 
 @synthesize alpha, saturation, brightness, contrast, fps,
-            rotation, origin, size, scaleRatio, active, lastFrame;
+            rotation, origin, size, scaleRatio, active, currentFrame;
 
 - (id)init
 {
     if (self = [super init]) {
-        lastFrame = nil;
+        currentFrame = nil;
 
         name = @"Untitled";
         self.saturation = [NSNumber numberWithFloat:1.0];
@@ -37,7 +37,7 @@
         [self registerInputPin:@"fps" withType:kVJXNumberPin andSelector:@selector(setFps:)];
 
         // we output at least 1 image
-        [self registerOutputPin:@"outputFrame" withType:KVJXImagePin];
+        [self registerOutputPin:@"outputFrame" withType:kVJXImagePin];
         outputFramePin = [outputPins lastObject]; // save the output pin to signal data when available
         
         // and 'effective' fps , only for debugging purposes
@@ -45,6 +45,13 @@
 
     }
     return self;
+}
+
+- (void)dealloc
+{
+    if (currentFrame)
+        self.currentFrame = nil; // ensure calling the accessor to release the current frame
+    [super dealloc];
 }
 
 - (void)setOriginPin:(NSData *)newOrigin
@@ -66,11 +73,11 @@
 - (CIImage *)frameImageForTime:(uint64_t)timeStamp
 {
     @synchronized(self) {
-        [outputFramePin signal:lastFrame];
+        [outputFramePin signal:currentFrame];
     }
     // TODO - compute the effective fps and send it to an output pin 
     //        for debugging purposes
-    return lastFrame;
+    return currentFrame;
 }
 
 @end

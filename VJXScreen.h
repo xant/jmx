@@ -7,10 +7,10 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "VJXEntity.h"
 
-
-@interface VJXScreen : NSObject {
-
+@interface VJXScreen : VJXEntity {
+    CIImage *currentFrame;
 }
 
 @end

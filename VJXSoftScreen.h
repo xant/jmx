@@ -7,9 +7,10 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "VJXScreen.h"
 
 
-@interface VJXSoftScreen : NSObject {
+@interface VJXSoftScreen : VJXScreen {
 
 }
 

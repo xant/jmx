@@ -46,7 +46,7 @@
             [colorFilter setValue:self.contrast forKey:@"inputContrast"];
             [colorFilter setValue:self.image forKey:@"inputImage"];
             CIImage *transformedFrame = [colorFilter valueForKey:@"outputImage"];
-            self.lastFrame = transformedFrame;
+            self.currentFrame = transformedFrame;
         }
     }
     return [super frameImageForTime:timeStamp];

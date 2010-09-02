@@ -7,10 +7,11 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "VJXScreen.h"
+#import "VJXOpenGLView.h"
 
-
-@interface VJXOpenGLScreen : NSObject {
-
+@interface VJXOpenGLScreen : VJXScreen {
+    VJXOpenGLView *view;
 }
 
 @end

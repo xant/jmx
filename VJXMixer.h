@@ -7,9 +7,10 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "VJXEntity.h"
 
 
-@interface VJXMixer : NSObject {
+@interface VJXMixer : VJXEntity {
 
 }
 

@@ -11,13 +11,12 @@
 
 @implementation VJXMovieLayer
 
-@synthesize movie, moviePath, paused, stopped, lastFrame, lastTimeValue;
+@synthesize movie, moviePath, paused, stopped, lastTimeValue;
 
 - (id)init
 {
     if ((self = [super init])) {
         movie = nil;
-        lastFrame = nil;
         moviePath = nil;
         timeScale = 600;
         previousTimeStamp = 0;
@@ -42,7 +41,6 @@
 }
 
 - (void)dealloc {
-    [lastFrame release];
     [movie release];
     [super dealloc];
 }
@@ -109,7 +107,7 @@
                 // Return the new frame. It should be retained by the user.
                 transformedFrame = [colorFilter valueForKey:@"outputImage"];
             }
-            self.lastFrame = transformedFrame;
+            self.currentFrame = transformedFrame;
         }
     }
     return [super frameImageForTime:timeStamp]; // let super notify output pins

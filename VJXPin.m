@@ -61,7 +61,7 @@
             if ([data isKindOfClass:[NSNumber class]])
                 signalData = data;
             break;
-        case KVJXImagePin:
+        case kVJXImagePin:
             if ([data isKindOfClass:[CIImage class]])
                 signalData = data;
             break;

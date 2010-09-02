@@ -24,7 +24,7 @@
     
     BOOL active;
     
-    CIImage *lastFrame;
+    CIImage *currentFrame;
 
 @private
     VJXPin *outputFramePin;
@@ -39,7 +39,7 @@
 @property (assign) NSPoint origin;
 @property (assign) NSSize size;
 @property (retain) NSNumber *fps;
-@property (retain) CIImage *lastFrame;
+@property (retain) CIImage *currentFrame;
 
 @property (assign) BOOL active;
 

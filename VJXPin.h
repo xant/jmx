@@ -12,8 +12,8 @@ typedef enum {
     kVJXVoidPin,
     kVJXStringPin,
     kVJXNumberPin,
-    KVJXImagePin,
-    KVJXAudioPin,
+    kVJXImagePin,
+    kVJXAudioPin,
     kVJXPointPin,
     kVJXSizePin
 } VJXPinType;

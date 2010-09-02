@@ -7,9 +7,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "VJXEntity.h"
 
-
-@interface VJXExporter : NSObject {
+@interface VJXExporter : VJXEntity {
 
 }
 

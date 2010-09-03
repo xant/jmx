@@ -11,7 +11,18 @@
 
 
 @interface VJXMixer : VJXEntity {
-
+@public
+    int fps;
+@protected
+    NSArray *videoInputs;
+@private
+    VJXPin *imageInputPin;
+    VJXPin *imageOutputPin;
+    CIImage *currentFrame;
+    NSThread *worker;
+    uint64_t previousTimeStamp;
 }
+
+@property (assign) int fps;
 
 @end

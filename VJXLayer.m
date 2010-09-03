@@ -23,18 +23,18 @@
         self.brightness = [NSNumber numberWithFloat:0.0];
         self.contrast = [NSNumber numberWithFloat:1.0];
         active = NO;
-        [self registerInputPin:@"name" withType:kVJXStringPin andSelector:@selector(setName:)];
-        [self registerInputPin:@"alpha" withType:kVJXNumberPin andSelector:@selector(setAlpha:)];
-        [self registerInputPin:@"saturation" withType:kVJXNumberPin andSelector:@selector(setSaturation:)];
-        [self registerInputPin:@"brightness" withType:kVJXNumberPin andSelector:@selector(setBrightness:)];
-        [self registerInputPin:@"contrast" withType:kVJXNumberPin andSelector:@selector(setContrast:)];
-        [self registerInputPin:@"rotation" withType:kVJXNumberPin andSelector:@selector(setRotation:)];
-        [self registerInputPin:@"scaleRatio" withType:kVJXNumberPin andSelector:@selector(setScaleRatio:)];
+        [self registerInputPin:@"name" withType:kVJXStringPin andSelector:@"setName:"];
+        [self registerInputPin:@"alpha" withType:kVJXNumberPin andSelector:@"setAlpha:"];
+        [self registerInputPin:@"saturation" withType:kVJXNumberPin andSelector:@"setSaturation:"];
+        [self registerInputPin:@"brightness" withType:kVJXNumberPin andSelector:@"setBrightness:"];
+        [self registerInputPin:@"contrast" withType:kVJXNumberPin andSelector:@"setContrast:"];
+        [self registerInputPin:@"rotation" withType:kVJXNumberPin andSelector:@"setRotation:"];
+        [self registerInputPin:@"scaleRatio" withType:kVJXNumberPin andSelector:@"setScaleRatio:"];
         
-        [self registerInputPin:@"origin" withType:kVJXPointPin andSelector:@selector(setOriginPin:)];
-        [self registerInputPin:@"size" withType:kVJXSizePin andSelector:@selector(setSizePin:)];
+        [self registerInputPin:@"origin" withType:kVJXPointPin andSelector:@"setOriginPin:"];
+        [self registerInputPin:@"size" withType:kVJXSizePin andSelector:@"setSizePin:"];
         
-        [self registerInputPin:@"fps" withType:kVJXNumberPin andSelector:@selector(setFps:)];
+        [self registerInputPin:@"fps" withType:kVJXNumberPin andSelector:@"setFps:"];
 
         // we output at least 1 image
         [self registerOutputPin:@"outputFrame" withType:kVJXImagePin];
@@ -73,7 +73,7 @@
 - (CIImage *)frameImageForTime:(uint64_t)timeStamp
 {
     @synchronized(self) {
-        [outputFramePin signal:currentFrame];
+        [outputFramePin deliverSignal:currentFrame];
     }
     // TODO - compute the effective fps and send it to an output pin 
     //        for debugging purposes

@@ -10,7 +10,6 @@
 #import <QuickTime/QuickTime.h>
 #import <QTKit/QTKit.h>
 #import <OpenGL/OpenGL.h>
-#import "VJXController.h"
 
 @interface VJXOpenGLView : NSOpenGLView {
     CIImage *currentFrame;
@@ -18,10 +17,6 @@
     NSRecursiveLock *lock;
 
     BOOL needsReShape;
-
-    IBOutlet VJXController *vjController;
 }
-
-- (void)tick;
 
 @end

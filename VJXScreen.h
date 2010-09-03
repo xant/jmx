@@ -10,7 +10,11 @@
 #import "VJXEntity.h"
 
 @interface VJXScreen : VJXEntity {
+@protected
     CIImage *currentFrame;
+    NSSize size;
 }
+
+- (id)initWithSize:(NSSize)screenSize;
 
 @end

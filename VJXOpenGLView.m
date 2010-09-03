@@ -18,24 +18,40 @@
 
 @implementation VJXOpenGLView
 
-- (void)awakeFromNib
+- (id)initWithFrame:(NSRect)frameRect
 {
-    [vjController addOutput:self];
-    ciContext = nil;
-    currentFrame = nil;
-    needsReShape = YES;
-    lock = [[NSRecursiveLock alloc] init];
+    NSOpenGLPixelFormatAttribute attrs[] =
+    {
+        NSOpenGLPFADoubleBuffer,
+        NSOpenGLPFADepthSize, 32,
+        0
+    };
+    
+    NSOpenGLPixelFormat* pixelFormat = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attrs] autorelease];
+    return [self initWithFrame:frameRect pixelFormat:pixelFormat];
+}
+
+- (id)initWithFrame:(NSRect)frameRect pixelFormat:(NSOpenGLPixelFormat *)format
+{
+    if (self = [super initWithFrame:frameRect pixelFormat:format]) {
+        currentFrame = nil;
+        ciContext = nil;
+    }
+    return self;
 }
 
 - (void)prepareOpenGL
 {
     if (ciContext == nil) {
+        [super prepareOpenGL];
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
         ciContext = [[CIContext contextWithCGLContext:[[self openGLContext] CGLContextObj]
                                           pixelFormat:[[self pixelFormat] CGLPixelFormatObj]
                                            colorSpace:colorSpace
                                               options:nil] retain];
         CGColorSpaceRelease(colorSpace);
+        needsReShape = YES;
+        [self setNeedsDisplay:YES];
     }
 }
 
@@ -102,6 +118,7 @@
 }
 
 
+/*
 
 - (void)tick;
 {
@@ -116,7 +133,7 @@
     [lock unlock];
     [pool release];
 }
-
+*/
 - (void)cleanup
 {
     if (ciContext) {

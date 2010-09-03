@@ -11,7 +11,9 @@
 #import "VJXOpenGLView.h"
 
 @interface VJXOpenGLScreen : VJXScreen {
-    VJXOpenGLView *view;
+@private
+    NSWindow *screenWindow;
+    VJXOpenGLView *screenView;
 }
 
 @end

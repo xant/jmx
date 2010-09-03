@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		256AC3DA0F4B6AC300CF3369 /* VeeJayAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* VeeJayAppDelegate.m */; };
-		82456B701223CA8C00236FE4 /* VJXController.m in Sources */ = {isa = PBXBuildFile; fileRef = 82456B6F1223CA8C00236FE4 /* VJXController.m */; };
 		82456BA51223CFA200236FE4 /* VJXLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 82456BA41223CFA200236FE4 /* VJXLayer.m */; };
 		82456BBA1223DBE100236FE4 /* VJXMovieLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 82456BB61223DBE100236FE4 /* VJXMovieLayer.m */; };
 		82456BBB1223DBE100236FE4 /* VJXOpenGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 82456BB81223DBE100236FE4 /* VJXOpenGLView.m */; };
@@ -47,8 +46,6 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		82456B6E1223CA8C00236FE4 /* VJXController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXController.h; sourceTree = "<group>"; };
-		82456B6F1223CA8C00236FE4 /* VJXController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXController.m; sourceTree = "<group>"; };
 		82456BA31223CFA200236FE4 /* VJXLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXLayer.h; sourceTree = "<group>"; };
 		82456BA41223CFA200236FE4 /* VJXLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXLayer.m; sourceTree = "<group>"; };
 		82456BB61223DBE100236FE4 /* VJXMovieLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXMovieLayer.m; sourceTree = "<group>"; };
@@ -110,11 +107,11 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				256AC3D80F4B6AC300CF3369 /* VeeJayAppDelegate.h */,
+				256AC3D90F4B6AC300CF3369 /* VeeJayAppDelegate.m */,
 				8245763C1227DF2900236FE4 /* GUI */,
 				82456BB81223DBE100236FE4 /* VJXOpenGLView.m */,
 				82456BB91223DBE100236FE4 /* VJXOpenGLView.h */,
-				82456B6E1223CA8C00236FE4 /* VJXController.h */,
-				82456B6F1223CA8C00236FE4 /* VJXController.m */,
 				82456FE712256A4A00236FE4 /* VJXImageLayer.h */,
 				82456FE812256A4A00236FE4 /* VJXImageLayer.m */,
 				82456BB61223DBE100236FE4 /* VJXMovieLayer.m */,
@@ -213,8 +210,6 @@
 		8245763C1227DF2900236FE4 /* GUI */ = {
 			isa = PBXGroup;
 			children = (
-				256AC3D80F4B6AC300CF3369 /* VeeJayAppDelegate.h */,
-				256AC3D90F4B6AC300CF3369 /* VeeJayAppDelegate.m */,
 				824570161225914B00236FE4 /* VJXLayerArrayController.h */,
 				824570171225914B00236FE4 /* VJXLayerArrayController.m */,
 				8245763D1227DF5800236FE4 /* VJXBoardEntityPin.m */,
@@ -291,7 +286,6 @@
 			files = (
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				256AC3DA0F4B6AC300CF3369 /* VeeJayAppDelegate.m in Sources */,
-				82456B701223CA8C00236FE4 /* VJXController.m in Sources */,
 				82456BA51223CFA200236FE4 /* VJXLayer.m in Sources */,
 				82456BBA1223DBE100236FE4 /* VJXMovieLayer.m in Sources */,
 				82456BBB1223DBE100236FE4 /* VJXOpenGLView.m in Sources */,

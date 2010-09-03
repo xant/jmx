@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "VJXPin.h"
 
-@interface VJXEntity : NSObject {
+@interface VJXEntity : NSObject <NSCopying> {
 @public
     NSString *name;
 
@@ -22,10 +22,10 @@
 }
 
 - (void)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType;
-- (void)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(SEL)selector;
+- (void)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector;
 
 - (void)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType;
-- (void)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(SEL)selector;
+- (void)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector;
 
 - (void)signalOutput:(id)data;
 

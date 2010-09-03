@@ -14,8 +14,8 @@
 - (id)init
 {
     if (self = [super init]) {
-        inputPins = [NSMutableDictionary alloc];
-        outputPins = [NSMutableDictionary alloc];
+        inputPins = [[NSMutableArray alloc] init];
+        outputPins = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -38,27 +38,34 @@
 
 - (void)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType
 {
-    [self registerInputPin:pinName withType:pinType andSelector:@selector(defaultInputCallback:)];
+    [self registerInputPin:pinName withType:pinType andSelector:@"defaultInputCallback:"];
 }
 
-- (void)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(SEL)selector
+- (void)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector
 {
     [inputPins addObject:[VJXPin pinWithName:pinName andType:pinType forObject:self withSelector:selector]];
 }
 
 - (void)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType
 {
-    [self registerInputPin:pinName withType:pinType andSelector:@selector(defaultOutputCallback:)];
+    [self registerOutputPin:pinName withType:pinType andSelector:@"defaultOutputCallback:"];
 }
 
-- (void)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(SEL)selector
+- (void)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector
 {
-    [inputPins addObject:[VJXPin pinWithName:pinName andType:pinType forObject:self withSelector:selector]];
+    [outputPins addObject:[VJXPin pinWithName:pinName andType:pinType forObject:self withSelector:selector]];
 }
 
 - (void)signalOutput:(id)data
 {
     
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    // we don't want copies, but we want to use such objects as keys of a dictionary
+    // so we still need to conform to the 'copying' protocol
+    return self;
 }
 
 @synthesize inputPins, outputPins, name;

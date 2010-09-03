@@ -38,11 +38,8 @@
     if (self = [super init]) {
         type = pinType;
         name = [pinName retain];
-        /*
-        receiver = nil;
-        selector = nil;
-        */
         receivers = [[NSMutableDictionary alloc] init];
+        connections = [[NSMutableArray alloc] init];
         multiple = NO;
     }
     return self;
@@ -50,9 +47,12 @@
 
 - (void)attachObject:(id)pinReceiver withSelector:(NSString *)pinSignal
 {
-    if (!multiple)
-        [receivers removeAllObjects];
     [receivers setObject:pinSignal forKey:pinReceiver];
+}
+
+- (void)detachObject:(id)pinReceiver
+{
+    [receivers removeObjectForKey:pinReceiver];
 }
 
 - (void)deliverSignal:(id)data
@@ -116,6 +116,34 @@
     [receivers release];
     [super dealloc];
 }
+
+- (void)connectToPin:(VJXPin *)destinationPin
+{
+    @synchronized(self) {
+        if (!multiple)
+            [self disconnectAllPins];
+        if (destinationPin.type == self.type) {
+            [destinationPin attachObject:self withSelector:@"deliverSignal:fromSender:"];
+            [connections addObject:destinationPin];
+        }
+    }
+}
+
+- (void)disconnectFromPin:(VJXPin *)destinationPin
+{
+    @synchronized(self) {
+        [destinationPin detachObject:self];
+        [connections removeObjectIdenticalTo:destinationPin];
+    }
+}
+
+- (void)disconnectAllPins
+{
+    id pin;
+    while (pin = [connections objectAtIndex:0])
+        [self disconnectFromPin:pin];
+}
+
 
 @synthesize type, name, multiple;
 

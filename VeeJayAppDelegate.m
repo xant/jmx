@@ -8,6 +8,7 @@
 
 #import "VeeJayAppDelegate.h"
 #import "VJXOpenGLScreen.h"
+#import "VJXMixer.h"
 
 @implementation VeeJayAppDelegate
 
@@ -15,8 +16,9 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     NSSize blah = { 320, 240 };
+    VJXMixer *mixer = [[VJXMixer alloc] init];
     VJXOpenGLScreen *screen = [[VJXOpenGLScreen alloc] initWithSize:blah];
-    
+    [mixer start];
 }
 
 - (void)awakeFromNib

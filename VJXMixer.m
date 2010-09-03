@@ -24,6 +24,7 @@
         imageOutputPin = [inputPins lastObject];
         [imageOutputPin allowMultipleConnections:YES];
         fps = 25; // default to 25 frames per second
+        worker = nil;
     }
     return self;
 }
@@ -63,10 +64,15 @@
 - (void)start
 {
     if (!worker) {
-        worker = [[NSThread alloc] initWithTarget:self selector:@selector(run:) object:nil];
+        worker = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
         [worker start];
     
     }
+}
+
+- (void)stop {
+    if (worker)
+        [worker cancel];
 }
 
 - (void)run
@@ -75,11 +81,9 @@
     
     NSThread *currentThread = [NSThread currentThread];
     
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-
     while (![currentThread isCancelled]) {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         uint64_t timeStamp = CVGetCurrentHostTime();
-        
         // Calculate delta of current and last time. If the current delta is
         // smaller than the maxDelta for 24fps, we wait the difference between
         // maxDelta and delta. Otherwise we just skip the sleep time and go for
@@ -91,10 +95,10 @@
             // NSLog(@"Will wait %llu nanoseconds", sleepTime);
             struct timespec time = { 0, 0 };
             struct timespec remainder = { 0, sleepTime };
-            time.tv_nsec = sleepTime;
             do {
-                time.tv_sec = remainder.tv_sec;
+                //time.tv_sec = remainder.tv_sec;
                 time.tv_nsec = remainder.tv_nsec;
+                remainder.tv_nsec = 0;
                 nanosleep(&time, &remainder);
             } while (remainder.tv_sec || time.tv_nsec);
         } else {
@@ -113,7 +117,6 @@
         
         [pool drain];
     }
-    [pool release];
 }
 
 @end

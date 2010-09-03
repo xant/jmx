@@ -23,6 +23,7 @@ typedef enum {
     VJXPinType type;
     NSString  *name;
     NSMutableDictionary *receivers;
+    NSMutableArray *connections;
     BOOL       multiple;
 }
 
@@ -31,12 +32,14 @@ typedef enum {
 @property (readonly) BOOL multiple;
 
 
-
 + (id)pinWithName:(NSString *)name andType:(VJXPinType)pinType;
 + (id)pinWithName:(NSString *)name andType:(VJXPinType)pinType forObject:(id)pinReceiver withSelector:(NSString *)pinSignal;
 
 - (id)initWithName:(NSString *)name andType:(VJXPinType)pinType;
 - (void)attachObject:(id)pinReceiver withSelector:(NSString *)pinSignal;
+- (void)connectToPin:(VJXPin *)destinationPin;
+- (void)disconnectFromPin:(VJXPin *)destinationPin;
+- (void)disconnectAllPins;
 - (void)deliverSignal:(id)data fromSender:(id)sender;
 - (void)deliverSignal:(id)data;
 - (void)allowMultipleConnections:(BOOL)choice;

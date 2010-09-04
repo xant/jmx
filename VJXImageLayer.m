@@ -31,7 +31,7 @@
         self.image = image_;
 }
 
-- (CIImage *)frameImageForTime:(uint64_t)timeStamp
+- (void)tick:(uint64_t)timeStamp
 {
     @synchronized(self) {
         if (!self.image)
@@ -51,7 +51,7 @@
             self.currentFrame = self.image;//transformedFrame;
         }
     }
-    return [super frameImageForTime:timeStamp];
+    return [super tick:timeStamp];
 }
 
 @end

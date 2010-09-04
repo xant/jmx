@@ -33,6 +33,7 @@
 		AA0F49D91230536C005A1C95 /* VJXExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = AA0F49D81230536C005A1C95 /* VJXExporter.m */; };
 		AA0F49DC12305376005A1C95 /* VJXMixer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA0F49DB12305376005A1C95 /* VJXMixer.m */; };
 		AA0F49DF12305384005A1C95 /* VJXContext.m in Sources */ = {isa = PBXBuildFile; fileRef = AA0F49DE12305384005A1C95 /* VJXContext.m */; };
+		AA792CD012328B3600860CD2 /* VJXEntity+Thread.m in Sources */ = {isa = PBXBuildFile; fileRef = AA792CCF12328B3600860CD2 /* VJXEntity+Thread.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -87,6 +88,8 @@
 		AA0F49DB12305376005A1C95 /* VJXMixer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXMixer.m; sourceTree = "<group>"; };
 		AA0F49DD12305384005A1C95 /* VJXContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXContext.h; sourceTree = "<group>"; };
 		AA0F49DE12305384005A1C95 /* VJXContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXContext.m; sourceTree = "<group>"; };
+		AA792CCE12328B3600860CD2 /* VJXEntity+Thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "VJXEntity+Thread.h"; sourceTree = "<group>"; };
+		AA792CCF12328B3600860CD2 /* VJXEntity+Thread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "VJXEntity+Thread.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,6 +137,8 @@
 				AA0F49DB12305376005A1C95 /* VJXMixer.m */,
 				AA0F49DD12305384005A1C95 /* VJXContext.h */,
 				AA0F49DE12305384005A1C95 /* VJXContext.m */,
+				AA792CCE12328B3600860CD2 /* VJXEntity+Thread.h */,
+				AA792CCF12328B3600860CD2 /* VJXEntity+Thread.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -304,6 +309,7 @@
 				AA0F49D91230536C005A1C95 /* VJXExporter.m in Sources */,
 				AA0F49DC12305376005A1C95 /* VJXMixer.m in Sources */,
 				AA0F49DF12305384005A1C95 /* VJXContext.m in Sources */,
+				AA792CD012328B3600860CD2 /* VJXEntity+Thread.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

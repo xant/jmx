@@ -10,6 +10,7 @@
 #import "VJXOpenGLScreen.h"
 #import "VJXMixer.h"
 #import "VJXImageLayer.h"
+#import "VJXEntity+Thread.h"
 
 @implementation VeeJayAppDelegate
 

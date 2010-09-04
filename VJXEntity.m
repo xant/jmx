@@ -118,5 +118,9 @@
     }
 }
 
+- (void)tick:(uint64_t)timeStamp
+{
+}
+
 @synthesize inputPins, outputPins, name;
 @end

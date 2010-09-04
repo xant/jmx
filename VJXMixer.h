@@ -19,15 +19,9 @@
     VJXPin *imageInputPin;
     VJXPin *imageOutputPin;
     CIImage *currentFrame;
-    NSThread *worker;
-    uint64_t previousTimeStamp;
     NSMutableDictionary *inputStats;
 }
 
 @property (assign) int fps;
-
-- (void)start;
-- (void)stop;
-- (void)run;
 
 @end

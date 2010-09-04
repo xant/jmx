@@ -45,10 +45,9 @@
     [super dealloc];
 }
 
-- (CIImage *)frameImageForTime:(uint64_t)timeStamp
+- (void)tick:(uint64_t)timeStamp
 {
     QTTime now = [movie currentTime];
-
     if (![self paused]) {
         @synchronized(self) {
             // Find out the difference between the last time an image was
@@ -110,7 +109,7 @@
             self.currentFrame = transformedFrame;
         }
     }
-    return [super frameImageForTime:timeStamp]; // let super notify output pins
+    return [super tick:timeStamp]; // let super notify output pins
 }
 
 @end

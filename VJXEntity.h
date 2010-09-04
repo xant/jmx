@@ -12,13 +12,12 @@
 @interface VJXEntity : NSObject <NSCopying> {
 @public
     NSString *name;
-
 @protected
     NSMutableArray *inputPins;
     NSMutableArray *outputPins;
-    
+    int _fps; // XXX
+    uint64_t previousTimeStamp;
 @private
-    
 }
 
 - (void)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType;
@@ -37,6 +36,7 @@
 
 - (void)signalOutput:(id)data;
 
+- (void)tick:(uint64_t)timeStamp;
 
 @property (readonly) NSMutableArray *inputPins;
 @property (readonly) NSMutableArray *outputPins;

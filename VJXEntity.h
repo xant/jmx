@@ -18,6 +18,7 @@
     int _fps; // XXX
     uint64_t previousTimeStamp;
 @private
+    NSThread *worker;
 }
 
 - (void)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType;
@@ -37,6 +38,10 @@
 - (void)signalOutput:(id)data;
 
 - (void)tick:(uint64_t)timeStamp;
+
+- (void)start;
+- (void)stop;
+- (void)run;
 
 @property (readonly) NSMutableArray *inputPins;
 @property (readonly) NSMutableArray *outputPins;

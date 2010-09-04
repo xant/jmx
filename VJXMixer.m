@@ -21,7 +21,7 @@
         imageInputPin = [inputPins lastObject];
         [imageInputPin allowMultipleConnections:YES];
         [self registerOutputPin:@"videoOutput" withType:kVJXImagePin];
-        imageOutputPin = [inputPins lastObject];
+        imageOutputPin = [outputPins lastObject];
         [imageOutputPin allowMultipleConnections:YES];
         fps = 25; // default to 25 frames per second
         worker = nil;

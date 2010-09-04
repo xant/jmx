@@ -25,5 +25,12 @@
     return self;
     
 }
-
+- (void)outputFrame:(CIImage *)frame
+{
+    [super outputFrame:frame];
+    @synchronized(self) {
+        screenView.currentFrame = frame;
+        [screenView setNeedsDisplay:YES];
+    }
+}
 @end

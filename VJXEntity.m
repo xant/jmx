@@ -70,5 +70,23 @@
     return [self retain];
 }
 
+- (VJXPin *)inputPinWithName:(NSString *)pinName
+{
+    for (id pin in inputPins) {
+        if ([pin name] == pinName)
+            return pin;
+    }
+    return nil;
+}
+
+- (VJXPin *)outputPinWithName:(NSString *)pinName
+{
+    for (id pin in outputPins) {
+        if ([pin name] == pinName)
+            return pin;
+    }
+    return nil;
+}
+
 @synthesize inputPins, outputPins, name;
 @end

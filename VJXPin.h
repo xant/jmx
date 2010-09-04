@@ -18,7 +18,7 @@ typedef enum {
     kVJXSizePin
 } VJXPinType;
 
-@interface VJXPin : NSObject {
+@interface VJXPin : NSObject <NSCopying> {
 @private
     VJXPinType type;
     NSString  *name;

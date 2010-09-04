@@ -25,4 +25,8 @@
 
 @property (assign) int fps;
 
+- (void)start;
+- (void)stop;
+- (void)run;
+
 @end

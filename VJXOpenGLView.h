@@ -19,4 +19,6 @@
     BOOL needsReShape;
 }
 
+@property (retain) CIImage *currentFrame;
+
 @end

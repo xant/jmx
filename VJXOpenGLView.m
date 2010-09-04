@@ -18,6 +18,8 @@
 
 @implementation VJXOpenGLView
 
+@synthesize currentFrame;
+
 - (id)initWithFrame:(NSRect)frameRect
 {
     NSOpenGLPixelFormatAttribute attrs[] =

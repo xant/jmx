@@ -27,8 +27,8 @@
 - (void)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType;
 - (void)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector;
 
-- (void)inputPinWithName:(NSString *)pinName;
-- (void)outputPinWithName:(NSString *)pinName;
+- (VJXPin *)inputPinWithName:(NSString *)pinName;
+- (VJXPin *)outputPinWithName:(NSString *)pinName;
 
 - (void)signalOutput:(id)data;
 

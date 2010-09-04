@@ -25,10 +25,17 @@
     BOOL active;
     
     CIImage *currentFrame;
+    uint64_t previousTimeStamp;
+    VJXPin *outputFramePin;
 
 @private
-    VJXPin *outputFramePin;
+    NSThread *worker;
+
 }
+
+- (void)start;
+- (void)stop;
+- (void)run;
 
 @property (retain) NSNumber *alpha;
 @property (retain) NSNumber *saturation;

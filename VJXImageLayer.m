@@ -17,7 +17,7 @@
 - (id)init
 {
     if (self = [super init]) {
-        self.imagePath = @"/Users/igorsutton/Desktop/output.jpeg";
+        self.imagePath = @"/Users/xant/broken-LCD.jpg";
     }
 
     return self;

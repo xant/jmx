@@ -13,7 +13,6 @@
 @interface VJXMovieLayer : VJXLayer {
     QTMovie *movie;
     NSUInteger timeScale;
-    uint64_t previousTimeStamp;
     NSString *moviePath;
     float lastTimeValue;
 

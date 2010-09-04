@@ -39,6 +39,7 @@
         // XXX - it's useless to render the image each time ... 
         //       it should be done only if image parameters have changed
         if (self.image) {
+            /*
             CIFilter *colorFilter = [CIFilter filterWithName:@"CIColorControls"];
             [colorFilter setDefaults];
             [colorFilter setValue:self.saturation forKey:@"inputSaturation"];
@@ -46,7 +47,8 @@
             [colorFilter setValue:self.contrast forKey:@"inputContrast"];
             [colorFilter setValue:self.image forKey:@"inputImage"];
             CIImage *transformedFrame = [colorFilter valueForKey:@"outputImage"];
-            self.currentFrame = transformedFrame;
+             */
+            self.currentFrame = self.image;//transformedFrame;
         }
     }
     return [super frameImageForTime:timeStamp];

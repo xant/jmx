@@ -16,5 +16,6 @@
 }
 
 - (id)initWithSize:(NSSize)screenSize;
+- (void)outputFrame:(CIImage *)frame;
 
 @end

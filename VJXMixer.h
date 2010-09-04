@@ -21,6 +21,7 @@
     CIImage *currentFrame;
     NSThread *worker;
     uint64_t previousTimeStamp;
+    NSMutableDictionary *inputStats;
 }
 
 @property (assign) int fps;

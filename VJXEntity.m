@@ -88,5 +88,35 @@
     return nil;
 }
 
+- (void)unregisterInputPin:(NSString *)pinName
+{
+    VJXPin *pin = [self inputPinWithName:pinName];
+    if (pin) {
+        [inputPins removeObject:pin];
+        [pin disconnectAllPins];
+    }
+}
+
+- (void)unregisterOutputPin:(NSString *)pinName
+{
+    VJXPin *pin = [self inputPinWithName:pinName];
+    if (pin) {
+        [inputPins removeObject:pin];
+        [pin disconnectAllPins];
+    }
+}
+
+- (void)unregisterAllPins
+{
+    for (id pin in inputPins) {
+        [inputPins removeObject:pin];
+        [pin disconnectAllPins];
+    }
+    for (id pin in outputPins) {
+        [outputPins removeObject:pin];
+        [pin disconnectAllPins];
+    }
+}
+
 @synthesize inputPins, outputPins, name;
 @end

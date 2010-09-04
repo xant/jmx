@@ -77,19 +77,20 @@
         [self reShape];
         needsReShape = NO;
     }
+    @synchronized(self) {
+        if (currentFrame != NULL) {
+            CIImage *image = currentFrame;
+            CGRect imageRect = [image extent];
+            CGRect inRect = NSRectToCGRect(bounds);
+            [ciContext drawImage:image inRect:inRect fromRect:imageRect];
+        }
 
-    if (currentFrame != NULL) {
-        CIImage *image = currentFrame;
-        CGRect imageRect = [image extent];
-        CGRect inRect = NSRectToCGRect(bounds);
-        [ciContext drawImage:image inRect:inRect fromRect:imageRect];
+        [[self openGLContext] flushBuffer];
+        [self setNeedsDisplay:NO];
+
     }
-
-
-    [[self openGLContext] flushBuffer];
     CGLUnlockContext([[self openGLContext] CGLContextObj]);
 
-    [self setNeedsDisplay:NO];
 }
 
 - (void)reShape

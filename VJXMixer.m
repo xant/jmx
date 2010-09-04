@@ -25,16 +25,31 @@
         [imageOutputPin allowMultipleConnections:YES];
         fps = 25; // default to 25 frames per second
         worker = nil;
+        inputStats = [[NSMutableDictionary alloc] init];
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [self stop];
+    
+    [inputStats release];
+    [super dealloc];
 }
 
 - (void)receivedFrame:(CIImage *)frame fromSender:(id)sender
 {
     @synchronized(self) {
-        if (!currentFrame) {
-            currentFrame = [frame retain];
+        if ([inputStats objectForKey:sender]) {
+            // we already got a frame from this sender during
+            // actual runcycle ... so let's skip this frame
+            // TODO - take note of inputs' framerates to produce stats
+            return;
         }
+        [inputStats setObject:@"1" forKey:sender]; // take note of who provided us a frame in time
+        if (!currentFrame)
+            currentFrame = [frame retain];
         else {
             CIFilter *blendScreenFilter = [CIFilter filterWithName:@"CIScreenBlendMode"];
             [blendScreenFilter setDefaults];
@@ -110,6 +125,9 @@
                 [imageOutputPin deliverSignal:currentFrame fromSender:self];
                 [currentFrame release];
                 currentFrame = nil;
+                // TODO - copute stats by looking at who provided frames in the last runcycle
+                //        and at which rates each is providing frames
+                [inputStats removeAllObjects];
                 // go for next frame
             }
             previousTimeStamp = timeStamp;

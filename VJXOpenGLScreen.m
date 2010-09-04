@@ -29,8 +29,13 @@
 {
     [super outputFrame:frame];
     @synchronized(self) {
-        screenView.currentFrame = frame;
-        [screenView setNeedsDisplay:YES];
+        screenView.currentFrame = currentFrame;
+        // XXX - setting needsDisplay makes rendering happen in the main gui thread
+        // this could lead to undesired behaviours like rendering stopping while 
+        // a gui animation is in progress. Calling drawRect directly here, instead, 
+        // makes rendering happen in the current thread... which is what we really want
+        //[screenView setNeedsDisplay:YES];
+        [screenView drawRect:NSZeroRect];
     }
 }
 @end

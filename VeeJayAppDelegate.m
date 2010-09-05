@@ -27,6 +27,9 @@
     // CREATE A SCREEN
     NSSize screenSize = { 640, 480 };
     VJXOpenGLScreen *screen = [[VJXOpenGLScreen alloc] initWithSize:screenSize];
+    VJXOpenGLScreen *screen2 = [[VJXOpenGLScreen alloc] initWithSize:screenSize];
+    NSPoint makeItVisible = { 500, 500 };
+    [screen2.window setFrameOrigin:makeItVisible];
     
     // CREATE LAYERS (producing frames)
     VJXImageLayer *imageLayer = [[VJXImageLayer alloc] init];
@@ -40,13 +43,16 @@
     VJXPin *mixerPin = [mixer inputPinWithName:@"videoInput"];
     VJXPin *mixerOut = [mixer outputPinWithName:@"videoOutput"];
     VJXPin *screenInput = [screen inputPinWithName:@"inputFrame"];
-    
+    VJXPin *screenInput2 = [screen2 inputPinWithName:@"inputFrame"];
+
     // CONNECT PINS AS NECESSARY :
     // FIRST THE LAYERS TO THE MIXER
     [mixerPin connectToPin:imagePin];
     [mixerPin connectToPin:moviePin];
     // AND THEN THE MIXER TO THE SCREEN
     [screenInput connectToPin:mixerOut];
+    [screenInput2 connectToPin:mixerOut];
+
 
     // START EVERYTHING
     [imageLayer start];
@@ -57,12 +63,6 @@
     [mixer attachObject:self withSelector:@"printFrequency:andSender:" toOutputPin:@"outputFrequency"];
     [imageLayer attachObject:self withSelector:@"printFrequency:andSender:" toOutputPin:@"outputFrequency"];
     
-    /*
-    NSPoint blah = { 15, 20 };
-    VJXPoint *point = [VJXPoint pointWithNSPoint:blah];
-    CGFloat x = point.x;
-    NSLog(@"TEST %f\n", x);
-     */
     /* END OF TEST CODE */
 }
 

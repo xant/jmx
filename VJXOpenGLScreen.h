@@ -12,8 +12,11 @@
 
 @interface VJXOpenGLScreen : VJXScreen {
 @private
-    NSWindow *screenWindow;
-    VJXOpenGLView *screenView;
+    NSWindow *window;
+    VJXOpenGLView *view;
 }
+
+@property (readonly) NSWindow *window;
+@property (readonly) VJXOpenGLView *view;
 
 @end

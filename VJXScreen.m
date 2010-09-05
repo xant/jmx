@@ -16,7 +16,7 @@
     if (self = [super init]) {
         currentFrame = nil;
         memcpy(&size, &screenSize, sizeof(size));
-        [self registerInputPin:@"inputFrame" withType:kVJXImagePin andSelector:@"outputFrame:"];
+        [self registerInputPin:@"inputFrame" withType:kVJXImagePin andSelector:@"drawFrame:"];
         // effective fps for debugging purposes
         [self registerOutputPin:@"fps" withType:kVJXNumberPin];
     }
@@ -29,7 +29,7 @@
     return [self initWithSize:defaultSize];
 }
 
-- (void)outputFrame:(CIImage *)frame
+- (void)drawFrame:(CIImage *)frame
 {
     @synchronized(self) {
         currentFrame = [frame retain];

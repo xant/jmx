@@ -120,23 +120,6 @@
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-
-/*
-
-- (void)tick;
-{
-    [lock lock];
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    CIImage *newFrame = [vjController lastImage];
-    currentFrame = [newFrame retain];
-    if (currentFrame != nil) {
-        [self drawRect:NSZeroRect];
-        [currentFrame release];
-    }
-    [lock unlock];
-    [pool release];
-}
-*/
 - (void)cleanup
 {
     if (ciContext) {

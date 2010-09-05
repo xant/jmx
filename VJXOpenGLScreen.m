@@ -25,11 +25,14 @@
     return self;
     
 }
-- (void)outputFrame:(CIImage *)frame
+- (void)drawFrame:(CIImage *)frame
 {
-    [super outputFrame:frame];
+    [super drawFrame:frame];
     @synchronized(self) {
-        screenView.currentFrame = currentFrame;
+        // XXX - this is a leftover from first implementation, storing the current frame
+        //       in the view implementation shouldn't be necessary anymore 
+        screenView.currentFrame = currentFrame; 
+        
         // XXX - setting needsDisplay makes rendering happen in the main gui thread
         // this could lead to undesired behaviours like rendering stopping while 
         // a gui animation is in progress. Calling drawRect directly here, instead, 

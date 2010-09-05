@@ -23,9 +23,14 @@
     BOOL active;
 }
 
+#pragma mark Properties
 @property (readonly)BOOL active;
 @property (retain) NSNumber *frequency;
+@property (readonly) NSMutableArray *inputPins;
+@property (readonly) NSMutableArray *outputPins;
+@property (readwrite, copy) NSString *name;
 
+#pragma mark Pin API
 - (void)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType;
 - (void)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector;
 
@@ -40,17 +45,12 @@
 - (VJXPin *)inputPinWithName:(NSString *)pinName;
 - (VJXPin *)outputPinWithName:(NSString *)pinName;
 
-- (void)signalOutput:(id)data;
+- (void)tick:(uint64_t)timeStamp; // should deliver signals to all output pins
 
-- (void)tick:(uint64_t)timeStamp;
+#pragma mark Thread API
 
 - (void)start;
 - (void)stop;
 - (void)run;
-
-@property (readonly) NSMutableArray *inputPins;
-@property (readonly) NSMutableArray *outputPins;
-@property (readwrite, copy) NSString *name;
-
 
 @end

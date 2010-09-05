@@ -65,11 +65,6 @@
     [outputPins addObject:[VJXPin pinWithName:pinName andType:pinType forObject:self withSelector:selector]];
 }
 
-- (void)signalOutput:(id)data
-{
-    
-}
-
 - (id)copyWithZone:(NSZone *)zone
 {
     // we don't want copies, but we want to use such objects as keys of a dictionary

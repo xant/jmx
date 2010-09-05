@@ -41,7 +41,7 @@
         if (self.image)
             self.currentFrame = self.image;//transformedFrame;
     }
-    return [super tick:timeStamp];
+    [super tick:timeStamp];
 }
 
 @end

@@ -44,9 +44,19 @@
     return self;
 }
 
-- (void)attachObject:(id)pinReceiver withSelector:(NSString *)pinSignal
+- (BOOL)attachObject:(id)pinReceiver withSelector:(NSString *)pinSignal
 {
-    [receivers setObject:pinSignal forKey:pinReceiver];
+    if ([pinReceiver respondsToSelector:NSSelectorFromString(pinSignal)]) {
+        if ([[pinSignal componentsSeparatedByString:@":"] count]-1 <= 2) {
+            [receivers setObject:pinSignal forKey:pinReceiver];
+            return YES;
+        } else {
+            NSLog(@"Unsupported selector : '%@' . It can take up to two arguments\n", pinSignal);
+        }
+    } else {
+        NSLog(@"Object %@ doesn't respond to %@\n", pinReceiver, pinSignal);
+    }
+    return NO;
 }
 
 - (void)detachObject:(id)pinReceiver
@@ -93,18 +103,30 @@
         currentData = [signalData retain]; 
         for (id receiver in receivers) {
             NSString *selectorName = [receivers objectForKey:receiver];
-            int selectorArgsNum = [[selectorName componentsSeparatedByString:@":"] count]-1;
             SEL selector = NSSelectorFromString(selectorName);
-            if ([receiver respondsToSelector:selector]) {                
-                if (selectorArgsNum == 1)
+            int selectorArgsNum = [[selectorName componentsSeparatedByString:@":"] count]-1;
+            // checks are now done when registering receivers
+            // so we can avoid checking again now if receiver responds to selector and 
+            // if the selector expects the correct amount of arguments.
+            // this routine is expected to deliver the signals as soon as possible
+            // all safety checks must be done before putting new objects in the receivers' table
+            switch (selectorArgsNum) {
+                case 0:
+                    // some listener could be uninterested to the data, 
+                    // but just want to get notified when something travels on a pin
+                    [receiver performSelector:selector];
+                    break;
+                case 1:
+                    // some other listeners could be interested only in the data,
+                    // regardless of the sender
                     [receiver performSelector:selector withObject:data];
-                else if (selectorArgsNum == 2)
+                    break;
+                case 2:
+                    // and finally there can be listeners which require to know also who has sent the data
                     [receiver performSelector:selector withObject:data withObject:sender];
-                else 
-                    NSLog(@"Unsupported selector : '%@' . It can take either one or two arguments\n");
-
-            } else {
-                // TODO - Error Messages
+                    break;
+                default:
+                    NSLog(@"Unsupported selector : '%@' . It can take up to two arguments\n", selectorName);
             }
         }
     }
@@ -123,16 +145,19 @@
     [super dealloc];
 }
 
-- (void)connectToPin:(VJXPin *)destinationPin
+- (BOOL)connectToPin:(VJXPin *)destinationPin
 {
     @synchronized(self) {
         if (!multiple)
             [self disconnectAllPins];
         if (destinationPin.type == self.type) {
-            [destinationPin attachObject:self withSelector:@"deliverSignal:fromSender:"];
-            [connections addObject:destinationPin];
+            if ([destinationPin attachObject:self withSelector:@"deliverSignal:fromSender:"]) {
+                [connections addObject:destinationPin];
+                return YES;
+            }
         }
     }
+    return NO;
 }
 
 - (void)disconnectFromPin:(VJXPin *)destinationPin

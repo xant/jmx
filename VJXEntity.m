@@ -16,8 +16,8 @@
 - (id)init
 {
     if (self = [super init]) {
-        inputPins = [[NSMutableArray alloc] init];
-        outputPins = [[NSMutableArray alloc] init];
+        inputPins = [[NSMutableDictionary alloc] init];
+        outputPins = [[NSMutableDictionary alloc] init];
         worker = nil;
         self.frequency = [NSNumber numberWithDouble:25];
         [self registerInputPin:@"frequency" withType:kVJXNumberPin andSelector:@"setFrequency:"];
@@ -34,6 +34,7 @@
 - (void)dealloc
 {
     [self stop];
+    [self unregisterAllPins];
     [inputPins release];
     [outputPins release];
     [super dealloc];
@@ -48,85 +49,73 @@
 {
 }
 
-- (void)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType
+- (VJXPin *)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType
 {
-    [self registerInputPin:pinName withType:pinType andSelector:@"defaultInputCallback:"];
+    return [self registerInputPin:pinName withType:pinType andSelector:@"defaultInputCallback:"];
 }
 
-- (void)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector
+- (VJXPin *)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector
 {
-    [inputPins addObject:[VJXPin pinWithName:pinName andType:pinType forObject:self withSelector:selector]];
+    [inputPins setObject:[VJXPin pinWithName:pinName andType:pinType forObject:self withSelector:selector]
+                  forKey:pinName];
+    return [inputPins objectForKey:pinName];
 }
 
-- (void)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType
+- (VJXPin *)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType
 {
-    [self registerOutputPin:pinName withType:pinType andSelector:@"defaultOutputCallback:"];
+    return [self registerOutputPin:pinName withType:pinType andSelector:@"defaultOutputCallback:"];
 }
 
-- (void)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector
+- (VJXPin *)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector
 {
-    [outputPins addObject:[VJXPin pinWithName:pinName andType:pinType forObject:self withSelector:selector]];
+    [outputPins setObject:[VJXPin pinWithName:pinName andType:pinType forObject:self withSelector:selector]
+                   forKey:pinName];
+    return [outputPins objectForKey:pinName];
 }
 
 - (VJXPin *)inputPinWithName:(NSString *)pinName
 {
-    for (id pin in inputPins) {
-        if ([pin name] == pinName)
-            return pin;
-    }
-    return nil;
+    return [inputPins objectForKey:pinName];
 }
 
 - (VJXPin *)outputPinWithName:(NSString *)pinName
 {
-    for (id pin in outputPins) {
-        if ([pin name] == pinName)
-            return pin;
-    }
-    return nil;
+    return [outputPins objectForKey:pinName];
 }
 
 - (void)unregisterInputPin:(NSString *)pinName
 {
-    VJXPin *pin = [self inputPinWithName:pinName];
+    VJXPin *pin = [inputPins objectForKey:pinName];
     if (pin) {
-        [inputPins removeObject:pin];
+        [inputPins removeObjectForKey:pinName];
         [pin disconnectAllPins];
     }
 }
 
 - (void)unregisterOutputPin:(NSString *)pinName
 {
-    VJXPin *pin = [self inputPinWithName:pinName];
+    VJXPin *pin = [outputPins objectForKey:pinName];
     if (pin) {
-        [inputPins removeObject:pin];
+        [outputPins removeObjectForKey:pinName];
         [pin disconnectAllPins];
     }
 }
 
 - (void)unregisterAllPins
 {
-    for (id pin in inputPins) {
-        [inputPins removeObject:pin];
-        [pin disconnectAllPins];
-    }
-    for (id pin in outputPins) {
-        [outputPins removeObject:pin];
-        [pin disconnectAllPins];
-    }
+    for (id key in inputPins)
+        [[inputPins objectForKey:key] disconnectAllPins];
+    [inputPins removeAllObjects];
+    for (id key in outputPins)
+        [[outputPins objectForKey:key] disconnectAllPins];
+    [outputPins removeAllObjects];
 }
 
-- (void)tick:(uint64_t)timeStamp
+- (void)outputDefaultSignals:(uint64_t)timeStamp
 {
-    // TODO - base tick implementation 
-    //        should call 'producer-callbacks'
-    //        for all output pins
-    
-    // XXX - save pointers to output pins at initialization time
-    //       and don't waste time resolving them here
     VJXPin *activePin = [self outputPinWithName:@"active"];
     VJXPin *frequencyPin = [self outputPinWithName:@"outputFrequency"];
-
+    
     [activePin deliverSignal:[NSNumber numberWithBool:active] fromSender:self];
     
     int i = 0;
@@ -141,6 +130,16 @@
     double rate = 1e9/((stamps[stampCount - 1] - stamps[0])/stampCount);
     [frequencyPin deliverSignal:[NSNumber numberWithDouble:rate]
                      fromSender:self];
+}
+
+- (BOOL)attachObject:(id)receiver withSelector:(NSString *)selector toOutputPin:(NSString *)pinName
+{
+    VJXPin *pin = [self outputPinWithName:pinName];
+    if (pin) {
+        [pin attachObject:receiver withSelector:selector];
+        return YES;
+    }
+    return NO;
 }
 
 - (void)start
@@ -167,6 +166,7 @@
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         uint64_t timeStamp = CVGetCurrentHostTime();
         [self tick:timeStamp];
+        [self outputDefaultSignals:timeStamp]; // ensure sending all default signals
         previousTimeStamp = timeStamp;
         uint64_t now = CVGetCurrentHostTime();
         // Check if tick() has returned earlier and we still have time before next tick. 

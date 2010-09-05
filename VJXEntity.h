@@ -9,12 +9,19 @@
 #import <Cocoa/Cocoa.h>
 #import "VJXPin.h"
 
-@interface VJXEntity : NSObject <NSCopying> {
+@protocol VJXEntity
+@optional
+// entities should implement this message to trigger 
+// delivering of signals to all their custom output pins
+- (void)tick:(uint64_t)timeStamp;
+@end
+
+@interface VJXEntity : NSObject <NSCopying, VJXEntity> {
 @public
     NSString *name;
 @protected
-    NSMutableArray *inputPins;
-    NSMutableArray *outputPins;
+    NSMutableDictionary *inputPins;
+    NSMutableDictionary *outputPins;
     uint64_t previousTimeStamp;
     NSNumber *frequency;
     
@@ -28,16 +35,24 @@
 #pragma mark Properties
 @property (readonly)BOOL active;
 @property (retain) NSNumber *frequency;
-@property (readonly) NSMutableArray *inputPins;
-@property (readonly) NSMutableArray *outputPins;
+@property (readonly) NSMutableDictionary *inputPins;
+@property (readonly) NSMutableDictionary *outputPins;
 @property (readwrite, copy) NSString *name;
 
 #pragma mark Pin API
-- (void)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType;
-- (void)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector;
+- (VJXPin *)registerInputPin:(NSString *)pinName
+                    withType:(VJXPinType)pinType;
 
-- (void)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType;
-- (void)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector;
+- (VJXPin *)registerInputPin:(NSString *)pinName
+                    withType:(VJXPinType)pinType
+                 andSelector:(NSString *)selector;
+
+- (VJXPin *)registerOutputPin:(NSString *)pinName
+                     withType:(VJXPinType)pinType;
+
+- (VJXPin *)registerOutputPin:(NSString *)pinName
+                     withType:(VJXPinType)pinType
+                  andSelector:(NSString *)selector;
 
 - (void)unregisterInputPin:(NSString *)pinName;
 - (void)unregisterOutputPin:(NSString *)pinName;
@@ -47,7 +62,9 @@
 - (VJXPin *)inputPinWithName:(NSString *)pinName;
 - (VJXPin *)outputPinWithName:(NSString *)pinName;
 
-- (void)tick:(uint64_t)timeStamp; // should deliver signals to all output pins
+- (BOOL)attachObject:(id)receiver
+        withSelector:(NSString *)selector
+        toOutputPin:(NSString *)pinName;
 
 #pragma mark Thread API
 

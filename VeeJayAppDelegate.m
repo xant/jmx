@@ -12,7 +12,7 @@
 #import "VJXOpenGLScreen.h"
 #import "VJXMixer.h"
 #import "VJXImageLayer.h"
-#import "VJXMovieLayer.h"
+#import "VJXQtVideoLayer.h"
 #import "VJXPoint.h"
 // END OF HERE FOR TESTING
 @implementation VeeJayAppDelegate
@@ -30,7 +30,7 @@
     
     // CREATE LAYERS (producing frames)
     VJXImageLayer *imageLayer = [[VJXImageLayer alloc] init];
-    VJXMovieLayer *movieLayer = [[VJXMovieLayer alloc] init];
+    VJXQtVideoLayer *movieLayer = [[VJXQtVideoLayer alloc] init];
     movieLayer.moviePath = @"/Users/xant/test.avi";
     [movieLayer loadMovie];
     
@@ -53,8 +53,10 @@
     [movieLayer start];
     [mixer start];
     
-    VJXPin *mixerFrequency = [mixer outputPinWithName:@"outputFrequency"];
-    [mixerFrequency attachObject:self withSelector:@"printFrequency:"];
+    // CONNECT A CALLBACK TO THE MIXER OUTPUT PIN TO GET EFFECTIVE FREQUENCY AND PRINT IT OUT
+    [mixer attachObject:self withSelector:@"printFrequency:andSender:" toOutputPin:@"outputFrequency"];
+    [imageLayer attachObject:self withSelector:@"printFrequency:andSender:" toOutputPin:@"outputFrequency"];
+    
     /*
     NSPoint blah = { 15, 20 };
     VJXPoint *point = [VJXPoint pointWithNSPoint:blah];
@@ -64,9 +66,9 @@
     /* END OF TEST CODE */
 }
 
-- (void)printFrequency:(id)data
+- (void)printFrequency:(id)data andSender:(id)sender
 {
-    NSLog(@"Frequency: %@\n", data); 
+    NSLog(@"Frequency for %@: %@\n", sender, data); 
 }
 
 - (void)awakeFromNib

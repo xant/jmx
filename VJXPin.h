@@ -38,8 +38,8 @@ typedef enum {
 + (id)pinWithName:(NSString *)name andType:(VJXPinType)pinType forObject:(id)pinReceiver withSelector:(NSString *)pinSignal;
 
 - (id)initWithName:(NSString *)name andType:(VJXPinType)pinType;
-- (void)attachObject:(id)pinReceiver withSelector:(NSString *)pinSignal;
-- (void)connectToPin:(VJXPin *)destinationPin;
+- (BOOL)attachObject:(id)pinReceiver withSelector:(NSString *)pinSignal;
+- (BOOL)connectToPin:(VJXPin *)destinationPin;
 - (void)disconnectFromPin:(VJXPin *)destinationPin;
 - (void)disconnectAllPins;
 - (void)deliverSignal:(id)data fromSender:(id)sender;

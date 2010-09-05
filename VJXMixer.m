@@ -17,11 +17,9 @@
 - (id) init
 {
     if (self = [super init]) {
-        [self registerInputPin:@"videoInput" withType:kVJXImagePin andSelector:@"receivedFrame:fromSender:"];
-        imageInputPin = [inputPins lastObject];
+        imageInputPin = [self registerInputPin:@"videoInput" withType:kVJXImagePin andSelector:@"receivedFrame:fromSender:"];
         [imageInputPin allowMultipleConnections:YES];
-        [self registerOutputPin:@"videoOutput" withType:kVJXImagePin];
-        imageOutputPin = [outputPins lastObject];
+        imageOutputPin = [self registerOutputPin:@"videoOutput" withType:kVJXImagePin];
         [imageOutputPin allowMultipleConnections:YES];
         outputSize.height = 480; // HC
         outputSize.width = 640; // HC
@@ -75,21 +73,12 @@
                 [blendScreenFilter setDefaults];
                 [blendScreenFilter setValue:frame forKey:@"inputImage"];
                 [blendScreenFilter setValue:currentFrame forKey:@"inputBackgroundImage"];
-                CIImage *resultingImage = [blendScreenFilter valueForKey:@"outputImage"];
-                /* TODO - apply filters
-                 resultingImage = [filter valueForKey:@"outputImage"];
-                 */
-                currentFrame = resultingImage;
+                currentFrame = [blendScreenFilter valueForKey:@"outputImage"];
                 
             }
-            // TODO - copute stats by looking at who provided frames in the last runcycle
-            //        and at which rates each is providing frames
-            //[imageProducers removeAllObjects];
-            // go for next frame
         }
         [imageOutputPin deliverSignal:currentFrame fromSender:self];
     }
-    [super tick:timeStamp];
 }
 
 - (NSArray *)imageProducers

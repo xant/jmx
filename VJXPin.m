@@ -77,10 +77,12 @@
                 signalData = data;
             break;
         case kVJXSizePin:
+            // TODO - encapsulate in a specific VJXSize class
             if ([data isKindOfClass:[NSData class]] && [data length] == sizeof(NSSize))
                 signalData = data;
             break;
         case kVJXPointPin:
+            // TODO - encapsulate in a specific VJXPoint class
             if ([data isKindOfClass:[NSData class]] && [data length] == sizeof(NSPoint))
                 signalData = data;
             break;

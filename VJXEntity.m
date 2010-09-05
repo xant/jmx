@@ -21,6 +21,7 @@
         worker = nil;
         self.frequency = [NSNumber numberWithDouble:25];
         [self registerInputPin:@"frequency" withType:kVJXNumberPin andSelector:@"setFrequency:"];
+        [self registerInputPin:@"active" withType:kVJXNumberPin andSelector:@"setActive:"];
         [self registerOutputPin:@"active" withType:kVJXNumberPin];
         // and 'effective' frequency , only for debugging purposes
         [self registerOutputPin:@"outputFrequency" withType:kVJXNumberPin];
@@ -189,6 +190,15 @@
         [pool drain];
     }
     active = NO;
+}
+
+- (void)setActive:(id)value
+{
+    active = (value && 
+              [value respondsToSelector:@selector(boolValue)] && 
+              [value boolValue])
+           ? YES
+           : NO;
 }
 
 @synthesize inputPins, outputPins, name, active;

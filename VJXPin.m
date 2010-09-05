@@ -8,7 +8,6 @@
 
 #import "VJXPin.h"
 
-
 @implementation VJXPin
 
 - (id)init
@@ -77,13 +76,11 @@
                 signalData = data;
             break;
         case kVJXSizePin:
-            // TODO - encapsulate in a specific VJXSize class
-            if ([data isKindOfClass:[NSData class]] && [data length] == sizeof(NSSize))
+            if ([data isKindOfClass:[VJXSize class]])
                 signalData = data;
             break;
         case kVJXPointPin:
-            // TODO - encapsulate in a specific VJXPoint class
-            if ([data isKindOfClass:[NSData class]] && [data length] == sizeof(NSPoint))
+            if ([data isKindOfClass:[VJXPoint class]])
                 signalData = data;
             break;
         default:
@@ -98,7 +95,7 @@
             NSString *selectorName = [receivers objectForKey:receiver];
             int selectorArgsNum = [[selectorName componentsSeparatedByString:@":"] count]-1;
             SEL selector = NSSelectorFromString(selectorName);
-            if ([receiver respondsToSelector:selector]) {
+            if ([receiver respondsToSelector:selector]) {                
                 if (selectorArgsNum == 1)
                     [receiver performSelector:selector withObject:data];
                 else if (selectorArgsNum == 2)

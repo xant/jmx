@@ -18,8 +18,8 @@
     NSNumber *rotation;
     NSNumber *scaleRatio;
     NSNumber *fps;
-    NSPoint  origin;
-    NSSize   size;
+    VJXPoint *origin;
+    VJXSize  *size;
     
     CIImage *currentFrame;
     VJXPin *outputFramePin;
@@ -36,8 +36,8 @@
 @property (retain) NSNumber *rotation;
 @property (retain) NSNumber *scaleRatio;
 @property (retain) NSNumber *fps;
-@property (assign) NSPoint origin;
-@property (assign) NSSize size;
+@property (retain) VJXPoint *origin;
+@property (retain) VJXSize  *size;
 @property (retain) CIImage *currentFrame;
 
 @end

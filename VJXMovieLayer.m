@@ -66,7 +66,6 @@
                 uint64_t delta = previousTimeStamp
                                ? (timeStamp - previousTimeStamp) / 1e9 * now.timeScale
                                : now.timeScale / [fps doubleValue];
-                NSLog(@"%d\n", delta);
                 // Calculate the next frame we need to provide.
                 now.timeValue += delta;
 

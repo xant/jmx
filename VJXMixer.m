@@ -7,8 +7,8 @@
 //
 
 #import "VJXMixer.h"
+#import "VJXLayer.h"
 #import <QuartzCore/QuartzCore.h>
-
 
 @implementation VJXMixer
 
@@ -50,17 +50,24 @@
             [currentFrame release];
             currentFrame = nil;
         }
-        for (id layer in imageProducers) {
-            CIFilter *filter = [CIFilter filterWithName:@"CIAffineTransform"];
-            CGRect imageRect = [[imageProducers objectForKey:layer] extent];
-            float xScale = outputSize.width / imageRect.size.width;
-            float yScale = outputSize.height / imageRect.size.height;
-            NSAffineTransform *transform = [NSAffineTransform transform];
-            [transform scaleXBy:xScale yBy:yScale];
-            [filter setDefaults];
-            [filter setValue:transform forKey:@"inputTransform"];
-            [filter setValue:[imageProducers objectForKey:layer] forKey:@"inputImage"];
-            CIImage *frame = [filter valueForKey:@"outputImage"];
+        for (id producer in imageProducers) {
+            CIImage *frame = [imageProducers objectForKey:producer];
+            if ([producer isKindOfClass:[VJXLayer class]]) {
+                VJXLayer *layer = (VJXLayer *)producer;
+                if (layer.size.width != outputSize.width || layer.size.height != outputSize.height)
+                {
+                    CIFilter *filter = [CIFilter filterWithName:@"CIAffineTransform"];
+                    CGRect imageRect = [frame extent];
+                    float xScale = outputSize.width / imageRect.size.width;
+                    float yScale = outputSize.height / imageRect.size.height;
+                    NSAffineTransform *transform = [NSAffineTransform transform];
+                    [transform scaleXBy:xScale yBy:yScale];
+                    [filter setDefaults];
+                    [filter setValue:transform forKey:@"inputTransform"];
+                    [filter setValue:frame forKey:@"inputImage"];
+                    frame = [filter valueForKey:@"outputImage"];
+                }
+            }
             if (!currentFrame)
                 currentFrame = frame;
             else {

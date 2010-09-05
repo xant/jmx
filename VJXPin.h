@@ -7,6 +7,8 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "VJXSize.h"
+#import "VJXPoint.h"
 
 typedef enum {
     kVJXVoidPin,
@@ -15,11 +17,7 @@ typedef enum {
     kVJXImagePin,
     kVJXAudioPin,
     kVJXPointPin,
-    kVJXSizePin
-// TODO - we need a Boolean type (perhaps encapsulated in a number, 
-//        but still it would be appropriate to provide a BOOL value 
-//        to receivers (which could then register accessors to their 
-//        BOOL ivars directly)
+    kVJXSizePin,
 } VJXPinType;
 
 @interface VJXPin : NSObject <NSCopying> {

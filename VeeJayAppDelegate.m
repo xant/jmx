@@ -7,11 +7,14 @@
 //
 
 #import "VeeJayAppDelegate.h"
+
+// HERE FOR TESTING
 #import "VJXOpenGLScreen.h"
 #import "VJXMixer.h"
 #import "VJXImageLayer.h"
 #import "VJXMovieLayer.h"
-
+#import "VJXPoint.h"
+// END OF HERE FOR TESTING
 @implementation VeeJayAppDelegate
 
 @synthesize window, layersTableView;
@@ -49,7 +52,12 @@
     [imageLayer start];
     [movieLayer start];
     [mixer start];
-    
+    /*
+    NSPoint blah = { 15, 20 };
+    VJXPoint *point = [VJXPoint pointWithNSPoint:blah];
+    CGFloat x = point.x;
+    NSLog(@"TEST %f\n", x);
+     */
     /* END OF TEST CODE */
 }
 

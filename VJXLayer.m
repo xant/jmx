@@ -30,12 +30,16 @@
         [self registerInputPin:@"rotation" withType:kVJXNumberPin andSelector:@"setRotation:"];
         [self registerInputPin:@"scaleRatio" withType:kVJXNumberPin andSelector:@"setScaleRatio:"];
         
-        [self registerInputPin:@"origin" withType:kVJXPointPin andSelector:@"setOriginPin:"];
-        [self registerInputPin:@"size" withType:kVJXSizePin andSelector:@"setSizePin:"];
+        [self registerInputPin:@"origin" withType:kVJXPointPin andSelector:@"setOrigin:"];
+        [self registerInputPin:@"size" withType:kVJXSizePin andSelector:@"setSize:"];
 
         // we output at least 1 image
         [self registerOutputPin:@"outputFrame" withType:kVJXImagePin];
         outputFramePin = [outputPins lastObject]; // save the output pin to signal data when available
+        
+        // XXX - DEFAULTS
+        NSSize defaultLayerSize = { 640, 480 };
+        size = [[VJXSize sizeWithNSSize:defaultLayerSize] retain];
     }
     return self;
 }
@@ -44,39 +48,37 @@
 {
     if (currentFrame)
         self.currentFrame = nil; // ensure calling the accessor to release the current frame
+    [size release];
     [super dealloc];
-}
-
-- (void)setOriginPin:(NSData *)newOrigin
-{
-    @synchronized(self) {
-        // we can trust type-checking done by the VJXPin->signal() method
-        memcpy(&origin, [newOrigin bytes], sizeof(origin));
-    }
-}
-
-- (void)setSizePin:(NSData *)newSize
-{
-    @synchronized(self) {
-        // we can trust type-checking done by the VJXPin->signal() method
-        memcpy(&size, [newSize bytes], sizeof(size));
-    }
 }
 
 - (void)tick:(uint64_t)timeStamp
 {
     @synchronized(self) {
-        // TODO - apply filters
-         CIFilter *colorFilter = [CIFilter filterWithName:@"CIColorControls"];
-         [colorFilter setDefaults];
-         [colorFilter setValue:self.saturation forKey:@"inputSaturation"];
-         [colorFilter setValue:self.brightness forKey:@"inputBrightness"];
-         [colorFilter setValue:self.contrast forKey:@"inputContrast"];
-         [colorFilter setValue:self.currentFrame forKey:@"inputImage"];
-         self.currentFrame = [colorFilter valueForKey:@"outputImage"];
+        CIFilter *colorFilter = [CIFilter filterWithName:@"CIColorControls"];
+        [colorFilter setDefaults];
+        [colorFilter setValue:self.saturation forKey:@"inputSaturation"];
+        [colorFilter setValue:self.brightness forKey:@"inputBrightness"];
+        [colorFilter setValue:self.contrast forKey:@"inputContrast"];
+        [colorFilter setValue:self.currentFrame forKey:@"inputImage"];
+        // scale the image to fit the configured layer size
+        CIImage *frame = [colorFilter valueForKey:@"outputImage"];
+        CIFilter *scaleFilter = [CIFilter filterWithName:@"CIAffineTransform"];
+        CGRect imageRect = [frame extent];
+        float xScale = size.width / imageRect.size.width;
+        float yScale = size.height / imageRect.size.height;
+        // TODO - take scaleRatio into account for further scaling requested by the user
+        NSAffineTransform *transform = [NSAffineTransform transform];
+        [transform scaleXBy:xScale yBy:yScale];
+        [scaleFilter setDefaults];
+        [scaleFilter setValue:transform forKey:@"inputTransform"];
+        [scaleFilter setValue:frame forKey:@"inputImage"];
+        
+        self.currentFrame = [scaleFilter valueForKey:@"outputImage"];
+        
         // TODO - compute the effective fps and send it to an output pin 
         //        for debugging purposes
-        [outputFramePin deliverSignal:currentFrame];
+        [outputFramePin deliverSignal:currentFrame fromSender:self];
     }
     [super tick:timeStamp];
 }

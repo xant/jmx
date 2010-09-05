@@ -35,8 +35,8 @@
 #pragma mark Properties
 @property (readonly)BOOL active;
 @property (retain) NSNumber *frequency;
-@property (readonly) NSMutableDictionary *inputPins;
-@property (readonly) NSMutableDictionary *outputPins;
+@property (readonly) NSDictionary *inputPins;
+@property (readonly) NSDictionary *outputPins;
 @property (readwrite, copy) NSString *name;
 
 #pragma mark Pin API

@@ -54,36 +54,38 @@
 - (void)tick:(uint64_t)timeStamp
 {
     @synchronized(self) {
-        // Apply image parameters
-        CIFilter *colorFilter = [CIFilter filterWithName:@"CIColorControls"];
-        [colorFilter setDefaults];
-        [colorFilter setValue:saturation forKey:@"inputSaturation"];
-        [colorFilter setValue:brightness forKey:@"inputBrightness"];
-        [colorFilter setValue:contrast forKey:@"inputContrast"];
-        [colorFilter setValue:currentFrame forKey:@"inputImage"];
-        // scale the image to fit the configured layer size
-        CIImage *frame = [colorFilter valueForKey:@"outputImage"];
-        
+        if (currentFrame) {
+            // Apply image parameters
+            CIFilter *colorFilter = [CIFilter filterWithName:@"CIColorControls"];
+            [colorFilter setDefaults];
+            [colorFilter setValue:saturation forKey:@"inputSaturation"];
+            [colorFilter setValue:brightness forKey:@"inputBrightness"];
+            [colorFilter setValue:contrast forKey:@"inputContrast"];
+            [colorFilter setValue:currentFrame forKey:@"inputImage"];
+            // scale the image to fit the configured layer size
+            CIImage *frame = [colorFilter valueForKey:@"outputImage"];
+            
 #if 1 // frame should be produced with the correct size by the layer implementation
-        CGRect imageRect = [frame extent];
-        // and scale the frame if necessary
-        if (size.width != imageRect.size.width || size.height != imageRect.size.height) {
-            CIFilter *scaleFilter = [CIFilter filterWithName:@"CIAffineTransform"];
-            float xScale = size.width / imageRect.size.width;
-            float yScale = size.height / imageRect.size.height;
-            // TODO - take scaleRatio into account for further scaling requested by the user
-            NSAffineTransform *transform = [NSAffineTransform transform];
-            [transform scaleXBy:xScale yBy:yScale];
-            [scaleFilter setDefaults];
-            [scaleFilter setValue:transform forKey:@"inputTransform"];
-            [scaleFilter setValue:frame forKey:@"inputImage"];
-            frame = [scaleFilter valueForKey:@"outputImage"];
-        } 
+            CGRect imageRect = [frame extent];
+            // and scale the frame if necessary
+            if (size.width != imageRect.size.width || size.height != imageRect.size.height) {
+                CIFilter *scaleFilter = [CIFilter filterWithName:@"CIAffineTransform"];
+                float xScale = size.width / imageRect.size.width;
+                float yScale = size.height / imageRect.size.height;
+                // TODO - take scaleRatio into account for further scaling requested by the user
+                NSAffineTransform *transform = [NSAffineTransform transform];
+                [transform scaleXBy:xScale yBy:yScale];
+                [scaleFilter setDefaults];
+                [scaleFilter setValue:transform forKey:@"inputTransform"];
+                [scaleFilter setValue:frame forKey:@"inputImage"];
+                frame = [scaleFilter valueForKey:@"outputImage"];
+            } 
 #endif
-        
-        if (currentFrame)
-            [currentFrame release];
-        currentFrame = [frame retain];
+            if (frame) {
+                [currentFrame release];
+                currentFrame = [frame retain];
+            }
+        }
         
         // TODO - compute the effective fps and send it to an output pin 
         //        for debugging purposes

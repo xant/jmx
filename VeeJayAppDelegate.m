@@ -17,27 +17,39 @@
 @synthesize window, layersTableView;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-    NSSize blah = { 640, 480 };
     /* TEST CODE */
+    // CREATE A MIXER
     VJXMixer *mixer = [[VJXMixer alloc] init];
-    VJXOpenGLScreen *screen = [[VJXOpenGLScreen alloc] initWithSize:blah];
+    
+    // CREATE A SCREEN
+    NSSize screenSize = { 640, 480 };
+    VJXOpenGLScreen *screen = [[VJXOpenGLScreen alloc] initWithSize:screenSize];
+    
+    // CREATE LAYERS (producing frames)
     VJXImageLayer *imageLayer = [[VJXImageLayer alloc] init];
     VJXMovieLayer *movieLayer = [[VJXMovieLayer alloc] init];
     movieLayer.moviePath = @"/Users/xant/test.avi";
     [movieLayer loadMovie];
+    
+    // GET ALL PINS WE WANT TO CONNECT ONE TO EACH OTHER
     VJXPin *moviePin = [movieLayer outputPinWithName:@"outputFrame"];
     VJXPin *imagePin = [imageLayer outputPinWithName:@"outputFrame"];
     VJXPin *mixerPin = [mixer inputPinWithName:@"videoInput"];
     VJXPin *mixerOut = [mixer outputPinWithName:@"videoOutput"];
     VJXPin *screenInput = [screen inputPinWithName:@"inputFrame"];
+    
+    // CONNECT PINS AS NECESSARY :
+    // FIRST THE LAYERS TO THE MIXER
     [mixerPin connectToPin:imagePin];
     [mixerPin connectToPin:moviePin];
+    // AND THEN THE MIXER TO THE SCREEN
     [screenInput connectToPin:mixerOut];
-    NSLog(@"%@\n", [mixerPin name]);
-    //NSLog(@"%@\n", mixerPin);
+
+    // START EVERYTHING
     [imageLayer start];
     [movieLayer start];
     [mixer start];
+    
     /* END OF TEST CODE */
 }
 

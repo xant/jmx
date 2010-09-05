@@ -15,7 +15,7 @@
     NSString *imagePath;
 }
 
-@property (nonatomic,retain) CIImage *image;
-@property (nonatomic,copy) NSString *imagePath;
+@property (retain) CIImage *image;
+@property (copy) NSString *imagePath;
 
 @end

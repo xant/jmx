@@ -46,7 +46,7 @@
 - (void)dealloc
 {
     if (currentFrame)
-        self.currentFrame = nil; // ensure calling the accessor to release the current frame
+        [currentFrame release];
     [size release];
     [super dealloc];
 }
@@ -57,10 +57,10 @@
         // Apply image parameters
         CIFilter *colorFilter = [CIFilter filterWithName:@"CIColorControls"];
         [colorFilter setDefaults];
-        [colorFilter setValue:self.saturation forKey:@"inputSaturation"];
-        [colorFilter setValue:self.brightness forKey:@"inputBrightness"];
-        [colorFilter setValue:self.contrast forKey:@"inputContrast"];
-        [colorFilter setValue:self.currentFrame forKey:@"inputImage"];
+        [colorFilter setValue:saturation forKey:@"inputSaturation"];
+        [colorFilter setValue:brightness forKey:@"inputBrightness"];
+        [colorFilter setValue:contrast forKey:@"inputContrast"];
+        [colorFilter setValue:currentFrame forKey:@"inputImage"];
         // scale the image to fit the configured layer size
         CIImage *frame = [colorFilter valueForKey:@"outputImage"];
         
@@ -81,7 +81,9 @@
         } 
 #endif
         
-        self.currentFrame = frame;
+        if (currentFrame)
+            [currentFrame release];
+        currentFrame = [frame retain];
         
         // TODO - compute the effective fps and send it to an output pin 
         //        for debugging purposes

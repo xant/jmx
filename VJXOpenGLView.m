@@ -7,7 +7,6 @@
 //
 
 #import "VJXOpenGLView.h"
-#import "VJXMovieLayer.h"
 
 @interface VJXOpenGLView (Private)
 
@@ -125,11 +124,6 @@
     if (ciContext) {
         [ciContext release];
         ciContext = nil;
-    }
-
-    if (currentFrame) {
-        [currentFrame release];
-        currentFrame = nil;
     }
 
     if (lock) {

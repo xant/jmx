@@ -63,6 +63,10 @@
     QTTime now = [movie currentTime];
     @synchronized(self) {
         if (!paused) {
+            if (currentFrame) {
+                [currentFrame release];
+                currentFrame = nil;
+            }
             uint64_t delta = previousTimeStamp
                            ? (timeStamp - previousTimeStamp) / 1e9 * now.timeScale
                            : now.timeScale / [fps doubleValue];
@@ -76,7 +80,6 @@
                     [movie gotoBeginning];
                 } else {
                     [self stop];
-                    self.currentFrame = nil; // XXX - perhaps we should return a black frame instead of nil 
                     return [super tick:timeStamp]; // we still want to propagate the signal
                 }
             }
@@ -95,7 +98,9 @@
             // Get our CIImage.
             // TODO: Implement error handling.
             // XXX - and check why requested framesize is not honored
-            self.currentFrame = [movie frameImageAtTime:now withAttributes:attrs error:nil];
+            CIImage *frame = [movie frameImageAtTime:now withAttributes:attrs error:nil];
+            if (frame)
+                currentFrame = [frame retain];
         } 
     }
     [super tick:timeStamp]; // let super notify output pins

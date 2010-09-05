@@ -38,6 +38,6 @@
 @property (retain) NSNumber *fps;
 @property (retain) VJXPoint *origin;
 @property (retain) VJXSize  *size;
-@property (retain) CIImage *currentFrame;
+@property (readonly) CIImage *currentFrame;
 
 @end

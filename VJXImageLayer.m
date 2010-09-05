@@ -38,8 +38,11 @@
             [self load];
         // XXX - it's useless to render the image each time ... 
         //       it should be done only if image parameters have changed
-        if (self.image)
-            self.currentFrame = self.image;//transformedFrame;
+        if (self.image) {
+            if (currentFrame)
+                [currentFrame release];
+            currentFrame = [self.image retain];
+        }
     }
     [super tick:timeStamp];
 }

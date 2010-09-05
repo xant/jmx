@@ -32,8 +32,17 @@
 - (void)drawFrame:(CIImage *)frame
 {
     @synchronized(self) {
+        if (currentFrame)
+            [currentFrame release];
         currentFrame = [frame retain];
     }
+}
+
+- (void)dealloc
+{
+    if (currentFrame)
+        [currentFrame release];
+    [super dealloc];
 }
 
 @end

@@ -12,7 +12,7 @@
 @implementation VJXLayer
 
 @synthesize alpha, saturation, brightness, contrast, rotation,
-            origin, size, scaleRatio, fps, currentFrame;
+            origin, size, scaleRatio, fps;
 
 - (id)init
 {
@@ -91,6 +91,17 @@
         //        for debugging purposes
         [outputFramePin deliverSignal:currentFrame fromSender:self];
     }
+}
+
+- (CIImage *)currentFrame
+{   
+    @synchronized(self) {
+        if (currentFrame) {
+            CIImage *frame = [currentFrame retain];
+            return [frame autorelease];
+        }
+    }
+    return nil;
 }
 
 @end

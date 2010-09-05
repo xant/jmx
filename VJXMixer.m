@@ -87,9 +87,9 @@
             //[imageProducers removeAllObjects];
             // go for next frame
         }
-        previousTimeStamp = timeStamp;
         [imageOutputPin deliverSignal:currentFrame fromSender:self];
     }
+    [super tick:timeStamp];
 }
 
 - (NSArray *)imageProducers

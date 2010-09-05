@@ -52,6 +52,9 @@
     [imageLayer start];
     [movieLayer start];
     [mixer start];
+    
+    VJXPin *mixerFrequency = [mixer outputPinWithName:@"outputFrequency"];
+    [mixerFrequency attachObject:self withSelector:@"printFrequency:"];
     /*
     NSPoint blah = { 15, 20 };
     VJXPoint *point = [VJXPoint pointWithNSPoint:blah];
@@ -61,9 +64,24 @@
     /* END OF TEST CODE */
 }
 
+- (void)printFrequency:(id)data
+{
+    NSLog(@"Frequency: %@\n", data); 
+}
+
 - (void)awakeFromNib
 {
     [layersTableView registerForDraggedTypes:[NSArray arrayWithObject:@"LayerTableViewDataType"]];
+}
+
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    // we don't want copies, but we want to use such objects as keys of a dictionary
+    // so we still need to conform to the 'copying' protocol,
+    // but since we are to be considered 'immutable' we can adopt what described at the end of :
+    // http://developer.apple.com/mac/library/documentation/cocoa/conceptual/MemoryMgmt/Articles/mmImplementCopy.html
+    return [self retain];
 }
 
 @end

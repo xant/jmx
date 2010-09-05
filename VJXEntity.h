@@ -21,6 +21,8 @@
 @private
     NSThread *worker;
     BOOL active;
+    int64_t stamps[25 + 1]; // XXX - 25 should be a constant
+    int stampCount;
 }
 
 #pragma mark Properties

@@ -25,6 +25,8 @@
         [self registerOutputPin:@"active" withType:kVJXNumberPin];
         // and 'effective' frequency , only for debugging purposes
         [self registerOutputPin:@"outputFrequency" withType:kVJXNumberPin];
+        stampCount = 0;
+        previousTimeStamp = 0;
     }
     return self;
 }
@@ -64,15 +66,6 @@
 - (void)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector
 {
     [outputPins addObject:[VJXPin pinWithName:pinName andType:pinType forObject:self withSelector:selector]];
-}
-
-- (id)copyWithZone:(NSZone *)zone
-{
-    // we don't want copies, but we want to use such objects as keys of a dictionary
-    // so we still need to conform to the 'copying' protocol,
-    // but since we are to be considered 'immutable' we can adopt what described at the end of :
-    // http://developer.apple.com/mac/library/documentation/cocoa/conceptual/MemoryMgmt/Articles/mmImplementCopy.html
-    return [self retain];
 }
 
 - (VJXPin *)inputPinWithName:(NSString *)pinName
@@ -128,8 +121,26 @@
     // TODO - base tick implementation 
     //        should call 'producer-callbacks'
     //        for all output pins
+    
+    // XXX - save pointers to output pins at initialization time
+    //       and don't waste time resolving them here
     VJXPin *activePin = [self outputPinWithName:@"active"];
-    [activePin deliverSignal:[NSNumber numberWithBool:active]];
+    VJXPin *frequencyPin = [self outputPinWithName:@"outputFrequency"];
+
+    [activePin deliverSignal:[NSNumber numberWithBool:active] fromSender:self];
+    
+    int i = 0;
+    if (stampCount > 25) {
+        for (i = 0; i < stampCount; i++) {
+            stamps[i] = stamps[i+1];
+        }
+        stampCount = 25;  
+    }
+    stamps[stampCount++] = timeStamp;
+    
+    double rate = 1e9/((stamps[stampCount - 1] - stamps[0])/stampCount);
+    [frequencyPin deliverSignal:[NSNumber numberWithDouble:rate]
+                     fromSender:self];
 }
 
 - (void)start
@@ -155,12 +166,15 @@
     while (![currentThread isCancelled]) {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         uint64_t timeStamp = CVGetCurrentHostTime();
-        // Calculate the delta between current and last time. If the current delta is
-        // smaller than our frequency, we will wait the difference between
-        // maxDelta and delta to honor the configured frequency.
+        [self tick:timeStamp];
+        previousTimeStamp = timeStamp;
+        uint64_t now = CVGetCurrentHostTime();
+        // Check if tick() has returned earlier and we still have time before next tick. 
+        // If the current delta is smaller than our frequency, we will wait the difference
+        // between maxDelta and delta to honor the configured frequency.
         // Otherwise, since we would be already late, we just skip the sleep time and 
         // go for the next frame.
-        uint64_t delta = previousTimeStamp ? timeStamp - previousTimeStamp : 0;
+        uint64_t delta = now - timeStamp;
         uint64_t sleepTime = (delta && delta < maxDelta) ? maxDelta - delta : 0;
         
         if (sleepTime) {
@@ -185,8 +199,6 @@
             // mmm ... no sleep time ... perhaps we are out of resources and slowing down mixing
             // TODO - produce a warning in this case
         }
-        [self tick:timeStamp];
-        previousTimeStamp = timeStamp;
         [pool drain];
     }
     active = NO;
@@ -199,6 +211,15 @@
               [value boolValue])
            ? YES
            : NO;
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    // we don't want copies, but we want to use such objects as keys of a dictionary
+    // so we still need to conform to the 'copying' protocol,
+    // but since we are to be considered 'immutable' we can adopt what described at the end of :
+    // http://developer.apple.com/mac/library/documentation/cocoa/conceptual/MemoryMgmt/Articles/mmImplementCopy.html
+    return [self retain];
 }
 
 @synthesize inputPins, outputPins, name, active;

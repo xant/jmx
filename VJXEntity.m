@@ -11,13 +11,19 @@
 
 @implementation VJXEntity
 
+@synthesize frequency;
+
 - (id)init
 {
     if (self = [super init]) {
         inputPins = [[NSMutableArray alloc] init];
         outputPins = [[NSMutableArray alloc] init];
         worker = nil;
-        _fps = 25;
+        self.frequency = [NSNumber numberWithDouble:25];
+        [self registerInputPin:@"frequency" withType:kVJXNumberPin andSelector:@"setFrequency:"];
+        [self registerOutputPin:@"active" withType:kVJXNumberPin];
+        // and 'effective' frequency , only for debugging purposes
+        [self registerOutputPin:@"outputFrequency" withType:kVJXNumberPin];
     }
     return self;
 }
@@ -126,6 +132,8 @@
     // TODO - base tick implementation 
     //        should call 'producer-callbacks'
     //        for all output pins
+    VJXPin *activePin = [self outputPinWithName:@"active"];
+    [activePin deliverSignal:[NSNumber numberWithBool:active]];
 }
 
 - (void)start
@@ -143,30 +151,40 @@
 
 - (void)run
 {
-    uint64_t maxDelta = 1e9 / _fps;
+    uint64_t maxDelta = 1e9 / [frequency doubleValue];
     
     NSThread *currentThread = [NSThread currentThread];
     
+    active = YES;
     while (![currentThread isCancelled]) {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         uint64_t timeStamp = CVGetCurrentHostTime();
-        // Calculate delta of current and last time. If the current delta is
-        // smaller than the maxDelta for 24fps, we wait the difference between
-        // maxDelta and delta. Otherwise we just skip the sleep time and go for
-        // the next frame.
+        // Calculate the delta between current and last time. If the current delta is
+        // smaller than our frequency, we will wait the difference between
+        // maxDelta and delta to honor the configured frequency.
+        // Otherwise, since we would be already late, we just skip the sleep time and 
+        // go for the next frame.
         uint64_t delta = previousTimeStamp ? timeStamp - previousTimeStamp : 0;
-        uint64_t sleepTime = delta < maxDelta ? maxDelta - delta : 0;
+        uint64_t sleepTime = (delta && delta < maxDelta) ? maxDelta - delta : 0;
         
-        if (sleepTime > 0) {
-            // NSLog(@"Will wait %llu nanoseconds", sleepTime);
+        if (sleepTime) {
+#if 0
+            // using nanosleep is a good portable way, but since we are running 
+            // on OSX only, we should try relying on the NSThread API.
+            // We will switch back to nanosleep if we notice that 'sleepForTimeInterval'
+            // is not precise enough.
             struct timespec time = { 0, 0 };
             struct timespec remainder = { 0, sleepTime };
             do {
-                //time.tv_sec = remainder.tv_sec;
+                time.tv_sec = remainder.tv_sec;
                 time.tv_nsec = remainder.tv_nsec;
                 remainder.tv_nsec = 0;
                 nanosleep(&time, &remainder);
-            } while (remainder.tv_sec || time.tv_nsec);
+            } while (remainder.tv_sec || remainder.tv_nsec);
+#else
+            // let's try if NSThread facilities are reliable (in terms of time precision)
+            [NSThread sleepForTimeInterval:sleepTime/1e9];
+#endif
         } else {
             // mmm ... no sleep time ... perhaps we are out of resources and slowing down mixing
             // TODO - produce a warning in this case
@@ -175,7 +193,8 @@
         previousTimeStamp = timeStamp;
         [pool drain];
     }
+    active = NO;
 }
 
-@synthesize inputPins, outputPins, name;
+@synthesize inputPins, outputPins, name, active;
 @end

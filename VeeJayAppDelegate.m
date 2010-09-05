@@ -33,7 +33,8 @@
     [mixerPin connectToPin:imagePin];
     [mixerPin connectToPin:moviePin];
     [screenInput connectToPin:mixerOut];
-    NSLog(@"%@\n", mixerPin);
+    NSLog(@"%@\n", [mixerPin name]);
+    //NSLog(@"%@\n", mixerPin);
     [imageLayer start];
     [movieLayer start];
     [mixer start];

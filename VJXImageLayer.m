@@ -18,8 +18,8 @@
 {
     if (self = [super init]) {
         self.imagePath = @"/Users/xant/broken-LCD.jpg";
+        self.frequency = [NSNumber numberWithDouble:1]; // override frequency
     }
-
     return self;
 }
 
@@ -38,18 +38,8 @@
             [self load];
         // XXX - it's useless to render the image each time ... 
         //       it should be done only if image parameters have changed
-        if (self.image) {
-            /*
-            CIFilter *colorFilter = [CIFilter filterWithName:@"CIColorControls"];
-            [colorFilter setDefaults];
-            [colorFilter setValue:self.saturation forKey:@"inputSaturation"];
-            [colorFilter setValue:self.brightness forKey:@"inputBrightness"];
-            [colorFilter setValue:self.contrast forKey:@"inputContrast"];
-            [colorFilter setValue:self.image forKey:@"inputImage"];
-            CIImage *transformedFrame = [colorFilter valueForKey:@"outputImage"];
-             */
+        if (self.image)
             self.currentFrame = self.image;//transformedFrame;
-        }
     }
     return [super tick:timeStamp];
 }

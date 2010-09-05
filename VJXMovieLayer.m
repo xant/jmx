@@ -11,15 +11,17 @@
 
 @implementation VJXMovieLayer
 
-@synthesize movie, moviePath, paused, stopped, lastTimeValue;
+@synthesize movie, moviePath, paused, repeat;
 
 - (id)init
 {
     if ((self = [super init])) {
         movie = nil;
         moviePath = nil;
-        timeScale = 600;
-        previousTimeStamp = 0;
+        repeat = YES;
+        paused = NO;
+        [self registerInputPin:@"repeat" withType:kVJXNumberPin andSelector:@"setRepeat:"];
+        [self registerInputPin:@"paused" withType:kVJXNumberPin andSelector:@"setPaused:"];
     }
 
     return self;
@@ -42,7 +44,12 @@
         QTMedia* media = [firstVideoTrack media];
         QTTime qtTimeDuration = [[media attributeForKey:QTMediaDurationAttribute] QTTimeValue];
         long sampleCount = [[media attributeForKey:QTMediaSampleCountAttribute] longValue];
-        _fps = sampleCount/(qtTimeDuration.timeValue/qtTimeDuration.timeScale);
+        // we can set the frequency to be exactly the same as fps ... since it's useles
+        // to have an higher signaling frequency in the case of an existing movie. 
+        // In any case we won't have more 'unique' frames than the native movie fps ... so if signaling 
+        // the frames more often we will just send the same image multiple times (wasting precious cpu time)
+        self.frequency = [NSNumber numberWithDouble:sampleCount/(qtTimeDuration.timeValue/qtTimeDuration.timeScale)];
+        self.fps = self.frequency;
     }
 }
 
@@ -54,67 +61,40 @@
 - (void)tick:(uint64_t)timeStamp
 {
     QTTime now = [movie currentTime];
-    if (![self paused]) {
-        @synchronized(self) {
-            // Find out the difference between the last time an image was
-            // requested and the current time. Since we prevent this to be
-            // called too often, we should get approximatelly 24fps.
+    @synchronized(self) {
+        if (!paused) {
+                uint64_t delta = previousTimeStamp
+                               ? (timeStamp - previousTimeStamp) / 1e9 * now.timeScale
+                               : now.timeScale / [fps doubleValue];
+                NSLog(@"%d\n", delta);
+                // Calculate the next frame we need to provide.
+                now.timeValue += delta;
+
+                if (QTTimeCompare(now, [movie duration]) == NSOrderedAscending) {
+                    [movie setCurrentTime:now];
+                } else {
+                    if (repeat) {
+                        [movie gotoBeginning];
+                    } else {
+                        [self stop];
+                        self.currentFrame = nil; // XXX - perhaps we should return a black frame instead of nil 
+                        return [super tick:timeStamp]; // we still want to propagate the signal
+                    }
+                }
             
-            //uint64_t delta = (previousTimeStamp > 0 ? timeStamp - previousTimeStamp : 0);
+                // Setup the attrs dictionary. We want to get back from frameImageAtTime:withAttributes:error:
+                // a CIImage object.
+                NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                                       QTMovieFrameImageTypeCIImage,
+                                       QTMovieFrameImageType,
+                                       [NSNumber numberWithBool:TRUE],
+                                       QTMovieFrameImageSessionMode,
+                                       nil];
 
-            // Calculate the position of the next frame, based on the pre-
-            // calculated delta and the timeScale we provide. Please note
-            // the delta is in nanoseconds, hence the 1e9.
-            // now.timeValue += (delta * now.timeScale) / 1e9;
-
-            // Set the timeValue to the last timeValue we've seen, since this isn't a
-            // real video stream, and we can "pause" the video.
-            now.timeValue = lastTimeValue;
-
-            // Calculate the next frame - I don't know yet how to do this.
-            now.timeValue += now.timeScale / 23; // 24fps
-
-            // Remember the timeValue.
-            lastTimeValue = now.timeValue;
-
-            // Move the frame to the time we specified, so we don't need to
-            // keep track of the movie's position ourselves.
-            [movie setCurrentTime:now];
-
-            // Store the the current timeStamp->hostTime as our reference
-            // for the next call.
-            previousTimeStamp = timeStamp;
-
-            // Setup the attrs dictionary. We want to get back from frameImageAtTime:withAttributes:error:
-            // a CIImage object.
-            NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   QTMovieFrameImageTypeCIImage,
-                                   QTMovieFrameImageType,
-                                   [NSNumber numberWithBool:TRUE],
-                                   QTMovieFrameImageSessionMode,
-                                   nil];
-
-            // Get our CIImage.
-            // TODO: Implement error handling.
-            CIImage *newFrame = [movie frameImageAtTime:now withAttributes:attrs error:nil];
-/*
-            CIImage *transformedFrame = nil;
-
-            if (newFrame) {
-                // Apply some basic filters.
-                CIFilter *colorFilter = [CIFilter filterWithName:@"CIColorControls"];
-                [colorFilter setDefaults];
-                [colorFilter setValue:saturation forKey:@"inputSaturation"];
-                [colorFilter setValue:brightness forKey:@"inputBrightness"];
-                [colorFilter setValue:contrast forKey:@"inputContrast"];
-                [colorFilter setValue:newFrame forKey:@"inputImage"];
-
-                // Return the new frame. It should be retained by the user.
-                transformedFrame = [colorFilter valueForKey:@"outputImage"];
-            }
- */
-            self.currentFrame = newFrame;
-        }
+                // Get our CIImage.
+                // TODO: Implement error handling.
+                self.currentFrame = [movie frameImageAtTime:now withAttributes:attrs error:nil];
+        } 
     }
     return [super tick:timeStamp]; // let super notify output pins
 }

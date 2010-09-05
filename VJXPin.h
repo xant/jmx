@@ -20,17 +20,17 @@ typedef enum {
 
 @interface VJXPin : NSObject <NSCopying> {
 @private
-    VJXPinType type;
-    NSString  *name;
+    VJXPinType          type;
+    NSString            *name;
     NSMutableDictionary *receivers;
-    NSMutableArray *connections;
-    BOOL       multiple;
+    NSMutableArray      *connections;
+    BOOL                 multiple;
+    id                   currentData;
 }
 
 @property (readonly) VJXPinType type;
 @property (readonly) NSString *name;
 @property (readonly) BOOL multiple;
-
 
 + (id)pinWithName:(NSString *)name andType:(VJXPinType)pinType;
 + (id)pinWithName:(NSString *)name andType:(VJXPinType)pinType forObject:(id)pinReceiver withSelector:(NSString *)pinSignal;
@@ -43,4 +43,7 @@ typedef enum {
 - (void)deliverSignal:(id)data fromSender:(id)sender;
 - (void)deliverSignal:(id)data;
 - (void)allowMultipleConnections:(BOOL)choice;
+
+- (id)readPinValue;
+
 @end

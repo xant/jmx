@@ -87,20 +87,26 @@
         default:
             NSLog(@"Unkown pin type!\n");
     }
-    for (id receiver in receivers) {
-        NSString *selectorName = [receivers objectForKey:receiver];
-        int selectorArgsNum = [[selectorName componentsSeparatedByString:@":"] count]-1;
-        SEL selector = NSSelectorFromString(selectorName);
-        if ([receiver respondsToSelector:selector]) {
-        if (selectorArgsNum == 1)
-            [receiver performSelector:selector withObject:data];
-        else if (selectorArgsNum == 2)
-            [receiver performSelector:selector withObject:data withObject:sender];
-        else 
-            NSLog(@"Unsupported selector : '%@' . It can take either one or two arguments\n");
+    @synchronized(self) {
+        // save current data
+        if (currentData)
+            [currentData release];
+        currentData = [signalData retain]; 
+        for (id receiver in receivers) {
+            NSString *selectorName = [receivers objectForKey:receiver];
+            int selectorArgsNum = [[selectorName componentsSeparatedByString:@":"] count]-1;
+            SEL selector = NSSelectorFromString(selectorName);
+            if ([receiver respondsToSelector:selector]) {
+                if (selectorArgsNum == 1)
+                    [receiver performSelector:selector withObject:data];
+                else if (selectorArgsNum == 2)
+                    [receiver performSelector:selector withObject:data withObject:sender];
+                else 
+                    NSLog(@"Unsupported selector : '%@' . It can take either one or two arguments\n");
 
-        } else {
-            // TODO - Error Messages
+            } else {
+                // TODO - Error Messages
+            }
         }
     }
 }
@@ -151,6 +157,15 @@
     // but since we are to be considered 'immutable' we can adopt what described at the end of :
     // http://developer.apple.com/mac/library/documentation/cocoa/conceptual/MemoryMgmt/Articles/mmImplementCopy.html
     return [self retain];
+}
+
+- (id)readPinValue
+{
+    id data;
+    @synchronized(self) {
+        data = [currentData retain];
+    }
+    return [data autorelease];
 }
 
 @synthesize type, name, multiple;

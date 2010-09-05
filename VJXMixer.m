@@ -12,7 +12,7 @@
 
 @implementation VJXMixer
 
-@synthesize fps;
+@synthesize outputSize;
 
 - (id) init
 {
@@ -23,25 +23,23 @@
         [self registerOutputPin:@"videoOutput" withType:kVJXImagePin];
         imageOutputPin = [outputPins lastObject];
         [imageOutputPin allowMultipleConnections:YES];
-        fps = 25; // default to 25 frames per second
-        _fps = 25; // XXX
         outputSize.height = 480; // HC
         outputSize.width = 640; // HC
-        inputStats = [[NSMutableDictionary alloc] init];
+        imageProducers = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
 
 - (void)dealloc
 {    
-    [inputStats release];
+    [imageProducers release];
     [super dealloc];
 }
 
 - (void)receivedFrame:(CIImage *)frame fromSender:(id)sender
 {
     @synchronized(self) {
-        [inputStats setObject:frame forKey:sender]; // take note of who provided us a frame in time
+        [imageProducers setObject:frame forKey:sender]; // take note of who provided us a frame in time
     }
 }
 
@@ -52,16 +50,16 @@
             [currentFrame release];
             currentFrame = nil;
         }
-        for (id key in inputStats) {
+        for (id layer in imageProducers) {
             CIFilter *filter = [CIFilter filterWithName:@"CIAffineTransform"];
-            CGRect imageRect = [[inputStats objectForKey:key] extent];
+            CGRect imageRect = [[imageProducers objectForKey:layer] extent];
             float xScale = outputSize.width / imageRect.size.width;
             float yScale = outputSize.height / imageRect.size.height;
             NSAffineTransform *transform = [NSAffineTransform transform];
             [transform scaleXBy:xScale yBy:yScale];
             [filter setDefaults];
             [filter setValue:transform forKey:@"inputTransform"];
-            [filter setValue:[inputStats objectForKey:key] forKey:@"inputImage"];
+            [filter setValue:[imageProducers objectForKey:layer] forKey:@"inputImage"];
             CIImage *frame = [filter valueForKey:@"outputImage"];
             if (!currentFrame)
                 currentFrame = frame;
@@ -79,12 +77,23 @@
             }
             // TODO - copute stats by looking at who provided frames in the last runcycle
             //        and at which rates each is providing frames
-            //[inputStats removeAllObjects];
+            //[imageProducers removeAllObjects];
             // go for next frame
         }
         previousTimeStamp = timeStamp;
         [imageOutputPin deliverSignal:currentFrame fromSender:self];
     }
+}
+
+- (NSArray *)imageProducers
+{
+    NSMutableArray *out = [[[NSMutableArray alloc] init] autorelease];
+    @synchronized(self) {
+        for (id layer in imageProducers) {
+            [out addObject:layer];
+        }
+    }
+    return out;
 }
 
 @end

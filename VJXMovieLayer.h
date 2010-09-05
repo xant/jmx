@@ -12,19 +12,16 @@
 
 @interface VJXMovieLayer : VJXLayer {
     QTMovie *movie;
-    NSUInteger timeScale;
     NSString *moviePath;
-    float lastTimeValue;
 
     BOOL paused;
-    BOOL stopped;
+    BOOL repeat;
 }
 
-@property (nonatomic, retain) QTMovie *movie;
-@property (nonatomic, copy) NSString *moviePath;
-@property (nonatomic, assign) BOOL paused;
-@property (nonatomic, assign) BOOL stopped;
-@property (nonatomic, assign) float lastTimeValue;
+@property (retain) QTMovie *movie;
+@property (copy) NSString *moviePath;
+@property (assign) BOOL paused;
+@property (assign) BOOL repeat;
 
 - (void)loadMovie;
 

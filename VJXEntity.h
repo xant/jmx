@@ -15,11 +15,16 @@
 @protected
     NSMutableArray *inputPins;
     NSMutableArray *outputPins;
-    int _fps; // XXX
     uint64_t previousTimeStamp;
+    NSNumber *frequency;
+    
 @private
     NSThread *worker;
+    BOOL active;
 }
+
+@property (readonly)BOOL active;
+@property (retain) NSNumber *frequency;
 
 - (void)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType;
 - (void)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector;

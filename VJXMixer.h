@@ -12,17 +12,19 @@
 
 @interface VJXMixer : VJXEntity {
 @public
-    int fps;
+    NSSize outputSize;
+
 @protected
     NSArray *videoInputs;
 @private
     VJXPin *imageInputPin;
     VJXPin *imageOutputPin;
     CIImage *currentFrame;
-    NSSize outputSize;
-    NSMutableDictionary *inputStats;
+    NSMutableDictionary *imageProducers;
 }
 
-@property (assign) int fps;
 @property (assign) NSSize outputSize;
+
+- (NSArray *)imageProducers;
+
 @end

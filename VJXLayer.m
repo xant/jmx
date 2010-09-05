@@ -11,20 +11,17 @@
 
 @implementation VJXLayer
 
-@synthesize alpha, saturation, brightness, contrast, fps,
-            rotation, origin, size, scaleRatio, active, currentFrame;
+@synthesize alpha, saturation, brightness, contrast, rotation,
+            origin, size, scaleRatio, fps, currentFrame;
 
 - (id)init
 {
     if (self = [super init]) {
         currentFrame = nil;
-        fps = [NSNumber numberWithDouble:25]; //defaults to 25 fps
-        _fps = 25; // XXX
         name = @"Untitled";
         self.saturation = [NSNumber numberWithFloat:1.0];
         self.brightness = [NSNumber numberWithFloat:0.0];
         self.contrast = [NSNumber numberWithFloat:1.0];
-        active = NO;
         [self registerInputPin:@"name" withType:kVJXStringPin andSelector:@"setName:"];
         [self registerInputPin:@"alpha" withType:kVJXNumberPin andSelector:@"setAlpha:"];
         [self registerInputPin:@"saturation" withType:kVJXNumberPin andSelector:@"setSaturation:"];
@@ -35,16 +32,10 @@
         
         [self registerInputPin:@"origin" withType:kVJXPointPin andSelector:@"setOriginPin:"];
         [self registerInputPin:@"size" withType:kVJXSizePin andSelector:@"setSizePin:"];
-        
-        [self registerInputPin:@"fps" withType:kVJXNumberPin andSelector:@"setFps:"];
 
         // we output at least 1 image
         [self registerOutputPin:@"outputFrame" withType:kVJXImagePin];
         outputFramePin = [outputPins lastObject]; // save the output pin to signal data when available
-        
-        // and 'effective' fps , only for debugging purposes
-        [self registerOutputPin:@"outputFps" withType:kVJXNumberPin];
-
     }
     return self;
 }
@@ -75,10 +66,18 @@
 - (void)tick:(uint64_t)timeStamp
 {
     @synchronized(self) {
+        // TODO - apply filters
+         CIFilter *colorFilter = [CIFilter filterWithName:@"CIColorControls"];
+         [colorFilter setDefaults];
+         [colorFilter setValue:self.saturation forKey:@"inputSaturation"];
+         [colorFilter setValue:self.brightness forKey:@"inputBrightness"];
+         [colorFilter setValue:self.contrast forKey:@"inputContrast"];
+         [colorFilter setValue:self.currentFrame forKey:@"inputImage"];
+         self.currentFrame = [colorFilter valueForKey:@"outputImage"];
+        // TODO - compute the effective fps and send it to an output pin 
+        //        for debugging purposes
         [outputFramePin deliverSignal:currentFrame];
     }
-    // TODO - compute the effective fps and send it to an output pin 
-    //        for debugging purposes
     [super tick:timeStamp];
 }
 

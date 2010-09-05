@@ -21,8 +21,6 @@
     NSPoint  origin;
     NSSize   size;
     
-    BOOL active;
-    
     CIImage *currentFrame;
     VJXPin *outputFramePin;
 
@@ -37,11 +35,9 @@
 @property (retain) NSNumber *contrast;
 @property (retain) NSNumber *rotation;
 @property (retain) NSNumber *scaleRatio;
+@property (retain) NSNumber *fps;
 @property (assign) NSPoint origin;
 @property (assign) NSSize size;
-@property (retain) NSNumber *fps;
 @property (retain) CIImage *currentFrame;
-
-@property (assign) BOOL active;
 
 @end

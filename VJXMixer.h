@@ -19,9 +19,10 @@
     VJXPin *imageInputPin;
     VJXPin *imageOutputPin;
     CIImage *currentFrame;
+    NSSize outputSize;
     NSMutableDictionary *inputStats;
 }
 
 @property (assign) int fps;
-
+@property (assign) NSSize outputSize;
 @end

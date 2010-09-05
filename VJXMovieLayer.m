@@ -37,6 +37,12 @@
             NSLog(@"Got error: %@", error);
         }
         NSLog(@"movie: %@", movie);
+        NSArray* videoTracks = [movie tracksOfMediaType:QTMediaTypeVideo];
+        QTTrack* firstVideoTrack = [videoTracks objectAtIndex:0];
+        QTMedia* media = [firstVideoTrack media];
+        QTTime qtTimeDuration = [[media attributeForKey:QTMediaDurationAttribute] QTTimeValue];
+        long sampleCount = [[media attributeForKey:QTMediaSampleCountAttribute] longValue];
+        _fps = sampleCount/(qtTimeDuration.timeValue/qtTimeDuration.timeScale);
     }
 }
 
@@ -91,7 +97,7 @@
             // Get our CIImage.
             // TODO: Implement error handling.
             CIImage *newFrame = [movie frameImageAtTime:now withAttributes:attrs error:nil];
-
+/*
             CIImage *transformedFrame = nil;
 
             if (newFrame) {
@@ -106,7 +112,8 @@
                 // Return the new frame. It should be retained by the user.
                 transformedFrame = [colorFilter valueForKey:@"outputImage"];
             }
-            self.currentFrame = transformedFrame;
+ */
+            self.currentFrame = newFrame;
         }
     }
     return [super tick:timeStamp]; // let super notify output pins

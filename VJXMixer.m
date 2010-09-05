@@ -25,6 +25,8 @@
         [imageOutputPin allowMultipleConnections:YES];
         fps = 25; // default to 25 frames per second
         _fps = 25; // XXX
+        outputSize.height = 480; // HC
+        outputSize.width = 640; // HC
         inputStats = [[NSMutableDictionary alloc] init];
     }
     return self;
@@ -39,54 +41,49 @@
 - (void)receivedFrame:(CIImage *)frame fromSender:(id)sender
 {
     @synchronized(self) {
-        if ([inputStats objectForKey:sender]) {
-            // we already got a frame from this sender during
-            // actual runcycle ... so let's skip this frame
-            // TODO - take note of inputs' framerates to produce stats
-            return;
-        }
-        [inputStats setObject:@"1" forKey:sender]; // take note of who provided us a frame in time
-        if (!currentFrame)
-            currentFrame = [frame retain];
-        else {
-            CIFilter *blendScreenFilter = [CIFilter filterWithName:@"CIScreenBlendMode"];
-            [blendScreenFilter setDefaults];
-            [blendScreenFilter setValue:frame forKey:@"inputImage"];
-            [blendScreenFilter setValue:currentFrame forKey:@"inputBackgroundImage"];
-            CIImage *resultingImage = [blendScreenFilter valueForKey:@"outputImage"];
-            /* TODO - apply filters
-            CIFilter *filter = [CIFilter filterWithName:@"CIAffineTransform"];
-            CGRect imageRect = [resultingImage extent];
-            float xScale = 640 / imageRect.size.width;
-            float yScale = 480 / imageRect.size.height;
-            NSAffineTransform *transform = [NSAffineTransform transform];
-            [transform scaleXBy:xScale yBy:yScale];
-            [filter setDefaults];
-            [filter setValue:transform forKey:@"inputTransform"];
-            [filter setValue:resultingImage forKey:@"inputImage"];
-            
-            resultingImage = [filter valueForKey:@"outputImage"];
-            */
-            [currentFrame release];
-            currentFrame = [resultingImage retain];
-        }
+        [inputStats setObject:frame forKey:sender]; // take note of who provided us a frame in time
     }
-    
 }
 
 - (void)tick:(uint64_t)timeStamp
 {
     @synchronized(self) {
         if (currentFrame) {
-            [imageOutputPin deliverSignal:currentFrame fromSender:self];
             [currentFrame release];
             currentFrame = nil;
+        }
+        for (id key in inputStats) {
+            CIFilter *filter = [CIFilter filterWithName:@"CIAffineTransform"];
+            CGRect imageRect = [[inputStats objectForKey:key] extent];
+            float xScale = outputSize.width / imageRect.size.width;
+            float yScale = outputSize.height / imageRect.size.height;
+            NSAffineTransform *transform = [NSAffineTransform transform];
+            [transform scaleXBy:xScale yBy:yScale];
+            [filter setDefaults];
+            [filter setValue:transform forKey:@"inputTransform"];
+            [filter setValue:[inputStats objectForKey:key] forKey:@"inputImage"];
+            CIImage *frame = [filter valueForKey:@"outputImage"];
+            if (!currentFrame)
+                currentFrame = frame;
+            else {
+                CIFilter *blendScreenFilter = [CIFilter filterWithName:@"CIScreenBlendMode"];
+                [blendScreenFilter setDefaults];
+                [blendScreenFilter setValue:frame forKey:@"inputImage"];
+                [blendScreenFilter setValue:currentFrame forKey:@"inputBackgroundImage"];
+                CIImage *resultingImage = [blendScreenFilter valueForKey:@"outputImage"];
+                /* TODO - apply filters
+                 resultingImage = [filter valueForKey:@"outputImage"];
+                 */
+                currentFrame = resultingImage;
+                
+            }
             // TODO - copute stats by looking at who provided frames in the last runcycle
             //        and at which rates each is providing frames
-            [inputStats removeAllObjects];
+            //[inputStats removeAllObjects];
             // go for next frame
         }
         previousTimeStamp = timeStamp;
+        [imageOutputPin deliverSignal:currentFrame fromSender:self];
     }
 }
 

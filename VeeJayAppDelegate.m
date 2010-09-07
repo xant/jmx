@@ -20,6 +20,7 @@
 @synthesize window, layersTableView;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+    return;
     /* TEST CODE */
     // CREATE A MIXER
     VJXMixer *mixer = [[VJXMixer alloc] init];
@@ -34,7 +35,7 @@
     // CREATE LAYERS (producing frames)
     VJXImageLayer *imageLayer = [[VJXImageLayer alloc] init];
     VJXQtVideoLayer *movieLayer = [[VJXQtVideoLayer alloc] init];
-    movieLayer.moviePath = @"/Users/xant/test.avi";
+    movieLayer.moviePath = [@"~/test.avi" stringByExpandingTildeInPath];
     [movieLayer loadMovie];
     
     // GET ALL PINS WE WANT TO CONNECT ONE TO EACH OTHER

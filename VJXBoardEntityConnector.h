@@ -11,14 +11,23 @@
 
 @class VJXBoardEntityPin;
 
+enum Direction {
+    kSouthEastDirection,
+    kNorthEastDirection,
+    kSouthWestDirection,
+    kNorthWestDirection
+};
+
 @interface VJXBoardEntityConnector : NSView {
-    NSUInteger direction;
     VJXBoardEntityPin *origin;
     VJXBoardEntityPin *destination;
+    NSUInteger direction;
 }
 
 @property (assign) NSUInteger direction;
 @property (nonatomic,retain) VJXBoardEntityPin *origin;
 @property (nonatomic,retain) VJXBoardEntityPin *destination;
+
+- (void)recalculateFrame;
 
 @end

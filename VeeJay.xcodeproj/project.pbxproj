@@ -16,7 +16,6 @@
 		82456BC81223DC9900236FE4 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BC71223DC9900236FE4 /* QTKit.framework */; };
 		82456BCC1223DCA700236FE4 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BCB1223DCA700236FE4 /* QuartzCore.framework */; };
 		82456FE912256A4A00236FE4 /* VJXImageLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 82456FE812256A4A00236FE4 /* VJXImageLayer.m */; };
-		824570181225914B00236FE4 /* VJXLayerArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 824570171225914B00236FE4 /* VJXLayerArrayController.m */; };
 		824576451227DF5800236FE4 /* VJXBoardEntityPin.m in Sources */ = {isa = PBXBuildFile; fileRef = 8245763D1227DF5800236FE4 /* VJXBoardEntityPin.m */; };
 		824576461227DF5800236FE4 /* VJXBoardEntityConnector.m in Sources */ = {isa = PBXBuildFile; fileRef = 8245763F1227DF5800236FE4 /* VJXBoardEntityConnector.m */; };
 		824576471227DF5800236FE4 /* VJXBoardEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 824576411227DF5800236FE4 /* VJXBoardEntity.m */; };
@@ -72,8 +71,6 @@
 		82456BCB1223DCA700236FE4 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		82456FE712256A4A00236FE4 /* VJXImageLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXImageLayer.h; sourceTree = "<group>"; };
 		82456FE812256A4A00236FE4 /* VJXImageLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXImageLayer.m; sourceTree = "<group>"; };
-		824570161225914B00236FE4 /* VJXLayerArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXLayerArrayController.h; sourceTree = "<group>"; };
-		824570171225914B00236FE4 /* VJXLayerArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXLayerArrayController.m; sourceTree = "<group>"; };
 		8245763D1227DF5800236FE4 /* VJXBoardEntityPin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXBoardEntityPin.m; sourceTree = "<group>"; };
 		8245763E1227DF5800236FE4 /* VJXBoardEntityPin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXBoardEntityPin.h; sourceTree = "<group>"; };
 		8245763F1227DF5800236FE4 /* VJXBoardEntityConnector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXBoardEntityConnector.m; sourceTree = "<group>"; };
@@ -269,8 +266,6 @@
 		8245763C1227DF2900236FE4 /* GUI */ = {
 			isa = PBXGroup;
 			children = (
-				824570161225914B00236FE4 /* VJXLayerArrayController.h */,
-				824570171225914B00236FE4 /* VJXLayerArrayController.m */,
 				8245763D1227DF5800236FE4 /* VJXBoardEntityPin.m */,
 				8245763E1227DF5800236FE4 /* VJXBoardEntityPin.h */,
 				8245763F1227DF5800236FE4 /* VJXBoardEntityConnector.m */,
@@ -377,7 +372,6 @@
 				82456BBA1223DBE100236FE4 /* VJXQtVideoLayer.m in Sources */,
 				82456BBB1223DBE100236FE4 /* VJXOpenGLView.m in Sources */,
 				82456FE912256A4A00236FE4 /* VJXImageLayer.m in Sources */,
-				824570181225914B00236FE4 /* VJXLayerArrayController.m in Sources */,
 				824576451227DF5800236FE4 /* VJXBoardEntityPin.m in Sources */,
 				824576461227DF5800236FE4 /* VJXBoardEntityConnector.m in Sources */,
 				824576471227DF5800236FE4 /* VJXBoardEntity.m in Sources */,

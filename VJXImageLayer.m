@@ -17,7 +17,7 @@
 - (id)init
 {
     if (self = [super init]) {
-        self.imagePath = @"/Users/xant/broken-LCD.jpg";
+        self.imagePath = [@"~/broken-LCD.jpg" stringByExpandingTildeInPath];
         self.frequency = [NSNumber numberWithDouble:1]; // override frequency
     }
     return self;

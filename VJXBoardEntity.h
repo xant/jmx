@@ -7,10 +7,16 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "VJXEntity.h"
 
-
-@interface VJXBoardEntity : NSView {
+@interface VJXBoardEntity : NSView
+{
+    VJXEntity *entity;
     NSPoint lastDragLocation;
 }
+
+@property (nonatomic,retain) VJXEntity *entity;
+
+- (id)initWithEntity:(VJXEntity *)theEntity;
 
 @end

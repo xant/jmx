@@ -10,7 +10,7 @@
 
 @implementation VJXBoardEntityPin
 
-@synthesize connector;
+@synthesize pin, connector;
 
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
@@ -22,7 +22,6 @@
 
 - (void)dealloc
 {
-    [self setConnector:nil];
     [super dealloc];
 }
 
@@ -35,21 +34,21 @@
     [thePath fill];
     [thePath release];
 
-    VJXBoardEntityPin *origin = [connector origin];
-    VJXBoardEntityPin *destination = [connector destination];
+//    VJXBoardEntityPin *origin = [connector origin];
+//    VJXBoardEntityPin *destination = [connector destination];
 
-    NSPoint originPoint = [connector.superview.superview convertPoint:origin.frame.origin fromView:origin];
-    NSPoint destinationPoint = [connector.superview.superview convertPoint:destination.frame.origin fromView:destination];
+//    NSPoint originPoint = [connector.superview.superview convertPoint:origin.frame.origin fromView:origin];
+//    NSPoint destinationPoint = [connector.superview.superview convertPoint:destination.frame.origin fromView:destination];
 
-    float x = MIN(originPoint.x, destinationPoint.x);
-    float y = MIN(originPoint.y, destinationPoint.y);
-    float w = abs(originPoint.x - destinationPoint.x);
-    float h = abs(originPoint.y - destinationPoint.y);
+//    float x = MIN(originPoint.x, destinationPoint.x);
+//    float y = MIN(originPoint.y, destinationPoint.y);
+//    float w = abs(originPoint.x - destinationPoint.x);
+//    float h = abs(originPoint.y - destinationPoint.y);
+//
+//    NSLog(@"%f:%f:%f:%f", x, y, w, h);
 
-    NSLog(@"%f:%f:%f:%f", x, y, w, h);
-
-    NSRect connectorFrame = NSMakeRect(x, y, w, h);
-    [connector setFrame:connectorFrame];
+//    NSRect connectorFrame = NSMakeRect(x, y, w, h);
+//    [connector setFrame:connectorFrame];
 //    [connector setNeedsDisplay:YES];
 }
 
@@ -60,12 +59,30 @@
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
+    
+}
+
+- (void)mouseUp:(NSEvent *)theEvent
+{
+    NSPoint locationInWindow = [theEvent locationInWindow];
+    
+    NSView *aView = [self.superview.superview hitTest:locationInWindow];
+
+    if ([aView isKindOfClass:[VJXBoardEntityPin class]]) {
+        VJXBoardEntityPin *otherPin = (VJXBoardEntityPin *)aView;
+        NSLog(@"this Pin: %@, other Pin: %@", self.pin.name, otherPin.pin.name);
+        [otherPin.pin connectToPin:self.pin];
+        
+        otherPin.connector = self.connector;
+    }
 }
 
 #define SOUTHWEST 0
 #define SOUTHEAST 1
 #define NORTHWEST 2
 #define NORTHEAST 3
+
+
 
 - (void)mouseDragged:(NSEvent *)theEvent
 {
@@ -76,6 +93,11 @@
     }
 
     NSPoint locationInWindow = [theEvent locationInWindow];
+    
+    NSView *aView = [self.superview.superview hitTest:locationInWindow];
+    
+    NSLog(@"aView: %@", aView);
+    
     NSPoint thisLocation = [self.superview.superview convertPoint:[self bounds].origin fromView:self];
 
     NSRect bounds = [self bounds];
@@ -114,22 +136,33 @@
 
 }
 
-- (void)mouseUp:(NSEvent *)theEvent
+- (NSPoint)pointAtCenter
 {
-    NSPoint currentLocation = [theEvent locationInWindow];
-    NSView *view = [self.superview.superview hitTest:currentLocation];
-    NSLog(@"View: %@", view);
-
-    if ((!view) || (![view isKindOfClass:[VJXBoardEntityPin class]])) {
-        [connector removeFromSuperview];
-        [connector release];
-        connector = nil;
-        return;
-    }
-
-    VJXBoardEntityPin *pin = (VJXBoardEntityPin *)view;
-    [pin setConnector:connector];
-    [connector setDestination:pin];
+    NSPoint origin = [self frame].origin;
+    NSSize size = [self frame].size;
+    NSPoint center = NSMakePoint(origin.x + (size.width / 2),
+                                 origin.y + (size.height / 2));
+    return center;
 }
+
+//- (void)mouseUp:(NSEvent *)theEvent
+//{
+//    NSPoint currentLocation = [theEvent locationInWindow];
+//    NSView *view = [self.superview.superview hitTest:currentLocation];
+//    //NSLog(@"View: %@", view);
+//
+//    NSLog(@"Pin Name: %@", self.pin.name);
+//    
+//    if ((!view) || (![view isKindOfClass:[VJXBoardEntityPin class]])) {
+////        [connector removeFromSuperview];
+////        [connector release];
+////        connector = nil;
+//        return;
+//    }
+//
+////    VJXBoardEntityPin *pin = (VJXBoardEntityPin *)view;
+////    [pin setConnector:connector];
+////    [connector setDestination:pin];
+//}
 
 @end

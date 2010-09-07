@@ -18,4 +18,11 @@
 
 - (IBAction)addEntity:(id)sender;
 
+- (IBAction)addMovieLayer:(id)sender;
+- (IBAction)addImageLayer:(id)sender;
+- (IBAction)addOutputScreen:(id)sender;
+
++ (void)setSharedBoard:(id)aBoard;
++ (id)sharedBoard;
+
 @end

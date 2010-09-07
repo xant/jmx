@@ -8,13 +8,19 @@
 
 #import <Cocoa/Cocoa.h>
 #import "VJXBoardEntityConnector.h"
+#import "VJXPin.h"
 
 @class VJXBoardEntityConnector;
 
-@interface VJXBoardEntityPin : NSView {
+@interface VJXBoardEntityPin : NSView
+{
+    VJXPin *pin;
     VJXBoardEntityConnector *connector;
 }
 
+@property (nonatomic,retain) VJXPin *pin;
 @property (nonatomic,retain) VJXBoardEntityConnector *connector;
+
+- (NSPoint)pointAtCenter;
 
 @end

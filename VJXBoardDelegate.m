@@ -27,7 +27,7 @@ static id sharedBoard = nil;
     return sharedBoard;
 }
 
-- (id)awakeFromNib
+- (void)awakeFromNib
 {
     [VJXBoardDelegate setSharedBoard:board];
 }

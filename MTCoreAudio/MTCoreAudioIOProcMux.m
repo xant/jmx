@@ -270,7 +270,7 @@ static OSStatus demuxIOProc (
 		numSamples = ( MIN(eachOutputData->mBuffers[x].mDataByteSize, liveAudioBufferList->mBuffers[x].mDataByteSize)) / sizeof(Float32);
 		srcBuffer = eachOutputData->mBuffers[x].mData;
 		dstBuffer = liveAudioBufferList->mBuffers[x].mData;
-		vadd ( srcBuffer, 1, dstBuffer, 1, dstBuffer, 1, numSamples );
+		vDSP_vadd ( srcBuffer, 1, dstBuffer, 1, dstBuffer, 1, numSamples );
 	}
 }
 

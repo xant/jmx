@@ -168,7 +168,6 @@
                         return YES;
                     }
                 }
-                
             } else if (destinationPin.direction == kVJXInputPin) {
                 if (self.direction != kVJXInputPin) 
                     return [destinationPin connectToPin:self];

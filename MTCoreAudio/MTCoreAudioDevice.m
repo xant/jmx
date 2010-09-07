@@ -36,14 +36,22 @@ static id _MTCoreAudioHardwareDelegate;
 
 
 static OSStatus _MTCoreAudioHardwarePropertyListener (
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectID inObjectID,
+    UInt32 inNumberAddresses,
+    const AudioObjectPropertyAddress inAddresses[],
+#else
 	AudioHardwarePropertyID inPropertyID,
+#endif
 	void * inClientData
 )
 {
 	NSAutoreleasePool * pool;
 	SEL delegateSelector;
 	NSString * notificationName = nil;
-	
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioHardwarePropertyID inPropertyID = inAddresses[0].mSelector;
+#endif
 	switch (inPropertyID)
 	{
 		case kAudioHardwarePropertyDevices:
@@ -82,21 +90,34 @@ static OSStatus _MTCoreAudioHardwarePropertyListener (
 }
 
 static OSStatus _MTCoreAudioDevicePropertyListener (
+                                                    
 	AudioDeviceID inDevice,
-	UInt32 inChannel,
-	Boolean isInput,
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    //AudioObjectID inObjectID,
+    UInt32 inNumberAddresses,
+    const AudioObjectPropertyAddress inAddresses[],
+#else
+    UInt32 inChannel,
+    Boolean isInput,
 	AudioDevicePropertyID inPropertyID,
-	void * inClientData
+#endif
+    void * inClientData
 )
 {
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	NSMutableDictionary * notificationUserInfo = [NSMutableDictionary dictionaryWithCapacity:4];
 	
 	[notificationUserInfo setObject:[NSNumber numberWithUnsignedLong:inDevice] forKey:_MTCoreAudioDeviceIDKey];
-	[notificationUserInfo setObject:[NSNumber numberWithUnsignedLong:inChannel] forKey:_MTCoreAudioChannelKey];
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    [notificationUserInfo setObject:[NSNumber numberWithUnsignedLong:inAddresses[0].mElement] forKey:_MTCoreAudioChannelKey]; // XXX
+    [notificationUserInfo setObject:[NSNumber numberWithBool:inAddresses[0].mScope ==  kAudioDevicePropertyScopeInput ? YES : NO] forKey:_MTCoreAudioDirectionKey];
+    [notificationUserInfo setObject:[NSNumber numberWithUnsignedLong:inAddresses[0].mSelector] forKey:_MTCoreAudioPropertyIDKey];
+#else
+    [notificationUserInfo setObject:[NSNumber numberWithUnsignedLong:inChannel] forKey:_MTCoreAudioChannelKey];
 	[notificationUserInfo setObject:[NSNumber numberWithBool:isInput] forKey:_MTCoreAudioDirectionKey];
 	[notificationUserInfo setObject:[NSNumber numberWithUnsignedLong:inPropertyID] forKey:_MTCoreAudioPropertyIDKey];
-	
+#endif
+    
 	[[NSNotificationCenter defaultCenter] postNotificationName:_MTCoreAudioDeviceNotification object:nil userInfo:notificationUserInfo];
 	
 	[pool release];
@@ -117,7 +138,15 @@ static NSString * _DataSourceNameForID ( AudioDeviceID theDeviceID, MTCoreAudioD
 	theTranslation.mOutputData = &theCFString;
 	theTranslation.mOutputDataSize = sizeof ( CFStringRef );
 	theSize = sizeof(AudioValueTranslation);
-	theStatus = AudioDeviceGetProperty ( theDeviceID, theChannel, theDirection, kAudioDevicePropertyDataSourceNameForIDCFString, &theSize, &theTranslation );
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    struct AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyDataSourceNameForIDCFString;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    theStatus = AudioObjectGetPropertyData(theDeviceID, &propertyAddress, 0, NULL, &theSize, &theTranslation);
+#else
+    theStatus = AudioDeviceGetProperty ( theDeviceID, theChannel, theDirection, kAudioDevicePropertyDataSourceNameForIDCFString, &theSize, &theTranslation );
+#endif
 	if (( theStatus == 0 ) && theCFString )
 	{
 		rv = [NSString stringWithString:(NSString *)theCFString];
@@ -131,17 +160,25 @@ static NSString * _DataSourceNameForID ( AudioDeviceID theDeviceID, MTCoreAudioD
 static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, MTCoreAudioDirection theDirection, UInt32 theChannel, UInt32 theClockSourceID )
 {
 	OSStatus theStatus;
-	UInt32 theSize;
-	AudioValueTranslation theTranslation;
-	CFStringRef theCFString;
 	NSString * rv;
-	
+    CFStringRef theCFString;
+    UInt32 theSize;
+
+    AudioValueTranslation theTranslation;
 	theTranslation.mInputData = &theClockSourceID;
 	theTranslation.mInputDataSize = sizeof(UInt32);
 	theTranslation.mOutputData = &theCFString;
 	theTranslation.mOutputDataSize = sizeof ( CFStringRef );
-	theSize = sizeof(AudioValueTranslation);
+    theSize = sizeof(AudioValueTranslation);
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    struct AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyClockSourceNameForIDCFString;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    theStatus = AudioObjectGetPropertyData(theDeviceID, &propertyAddress, 0, NULL, &theSize, &theTranslation);
+#else
 	theStatus = AudioDeviceGetProperty ( theDeviceID, theChannel, theDirection, kAudioDevicePropertyClockSourceNameForIDCFString, &theSize, &theTranslation );
+#endif
 	if (( theStatus == 0 ) && theCFString )
 	{
 		rv = [NSString stringWithString:(NSString *)theCFString];
@@ -165,7 +202,21 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, MTCoreAudio
 	{
 		initted = YES;
 		_MTCoreAudioHardwareDelegate = nil;
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+        struct AudioObjectPropertyAddress propertyAddress;
+        propertyAddress.mSelector = kAudioObjectPropertySelectorWildcard;
+        propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+        propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+        OSStatus theStatus = AudioObjectAddPropertyListener(kAudioObjectSystemObject, 
+                                                       &propertyAddress, 
+                                                       _MTCoreAudioHardwarePropertyListener, 
+                                                       NULL);
+        if (theStatus != 0) {
+            // TODO - error messages
+        }
+#else
 		AudioHardwareAddPropertyListener ( kAudioPropertyWildcardPropertyID, _MTCoreAudioHardwarePropertyListener, NULL );
+#endif
 		[MTDecibelTransformer class]; // will send +initialize if needed
 	}
 }
@@ -174,7 +225,21 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, MTCoreAudio
 {
 	if ( ! isRegisteredForNotifications )
 	{
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+        struct AudioObjectPropertyAddress propertyAddress;
+        propertyAddress.mSelector = kAudioObjectPropertySelectorWildcard;
+        propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+        propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+        OSStatus theStatus = AudioObjectAddPropertyListener(myDevice, 
+                                                            &propertyAddress, 
+                                                            _MTCoreAudioDevicePropertyListener, 
+                                                            NULL);
+        if (theStatus != 0) {
+            // TODO - error messages
+        }   
+#else
 		AudioDeviceAddPropertyListener ( myDevice, kAudioPropertyWildcardChannel, kAudioPropertyWildcardSection, kAudioPropertyWildcardPropertyID, _MTCoreAudioDevicePropertyListener, NULL );
+#endif
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_dispatchDeviceNotification:) name:_MTCoreAudioDeviceNotification object:nil];
 		isRegisteredForNotifications = YES;
 	}
@@ -191,14 +256,26 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, MTCoreAudio
 	AudioDeviceID * deviceList;
 	MTCoreAudioDevice * tmpDevice;
 	
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioHardwarePropertyDevices;
+    propertyAddress.mScope = kAudioObjectPropertyScopeGlobal;
+    propertyAddress.mElement = kAudioObjectPropertyElementMaster;
+    theStatus = AudioObjectGetPropertyDataSize(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &theSize);
+#else
 	theStatus = AudioHardwareGetPropertyInfo ( kAudioHardwarePropertyDevices, &theSize, NULL );
+#endif
 	if (theStatus != 0)
 		return nil;
 	numDevices = theSize / sizeof(AudioDeviceID);
 	deviceList = (AudioDeviceID *) malloc ( theSize );
 	if (deviceList == NULL)
 		return nil;
-	theStatus = AudioHardwareGetProperty ( kAudioHardwarePropertyDevices, &theSize, deviceList );
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    theStatus = AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &theSize, deviceList);
+#else
+	theStatus = AudioHardwareGetProperty (kAudioHardwarePropertyDevices, &theSize, deviceList );
+#endif
 	if (theStatus != 0)
 	{
 		free(deviceList);
@@ -283,7 +360,16 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, MTCoreAudio
 	theTranslation.mOutputData = &theID;
 	theTranslation.mOutputDataSize = sizeof(AudioDeviceID);
 	theSize = sizeof(AudioValueTranslation);
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioHardwarePropertyDeviceForUID;
+    propertyAddress.mScope = kAudioObjectPropertyScopeGlobal;
+    propertyAddress.mElement = kAudioObjectPropertyElementMaster;
+    theStatus = AudioObjectGetPropertyDataSize(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &theSize);
+    theStatus = AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &theSize, &theTranslation);
+#else
 	theStatus = AudioHardwareGetProperty ( kAudioHardwarePropertyDeviceForUID, &theSize, &theTranslation );
+#endif
 	CFRelease ( theCFString );
 	free ( theCharacters );
 	if (theStatus == 0)
@@ -300,8 +386,16 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, MTCoreAudio
 	AudioDeviceID theID;
 	
 	theSize = sizeof(AudioDeviceID);
-
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = whichDevice;
+    propertyAddress.mScope = kAudioObjectPropertyScopeGlobal;
+    propertyAddress.mElement = kAudioObjectPropertyElementMaster;
+    theStatus = AudioObjectGetPropertyDataSize(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &theSize);
+    theStatus = AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &theSize, &theID);
+#else
 	theStatus = AudioHardwareGetProperty ( whichDevice, &theSize, &theID );
+#endif
 	if (theStatus == 0)
 		return [[self class] deviceWithID:theID];
 	return nil;
@@ -353,9 +447,11 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, MTCoreAudio
 	MTCoreAudioDevice * tmpDevice;
 	NSMutableArray * rv = [NSMutableArray arrayWithObject:self];
 	UInt32 x;
-	
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+#else
 	theStatus = AudioDeviceGetPropertyInfo ( myDevice, 0, 0, kAudioDevicePropertyRelatedDevices, &theSize, NULL );
-	if (theStatus != 0)
+#endif
+    if (theStatus != 0)
 		goto finish;
 	deviceList = (AudioDeviceID *) malloc ( theSize );
 	numDevices = theSize / sizeof(AudioDeviceID);

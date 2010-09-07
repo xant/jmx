@@ -10,21 +10,29 @@
 
 @implementation VJXPin
 
+@synthesize type, name, multiple, direction;
+
 - (id)init
 {
     // TODO - generate a warning message
-    return [self initWithName:@"Unknown" andType:kVJXVoidPin];
+    return [self initWithName:@"Unknown" andType:kVJXVoidPin forDirection:kVJXAnyPin];
 }
 
-+ (id)pinWithName:(NSString *)pinName andType:(VJXPinType)pinType
++ (id)pinWithName:(NSString *)pinName
+          andType:(VJXPinType)pinType
+     forDirection:(VJXPinDirection)pinDirection
+
 {
-    VJXPin *obj = [[self alloc] init];
-    return [[obj initWithName:pinName andType:pinType] autorelease];
+    return [[[self alloc] initWithName:pinName andType:pinType forDirection:pinDirection] autorelease];
 }
 
-+ (id)pinWithName:(NSString *)name andType:(VJXPinType)pinType forObject:(id)pinReceiver withSelector:(NSString *)pinSignal
++ (id)pinWithName:(NSString *)name
+          andType:(VJXPinType)pinType
+     forDirection:(VJXPinDirection)pinDirection
+    boundToObject:(id)pinReceiver
+     withSelector:(NSString *)pinSignal
 {
-    VJXPin *obj = [VJXPin pinWithName:name andType:pinType];
+    VJXPin *obj = [VJXPin pinWithName:name andType:pinType forDirection:pinDirection];
     
     if (obj)
         [obj attachObject:pinReceiver withSelector:pinSignal];
@@ -32,13 +40,14 @@
 }
 
 
-- (id)initWithName:(NSString *)pinName andType:(VJXPinType)pinType
+- (id)initWithName:(NSString *)pinName andType:(VJXPinType)pinType forDirection:(VJXPinDirection)pinDirection
 {
     if (self = [super init]) {
         type = pinType;
         name = [pinName retain];
         receivers = [[NSMutableDictionary alloc] init];
         connections = [[NSMutableArray alloc] init];
+        direction = pinDirection;
         multiple = NO;
     }
     return self;
@@ -151,10 +160,29 @@
         if (!multiple)
             [self disconnectAllPins];
         if (destinationPin.type == self.type) {
-            if ([destinationPin attachObject:self withSelector:@"deliverSignal:fromSender:"]) {
-                [connections addObject:destinationPin];
-                return YES;
+            
+            if (self.direction == kVJXInputPin) {
+                if (destinationPin.direction != kVJXInputPin) {
+                    if ([destinationPin attachObject:self withSelector:@"deliverSignal:fromSender:"]) {
+                        [connections addObject:destinationPin];
+                        return YES;
+                    }
+                }
+                
+            } else if (destinationPin.direction == kVJXInputPin) {
+                if (self.direction != kVJXInputPin) 
+                    return [destinationPin connectToPin:self];
+            } else if (self.direction == kVJXAnyPin) {
+                //if (destinationPin.direction == kVJXOutputPin) {
+                    if ([self attachObject:self withSelector:@"deliverSignal:fromSender:"]) {
+                        [connections addObject:self];
+                        return YES;
+                    }
+                //}
+            } else if (destinationPin.direction == kVJXAnyPin) {
+                return [destinationPin connectToPin:self];
             }
+            
         }
     }
     return NO;
@@ -191,7 +219,5 @@
     }
     return [data autorelease];
 }
-
-@synthesize type, name, multiple;
 
 @end

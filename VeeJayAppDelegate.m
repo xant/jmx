@@ -47,10 +47,10 @@
 
     // CONNECT PINS AS NECESSARY :
     // FIRST THE LAYERS TO THE MIXER
-    [mixerPin connectToPin:imagePin];
+    [imagePin connectToPin:mixerPin];
     [mixerPin connectToPin:moviePin];
     // AND THEN THE MIXER TO THE SCREEN
-    [screenInput connectToPin:mixerOut];
+    [mixerOut connectToPin:screenInput];
     [screenInput2 connectToPin:mixerOut];
 
 

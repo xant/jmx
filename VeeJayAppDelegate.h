@@ -8,7 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 
+#if MAC_OS_X_VERSION_10_6
 @interface VeeJayAppDelegate : NSObject <NSApplicationDelegate> {
+#else
+@interface VeeJayAppDelegate : NSObject {
+#endif
     NSWindow *window;
     NSTableView *layersTableView;
 }

@@ -20,24 +20,38 @@ typedef enum {
     kVJXSizePin,
 } VJXPinType;
 
+typedef enum {
+    kVJXInputPin,
+    kVJXOutputPin,
+    kVJXAnyPin
+} VJXPinDirection;
+
 @interface VJXPin : NSObject <NSCopying> {
 @private
     VJXPinType          type;
     NSString            *name;
     NSMutableDictionary *receivers;
     NSMutableArray      *connections;
-    BOOL                 multiple;
-    id                   currentData;
+    BOOL                multiple;
+    id                  currentData;
+    VJXPinDirection     direction;
 }
 
 @property (readonly) VJXPinType type;
 @property (readonly) NSString *name;
 @property (readonly) BOOL multiple;
+@property (readonly) VJXPinDirection direction;
 
-+ (id)pinWithName:(NSString *)name andType:(VJXPinType)pinType;
-+ (id)pinWithName:(NSString *)name andType:(VJXPinType)pinType forObject:(id)pinReceiver withSelector:(NSString *)pinSignal;
++ (id)pinWithName:(NSString *)name
+          andType:(VJXPinType)pinType
+    forDirection:(VJXPinDirection)pinDirection;
++ (id)pinWithName:(NSString *)name
+          andType:(VJXPinType)pinType
+     forDirection:(VJXPinDirection)pinDirection 
+    boundToObject:(id)pinReceiver 
+     withSelector:(NSString *)pinSignal;
 
-- (id)initWithName:(NSString *)name andType:(VJXPinType)pinType;
+- (id)initWithName:(NSString *)name andType:(VJXPinType)pinType forDirection:(VJXPinDirection)pinDirection;
 - (BOOL)attachObject:(id)pinReceiver withSelector:(NSString *)pinSignal;
 - (BOOL)connectToPin:(VJXPin *)destinationPin;
 - (void)disconnectFromPin:(VJXPin *)destinationPin;

@@ -7,10 +7,10 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "VJXEntity.h"
+#import "VJXThreadedEntity.h"
 
 
-@interface VJXMixer : VJXEntity {
+@interface VJXMixer : VJXThreadedEntity {
 @public
     NSSize outputSize;
 

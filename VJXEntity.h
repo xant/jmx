@@ -9,14 +9,19 @@
 #import <Cocoa/Cocoa.h>
 #import "VJXPin.h"
 
-@protocol VJXEntity
-@optional
+/*
+@protocol VJXThread
+#pragma mark Thread API
 // entities should implement this message to trigger 
 // delivering of signals to all their custom output pins
 - (void)tick:(uint64_t)timeStamp;
+- (void)start;
+- (void)stop;
+- (void)run;
 @end
+*/
 
-@interface VJXEntity : NSObject <NSCopying, VJXEntity> {
+@interface VJXEntity : NSObject <NSCopying> {
 @public
     NSString *name;
 @protected
@@ -24,10 +29,8 @@
     NSMutableDictionary *outputPins;
     uint64_t previousTimeStamp;
     NSNumber *frequency;
-    
-@private
-    NSThread *worker;
     BOOL active;
+@private
     int64_t stamps[25 + 1]; // XXX - 25 should be a constant
     int stampCount;
 }
@@ -66,10 +69,7 @@
         withSelector:(NSString *)selector
         toOutputPin:(NSString *)pinName;
 
-#pragma mark Thread API
-
-- (void)start;
-- (void)stop;
-- (void)run;
+- (void)outputDefaultSignals:(uint64_t)timeStamp;
 
 @end
+

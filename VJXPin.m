@@ -46,7 +46,7 @@
         type = pinType;
         name = [pinName retain];
         receivers = [[NSMutableDictionary alloc] init];
-        connections = [[NSMutableArray alloc] init];
+        producers = [[NSMutableArray alloc] init];
         direction = pinDirection;
         multiple = NO;
     }
@@ -150,21 +150,20 @@
 {
     [name release];
     [receivers release];
-    [connections release];
+    [producers release];
     [super dealloc];
 }
 
 - (BOOL)connectToPin:(VJXPin *)destinationPin
 {
     @synchronized(self) {
-        if (!multiple)
-            [self disconnectAllPins];
         if (destinationPin.type == self.type) {
-            
             if (self.direction == kVJXInputPin) {
                 if (destinationPin.direction != kVJXInputPin) {
+                    if ([producers count] && !multiple)
+                        [self disconnectAllPins];
                     if ([destinationPin attachObject:self withSelector:@"deliverSignal:fromSender:"]) {
-                        [connections addObject:destinationPin];
+                        [producers addObject:destinationPin];
                         return YES;
                     }
                 }
@@ -172,12 +171,12 @@
                 if (self.direction != kVJXInputPin) 
                     return [destinationPin connectToPin:self];
             } else if (self.direction == kVJXAnyPin) {
-                //if (destinationPin.direction == kVJXOutputPin) {
-                    if ([self attachObject:self withSelector:@"deliverSignal:fromSender:"]) {
-                        [connections addObject:self];
-                        return YES;
-                    }
-                //}
+                if ([producers count] && multiple)
+                    [self disconnectAllPins];
+                if ([destinationPin attachObject:self withSelector:@"deliverSignal:fromSender:"]) {
+                    [producers addObject:self];
+                    return YES;
+                }
             } else if (destinationPin.direction == kVJXAnyPin) {
                 return [destinationPin connectToPin:self];
             }
@@ -191,14 +190,14 @@
 {
     @synchronized(self) {
         [destinationPin detachObject:self];
-        [connections removeObjectIdenticalTo:destinationPin];
+        [producers removeObjectIdenticalTo:destinationPin];
     }
 }
 
 - (void)disconnectAllPins
 {
-    while ([connections count])
-        [self disconnectFromPin:[connections objectAtIndex:0]];
+    while ([producers count])
+        [self disconnectFromPin:[producers objectAtIndex:0]];
 }
 
 - (id)copyWithZone:(NSZone *)zone

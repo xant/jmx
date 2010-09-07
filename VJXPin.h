@@ -31,7 +31,7 @@ typedef enum {
     VJXPinType          type;
     NSString            *name;
     NSMutableDictionary *receivers;
-    NSMutableArray      *connections;
+    NSMutableArray      *producers;
     BOOL                multiple;
     id                  currentData;
     VJXPinDirection     direction;

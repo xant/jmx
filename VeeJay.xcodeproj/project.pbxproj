@@ -45,6 +45,7 @@
 		AA2BE3B71235396F006087E7 /* MTDecibelTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2BE3AE1235396F006087E7 /* MTDecibelTransformer.m */; };
 		AA2BE3F312353BA6006087E7 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE3F212353BA6006087E7 /* CoreAudio.framework */; };
 		AA2BE40B12353D5C006087E7 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE40A12353D5C006087E7 /* Accelerate.framework */; };
+		AA2BE6511236D31E006087E7 /* VJXThreadedEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2BE6501236D31E006087E7 /* VJXThreadedEntity.m */; };
 		AA7931BE1233A64800860CD2 /* VJXSize.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7931BD1233A64800860CD2 /* VJXSize.m */; };
 		AA7931C11233A65400860CD2 /* VJXPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7931C01233A65400860CD2 /* VJXPoint.m */; };
 /* End PBXBuildFile section */
@@ -126,6 +127,8 @@
 		AA2BE3AE1235396F006087E7 /* MTDecibelTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MTDecibelTransformer.m; path = MTCoreAudio/MTDecibelTransformer.m; sourceTree = "<group>"; };
 		AA2BE3F212353BA6006087E7 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		AA2BE40A12353D5C006087E7 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		AA2BE6401236D2C4006087E7 /* VJXThreadedEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXThreadedEntity.h; sourceTree = "<group>"; };
+		AA2BE6501236D31E006087E7 /* VJXThreadedEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXThreadedEntity.m; sourceTree = "<group>"; };
 		AA7931BC1233A64800860CD2 /* VJXSize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXSize.h; sourceTree = "<group>"; };
 		AA7931BD1233A64800860CD2 /* VJXSize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXSize.m; sourceTree = "<group>"; };
 		AA7931BF1233A65400860CD2 /* VJXPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXPoint.h; sourceTree = "<group>"; };
@@ -186,6 +189,8 @@
 				AA7931C01233A65400860CD2 /* VJXPoint.m */,
 				AA0D28A6123436C4009C8690 /* VJXAudioTrack.h */,
 				AA0D28A7123436C4009C8690 /* VJXAudioTrack.m */,
+				AA2BE6401236D2C4006087E7 /* VJXThreadedEntity.h */,
+				AA2BE6501236D31E006087E7 /* VJXThreadedEntity.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -398,6 +403,7 @@
 				AA2BE3B51235396F006087E7 /* MTCoreAudioStream.m in Sources */,
 				AA2BE3B61235396F006087E7 /* MTCoreAudioStreamDescription.m in Sources */,
 				AA2BE3B71235396F006087E7 /* MTDecibelTransformer.m in Sources */,
+				AA2BE6511236D31E006087E7 /* VJXThreadedEntity.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

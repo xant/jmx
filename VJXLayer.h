@@ -7,9 +7,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "VJXEntity.h"
+#import "VJXThreadedEntity.h"
 
-@interface VJXLayer : VJXEntity {
+@interface VJXLayer : VJXThreadedEntity {
 @protected
     NSNumber *saturation;
     NSNumber *brightness;

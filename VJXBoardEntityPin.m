@@ -12,43 +12,15 @@
 
 @implementation VJXBoardEntityPin
 
-@synthesize pin, tempConnector, connectors, label, output;
+@synthesize pin, tempConnector, connectors;
 
-
-- (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint isOutput:(BOOL)isOutput
+- (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint
 {
-    NSRect frame;
-    
-    if (isOutput) {
-        frame = NSMakeRect(thePoint.x - 120.0, thePoint.y, 120.0, 18.0);
-    }
-    else {
-        frame = NSMakeRect(thePoint.x, thePoint.y, 120.0, 18.0);        
-    }
+    NSRect frame = NSMakeRect(thePoint.x, thePoint.y, 18.0, 18.0);
     
     if ((self = [super initWithFrame:frame]) != nil) {
         self.connectors = [[NSMutableArray alloc] init];
-        self.pin = thePin;
-        self.output = isOutput;
-        
-        NSRect labelRect;
-        if (isOutput) {
-            labelRect = NSMakeRect(0.0, 0.0, 90.0, frame.size.height);
-        }
-        else {
-            labelRect = NSMakeRect(frame.size.height, 0.0, 90.0, frame.size.height);            
-        }
-
-        self.label = [[NSTextField alloc] initWithFrame:labelRect];
-        [self.label setStringValue:self.pin.name];
-        [self.label setEditable:NO];
-        [self.label setBackgroundColor:[NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:0.0]];
-        [self.label setBordered:NO];
-        
-        if (isOutput)
-            [self.label setAlignment:NSRightTextAlignment];
-        
-        [self addSubview:self.label];
+        self.pin = thePin;        
     }
     return self;
 }
@@ -65,12 +37,7 @@
     [[NSColor redColor] set];
     thePath = [[NSBezierPath alloc] init];
     NSRect pinRect;
-    if (self.output) {
-        pinRect = NSMakeRect([self bounds].size.width - [self bounds].size.height, 0.0, [self bounds].size.height, [self bounds].size.height);
-    }
-    else {
-        pinRect = NSMakeRect([self bounds].origin.x, [self bounds].origin.y, [self bounds].size.height, [self bounds].size.height);
-    }
+    pinRect = NSMakeRect([self bounds].origin.x, [self bounds].origin.y, [self bounds].size.height, [self bounds].size.height);
     [thePath appendBezierPathWithOvalInRect:pinRect];
     [thePath fill];
     [thePath release];

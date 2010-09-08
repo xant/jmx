@@ -17,23 +17,16 @@
     VJXPin *pin;
     VJXBoardEntityConnector *tempConnector;
     NSMutableArray *connectors;
-    NSTextField *label;
-    BOOL output;
 }
 
 @property (nonatomic,retain) VJXPin *pin;
 @property (nonatomic,retain) VJXBoardEntityConnector *tempConnector;
 @property (nonatomic,retain) NSMutableArray *connectors;
-@property (nonatomic,retain) NSTextField *label;
-@property (nonatomic,assign) BOOL output;
 
-- (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint isOutput:(BOOL)isOutput;
-
+- (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint;
 - (NSPoint)pointAtCenter;
 - (void)updateAllConnectorsFrames;
-
 - (BOOL)multiple;
-
 - (void)addConnector:(VJXBoardEntityConnector *)theConnector;
 
 @end

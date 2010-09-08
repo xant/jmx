@@ -8,32 +8,11 @@
 
 #import "VJXBoardEntity.h"
 #import "VJXBoardEntityPin.h"
+#import "VJXBoardEntityOutlet.h"
 
 @implementation VJXBoardEntity
 
 @synthesize entity;
-
-- (id)initWithFrame:(NSRect)frame {
-    self = [super initWithFrame:frame];
-    if (self) {
-        NSRect bounds = [self bounds];
-
-        // Input outlets
-        NSUInteger nrOutlets = (rand() % 4)+1;
-        for (NSUInteger i = 0; i < nrOutlets; i++) {
-            NSRect outletRect = NSMakeRect(0.0, (((bounds.size.height / nrOutlets) * i) - (bounds.origin.y - (3.0))), 11.0, 11.0);
-            VJXBoardEntityPin *outlet = [[VJXBoardEntityPin alloc] initWithFrame:outletRect];
-            [self addSubview:outlet];
-        }
-
-        // Output outlets
-        for (NSUInteger i = 0; i < nrOutlets; i++) {
-
-        }
-
-    }
-    return self;
-}
 
 - (id)initWithEntity:(VJXEntity *)theEntity
 {
@@ -58,16 +37,23 @@
         int i = 0;
         for (NSString *pinName in theEntity.inputPins) {
             NSPoint origin = NSMakePoint(0.0, (((bounds.size.height / nrInputPins) * i++) - (bounds.origin.y - (3.0))));
-            VJXBoardEntityPin *outlet = [[VJXBoardEntityPin alloc] initWithPin:[theEntity.inputPins objectForKey:pinName] andPoint:origin isOutput:NO];
+            VJXBoardEntityOutlet *outlet = [[VJXBoardEntityOutlet alloc] initWithPin:[theEntity.inputPins objectForKey:pinName]
+                                                                            andPoint:origin
+                                                                            isOutput:NO];
             [self addSubview:outlet];
+            [outlet release];
         }
         
         i = 0;
         for (NSString *pinName in theEntity.outputPins) {
             NSLog(@"%@", pinName);
-            NSPoint origin = NSMakePoint(bounds.size.width - pinSide, (((bounds.size.height / nrOutputPins) * i++) - (bounds.origin.y - (3.0))));
-            VJXBoardEntityPin *outlet = [[VJXBoardEntityPin alloc] initWithPin:[theEntity.outputPins objectForKey:pinName] andPoint:origin isOutput:YES];
+            NSPoint origin = NSMakePoint(bounds.size.width - 120.0,
+                                         (((bounds.size.height / nrOutputPins) * i++) - (bounds.origin.y - (3.0))));
+            VJXBoardEntityOutlet *outlet = [[VJXBoardEntityOutlet alloc] initWithPin:[theEntity.outputPins objectForKey:pinName]
+                                                                            andPoint:origin
+                                                                            isOutput:YES];
             [self addSubview:outlet];
+            [outlet release];
         }
     }
     return self;

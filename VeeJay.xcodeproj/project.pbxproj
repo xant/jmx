@@ -21,6 +21,7 @@
 		824576471227DF5800236FE4 /* VJXBoardEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 824576411227DF5800236FE4 /* VJXBoardEntity.m */; };
 		824576481227DF5800236FE4 /* VJXBoard.m in Sources */ = {isa = PBXBuildFile; fileRef = 824576431227DF5800236FE4 /* VJXBoard.m */; };
 		8245765A1227E0A400236FE4 /* VJXBoardDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 824576591227E0A400236FE4 /* VJXBoardDelegate.m */; };
+		82B0A4C31237AFB20006D003 /* VJXBoardEntityOutlet.m in Sources */ = {isa = PBXBuildFile; fileRef = 82B0A4C21237AFB20006D003 /* VJXBoardEntityOutlet.m */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -81,6 +82,8 @@
 		824576441227DF5800236FE4 /* VJXBoard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXBoard.h; sourceTree = "<group>"; };
 		824576581227E0A400236FE4 /* VJXBoardDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXBoardDelegate.h; sourceTree = "<group>"; };
 		824576591227E0A400236FE4 /* VJXBoardDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXBoardDelegate.m; sourceTree = "<group>"; };
+		82B0A4C11237AFB20006D003 /* VJXBoardEntityOutlet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXBoardEntityOutlet.h; sourceTree = "<group>"; };
+		82B0A4C21237AFB20006D003 /* VJXBoardEntityOutlet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXBoardEntityOutlet.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* VeeJay-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "VeeJay-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* VeeJay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VeeJay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA0D28A6123436C4009C8690 /* VJXAudioTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXAudioTrack.h; sourceTree = "<group>"; };
@@ -276,6 +279,8 @@
 				824576441227DF5800236FE4 /* VJXBoard.h */,
 				824576581227E0A400236FE4 /* VJXBoardDelegate.h */,
 				824576591227E0A400236FE4 /* VJXBoardDelegate.m */,
+				82B0A4C11237AFB20006D003 /* VJXBoardEntityOutlet.h */,
+				82B0A4C21237AFB20006D003 /* VJXBoardEntityOutlet.m */,
 			);
 			name = GUI;
 			sourceTree = "<group>";
@@ -398,6 +403,7 @@
 				AA2BE3B61235396F006087E7 /* MTCoreAudioStreamDescription.m in Sources */,
 				AA2BE3B71235396F006087E7 /* MTDecibelTransformer.m in Sources */,
 				AA2BE6511236D31E006087E7 /* VJXThreadedEntity.m in Sources */,
+				82B0A4C31237AFB20006D003 /* VJXBoardEntityOutlet.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

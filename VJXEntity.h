@@ -21,6 +21,8 @@
 @end
 */
 
+#define kVJXFpsMaxStamps 25
+
 @interface VJXEntity : NSObject <NSCopying> {
 @public
     NSString *name;
@@ -31,7 +33,7 @@
     NSNumber *frequency;
     BOOL active;
 @private
-    int64_t stamps[25 + 1]; // XXX - 25 should be a constant
+    int64_t stamps[kVJXFpsMaxStamps + 1]; // XXX - 25 should be a constant
     int stampCount;
 }
 

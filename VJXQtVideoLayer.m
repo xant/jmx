@@ -97,10 +97,10 @@
                                        QTMovieFrameImageSize,
                                        QTMovieFrameImageTypeCIImage,
                                        QTMovieFrameImageType,
-    #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
                                        [NSNumber numberWithBool:TRUE],
                                        QTMovieFrameImageSessionMode,
-    #endif
+#endif
                                        nil];
 
                 // Get our CIImage.

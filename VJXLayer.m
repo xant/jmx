@@ -85,11 +85,10 @@
                 [currentFrame release];
                 currentFrame = [frame retain];
             }
+            // TODO - compute the effective fps and send it to an output pin 
+            //        for debugging purposes
+            [outputFramePin deliverSignal:currentFrame fromSender:self];
         }
-        
-        // TODO - compute the effective fps and send it to an output pin 
-        //        for debugging purposes
-        [outputFramePin deliverSignal:currentFrame fromSender:self];
     }
 }
 

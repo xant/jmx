@@ -108,6 +108,22 @@
         
         NSLog(@"this Pin: %@, other Pin: %@", self.pin.name, otherPin.pin.name);
         
+        if ([otherPin.connectors count] && !otherPin.pin.multiple) {
+            // XXX - there are too many references around ...
+            //       maintaining all these lists is far too complex
+            //       and we don't really need all these circular refences
+            //       since they can easily lead to leaks
+            for (VJXBoardEntityConnector *connector in otherPin.connectors) {
+                if (connector.origin == otherPin) {
+                    [connector.destination.connectors removeObject:connector];
+                } else {
+                    [connector.origin.connectors removeObject:connector];
+                }
+                [connector removeFromSuperview];
+            }
+            [otherPin.connectors removeAllObjects];
+        }
+
         [otherPin.pin connectToPin:self.pin];
 
         [tempConnector setOrigin:self];

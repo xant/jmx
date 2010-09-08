@@ -117,11 +117,11 @@
     [activePin deliverSignal:[NSNumber numberWithBool:active] fromSender:self];
     
     int i = 0;
-    if (stampCount > 25) {
+    if (stampCount > kVJXFpsMaxStamps) {
         for (i = 0; i < stampCount; i++) {
             stamps[i] = stamps[i+1];
         }
-        stampCount = 25;  
+        stampCount = kVJXFpsMaxStamps;  
     }
     stamps[stampCount++] = timeStamp;
     

@@ -19,6 +19,9 @@
 	NSRecursiveLock * registrationLock;
 	AudioBufferList * eachOutputData;
 	Boolean isRunning;
+#if defined(MAC_OS_X_VERSION_10_5) && (MAC_OS_X_VERSION_MIN_REQUIRED>=MAC_OS_X_VERSION_10_5)
+    AudioDeviceIOProcID demuxIOProcID;
+#endif
 }
 
 + (Boolean) registerDevice:(MTCoreAudioDevice *)theDevice;

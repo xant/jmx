@@ -64,6 +64,9 @@ static OSStatus demuxIOProc (
 	lock = [NSLock new];
 	registrationLock = [NSRecursiveLock new];
 	eachOutputData = 0;
+#if defined(MAC_OS_X_VERSION_10_5) && (MAC_OS_X_VERSION_MIN_REQUIRED>=MAC_OS_X_VERSION_10_5)
+    demuxIOProcID = 0;
+#endif
 	return self;
 }
 
@@ -93,7 +96,7 @@ static OSStatus demuxIOProc (
 {
 	NSValue * myProxy = [NSValue valueWithNonretainedObject:theDevice];
 	Boolean shouldStop = NO;
-
+    OSStatus theStatus = noErr;
 	[registrationLock lock];
 	[lock lock];
 	
@@ -112,7 +115,15 @@ static OSStatus demuxIOProc (
 		// these can't be done inside the same lock that's held by the IOProc
 		// dispatcher, because this can lead to a deadlock with CoreAudio's CAGuard lock
 		AudioDeviceStop ( myDeviceID, demuxIOProc );
-		AudioDeviceRemoveIOProc ( myDeviceID, demuxIOProc );
+#if defined(MAC_OS_X_VERSION_10_5) && (MAC_OS_X_VERSION_MIN_REQUIRED>=MAC_OS_X_VERSION_10_5)
+        theStatus = AudioDeviceDestroyIOProcID( myDeviceID, demuxIOProcID );
+#else
+        // deprecated in favor of AudioDeviceDestroyIOProcID()
+        theStatus = AudioDeviceRemoveIOProc ( myDeviceID, demuxIOProc );
+#endif
+        if (noErr != theStatus) {
+            // TODO - Error Messages
+        }
 	}
 	
 	[registrationLock unlock];
@@ -147,7 +158,12 @@ static OSStatus demuxIOProc (
 	{
 		// these can't be done inside the same lock that's held by the IOProc
 		// dispatcher, because this can lead to a deadlock with CoreAudio's CAGuard lock
+#if defined(MAC_OS_X_VERSION_10_5) && (MAC_OS_X_VERSION_MIN_REQUIRED>=MAC_OS_X_VERSION_10_5)
+        rv = AudioDeviceCreateIOProcID( myDeviceID, demuxIOProc, self, &demuxIOProcID );
+#else
+        // deprecated in favor of AudioDeviceCreateIOProcID()
 		rv = AudioDeviceAddIOProc ( myDeviceID, demuxIOProc, self );
+#endif
 		if ( noErr == rv )
 		{
 			rv = AudioDeviceStart ( myDeviceID, demuxIOProc );

@@ -58,7 +58,7 @@
         int i = 0;
         for (NSString *pinName in theEntity.inputPins) {
             NSPoint origin = NSMakePoint(0.0, (((bounds.size.height / nrInputPins) * i++) - (bounds.origin.y - (3.0))));
-            VJXBoardEntityPin *outlet = [[VJXBoardEntityPin alloc] initWithPin:[theEntity.inputPins objectForKey:pinName] andPoint:origin];
+            VJXBoardEntityPin *outlet = [[VJXBoardEntityPin alloc] initWithPin:[theEntity.inputPins objectForKey:pinName] andPoint:origin isOutput:NO];
             [self addSubview:outlet];
         }
         
@@ -66,7 +66,7 @@
         for (NSString *pinName in theEntity.outputPins) {
             NSLog(@"%@", pinName);
             NSPoint origin = NSMakePoint(bounds.size.width - pinSide, (((bounds.size.height / nrOutputPins) * i++) - (bounds.origin.y - (3.0))));
-            VJXBoardEntityPin *outlet = [[VJXBoardEntityPin alloc] initWithPin:[theEntity.outputPins objectForKey:pinName] andPoint:origin];
+            VJXBoardEntityPin *outlet = [[VJXBoardEntityPin alloc] initWithPin:[theEntity.outputPins objectForKey:pinName] andPoint:origin isOutput:YES];
             [self addSubview:outlet];
         }
     }

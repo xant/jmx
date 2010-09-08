@@ -18,4 +18,6 @@
 @property (retain) CIImage *image;
 @property (copy) NSString *imagePath;
 
+- (BOOL)open:(NSString *)file;
+
 @end

@@ -34,6 +34,57 @@ static id sharedBoard = nil;
     [VJXBoardDelegate setSharedBoard:board];
 }
 
+- (void)openFilePanelDidEnd:(NSOpenPanel *)panel returnCode:(int)returnCode  contextInfo:(void  *)contextInfo
+{
+    VJXEntity *entity = (VJXEntity *)contextInfo;
+    
+    if(returnCode == NSOKButton){
+        NSLog(@"openFilePanel: OK\n");    
+    } else if(returnCode == NSCancelButton) {
+        NSLog(@"openFilePanel: Cancel\n");
+        return;
+    } else {
+        NSLog(@"openFilePanel: Error %3d\n",returnCode);
+        return;
+    } // end if     
+    NSString * directory = [panel directory];
+    NSLog(@"openFile directory = %@\n",directory);
+    
+    NSString * fileName = [panel filename];
+    NSLog(@"openFile filename = %@\n",fileName);
+    
+    if (fileName) {
+        if ([entity respondsToSelector:@selector(open:)]) {
+            [entity performSelector:@selector(open:) withObject:fileName];
+        } else {
+            NSLog(@"Entity %@ doesn't respond to 'open:'\n");
+            return;
+        }
+        VJXBoardEntity *entityView = [[VJXBoardEntity alloc] initWithEntity:entity];
+        [board addSubview:entityView];
+        if ([entity respondsToSelector:@selector(start)])
+            [entity performSelector:@selector(start)];
+        else
+             NSLog(@"Entity %@ doesn't respond to 'start'. Not a VJXThreadedEntity ?\n");
+    }
+}
+
+- (void)openFile:(NSArray *)types forEntity:(VJXEntity *)entity
+{    
+    NSOpenPanel *fileSelectionPanel    = [NSOpenPanel openPanel];
+    
+    
+    [fileSelectionPanel 
+     beginSheetForDirectory:nil 
+     file:nil
+     types:types 
+     modalForWindow:[board window]
+     modalDelegate:self 
+     didEndSelector:@selector(openFilePanelDidEnd: returnCode: contextInfo:) 
+     contextInfo:entity];    
+    [fileSelectionPanel setCanChooseFiles:YES];
+} // end openFile
+
 - (IBAction)addEntity:(id)sender
 {
     NSRect frame = NSMakeRect(10.0, 10.0, 200.0, 100.0);
@@ -44,21 +95,23 @@ static id sharedBoard = nil;
 
 - (IBAction)addMovieLayer:(id)sender
 {
+    
+    NSArray *types = [NSArray arrayWithObjects:
+                      @"avi", @"mov", @"mpg", @"asf", nil];
+    
     VJXQtVideoLayer *movieLayer = [[VJXQtVideoLayer alloc] init];
-    movieLayer.moviePath = [@"~/test.avi" stringByExpandingTildeInPath];
-    [movieLayer loadMovie];
-
-    VJXBoardEntity *entity = [[VJXBoardEntity alloc] initWithEntity:movieLayer];
-    [board addSubview:entity];
-    [movieLayer start];
+    [self openFile:types forEntity:movieLayer];
 }
+
 
 - (IBAction)addImageLayer:(id)sender
 {
+    NSArray *types = [NSArray arrayWithObjects:
+                      @"jpg", @"png", @"tif", @"bmp", 
+                      @"gif", @"pdf", nil];
+
     VJXImageLayer *imageLayer = [[VJXImageLayer alloc] init];
-    VJXBoardEntity *entity = [[VJXBoardEntity alloc] initWithEntity:imageLayer];
-    [board addSubview:entity];
-    [imageLayer start];
+    [self openFile:types forEntity:imageLayer];
 }
 
 - (IBAction)addMixerLayer:(id)sender
@@ -76,6 +129,5 @@ static id sharedBoard = nil;
     [board addSubview:entity];
     NSLog(@"%s", _cmd);
 }
-
 
 @end

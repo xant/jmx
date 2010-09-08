@@ -27,16 +27,18 @@
     return self;
 }
 
-- (void)loadMovie
+- (BOOL)open:(NSString *)file
 {
-    if (moviePath != nil) {
+    if (file != nil) {
         NSError *error;
+        self.moviePath = file;
         NSLog(@"moviePath: %@", moviePath);
         if (movie)
             [movie release];
         movie = [[QTMovie movieWithFile:moviePath error:&error] retain];
         if (!movie) {
             NSLog(@"Got error: %@", error);
+            return NO;
         }
         NSLog(@"movie: %@", movie);
         NSArray* videoTracks = [movie tracksOfMediaType:QTMediaTypeVideo];
@@ -50,60 +52,65 @@
         // the frames more often we will just send the same image multiple times (wasting precious cpu time)
         self.frequency = [NSNumber numberWithDouble:sampleCount/(qtTimeDuration.timeValue/qtTimeDuration.timeScale)];
         self.fps = self.frequency;
+        return YES;
     }
+    return NO;
 }
 
 - (void)dealloc {
-    [movie release];
+    if (movie)
+        [movie release];
     [super dealloc];
 }
 
 - (void)tick:(uint64_t)timeStamp
 {
-    QTTime now = [movie currentTime];
-    @synchronized(self) {
-        if (!paused) {
-            if (currentFrame) {
-                [currentFrame release];
-                currentFrame = nil;
-            }
-            uint64_t delta = previousTimeStamp
-                           ? (timeStamp - previousTimeStamp) / 1e9 * now.timeScale
-                           : now.timeScale / [fps doubleValue];
-            // Calculate the next frame we need to provide.
-            now.timeValue += delta;
-
-            if (QTTimeCompare(now, [movie duration]) == NSOrderedAscending) {
-                [movie setCurrentTime:now];
-            } else { // the movie is ended
-                if (repeat) { // check if we need to rewind and re-start extracting frames
-                    [movie gotoBeginning];
-                } else {
-                    [self stop];
-                    return [super tick:timeStamp]; // we still want to propagate the signal
+    if (movie) {
+        QTTime now = [movie currentTime];
+        @synchronized(self) {
+            if (!paused) {
+                if (currentFrame) {
+                    [currentFrame release];
+                    currentFrame = nil;
                 }
-            }
-        
-            // Setup the attrs dictionary. 
-            // We want to get back a CIImage object of the proper size.
-            NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   [NSValue valueWithSize:self.size.nsSize],
-                                   QTMovieFrameImageSize,
-                                   QTMovieFrameImageTypeCIImage,
-                                   QTMovieFrameImageType,
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
-                                   [NSNumber numberWithBool:TRUE],
-                                   QTMovieFrameImageSessionMode,
-#endif
-                                   nil];
+                uint64_t delta = previousTimeStamp
+                               ? (timeStamp - previousTimeStamp) / 1e9 * now.timeScale
+                               : now.timeScale / [fps doubleValue];
+                // Calculate the next frame we need to provide.
+                now.timeValue += delta;
 
-            // Get our CIImage.
-            // TODO: Implement error handling.
-            // XXX - and check why requested framesize is not honored
-            CIImage *frame = [movie frameImageAtTime:now withAttributes:attrs error:nil];
-            if (frame)
-                currentFrame = [frame retain];
-        } 
+                if (QTTimeCompare(now, [movie duration]) == NSOrderedAscending) {
+                    [movie setCurrentTime:now];
+                } else { // the movie is ended
+                    if (repeat) { // check if we need to rewind and re-start extracting frames
+                        [movie gotoBeginning];
+                    } else {
+                        [self stop];
+                        return [super tick:timeStamp]; // we still want to propagate the signal
+                    }
+                }
+            
+                // Setup the attrs dictionary. 
+                // We want to get back a CIImage object of the proper size.
+                NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                                       [NSValue valueWithSize:self.size.nsSize],
+                                       QTMovieFrameImageSize,
+                                       QTMovieFrameImageTypeCIImage,
+                                       QTMovieFrameImageType,
+    #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+                                       [NSNumber numberWithBool:TRUE],
+                                       QTMovieFrameImageSessionMode,
+    #endif
+                                       nil];
+
+                // Get our CIImage.
+                // TODO: Implement error handling.
+                // XXX - and check why requested framesize is not honored
+                CIImage *frame = [movie frameImageAtTime:now withAttributes:attrs error:nil];
+                if (frame)
+                    currentFrame = [frame retain];
+            } 
+        }
     }
     [super tick:timeStamp]; // let super notify output pins
 }

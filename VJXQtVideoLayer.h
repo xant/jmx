@@ -23,6 +23,6 @@
 @property (assign) BOOL paused;
 @property (assign) BOOL repeat;
 
-- (void)loadMovie;
+- (BOOL)open:(NSString *)file;
 
 @end

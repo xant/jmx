@@ -45,7 +45,7 @@
         self.pin = [[[VJXBoardEntityPin alloc] initWithPin:thePin andPoint:pinPoint] autorelease];
         self.output = isOutput;
 
-        self.pinName = [[NSTextField alloc] initWithFrame:labelRect];
+        self.pinName = [[[NSTextField alloc] initWithFrame:labelRect] autorelease];
         [self.pinName setStringValue:self.pin.pin.name];
         [self.pinName setEditable:NO];
         [self.pinName setBackgroundColor:[NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:0.0]];
@@ -58,6 +58,13 @@
         [self addSubview:self.pin];
     }
     return self;
+}
+
+- (void)dealloc
+{
+    self.pinName = nil;
+    self.pin = nil;
+    [super dealloc];
 }
 
 - (void)updateAllConnectorsFrames

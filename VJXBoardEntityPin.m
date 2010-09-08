@@ -12,22 +12,25 @@
 
 @implementation VJXBoardEntityPin
 
-@synthesize pin, tempConnector, connectors;
+@synthesize pin, connectors;
 
 - (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint
 {
     NSRect frame = NSMakeRect(thePoint.x, thePoint.y, 18.0, 18.0);
     
     if ((self = [super initWithFrame:frame]) != nil) {
-        self.connectors = [[NSMutableArray alloc] init];
-        self.pin = thePin;        
+        connectors = [[NSMutableArray alloc] init];
+        pin = [thePin retain];        
     }
     return self;
 }
 
 - (void)dealloc
 {
-    self.connectors = nil;
+    if (connectors)
+        [connectors release];
+    if (pin)
+        [pin release];
     [super dealloc];
 }
 
@@ -108,37 +111,26 @@
         
         NSLog(@"this Pin: %@, other Pin: %@", self.pin.name, otherPin.pin.name);
         
-        if ([otherPin.connectors count] && !otherPin.pin.multiple) {
-            // XXX - there are too many references around ...
-            //       maintaining all these lists is far too complex
-            //       and we don't really need all these circular refences
-            //       since they can easily lead to leaks
-            for (VJXBoardEntityConnector *connector in otherPin.connectors) {
-                if (connector.origin == otherPin) {
-                    [connector.destination.connectors removeObject:connector];
-                } else {
-                    [connector.origin.connectors removeObject:connector];
-                }
-                [connector removeFromSuperview];
-            }
-            [otherPin.connectors removeAllObjects];
-        }
+        if ([otherPin isConnected] && ![otherPin multiple])
+            [otherPin removeAllConnectors];
 
         [otherPin.pin connectToPin:self.pin];
 
         [tempConnector setOrigin:self];
         [tempConnector setDestination:otherPin];
 
-        [otherPin addConnector:self.tempConnector];
-        [self addConnector:self.tempConnector];
+        [otherPin addConnector:tempConnector];
+        [self addConnector:tempConnector];
         
         [self updateAllConnectorsFrames];
         
-        self.tempConnector = nil;
+        [tempConnector release];
+        tempConnector = nil;
     }
     else {
         [tempConnector removeFromSuperview];
-        self.tempConnector = nil;
+        [tempConnector release];
+        tempConnector = nil;
     }
 }
 
@@ -157,7 +149,12 @@
 
 - (BOOL)multiple
 {
-    return [[self pin] multiple];
+    return pin.multiple;
+}
+
+- (BOOL)isConnected
+{
+    return [connectors count] ? YES : NO;
 }
 
 - (void)addConnector:(VJXBoardEntityConnector *)theConnector
@@ -165,5 +162,22 @@
     [connectors addObject:theConnector];
 }
 
+- (void)removeConnector:(VJXBoardEntityConnector *)theConnector
+{
+    [connectors removeObject:theConnector];
+}
+
+- (void)removeAllConnectors
+{
+    for (VJXBoardEntityConnector *connector in connectors) {
+        if (connector.origin == self) {
+            [connector.destination removeConnector:connector];
+        } else {
+            [connector.origin removeConnector:connector];
+        }
+        [connector removeFromSuperview];
+    }
+    [connectors removeAllObjects];
+}
 
 @end

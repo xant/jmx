@@ -10,6 +10,8 @@
 #import "VJXBoardEntity.h"
 #import "VJXQtVideoLayer.h"
 #import "VJXOpenGLScreen.h"
+#import "VJXImageLayer.h"
+#import "VJXMixer.h"
 
 @implementation VJXBoardDelegate
 
@@ -53,7 +55,16 @@ static id sharedBoard = nil;
 
 - (IBAction)addImageLayer:(id)sender
 {
-    
+    VJXImageLayer *imageLayer = [[VJXImageLayer alloc] init];
+    VJXBoardEntity *entity = [[VJXBoardEntity alloc] initWithEntity:imageLayer];
+    [board addSubview:entity];
+}
+
+- (IBAction)addMixerLayer:(id)sender
+{
+    VJXMixer *mixer = [[VJXMixer alloc] init];
+    VJXBoardEntity *entity = [[VJXBoardEntity alloc] initWithEntity:mixer];
+    [board addSubview:entity];
 }
 
 - (IBAction)addOutputScreen:(id)sender

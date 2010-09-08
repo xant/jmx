@@ -21,6 +21,7 @@
 - (IBAction)addMovieLayer:(id)sender;
 - (IBAction)addImageLayer:(id)sender;
 - (IBAction)addOutputScreen:(id)sender;
+- (IBAction)addMixerLayer:(id)sender;
 
 + (void)setSharedBoard:(id)aBoard;
 + (id)sharedBoard;

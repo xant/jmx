@@ -27,6 +27,7 @@
 #import "VJXOpenGLScreen.h"
 #import "VJXImageLayer.h"
 #import "VJXMixer.h"
+#import <QTKit/QTMovie.h>
 
 @implementation VJXBoardDelegate
 
@@ -110,10 +111,7 @@ static id sharedBoard = nil;
 
 - (IBAction)addMovieLayer:(id)sender
 {
-    
-    NSArray *types = [NSArray arrayWithObjects:
-                      @"avi", @"mov", @"mpg", @"asf", nil];
-    
+    NSArray *types = [QTMovie movieTypesWithOptions:QTIncludeCommonTypes];
     VJXQtVideoLayer *movieLayer = [[VJXQtVideoLayer alloc] init];
     [self openFile:types forEntity:movieLayer];
 }

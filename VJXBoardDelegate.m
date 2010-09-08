@@ -121,9 +121,7 @@ static id sharedBoard = nil;
 
 - (IBAction)addImageLayer:(id)sender
 {
-    NSArray *types = [NSArray arrayWithObjects:
-                      @"jpg", @"png", @"tif", @"bmp", 
-                      @"gif", @"pdf", nil];
+    NSArray *types = [NSImage imageTypes];
 
     VJXImageLayer *imageLayer = [[VJXImageLayer alloc] init];
     [self openFile:types forEntity:imageLayer];

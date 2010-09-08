@@ -15,13 +15,19 @@
 @interface VJXBoardEntityPin : NSView
 {
     VJXPin *pin;
-    VJXBoardEntityConnector *connector;
+    VJXBoardEntityConnector *tempConnector;
+    NSMutableArray *connectors;
 }
 
 @property (nonatomic,retain) VJXPin *pin;
-@property (nonatomic,retain) VJXBoardEntityConnector *connector;
+@property (nonatomic,retain) VJXBoardEntityConnector *tempConnector;
+@property (nonatomic,retain) NSMutableArray *connectors;
 
 - (NSPoint)pointAtCenter;
 - (void)updateAllConnectorsFrames;
+
+- (BOOL)multiple;
+
+- (void)addConnector:(VJXBoardEntityConnector *)theConnector;
 
 @end

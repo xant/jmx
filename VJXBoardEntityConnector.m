@@ -65,6 +65,7 @@
 
 - (void)recalculateFrame
 {
+    NSLog(@"%s", _cmd);
     NSPoint originPoint = [origin convertPoint:[origin pointAtCenter]
         toView:[VJXBoardDelegate sharedBoard]];
 

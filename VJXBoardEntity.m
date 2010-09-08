@@ -133,10 +133,7 @@
     lastDragLocation = newDragLocation;
     
     // Update pins' connectors coordinates as well.
-    for (VJXBoardEntityPin *pin in [self subviews]) {
-        [pin updateAllConnectorsFrames];
-    }
-    
+    [[self subviews] makeObjectsPerformSelector:@selector(updateAllConnectorsFrames)];    
 }
 
 - (void)mouseUp:(NSEvent *)theEvent

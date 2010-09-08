@@ -112,6 +112,8 @@
         [otherPin addConnector:self.tempConnector];
         [self addConnector:self.tempConnector];
         
+        [self updateAllConnectorsFrames];
+        
         self.tempConnector = nil;
     }
     else {

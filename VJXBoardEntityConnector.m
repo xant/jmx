@@ -31,12 +31,7 @@
 
 - (void)drawRect:(NSRect)dirtyRect
 {
-    [[NSColor colorWithDeviceRed:1.0 green:0.0 blue:0.0 alpha:0.2] set];
-
     NSBezierPath *thePath = [[NSBezierPath alloc] init];
-
-    [thePath appendBezierPathWithRect:[self bounds]];
-    [thePath fill];
 
     [thePath setLineWidth:2.0];
 
@@ -45,21 +40,23 @@
     if ((direction == kSouthEastDirection) || (direction == kNorthWestDirection)) {
         initialPoint = NSMakePoint(0.0, [self frame].size.height - 2.0);
         endPoint = NSMakePoint([self frame].size.width, 2.0);
-        controlPoint1 = NSMakePoint([self frame].size.width, [self frame].size.height);
-        controlPoint2 = NSMakePoint(0.0, 0.0);
+        controlPoint1 = NSMakePoint([self frame].size.width / 3, [self frame].size.height);
+        controlPoint2 = NSMakePoint([self frame].size.width / 3, [self frame].size.height);
     }
     else {
         initialPoint = NSMakePoint(0.0, 2.0);
         endPoint = NSMakePoint([self frame].size.width, [self frame].size.height - 2.0);
-        controlPoint1 = NSMakePoint([self frame].size.width, 0.0);
-        controlPoint2 = NSMakePoint(0, [self frame].size.height);
+        controlPoint1 = NSMakePoint([self frame].size.width / 3, 0.0);
+        controlPoint2 = NSMakePoint([self frame].size.width / 3, 0.0);
     }
 
     [thePath moveToPoint:initialPoint];
     [thePath curveToPoint:endPoint controlPoint1:controlPoint1 controlPoint2:controlPoint2];
+    [thePath setLineCapStyle:NSRoundLineCapStyle];
 
-    [[NSColor blackColor] setStroke];
+    [[NSColor blackColor] set];
     [thePath stroke];
+    
     [thePath release];
 }
 

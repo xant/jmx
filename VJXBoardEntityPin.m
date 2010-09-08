@@ -12,13 +12,24 @@
 
 @implementation VJXBoardEntityPin
 
-@synthesize pin, tempConnector, connectors;
+@synthesize pin, tempConnector, connectors, label;
 
-- (id)initWithFrame:(NSRect)frame
+
+- (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint
 {
-    self = [super initWithFrame:frame];
-    if (self) {
+    NSRect frame = NSMakeRect(thePoint.x, thePoint.y, 120.0, 18.0);
+    
+    if ((self = [super initWithFrame:frame]) != nil) {
         self.connectors = [[NSMutableArray alloc] init];
+        self.pin = thePin;
+        
+        NSRect labelRect = NSMakeRect(frame.size.height, 0.0, 100.0, frame.size.height);
+        self.label = [[NSTextField alloc] initWithFrame:labelRect];
+        [self.label setStringValue:self.pin.name];
+        [self.label setEditable:NO];
+        [self.label setBackgroundColor:[NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:0.0]];
+        [self.label setBordered:NO];
+        [self addSubview:self.label];
     }
     return self;
 }
@@ -34,7 +45,8 @@
     NSBezierPath *thePath = nil;
     [[NSColor redColor] set];
     thePath = [[NSBezierPath alloc] init];
-    [thePath appendBezierPathWithOvalInRect:[self bounds]];
+    NSRect pinRect = NSMakeRect([self bounds].origin.x, [self bounds].origin.y, [self bounds].size.height, [self bounds].size.height);
+    [thePath appendBezierPathWithOvalInRect:pinRect];
     [thePath fill];
     [thePath release];
 }

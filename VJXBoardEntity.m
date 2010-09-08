@@ -42,7 +42,7 @@
 
     CGFloat pinSide = 11.0;
     CGFloat height = pinSide * 2 * maxNrPins;
-    CGFloat width = 100.0;
+    CGFloat width = 300.0;
     
     NSRect frame = NSMakeRect(10.0, 10.0, width, height);
     
@@ -57,19 +57,16 @@
         
         int i = 0;
         for (NSString *pinName in theEntity.inputPins) {
-            NSLog(@"%@", pinName);
-            NSRect outletRect = NSMakeRect(0.0, (((bounds.size.height / nrInputPins) * i++) - (bounds.origin.y - (3.0))), pinSide, pinSide);
-            VJXBoardEntityPin *outlet = [[VJXBoardEntityPin alloc] initWithFrame:outletRect];
-            outlet.pin = [theEntity.inputPins objectForKey:pinName];
+            NSPoint origin = NSMakePoint(0.0, (((bounds.size.height / nrInputPins) * i++) - (bounds.origin.y - (3.0))));
+            VJXBoardEntityPin *outlet = [[VJXBoardEntityPin alloc] initWithPin:[theEntity.inputPins objectForKey:pinName] andPoint:origin];
             [self addSubview:outlet];
         }
         
         i = 0;
         for (NSString *pinName in theEntity.outputPins) {
             NSLog(@"%@", pinName);
-            NSRect outletRect = NSMakeRect(bounds.size.width - pinSide, (((bounds.size.height / nrOutputPins) * i++) - (bounds.origin.y - (3.0))), pinSide, pinSide);
-            VJXBoardEntityPin *outlet = [[VJXBoardEntityPin alloc] initWithFrame:outletRect];
-            outlet.pin = [theEntity.outputPins objectForKey:pinName];
+            NSPoint origin = NSMakePoint(bounds.size.width - pinSide, (((bounds.size.height / nrOutputPins) * i++) - (bounds.origin.y - (3.0))));
+            VJXBoardEntityPin *outlet = [[VJXBoardEntityPin alloc] initWithPin:[theEntity.outputPins objectForKey:pinName] andPoint:origin];
             [self addSubview:outlet];
         }
     }

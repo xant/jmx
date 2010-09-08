@@ -17,11 +17,15 @@
     VJXPin *pin;
     VJXBoardEntityConnector *tempConnector;
     NSMutableArray *connectors;
+    NSTextField *label;
 }
 
 @property (nonatomic,retain) VJXPin *pin;
 @property (nonatomic,retain) VJXBoardEntityConnector *tempConnector;
 @property (nonatomic,retain) NSMutableArray *connectors;
+@property (nonatomic,retain) NSTextField *label;
+
+- (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint;
 
 - (NSPoint)pointAtCenter;
 - (void)updateAllConnectorsFrames;

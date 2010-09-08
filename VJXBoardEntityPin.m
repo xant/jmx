@@ -7,6 +7,7 @@
 //
 
 #import "VJXBoardEntityPin.h"
+#import "VJXBoardDelegate.h"
 
 @implementation VJXBoardEntityPin
 
@@ -36,17 +37,15 @@
 
 //    VJXBoardEntityPin *origin = [connector origin];
 //    VJXBoardEntityPin *destination = [connector destination];
-
+//
 //    NSPoint originPoint = [connector.superview.superview convertPoint:origin.frame.origin fromView:origin];
 //    NSPoint destinationPoint = [connector.superview.superview convertPoint:destination.frame.origin fromView:destination];
-
+//
 //    float x = MIN(originPoint.x, destinationPoint.x);
 //    float y = MIN(originPoint.y, destinationPoint.y);
 //    float w = abs(originPoint.x - destinationPoint.x);
 //    float h = abs(originPoint.y - destinationPoint.y);
 //
-//    NSLog(@"%f:%f:%f:%f", x, y, w, h);
-
 //    NSRect connectorFrame = NSMakeRect(x, y, w, h);
 //    [connector setFrame:connectorFrame];
 //    [connector setNeedsDisplay:YES];
@@ -74,6 +73,8 @@
         [otherPin.pin connectToPin:self.pin];
         
         otherPin.connector = self.connector;
+        [connector setOrigin:self];
+        [connector setDestination:otherPin];
     }
 }
 
@@ -89,16 +90,14 @@
     if (!connector) {
         connector = [[VJXBoardEntityConnector alloc] init];
         [connector setOrigin:self];
-        [self.superview.superview addSubview:connector positioned:0 relativeTo:nil];
+        [[VJXBoardDelegate sharedBoard] addSubview:connector positioned:0 relativeTo:nil];
     }
 
     NSPoint locationInWindow = [theEvent locationInWindow];
     
-    NSView *aView = [self.superview.superview hitTest:locationInWindow];
+    NSView *aView = [[VJXBoardDelegate sharedBoard] hitTest:locationInWindow];
     
-    NSLog(@"aView: %@", aView);
-    
-    NSPoint thisLocation = [self.superview.superview convertPoint:[self bounds].origin fromView:self];
+    NSPoint thisLocation = [self convertPoint:[self bounds].origin toView:[VJXBoardDelegate sharedBoard]];
 
     NSRect bounds = [self bounds];
 

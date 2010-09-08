@@ -127,6 +127,11 @@
     thisOrigin.y += (-lastDragLocation.y + newDragLocation.y);
     [self setFrameOrigin:thisOrigin];
     lastDragLocation = newDragLocation;
+    
+    for (VJXBoardEntityPin *pin in [self subviews]) {
+        [pin.connector recalculateFrame];
+    }
+    
 }
 
 - (void)mouseUp:(NSEvent *)theEvent

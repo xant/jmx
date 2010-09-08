@@ -105,6 +105,18 @@
     NSPoint destinationPoint = [destination convertPoint:[destination pointAtCenter]
         toView:[VJXBoardDelegate sharedBoard]];
 
+    NSLog(@"originPoint.x:%f originPoint.y:%f destinationPoint.x:%f destinationPoint.y:%f",
+        originPoint.x,
+        originPoint.y,
+        destinationPoint.x,
+        destinationPoint.y);
+
+    NSLog(@"origin.x:%f origin.y:%f destination.x:%f destination.y:%f",
+          [origin pointAtCenter].x,
+          [origin pointAtCenter].y,
+          [destination pointAtCenter].x,
+          [destination pointAtCenter].y);
+    
     float x = MIN(originPoint.x, destinationPoint.x);
     float y = MIN(originPoint.y, destinationPoint.y);
     float w = abs(originPoint.x - destinationPoint.x);
@@ -123,7 +135,7 @@
     //if (w < 1.0) w = 2.0;
 
     CGFloat entityWidth = 100.0;
-    
+
     if ((direction == kSouthWestDirection) || (direction == kNorthWestDirection)) {
         float scale = entityWidth / entityWidth;
         x -= ((scale - 1) * entityWidth);

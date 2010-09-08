@@ -58,6 +58,7 @@ static id sharedBoard = nil;
     VJXImageLayer *imageLayer = [[VJXImageLayer alloc] init];
     VJXBoardEntity *entity = [[VJXBoardEntity alloc] initWithEntity:imageLayer];
     [board addSubview:entity];
+    [imageLayer start];
 }
 
 - (IBAction)addMixerLayer:(id)sender
@@ -65,6 +66,7 @@ static id sharedBoard = nil;
     VJXMixer *mixer = [[VJXMixer alloc] init];
     VJXBoardEntity *entity = [[VJXBoardEntity alloc] initWithEntity:mixer];
     [board addSubview:entity];
+    [mixer start];
 }
 
 - (IBAction)addOutputScreen:(id)sender

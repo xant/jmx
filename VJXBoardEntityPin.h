@@ -22,5 +22,6 @@
 @property (nonatomic,retain) VJXBoardEntityConnector *connector;
 
 - (NSPoint)pointAtCenter;
+- (void)updateAllConnectorsFrames;
 
 @end

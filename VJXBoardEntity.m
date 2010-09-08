@@ -116,11 +116,15 @@
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
+    // Here we keep track of our initial location, so when mouseDragged: message
+    // is called it knows the last drag location.
     lastDragLocation = [theEvent locationInWindow];
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent
 {
+    // Move the entity, recalculating the coordinates based on the current point
+    // and the entity's frame.
     NSPoint newDragLocation = [theEvent locationInWindow];
     NSPoint thisOrigin = [self frame].origin;
     thisOrigin.x += (-lastDragLocation.x + newDragLocation.x);
@@ -128,14 +132,17 @@
     [self setFrameOrigin:thisOrigin];
     lastDragLocation = newDragLocation;
     
+    // Update pins' connectors coordinates as well.
     for (VJXBoardEntityPin *pin in [self subviews]) {
-        [pin.connector recalculateFrame];
+        [pin updateAllConnectorsFrames];
     }
     
 }
 
 - (void)mouseUp:(NSEvent *)theEvent
 {
+    // Cleanup last drag location.
+    lastDragLocation = NSZeroPoint;
 }
 
 @end

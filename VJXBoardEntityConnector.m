@@ -29,42 +29,8 @@
     [super dealloc];
 }
 
-//- (void)drawRect:(NSRect)dirtyRect {
-//    NSBezierPath *thePath = [[NSBezierPath alloc] init];
-//
-//    [[NSColor blackColor] set];
-//
-//    NSPoint start, end;
-//    NSRect bounds = [self bounds];
-//
-//    if ((direction == 0) || (direction == 3)) {
-//        start = bounds.origin;
-//        end = NSMakePoint(bounds.size.width,
-//                          bounds.size.height);
-//    }
-//    else if (direction == 1) {
-//        start = NSMakePoint(bounds.origin.x, bounds.size.height);
-//        end = NSMakePoint(bounds.size.width, bounds.origin.y);
-//    }
-//    else if (direction == 2) {
-//        start = NSMakePoint(bounds.origin.x, bounds.size.height);
-//        end = NSMakePoint(bounds.size.width, bounds.origin.y);
-//    }
-//
-//    NSPointArray points;
-//    points = (NSPointArray)calloc(2, sizeof(NSPoint));
-//
-//    points[0] = start;
-//    points[1] = end;
-//
-//
-//    [thePath appendBezierPathWithPoints:points count:2];
-//    [thePath stroke];
-//}
-
 - (void)drawRect:(NSRect)dirtyRect
 {
-
     [[NSColor colorWithDeviceRed:1.0 green:0.0 blue:0.0 alpha:0.2] set];
 
     NSBezierPath *thePath = [[NSBezierPath alloc] init];

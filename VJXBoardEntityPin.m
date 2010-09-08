@@ -8,12 +8,14 @@
 
 #import "VJXBoardEntityPin.h"
 #import "VJXBoardDelegate.h"
+#import "VJXBoardEntityConnector.h"
 
 @implementation VJXBoardEntityPin
 
 @synthesize pin, connector;
 
-- (id)initWithFrame:(NSRect)frame {
+- (id)initWithFrame:(NSRect)frame
+{
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code here.
@@ -26,7 +28,8 @@
     [super dealloc];
 }
 
-- (void)drawRect:(NSRect)dirtyRect {
+- (void)drawRect:(NSRect)dirtyRect
+{
     NSBezierPath *thePath = nil;
 
     [[NSColor redColor] set];
@@ -35,20 +38,20 @@
     [thePath fill];
     [thePath release];
 
-//    VJXBoardEntityPin *origin = [connector origin];
-//    VJXBoardEntityPin *destination = [connector destination];
-//
-//    NSPoint originPoint = [connector.superview.superview convertPoint:origin.frame.origin fromView:origin];
-//    NSPoint destinationPoint = [connector.superview.superview convertPoint:destination.frame.origin fromView:destination];
-//
-//    float x = MIN(originPoint.x, destinationPoint.x);
-//    float y = MIN(originPoint.y, destinationPoint.y);
-//    float w = abs(originPoint.x - destinationPoint.x);
-//    float h = abs(originPoint.y - destinationPoint.y);
-//
-//    NSRect connectorFrame = NSMakeRect(x, y, w, h);
-//    [connector setFrame:connectorFrame];
-//    [connector setNeedsDisplay:YES];
+    //    VJXBoardEntityPin *origin = [connector origin];
+    //    VJXBoardEntityPin *destination = [connector destination];
+    //
+    //    NSPoint originPoint = [connector.superview.superview convertPoint:origin.frame.origin fromView:origin];
+    //    NSPoint destinationPoint = [connector.superview.superview convertPoint:destination.frame.origin fromView:destination];
+    //
+    //    float x = MIN(originPoint.x, destinationPoint.x);
+    //    float y = MIN(originPoint.y, destinationPoint.y);
+    //    float w = abs(originPoint.x - destinationPoint.x);
+    //    float h = abs(originPoint.y - destinationPoint.y);
+    //
+    //    NSRect connectorFrame = NSMakeRect(x, y, w, h);
+    //    [connector setFrame:connectorFrame];
+    //    [connector setNeedsDisplay:YES];
 }
 
 - (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
@@ -58,32 +61,25 @@
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
-    
+
 }
 
 - (void)mouseUp:(NSEvent *)theEvent
 {
     NSPoint locationInWindow = [theEvent locationInWindow];
-    
+
     NSView *aView = [self.superview.superview hitTest:locationInWindow];
 
     if ([aView isKindOfClass:[VJXBoardEntityPin class]]) {
         VJXBoardEntityPin *otherPin = (VJXBoardEntityPin *)aView;
         NSLog(@"this Pin: %@, other Pin: %@", self.pin.name, otherPin.pin.name);
         [otherPin.pin connectToPin:self.pin];
-        
+
         otherPin.connector = self.connector;
         [connector setOrigin:self];
         [connector setDestination:otherPin];
     }
 }
-
-#define SOUTHWEST 0
-#define SOUTHEAST 1
-#define NORTHWEST 2
-#define NORTHEAST 3
-
-
 
 - (void)mouseDragged:(NSEvent *)theEvent
 {
@@ -94,9 +90,7 @@
     }
 
     NSPoint locationInWindow = [theEvent locationInWindow];
-    
-    NSView *aView = [[VJXBoardDelegate sharedBoard] hitTest:locationInWindow];
-    
+
     NSPoint thisLocation = [self convertPoint:[self bounds].origin toView:[VJXBoardDelegate sharedBoard]];
 
     NSRect bounds = [self bounds];
@@ -117,16 +111,16 @@
     }
 
     if ((locationInWindow.y < thisLocation.y) && (locationInWindow.x < thisLocation.x)) {
-        connector.direction = SOUTHWEST;
+        connector.direction = kSouthWestDirection;
     }
     else if ((locationInWindow.y < thisLocation.y) && (locationInWindow.x > thisLocation.x)) {
-        connector.direction = SOUTHEAST;
+        connector.direction = kSouthEastDirection;
     }
     else if ((locationInWindow.y > thisLocation.y) && (locationInWindow.x < thisLocation.x)) {
-        connector.direction = NORTHWEST;
+        connector.direction = kNorthWestDirection;
     }
     else if ((locationInWindow.y > thisLocation.y) && (locationInWindow.x > thisLocation.x)) {
-        connector.direction = NORTHEAST;
+        connector.direction = kNorthEastDirection;
     }
 
     NSRect frame = NSMakeRect(minX, minY, width, height);
@@ -140,28 +134,13 @@
     NSPoint origin = [self frame].origin;
     NSSize size = [self frame].size;
     NSPoint center = NSMakePoint(origin.x + (size.width / 2),
-                                 origin.y + (size.height / 2));
+        origin.y + (size.height / 2));
     return center;
 }
 
-//- (void)mouseUp:(NSEvent *)theEvent
-//{
-//    NSPoint currentLocation = [theEvent locationInWindow];
-//    NSView *view = [self.superview.superview hitTest:currentLocation];
-//    //NSLog(@"View: %@", view);
-//
-//    NSLog(@"Pin Name: %@", self.pin.name);
-//    
-//    if ((!view) || (![view isKindOfClass:[VJXBoardEntityPin class]])) {
-////        [connector removeFromSuperview];
-////        [connector release];
-////        connector = nil;
-//        return;
-//    }
-//
-////    VJXBoardEntityPin *pin = (VJXBoardEntityPin *)view;
-////    [pin setConnector:connector];
-////    [connector setDestination:pin];
-//}
+- (void)updateAllConnectorsFrames
+{
+    [self.connector recalculateFrame];
+}
 
 @end

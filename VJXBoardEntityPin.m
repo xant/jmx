@@ -54,7 +54,7 @@
     if (!tempConnector) {
         tempConnector = [[VJXBoardEntityConnector alloc] init];
         [tempConnector setOrigin:self];
-        [[VJXBoardDelegate sharedBoard] addSubview:tempConnector positioned:0 relativeTo:nil];
+        [[VJXBoardDelegate sharedBoard] addSubview:tempConnector positioned:NSWindowBelow relativeTo:nil];
     }
 
     NSPoint locationInWindow = [theEvent locationInWindow];
@@ -112,6 +112,10 @@
         [otherPin addConnector:self.tempConnector];
         [self addConnector:self.tempConnector];
         
+        self.tempConnector = nil;
+    }
+    else {
+        [tempConnector removeFromSuperview];
         self.tempConnector = nil;
     }
 }

@@ -65,58 +65,28 @@
 
 - (void)recalculateFrame
 {
-    NSLog(@"%s", _cmd);
-    NSPoint originPoint = [origin convertPoint:[origin pointAtCenter]
-        toView:[VJXBoardDelegate sharedBoard]];
-
-    NSPoint destinationPoint = [destination convertPoint:[destination pointAtCenter]
-        toView:[VJXBoardDelegate sharedBoard]];
-
-    NSLog(@"originPoint.x:%f originPoint.y:%f destinationPoint.x:%f destinationPoint.y:%f",
-        originPoint.x,
-        originPoint.y,
-        destinationPoint.x,
-        destinationPoint.y);
-
-    NSLog(@"origin.x:%f origin.y:%f destination.x:%f destination.y:%f",
-          [origin pointAtCenter].x,
-          [origin pointAtCenter].y,
-          [destination pointAtCenter].x,
-          [destination pointAtCenter].y);
+    VJXBoard *board = [VJXBoardDelegate sharedBoard];
     
-    float x = MIN(originPoint.x, destinationPoint.x);
-    float y = MIN(originPoint.y, destinationPoint.y);
-    float w = abs(originPoint.x - destinationPoint.x);
-    float h = abs(originPoint.y - destinationPoint.y);
-
+    NSPoint originLocation = [origin convertPoint:[origin pointAtCenter] toView:board];
+    NSPoint destinationLocation = [destination convertPoint:[destination pointAtCenter] toView:board];
+    
+    float x = MIN(originLocation.x, destinationLocation.x);
+    float y = MIN(originLocation.y, destinationLocation.y);
+    float w = abs(originLocation.x - destinationLocation.x);
+    float h = abs(originLocation.y - destinationLocation.y);
+    
     direction =
-        ((originPoint.x < destinationPoint.x) && (originPoint.y < destinationPoint.y))
-        ? kSouthWestDirection
-        : ((originPoint.x > destinationPoint.x) && (originPoint.y < destinationPoint.y))
-        ? kSouthEastDirection
-        : ((originPoint.x > destinationPoint.x) && (originPoint.y > destinationPoint.y))
-        ? kNorthEastDirection
-        : kNorthWestDirection;
-
-    //if (h < 1.0) h = 2.0;
-    //if (w < 1.0) w = 2.0;
-
-    CGFloat entityWidth = 100.0;
-
-    if ((direction == kSouthWestDirection) || (direction == kNorthWestDirection)) {
-        float scale = entityWidth / entityWidth;
-        x -= ((scale - 1) * entityWidth);
-        w += ((scale - 1) * entityWidth);
-    }
-    else {
-        float scale = entityWidth / entityWidth;
-        x -= ((scale - 1) * entityWidth);
-        w -= ((scale - 1) * entityWidth);
-    }
-    // entity's width / pin's width *
-
+    ((originLocation.x < destinationLocation.x) && (originLocation.y < destinationLocation.y))
+    ? kSouthWestDirection
+    : ((originLocation.x > destinationLocation.x) && (originLocation.y < destinationLocation.y))
+    ? kSouthEastDirection
+    : ((originLocation.x > destinationLocation.x) && (originLocation.y > destinationLocation.y))
+    ? kNorthEastDirection
+    : kNorthWestDirection;
+    
     NSRect frame = NSMakeRect(x, y, w, h);
     [self setFrame:frame];
 }
+
 
 @end

@@ -59,7 +59,7 @@
 
     NSPoint locationInWindow = [theEvent locationInWindow];
 
-    NSPoint thisLocation = [self convertPoint:[self bounds].origin toView:[VJXBoardDelegate sharedBoard]];
+    NSPoint thisLocation = [self convertPoint:[self pointAtCenter] toView:[VJXBoardDelegate sharedBoard]];
 
     float minX = MIN(locationInWindow.x, thisLocation.x);
     float minY = MIN(locationInWindow.y, thisLocation.y);
@@ -122,8 +122,8 @@
 
 - (NSPoint)pointAtCenter
 {
-    NSPoint origin = [self frame].origin;
-    NSSize size = [self frame].size;
+    NSPoint origin = [self bounds].origin;
+    NSSize size = [self bounds].size;
     NSPoint center = NSMakePoint(origin.x + (size.width / 2), origin.y + (size.height / 2));
     return center;
 }

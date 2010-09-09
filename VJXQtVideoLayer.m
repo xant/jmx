@@ -65,7 +65,12 @@
         // to have an higher signaling frequency in the case of an existing movie. 
         // In any case we won't have more 'unique' frames than the native movie fps ... so if signaling 
         // the frames more often we will just send the same image multiple times (wasting precious cpu time)
-        self.frequency = [NSNumber numberWithDouble:sampleCount/(qtTimeDuration.timeValue/qtTimeDuration.timeScale)];
+        if (sampleCount > 1) // check if we indeed have a sequence of frames
+            self.frequency = [NSNumber numberWithDouble:sampleCount/(qtTimeDuration.timeValue/qtTimeDuration.timeScale)];
+        else // or if it's just a still image, set the frequency to 1 sec
+            self.frequency = [NSNumber numberWithDouble:1]; // XXX
+            
+
         self.fps = self.frequency;
         return YES;
     }
@@ -99,6 +104,7 @@
                 } else { // the movie is ended
                     if (repeat) { // check if we need to rewind and re-start extracting frames
                         [movie gotoBeginning];
+                        now.timeValue = 0;
                     } else {
                         [self stop];
                         return [super tick:timeStamp]; // we still want to propagate the signal

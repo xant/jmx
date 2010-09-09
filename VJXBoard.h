@@ -32,5 +32,6 @@
 
 + (VJXBoard *)sharedBoard;
 + (void)setSharedBoard:(VJXBoard *)aBoard;
+- (void)setSelected:(id)theEntity;
 
 @end

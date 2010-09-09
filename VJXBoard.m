@@ -31,7 +31,7 @@
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setSelectedEntity:nil];
+        [self setSelected:nil];
     }
     return self;
 }
@@ -53,11 +53,11 @@
 {
     [super addSubview:aView];
     if ([aView isKindOfClass:[VJXBoardEntity class]]) {
-        [self setSelectedEntity:(VJXBoardEntity *)aView];        
+        [self setSelected:(VJXBoardEntity *)aView];        
     }
 }
 
-- (void)setSelectedEntity:(VJXBoardEntity *)theEntity
+- (void)setSelected:(id)theEntity
 {
     // Add some point, we'll be using a NSArrayController to have references of
     // all entities we have on the board, so the entity selection will be done
@@ -65,15 +65,15 @@
     // nice because we can use KVC in IB to create the Inspector palettes.
     
     if (theEntity != selectedEntity) {
-        [selectedEntity setSelected:NO];
+        [selectedEntity toggleSelected];
         [selectedEntity release];
         selectedEntity = [theEntity retain];
-        [selectedEntity setSelected:YES];        
+        [selectedEntity toggleSelected];
     }
 
     // Move the selected entity to the end of the subviews array, making it move
     // to the top of the view hierarchy.
-    if ([[self subviews] count] >= 1) {
+    if ([theEntity isKindOfClass:[VJXBoardEntity class]] && ([[self subviews] count] >= 1)) {
         NSMutableArray *subviews = [[self subviews] mutableCopy];
         [subviews removeObjectAtIndex:[subviews indexOfObject:selectedEntity]];
         [subviews addObject:selectedEntity];

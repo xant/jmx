@@ -26,7 +26,7 @@
 
 @implementation VJXBoardEntityConnector
 
-@synthesize direction, origin, destination;
+@synthesize selected, direction, origin, destination;
 
 - (id)initWithFrame:(NSRect)frame
 {
@@ -69,10 +69,21 @@
     [thePath curveToPoint:endPoint controlPoint1:controlPoint1 controlPoint2:controlPoint2];
     [thePath setLineCapStyle:NSRoundLineCapStyle];
 
-    [[NSColor blackColor] set];
+    if (self.selected)
+        [[NSColor yellowColor] set];
+    else
+        [[NSColor blackColor] set];
+    
+    NSShadow *lineShadow = [[NSShadow alloc] init];
+    [lineShadow setShadowColor:[NSColor blackColor]];
+    [lineShadow setShadowBlurRadius:2.5];
+    [lineShadow setShadowOffset:NSMakeSize(2.0, -2.0)];
+    [lineShadow set];
+    
     [thePath stroke];
     
     [thePath release];
+    [lineShadow release];
 }
 
 - (void)recalculateFrame
@@ -104,6 +115,24 @@
 {
     [self.origin removeConnector:self];
     [self.destination removeConnector:self];
+}
+
+- (void)mouseDown:(NSEvent *)theEvent
+{
+    [[VJXBoard sharedBoard] setSelected:self];
+}
+
+- (void)toggleSelected
+{
+    self.selected = !self.selected;
+    [self.origin toggleSelected];
+    [self.destination toggleSelected];
+}
+
+- (void)setSelected:(BOOL)isSelected
+{
+    selected = isSelected;
+    [self setNeedsDisplay:YES];
 }
 
 @end

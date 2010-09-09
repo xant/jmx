@@ -29,6 +29,7 @@
 
 @interface VJXBoardEntityPin : NSView
 {
+    BOOL selected;
 @protected
     VJXPin *pin;
     NSMutableArray *connectors;
@@ -36,6 +37,7 @@
     VJXBoardEntityConnector *tempConnector;
 }
 
+@property (nonatomic,assign) BOOL selected;
 @property (nonatomic,readonly) VJXPin *pin;
 @property (nonatomic,readonly) NSArray *connectors;
 
@@ -47,4 +49,6 @@
 - (void)removeConnector:(VJXBoardEntityConnector *)theConnector;
 - (void)removeAllConnectors;
 - (BOOL)isConnected;
+- (void)toggleSelected;
+
 @end

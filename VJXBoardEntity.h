@@ -38,5 +38,6 @@
 @property (nonatomic,assign) BOOL selected;
 
 - (id)initWithEntity:(VJXEntity *)theEntity;
+- (void)toggleSelected;
 
 @end

@@ -27,13 +27,14 @@
 
 @implementation VJXBoardEntityPin
 
-@synthesize pin, connectors;
+@synthesize selected, pin, connectors;
 
 - (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint
 {
     NSRect frame = NSMakeRect(thePoint.x, thePoint.y, 18.0, 18.0);
     
     if ((self = [super initWithFrame:frame]) != nil) {
+        selected = NO;
         connectors = [[NSMutableArray alloc] init];
         pin = [thePin retain];        
     }
@@ -61,9 +62,13 @@
     bounds.size.height -= (2 * bounds.origin.y);
     
     NSBezierPath *thePath = nil;
-    [[NSColor whiteColor] setFill];
+    
+    if (self.selected == YES) 
+        [[NSColor yellowColor] setFill];
+    else
+        [[NSColor whiteColor] setFill];
+    
     thePath = [[NSBezierPath alloc] init];
-    [thePath setLineWidth:2.0];
     [thePath appendBezierPathWithOvalInRect:bounds];
     [thePath fill];
         
@@ -92,16 +97,16 @@
 
     NSPoint thisLocation = [self convertPoint:[self pointAtCenter] toView:[VJXBoard sharedBoard]];
 
-    float minX = MIN(locationInWindow.x, thisLocation.x);
-    float minY = MIN(locationInWindow.y, thisLocation.y);
+    float minX = MIN(locationInWindow.x, thisLocation.x) - 2.0;
+    float minY = MIN(locationInWindow.y, thisLocation.y) - 2.0;
     float width = abs(locationInWindow.x - thisLocation.x);
     float height = abs(locationInWindow.y - thisLocation.y);
 
-    if (width < 5.0) {
-        width = 5.0;
+    if (width < 6.0) {
+        width = 6.0;
     }
-    if (height < 5.0) {
-        height = 5.0;
+    if (height < 6.0) {
+        height = 6.0;
     }
 
     if ((locationInWindow.y < thisLocation.y) && (locationInWindow.x < thisLocation.x)) {
@@ -119,7 +124,6 @@
 
     NSRect frame = NSMakeRect(minX, minY, width, height);
     [tempConnector setFrame:frame];
-    [self.superview setNeedsDisplay:YES];
 
 }
 
@@ -207,6 +211,17 @@
         [connector removeFromSuperview];
     }
     [connectors removeAllObjects];
+}
+
+- (void)setSelected:(BOOL)isSelected
+{
+    selected = isSelected;
+    [self setNeedsDisplay:YES];
+}
+
+- (void)toggleSelected
+{
+    self.selected = !self.selected;
 }
 
 @end

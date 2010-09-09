@@ -34,15 +34,18 @@ enum Direction {
 };
 
 @interface VJXBoardEntityConnector : NSView {
+    BOOL selected;
     VJXBoardEntityPin *origin;
     VJXBoardEntityPin *destination;
     NSUInteger direction;
 }
 
+@property (assign) BOOL selected;
 @property (assign) NSUInteger direction;
 @property (nonatomic,retain) VJXBoardEntityPin *origin;
 @property (nonatomic,retain) VJXBoardEntityPin *destination;
 
 - (void)recalculateFrame;
+- (void)toggleSelected;
 
 @end

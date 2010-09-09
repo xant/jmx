@@ -148,7 +148,7 @@
     // is called it knows the last drag location.
     lastDragLocation = [theEvent locationInWindow];
     
-    [[VJXBoard sharedBoard] setSelectedEntity:self];
+    [[VJXBoard sharedBoard] setSelected:self];
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent
@@ -177,6 +177,11 @@
     // Whenever the selected status is changed, we need to redraw the entity.
     selected = isSelected;
     [self setNeedsDisplay:YES];
+}
+
+- (void)toggleSelected
+{
+    self.selected = !self.selected;
 }
 
 - (NSString *)description

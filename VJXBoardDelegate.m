@@ -27,27 +27,16 @@
 #import "VJXOpenGLScreen.h"
 #import "VJXImageLayer.h"
 #import "VJXMixer.h"
+#import "VJXBoard.h"
 #import <QTKit/QTMovie.h>
 
 @implementation VJXBoardDelegate
 
 @synthesize board;
 
-static id sharedBoard = nil;
-
-+ (void)setSharedBoard:(id)aBoard
-{
-    sharedBoard = aBoard;
-}
-
-+ (id)sharedBoard
-{
-    return sharedBoard;
-}
-
 - (void)awakeFromNib
 {
-    [VJXBoardDelegate setSharedBoard:board];
+    [VJXBoard setSharedBoard:board];
 }
 
 - (void)openFilePanelDidEnd:(NSOpenPanel *)panel returnCode:(int)returnCode  contextInfo:(void  *)contextInfo
@@ -138,7 +127,6 @@ static id sharedBoard = nil;
     VJXOpenGLScreen *screen = [[VJXOpenGLScreen alloc] init];
     VJXBoardEntity *entity = [[VJXBoardEntity alloc] initWithEntity:screen];
     [board addSubview:entity];
-    NSLog(@"%s", _cmd);
 }
 
 @end

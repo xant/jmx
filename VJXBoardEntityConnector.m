@@ -22,7 +22,7 @@
 //
 
 #import "VJXBoardEntityConnector.h"
-#import "VJXBoardDelegate.h"
+#import "VJXBoard.h"
 
 @implementation VJXBoardEntityConnector
 
@@ -77,7 +77,7 @@
 
 - (void)recalculateFrame
 {
-    VJXBoard *board = [VJXBoardDelegate sharedBoard];
+    VJXBoard *board = [VJXBoard sharedBoard];
     
     NSPoint originLocation = [origin convertPoint:[origin pointAtCenter] toView:board];
     NSPoint destinationLocation = [destination convertPoint:[destination pointAtCenter] toView:board];

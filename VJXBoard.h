@@ -30,4 +30,7 @@
 
 @property (nonatomic,retain) VJXBoardEntity *selectedEntity;
 
++ (VJXBoard *)sharedBoard;
++ (void)setSharedBoard:(VJXBoard *)aBoard;
+
 @end

@@ -22,7 +22,7 @@
 //
 
 #import "VJXBoardEntityPin.h"
-#import "VJXBoardDelegate.h"
+#import "VJXBoard.h"
 #import "VJXBoardEntityConnector.h"
 
 @implementation VJXBoardEntityPin
@@ -85,12 +85,12 @@
     if (!tempConnector) {
         tempConnector = [[VJXBoardEntityConnector alloc] init];
         [tempConnector setOrigin:self];
-        [[VJXBoardDelegate sharedBoard] addSubview:tempConnector positioned:NSWindowBelow relativeTo:nil];
+        [[VJXBoard sharedBoard] addSubview:tempConnector positioned:NSWindowBelow relativeTo:nil];
     }
 
     NSPoint locationInWindow = [theEvent locationInWindow];
 
-    NSPoint thisLocation = [self convertPoint:[self pointAtCenter] toView:[VJXBoardDelegate sharedBoard]];
+    NSPoint thisLocation = [self convertPoint:[self pointAtCenter] toView:[VJXBoard sharedBoard]];
 
     float minX = MIN(locationInWindow.x, thisLocation.x);
     float minY = MIN(locationInWindow.y, thisLocation.y);
@@ -127,7 +127,7 @@
 {
     NSPoint locationInWindow = [theEvent locationInWindow];
     
-    NSView *aView = [[VJXBoardDelegate sharedBoard] hitTest:locationInWindow];
+    NSView *aView = [[VJXBoard sharedBoard] hitTest:locationInWindow];
     
     BOOL isConnected = NO;
     

@@ -84,4 +84,16 @@
     
 }
 
+static VJXBoard *sharedBoard = nil;
+
++ (VJXBoard *)sharedBoard
+{
+    return sharedBoard;
+}
+
++ (void)setSharedBoard:(VJXBoard *)aBoard
+{
+    sharedBoard = aBoard;
+}
+
 @end

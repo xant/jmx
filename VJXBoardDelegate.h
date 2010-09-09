@@ -38,7 +38,4 @@
 - (IBAction)addOutputScreen:(id)sender;
 - (IBAction)addMixerLayer:(id)sender;
 
-+ (void)setSharedBoard:(id)aBoard;
-+ (id)sharedBoard;
-
 @end

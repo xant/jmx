@@ -148,7 +148,7 @@
     // is called it knows the last drag location.
     lastDragLocation = [theEvent locationInWindow];
     
-    [[VJXBoardDelegate sharedBoard] setSelectedEntity:self];
+    [[VJXBoard sharedBoard] setSelectedEntity:self];
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent

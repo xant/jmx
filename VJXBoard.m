@@ -49,6 +49,14 @@
     [thePath release];
 }
 
+- (void)addSubview:(NSView *)aView
+{
+    [super addSubview:aView];
+    if ([aView isKindOfClass:[VJXBoardEntity class]]) {
+        [self setSelectedEntity:(VJXBoardEntity *)aView];        
+    }
+}
+
 - (void)setSelectedEntity:(VJXBoardEntity *)theEntity
 {
     // Add some point, we'll be using a NSArrayController to have references of
@@ -59,18 +67,19 @@
         [selectedEntity setSelected:NO];
     }
     selectedEntity = [theEntity retain];
+    [selectedEntity setSelected:YES];
 
     // Move the selected entity to the end of the subviews array, making it move
     // to the top of the view hierarchy.
-    if ([[self subviews] count] > 1) {
+    if ([[self subviews] count] >= 1) {
         NSMutableArray *subviews = [[self subviews] mutableCopy];
         [subviews removeObjectAtIndex:[subviews indexOfObject:selectedEntity]];
         [subviews addObject:selectedEntity];
         [self setSubviews:subviews];
+        NSLog(@"%@", subviews);
         [subviews release];
     }
     
-    [selectedEntity setSelected:YES];
 }
 
 @end

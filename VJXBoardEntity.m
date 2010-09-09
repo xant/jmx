@@ -83,9 +83,7 @@
         [self.label setBordered:NO];
         [self.label setEditable:NO];
         [self.label setDrawsBackground:NO];
-        [self addSubview:self.label];
-        
-        [[VJXBoardDelegate sharedBoard] setSelectedEntity:self];
+        [self addSubview:self.label];        
     }
     return self;
 }

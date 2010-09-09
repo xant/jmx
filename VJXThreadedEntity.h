@@ -26,10 +26,17 @@
 
 //@interface VJXThreadedEntity : VJXEntity <VJXThread> {
 @interface VJXThreadedEntity : VJXEntity {
+@protected
+    uint64_t previousTimeStamp;
+    NSNumber *frequency;
 @private
     NSThread *worker;
-
+    int64_t stamps[kVJXFpsMaxStamps + 1]; // XXX - 25 should be a constant
+    int stampCount;
 }
+
+@property (retain) NSNumber *frequency;
+
 - (void)start;
 - (void)stop;
 - (void)run;

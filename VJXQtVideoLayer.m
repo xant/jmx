@@ -37,6 +37,10 @@
         paused = NO;
         [self registerInputPin:@"repeat" withType:kVJXNumberPin andSelector:@"setRepeat:"];
         [self registerInputPin:@"paused" withType:kVJXNumberPin andSelector:@"setPaused:"];
+        
+        NSSize defaultLayerSize = { 640, 480 };
+        size = [[VJXSize sizeWithNSSize:defaultLayerSize] retain];
+
     }
 
     return self;

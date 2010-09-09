@@ -26,10 +26,20 @@
 
 @implementation VJXThreadedEntity
 
+@synthesize frequency;
+
 - (id)init
 {
-    if (self == [super init])
+    if (self == [super init]) {
         worker = nil;
+        // and 'effective' frequency , only for debugging purposes
+        self.frequency = [NSNumber numberWithDouble:25];
+        [self registerInputPin:@"frequency" withType:kVJXNumberPin andSelector:@"setFrequency:"];
+        [self registerInputPin:@"active" withType:kVJXNumberPin andSelector:@"setActive:"];
+        [self registerOutputPin:@"outputFrequency" withType:kVJXNumberPin];
+        stampCount = 0;
+        previousTimeStamp = 0;
+    }
     return self;
 }
 
@@ -105,6 +115,24 @@
 - (void)tick:(uint64_t)timeStamp
 {
     // do nothing for now
+}
+
+- (void)outputDefaultSignals:(uint64_t)timeStamp
+{
+    VJXPin *frequencyPin = [self outputPinWithName:@"outputFrequency"];
+    int i = 0;
+    if (stampCount > kVJXFpsMaxStamps) {
+        for (i = 0; i < stampCount; i++) {
+            stamps[i] = stamps[i+1];
+        }
+        stampCount = kVJXFpsMaxStamps;  
+    }
+    stamps[stampCount++] = timeStamp;
+    
+    double rate = 1e9/((stamps[stampCount - 1] - stamps[0])/stampCount);
+    [frequencyPin deliverSignal:[NSNumber numberWithDouble:rate]
+                     fromSender:self];
+    [super outputDefaultSignals:timeStamp];
 }
 
 @end

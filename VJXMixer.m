@@ -36,8 +36,8 @@
         [imageInputPin allowMultipleConnections:YES];
         imageOutputPin = [self registerOutputPin:@"videoOutput" withType:kVJXImagePin];
         [imageOutputPin allowMultipleConnections:YES];
-        outputSize.height = 480; // HC
-        outputSize.width = 640; // HC
+        outputSize.height = 640; // HC
+        outputSize.width = 480; // HC
         imageProducers = [[NSMutableDictionary alloc] init];
     }
     return self;
@@ -65,6 +65,8 @@
         }
         for (id producer in imageProducers) {
             CIImage *frame = [imageProducers objectForKey:producer];
+#if 0
+
             if ([producer isKindOfClass:[VJXLayer class]]) {
                 VJXLayer *layer = (VJXLayer *)producer;
                 if (layer.size.width != outputSize.width || layer.size.height != outputSize.height)
@@ -81,6 +83,7 @@
                     frame = [filter valueForKey:@"outputImage"];
                 }
             }
+#endif
             if (!currentFrame)
                 currentFrame = [frame retain];
             else {

@@ -44,17 +44,12 @@
 @protected
     NSMutableDictionary *inputPins;
     NSMutableDictionary *outputPins;
-    uint64_t previousTimeStamp;
-    NSNumber *frequency;
     BOOL active;
 @private
-    int64_t stamps[kVJXFpsMaxStamps + 1]; // XXX - 25 should be a constant
-    int stampCount;
 }
 
 #pragma mark Properties
 @property (readonly)BOOL active;
-@property (retain) NSNumber *frequency;
 @property (readonly) NSDictionary *inputPins;
 @property (readonly) NSDictionary *outputPins;
 @property (readwrite, copy) NSString *name;

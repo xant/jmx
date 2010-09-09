@@ -26,21 +26,12 @@
 
 @implementation VJXEntity
 
-@synthesize frequency;
-
 - (id)init
 {
     if (self = [super init]) {
         inputPins = [[NSMutableDictionary alloc] init];
         outputPins = [[NSMutableDictionary alloc] init];
-        self.frequency = [NSNumber numberWithDouble:25];
-        [self registerInputPin:@"frequency" withType:kVJXNumberPin andSelector:@"setFrequency:"];
-        [self registerInputPin:@"active" withType:kVJXNumberPin andSelector:@"setActive:"];
         [self registerOutputPin:@"active" withType:kVJXNumberPin];
-        // and 'effective' frequency , only for debugging purposes
-        [self registerOutputPin:@"outputFrequency" withType:kVJXNumberPin];
-        stampCount = 0;
-        previousTimeStamp = 0;
     }
     return self;
 }
@@ -126,23 +117,8 @@
 
 - (void)outputDefaultSignals:(uint64_t)timeStamp
 {
-    VJXPin *activePin = [self outputPinWithName:@"active"];
-    VJXPin *frequencyPin = [self outputPinWithName:@"outputFrequency"];
-    
+    VJXPin *activePin = [self outputPinWithName:@"active"];    
     [activePin deliverSignal:[NSNumber numberWithBool:active] fromSender:self];
-    
-    int i = 0;
-    if (stampCount > kVJXFpsMaxStamps) {
-        for (i = 0; i < stampCount; i++) {
-            stamps[i] = stamps[i+1];
-        }
-        stampCount = kVJXFpsMaxStamps;  
-    }
-    stamps[stampCount++] = timeStamp;
-    
-    double rate = 1e9/((stamps[stampCount - 1] - stamps[0])/stampCount);
-    [frequencyPin deliverSignal:[NSNumber numberWithDouble:rate]
-                     fromSender:self];
 }
 
 - (BOOL)attachObject:(id)receiver withSelector:(NSString *)selector toOutputPin:(NSString *)pinName

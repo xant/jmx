@@ -129,6 +129,8 @@
     
     NSView *aView = [[VJXBoardDelegate sharedBoard] hitTest:locationInWindow];
     
+    BOOL isConnected = NO;
+    
     if ([aView isKindOfClass:[VJXBoardEntityPin class]]) {
         
         VJXBoardEntityPin *otherPin = (VJXBoardEntityPin *)aView;
@@ -138,20 +140,23 @@
         if ([otherPin isConnected] && ![otherPin multiple])
             [otherPin removeAllConnectors];
 
-        [otherPin.pin connectToPin:self.pin];
+        isConnected = [otherPin.pin connectToPin:self.pin];
 
-        [tempConnector setOrigin:self];
-        [tempConnector setDestination:otherPin];
-
-        [otherPin addConnector:tempConnector];
-        [self addConnector:tempConnector];
-        
-        [self updateAllConnectorsFrames];
-        
-        [tempConnector release];
-        tempConnector = nil;
+        if (isConnected) {
+            [tempConnector setOrigin:self];
+            [tempConnector setDestination:otherPin];
+            
+            [otherPin addConnector:tempConnector];
+            [self addConnector:tempConnector];
+            
+            [self updateAllConnectorsFrames];
+            
+            [tempConnector release];
+            tempConnector = nil;            
+        }
     }
-    else {
+    
+    if (!isConnected) {        
         [tempConnector removeFromSuperview];
         [tempConnector release];
         tempConnector = nil;

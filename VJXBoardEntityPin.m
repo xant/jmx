@@ -53,13 +53,20 @@
 
 - (void)drawRect:(NSRect)dirtyRect
 {
+    NSRect bounds = [self bounds];
+    
+    bounds.origin.x += 5.0;
+    bounds.origin.y += 5.0;
+    bounds.size.width -= (2 * bounds.origin.x);
+    bounds.size.height -= (2 * bounds.origin.y);
+    
     NSBezierPath *thePath = nil;
-    [[NSColor redColor] set];
+    [[NSColor whiteColor] setFill];
     thePath = [[NSBezierPath alloc] init];
-    NSRect pinRect;
-    pinRect = NSMakeRect([self bounds].origin.x, [self bounds].origin.y, [self bounds].size.height, [self bounds].size.height);
-    [thePath appendBezierPathWithOvalInRect:pinRect];
+    [thePath setLineWidth:2.0];
+    [thePath appendBezierPathWithOvalInRect:bounds];
     [thePath fill];
+        
     [thePath release];
 }
 

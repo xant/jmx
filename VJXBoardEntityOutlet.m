@@ -48,9 +48,10 @@
         self.pinName = [[[NSTextField alloc] initWithFrame:labelRect] autorelease];
         [self.pinName setStringValue:self.pin.pin.name];
         [self.pinName setEditable:NO];
-        [self.pinName setBackgroundColor:[NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:0.0]];
-        [self.pinName setTextColor:[NSColor whiteColor]];
+        [self.pinName setDrawsBackground:NO];
         [self.pinName setBordered:NO];
+        [self.pinName setTextColor:[NSColor whiteColor]];
+        [[self.pinName cell] setTruncatesLastVisibleLine:YES];
 
         if (isOutput)
             [self.pinName setAlignment:NSRightTextAlignment];

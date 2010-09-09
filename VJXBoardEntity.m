@@ -47,13 +47,15 @@
         [self setEntity:theEntity];
         NSRect bounds = [self bounds];
         bounds.size.height -= labelHeight;
+        bounds.origin.x += 6.0;
+        bounds.origin.y -= 6.0;
         
         NSUInteger nrInputPins = [theEntity.inputPins count];
         NSUInteger nrOutputPins = [theEntity.outputPins count];
         
         int i = 0;
         for (NSString *pinName in theEntity.inputPins) {
-            NSPoint origin = NSMakePoint(0.0, (((bounds.size.height / nrInputPins) * i++) - (bounds.origin.y - (3.0))));
+            NSPoint origin = NSMakePoint(bounds.origin.x, (((bounds.size.height / nrInputPins) * i++) - (bounds.origin.y - (3.0))));
             VJXBoardEntityOutlet *outlet = [[VJXBoardEntityOutlet alloc] initWithPin:[theEntity.inputPins objectForKey:pinName]
                                                                             andPoint:origin
                                                                             isOutput:NO];
@@ -73,12 +75,12 @@
             [outlet release];
         }
         
-        self.label = [[NSTextField alloc] initWithFrame:NSMakeRect(4.0, (bounds.size.height - 4.0), bounds.size.width, labelHeight)];
-        [self.label setBackgroundColor:[NSColor colorWithDeviceWhite:0.0 alpha:0.0]];
+        self.label = [[NSTextField alloc] initWithFrame:NSMakeRect(bounds.origin.x, (bounds.size.height - 4.0), bounds.size.width, labelHeight)];
         [self.label setTextColor:[NSColor whiteColor]];
         [self.label setStringValue:[self.entity displayName]];
         [self.label setBordered:NO];
         [self.label setEditable:NO];
+        [self.label setDrawsBackground:NO];
         [self addSubview:self.label];
     }
     return self;

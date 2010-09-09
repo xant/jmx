@@ -189,4 +189,16 @@
     return [self.entity displayName];
 }
 
+// Caller should free() the NSPointArray.
+- (NSPointArray)points
+{
+    NSRect frame = [self frame];
+    NSPointArray points = calloc(4, sizeof(NSPoint));
+    points[0] = NSMakePoint(frame.origin.x, frame.origin.y);
+    points[1] = NSMakePoint(frame.origin.x, frame.origin.y + frame.size.height);
+    points[2] = NSMakePoint(frame.origin.x + frame.size.width, frame.origin.y);
+    points[3] = NSMakePoint(frame.origin.x + frame.size.width, frame.origin.y + frame.size.height);
+    return points;
+}
+
 @end

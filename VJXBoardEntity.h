@@ -40,4 +40,6 @@
 - (id)initWithEntity:(VJXEntity *)theEntity;
 - (void)toggleSelected;
 
+- (NSPointArray)points;
+
 @end

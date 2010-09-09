@@ -87,6 +87,8 @@
 - (void)mouseDown:(NSEvent *)theEvent
 {
     lastDragLocation = [theEvent locationInWindow];
+    [self.selectedEntity toggleSelected];
+    self.selectedEntity = nil;
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent
@@ -105,6 +107,21 @@
     h = abs(thisLocation.y - lastDragLocation.y);
     
     [currentSelection setFrame:NSMakeRect(x, y, w, h)];
+    
+    for (VJXBoardEntity *entity in [self subviews]) {
+        if (![entity isKindOfClass:[VJXBoardEntity class]])
+            continue;
+        
+        NSPointArray points = [entity points];
+        for (int i = 0; i < 4; i++) {
+            if (NSPointInRect(points[i], [currentSelection frame])) {
+                [entity setSelected:YES];
+                break;
+            }
+        }
+        free(points);
+    }
+    
 }
 
 - (void)mouseUp:(NSEvent *)theEvent

@@ -139,8 +139,6 @@
         
         VJXBoardEntityPin *otherPin = (VJXBoardEntityPin *)aView;
         
-        NSLog(@"this Pin: %@, other Pin: %@", self.pin.name, otherPin.pin.name);
-        
         if ([otherPin isConnected] && ![otherPin multiple])
             [otherPin removeAllConnectors];
 

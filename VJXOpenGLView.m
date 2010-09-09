@@ -109,7 +109,6 @@
 
 - (void)reShape
 {
-    NSLog(@"reShape:");
     NSRect bounds = [self bounds];
 
     GLfloat minX, minY, maxX, maxY;

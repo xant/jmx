@@ -29,6 +29,7 @@
     VJXEntity *entity;
     NSPoint lastDragLocation;
     NSTextField *label;
+    NSMutableArray *outlets;
     
     BOOL selected;
 }
@@ -36,10 +37,11 @@
 @property (nonatomic,retain) VJXEntity *entity;
 @property (nonatomic,retain) NSTextField *label;
 @property (nonatomic,assign) BOOL selected;
+@property (nonatomic,retain) NSMutableArray *outlets;
 
 - (id)initWithEntity:(VJXEntity *)theEntity;
 - (void)toggleSelected;
-
-- (NSPointArray)points;
+- (BOOL)inRect:(NSRect)rect;
+- (void)unselect;
 
 @end

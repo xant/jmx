@@ -28,7 +28,7 @@
 
 @implementation VJXBoardEntity
 
-@synthesize entity, label, selected;
+@synthesize entity, label, selected, outlets;
 
 - (id)initWithEntity:(VJXEntity *)theEntity
 {
@@ -47,6 +47,7 @@
     if (self) {
         [self setEntity:theEntity];
         [self setSelected:NO];
+        self.outlets = [NSMutableArray array];
         NSRect bounds = [self bounds];
         bounds.size.height -= labelHeight;
         bounds.origin.x += 6.0;
@@ -62,18 +63,19 @@
                                                                             andPoint:origin
                                                                             isOutput:NO];
             [self addSubview:outlet];
+            [self.outlets addObject:outlet];
             [outlet release];
         }
         
         i = 0;
         for (NSString *pinName in theEntity.outputPins) {
-            NSLog(@"%@", pinName);
             NSPoint origin = NSMakePoint(bounds.size.width - 120.0,
                                          (((bounds.size.height / nrOutputPins) * i++) - (bounds.origin.y - (3.0))));
             VJXBoardEntityOutlet *outlet = [[VJXBoardEntityOutlet alloc] initWithPin:[theEntity.outputPins objectForKey:pinName]
                                                                             andPoint:origin
                                                                             isOutput:YES];
             [self addSubview:outlet];
+            [self.outlets addObject:outlet];
             [outlet release];
         }
         
@@ -162,8 +164,8 @@
     [self setFrameOrigin:thisOrigin];
     lastDragLocation = newDragLocation;
     
-    // Update pins' connectors coordinates as well.
-    [[self subviews] makeObjectsPerformSelector:@selector(updateAllConnectorsFrames)];    
+    // Update outlets' connectors coordinates as well.
+    [self.outlets makeObjectsPerformSelector:@selector(updateAllConnectorsFrames)];
 }
 
 - (void)mouseUp:(NSEvent *)theEvent
@@ -189,8 +191,13 @@
     return [self.entity displayName];
 }
 
-// Caller should free() the NSPointArray.
-- (NSPointArray)points
+- (void)removeFromSuperview
+{
+    [VJXBoard removeEntity:self];
+    [super removeFromSuperview];
+}
+
+- (BOOL)inRect:(NSRect)rect
 {
     NSRect frame = [self frame];
     NSPointArray points = calloc(4, sizeof(NSPoint));
@@ -198,7 +205,21 @@
     points[1] = NSMakePoint(frame.origin.x, frame.origin.y + frame.size.height);
     points[2] = NSMakePoint(frame.origin.x + frame.size.width, frame.origin.y);
     points[3] = NSMakePoint(frame.origin.x + frame.size.width, frame.origin.y + frame.size.height);
-    return points;
+
+    BOOL inRect = NO;
+    
+    for (int i = 0; i < 4; i++) {
+        if ((inRect = NSPointInRect(points[i], rect)) == YES)
+            break;
+    }
+    free(points);
+    
+    return inRect;
+}
+
+- (void)unselect
+{
+    [self setSelected:NO];
 }
 
 @end

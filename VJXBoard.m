@@ -26,11 +26,12 @@
 
 @implementation VJXBoard
 
-@synthesize selectedEntity, currentSelection;
+@synthesize selectedEntity, currentSelection, entities;
 
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+        self.entities = [NSMutableArray array];
         [self setSelected:nil];
     }
     return self;
@@ -38,6 +39,7 @@
 
 - (void)awakeFromNib
 {
+    self.entities = [NSMutableArray array];
     [self setNeedsDisplay:YES];
 }
 
@@ -53,6 +55,7 @@
 {
     [super addSubview:aView];
     if ([aView isKindOfClass:[VJXBoardEntity class]]) {
+        [entities addObject:aView];
         [self setSelected:(VJXBoardEntity *)aView];        
     }
 }
@@ -63,22 +66,18 @@
     // all entities we have on the board, so the entity selection will be done
     // thru it instead of this code. Using NSArrayController for that will be 
     // nice because we can use KVC in IB to create the Inspector palettes.
-    
-    if (theEntity != selectedEntity) {
-        [selectedEntity toggleSelected];
-        [selectedEntity release];
-        selectedEntity = [theEntity retain];
-        [selectedEntity toggleSelected];
-    }
 
+    // Unselect all entities, and toggle only the one we selected.
+    [entities makeObjectsPerformSelector:@selector(unselect)];
+    [theEntity toggleSelected];
+    
     // Move the selected entity to the end of the subviews array, making it move
     // to the top of the view hierarchy.
     if ([theEntity isKindOfClass:[VJXBoardEntity class]] && ([[self subviews] count] >= 1)) {
         NSMutableArray *subviews = [[self subviews] mutableCopy];
-        [subviews removeObjectAtIndex:[subviews indexOfObject:selectedEntity]];
-        [subviews addObject:selectedEntity];
+        [subviews removeObjectAtIndex:[subviews indexOfObject:theEntity]];
+        [subviews addObject:theEntity];
         [self setSubviews:subviews];
-        NSLog(@"%@", subviews);
         [subviews release];
     }
     
@@ -87,41 +86,33 @@
 - (void)mouseDown:(NSEvent *)theEvent
 {
     lastDragLocation = [theEvent locationInWindow];
-    [self.selectedEntity toggleSelected];
-    self.selectedEntity = nil;
+    [entities makeObjectsPerformSelector:@selector(unselect)]; 
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent
 {
     NSPoint thisLocation = [theEvent locationInWindow];
-    
+
+    // Create a view VJXBoardSelection and place it in the top of the view
+    // hierarchy if it already doesn't exist.
     if (!currentSelection) {
         self.currentSelection = [[VJXBoardSelection alloc] init];
         [self addSubview:currentSelection positioned:NSWindowAbove relativeTo:nil];
     }
     
-    CGFloat x, y, w, h;
-    x = MIN(thisLocation.x, lastDragLocation.x);
-    y = MIN(thisLocation.y, lastDragLocation.y);
-    w = abs(thisLocation.x - lastDragLocation.x);
-    h = abs(thisLocation.y - lastDragLocation.y);
+    // Calculate the frame based on the window's coordinates and set the rect
+    // as the current selection frame.
+    [currentSelection setFrame:NSMakeRect(MIN(thisLocation.x, lastDragLocation.x),
+                                          MIN(thisLocation.y, lastDragLocation.y), 
+                                          abs(thisLocation.x - lastDragLocation.x), 
+                                          abs(thisLocation.y - lastDragLocation.y))];
     
-    [currentSelection setFrame:NSMakeRect(x, y, w, h)];
-    
-    for (VJXBoardEntity *entity in [self subviews]) {
-        if (![entity isKindOfClass:[VJXBoardEntity class]])
-            continue;
-        
-        NSPointArray points = [entity points];
-        for (int i = 0; i < 4; i++) {
-            if (NSPointInRect(points[i], [currentSelection frame])) {
-                [entity setSelected:YES];
-                break;
-            }
-        }
-        free(points);
+    for (VJXBoardEntity *entity in [self entities]) {
+        // Unselect the entity. We'll have all the entities unselected as net
+        // result of this operation, if the entity isn't inside the current 
+        // selection rect.
+        [entity setSelected:[entity inRect:[currentSelection frame]]];
     }
-    
 }
 
 - (void)mouseUp:(NSEvent *)theEvent
@@ -140,6 +131,16 @@ static VJXBoard *sharedBoard = nil;
 + (void)setSharedBoard:(VJXBoard *)aBoard
 {
     sharedBoard = aBoard;
+}
+
+- (void)removeEntity:(VJXBoardEntity *)theEntity
+{
+    [entities removeObject:theEntity];
+}
+
++ (void)removeEntity:(VJXBoardEntity *)theEntity
+{
+    [[self sharedBoard] removeEntity:theEntity];
 }
 
 @end

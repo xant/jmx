@@ -63,11 +63,13 @@
     // all entities we have on the board, so the entity selection will be done
     // thru it instead of this code. Using NSArrayController for that will be 
     // nice because we can use KVC in IB to create the Inspector palettes.
-    if (selectedEntity) {
+    
+    if (theEntity != selectedEntity) {
         [selectedEntity setSelected:NO];
+        [selectedEntity release];
+        selectedEntity = [theEntity retain];
+        [selectedEntity setSelected:YES];        
     }
-    selectedEntity = [theEntity retain];
-    [selectedEntity setSelected:YES];
 
     // Move the selected entity to the end of the subviews array, making it move
     // to the top of the view hierarchy.

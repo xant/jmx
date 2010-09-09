@@ -26,10 +26,12 @@
 
 @implementation VJXBoard
 
+@synthesize selectedEntity;
+
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-
+        [self setSelectedEntity:nil];
     }
     return self;
 }
@@ -45,6 +47,16 @@
     [thePath appendBezierPathWithRect:[self bounds]];
     [thePath fill];
     [thePath release];
+}
+
+- (void)setSelectedEntity:(VJXBoardEntity *)theEntity
+{
+    if (selectedEntity) {
+        [selectedEntity setSelected:NO];
+        [selectedEntity setNeedsDisplay:YES];
+    }
+    selectedEntity = [theEntity retain];
+    [selectedEntity setSelected:YES];
 }
 
 @end

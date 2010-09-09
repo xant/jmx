@@ -22,10 +22,12 @@
 //
 
 #import <Cocoa/Cocoa.h>
-
+#import "VJXBoardEntity.h"
 
 @interface VJXBoard : NSView {
-
+    VJXBoardEntity *selectedEntity;
 }
+
+@property (nonatomic,retain) VJXBoardEntity *selectedEntity;
 
 @end

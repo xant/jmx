@@ -100,5 +100,10 @@
     [self setFrame:frame];
 }
 
+- (void)disconnect
+{
+    [self.origin removeConnector:self];
+    [self.destination removeConnector:self];
+}
 
 @end

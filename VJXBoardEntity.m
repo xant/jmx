@@ -24,10 +24,11 @@
 #import "VJXBoardEntity.h"
 #import "VJXBoardEntityPin.h"
 #import "VJXBoardEntityOutlet.h"
+#import "VJXBoardDelegate.h"
 
 @implementation VJXBoardEntity
 
-@synthesize entity, label;
+@synthesize entity, label, selected;
 
 - (id)initWithEntity:(VJXEntity *)theEntity
 {
@@ -45,6 +46,7 @@
     
     if (self) {
         [self setEntity:theEntity];
+        [self setSelected:NO];
         NSRect bounds = [self bounds];
         bounds.size.height -= labelHeight;
         bounds.origin.x += 6.0;
@@ -82,6 +84,8 @@
         [self.label setEditable:NO];
         [self.label setDrawsBackground:NO];
         [self addSubview:self.label];
+        
+        [[VJXBoardDelegate sharedBoard] setSelectedEntity:self];
     }
     return self;
 }
@@ -120,7 +124,11 @@
     thePath = [[NSBezierPath alloc] init];
 
     [[NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:0.5] setFill];
-    [[NSColor blackColor] setStroke];
+
+    if (self.selected)
+        [[NSColor yellowColor] setStroke];
+    else 
+        [[NSColor blackColor] setStroke];
     
     NSAffineTransform *transform = [[[NSAffineTransform alloc] init] autorelease];
     [transform translateXBy:0.5 yBy:0.5];
@@ -141,6 +149,9 @@
     // Here we keep track of our initial location, so when mouseDragged: message
     // is called it knows the last drag location.
     lastDragLocation = [theEvent locationInWindow];
+    
+    [[VJXBoardDelegate sharedBoard] setSelectedEntity:self];
+    [self setNeedsDisplay:YES];
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent

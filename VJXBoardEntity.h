@@ -29,10 +29,13 @@
     VJXEntity *entity;
     NSPoint lastDragLocation;
     NSTextField *label;
+    
+    BOOL selected;
 }
 
 @property (nonatomic,retain) VJXEntity *entity;
 @property (nonatomic,retain) NSTextField *label;
+@property (nonatomic,assign) BOOL selected;
 
 - (id)initWithEntity:(VJXEntity *)theEntity;
 

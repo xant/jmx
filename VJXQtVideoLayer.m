@@ -110,6 +110,23 @@
                     if (repeat) { // check if we need to rewind and re-start extracting frames
                         [movie gotoBeginning];
                         now.timeValue = 0;
+                        // Setup the attrs dictionary. 
+                        // We want to get back a CIImage object of the proper size.
+                        NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                                               //                                     [NSValue valueWithSize:self.size.nsSize],
+                                               //                                     QTMovieFrameImageSize,
+                                               QTMovieFrameImageTypeCIImage,
+                                               QTMovieFrameImageType,
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+                                               [NSNumber numberWithBool:NO],
+                                               QTMovieFrameImageSessionMode,
+#endif
+                                               nil];
+                        
+                        // Get our CIImage.
+                        // TODO: Implement error handling.
+                        // XXX - and check why requested framesize is not honored
+                        [movie frameImageAtTime:now withAttributes:attrs error:nil];
                     } else {
                         [self stop];
                         return [super tick:timeStamp]; // we still want to propagate the signal

@@ -49,6 +49,7 @@ typedef enum {
     NSMutableArray      *producers;
     BOOL                multiple;
     id                  currentData;
+    id                  currentProducer;
     VJXPinDirection     direction;
 }
 

@@ -64,23 +64,31 @@
         producers = [[NSMutableArray alloc] init];
         direction = pinDirection;
         multiple = NO;
+        currentData = nil;
+        currentProducer = nil;
     }
     return self;
 }
 
 - (BOOL)attachObject:(id)pinReceiver withSelector:(NSString *)pinSignal
 {
-    if ([pinReceiver respondsToSelector:NSSelectorFromString(pinSignal)]) {
-        if ([[pinSignal componentsSeparatedByString:@":"] count]-1 <= 2) {
-            [receivers setObject:pinSignal forKey:pinReceiver];
-            return YES;
+    BOOL rv = NO;
+    @synchronized(self) {
+        if ([pinReceiver respondsToSelector:NSSelectorFromString(pinSignal)]) {
+            if ([[pinSignal componentsSeparatedByString:@":"] count]-1 <= 2) {
+                [receivers setObject:pinSignal forKey:pinReceiver];
+                rv = YES;
+            } else {
+                NSLog(@"Unsupported selector : '%@' . It can take up to two arguments\n", pinSignal);
+            }
         } else {
-            NSLog(@"Unsupported selector : '%@' . It can take up to two arguments\n", pinSignal);
+            NSLog(@"Object %@ doesn't respond to %@\n", pinReceiver, pinSignal);
         }
-    } else {
-        NSLog(@"Object %@ doesn't respond to %@\n", pinReceiver, pinSignal);
     }
-    return NO;
+    // deliver the signal to the just connected receiver
+    if (rv == YES && currentData)
+        [self deliverSignal:currentData fromSender:currentProducer ? currentProducer : self];
+    return rv;
 }
 
 - (void)detachObject:(id)pinReceiver
@@ -124,7 +132,8 @@
         // save current data
         if (currentData)
             [currentData release];
-        currentData = [signalData retain]; 
+        currentData = [signalData retain];
+        currentProducer = [sender retain];
         for (id receiver in receivers) {
             NSString *selectorName = [receivers objectForKey:receiver];
             SEL selector = NSSelectorFromString(selectorName);

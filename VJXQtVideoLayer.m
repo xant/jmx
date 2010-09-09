@@ -37,10 +37,6 @@
         paused = NO;
         [self registerInputPin:@"repeat" withType:kVJXNumberPin andSelector:@"setRepeat:"];
         [self registerInputPin:@"paused" withType:kVJXNumberPin andSelector:@"setPaused:"];
-        
-        NSSize defaultLayerSize = { 640, 480 };
-        size = [[VJXSize sizeWithNSSize:defaultLayerSize] retain];
-
     }
 
     return self;
@@ -74,7 +70,12 @@
         else // or if it's just a still image, set the frequency to 1 sec
             self.frequency = [NSNumber numberWithDouble:1]; // XXX
             
-
+        // set the layer size to the native movie size
+        // scaling is a quite expensive operation and the user 
+        // must be aware he is doing that (so better waiting for him
+        // to set a different layer size by using the proper input pin)
+        NSSize movieSize = [firstVideoTrack apertureModeDimensionsForMode:@"QTMovieApertureModeClean"];
+        size = [[VJXSize sizeWithNSSize:movieSize] retain];
         self.fps = self.frequency;
         return YES;
     }
@@ -118,8 +119,8 @@
                 // Setup the attrs dictionary. 
                 // We want to get back a CIImage object of the proper size.
                 NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                                       [NSValue valueWithSize:self.size.nsSize],
-                                       QTMovieFrameImageSize,
+//                                     [NSValue valueWithSize:self.size.nsSize],
+//                                     QTMovieFrameImageSize,
                                        QTMovieFrameImageTypeCIImage,
                                        QTMovieFrameImageType,
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5

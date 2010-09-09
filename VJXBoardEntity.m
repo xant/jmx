@@ -83,28 +83,39 @@
 #define Y_RADIUS 4.0
 
 - (void)drawRect:(NSRect)dirtyRect {
+    
+    NSShadow *dropShadow = [[[NSShadow alloc] init] autorelease];
+    
+    [dropShadow setShadowColor:[NSColor blackColor]];
+    [dropShadow setShadowBlurRadius:2.5];
+    [dropShadow setShadowOffset:NSMakeSize(2.0, -2.0)];
+    
+    [dropShadow set];
+    
     NSRect bounds = [self bounds];
     NSBezierPath *thePath = nil;
 
     // Give enough room for outlets.
-    bounds.origin.x += 2.0;
-    bounds.origin.y += 2.0;
-    bounds.size.width -= 4.0;
-    bounds.size.height -= 4.0;
+    bounds.origin.x += 4.0;
+    bounds.origin.y += 4.0;
+    bounds.size.width -= 2 * bounds.origin.x;
+    bounds.size.height -= 2 * bounds.origin.y;
 
-    [[NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:0.5] set];
-
-    NSRect rect = NSMakeRect(bounds.origin.x + .5,
-                             bounds.origin.y + .5,
-                             bounds.size.width - 1.0,
-                             bounds.size.height - 1.0);
+    NSRect rect = NSMakeRect(bounds.origin.x + 1.0,
+                             bounds.origin.y + 1.0,
+                             bounds.size.width - 2.0,
+                             bounds.size.height - 2.0);
     thePath = [[NSBezierPath alloc] init];
+
+    [[NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:0.5] setFill];
+    [[NSColor blackColor] setStroke];
+    
+    NSAffineTransform *transform = [[[NSAffineTransform alloc] init] autorelease];
+    [transform translateXBy:0.5 yBy:0.5];
+    
     [thePath appendBezierPathWithRoundedRect:rect xRadius:X_RADIUS yRadius:Y_RADIUS];
+    [thePath transformUsingAffineTransform:transform];
     [thePath fill];
-
-    thePath = [[NSBezierPath alloc] init];
-    [thePath appendBezierPathWithRoundedRect:bounds xRadius:X_RADIUS yRadius:Y_RADIUS];
-    [[NSColor blackColor] set];
     [thePath stroke];
 }
 

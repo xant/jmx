@@ -49,6 +49,7 @@
         [self.pinName setStringValue:self.pin.pin.name];
         [self.pinName setEditable:NO];
         [self.pinName setBackgroundColor:[NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:0.0]];
+        [self.pinName setTextColor:[NSColor whiteColor]];
         [self.pinName setBordered:NO];
 
         if (isOutput)

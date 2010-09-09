@@ -90,7 +90,9 @@
 
 - (void)tick:(uint64_t)timeStamp
 {
+    NSError* error = nil;
     if (movie) {
+        [QTMovie enterQTKitOnThread];
         QTTime now = [movie currentTime];
         @synchronized(self) {
             if (!paused) {
@@ -115,7 +117,18 @@
                         return [super tick:timeStamp]; // we still want to propagate the signal
                     }
                 }
-            
+#ifdef __x86_64
+                NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                                       //                                     [NSValue valueWithSize:self.size.nsSize],
+                                       //                                     QTMovieFrameImageSize,
+                                       QTMovieFrameImageTypeCVPixelBufferRef,
+                                       QTMovieFrameImageType,
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+                                       [NSNumber numberWithBool:TRUE],
+                                       QTMovieFrameImageSessionMode,
+#endif
+                                       nil];
+#else
                 // Setup the attrs dictionary. 
                 // We want to get back a CIImage object of the proper size.
                 NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -128,16 +141,24 @@
                                        QTMovieFrameImageSessionMode,
 #endif
                                        nil];
-
+#endif
                 // Get our CIImage.
                 // TODO: Implement error handling.
                 // XXX - and check why requested framesize is not honored
-                CIImage *frame = [movie frameImageAtTime:now withAttributes:attrs error:nil];
+#ifdef __x86_64
+                CVPixelBufferRef pixelBuffer;
+                pixelBuffer = (CVPixelBufferRef)[movie frameImageAtTime:now 
+                                                         withAttributes:attrs error:&error];
+                CIImage* frame = [CIImage imageWithCVImageBuffer:pixelBuffer];
+                
+#else
+                CIImage *frame = [movie frameImageAtTime:now withAttributes:attrs error:&error];
+#endif
                 if (frame)
                     currentFrame = [frame retain];
             } 
         }
-        [movie setIdling:YES];
+        [QTMovie exitQTKitOnThread];
     }
     [super tick:timeStamp]; // let super notify output pins
 }

@@ -84,4 +84,11 @@
     [super tick:timeStamp];
 }
 
+#pragma mark -
+
+- (NSString *)displayName
+{
+    return [NSString stringWithFormat:@"%@", self.imagePath];
+}
+
 @end

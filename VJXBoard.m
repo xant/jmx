@@ -26,7 +26,7 @@
 
 @implementation VJXBoard
 
-@synthesize selectedEntity;
+@synthesize selectedEntity, currentSelection;
 
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
@@ -82,6 +82,35 @@
         [subviews release];
     }
     
+}
+
+- (void)mouseDown:(NSEvent *)theEvent
+{
+    lastDragLocation = [theEvent locationInWindow];
+}
+
+- (void)mouseDragged:(NSEvent *)theEvent
+{
+    NSPoint thisLocation = [theEvent locationInWindow];
+    
+    if (!currentSelection) {
+        self.currentSelection = [[VJXBoardSelection alloc] init];
+        [self addSubview:currentSelection positioned:NSWindowAbove relativeTo:nil];
+    }
+    
+    CGFloat x, y, w, h;
+    x = MIN(thisLocation.x, lastDragLocation.x);
+    y = MIN(thisLocation.y, lastDragLocation.y);
+    w = abs(thisLocation.x - lastDragLocation.x);
+    h = abs(thisLocation.y - lastDragLocation.y);
+    
+    [currentSelection setFrame:NSMakeRect(x, y, w, h)];
+}
+
+- (void)mouseUp:(NSEvent *)theEvent
+{
+    [currentSelection removeFromSuperview];
+    self.currentSelection = nil;
 }
 
 static VJXBoard *sharedBoard = nil;

@@ -1,9 +1,4 @@
 //
-//  VJXBoard.h
-//  GraphRep
-//
-//  Created by Igor Sutton on 8/26/10.
-//  Copyright 2010 StrayDev.com. All rights reserved.
 //
 //  This file is part of VeeJay
 //
@@ -20,22 +15,30 @@
 //  You should have received a copy of the GNU General Public License
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
+//  VJXBoardSelection.m by Igor Sutton on 9/9/10.
+//
 
-#import <Cocoa/Cocoa.h>
-#import "VJXBoardEntity.h"
 #import "VJXBoardSelection.h"
 
-@interface VJXBoard : NSView {
-    VJXBoardEntity *selectedEntity;
-    NSPoint lastDragLocation;
-    VJXBoardSelection *currentSelection;
+
+@implementation VJXBoardSelection
+
+- (void)drawRect:(NSRect)dirtyRect
+{
+    
+    [[NSColor colorWithDeviceRed:0.0 green:0.0 blue:1.0 alpha:0.2] setFill];
+    [[NSColor colorWithDeviceRed:0.0 green:0.0 blue:1.0 alpha:1.0] setStroke];
+
+    NSBezierPath *thePath = [[NSBezierPath alloc] init];
+    NSAffineTransform *transform = [[NSAffineTransform alloc] init];
+    [transform translateXBy:0.5 yBy:0.5];
+    [thePath transformUsingAffineTransform:transform];
+    [thePath setLineWidth:2.0];
+    [thePath appendBezierPathWithRect:[self bounds]];
+    [thePath stroke];
+    [thePath fill];
+    
+    [thePath release];
 }
-
-@property (nonatomic,retain) VJXBoardEntity *selectedEntity;
-@property (nonatomic,retain) VJXBoardSelection *currentSelection;
-
-+ (VJXBoard *)sharedBoard;
-+ (void)setSharedBoard:(VJXBoard *)aBoard;
-- (void)setSelected:(id)theEntity;
 
 @end

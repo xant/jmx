@@ -1,9 +1,4 @@
 //
-//  VJXBoard.h
-//  GraphRep
-//
-//  Created by Igor Sutton on 8/26/10.
-//  Copyright 2010 StrayDev.com. All rights reserved.
 //
 //  This file is part of VeeJay
 //
@@ -20,22 +15,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
+//  VJXBoardSelection.h by Igor Sutton on 9/9/10.
+//
 
 #import <Cocoa/Cocoa.h>
-#import "VJXBoardEntity.h"
-#import "VJXBoardSelection.h"
 
-@interface VJXBoard : NSView {
-    VJXBoardEntity *selectedEntity;
-    NSPoint lastDragLocation;
-    VJXBoardSelection *currentSelection;
+
+@interface VJXBoardSelection : NSView {
+
 }
-
-@property (nonatomic,retain) VJXBoardEntity *selectedEntity;
-@property (nonatomic,retain) VJXBoardSelection *currentSelection;
-
-+ (VJXBoard *)sharedBoard;
-+ (void)setSharedBoard:(VJXBoard *)aBoard;
-- (void)setSelected:(id)theEntity;
 
 @end

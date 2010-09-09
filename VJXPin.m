@@ -73,21 +73,30 @@
 - (BOOL)attachObject:(id)pinReceiver withSelector:(NSString *)pinSignal
 {
     BOOL rv = NO;
+    id data = nil;
+    id producer = nil;
     @synchronized(self) {
         if ([pinReceiver respondsToSelector:NSSelectorFromString(pinSignal)]) {
             if ([[pinSignal componentsSeparatedByString:@":"] count]-1 <= 2) {
                 [receivers setObject:pinSignal forKey:pinReceiver];
                 rv = YES;
+                data = [currentData retain];
+                producer = [currentProducer retain];
             } else {
                 NSLog(@"Unsupported selector : '%@' . It can take up to two arguments\n", pinSignal);
             }
         } else {
             NSLog(@"Object %@ doesn't respond to %@\n", pinReceiver, pinSignal);
         }
+        
     }
     // deliver the signal to the just connected receiver
-    if (rv == YES && currentData)
-        [self deliverSignal:currentData fromSender:currentProducer ? currentProducer : self];
+    if (rv == YES && data) {
+        [self deliverSignal:data fromSender:producer ? producer : self];
+        [data release];
+        if (producer)
+            [producer release];
+    }
     return rv;
 }
 

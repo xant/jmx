@@ -28,9 +28,11 @@
 {
     VJXEntity *entity;
     NSPoint lastDragLocation;
+    NSTextField *label;
 }
 
 @property (nonatomic,retain) VJXEntity *entity;
+@property (nonatomic,retain) NSTextField *label;
 
 - (id)initWithEntity:(VJXEntity *)theEntity;
 

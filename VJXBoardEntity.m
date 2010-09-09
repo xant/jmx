@@ -27,24 +27,26 @@
 
 @implementation VJXBoardEntity
 
-@synthesize entity;
+@synthesize entity, label;
 
 - (id)initWithEntity:(VJXEntity *)theEntity
 {
 
     NSUInteger maxNrPins = MAX([theEntity.inputPins count], [theEntity.outputPins count]);
 
+    CGFloat labelHeight = 32.0;
     CGFloat pinSide = 11.0;
     CGFloat height = pinSide * 2 * maxNrPins;
     CGFloat width = 300.0;
     
-    NSRect frame = NSMakeRect(10.0, 10.0, width, height);
+    NSRect frame = NSMakeRect(10.0, 10.0, width, height + labelHeight);
     
     self = [super initWithFrame:frame];
     
     if (self) {
         [self setEntity:theEntity];
         NSRect bounds = [self bounds];
+        bounds.size.height -= labelHeight;
         
         NSUInteger nrInputPins = [theEntity.inputPins count];
         NSUInteger nrOutputPins = [theEntity.outputPins count];
@@ -70,6 +72,14 @@
             [self addSubview:outlet];
             [outlet release];
         }
+        
+        self.label = [[NSTextField alloc] initWithFrame:NSMakeRect(4.0, (bounds.size.height - 4.0), bounds.size.width, labelHeight)];
+        [self.label setBackgroundColor:[NSColor colorWithDeviceWhite:0.0 alpha:0.0]];
+        [self.label setTextColor:[NSColor whiteColor]];
+        [self.label setStringValue:[self.entity displayName]];
+        [self.label setBordered:NO];
+        [self.label setEditable:NO];
+        [self addSubview:self.label];
     }
     return self;
 }

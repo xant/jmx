@@ -174,4 +174,12 @@
 }
 
 @synthesize inputPins, outputPins, name, active;
+
+#pragma mark -
+
+- (NSString *)displayName
+{
+    return [self className];
+}
+
 @end

@@ -88,5 +88,9 @@
 
 - (void)outputDefaultSignals:(uint64_t)timeStamp;
 
+#pragma mark -
+
+- (NSString *)displayName;
+
 @end
 

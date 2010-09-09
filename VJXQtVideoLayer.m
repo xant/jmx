@@ -136,4 +136,11 @@
     [super tick:timeStamp]; // let super notify output pins
 }
 
+#pragma mark -
+
+- (NSString *)displayName
+{
+    return [NSString stringWithFormat:@"%@", self.moviePath];
+}
+
 @end

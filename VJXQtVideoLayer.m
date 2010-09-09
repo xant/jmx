@@ -90,7 +90,9 @@
 
 - (void)tick:(uint64_t)timeStamp
 {
+    CIImage* frame;
     NSError* error = nil;
+    
     if (movie) {
         [QTMovie enterQTKitOnThread];
         QTTime now = [movie currentTime];
@@ -128,6 +130,10 @@
                                        QTMovieFrameImageSessionMode,
 #endif
                                        nil];
+                CVPixelBufferRef pixelBuffer;
+                pixelBuffer = (CVPixelBufferRef)[movie frameImageAtTime:now 
+                                                         withAttributes:attrs error:&error];
+                frame = [CIImage imageWithCVImageBuffer:pixelBuffer];
 #else
                 // Setup the attrs dictionary. 
                 // We want to get back a CIImage object of the proper size.
@@ -141,21 +147,13 @@
                                        QTMovieFrameImageSessionMode,
 #endif
                                        nil];
-#endif
-                // Get our CIImage.
-                // TODO: Implement error handling.
-                // XXX - and check why requested framesize is not honored
-#ifdef __x86_64
-                CVPixelBufferRef pixelBuffer;
-                pixelBuffer = (CVPixelBufferRef)[movie frameImageAtTime:now 
-                                                         withAttributes:attrs error:&error];
-                CIImage* frame = [CIImage imageWithCVImageBuffer:pixelBuffer];
-                
-#else
-                CIImage *frame = [movie frameImageAtTime:now withAttributes:attrs error:&error];
+                frame = [movie frameImageAtTime:now withAttributes:attrs error:&error];
+
 #endif
                 if (frame)
                     currentFrame = [frame retain];
+                else if (error)
+                    NSLog(@"%@\n", error);
             } 
         }
         [QTMovie exitQTKitOnThread];

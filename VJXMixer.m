@@ -32,13 +32,15 @@
 - (id) init
 {
     if (self = [super init]) {
-        imageInputPin = [self registerInputPin:@"videoInput" withType:kVJXImagePin andSelector:@"receivedFrame:fromSender:"];
+        //imageInputPin = [self registerInputPin:@"videoInput" withType:kVJXImagePin andSelector:@"receivedFrame:fromSender:"];
+        imageInputPin = [self registerInputPin:@"videoInput" withType:kVJXImagePin];
         [imageInputPin allowMultipleConnections:YES];
         imageOutputPin = [self registerOutputPin:@"videoOutput" withType:kVJXImagePin];
         [imageOutputPin allowMultipleConnections:YES];
         outputSize.height = 640; // HC
         outputSize.width = 480; // HC
         imageProducers = [[NSMutableDictionary alloc] init];
+        currentFrame = nil;
     }
     return self;
 }
@@ -52,7 +54,11 @@
 - (void)receivedFrame:(CIImage *)frame fromSender:(id)sender
 {
     @synchronized(self) {
-        [imageProducers setObject:frame forKey:sender]; // take note of who provided us a frame in time
+        // if the sender is not a VJXPin,
+        // take note of who provided us the frame
+        // XXX
+        if (![sender isKindOfClass:[VJXPin class]])
+            [imageProducers setObject:frame forKey:[sender name]];
     }
 }
 
@@ -63,10 +69,11 @@
             [currentFrame release];
             currentFrame = nil;
         }
-        for (id producer in imageProducers) {
-            CIImage *frame = [imageProducers objectForKey:producer];
+        NSArray *frames = [imageInputPin readProducers];
+        for (CIImage *frame in frames) {
+        //for (id producer in imageProducers) {
+        //    CIImage *frame = [imageProducers objectForKey:producer];
 #if 0
-
             if ([producer isKindOfClass:[VJXLayer class]]) {
                 VJXLayer *layer = (VJXLayer *)producer;
                 if (layer.size.width != outputSize.width || layer.size.height != outputSize.height)
@@ -96,7 +103,14 @@
                 
             }
         }
-        [imageOutputPin deliverSignal:currentFrame fromSender:self];
+        if (currentFrame) {
+            [imageOutputPin deliverSignal:currentFrame fromSender:self];
+        } else {
+            // send a black frame
+            CIImage *blackFrame = [CIImage imageWithColor:[CIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.0]];
+            [imageOutputPin deliverSignal:blackFrame fromSender:self];
+        }
+        [imageProducers removeAllObjects];
     }
 }
 

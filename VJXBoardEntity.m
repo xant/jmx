@@ -99,9 +99,6 @@
     [super dealloc];
 }
 
-#define X_RADIUS 4.0
-#define Y_RADIUS 4.0
-
 - (void)drawRect:(NSRect)dirtyRect {
     
     NSShadow *dropShadow = [[[NSShadow alloc] init] autorelease];
@@ -112,19 +109,12 @@
     
     [dropShadow set];
     
-    NSRect bounds = [self bounds];
     NSBezierPath *thePath = nil;
 
-    // Give enough room for outlets.
-    bounds.origin.x += 4.0;
-    bounds.origin.y += 4.0;
-    bounds.size.width -= 2 * bounds.origin.x;
-    bounds.size.height -= 2 * bounds.origin.y;
+    NSRect rect = NSOffsetRect([self bounds], 4.0, 4.0);
+    rect.size.width -= 8.0;
+    rect.size.height -= 8.0;
 
-    NSRect rect = NSMakeRect(bounds.origin.x + 1.0,
-                             bounds.origin.y + 1.0,
-                             bounds.size.width - 2.0,
-                             bounds.size.height - 2.0);
     thePath = [[NSBezierPath alloc] init];
 
     [[NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:0.5] setFill];
@@ -136,11 +126,11 @@
     
     NSAffineTransform *transform = [[[NSAffineTransform alloc] init] autorelease];
     [transform translateXBy:0.5 yBy:0.5];
-    
-    [thePath appendBezierPathWithRoundedRect:rect xRadius:X_RADIUS yRadius:Y_RADIUS];
+    [thePath appendBezierPathWithRoundedRect:rect xRadius:4.0 yRadius:4.0];
     [thePath transformUsingAffineTransform:transform];
     [thePath fill];
     [thePath stroke];
+    [thePath release];
 }
 
 - (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
@@ -218,8 +208,8 @@
 - (void)shiftOffsetToLocation:(NSPoint)aLocation
 {
     NSRect thisFrame = NSOffsetRect([self frame], aLocation.x, aLocation.y);
-    [outlets makeObjectsPerformSelector:@selector(updateAllConnectorsFrames)];
     [self setFrame:thisFrame];
+    [outlets makeObjectsPerformSelector:@selector(updateAllConnectorsFrames)];
 }
 
 @end

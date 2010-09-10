@@ -44,5 +44,6 @@
 - (BOOL)hasMultipleEntitiesSelected;
 
 - (void)removeSelectedEntities;
+- (void)addToBoard:(VJXBoardEntity *)theEntity;
 
 @end

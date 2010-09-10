@@ -71,6 +71,7 @@
             [entity performSelector:@selector(start)];
         else
              NSLog(@"Entity %@ doesn't respond to 'start'. Not a VJXThreadedEntity ?\n");
+        [entityView release];
     }
 }
 
@@ -90,19 +91,12 @@
     [fileSelectionPanel setCanChooseFiles:YES];
 } // end openFile
 
-- (IBAction)addEntity:(id)sender
-{
-    NSRect frame = NSMakeRect(10.0, 10.0, 200.0, 100.0);
-    VJXBoardEntity *entity = [[VJXBoardEntity alloc] initWithFrame:frame];
-    [board addSubview:entity];
-    [board setNeedsDisplay:YES];
-}
-
 - (IBAction)addMovieLayer:(id)sender
 {
     NSArray *types = [QTMovie movieTypesWithOptions:QTIncludeCommonTypes];
     VJXQtVideoLayer *movieLayer = [[VJXQtVideoLayer alloc] init];
     [self openFile:types forEntity:movieLayer];
+    [movieLayer release];
 }
 
 
@@ -116,17 +110,21 @@
 
 - (IBAction)addMixerLayer:(id)sender
 {
-    VJXMixer *mixer = [[[VJXMixer alloc] init] autorelease];
-    VJXBoardEntity *entity = [[[VJXBoardEntity alloc] initWithEntity:mixer] autorelease];
-    [board addSubview:entity];
+    VJXMixer *mixer = [[VJXMixer alloc] init];
+    VJXBoardEntity *entity = [[VJXBoardEntity alloc] initWithEntity:mixer];
+    [board addToBoard:entity];
     [mixer start];
+    [mixer release];
+    [entity release];
 }
 
 - (IBAction)addOutputScreen:(id)sender
 {
-    VJXOpenGLScreen *screen = [[[VJXOpenGLScreen alloc] init] autorelease];
-    VJXBoardEntity *entity = [[[VJXBoardEntity alloc] initWithEntity:screen] autorelease];
-    [board addSubview:entity];
+    VJXOpenGLScreen *screen = [[VJXOpenGLScreen alloc] init];
+    VJXBoardEntity *entity = [[VJXBoardEntity alloc] initWithEntity:screen];
+    [board addToBoard:entity];
+    [entity release];
+    [screen release];
 }
 
 - (IBAction)removeSelectedEntities:(id)sender

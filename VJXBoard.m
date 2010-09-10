@@ -51,15 +51,13 @@
     [thePath release];
 }
 
-- (void)addSubview:(NSView *)aView
+- (void)addToBoard:(VJXBoardEntity *)theEntity
 {
-    [super addSubview:aView];
-    if ([aView isKindOfClass:[VJXBoardEntity class]]) {
-        [entities addObject:aView];
+    [self addSubview:theEntity];
+    [entities addObject:theEntity];
 
-        // Put focus on the created entity.
-        [self setSelected:(VJXBoardEntity *)aView multiple:NO];        
-    }
+    // Put focus on the created entity.
+    [self setSelected:theEntity multiple:NO];
 }
 
 - (void)setSelected:(VJXBoardEntity *)theEntity multiple:(BOOL)isMultiple
@@ -78,10 +76,11 @@
     // Move the selected entity to the end of the subviews array, making it move
     // to the top of the view hierarchy.
     if ([entities count] >= 1) {
-        NSMutableArray *subviews = [[[self subviews] mutableCopy] autorelease];
+        NSMutableArray *subviews = [[self subviews] mutableCopy];
         [subviews removeObjectAtIndex:[subviews indexOfObject:theEntity]];
         [subviews addObject:theEntity];
         [self setSubviews:subviews];
+        [subviews release];
     }
 }
 
@@ -166,7 +165,15 @@ static VJXBoard *sharedBoard = nil;
 {
     for (VJXBoardEntity *e in entities) {
         if (e.selected) {
+            // Remove the entity from the superview.
+            //
+            // It seems removeFromSuperview autoreleases the view, instead of
+            // releasing it at the time we remove it, so retainCount won't be
+            // updated until the end of the run loop.
             [e removeFromSuperview];
+
+            // Remove the entity from our entities array, since we won't need
+            // it anymore.
             [entities removeObject:e];
             NSLog(@"retainCount: %i", [e retainCount]);
         }

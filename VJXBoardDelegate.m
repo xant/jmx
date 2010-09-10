@@ -116,8 +116,8 @@
 
 - (IBAction)addMixerLayer:(id)sender
 {
-    VJXMixer *mixer = [[VJXMixer alloc] init];
-    VJXBoardEntity *entity = [[VJXBoardEntity alloc] initWithEntity:mixer];
+    VJXMixer *mixer = [[[VJXMixer alloc] init] autorelease];
+    VJXBoardEntity *entity = [[[VJXBoardEntity alloc] initWithEntity:mixer] autorelease];
     [board addSubview:entity];
     [mixer start];
 }

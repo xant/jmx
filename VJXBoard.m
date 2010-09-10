@@ -128,10 +128,12 @@ static VJXBoard *sharedBoard = nil;
 
 + (VJXBoard *)sharedBoard
 {
-    // XXX - here a create-on-first-use idiom should be adopted
-    //       and if this class is going to be used as singleton,
+    // XXX - here a create-on-first-use idiom should be adopted.
+    //       If this class is going to be used as singleton,
     //       new instances shold be forbiddend and constructors/initializers
-    //       should be private
+    //       should be private.
+    //       Actually the instance is instantiated by the nib file, so we could 
+    //       just have the sharedBoard pointer set through an Outlet
     return sharedBoard;
 }
 
@@ -173,7 +175,8 @@ static VJXBoard *sharedBoard = nil;
 
 - (void)removeSelectedEntities
 {
-    for (VJXBoardEntity *e in entities) {
+    for (NSUInteger i = 0; i < [entities count]; i++) {
+        VJXBoardEntity *e = [entities objectAtIndex:i];
         if (e.selected) {
             // Remove the entity from the superview.
             //
@@ -184,8 +187,8 @@ static VJXBoard *sharedBoard = nil;
 
             // Remove the entity from our entities array, since we won't need
             // it anymore.
-            [entities removeObject:e];
-            NSLog(@"retainCount: %i", [e retainCount]);
+            [entities removeObjectAtIndex:i];
+            i--;
         }
     }
 }

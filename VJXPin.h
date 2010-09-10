@@ -51,6 +51,8 @@ typedef enum {
     id                  currentData;
     id                  currentProducer;
     VJXPinDirection     direction;
+    id                  owner;
+    NSString            *ownerSignal;
 }
 
 @property (readonly) VJXPinType type;
@@ -60,14 +62,11 @@ typedef enum {
 
 + (id)pinWithName:(NSString *)name
           andType:(VJXPinType)pinType
-    forDirection:(VJXPinDirection)pinDirection;
-+ (id)pinWithName:(NSString *)name
-          andType:(VJXPinType)pinType
      forDirection:(VJXPinDirection)pinDirection 
-    boundToObject:(id)pinReceiver 
-     withSelector:(NSString *)pinSignal;
+          ownedBy:(id)pinOwner 
+       withSignal:(NSString *)pinSignal;
 
-- (id)initWithName:(NSString *)name andType:(VJXPinType)pinType forDirection:(VJXPinDirection)pinDirection;
+- (id)initWithName:(NSString *)pinName andType:(VJXPinType)pinType forDirection:(VJXPinDirection)pinDirection ownedBy:(id)pinOwner withSignal:(NSString *)pinSignal;
 - (BOOL)attachObject:(id)pinReceiver withSelector:(NSString *)pinSignal;
 - (BOOL)connectToPin:(VJXPin *)destinationPin;
 - (void)disconnectFromPin:(VJXPin *)destinationPin;

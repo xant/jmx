@@ -60,7 +60,7 @@
 
 - (VJXPin *)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector
 {
-    [inputPins setObject:[VJXPin pinWithName:pinName andType:pinType forDirection:kVJXInputPin boundToObject:self withSelector:selector]
+    [inputPins setObject:[VJXPin pinWithName:pinName andType:pinType forDirection:kVJXInputPin ownedBy:self withSignal:selector]
                   forKey:pinName];
     return [inputPins objectForKey:pinName];
 }
@@ -72,7 +72,7 @@
 
 - (VJXPin *)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector
 {
-    [outputPins setObject:[VJXPin pinWithName:pinName andType:pinType forDirection:kVJXOutputPin boundToObject:self withSelector:selector]
+    [outputPins setObject:[VJXPin pinWithName:pinName andType:pinType forDirection:kVJXOutputPin ownedBy:self withSignal:selector]
                    forKey:pinName];
     return [outputPins objectForKey:pinName];
 }

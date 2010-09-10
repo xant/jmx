@@ -27,35 +27,17 @@
 
 @synthesize type, name, multiple, direction;
 
-- (id)init
-{
-    // TODO - generate a warning message
-    return [self initWithName:@"Unknown" andType:kVJXVoidPin forDirection:kVJXAnyPin];
-}
-
-+ (id)pinWithName:(NSString *)pinName
-          andType:(VJXPinType)pinType
-     forDirection:(VJXPinDirection)pinDirection
-
-{
-    return [[[self alloc] initWithName:pinName andType:pinType forDirection:pinDirection] autorelease];
-}
-
 + (id)pinWithName:(NSString *)name
           andType:(VJXPinType)pinType
      forDirection:(VJXPinDirection)pinDirection
-    boundToObject:(id)pinReceiver
-     withSelector:(NSString *)pinSignal
+          ownedBy:(id)pinOwner
+     withSignal:(NSString *)pinSignal
 {
-    VJXPin *obj = [VJXPin pinWithName:name andType:pinType forDirection:pinDirection];
-    
-    if (obj)
-        [obj attachObject:pinReceiver withSelector:pinSignal];
-    return obj;
+    return [[[VJXPin alloc] initWithName:name andType:pinType forDirection:pinDirection ownedBy:pinOwner withSignal:pinSignal] autorelease];
 }
 
 
-- (id)initWithName:(NSString *)pinName andType:(VJXPinType)pinType forDirection:(VJXPinDirection)pinDirection
+- (id)initWithName:(NSString *)pinName andType:(VJXPinType)pinType forDirection:(VJXPinDirection)pinDirection ownedBy:(id)pinOwner withSignal:(NSString *)pinSignal
 {
     if (self = [super init]) {
         type = pinType;
@@ -66,6 +48,8 @@
         multiple = NO;
         currentData = nil;
         currentProducer = nil;
+        owner = pinOwner;
+        ownerSignal = pinSignal;
     }
     return self;
 }
@@ -110,6 +94,35 @@
     [self deliverSignal:data fromSender:self];
 }
 
+- (void)sendData:(id)data toReceiver:(id)receiver withSelector:(NSString *)selectorName fromSender:(id)sender
+{
+    SEL selector = NSSelectorFromString(selectorName);
+    int selectorArgsNum = [[selectorName componentsSeparatedByString:@":"] count]-1;
+    // checks are now done when registering receivers
+    // so we can avoid checking again now if receiver responds to selector and 
+    // if the selector expects the correct amount of arguments.
+    // this routine is expected to deliver the signals as soon as possible
+    // all safety checks must be done before putting new objects in the receivers' table
+    switch (selectorArgsNum) {
+        case 0:
+            // some listener could be uninterested to the data, 
+            // but just want to get notified when something travels on a pin
+            [receiver performSelector:selector];
+            break;
+        case 1:
+            // some other listeners could be interested only in the data,
+            // regardless of the sender
+            [receiver performSelector:selector withObject:data];
+            break;
+        case 2:
+            // and finally there can be listeners which require to know also who has sent the data
+            [receiver performSelector:selector withObject:data withObject:sender];
+            break;
+        default:
+            NSLog(@"Unsupported selector : '%@' . It can take up to two arguments\n", selectorName);
+    }
+}
+
 - (void)deliverSignal:(id)data fromSender:(id)sender
 {
     id signalData = [NSNull null];
@@ -143,34 +156,14 @@
             [currentData release];
         currentData = [signalData retain];
         currentProducer = [sender retain];
-        for (id receiver in receivers) {
-            NSString *selectorName = [receivers objectForKey:receiver];
-            SEL selector = NSSelectorFromString(selectorName);
-            int selectorArgsNum = [[selectorName componentsSeparatedByString:@":"] count]-1;
-            // checks are now done when registering receivers
-            // so we can avoid checking again now if receiver responds to selector and 
-            // if the selector expects the correct amount of arguments.
-            // this routine is expected to deliver the signals as soon as possible
-            // all safety checks must be done before putting new objects in the receivers' table
-            switch (selectorArgsNum) {
-                case 0:
-                    // some listener could be uninterested to the data, 
-                    // but just want to get notified when something travels on a pin
-                    [receiver performSelector:selector];
-                    break;
-                case 1:
-                    // some other listeners could be interested only in the data,
-                    // regardless of the sender
-                    [receiver performSelector:selector withObject:data];
-                    break;
-                case 2:
-                    // and finally there can be listeners which require to know also who has sent the data
-                    [receiver performSelector:selector withObject:data withObject:sender];
-                    break;
-                default:
-                    NSLog(@"Unsupported selector : '%@' . It can take up to two arguments\n", selectorName);
-            }
-        }
+        // send the signal to our owner 
+        // (if we are an input pin and if our ownerregistered a selector)
+        if (direction == kVJXInputPin && owner && ownerSignal)
+            [self sendData:data toReceiver:owner withSelector:ownerSignal fromSender:sender];
+
+        // and then propagate it to all receivers
+        for (id receiver in receivers)
+            [self sendData:data toReceiver:receiver withSelector:[receivers objectForKey:receiver] fromSender:sender];
     }
 }
 

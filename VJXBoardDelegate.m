@@ -67,6 +67,7 @@
         }
         VJXBoardEntity *entityView = [[VJXBoardEntity alloc] initWithEntity:entity];
         [board addSubview:entityView];
+        [entity release];
         if ([entity respondsToSelector:@selector(start)])
             [entity performSelector:@selector(start)];
         else
@@ -96,7 +97,6 @@
     NSArray *types = [QTMovie movieTypesWithOptions:QTIncludeCommonTypes];
     VJXQtVideoLayer *movieLayer = [[VJXQtVideoLayer alloc] init];
     [self openFile:types forEntity:movieLayer];
-    [movieLayer release];
 }
 
 

@@ -38,7 +38,7 @@
 
 + (VJXBoard *)sharedBoard;
 + (void)setSharedBoard:(VJXBoard *)aBoard;
-- (void)setSelected:(id)theEntity;
+- (void)setSelected:(id)theEntity multiple:(BOOL)isMultiple;
 
 + (void)removeEntity:(VJXBoardEntity *)theEntity;
 - (void)removeEntity:(VJXBoardEntity *)theEntity;

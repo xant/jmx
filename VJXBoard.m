@@ -60,7 +60,7 @@
     }
 }
 
-- (void)setSelected:(id)theEntity
+- (void)setSelected:(id)theEntity multiple:(BOOL)isMultiple
 {
     // Add some point, we'll be using a NSArrayController to have references of
     // all entities we have on the board, so the entity selection will be done
@@ -68,7 +68,8 @@
     // nice because we can use KVC in IB to create the Inspector palettes.
 
     // Unselect all entities, and toggle only the one we selected.
-    [entities makeObjectsPerformSelector:@selector(unselect)];
+    if (!isMultiple)
+        [entities makeObjectsPerformSelector:@selector(unselect)];
     [theEntity toggleSelected];
     
     // Move the selected entity to the end of the subviews array, making it move

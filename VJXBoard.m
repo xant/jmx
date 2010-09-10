@@ -159,6 +159,9 @@ static VJXBoard *sharedBoard = nil;
 - (BOOL)hasMultipleEntitiesSelected
 {
     NSUInteger count = 0;
+    // XXX - we should create a 'selected' array , instead of iterating each time
+    //       over all existing entities. In theory there could be many entities involved in
+    //       a single patch ... especially when we will have macros and groups.
     for (VJXBoardEntity *e in [self entities]) {
         if (e.selected)
             count++;

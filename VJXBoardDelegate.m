@@ -66,7 +66,7 @@
             return;
         }
         VJXBoardEntity *entityView = [[VJXBoardEntity alloc] initWithEntity:entity];
-        [board addSubview:entityView];
+        [board addToBoard:entityView];
         if ([entity respondsToSelector:@selector(start)])
             [entity performSelector:@selector(start)];
         else

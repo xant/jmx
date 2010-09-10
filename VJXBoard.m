@@ -62,7 +62,7 @@
     }
 }
 
-- (void)setSelected:(id)theEntity multiple:(BOOL)isMultiple
+- (void)setSelected:(VJXBoardEntity *)theEntity multiple:(BOOL)isMultiple
 {
     // Add some point, we'll be using a NSArrayController to have references of
     // all entities we have on the board, so the entity selection will be done
@@ -77,14 +77,12 @@
     
     // Move the selected entity to the end of the subviews array, making it move
     // to the top of the view hierarchy.
-    if ([theEntity isKindOfClass:[VJXBoardEntity class]] && ([[self subviews] count] >= 1)) {
-        NSMutableArray *subviews = [[self subviews] mutableCopy];
+    if ([entities count] >= 1) {
+        NSMutableArray *subviews = [[[self subviews] mutableCopy] autorelease];
         [subviews removeObjectAtIndex:[subviews indexOfObject:theEntity]];
         [subviews addObject:theEntity];
         [self setSubviews:subviews];
-        [subviews release];
     }
-    
 }
 
 - (void)mouseDown:(NSEvent *)theEvent

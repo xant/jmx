@@ -36,7 +36,7 @@
 
 + (VJXBoard *)sharedBoard;
 + (void)setSharedBoard:(VJXBoard *)aBoard;
-- (void)setSelected:(id)theEntity multiple:(BOOL)isMultiple;
+- (void)setSelected:(VJXBoardEntity *)theEntity multiple:(BOOL)isMultiple;
 
 + (void)shiftSelectedToLocation:(NSPoint)aLocation;
 - (void)shiftSelectedToLocation:(NSPoint)aLocation;

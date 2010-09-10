@@ -122,7 +122,10 @@
 {
     VJXPin *pin = [self outputPinWithName:pinName];
     if (pin) {
-        [pin attachObject:receiver withSelector:selector];
+        // create a virtual pin to be attached to the receiver
+        // not that the pin will automatically released once disconnected
+        VJXPin *vPin = [VJXPin pinWithName:@"vpin" andType:pin.type forDirection:kVJXInputPin ownedBy:receiver withSignal:selector];
+        [pin connectToPin:vPin];
         return YES;
     }
     return NO;

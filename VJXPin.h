@@ -49,7 +49,7 @@ typedef enum {
     NSMutableArray      *producers;
     BOOL                multiple;
     id                  currentData;
-    id                  currentProducer;
+    id                  currentSender;
     VJXPinDirection     direction;
     id                  owner;
     NSString            *ownerSignal;
@@ -67,14 +67,13 @@ typedef enum {
        withSignal:(NSString *)pinSignal;
 
 - (id)initWithName:(NSString *)pinName andType:(VJXPinType)pinType forDirection:(VJXPinDirection)pinDirection ownedBy:(id)pinOwner withSignal:(NSString *)pinSignal;
-- (BOOL)attachObject:(id)pinReceiver withSelector:(NSString *)pinSignal;
 - (BOOL)connectToPin:(VJXPin *)destinationPin;
 - (void)disconnectFromPin:(VJXPin *)destinationPin;
 - (void)disconnectAllPins;
 - (void)deliverSignal:(id)data fromSender:(id)sender;
 - (void)deliverSignal:(id)data;
 - (void)allowMultipleConnections:(BOOL)choice;
-
+- (NSArray *)readProducers;
 - (id)readPinValue;
 
 @end

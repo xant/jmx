@@ -23,6 +23,11 @@
 
 #import "VJXPin.h"
 
+@interface VJXPin (private)
+- (BOOL)attachObject:(id)pinReceiver withSelector:(NSString *)pinSignal;
+- (void)sendData:(id)data toReceiver:(id)receiver withSelector:(NSString *)selectorName fromSender:(id)sender;
+@end
+
 @implementation VJXPin
 
 @synthesize type, name, multiple, direction;
@@ -47,51 +52,11 @@
         direction = pinDirection;
         multiple = NO;
         currentData = nil;
-        currentProducer = nil;
+        currentSender = nil;
         owner = pinOwner;
         ownerSignal = pinSignal;
     }
     return self;
-}
-
-- (BOOL)attachObject:(id)pinReceiver withSelector:(NSString *)pinSignal
-{
-    BOOL rv = NO;
-    id data = nil;
-    id producer = nil;
-    @synchronized(self) {
-        if ([pinReceiver respondsToSelector:NSSelectorFromString(pinSignal)]) {
-            if ([[pinSignal componentsSeparatedByString:@":"] count]-1 <= 2) {
-                [receivers setObject:pinSignal forKey:pinReceiver];
-                rv = YES;
-                //data = [currentData retain];
-                //producer = [currentProducer retain];
-            } else {
-                NSLog(@"Unsupported selector : '%@' . It can take up to two arguments\n", pinSignal);
-            }
-        } else {
-            NSLog(@"Object %@ doesn't respond to %@\n", pinReceiver, pinSignal);
-        }
-        
-    }
-    // deliver the signal to the just connected receiver
-    /*if (rv == YES && data) {
-        [self deliverSignal:data fromSender:producer ? producer : self];
-        [data release];
-        if (producer)
-            [producer release];
-    }*/
-    return rv;
-}
-
-- (void)detachObject:(id)pinReceiver
-{
-    [receivers removeObjectForKey:pinReceiver];
-}
-
-- (void)deliverSignal:(id)data
-{
-    [self deliverSignal:data fromSender:self];
 }
 
 - (void)sendData:(id)data toReceiver:(id)receiver withSelector:(NSString *)selectorName fromSender:(id)sender
@@ -123,6 +88,41 @@
     }
 }
 
+- (BOOL)attachObject:(id)pinReceiver withSelector:(NSString *)pinSignal
+{
+    BOOL rv = NO;
+    @synchronized(self) {
+        if ([pinReceiver respondsToSelector:NSSelectorFromString(pinSignal)]) {
+            if ([[pinSignal componentsSeparatedByString:@":"] count]-1 <= 2) {
+                [receivers setObject:pinSignal forKey:pinReceiver];
+                rv = YES;
+            } else {
+                NSLog(@"Unsupported selector : '%@' . It can take up to two arguments\n", pinSignal);
+            }
+        } else {
+            NSLog(@"Object %@ doesn't respond to %@\n", pinReceiver, pinSignal);
+        }
+        
+        // deliver the signal to the just connected receiver
+        if (rv == YES && currentData) {
+            [self sendData:currentData toReceiver:pinReceiver withSelector:pinSignal fromSender:currentSender ? currentSender : self];
+        }
+    }
+    return rv;
+}
+
+- (void)detachObject:(id)pinReceiver
+{
+    @synchronized(self) {
+        [receivers removeObjectForKey:pinReceiver];
+    }
+}
+
+- (void)deliverSignal:(id)data
+{
+    [self deliverSignal:data fromSender:self];
+}
+
 - (void)deliverSignal:(id)data fromSender:(id)sender
 {
     id signalData = [NSNull null];
@@ -151,15 +151,12 @@
             NSLog(@"Unkown pin type!\n");
     }
     @synchronized(self) {
-        // save current data
         if (currentData)
             [currentData release];
-        if (currentProducer)
-            [currentProducer release];
         currentData = [signalData retain];
-        //currentProducer = [sender retain];
+        currentSender = sender;
         // send the signal to our owner 
-        // (if we are an input pin and if our ownerregistered a selector)
+        // (if we are an input pin and if our owner registered a selector)
         if (direction == kVJXInputPin && owner && ownerSignal)
             [self sendData:data toReceiver:owner withSelector:ownerSignal fromSender:sender];
 
@@ -176,13 +173,11 @@
 
 - (void)dealloc
 {
+    if (currentData)
+        [currentData release];
     [name release];
     [receivers release];
     [producers release];
-    if (currentData)
-        [currentData release];
-    if (currentProducer)
-        [currentProducer release];
     [super dealloc];
 }
 
@@ -231,9 +226,14 @@
 }
 
 - (void)disconnectAllPins
-{
-    while ([producers count])
-        [self disconnectFromPin:[producers objectAtIndex:0]];
+{    
+    @synchronized (self) { 
+        while ([producers count])
+            [self disconnectFromPin:[producers objectAtIndex:0]];
+        NSArray *receiverObjects = [receivers allKeys];
+        for (VJXPin *receiver in receiverObjects)
+            [receiver disconnectFromPin:self];
+    }
 }
 
 - (id)copyWithZone:(NSZone *)zone
@@ -252,6 +252,16 @@
         data = [currentData retain];
     }
     return [data autorelease];
+}
+
+- (NSArray *)readProducers
+{
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    @synchronized(self) {
+        for (VJXPin *producer in producers)
+            [array addObject:[producer readPinValue]];
+    }
+    return [array autorelease];
 }
 
 @end

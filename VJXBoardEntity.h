@@ -44,4 +44,6 @@
 - (BOOL)inRect:(NSRect)rect;
 - (void)unselect;
 
+- (void)shiftOffsetToLocation:(NSPoint)aLocation;
+
 @end

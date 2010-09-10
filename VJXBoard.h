@@ -43,4 +43,7 @@
 + (void)removeEntity:(VJXBoardEntity *)theEntity;
 - (void)removeEntity:(VJXBoardEntity *)theEntity;
 
++ (void)shiftSelectedToLocation:(NSPoint)aLocation;
+- (void)shiftSelectedToLocation:(NSPoint)aLocation;
+
 @end

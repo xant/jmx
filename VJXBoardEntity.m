@@ -156,17 +156,14 @@
 
 - (void)mouseDragged:(NSEvent *)theEvent
 {
-    // Move the entity, recalculating the coordinates based on the current point
-    // and the entity's frame.
     NSPoint newDragLocation = [theEvent locationInWindow];
-    NSPoint thisOrigin = [self frame].origin;
-    thisOrigin.x += (-lastDragLocation.x + newDragLocation.x);
-    thisOrigin.y += (-lastDragLocation.y + newDragLocation.y);
-    [self setFrameOrigin:thisOrigin];
-    lastDragLocation = newDragLocation;
+    NSPoint newLocation = NSMakePoint((-lastDragLocation.x + newDragLocation.x), (-lastDragLocation.y + newDragLocation.y));
+    [[VJXBoard sharedBoard] shiftSelectedToLocation:newLocation];
     
     // Update outlets' connectors coordinates as well.
     [self.outlets makeObjectsPerformSelector:@selector(updateAllConnectorsFrames)];
+
+    lastDragLocation = newDragLocation;
 }
 
 - (void)mouseUp:(NSEvent *)theEvent
@@ -206,6 +203,12 @@
 - (void)unselect
 {
     [self setSelected:NO];
+}
+
+- (void)shiftOffsetToLocation:(NSPoint)aLocation
+{
+    NSRect thisFrame = NSOffsetRect([self frame], aLocation.x, aLocation.y);
+    [self setFrame:thisFrame];
 }
 
 @end

@@ -144,4 +144,17 @@ static VJXBoard *sharedBoard = nil;
     [[self sharedBoard] removeEntity:theEntity];
 }
 
++ (void)shiftSelectedToLocation:(NSPoint)aLocation
+{
+    [[self sharedBoard] shiftSelectedToLocation:aLocation];
+}
+
+- (void)shiftSelectedToLocation:(NSPoint)aLocation;
+{
+    for (VJXBoardEntity *e in [self entities]) {
+        if (e.selected)
+            [e shiftOffsetToLocation:aLocation];
+    }
+}
+
 @end

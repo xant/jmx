@@ -46,4 +46,6 @@
 + (void)shiftSelectedToLocation:(NSPoint)aLocation;
 - (void)shiftSelectedToLocation:(NSPoint)aLocation;
 
+- (BOOL)hasMultipleEntitiesSelected;
+
 @end

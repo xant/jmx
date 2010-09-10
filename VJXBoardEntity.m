@@ -150,8 +150,15 @@
     // is called it knows the last drag location.
     lastDragLocation = [theEvent locationInWindow];
     
-    bool isMultiple = [theEvent modifierFlags] & NSShiftKeyMask;
-    [[VJXBoard sharedBoard] setSelected:self multiple:(isMultiple ? YES : NO)];
+    BOOL isMultiple = [theEvent modifierFlags] & NSShiftKeyMask ? YES : NO;
+    if (isMultiple) {
+        [[VJXBoard sharedBoard] setSelected:self multiple:isMultiple];        
+    }
+    else {
+        if (![[VJXBoard sharedBoard] hasMultipleEntitiesSelected]) {
+            [[VJXBoard sharedBoard] setSelected:self multiple:NO];
+        }
+    }
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent

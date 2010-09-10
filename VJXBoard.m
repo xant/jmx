@@ -157,4 +157,16 @@ static VJXBoard *sharedBoard = nil;
     }
 }
 
+- (BOOL)hasMultipleEntitiesSelected
+{
+    NSUInteger count = 0;
+    for (VJXBoardEntity *e in [self entities]) {
+        if (e.selected)
+            count++;
+        if (count > 1)
+            return YES;
+    }
+    return NO;
+}
+
 @end

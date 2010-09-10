@@ -67,11 +67,11 @@
         }
         VJXBoardEntity *entityView = [[VJXBoardEntity alloc] initWithEntity:entity];
         [board addSubview:entityView];
-        [entity release];
         if ([entity respondsToSelector:@selector(start)])
             [entity performSelector:@selector(start)];
         else
              NSLog(@"Entity %@ doesn't respond to 'start'. Not a VJXThreadedEntity ?\n");
+        [entity release];
         [entityView release];
     }
 }

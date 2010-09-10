@@ -128,9 +128,16 @@ static VJXBoard *sharedBoard = nil;
 
 + (VJXBoard *)sharedBoard
 {
+    // XXX - here a create-on-first-use idiom should be adopted
+    //       and if this class is going to be used as singleton,
+    //       new instances shold be forbiddend and constructors/initializers
+    //       should be private
     return sharedBoard;
 }
 
+// XXX - such a message shouldn't exist at all
+//       the shared 'singleton' instance should be created
+//       transparently the first time it is requested
 + (void)setSharedBoard:(VJXBoard *)aBoard
 {
     sharedBoard = aBoard;

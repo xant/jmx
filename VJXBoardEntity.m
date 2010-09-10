@@ -93,6 +93,8 @@
 
 - (void)dealloc
 {
+    if ([entity respondsToSelector:@selector(stop)])
+        [entity performSelector:@selector(stop)];
     [entity release];
     [label release];
     [outlets release];

@@ -64,8 +64,8 @@
             if ([[pinSignal componentsSeparatedByString:@":"] count]-1 <= 2) {
                 [receivers setObject:pinSignal forKey:pinReceiver];
                 rv = YES;
-                data = [currentData retain];
-                producer = [currentProducer retain];
+                //data = [currentData retain];
+                //producer = [currentProducer retain];
             } else {
                 NSLog(@"Unsupported selector : '%@' . It can take up to two arguments\n", pinSignal);
             }
@@ -75,12 +75,12 @@
         
     }
     // deliver the signal to the just connected receiver
-    if (rv == YES && data) {
+    /*if (rv == YES && data) {
         [self deliverSignal:data fromSender:producer ? producer : self];
         [data release];
         if (producer)
             [producer release];
-    }
+    }*/
     return rv;
 }
 
@@ -154,8 +154,10 @@
         // save current data
         if (currentData)
             [currentData release];
+        if (currentProducer)
+            [currentProducer release];
         currentData = [signalData retain];
-        currentProducer = [sender retain];
+        //currentProducer = [sender retain];
         // send the signal to our owner 
         // (if we are an input pin and if our ownerregistered a selector)
         if (direction == kVJXInputPin && owner && ownerSignal)
@@ -177,6 +179,10 @@
     [name release];
     [receivers release];
     [producers release];
+    if (currentData)
+        [currentData release];
+    if (currentProducer)
+        [currentProducer release];
     [super dealloc];
 }
 

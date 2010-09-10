@@ -26,7 +26,7 @@
 
 @implementation VJXQtVideoLayer
 
-@synthesize movie, moviePath, paused, repeat;
+@synthesize moviePath, paused, repeat;
 
 - (id)init
 {
@@ -48,44 +48,48 @@
         NSError *error;
         self.moviePath = file;
         NSLog(@"moviePath: %@", moviePath);
-
-        // Setter already releases and retains where appropriate.
-        self.movie = [QTMovie movieWithFile:moviePath error:&error];
-        
-        if (!movie) {
-            NSLog(@"Got error: %@", error);
-            return NO;
-        }
-        
-        NSLog(@"movie: %@", movie);
-        NSArray* videoTracks = [movie tracksOfMediaType:QTMediaTypeVideo];
-        QTTrack* firstVideoTrack = [videoTracks objectAtIndex:0];
-        QTMedia* media = [firstVideoTrack media];
-        QTTime qtTimeDuration = [[media attributeForKey:QTMediaDurationAttribute] QTTimeValue];
-        long sampleCount = [[media attributeForKey:QTMediaSampleCountAttribute] longValue];
-        // we can set the frequency to be exactly the same as fps ... since it's useles
-        // to have an higher signaling frequency in the case of an existing movie. 
-        // In any case we won't have more 'unique' frames than the native movie fps ... so if signaling 
-        // the frames more often we will just send the same image multiple times (wasting precious cpu time)
-        if (sampleCount > 1) // check if we indeed have a sequence of frames
-            self.frequency = [NSNumber numberWithDouble:sampleCount/(qtTimeDuration.timeValue/qtTimeDuration.timeScale)];
-        else // or if it's just a still image, set the frequency to 1 sec
-            self.frequency = [NSNumber numberWithDouble:1]; // XXX
+        @synchronized(self) {
+            if (movie)
+                [movie release];
+            // Setter already releases and retains where appropriate.
+            movie = [[QTMovie movieWithFile:moviePath error:&error] retain];
             
-        // set the layer size to the native movie size
-        // scaling is a quite expensive operation and the user 
-        // must be aware he is doing that (so better waiting for him
-        // to set a different layer size by using the proper input pin)
-        NSSize movieSize = [firstVideoTrack apertureModeDimensionsForMode:@"QTMovieApertureModeClean"];
-        size = [[VJXSize sizeWithNSSize:movieSize] retain];
-        self.fps = self.frequency;
+            if (!movie) {
+                NSLog(@"Got error: %@", error);
+                return NO;
+            }
+            
+            NSLog(@"movie: %@", movie);
+            NSArray* videoTracks = [movie tracksOfMediaType:QTMediaTypeVideo];
+            QTTrack* firstVideoTrack = [videoTracks objectAtIndex:0];
+            QTMedia* media = [firstVideoTrack media];
+            QTTime qtTimeDuration = [[media attributeForKey:QTMediaDurationAttribute] QTTimeValue];
+            long sampleCount = [[media attributeForKey:QTMediaSampleCountAttribute] longValue];
+            // we can set the frequency to be exactly the same as fps ... since it's useles
+            // to have an higher signaling frequency in the case of an existing movie. 
+            // In any case we won't have more 'unique' frames than the native movie fps ... so if signaling 
+            // the frames more often we will just send the same image multiple times (wasting precious cpu time)
+            if (sampleCount > 1) // check if we indeed have a sequence of frames
+                self.frequency = [NSNumber numberWithDouble:sampleCount/(qtTimeDuration.timeValue/qtTimeDuration.timeScale)];
+            else // or if it's just a still image, set the frequency to 1 sec
+                self.frequency = [NSNumber numberWithDouble:1]; // XXX
+                
+            // set the layer size to the native movie size
+            // scaling is a quite expensive operation and the user 
+            // must be aware he is doing that (so better waiting for him
+            // to set a different layer size by using the proper input pin)
+            NSSize movieSize = [firstVideoTrack apertureModeDimensionsForMode:@"QTMovieApertureModeClean"];
+            size = [[VJXSize sizeWithNSSize:movieSize] retain];
+            self.fps = self.frequency;
+        }
         return YES;
     }
     return NO;
 }
 
 - (void)dealloc {
-    self.movie = nil;
+    if (movie)
+        [movie release];
     [super dealloc];
 }
 

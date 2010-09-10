@@ -26,14 +26,13 @@
 #import "VJXLayer.h"
 
 @interface VJXQtVideoLayer : VJXLayer {
+@private
     QTMovie *movie;
     NSString *moviePath;
-
     BOOL paused;
     BOOL repeat;
 }
 
-@property (retain) QTMovie *movie;
 @property (copy) NSString *moviePath;
 @property (assign) BOOL paused;
 @property (assign) BOOL repeat;

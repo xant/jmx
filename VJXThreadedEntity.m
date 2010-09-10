@@ -54,12 +54,17 @@
     if (!worker) {
         worker = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
         [worker start];
+        [worker release];
     }
 }
 
 - (void)stop {
-    if (worker)
+    if (worker) {
         [worker cancel];
+        while (![worker isFinished])
+            [NSThread sleepForTimeInterval:0.001];
+        worker = nil;
+    }
 }
 
 - (void)run

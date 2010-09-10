@@ -132,7 +132,6 @@
     stamps[stampCount++] = timeStamp;
     
     double rate = 1e9/((stamps[stampCount - 1] - stamps[0])/stampCount);
-    NSLog(@"DIOKANE %f\n", rate);
     [frequencyPin deliverSignal:[NSNumber numberWithDouble:rate]
                      fromSender:self];
     [super outputDefaultSignals:timeStamp];

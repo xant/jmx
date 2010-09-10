@@ -107,7 +107,7 @@
             [imageOutputPin deliverSignal:currentFrame fromSender:self];
         } else {
             // send a black frame
-            CIImage *blackFrame = [CIImage imageWithColor:[CIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.0]];
+            CIImage *blackFrame = [CIImage imageWithColor:[CIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
             [imageOutputPin deliverSignal:blackFrame fromSender:self];
         }
         [imageProducers removeAllObjects];

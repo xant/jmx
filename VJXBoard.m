@@ -190,6 +190,9 @@ static VJXBoard *sharedBoard = nil;
             // Remove the entity from our entities array, since we won't need
             // it anymore.
             [entities removeObjectAtIndex:i];
+            
+            // And remove also from our selectedEntities array...
+            [selectedEntities removeObject:e];
             i--;
         }
     }

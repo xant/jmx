@@ -102,7 +102,7 @@
     // Create a view VJXBoardSelection and place it in the top of the view
     // hierarchy if it already doesn't exist.
     if (!currentSelection) {
-        self.currentSelection = [[VJXBoardSelection alloc] init];
+        self.currentSelection = [[[VJXBoardSelection alloc] init] autorelease];
         [self addSubview:currentSelection positioned:NSWindowAbove relativeTo:nil];
     }
     

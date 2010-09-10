@@ -79,7 +79,7 @@
             [outlet release];
         }
         
-        self.label = [[NSTextField alloc] initWithFrame:NSMakeRect(bounds.origin.x, (bounds.size.height - 4.0), bounds.size.width, labelHeight)];
+        self.label = [[[NSTextField alloc] initWithFrame:NSMakeRect(bounds.origin.x, (bounds.size.height - 4.0), bounds.size.width, labelHeight)] autorelease];
         [self.label setTextColor:[NSColor whiteColor]];
         [self.label setStringValue:[self.entity displayName]];
         [self.label setBordered:NO];

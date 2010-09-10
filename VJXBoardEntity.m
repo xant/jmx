@@ -166,9 +166,9 @@
     NSPoint newDragLocation = [theEvent locationInWindow];
     NSPoint newLocation = NSMakePoint((-lastDragLocation.x + newDragLocation.x), (-lastDragLocation.y + newDragLocation.y));
     [[VJXBoard sharedBoard] shiftSelectedToLocation:newLocation];
-    
-    // Update outlets' connectors coordinates as well.
-    [self.outlets makeObjectsPerformSelector:@selector(updateAllConnectorsFrames)];
+//    
+//    // Update outlets' connectors coordinates as well.
+//    [self.outlets makeObjectsPerformSelector:@selector(updateAllConnectorsFrames)];
 
     lastDragLocation = newDragLocation;
 }
@@ -215,6 +215,7 @@
 - (void)shiftOffsetToLocation:(NSPoint)aLocation
 {
     NSRect thisFrame = NSOffsetRect([self frame], aLocation.x, aLocation.y);
+    [outlets makeObjectsPerformSelector:@selector(updateAllConnectorsFrames)];
     [self setFrame:thisFrame];
 }
 

@@ -173,7 +173,8 @@ static VJXBoard *sharedBoard = nil;
 
 - (void)removeSelectedEntities
 {
-    for (VJXBoardEntity *e in entities) {
+    NSArray *tempEntities = [entities copy];
+    for (VJXBoardEntity *e in tempEntities) {
         if (e.selected) {
             // Remove the entity from the superview.
             //
@@ -185,9 +186,9 @@ static VJXBoard *sharedBoard = nil;
             // Remove the entity from our entities array, since we won't need
             // it anymore.
             [entities removeObject:e];
-            NSLog(@"retainCount: %i", [e retainCount]);
         }
     }
+    [tempEntities release];
 }
 
 @end

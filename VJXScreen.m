@@ -30,7 +30,7 @@
 {
     if (self = [super init]) {
         currentFrame = nil;
-        memcpy(&size, &screenSize, sizeof(size));
+        size = screenSize;    
         [self registerInputPin:@"inputFrame" withType:kVJXImagePin andSelector:@"drawFrame:"];
         // effective fps for debugging purposes
         [self registerOutputPin:@"fps" withType:kVJXNumberPin];
@@ -40,8 +40,11 @@
 
 - (id)init
 {
-    NSSize defaultSize = { 640, 480 };
-    return [self initWithSize:defaultSize];
+    if (self == [super init]) {
+        NSSize defaultSize = { 640, 480 };
+        return [self initWithSize:defaultSize];
+    }
+    return self;
 }
 
 - (void)drawFrame:(CIImage *)frame

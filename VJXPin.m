@@ -183,8 +183,8 @@
 - (BOOL)connectToPin:(VJXPin *)destinationPin
 {
     @synchronized(self) {
-        if (destinationPin.type == self.type) {
-            if (self.direction == kVJXInputPin) {
+        if (destinationPin.type == type) {
+            if (direction == kVJXInputPin) {
                 if (destinationPin.direction != kVJXInputPin) {
                     if ([producers count] && !multiple)
                         [self disconnectAllPins];
@@ -194,9 +194,9 @@
                     }
                 }
             } else if (destinationPin.direction == kVJXInputPin) {
-                if (self.direction != kVJXInputPin) 
+                if (direction != kVJXInputPin) 
                     return [destinationPin connectToPin:self];
-            } else if (self.direction == kVJXAnyPin) {
+            } else if (direction == kVJXAnyPin) {
                 if ([producers count] && multiple)
                     [self disconnectAllPins];
                 if ([destinationPin attachObject:self withSelector:@"deliverSignal:fromSender:"]) {
@@ -215,8 +215,12 @@
 - (void)disconnectFromPin:(VJXPin *)destinationPin
 {
     @synchronized(self) {
-        [destinationPin detachObject:self];
-        [producers removeObjectIdenticalTo:destinationPin];
+        if (direction == kVJXInputPin) {
+            [destinationPin detachObject:self];
+            [producers removeObjectIdenticalTo:destinationPin];
+        } else {
+            [destinationPin disconnectFromPin:self];
+        }
     }
 }
 

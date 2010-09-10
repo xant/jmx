@@ -38,6 +38,7 @@
                                                  defer:NO];
         view = [[VJXOpenGLView alloc] initWithFrame:[window frame]];
         [[window contentView] addSubview:view];
+        [window setReleasedWhenClosed:NO];
         [window setIsVisible:YES];
     }
     return self;
@@ -46,9 +47,8 @@
 
 - (void)dealloc
 {
-    [window close];
-    [window release];
     [view release];
+    [window release];
     [super dealloc];
 }
 

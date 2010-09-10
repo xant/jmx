@@ -150,7 +150,13 @@
     // is called it knows the last drag location.
     lastDragLocation = [theEvent locationInWindow];
     
-    BOOL isMultiple = [theEvent modifierFlags] & NSShiftKeyMask ? YES : NO;
+    // If we have the Command key pressed, we assume the user wants to select
+    // several entities so we add the entity to the selection. If we have other
+    // entities selected (more than one) we don't do anything since we assume
+    // the user want to move the selected entities. If we don't have several
+    // entities selected, we unfocus the current selection and focus the 
+    // one clicked.
+    BOOL isMultiple = [theEvent modifierFlags] & NSCommandKeyMask ? YES : NO;
     if (isMultiple) {
         [[VJXBoard sharedBoard] setSelected:self multiple:isMultiple];        
     }
@@ -163,13 +169,12 @@
 
 - (void)mouseDragged:(NSEvent *)theEvent
 {
+    // Calculate the new location based on the last drag location and the 
+    // location, then ask the board to shift all the selected elements to the
+    // new point.
     NSPoint newDragLocation = [theEvent locationInWindow];
     NSPoint newLocation = NSMakePoint((-lastDragLocation.x + newDragLocation.x), (-lastDragLocation.y + newDragLocation.y));
     [[VJXBoard sharedBoard] shiftSelectedToLocation:newLocation];
-//    
-//    // Update outlets' connectors coordinates as well.
-//    [self.outlets makeObjectsPerformSelector:@selector(updateAllConnectorsFrames)];
-
     lastDragLocation = newDragLocation;
 }
 

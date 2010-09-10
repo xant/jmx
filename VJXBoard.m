@@ -32,7 +32,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.entities = [NSMutableArray array];
-        [self setSelected:nil];
+        [self setSelected:nil multiple:NO];
     }
     return self;
 }
@@ -56,7 +56,9 @@
     [super addSubview:aView];
     if ([aView isKindOfClass:[VJXBoardEntity class]]) {
         [entities addObject:aView];
-        [self setSelected:(VJXBoardEntity *)aView];        
+
+        // Put focus on the created entity.
+        [self setSelected:(VJXBoardEntity *)aView multiple:NO];        
     }
 }
 
@@ -70,6 +72,7 @@
     // Unselect all entities, and toggle only the one we selected.
     if (!isMultiple)
         [entities makeObjectsPerformSelector:@selector(unselect)];
+
     [theEntity toggleSelected];
     
     // Move the selected entity to the end of the subviews array, making it move
@@ -87,6 +90,8 @@
 - (void)mouseDown:(NSEvent *)theEvent
 {
     lastDragLocation = [theEvent locationInWindow];
+
+    // Unselect all the selected entities if the user click on the board.
     [entities makeObjectsPerformSelector:@selector(unselect)]; 
 }
 

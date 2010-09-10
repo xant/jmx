@@ -33,7 +33,7 @@
     if (self == [super init]) {
         worker = nil;
         // and 'effective' frequency , only for debugging purposes
-        self.frequency = [NSNumber numberWithDouble:25];
+        self.frequency = [NSNumber numberWithFloat:25.0];
         [self registerInputPin:@"frequency" withType:kVJXNumberPin andSelector:@"setFrequency:"];
         [self registerInputPin:@"active" withType:kVJXNumberPin andSelector:@"setActive:"];
         [self registerOutputPin:@"outputFrequency" withType:kVJXNumberPin];
@@ -86,7 +86,7 @@
         uint64_t sleepTime = (delta && delta < maxDelta) ? maxDelta - delta : 0;
         
         if (sleepTime) {
-#if 0
+#if 1
             // using nanosleep is a good portable way, but since we are running 
             // on OSX only, we should try relying on the NSThread API.
             // We will switch back to nanosleep if we notice that 'sleepForTimeInterval'
@@ -101,7 +101,9 @@
             } while (remainder.tv_sec || remainder.tv_nsec);
 #else
             // let's try if NSThread facilities are reliable (in terms of time precision)
-            [NSThread sleepForTimeInterval:sleepTime/1e9];
+            do {
+                [NSThread sleepForTimeInterval:0.001];
+            } while (CVGetCurrentHostTime() - timeStamp <= sleepTime);
 #endif
         } else {
             // mmm ... no sleep time ... perhaps we are out of resources and slowing down mixing
@@ -130,6 +132,7 @@
     stamps[stampCount++] = timeStamp;
     
     double rate = 1e9/((stamps[stampCount - 1] - stamps[0])/stampCount);
+    NSLog(@"DIOKANE %f\n", rate);
     [frequencyPin deliverSignal:[NSNumber numberWithDouble:rate]
                      fromSender:self];
     [super outputDefaultSignals:timeStamp];

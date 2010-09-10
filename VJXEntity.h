@@ -73,6 +73,7 @@
 - (void)unregisterOutputPin:(NSString *)pinName;
 
 - (void)unregisterAllPins;
+- (void)disconnectAllPins;
 
 - (VJXPin *)inputPinWithName:(NSString *)pinName;
 - (VJXPin *)outputPinWithName:(NSString *)pinName;

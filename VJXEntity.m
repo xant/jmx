@@ -107,11 +107,8 @@
 
 - (void)unregisterAllPins
 {
-    for (id key in inputPins)
-        [[inputPins objectForKey:key] disconnectAllPins];
+    [self disconnectAllPins];
     [inputPins removeAllObjects];
-    for (id key in outputPins)
-        [[outputPins objectForKey:key] disconnectAllPins];
     [outputPins removeAllObjects];
 }
 
@@ -147,6 +144,14 @@
     // but since we are to be considered 'immutable' we can adopt what described at the end of :
     // http://developer.apple.com/mac/library/documentation/cocoa/conceptual/MemoryMgmt/Articles/mmImplementCopy.html
     return [self retain];
+}
+
+- (void)disconnectAllPins
+{
+    for (id key in inputPins)
+        [[inputPins objectForKey:key] disconnectAllPins];
+    for (id key in outputPins)
+        [[outputPins objectForKey:key] disconnectAllPins];
 }
 
 @synthesize inputPins, outputPins, name, active;

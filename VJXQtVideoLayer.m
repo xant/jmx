@@ -48,13 +48,15 @@
         NSError *error;
         self.moviePath = file;
         NSLog(@"moviePath: %@", moviePath);
-        if (movie)
-            [movie release];
-        movie = [[QTMovie movieWithFile:moviePath error:&error] retain];
+
+        // Setter already releases and retains where appropriate.
+        self.movie = [QTMovie movieWithFile:moviePath error:&error];
+        
         if (!movie) {
             NSLog(@"Got error: %@", error);
             return NO;
         }
+        
         NSLog(@"movie: %@", movie);
         NSArray* videoTracks = [movie tracksOfMediaType:QTMediaTypeVideo];
         QTTrack* firstVideoTrack = [videoTracks objectAtIndex:0];
@@ -83,8 +85,7 @@
 }
 
 - (void)dealloc {
-    if (movie)
-        [movie release];
+    self.movie = nil;
     [super dealloc];
 }
 

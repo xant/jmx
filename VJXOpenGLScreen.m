@@ -31,10 +31,11 @@
 - (id)initWithSize:(NSSize)screenSize
 {
     if (self = [super initWithSize:screenSize]) {
-        NSRect frame = { { 0, 0 }, { size.width, size.height } };
+        NSRect frame = NSMakeRect(0, 0, size.width, size.height);
         window = [[NSWindow alloc] initWithContentRect:frame                                          
-                                                   styleMask:NSTitledWindowMask|NSMiniaturizableWindowMask
-                                                     backing:NSBackingStoreBuffered defer:NO];
+                                             styleMask:NSTitledWindowMask|NSMiniaturizableWindowMask
+                                               backing:NSBackingStoreBuffered 
+                                                 defer:NO];
         view = [[VJXOpenGLView alloc] initWithFrame:[window frame]];
         [[window contentView] addSubview:view];
         [window setIsVisible:YES];
@@ -42,6 +43,15 @@
     return self;
     
 }
+
+- (void)dealloc
+{
+    [window close];
+    [window release];
+    [view release];
+    [super dealloc];
+}
+
 - (void)drawFrame:(CIImage *)frame
 {
     [super drawFrame:frame];
@@ -58,4 +68,5 @@
         [view drawRect:NSZeroRect];
     }
 }
+
 @end

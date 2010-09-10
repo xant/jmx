@@ -26,13 +26,11 @@
 #import "VJXBoardSelection.h"
 
 @interface VJXBoard : NSView {
-    VJXBoardEntity *selectedEntity;
     NSPoint lastDragLocation;
     VJXBoardSelection *currentSelection;
     NSMutableArray *entities;
 }
 
-@property (nonatomic,retain) VJXBoardEntity *selectedEntity;
 @property (nonatomic,retain) VJXBoardSelection *currentSelection;
 @property (nonatomic,retain) NSMutableArray *entities;
 
@@ -40,12 +38,11 @@
 + (void)setSharedBoard:(VJXBoard *)aBoard;
 - (void)setSelected:(id)theEntity multiple:(BOOL)isMultiple;
 
-+ (void)removeEntity:(VJXBoardEntity *)theEntity;
-- (void)removeEntity:(VJXBoardEntity *)theEntity;
-
 + (void)shiftSelectedToLocation:(NSPoint)aLocation;
 - (void)shiftSelectedToLocation:(NSPoint)aLocation;
 
 - (BOOL)hasMultipleEntitiesSelected;
+
+- (void)removeSelectedEntities;
 
 @end

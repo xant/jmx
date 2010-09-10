@@ -26,7 +26,7 @@
 
 @implementation VJXBoard
 
-@synthesize selectedEntity, currentSelection, entities;
+@synthesize currentSelection, entities;
 
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
@@ -139,16 +139,6 @@ static VJXBoard *sharedBoard = nil;
     sharedBoard = aBoard;
 }
 
-- (void)removeEntity:(VJXBoardEntity *)theEntity
-{
-    [entities removeObject:theEntity];
-}
-
-+ (void)removeEntity:(VJXBoardEntity *)theEntity
-{
-    [[self sharedBoard] removeEntity:theEntity];
-}
-
 + (void)shiftSelectedToLocation:(NSPoint)aLocation
 {
     [[self sharedBoard] shiftSelectedToLocation:aLocation];
@@ -172,6 +162,17 @@ static VJXBoard *sharedBoard = nil;
             return YES;
     }
     return NO;
+}
+
+- (void)removeSelectedEntities
+{
+    for (VJXBoardEntity *e in entities) {
+        if (e.selected) {
+            [e removeFromSuperview];
+            [entities removeObject:e];
+            NSLog(@"retainCount: %i", [e retainCount]);
+        }
+    }
 }
 
 @end

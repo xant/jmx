@@ -37,5 +37,5 @@
 - (IBAction)addImageLayer:(id)sender;
 - (IBAction)addOutputScreen:(id)sender;
 - (IBAction)addMixerLayer:(id)sender;
-
+- (IBAction)removeSelectedEntities:(id)sender;
 @end

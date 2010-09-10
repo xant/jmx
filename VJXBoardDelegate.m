@@ -124,9 +124,14 @@
 
 - (IBAction)addOutputScreen:(id)sender
 {
-    VJXOpenGLScreen *screen = [[VJXOpenGLScreen alloc] init];
-    VJXBoardEntity *entity = [[VJXBoardEntity alloc] initWithEntity:screen];
+    VJXOpenGLScreen *screen = [[[VJXOpenGLScreen alloc] init] autorelease];
+    VJXBoardEntity *entity = [[[VJXBoardEntity alloc] initWithEntity:screen] autorelease];
     [board addSubview:entity];
+}
+
+- (IBAction)removeSelectedEntities:(id)sender
+{
+    [board removeSelectedEntities];
 }
 
 @end

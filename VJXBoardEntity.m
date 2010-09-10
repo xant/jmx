@@ -45,9 +45,10 @@
     self = [super initWithFrame:frame];
     
     if (self) {
-        [self setEntity:theEntity];
-        [self setSelected:NO];
+        self.entity = theEntity;
+        self.selected = NO;
         self.outlets = [NSMutableArray array];
+        
         NSRect bounds = [self bounds];
         bounds.size.height -= labelHeight;
         bounds.origin.x += 6.0;
@@ -92,6 +93,9 @@
 
 - (void)dealloc
 {
+    [entity release];
+    [label release];
+    [outlets release];
     [super dealloc];
 }
 
@@ -199,12 +203,6 @@
 - (NSString *)description
 {
     return [self.entity displayName];
-}
-
-- (void)removeFromSuperview
-{
-    [VJXBoard removeEntity:self];
-    [super removeFromSuperview];
 }
 
 - (BOOL)inRect:(NSRect)rect

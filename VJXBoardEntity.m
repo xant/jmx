@@ -200,22 +200,7 @@
 
 - (BOOL)inRect:(NSRect)rect
 {
-    NSRect frame = [self frame];
-    NSPointArray points = calloc(4, sizeof(NSPoint));
-    points[0] = NSMakePoint(frame.origin.x, frame.origin.y);
-    points[1] = NSMakePoint(frame.origin.x, frame.origin.y + frame.size.height);
-    points[2] = NSMakePoint(frame.origin.x + frame.size.width, frame.origin.y);
-    points[3] = NSMakePoint(frame.origin.x + frame.size.width, frame.origin.y + frame.size.height);
-
-    BOOL inRect = NO;
-    
-    for (int i = 0; i < 4; i++) {
-        if ((inRect = NSPointInRect(points[i], rect)) == YES)
-            break;
-    }
-    free(points);
-    
-    return inRect;
+    return NSIntersectsRect(rect, [self frame]);
 }
 
 - (void)unselect

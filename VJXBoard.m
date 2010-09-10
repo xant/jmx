@@ -31,7 +31,8 @@
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.entities = [NSMutableArray array];
+        entities = [[NSMutableArray alloc] init];
+        selectedEntities = [[NSMutableArray alloc] init];
         [self setSelected:nil multiple:NO];
     }
     return self;
@@ -39,8 +40,16 @@
 
 - (void)awakeFromNib
 {
-    self.entities = [NSMutableArray array];
+    entities = [[NSMutableArray alloc] init];
+    selectedEntities = [[NSMutableArray alloc] init];
     [self setNeedsDisplay:YES];
+}
+
+- (void)dealloc
+{
+    [entities release];
+    [selectedEntities release];
+    [super dealloc];
 }
 
 - (void)drawRect:(NSRect)dirtyRect {
@@ -68,8 +77,10 @@
     // nice because we can use KVC in IB to create the Inspector palettes.
 
     // Unselect all entities, and toggle only the one we selected.
-    if (!isMultiple)
+    if (!isMultiple) {
         [entities makeObjectsPerformSelector:@selector(unselect)];
+        [selectedEntities removeAllObjects];
+    }
 
     [theEntity toggleSelected];
     
@@ -79,6 +90,7 @@
         NSMutableArray *subviews = [[self subviews] mutableCopy];
         [subviews removeObjectAtIndex:[subviews indexOfObject:theEntity]];
         [subviews addObject:theEntity];
+        [selectedEntities addObject:theEntity];
         [self setSubviews:subviews];
         [subviews release];
     }
@@ -90,6 +102,7 @@
 
     // Unselect all the selected entities if the user click on the board.
     [entities makeObjectsPerformSelector:@selector(unselect)]; 
+    [selectedEntities removeAllObjects];
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent
@@ -152,25 +165,14 @@ static VJXBoard *sharedBoard = nil;
 
 - (void)shiftSelectedToLocation:(NSPoint)aLocation;
 {
-    for (VJXBoardEntity *e in [self entities]) {
-        if (e.selected)
-            [e shiftOffsetToLocation:aLocation];
+    for (VJXBoardEntity *e in selectedEntities) {
+        [e shiftOffsetToLocation:aLocation];
     }
 }
 
 - (BOOL)hasMultipleEntitiesSelected
 {
-    NSUInteger count = 0;
-    // XXX - we should create a 'selected' array , instead of iterating each time
-    //       over all existing entities. In theory there could be many entities involved in
-    //       a single patch ... especially when we will have macros and groups.
-    for (VJXBoardEntity *e in [self entities]) {
-        if (e.selected)
-            count++;
-        if (count > 1)
-            return YES;
-    }
-    return NO;
+    return [selectedEntities count] > 1;
 }
 
 - (void)removeSelectedEntities

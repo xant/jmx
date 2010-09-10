@@ -29,6 +29,7 @@
     NSPoint lastDragLocation;
     VJXBoardSelection *currentSelection;
     NSMutableArray *entities;
+    NSMutableArray *selectedEntities;
 }
 
 @property (nonatomic,retain) VJXBoardSelection *currentSelection;

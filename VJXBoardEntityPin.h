@@ -1,5 +1,5 @@
 //
-//  VJXBoardComponentOutlet.h
+//  VJXBoardEntityPin.h
 //  GraphRep
 //
 //  Created by Igor Sutton on 8/26/10.
@@ -24,6 +24,7 @@
 #import <Cocoa/Cocoa.h>
 #import "VJXBoardEntityConnector.h"
 #import "VJXPin.h"
+#import "VJXEntityInspector.h"
 
 @class VJXBoardEntityConnector;
 
@@ -35,6 +36,7 @@
     NSMutableArray *connectors;
 @private
     VJXBoardEntityConnector *tempConnector;
+    VJXEntityInspector *inspector;
 }
 
 @property (nonatomic,assign) BOOL selected;

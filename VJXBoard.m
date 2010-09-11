@@ -138,6 +138,7 @@
 }
 
 static VJXBoard *sharedBoard = nil;
+static NSPanel *inspectorPanel = nil;
 
 + (VJXBoard *)sharedBoard
 {
@@ -156,6 +157,14 @@ static VJXBoard *sharedBoard = nil;
 + (void)setSharedBoard:(VJXBoard *)aBoard
 {
     sharedBoard = aBoard;
+}
+
+// XXX - such a message shouldn't exist at all
+//       the shared 'singleton' instance should be created
+//       transparently the first time it is requested
++ (void)setInspectorPanel:(NSPanel *)aPanel
+{
+    inspectorPanel = aPanel;
 }
 
 + (void)shiftSelectedToLocation:(NSPoint)aLocation

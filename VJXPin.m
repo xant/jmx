@@ -271,4 +271,26 @@
     return [array autorelease];
 }
 
+- (NSString *)typeName
+{
+    switch (type) {
+        case kVJXStringPin:
+            return @"String";
+            break;
+        case kVJXNumberPin:
+            return @"Number";
+            break;
+        case kVJXImagePin:
+            return @"Image";
+            break;
+        case kVJXSizePin:
+            return @"Size";
+            break;
+        case kVJXPointPin:
+            return @"Point";
+            break;
+    }
+    return @"Unknown";
+}
+
 @end

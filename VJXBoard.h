@@ -36,7 +36,9 @@
 @property (nonatomic,retain) NSMutableArray *entities;
 
 + (VJXBoard *)sharedBoard;
++ (NSPanel *)inspectorPanel;
 + (void)setSharedBoard:(VJXBoard *)aBoard;
++ (void)setInspectorPanel:(NSPanel *)inspectorPanel;
 - (void)setSelected:(VJXBoardEntity *)theEntity multiple:(BOOL)isMultiple;
 
 + (void)shiftSelectedToLocation:(NSPoint)aLocation;

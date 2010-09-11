@@ -25,6 +25,7 @@
 #import "VJXBoardEntityPin.h"
 #import "VJXBoardEntityOutlet.h"
 #import "VJXBoardDelegate.h"
+#import "VJXEntityInspector.h";
 
 @implementation VJXBoardEntity
 
@@ -182,9 +183,13 @@
 
 - (void)setSelected:(BOOL)isSelected
 {
+    // reopen the inspector panel only if this is a new selection
+    if (isSelected && !selected) {
+        [VJXEntityInspector setEntity:self];
+        [self setNeedsDisplay:YES];
+    }
     // Whenever the selected status is changed, we need to redraw the entity.
     selected = isSelected;
-    [self setNeedsDisplay:YES];
 }
 
 - (void)toggleSelected

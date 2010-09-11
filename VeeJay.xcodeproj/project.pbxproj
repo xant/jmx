@@ -49,6 +49,8 @@
 		AA2BE6511236D31E006087E7 /* VJXThreadedEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2BE6501236D31E006087E7 /* VJXThreadedEntity.m */; };
 		AA7931BE1233A64800860CD2 /* VJXSize.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7931BD1233A64800860CD2 /* VJXSize.m */; };
 		AA7931C11233A65400860CD2 /* VJXPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7931C01233A65400860CD2 /* VJXPoint.m */; };
+		AA917B63123BC8EE00001A8B /* VJXEntityInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = AA917B62123BC8EE00001A8B /* VJXEntityInspector.m */; };
+		AA917C01123BD96700001A8B /* VJXEntityInspectorPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA917C00123BD96700001A8B /* VJXEntityInspectorPanel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -136,6 +138,10 @@
 		AA7931BD1233A64800860CD2 /* VJXSize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXSize.m; sourceTree = "<group>"; };
 		AA7931BF1233A65400860CD2 /* VJXPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXPoint.h; sourceTree = "<group>"; };
 		AA7931C01233A65400860CD2 /* VJXPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXPoint.m; sourceTree = "<group>"; };
+		AA917B61123BC8EE00001A8B /* VJXEntityInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXEntityInspector.h; sourceTree = "<group>"; };
+		AA917B62123BC8EE00001A8B /* VJXEntityInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXEntityInspector.m; sourceTree = "<group>"; };
+		AA917BFF123BD96700001A8B /* VJXEntityInspectorPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXEntityInspectorPanel.h; sourceTree = "<group>"; };
+		AA917C00123BD96700001A8B /* VJXEntityInspectorPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXEntityInspectorPanel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -286,6 +292,10 @@
 				82B0A4C21237AFB20006D003 /* VJXBoardEntityOutlet.m */,
 				821DE681123925EC00B6A45D /* VJXBoardSelection.h */,
 				821DE682123925EC00B6A45D /* VJXBoardSelection.m */,
+				AA917B61123BC8EE00001A8B /* VJXEntityInspector.h */,
+				AA917B62123BC8EE00001A8B /* VJXEntityInspector.m */,
+				AA917BFF123BD96700001A8B /* VJXEntityInspectorPanel.h */,
+				AA917C00123BD96700001A8B /* VJXEntityInspectorPanel.m */,
 			);
 			name = GUI;
 			sourceTree = "<group>";
@@ -410,6 +420,8 @@
 				AA2BE6511236D31E006087E7 /* VJXThreadedEntity.m in Sources */,
 				82B0A4C31237AFB20006D003 /* VJXBoardEntityOutlet.m in Sources */,
 				821DE683123925EC00B6A45D /* VJXBoardSelection.m in Sources */,
+				AA917B63123BC8EE00001A8B /* VJXEntityInspector.m in Sources */,
+				AA917C01123BD96700001A8B /* VJXEntityInspectorPanel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

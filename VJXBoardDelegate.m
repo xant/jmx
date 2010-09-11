@@ -29,14 +29,17 @@
 #import "VJXMixer.h"
 #import "VJXBoard.h"
 #import <QTKit/QTMovie.h>
+#import <VJXEntityInspector.h>
 
 @implementation VJXBoardDelegate
 
-@synthesize board;
+@synthesize board, inspectorPanel;
 
 - (void)awakeFromNib
 {
     [VJXBoard setSharedBoard:board];
+    [VJXBoard setInspectorPanel:inspectorPanel];
+    [VJXEntityInspector setPanel:inspectorPanel];
 }
 
 - (void)openFilePanelDidEnd:(NSOpenPanel *)panel returnCode:(int)returnCode  contextInfo:(void  *)contextInfo

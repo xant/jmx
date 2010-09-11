@@ -23,13 +23,16 @@
 
 #import <Cocoa/Cocoa.h>
 #import "VJXBoard.h"
+#import "VJXEntityInspectorPanel.h"
 
 
 @interface VJXBoardDelegate : NSObject {
     VJXBoard *board;
+    VJXEntityInspectorPanel *inspectorPanel;
 }
 
 @property (nonatomic,assign) IBOutlet VJXBoard *board;
+@property (nonatomic,assign) IBOutlet NSPanel *inspectorPanel;
 
 - (IBAction)addEntity:(id)sender;
 

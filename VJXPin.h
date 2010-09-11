@@ -75,5 +75,6 @@ typedef enum {
 - (void)allowMultipleConnections:(BOOL)choice;
 - (NSArray *)readProducers;
 - (id)readPinValue;
+- (NSString *)typeName;
 
 @end

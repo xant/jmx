@@ -126,6 +126,10 @@
     [board addToBoard:entity];
     [entity release];
     [screen release];
+    // XXX - dirty hack to have the board always on top when creating a new screen
+    // note that we don't want the board to be always on top, but we just want new screens
+    // to be displayed initially below the board
+    [[board window] orderFront:self];
 }
 
 - (IBAction)removeSelectedEntities:(id)sender

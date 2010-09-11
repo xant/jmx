@@ -40,6 +40,7 @@
         [[window contentView] addSubview:view];
         [window setReleasedWhenClosed:NO];
         [window setIsVisible:YES];
+        //[window orderBack:self];
     }
     return self;
     

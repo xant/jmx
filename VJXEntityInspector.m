@@ -27,6 +27,12 @@ static VJXEntityInspector *inspector = nil;
 
 }
 
++ (void)unsetEntity:(VJXBoardEntity *)entity
+{
+    if (inspector.entity == entity)
+        inspector.entity = nil;
+}
+
 + (void)setEntity:(VJXBoardEntity *)entity
 {
     if (!inspector)

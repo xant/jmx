@@ -42,8 +42,9 @@ enum Direction {
 
 @property (assign) BOOL selected;
 @property (assign) NSUInteger direction;
-@property (nonatomic,retain) VJXBoardEntityPin *origin;
-@property (nonatomic,retain) VJXBoardEntityPin *destination;
+// make this weak references otherwise pins will be overretained an never released
+@property (nonatomic,assign) VJXBoardEntityPin *origin;
+@property (nonatomic,assign) VJXBoardEntityPin *destination;
 
 - (void)recalculateFrame;
 - (void)toggleSelected;

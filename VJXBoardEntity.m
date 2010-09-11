@@ -96,6 +96,7 @@
 {
     if ([entity respondsToSelector:@selector(stop)])
         [entity performSelector:@selector(stop)];
+    [VJXEntityInspector unsetEntity:self];
     [entity release];
     [label release];
     [outlets release];

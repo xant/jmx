@@ -43,8 +43,14 @@
 
 - (void)dealloc
 {
-    if (connectors)
+    if (connectors) {
+        for (VJXBoardEntityConnector *connector in connectors) {
+            [connector.origin removeConnector:connector];
+            [connector.destination removeConnector:connector];
+            [connector removeFromSuperview];
+        }
         [connectors release];
+    }
     if (pin)
         [pin release];
     if (tempConnector)

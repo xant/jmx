@@ -22,6 +22,7 @@
 @property (assign)VJXEntityInspectorPanel *panel; // we don't want to retain the entity
 
 + (void)setEntity:(VJXBoardEntity *)entity;
++ (void)unsetEntity:(VJXBoardEntity *)entity;
 + (void)setPanel:(VJXEntityInspectorPanel *)aPanel;
 
 @end

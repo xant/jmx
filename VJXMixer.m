@@ -105,11 +105,11 @@
         }
         if (currentFrame) {
             [imageOutputPin deliverSignal:currentFrame fromSender:self];
-        } /*else {
+        } else {
             // send a black frame
             currentFrame = [[CIImage imageWithColor:[CIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:1.0]] retain];
             [imageOutputPin deliverSignal:currentFrame fromSender:self];
-        }*/
+        }
         [imageProducers removeAllObjects];
     }
 }

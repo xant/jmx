@@ -94,9 +94,8 @@
     @synchronized(self) {
         if (currentFrame != NULL) {
             CIImage *image = currentFrame;
-            CGRect imageRect = [image extent];
-            CGRect inRect = NSRectToCGRect(bounds);
-            [ciContext drawImage:image inRect:inRect fromRect:imageRect];
+            CGRect screenSizeRect = NSRectToCGRect(bounds);
+            [ciContext drawImage:image inRect:screenSizeRect fromRect:screenSizeRect];
         }
 
         [[self openGLContext] flushBuffer];

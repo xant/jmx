@@ -146,7 +146,7 @@
 {
     NSPoint locationInWindow = [theEvent locationInWindow];
     locationInWindow.x -= PIN_OUTLET_PADDING;
-    locationInWindow.y -=PIN_OUTLET_PADDING;
+    locationInWindow.y -= PIN_OUTLET_PADDING;
     NSView *aView = [[VJXBoard sharedBoard] hitTest:locationInWindow];
     
     BOOL isConnected = NO;

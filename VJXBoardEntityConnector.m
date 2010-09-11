@@ -88,7 +88,7 @@
     [thePath stroke];
     
     [thePath release];
-  //  [lineShadow release];
+    [lineShadow release];
 }
 
 - (void)recalculateFrame

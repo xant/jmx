@@ -68,23 +68,35 @@
     // if the selector expects the correct amount of arguments.
     // this routine is expected to deliver the signals as soon as possible
     // all safety checks must be done before putting new objects in the receivers' table
-    switch (selectorArgsNum) {
-        case 0:
-            // some listener could be uninterested to the data, 
-            // but just want to get notified when something travels on a pin
-            [receiver performSelector:selector];
-            break;
-        case 1:
-            // some other listeners could be interested only in the data,
-            // regardless of the sender
-            [receiver performSelector:selector withObject:data];
-            break;
-        case 2:
-            // and finally there can be listeners which require to know also who has sent the data
-            [receiver performSelector:selector withObject:data withObject:sender];
-            break;
-        default:
-            NSLog(@"Unsupported selector : '%@' . It can take up to two arguments\n", selectorName);
+    @synchronized(self) {
+        if (data) {
+            if (currentData)
+                [currentData release];
+            currentData = [data retain];
+        }
+        if (sender)
+            currentSender = sender;
+        else
+            currentSender = self;
+
+        switch (selectorArgsNum) {
+            case 0:
+                // some listener could be uninterested to the data, 
+                // but just want to get notified when something travels on a pin
+                [receiver performSelector:selector];
+                break;
+            case 1:
+                // some other listeners could be interested only in the data,
+                // regardless of the sender
+                [receiver performSelector:selector withObject:currentData];
+                break;
+            case 2:
+                // and finally there can be listeners which require to know also who has sent the data
+                [receiver performSelector:selector withObject:currentData withObject:currentSender];
+                break;
+            default:
+                NSLog(@"Unsupported selector : '%@' . It can take up to two arguments\n", selectorName);
+        }
     }
 }
 
@@ -102,12 +114,10 @@
         } else {
             NSLog(@"Object %@ doesn't respond to %@\n", pinReceiver, pinSignal);
         }
-        
-        // deliver the signal to the just connected receiver
-        if (rv == YES && currentData) {
-            [self sendData:currentData toReceiver:pinReceiver withSelector:pinSignal fromSender:currentSender ? currentSender : self];
-        }
     }
+    // deliver the signal to the just connected receiver
+    if (rv == YES)
+        [self sendData:nil toReceiver:pinReceiver withSelector:pinSignal fromSender:nil];
     return rv;
 }
 
@@ -150,20 +160,14 @@
         default:
             NSLog(@"Unkown pin type!\n");
     }
-    @synchronized(self) {
-        if (currentData)
-            [currentData release];
-        currentData = [signalData retain];
-        currentSender = sender;
-        // send the signal to our owner 
-        // (if we are an input pin and if our owner registered a selector)
-        if (direction == kVJXInputPin && owner && ownerSignal)
-            [self sendData:data toReceiver:owner withSelector:ownerSignal fromSender:sender];
+    // send the signal to our owner 
+    // (if we are an input pin and if our owner registered a selector)
+    if (direction == kVJXInputPin && owner && ownerSignal)
+        [self sendData:data toReceiver:owner withSelector:ownerSignal fromSender:sender];
 
-        // and then propagate it to all receivers
-        for (id receiver in receivers)
-            [self sendData:data toReceiver:receiver withSelector:[receivers objectForKey:receiver] fromSender:sender];
-    }
+    // and then propagate it to all receivers
+    for (id receiver in receivers)
+        [self sendData:data toReceiver:receiver withSelector:[receivers objectForKey:receiver] fromSender:sender];
 }
 
 - (void)allowMultipleConnections:(BOOL)choice
@@ -258,8 +262,11 @@
 {
     NSMutableArray *array = [[NSMutableArray alloc] init];
     @synchronized(self) {
-        for (VJXPin *producer in producers)
-            [array addObject:[producer readPinValue]];
+        for (VJXPin *producer in producers) {
+            id value = [producer readPinValue];
+            if (value)
+                [array addObject:value];
+        }
     }
     return [array autorelease];
 }

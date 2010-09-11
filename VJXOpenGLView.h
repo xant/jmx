@@ -34,6 +34,7 @@
     BOOL needsReShape;
 }
 
-@property (assign) CIImage *currentFrame;
+@property (retain) CIImage *currentFrame;
+@property (assign) BOOL needsReshape;
 
 @end

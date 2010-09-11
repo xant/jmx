@@ -34,6 +34,7 @@
 @private
     VJXPin *imageInputPin;
     VJXPin *imageOutputPin;
+    VJXPin *imageSizeOutputPin;
     CIImage *currentFrame;
     NSMutableDictionary *imageProducers;
     uint64_t lastFrameTime;

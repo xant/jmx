@@ -35,10 +35,12 @@
         //imageInputPin = [self registerInputPin:@"videoInput" withType:kVJXImagePin andSelector:@"receivedFrame:fromSender:"];
         imageInputPin = [self registerInputPin:@"videoInput" withType:kVJXImagePin];
         [imageInputPin allowMultipleConnections:YES];
+        imageSizeOutputPin = [self registerOutputPin:@"videoOutputSize" withType:kVJXSizePin];
+        [imageSizeOutputPin allowMultipleConnections:YES];
         imageOutputPin = [self registerOutputPin:@"videoOutput" withType:kVJXImagePin];
         [imageOutputPin allowMultipleConnections:YES];
-        outputSize.height = 640; // HC
-        outputSize.width = 480; // HC
+        outputSize.width = 640; // HC
+        outputSize.height = 480; // HC
         imageProducers = [[NSMutableDictionary alloc] init];
         currentFrame = nil;
     }
@@ -92,18 +94,15 @@
             }
 #endif
             if (!currentFrame)
-                currentFrame = [frame retain];
-            else {
-                CIFilter *blendScreenFilter = [CIFilter filterWithName:@"CIScreenBlendMode"];
-                [blendScreenFilter setDefaults];
-                [blendScreenFilter setValue:frame forKey:@"inputImage"];
-                [blendScreenFilter setValue:currentFrame forKey:@"inputBackgroundImage"];
-                [currentFrame release];
-                currentFrame = [[blendScreenFilter valueForKey:@"outputImage"] retain];
-                
-            }
+                currentFrame = [CIImage imageWithColor:[CIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
+            CIFilter *blendScreenFilter = [CIFilter filterWithName:@"CIScreenBlendMode"];
+            [blendScreenFilter setDefaults];
+            [blendScreenFilter setValue:frame forKey:@"inputImage"];
+            [blendScreenFilter setValue:currentFrame forKey:@"inputBackgroundImage"];
+            currentFrame = [blendScreenFilter valueForKey:@"outputImage"];
         }
         if (currentFrame) {
+            [currentFrame retain];
             [imageOutputPin deliverSignal:currentFrame fromSender:self];
         } else {
             // send a black frame
@@ -111,8 +110,9 @@
             [imageOutputPin deliverSignal:currentFrame fromSender:self];
         }
         [imageProducers removeAllObjects];
+        [imageSizeOutputPin deliverSignal:[VJXSize sizeWithNSSize:outputSize]];
     }
-}
+}   
 
 - (NSArray *)imageProducers
 {

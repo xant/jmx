@@ -44,16 +44,16 @@
         [self registerInputPin:@"contrast" withType:kVJXNumberPin andSelector:@"setContrast:"];
         [self registerInputPin:@"rotation" withType:kVJXNumberPin andSelector:@"setRotation:"];
         [self registerInputPin:@"scaleRatio" withType:kVJXNumberPin andSelector:@"setScaleRatio:"];
-        
         [self registerInputPin:@"origin" withType:kVJXPointPin andSelector:@"setOrigin:"];
         [self registerInputPin:@"size" withType:kVJXSizePin andSelector:@"setSize:"];
 
         // we output at least 1 image
         outputFramePin = [self registerOutputPin:@"outputFrame" withType:kVJXImagePin];
-        
+        outputFrameSizePin = [self registerOutputPin:@"outputFrameSize" withType:kVJXSizePin];
+        [outputFrameSizePin allowMultipleConnections:YES];
         // XXX - DEFAULTS
         NSSize defaultLayerSize = { 640, 480 };
-        size = [[VJXSize sizeWithNSSize:defaultLayerSize] retain];
+        self.size = [VJXSize sizeWithNSSize:defaultLayerSize];
     }
     return self;
 }
@@ -62,7 +62,7 @@
 {
     if (currentFrame)
         [currentFrame release];
-    [size release];
+    self.size = nil;
     [super dealloc];
 }
 
@@ -103,6 +103,7 @@
             // TODO - compute the effective fps and send it to an output pin 
             //        for debugging purposes
             [outputFramePin deliverSignal:currentFrame fromSender:self];
+            [outputFrameSizePin deliverSignal:size];
         }
     }
 }

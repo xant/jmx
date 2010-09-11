@@ -32,7 +32,7 @@
 
 @implementation VJXOpenGLView
 
-@synthesize currentFrame;
+@synthesize currentFrame, needsReshape;
 
 - (id)initWithFrame:(NSRect)frameRect
 {
@@ -143,6 +143,7 @@
         [lock release];
         lock = nil;
     }
+    self.currentFrame = nil;
 }
 
 @end

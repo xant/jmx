@@ -27,8 +27,10 @@
 @interface VJXScreen : VJXEntity {
 @protected
     CIImage *currentFrame;
-    NSSize size;
+    VJXSize *size;
 }
+
+@property (retain) VJXSize *size;
 
 - (id)initWithSize:(NSSize)screenSize;
 - (void)drawFrame:(CIImage *)frame;

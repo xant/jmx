@@ -38,6 +38,7 @@
     
     CIImage *currentFrame;
     VJXPin *outputFramePin;
+    VJXPin *outputFrameSizePin;
 
 @private
 

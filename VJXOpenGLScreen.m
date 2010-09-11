@@ -52,6 +52,18 @@
     [super dealloc];
 }
 
+- (void)setSize:(VJXSize *)newSize
+{
+    [super setSize:newSize];
+    @synchronized(self) {
+        if (newSize && [window isVisible]) { // XXX - does it update the size if the window is minimized?
+            [window setFrame:NSMakeRect(0, 0, newSize.width, newSize.height) display:YES];
+            view.needsReshape = YES;
+            //[view drawRect:NSZeroRect];
+        }
+    }
+}
+
 - (void)drawFrame:(CIImage *)frame
 {
     [super drawFrame:frame];

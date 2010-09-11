@@ -17,7 +17,7 @@
 
 static VJXEntityInspector *inspector = nil;
 
-@synthesize entity, panel;
+@synthesize entityView, panel;
 
 + (void)setPanel:(VJXEntityInspectorPanel *)aPanel
 {
@@ -29,8 +29,8 @@ static VJXEntityInspector *inspector = nil;
 
 + (void)unsetEntity:(VJXBoardEntity *)entity
 {
-    if (inspector.entity == entity)
-        inspector.entity = nil;
+    if (inspector.entityView == entity)
+        inspector.entityView = nil;
 }
 
 + (void)setEntity:(VJXBoardEntity *)entity
@@ -46,7 +46,7 @@ static VJXEntityInspector *inspector = nil;
 
 - (void)setEntity:(VJXBoardEntity *)boardEntity
 {
-    entity = boardEntity;
+    entityView = boardEntity;
     inputPins = panel.inputPins;
     outputPins = panel.outputPins;
     producers = panel.producers;
@@ -71,19 +71,19 @@ static VJXEntityInspector *inspector = nil;
 {
     NSInteger count = 0;
     if (aTableView == inputPins) {
-        count = [entity.entity.inputPins count];
+        count = [entityView.entity.inputPins count];
     } else if (aTableView == outputPins) {
-        count = [entity.entity.outputPins count];
+        count = [entityView.entity.outputPins count];
     } else if (aTableView == producers) {
         NSInteger selectedRow = [inputPins selectedRow];
         if (selectedRow >= 0) {
-            NSArray *pins = [[entity.entity.inputPins allKeys]
+            NSArray *pins = [[entityView.entity.inputPins allKeys]
                              sortedArrayUsingComparator:^(id obj1, id obj2)
                              {
                                  return [obj1 compare:obj2];
                              }];
             NSString *pinName = [pins objectAtIndex:selectedRow];
-            VJXPin *pin = [entity.entity inputPinWithName:pinName];
+            VJXPin *pin = [entityView.entity inputPinWithName:pinName];
             return [pin.producers count];
         }
     }
@@ -93,7 +93,7 @@ static VJXEntityInspector *inspector = nil;
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 { 
     if (aTableView == inputPins) {
-        NSArray *pins = [[entity.entity.inputPins allKeys]
+        NSArray *pins = [[entityView.entity.inputPins allKeys]
                             sortedArrayUsingComparator:^(id obj1, id obj2)
                                                         {
                                                             return [obj1 compare:obj2];
@@ -102,9 +102,9 @@ static VJXEntityInspector *inspector = nil;
         if ([[aTableColumn identifier] isEqualTo:@"pinName"])
             return [pins objectAtIndex:rowIndex];
         else
-            return [[entity.entity.inputPins objectForKey:[pins objectAtIndex:rowIndex]] typeName];
+            return [[entityView.entity.inputPins objectForKey:[pins objectAtIndex:rowIndex]] typeName];
     } else if (aTableView == outputPins) {
-        NSArray *pins = [[entity.entity.outputPins allKeys]
+        NSArray *pins = [[entityView.entity.outputPins allKeys]
                          sortedArrayUsingComparator:^(id obj1, id obj2)
                          {
                              return [obj1 compare:obj2];
@@ -112,17 +112,17 @@ static VJXEntityInspector *inspector = nil;
         if ([[aTableColumn identifier] isEqualTo:@"pinName"])
             return [pins objectAtIndex:rowIndex];
         else
-            return [[entity.entity.outputPins objectForKey:[pins objectAtIndex:rowIndex]] typeName];        
+            return [[entityView.entity.outputPins objectForKey:[pins objectAtIndex:rowIndex]] typeName];        
     } else if (aTableView == producers) {
         NSInteger selectedRow = [inputPins selectedRow];
         if (selectedRow >= 0) {
-            NSArray *pins = [[entity.entity.inputPins allKeys]
+            NSArray *pins = [[entityView.entity.inputPins allKeys]
                              sortedArrayUsingComparator:^(id obj1, id obj2)
                              {
                                  return [obj1 compare:obj2];
                              }];
             NSString *pinName = [pins objectAtIndex:selectedRow];
-            VJXPin *pin = [entity.entity inputPinWithName:pinName];
+            VJXPin *pin = [entityView.entity inputPinWithName:pinName];
             return [NSString stringWithFormat:@"%@",[pin.producers objectAtIndex:rowIndex]];
         }
     }

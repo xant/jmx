@@ -59,4 +59,11 @@
     return nsSize.height;
 }
 
+- (BOOL)isEqual:(VJXSize *)object
+{
+    if (nsSize.height == object.height && nsSize.width == object.width)
+        return YES;
+    return NO;
+}
+
 @end

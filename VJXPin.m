@@ -261,13 +261,13 @@
 - (NSArray *)readProducers
 {
     NSMutableArray *array = [[NSMutableArray alloc] init];
-    @synchronized(self) {
+    //@synchronized(self) {
         for (VJXPin *producer in producers) {
             id value = [producer readPinValue];
             if (value)
                 [array addObject:value];
         }
-    }
+    //}
     return [array autorelease];
 }
 

@@ -59,4 +59,11 @@
     return nsPoint.y;
 }
 
+- (BOOL)isEqual:(VJXPoint *)object
+{
+    if (nsPoint.y == object.y && nsPoint.x == object.x)
+        return YES;
+    return NO;
+}
+
 @end

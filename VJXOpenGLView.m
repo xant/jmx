@@ -26,7 +26,6 @@
 @interface VJXOpenGLView (Private)
 
 - (void)cleanup;
-- (void)reShape;
 
 @end
 
@@ -79,25 +78,18 @@
 
 - (void)drawRect:(NSRect)rect
 {
-    NSRect bounds = [self bounds];
-
-    if (CGLLockContext([[self openGLContext] CGLContextObj]) != kCGLNoError) {
-        NSLog(@"Could not lock CGLContext");
-    }
-
     [[self openGLContext] makeCurrentContext];
 
-    if (needsReShape) {
-        [self reShape];
-        needsReShape = NO;
-    }
+    if (CGLLockContext([[self openGLContext] CGLContextObj]) != kCGLNoError)
+        NSLog(@"Could not lock CGLContext");
+    
     @synchronized(self) {
+        NSRect bounds = [self bounds];
         if (currentFrame != NULL) {
             CIImage *image = currentFrame;
             CGRect screenSizeRect = NSRectToCGRect(bounds);
             [ciContext drawImage:image inRect:screenSizeRect fromRect:screenSizeRect];
         }
-
         [[self openGLContext] flushBuffer];
         [self setNeedsDisplay:NO];
 
@@ -106,30 +98,38 @@
 
 }
 
-- (void)reShape
+- (void)reshape
 {
-    NSRect bounds = [self bounds];
+    @synchronized(self) {
+        NSRect bounds = [self frame];
 
-    GLfloat minX, minY, maxX, maxY;
-    minX = NSMinX(bounds);
-    minY = NSMinY(bounds);
-    maxX = NSMaxX(bounds);
-    maxY = NSMaxY(bounds);
-    glViewport(0, 0, bounds.size.width, bounds.size.height);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(minX, maxX, minY, maxY, -1.0, 1.0);
-    glDisable(GL_DITHER);
-    glDisable(GL_ALPHA_TEST);
-    glDisable(GL_BLEND);
-    glDisable(GL_STENCIL_TEST);
-    glDisable(GL_FOG);
-    glDisable(GL_DEPTH_TEST);
-    glPixelZoom(1.0, 1.0);
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-    glClear(GL_COLOR_BUFFER_BIT);
+        GLfloat minX, minY, maxX, maxY;
+        minX = NSMinX(bounds);
+        minY = NSMinY(bounds);
+        maxX = NSMaxX(bounds);
+        maxY = NSMaxY(bounds);
+        [[self openGLContext] makeCurrentContext];
+        
+        if (CGLLockContext([[self openGLContext] CGLContextObj]) != kCGLNoError)
+            NSLog(@"Could not lock CGLContext");
+        
+        glViewport(0, 0, bounds.size.width, bounds.size.height);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glOrtho(minX, maxX, minY, maxY, -1.0, 1.0);
+        glDisable(GL_DITHER);
+        glDisable(GL_ALPHA_TEST);
+        glDisable(GL_BLEND);
+        glDisable(GL_STENCIL_TEST);
+        glDisable(GL_FOG);
+        glDisable(GL_DEPTH_TEST);
+        glPixelZoom(1.0, 1.0);
+        glClearColor(0.0, 0.0, 0.0, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT);
+        CGLUnlockContext([[self openGLContext] CGLContextObj]);
+    }
 }
 
 - (void)cleanup
@@ -144,6 +144,16 @@
         lock = nil;
     }
     self.currentFrame = nil;
+}
+
+- (void)setSize:(NSSize)size
+{
+    @synchronized(self) {
+        NSRect newRect = NSMakeRect(0, 0, size.width, size.height);
+        [self setFrame:newRect];
+        [[self window] setFrame:newRect display:YES];
+        needsReshape = YES;
+    }
 }
 
 @end

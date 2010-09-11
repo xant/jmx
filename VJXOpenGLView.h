@@ -37,4 +37,6 @@
 @property (retain) CIImage *currentFrame;
 @property (assign) BOOL needsReshape;
 
+- (void)setSize:(NSSize)size;
+
 @end

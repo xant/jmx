@@ -96,6 +96,10 @@
 {
     if ([entity respondsToSelector:@selector(stop)])
         [entity performSelector:@selector(stop)];
+    // we need to ensure telling the inspector 
+    // that we are going to be destroyed, since 
+    // it could still referencing us
+    // TODO - we could check this only if we are selected
     [VJXEntityInspector unsetEntity:self];
     [entity release];
     [label release];

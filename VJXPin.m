@@ -293,4 +293,17 @@
     return @"Unknown";
 }
 
+- (BOOL)moveProducerFromIndex:(NSUInteger)src toIndex:(NSUInteger)dst
+{
+    @synchronized(self) {
+        if ([producers count] > dst) {
+            VJXPin *obj = [[producers objectAtIndex:src] retain];
+            [producers removeObjectAtIndex:src];
+            [producers insertObject:obj atIndex:dst];
+            return YES;
+        }
+    }
+    return NO;
+}
+
 @end

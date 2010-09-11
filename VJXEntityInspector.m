@@ -64,7 +64,10 @@ static VJXEntityInspector *inspector = nil;
     if ([producers dataSource] != self) {
         [producers setDataSource:self];
         [producers setDelegate:self];
+        [producers registerForDraggedTypes:[NSArray arrayWithObject:@"PinRowIndex"]];
+
     }
+    [producers reloadData];
 }
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
@@ -106,9 +109,9 @@ static VJXEntityInspector *inspector = nil;
     } else if (aTableView == outputPins) {
         NSArray *pins = [[entityView.entity.outputPins allKeys]
                          sortedArrayUsingComparator:^(id obj1, id obj2)
-                         {
-                             return [obj1 compare:obj2];
-                         }];
+                                                     {
+                                                         return [obj1 compare:obj2];
+                                                     }];
         if ([[aTableColumn identifier] isEqualTo:@"pinName"])
             return [pins objectAtIndex:rowIndex];
         else
@@ -118,9 +121,9 @@ static VJXEntityInspector *inspector = nil;
         if (selectedRow >= 0) {
             NSArray *pins = [[entityView.entity.inputPins allKeys]
                              sortedArrayUsingComparator:^(id obj1, id obj2)
-                             {
-                                 return [obj1 compare:obj2];
-                             }];
+                                                         {
+                                                             return [obj1 compare:obj2];
+                                                         }];
             NSString *pinName = [pins objectAtIndex:selectedRow];
             VJXPin *pin = [entityView.entity inputPinWithName:pinName];
             return [NSString stringWithFormat:@"%@",[pin.producers objectAtIndex:rowIndex]];
@@ -132,6 +135,7 @@ static VJXEntityInspector *inspector = nil;
 - (void)tableViewSelectionDidChange:(NSNotification *)notification
 {
     NSTableView *aTableView =[notification object];
+    // at the moment we are interested only in selection among inputPins
     if (aTableView == inputPins)
         [producers reloadData];
 }
@@ -140,6 +144,60 @@ static VJXEntityInspector *inspector = nil;
 - (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
     return false; // we don't allow editing items for now
+}
+
+- (NSArray *)tableView:(NSTableView *)aTableView namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination 
+                                                                forDraggedRowsWithIndexes:(NSIndexSet *)indexSet
+{
+    if (aTableView != producers)
+        return nil;
+    return [NSArray arrayWithObjects:@"PinRowIndex", nil];
+}
+
+- (BOOL)tableView:(NSTableView *)aTableView writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard *)pboard
+{
+    if (aTableView != producers)
+        return NO;
+    
+    NSUInteger row = [rowIndexes firstIndex];
+    [pboard addTypes:[NSArray arrayWithObjects:@"PinRowIndex", nil] owner:(id)self];
+    [pboard setData:[NSData dataWithBytes:&row length:sizeof(NSUInteger)] forType:@"PinRowIndex"];
+    return YES;
+}
+
+
+- (NSDragOperation)tableView:(NSTableView *)aTableView validateDrop:(id < NSDraggingInfo >)info proposedRow:(NSInteger)row 
+                                                                                      proposedDropOperation:(NSTableViewDropOperation)operation
+{
+    NSDragOperation dragOp = NSDragOperationMove;
+    [aTableView setDropRow: row
+             dropOperation: NSTableViewDropAbove];   
+    return dragOp;
+}
+
+- (BOOL)tableView:(NSTableView *)aTableView acceptDrop:(id < NSDraggingInfo >)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation
+{
+    if (aTableView != producers)
+        return NO;
+    NSInteger srcRow = -1;
+    [[[info draggingPasteboard] dataForType:@"PinRowIndex"] getBytes:&srcRow length:sizeof(NSUInteger)];
+    if (srcRow >= 0) {
+        NSInteger selectedRow = [inputPins selectedRow];
+        if (selectedRow >= 0) {
+            NSArray *pins = [[entityView.entity.inputPins allKeys]
+                             sortedArrayUsingComparator:^(id obj1, id obj2)
+                             {
+                                 return [obj1 compare:obj2];
+                             }];
+            NSString *pinName = [pins objectAtIndex:selectedRow];
+            VJXPin *pin = [entityView.entity inputPinWithName:pinName];
+            if ([pin moveProducerFromIndex:(NSUInteger)srcRow toIndex:(NSUInteger)(srcRow < row)?row-1:row]) {
+                [aTableView reloadData];
+                return YES;
+            }
+        }
+    }
+    return NO;
 }
 
 @end

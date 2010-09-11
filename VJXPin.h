@@ -78,5 +78,5 @@ typedef enum {
 - (NSArray *)readProducers;
 - (id)readPinValue;
 - (NSString *)typeName;
-
+- (BOOL)moveProducerFromIndex:(NSUInteger)src toIndex:(NSUInteger)dst;
 @end

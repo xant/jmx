@@ -12,10 +12,10 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="783"/>
-			<integer value="768"/>
 			<integer value="737"/>
 			<integer value="771"/>
+			<integer value="783"/>
+			<integer value="833"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -2027,7 +2027,7 @@
 																<reference key="NSBackgroundColor" ref="493311483"/>
 																<reference key="NSGridColor" ref="391959582"/>
 																<double key="NSRowHeight">17</double>
-																<int key="NSTvFlags">-1841299456</int>
+																<int key="NSTvFlags">314572800</int>
 																<reference key="NSDelegate"/>
 																<reference key="NSDataSource"/>
 																<int key="NSColumnAutoresizingStyle">4</int>
@@ -5333,9 +5333,9 @@
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
-					<string>{{370, 33}, {807, 547}}</string>
+					<string>{{321, 33}, {807, 547}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{370, 33}, {807, 547}}</string>
+					<string>{{321, 33}, {807, 547}}</string>
 					<boolean value="YES"/>
 					<string>VJXBoard</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>

@@ -41,7 +41,6 @@
         [imageOutputPin allowMultipleConnections:YES];
         outputSize.width = 640; // HC
         outputSize.height = 480; // HC
-        imageProducers = [[NSMutableDictionary alloc] init];
         currentFrame = nil;
     }
     return self;
@@ -49,19 +48,7 @@
 
 - (void)dealloc
 {    
-    [imageProducers release];
     [super dealloc];
-}
-
-- (void)receivedFrame:(CIImage *)frame fromSender:(id)sender
-{
-    @synchronized(self) {
-        // if the sender is not a VJXPin,
-        // take note of who provided us the frame
-        // XXX
-        if (![sender isKindOfClass:[VJXPin class]])
-            [imageProducers setObject:frame forKey:[sender name]];
-    }
 }
 
 - (void)tick:(uint64_t)timeStamp
@@ -73,8 +60,6 @@
         }
         NSArray *frames = [imageInputPin readProducers];
         for (CIImage *frame in frames) {
-        //for (id producer in imageProducers) {
-        //    CIImage *frame = [imageProducers objectForKey:producer];
 #if 0
             if ([producer isKindOfClass:[VJXLayer class]]) {
                 VJXLayer *layer = (VJXLayer *)producer;
@@ -101,28 +86,13 @@
             [blendScreenFilter setValue:currentFrame forKey:@"inputBackgroundImage"];
             currentFrame = [blendScreenFilter valueForKey:@"outputImage"];
         }
-        if (currentFrame) {
+        if (currentFrame)
             [currentFrame retain];
-            [imageOutputPin deliverSignal:currentFrame fromSender:self];
-        } else {
-            // send a black frame
+        else // send a black frame
             currentFrame = [[CIImage imageWithColor:[CIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:1.0]] retain];
-            [imageOutputPin deliverSignal:currentFrame fromSender:self];
-        }
-        [imageProducers removeAllObjects];
+        [imageOutputPin deliverSignal:currentFrame fromSender:self];
         [imageSizeOutputPin deliverSignal:[VJXSize sizeWithNSSize:outputSize]];
     }
 }   
-
-- (NSArray *)imageProducers
-{
-    NSMutableArray *out = [[[NSMutableArray alloc] init] autorelease];
-    @synchronized(self) {
-        for (id layer in imageProducers) {
-            [out addObject:layer];
-        }
-    }
-    return out;
-}
 
 @end

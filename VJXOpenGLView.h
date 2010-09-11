@@ -30,12 +30,9 @@
     CIImage *currentFrame;
     CIContext *ciContext;
     NSRecursiveLock *lock;
-
-    BOOL needsReShape;
 }
 
 @property (retain) CIImage *currentFrame;
-@property (assign) BOOL needsReshape;
 
 - (void)setSize:(NSSize)size;
 

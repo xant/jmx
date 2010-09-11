@@ -36,12 +36,9 @@
     VJXPin *imageOutputPin;
     VJXPin *imageSizeOutputPin;
     CIImage *currentFrame;
-    NSMutableDictionary *imageProducers;
     uint64_t lastFrameTime;
 }
 
 @property (assign) NSSize outputSize;
-
-- (NSArray *)imageProducers;
 
 @end

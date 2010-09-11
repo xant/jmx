@@ -31,7 +31,7 @@
 
 @implementation VJXOpenGLView
 
-@synthesize currentFrame, needsReshape;
+@synthesize currentFrame;
 
 - (id)initWithFrame:(NSRect)frameRect
 {
@@ -65,7 +65,6 @@
                                            colorSpace:colorSpace
                                               options:nil] retain];
         CGColorSpaceRelease(colorSpace);
-        needsReShape = YES;
         [self setNeedsDisplay:YES];
     }
 }
@@ -98,6 +97,7 @@
 
 }
 
+// Called by Cocoa when the view's visible rectangle or bounds change.
 - (void)reshape
 {
     @synchronized(self) {
@@ -152,7 +152,6 @@
         NSRect newRect = NSMakeRect(0, 0, size.width, size.height);
         [self setFrame:newRect];
         [[self window] setFrame:newRect display:YES];
-        needsReshape = YES;
     }
 }
 

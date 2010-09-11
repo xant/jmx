@@ -25,13 +25,17 @@
 #import "VJXBoard.h"
 #import "VJXBoardEntityConnector.h"
 
+#define PIN_OUTLET_PADDING 5.0
+#define PIN_OUTLET_WIDTH 18.0
+#define PIN_OUTLET_HEIGHT 18.0
+
 @implementation VJXBoardEntityPin
 
 @synthesize selected, pin, connectors;
 
 - (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint
 {
-    NSRect frame = NSMakeRect(thePoint.x, thePoint.y, 18.0, 18.0);
+    NSRect frame = NSMakeRect(thePoint.x, thePoint.y, PIN_OUTLET_WIDTH, PIN_OUTLET_HEIGHT);
     
     if ((self = [super initWithFrame:frame]) != nil) {
         selected = NO;
@@ -67,8 +71,8 @@
 {
     NSRect bounds = [self bounds];
     
-    bounds.origin.x += 5.0;
-    bounds.origin.y += 5.0;
+    bounds.origin.x += PIN_OUTLET_PADDING;
+    bounds.origin.y += PIN_OUTLET_PADDING;
     bounds.size.width -= (2 * bounds.origin.x);
     bounds.size.height -= (2 * bounds.origin.y);
     
@@ -141,7 +145,8 @@
 - (void)mouseUp:(NSEvent *)theEvent
 {
     NSPoint locationInWindow = [theEvent locationInWindow];
-    
+    locationInWindow.x -= PIN_OUTLET_PADDING;
+    locationInWindow.y -=PIN_OUTLET_PADDING;
     NSView *aView = [[VJXBoard sharedBoard] hitTest:locationInWindow];
     
     BOOL isConnected = NO;

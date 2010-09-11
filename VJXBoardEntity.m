@@ -160,7 +160,7 @@
     // one clicked.
     BOOL isMultiple = [theEvent modifierFlags] & NSCommandKeyMask ? YES : NO;
     if (isMultiple) {
-        [[VJXBoard sharedBoard] setSelected:self multiple:isMultiple];        
+        [[VJXBoard sharedBoard] setSelected:self multiple:YES];        
     }
     else {
         if (![[VJXBoard sharedBoard] hasMultipleEntitiesSelected]) {

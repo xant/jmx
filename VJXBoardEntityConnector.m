@@ -28,6 +28,7 @@
 
 @synthesize selected, direction, origin, destination;
 
+#define CONNECTOR_LINE_WIDTH 2.0
 - (id)initWithFrame:(NSRect)frame
 {
     self = [super initWithFrame:frame];
@@ -48,20 +49,24 @@
 {
     NSBezierPath *thePath = [[NSBezierPath alloc] init];
 
-    [thePath setLineWidth:2.0];
+    [thePath setLineWidth:CONNECTOR_LINE_WIDTH];
 
     NSPoint initialPoint, endPoint, controlPoint1, controlPoint2;
 
     if ((direction == kSouthEastDirection) || (direction == kNorthWestDirection)) {
-        initialPoint = NSMakePoint(0.0, [self frame].size.height - 2.0);
-        endPoint = NSMakePoint([self frame].size.width, 2.0);
+        initialPoint = NSMakePoint(0.0, [self frame].size.height - CONNECTOR_LINE_WIDTH);
+        if (initialPoint.y < 0.0)
+            initialPoint.y = 0.0;
+        endPoint = NSMakePoint([self frame].size.width - 6.0, CONNECTOR_LINE_WIDTH);
         controlPoint1 = NSMakePoint([self frame].size.width / 3, [self frame].size.height);
         controlPoint2 = NSMakePoint([self frame].size.width / 3, [self frame].size.height);
     }
     else {
         initialPoint = NSMakePoint(0.0, 2.0);
-        endPoint = NSMakePoint([self frame].size.width, [self frame].size.height - 2.0);
-        controlPoint1 = NSMakePoint([self frame].size.width / 3, 0.0);
+        endPoint = NSMakePoint([self frame].size.width - 6.0, [self frame].size.height - CONNECTOR_LINE_WIDTH);
+        if (endPoint.y < 0.0)
+            endPoint.y = 0.0;
+        controlPoint1 = NSMakePoint(3.0, 0.0);
         controlPoint2 = NSMakePoint([self frame].size.width / 3, 0.0);
     }
 
@@ -77,13 +82,13 @@
     NSShadow *lineShadow = [[NSShadow alloc] init];
     [lineShadow setShadowColor:[NSColor blackColor]];
     [lineShadow setShadowBlurRadius:2.5];
-    [lineShadow setShadowOffset:NSMakeSize(2.0, -2.0)];
+    [lineShadow setShadowOffset:NSMakeSize(CONNECTOR_LINE_WIDTH, - CONNECTOR_LINE_WIDTH)];
     [lineShadow set];
     
     [thePath stroke];
     
     [thePath release];
-    [lineShadow release];
+  //  [lineShadow release];
 }
 
 - (void)recalculateFrame
@@ -107,7 +112,7 @@
     ? kNorthEastDirection
     : kNorthWestDirection;
     
-    NSRect frame = NSMakeRect(x, y, w, h);
+    NSRect frame = NSMakeRect(x, y, w + CONNECTOR_LINE_WIDTH, h + CONNECTOR_LINE_WIDTH);
     [self setFrame:frame];
 }
 
@@ -119,7 +124,8 @@
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
-    [[VJXBoard sharedBoard] setSelected:self];
+    BOOL isMultiple = [theEvent modifierFlags] & NSCommandKeyMask ? YES : NO;
+    [[VJXBoard sharedBoard] setSelected:self multiple:isMultiple];
 }
 
 - (void)toggleSelected

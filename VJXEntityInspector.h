@@ -10,12 +10,13 @@
 #import "VJXBoardEntity.h"
 #import "VJXEntityInspectorPanel.h"
 
-@interface VJXEntityInspector : NSObject < NSTableViewDataSource > {
+@interface VJXEntityInspector : NSObject < NSTableViewDataSource,NSTableViewDelegate > {
 @private 
     VJXBoardEntity *entity; // weak reference
     VJXEntityInspectorPanel *panel;
     NSTableView *inputPins;
     NSTableView *outputPins;
+    NSTableView *producers;
 }
 
 @property (assign)VJXBoardEntity *entity; // we don't want to retain the entity

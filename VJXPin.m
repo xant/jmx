@@ -30,7 +30,7 @@
 
 @implementation VJXPin
 
-@synthesize type, name, multiple, direction;
+@synthesize type, name, multiple, direction, producers;
 
 + (id)pinWithName:(NSString *)name
           andType:(VJXPinType)pinType

@@ -14,12 +14,13 @@
     IBOutlet NSTabView *pinInspector;
     IBOutlet NSTableView *inputPins;
     IBOutlet NSTableView *outputPins;
+    IBOutlet NSTableView *producers;
 }
 
 @property (readonly)NSTextField *entityName;
 @property (readonly)NSTabView *pinInspector;
 @property (readonly)NSTableView *inputPins;
 @property (readonly)NSTableView *outputPins;
-
+@property (readonly)NSTableView *producers;
 
 @end

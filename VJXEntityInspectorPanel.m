@@ -11,6 +11,6 @@
 
 @implementation VJXEntityInspectorPanel
 
-@synthesize entityName, pinInspector, inputPins, outputPins;
+@synthesize entityName, pinInspector, inputPins, outputPins, producers;
 
 @end

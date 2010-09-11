@@ -59,6 +59,7 @@ typedef enum {
 @property (readonly) NSString *name;
 @property (readonly) BOOL multiple;
 @property (readonly) VJXPinDirection direction;
+@property (readonly) NSArray *producers;
 
 + (id)pinWithName:(NSString *)name
           andType:(VJXPinType)pinType
@@ -73,6 +74,7 @@ typedef enum {
 - (void)deliverSignal:(id)data fromSender:(id)sender;
 - (void)deliverSignal:(id)data;
 - (void)allowMultipleConnections:(BOOL)choice;
+- (NSArray *)producers;
 - (NSArray *)readProducers;
 - (id)readPinValue;
 - (NSString *)typeName;

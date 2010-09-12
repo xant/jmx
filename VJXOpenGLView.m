@@ -149,8 +149,11 @@
 - (void)setSize:(NSSize)size
 {
     @synchronized(self) {
+        NSRect actualRect = [[self window ] frame];
         NSRect newRect = NSMakeRect(0, 0, size.width, size.height);
         [self setFrame:newRect];
+        newRect.origin.x = actualRect.origin.x;
+        newRect.origin.y = actualRect.origin.y;
         [[self window] setFrame:newRect display:YES];
     }
 }

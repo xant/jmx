@@ -29,6 +29,9 @@
 @synthesize selected, direction, origin, destination;
 
 #define CONNECTOR_LINE_WIDTH 2.0
+#define ORIGIN_OFFSET 10.0
+#define DESTINATION_OFFSET 20.0
+
 - (id)initWithFrame:(NSRect)frame
 {
     self = [super initWithFrame:frame];
@@ -49,25 +52,32 @@
 {
     NSBezierPath *thePath = [[NSBezierPath alloc] init];
 
+#if 0
+    [[NSColor colorWithDeviceRed:1.0 green:0.0 blue:0.0 alpha:0.25] setFill];
+    [thePath appendBezierPathWithRect:[self bounds]];
+    [thePath fill];
+    [thePath closePath];
+#endif
     [thePath setLineWidth:CONNECTOR_LINE_WIDTH];
 
     NSPoint initialPoint, endPoint, controlPoint1, controlPoint2;
+    NSRect frame = [self frame];
+
+    float scale = frame.size.width > frame.size.height
+    ? frame.size.width / frame.size.height
+    : frame.size.height / frame.size.width;
 
     if ((direction == kSouthEastDirection) || (direction == kNorthWestDirection)) {
-        initialPoint = NSMakePoint(0.0, [self frame].size.height - CONNECTOR_LINE_WIDTH);
-        if (initialPoint.y < 0.0)
-            initialPoint.y = 0.0;
-        endPoint = NSMakePoint([self frame].size.width - 6.0, CONNECTOR_LINE_WIDTH);
-        controlPoint1 = NSMakePoint([self frame].size.width / 3, [self frame].size.height);
-        controlPoint2 = NSMakePoint([self frame].size.width / 3, [self frame].size.height);
+        initialPoint = NSMakePoint(ORIGIN_OFFSET, frame.size.height - ORIGIN_OFFSET);
+        endPoint = NSMakePoint(frame.size.width - ORIGIN_OFFSET, ORIGIN_OFFSET);
+        controlPoint1 = NSMakePoint(frame.size.width / scale, frame.size.height - ORIGIN_OFFSET);
+        controlPoint2 = NSMakePoint(frame.size.width - (frame.size.width / scale), ORIGIN_OFFSET);
     }
     else {
-        initialPoint = NSMakePoint(0.0, 2.0);
-        endPoint = NSMakePoint([self frame].size.width - 6.0, [self frame].size.height - CONNECTOR_LINE_WIDTH);
-        if (endPoint.y < 0.0)
-            endPoint.y = 0.0;
-        controlPoint1 = NSMakePoint(3.0, 0.0);
-        controlPoint2 = NSMakePoint([self frame].size.width / 3, 0.0);
+        initialPoint = NSMakePoint(ORIGIN_OFFSET, ORIGIN_OFFSET);
+        endPoint = NSMakePoint(frame.size.width - ORIGIN_OFFSET, frame.size.height - ORIGIN_OFFSET);
+        controlPoint1 = NSMakePoint(frame.size.width / scale, ORIGIN_OFFSET);
+        controlPoint2 = NSMakePoint(frame.size.width - (frame.size.width / scale), frame.size.height - ORIGIN_OFFSET);
     }
 
     [thePath moveToPoint:initialPoint];
@@ -75,16 +85,16 @@
     [thePath setLineCapStyle:NSRoundLineCapStyle];
 
     if (self.selected)
-        [[NSColor yellowColor] set];
+        [[NSColor yellowColor] setStroke];
     else
-        [[NSColor blackColor] set];
+        [[NSColor blackColor] setStroke];
     
     NSShadow *lineShadow = [[NSShadow alloc] init];
     [lineShadow setShadowColor:[NSColor blackColor]];
     [lineShadow setShadowBlurRadius:2.5];
     [lineShadow setShadowOffset:NSMakeSize(CONNECTOR_LINE_WIDTH, - CONNECTOR_LINE_WIDTH)];
     [lineShadow set];
-    
+
     [thePath stroke];
     
     [thePath release];
@@ -98,10 +108,10 @@
     NSPoint originLocation = [origin convertPoint:[origin pointAtCenter] toView:board];
     NSPoint destinationLocation = [destination convertPoint:[destination pointAtCenter] toView:board];
     
-    float x = MIN(originLocation.x, destinationLocation.x);
-    float y = MIN(originLocation.y, destinationLocation.y);
-    float w = abs(originLocation.x - destinationLocation.x);
-    float h = abs(originLocation.y - destinationLocation.y);
+    float x = MIN(originLocation.x, destinationLocation.x) - ORIGIN_OFFSET;
+    float y = MIN(originLocation.y, destinationLocation.y) - ORIGIN_OFFSET;
+    float w = abs(originLocation.x - destinationLocation.x) + DESTINATION_OFFSET;
+    float h = abs(originLocation.y - destinationLocation.y) + DESTINATION_OFFSET;
     
     direction =
     ((originLocation.x < destinationLocation.x) && (originLocation.y < destinationLocation.y))

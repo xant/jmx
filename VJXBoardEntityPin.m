@@ -112,10 +112,10 @@
 
     NSPoint thisLocation = [self convertPoint:[self pointAtCenter] toView:[VJXBoard sharedBoard]];
 
-    float minX = MIN(locationInWindow.x, thisLocation.x) - 2.0;
-    float minY = MIN(locationInWindow.y, thisLocation.y) - 2.0;
-    float width = abs(locationInWindow.x - thisLocation.x);
-    float height = abs(locationInWindow.y - thisLocation.y);
+    float minX = MIN(locationInWindow.x, thisLocation.x) - 10.0;
+    float minY = MIN(locationInWindow.y, thisLocation.y) - 10.0;
+    float width = abs(locationInWindow.x - thisLocation.x) + 20.0;
+    float height = abs(locationInWindow.y - thisLocation.y) + 20.0;
 
     if (width < 6.0) {
         width = 6.0;

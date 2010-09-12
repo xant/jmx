@@ -78,13 +78,15 @@
                 }
             }
 #endif
-            if (!currentFrame)
-                currentFrame = [CIImage imageWithColor:[CIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
-            CIFilter *blendScreenFilter = [CIFilter filterWithName:@"CIScreenBlendMode"];
-            [blendScreenFilter setDefaults];
-            [blendScreenFilter setValue:frame forKey:@"inputImage"];
-            [blendScreenFilter setValue:currentFrame forKey:@"inputBackgroundImage"];
-            currentFrame = [blendScreenFilter valueForKey:@"outputImage"];
+            if (!currentFrame) {
+                currentFrame = frame;
+            } else {
+                CIFilter *blendScreenFilter = [CIFilter filterWithName:@"CIScreenBlendMode"];
+                [blendScreenFilter setDefaults];
+                [blendScreenFilter setValue:frame forKey:@"inputImage"];
+                [blendScreenFilter setValue:currentFrame forKey:@"inputBackgroundImage"];
+                currentFrame = [blendScreenFilter valueForKey:@"outputImage"];
+            }
         }
         if (currentFrame)
             [currentFrame retain];

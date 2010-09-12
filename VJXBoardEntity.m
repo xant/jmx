@@ -36,24 +36,37 @@
 
     NSUInteger maxNrPins = MAX([theEntity.inputPins count], [theEntity.outputPins count]);
 
-    CGFloat labelHeight = 32.0;
-    CGFloat pinSide = 11.0;
-    CGFloat height = pinSide * 2 * maxNrPins;
-    CGFloat width = 300.0;
+    CGFloat pinSide = ENTITY_PIN_HEIGHT;
+    CGFloat height = pinSide * maxNrPins * ENTITY_PIN_MINSPACING;
+    CGFloat width = ENTITY_FRAME_WIDTH;
     
-    NSRect frame = NSMakeRect(10.0, 10.0, width, height + labelHeight);
-    
+    NSTextField *labelView = [[[NSTextField alloc] init] autorelease];
+    [labelView setTextColor:[NSColor whiteColor]];
+    [labelView setStringValue:[theEntity displayName]];
+    [labelView setBordered:NO];
+    [labelView setEditable:NO];
+    [labelView setDrawsBackground:NO];
+    [labelView setFont:[NSFont boldSystemFontOfSize:[NSFont smallSystemFontSize]]];
+    [labelView sizeToFit];
+    CGFloat labelHeight = [labelView frame].size.height;
+    NSRect frame = NSMakeRect(10.0, 10.0, width, height + labelHeight + ENTITY_LABEL_PADDING);
+    CGRect labelFrame = [labelView frame];
+    labelFrame.origin.x += ENTITY_LABEL_PADDING;
+    labelFrame.origin.y = frame.size.height-labelHeight - ENTITY_LABEL_PADDING/2;
+    [labelView setFrame:labelFrame];
     self = [super initWithFrame:frame];
     
     if (self) {
+        self.label = labelView;
+        [self addSubview:self.label];
+
         self.entity = theEntity;
         self.selected = NO;
         self.outlets = [NSMutableArray array];
         
         NSRect bounds = [self bounds];
-        bounds.size.height -= labelHeight;
-        bounds.origin.x += 6.0;
-        bounds.origin.y -= 6.0;
+        bounds.size.height -= (labelHeight + ENTITY_LABEL_PADDING);
+        bounds.origin.x += ENTITY_PIN_LEFT_PADDING;
         
         NSUInteger nrInputPins = [theEntity.inputPins count];
         NSUInteger nrOutputPins = [theEntity.outputPins count];
@@ -71,7 +84,7 @@
         
         i = 0;
         for (NSString *pinName in theEntity.outputPins) {
-            NSPoint origin = NSMakePoint(bounds.size.width - 120.0,
+            NSPoint origin = NSMakePoint(bounds.size.width - ENTITY_OUTLET_WIDTH ,
                                          (((bounds.size.height / nrOutputPins) * i++) - (bounds.origin.y - (3.0))));
             VJXBoardEntityOutlet *outlet = [[VJXBoardEntityOutlet alloc] initWithPin:[theEntity.outputPins objectForKey:pinName]
                                                                             andPoint:origin
@@ -80,14 +93,6 @@
             [self.outlets addObject:outlet];
             [outlet release];
         }
-        
-        self.label = [[[NSTextField alloc] initWithFrame:NSMakeRect(bounds.origin.x, (bounds.size.height - 4.0), bounds.size.width, labelHeight)] autorelease];
-        [self.label setTextColor:[NSColor whiteColor]];
-        [self.label setStringValue:[self.entity displayName]];
-        [self.label setBordered:NO];
-        [self.label setEditable:NO];
-        [self.label setDrawsBackground:NO];
-        [self addSubview:self.label];        
     }
     return self;
 }

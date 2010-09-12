@@ -27,19 +27,19 @@
 - (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint isOutput:(BOOL)isOutput
 {
     NSRect frame;
-    frame = NSMakeRect(thePoint.x, thePoint.y, 120.0, 18.0);
+    frame = NSMakeRect(thePoint.x, thePoint.y, ENTITY_OUTLET_WIDTH, ENTITY_OUTLET_HEIGHT);
 
     if ((self = [super initWithFrame:frame]) != nil) {
         NSPoint pinPoint;
         NSRect labelRect;
 
         if (isOutput) {
-            pinPoint = NSMakePoint(frame.size.width - 30.0, 0.0);
-            labelRect = NSMakeRect(0.0, 0.0, 90.0, frame.size.height);
+            pinPoint = NSMakePoint(frame.size.width - ENTITY_OUTLET_LABEL_PADDING_FOR_OUTPUT, 0.0);
+            labelRect = NSMakeRect(0.0, 0.0, ENTITY_OUTLET_LABEL_WIDTH, frame.size.height);
         }
         else {
             pinPoint = NSMakePoint(0.0, 0.0);
-            labelRect = NSMakeRect(frame.size.height, 0.0, 90.0, frame.size.height);
+            labelRect = NSMakeRect(ENTITY_OUTLET_LABEL_PADDING_FOR_INPUT, 0.0, ENTITY_OUTLET_LABEL_WIDTH, frame.size.height);
         }
 
         self.pin = [[[VJXBoardEntityPin alloc] initWithPin:thePin andPoint:pinPoint] autorelease];
@@ -51,6 +51,7 @@
         [self.pinName setDrawsBackground:NO];
         [self.pinName setBordered:NO];
         [self.pinName setTextColor:[NSColor whiteColor]];
+        [self.pinName setFont:[NSFont fontWithName:@"terminal" size:[NSFont smallSystemFontSize]]];
         [[self.pinName cell] setTruncatesLastVisibleLine:YES];
 
         if (isOutput)

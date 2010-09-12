@@ -25,10 +25,6 @@
 #import "VJXBoard.h"
 #import "VJXBoardEntityConnector.h"
 
-#define PIN_OUTLET_PADDING 5.0
-#define PIN_OUTLET_WIDTH 18.0
-#define PIN_OUTLET_HEIGHT 18.0
-
 @implementation VJXBoardEntityPin
 
 @synthesize selected, pin, connectors;
@@ -97,7 +93,6 @@
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
-
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent

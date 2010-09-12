@@ -26,6 +26,10 @@
 #import "VJXPin.h"
 #import "VJXEntityInspector.h"
 
+#define PIN_OUTLET_PADDING 5.0
+#define PIN_OUTLET_WIDTH 20.0
+#define PIN_OUTLET_HEIGHT 20.0
+
 @class VJXBoardEntityConnector;
 
 @interface VJXBoardEntityPin : NSView

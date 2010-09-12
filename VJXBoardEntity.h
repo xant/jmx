@@ -24,6 +24,12 @@
 #import <Cocoa/Cocoa.h>
 #import "VJXEntity.h"
 
+#define ENTITY_LABEL_PADDING 12.0
+#define ENTITY_PIN_MINSPACING 1.5
+#define ENTITY_FRAME_WIDTH 220.0
+#define ENTITY_PIN_HEIGHT 11.0
+#define ENTITY_PIN_LEFT_PADDING 6.0
+
 @interface VJXBoardEntity : NSView
 {
     VJXEntity *entity;

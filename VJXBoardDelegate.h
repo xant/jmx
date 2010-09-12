@@ -32,9 +32,9 @@
 }
 
 @property (nonatomic,assign) IBOutlet VJXBoard *board;
-@property (nonatomic,assign) IBOutlet NSPanel *inspectorPanel;
+@property (nonatomic,assign) IBOutlet VJXEntityInspectorPanel *inspectorPanel;
 
-- (IBAction)addEntity:(id)sender;
+//- (IBAction)addEntity:(id)sender;
 
 - (IBAction)addMovieLayer:(id)sender;
 - (IBAction)addImageLayer:(id)sender;

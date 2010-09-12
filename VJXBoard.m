@@ -69,30 +69,33 @@
     [self setSelected:theEntity multiple:NO];
 }
 
-- (void)setSelected:(VJXBoardEntity *)theEntity multiple:(BOOL)isMultiple
+- (void)setSelected:(id)theEntity multiple:(BOOL)isMultiple
 {
-    // Add some point, we'll be using a NSArrayController to have references of
-    // all entities we have on the board, so the entity selection will be done
-    // thru it instead of this code. Using NSArrayController for that will be 
-    // nice because we can use KVC in IB to create the Inspector palettes.
+    if ([theEntity isKindOfClass:[VJXBoardEntity class]] ||
+        [theEntity isKindOfClass:[VJXBoardEntityConnector class]]) {
+        // Add some point, we'll be using a NSArrayController to have references of
+        // all entities we have on the board, so the entity selection will be done
+        // thru it instead of this code. Using NSArrayController for that will be 
+        // nice because we can use KVC in IB to create the Inspector palettes.
 
-    // Unselect all entities, and toggle only the one we selected.
-    if (!isMultiple) {
-        [entities makeObjectsPerformSelector:@selector(unselect)];
-        [selectedEntities removeAllObjects];
-    }
+        // Unselect all entities, and toggle only the one we selected.
+        if (!isMultiple) {
+            [entities makeObjectsPerformSelector:@selector(unselect)];
+            [selectedEntities removeAllObjects];
+        }
 
-    [theEntity toggleSelected];
-    
-    // Move the selected entity to the end of the subviews array, making it move
-    // to the top of the view hierarchy.
-    if ([entities count] >= 1) {
-        NSMutableArray *subviews = [[self subviews] mutableCopy];
-        [subviews removeObjectAtIndex:[subviews indexOfObject:theEntity]];
-        [subviews addObject:theEntity];
-        [selectedEntities addObject:theEntity];
-        [self setSubviews:subviews];
-        [subviews release];
+        [theEntity toggleSelected];
+        
+        // Move the selected entity to the end of the subviews array, making it move
+        // to the top of the view hierarchy.
+        if ([entities count] >= 1) {
+            NSMutableArray *subviews = [[self subviews] mutableCopy];
+            [subviews removeObjectAtIndex:[subviews indexOfObject:theEntity]];
+            [subviews addObject:theEntity];
+            [selectedEntities addObject:theEntity];
+            [self setSubviews:subviews];
+            [subviews release];
+        }
     }
 }
 
@@ -138,7 +141,7 @@
 }
 
 static VJXBoard *sharedBoard = nil;
-static NSPanel *inspectorPanel = nil;
+static VJXEntityInspectorPanel *inspectorPanel = nil;
 
 + (VJXBoard *)sharedBoard
 {
@@ -149,6 +152,11 @@ static NSPanel *inspectorPanel = nil;
     //       Actually the instance is instantiated by the nib file, so we could 
     //       just have the sharedBoard pointer set through an Outlet
     return sharedBoard;
+}
+
++ (VJXEntityInspectorPanel *)inspectorPanel
+{
+    return inspectorPanel;
 }
 
 // XXX - such a message shouldn't exist at all
@@ -162,7 +170,7 @@ static NSPanel *inspectorPanel = nil;
 // XXX - such a message shouldn't exist at all
 //       the shared 'singleton' instance should be created
 //       transparently the first time it is requested
-+ (void)setInspectorPanel:(NSPanel *)aPanel
++ (void)setInspectorPanel:(VJXEntityInspectorPanel *)aPanel
 {
     inspectorPanel = aPanel;
 }

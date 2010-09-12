@@ -23,6 +23,8 @@
 
 #import <Cocoa/Cocoa.h>
 #import "VJXBoardEntity.h"
+#import "VJXBoardEntityConnector.h"
+#import "VJXEntityInspectorPanel.h"
 #import "VJXBoardSelection.h"
 
 @interface VJXBoard : NSView {
@@ -36,10 +38,10 @@
 @property (nonatomic,retain) NSMutableArray *entities;
 
 + (VJXBoard *)sharedBoard;
-+ (NSPanel *)inspectorPanel;
++ (VJXEntityInspectorPanel *)inspectorPanel;
 + (void)setSharedBoard:(VJXBoard *)aBoard;
 + (void)setInspectorPanel:(NSPanel *)inspectorPanel;
-- (void)setSelected:(VJXBoardEntity *)theEntity multiple:(BOOL)isMultiple;
+- (void)setSelected:(id)theEntity multiple:(BOOL)isMultiple;
 
 + (void)shiftSelectedToLocation:(NSPoint)aLocation;
 - (void)shiftSelectedToLocation:(NSPoint)aLocation;

@@ -61,7 +61,6 @@
 
 - (void)stop {
     if (worker) {
-        [timer invalidate];
         [worker cancel];
         while (![worker isFinished])
             [NSThread sleepForTimeInterval:0.001];
@@ -79,6 +78,9 @@
     uint64_t timeStamp = CVGetCurrentHostTime();
     [self tick:timeStamp];
     [self outputDefaultSignals:timeStamp];
+    if ([[NSThread currentThread] isCancelled])
+        [timer invalidate];
+
 }
 
 - (void)run

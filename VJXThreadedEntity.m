@@ -91,7 +91,7 @@
         uint64_t sleepTime = (delta && delta < maxDelta) ? maxDelta - delta : 0;
         
         if (sleepTime) {
-#if 1
+#if 0
             // using nanosleep is a good portable way, but since we are running 
             // on OSX only, we should try relying on the NSThread API.
             // We will switch back to nanosleep if we notice that 'sleepForTimeInterval'
@@ -108,7 +108,7 @@
             // let's try if NSThread facilities are reliable (in terms of time precision)
             do {
                 [NSThread sleepForTimeInterval:0.001];
-            } while (CVGetCurrentHostTime() - timeStamp <= sleepTime);
+            } while (CVGetCurrentHostTime() - timeStamp <= sleepTime); // we need to be as precise as possible
 #endif
         } else {
             // mmm ... no sleep time ... perhaps we are out of resources and slowing down mixing

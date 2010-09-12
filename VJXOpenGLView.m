@@ -91,7 +91,6 @@
         }
         [[self openGLContext] flushBuffer];
         [self setNeedsDisplay:NO];
-
     }
     CGLUnlockContext([[self openGLContext] CGLContextObj]);
 
@@ -150,11 +149,18 @@
 {
     @synchronized(self) {
         NSRect actualRect = [[self window ] frame];
-        NSRect newRect = NSMakeRect(0, 0, size.width, size.height);
-        [self setFrame:newRect];
-        newRect.origin.x = actualRect.origin.x;
-        newRect.origin.y = actualRect.origin.y;
-        [[self window] setFrame:newRect display:YES];
+        // XXX - we actually don't allow setting a 0-size (for neither width nor height)
+        if (size.width && size.height &&
+            (size.width != actualRect.size.width ||
+            size.height != actualRect.size.height))
+        {
+            NSRect newRect = NSMakeRect(0, 0, size.width, size.height);
+            [self setFrame:newRect];
+            newRect.origin.x = actualRect.origin.x;
+            newRect.origin.y = actualRect.origin.y;
+            [[self window] setFrame:newRect display:NO];
+            [[self window] setMovable:YES]; // XXX - this shouldn't be necessary
+        }
     }
 }
 

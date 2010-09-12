@@ -191,9 +191,12 @@
     // reopen the inspector panel only if this is a new selection
     if (isSelected && !selected) {
         [VJXEntityInspector setEntity:self];
-        [self setNeedsDisplay:YES];
     }
+
     // Whenever the selected status is changed, we need to redraw the entity.
+    if (selected != isSelected)
+        [self setNeedsDisplay:YES];
+
     selected = isSelected;
 }
 

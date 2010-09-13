@@ -37,7 +37,7 @@
         self.frequency = [NSNumber numberWithDouble:25.0];
         [self registerInputPin:@"frequency" withType:kVJXNumberPin andSelector:@"setFrequency:"];
         [self registerInputPin:@"active" withType:kVJXNumberPin andSelector:@"setActive:"];
-        [self registerOutputPin:@"outputFrequency" withType:kVJXNumberPin];
+        frequencyPin = [self registerOutputPin:@"frequency" withType:kVJXNumberPin];
         stampCount = 0;
         previousTimeStamp = 0;
     }
@@ -103,7 +103,6 @@
 
 - (void)outputDefaultSignals:(uint64_t)timeStamp
 {
-    VJXPin *frequencyPin = [self outputPinWithName:@"outputFrequency"];
     int i = 0;
     if (stampCount > kVJXFpsMaxStamps) {
         for (i = 0; i < stampCount; i++) {

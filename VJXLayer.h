@@ -1,5 +1,5 @@
 //
-//  VJLayer.h
+//  VJXLayer.h
 //  VeeJay
 //
 //  Created by Igor Sutton on 8/24/10.

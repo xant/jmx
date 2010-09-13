@@ -35,5 +35,7 @@
 - (id)initWithNSSize:(NSSize)size;
 - (CGFloat)width;
 - (CGFloat)height;
+- (void)setWidth:(CGFloat)width;
+- (void)setHeight:(CGFloat)height;
 
 @end

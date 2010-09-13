@@ -1,5 +1,5 @@
 //
-//  VJLayer.m
+//  VJXLayer.m
 //  VeeJay
 //
 //  Created by Igor Sutton on 8/24/10.
@@ -45,11 +45,11 @@
         [self registerInputPin:@"rotation" withType:kVJXNumberPin andSelector:@"setRotation:"];
         [self registerInputPin:@"scaleRatio" withType:kVJXNumberPin andSelector:@"setScaleRatio:"];
         [self registerInputPin:@"origin" withType:kVJXPointPin andSelector:@"setOrigin:"];
-        [self registerInputPin:@"size" withType:kVJXSizePin andSelector:@"setSize:"];
+        [self registerInputPin:@"frameSize" withType:kVJXSizePin andSelector:@"setSize:"];
 
         // we output at least 1 image
-        outputFramePin = [self registerOutputPin:@"outputFrame" withType:kVJXImagePin];
-        outputFrameSizePin = [self registerOutputPin:@"outputFrameSize" withType:kVJXSizePin];
+        outputFramePin = [self registerOutputPin:@"frame" withType:kVJXImagePin];
+        outputFrameSizePin = [self registerOutputPin:@"frameSize" withType:kVJXSizePin];
         [outputFrameSizePin allowMultipleConnections:YES];
         // XXX - DEFAULTS
         NSSize defaultLayerSize = { 640, 480 };

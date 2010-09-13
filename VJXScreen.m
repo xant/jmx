@@ -33,7 +33,7 @@
     if (self = [super init]) {
         currentFrame = nil;
         self.size = [VJXSize sizeWithNSSize:screenSize];    
-        [self registerInputPin:@"inputFrame" withType:kVJXImagePin andSelector:@"drawFrame:"];
+        [self registerInputPin:@"frame" withType:kVJXImagePin andSelector:@"drawFrame:"];
         [self registerInputPin:@"screenSize" withType:kVJXSizePin andSelector:@"setSize:"];
 
         // effective fps for debugging purposes

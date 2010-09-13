@@ -27,7 +27,7 @@
 
 @interface VJXMixer : VJXThreadedEntity {
 @public
-    NSSize outputSize;
+    VJXSize *outputSize;
 
 @protected
     NSArray *videoInputs;
@@ -39,6 +39,6 @@
     uint64_t lastFrameTime;
 }
 
-@property (assign) NSSize outputSize;
+@property (retain) VJXSize *outputSize;
 
 @end

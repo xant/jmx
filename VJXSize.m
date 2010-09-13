@@ -59,6 +59,16 @@
     return nsSize.height;
 }
 
+- (void)setWidth:(CGFloat)width
+{
+    nsSize.width = width;
+}
+
+- (void)setHeight:(CGFloat)height
+{
+    nsSize.height = height;
+}
+
 - (BOOL)isEqual:(VJXSize *)object
 {
     if (nsSize.height == object.height && nsSize.width == object.width)

@@ -55,7 +55,6 @@
     if (!worker) {
         worker = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
         [worker start];
-        [worker release];
     }
 }
 
@@ -67,6 +66,7 @@
         // immediately after we return from this method
         while (![worker isFinished])
             [NSThread sleepForTimeInterval:0.001];
+        [worker release];
         worker = nil;
     }
 }

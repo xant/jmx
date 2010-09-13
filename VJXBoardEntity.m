@@ -115,7 +115,7 @@
     // that we are going to be destroyed, since 
     // it could still referencing us
     // TODO - we could check this only if we are selected
-    [VJXEntityInspector unsetEntity:self];
+    [[VJXBoard inspectorPanel] unsetEntity:self];
     [entity release];
     [label release];
     [outlets release];
@@ -205,7 +205,7 @@
 {
     // reopen the inspector panel only if this is a new selection
     if (isSelected && !selected) {
-        [VJXEntityInspector setEntity:self];
+        [[VJXBoard inspectorPanel] setEntity:self];
     }
 
     // Whenever the selected status is changed, we need to redraw the entity.

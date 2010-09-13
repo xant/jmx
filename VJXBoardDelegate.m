@@ -40,7 +40,6 @@
 {
     [VJXBoard setSharedBoard:board];
     [VJXBoard setInspectorPanel:inspectorPanel];
-    [VJXEntityInspector setPanel:inspectorPanel];
 }
 
 - (void)openFilePanelDidEnd:(NSOpenPanel *)panel returnCode:(int)returnCode  contextInfo:(void  *)contextInfo

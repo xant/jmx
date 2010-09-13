@@ -41,4 +41,6 @@
 - (IBAction)addOutputScreen:(id)sender;
 - (IBAction)addMixerLayer:(id)sender;
 - (IBAction)removeSelectedEntities:(id)sender;
+- (IBAction)addCaptureLayer:(id)sender;
+
 @end

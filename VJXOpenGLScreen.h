@@ -23,7 +23,8 @@
 
 #import <Cocoa/Cocoa.h>
 #import "VJXScreen.h"
-#import "VJXOpenGLView.h"
+
+@class VJXOpenGLView;
 
 @interface VJXOpenGLScreen : VJXScreen {
 @private

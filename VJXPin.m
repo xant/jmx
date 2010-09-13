@@ -163,8 +163,13 @@
         NSLog(@"Object %@ doesn't respond to %@\n", pinReceiver, pinSignal);
     }
     // deliver the signal to the just connected receiver
-    if (rv == YES)
-        [self sendData:nil toReceiver:pinReceiver withSelector:pinSignal fromSender:nil];
+    if (rv == YES) {
+        VJXPinSignal *signal;
+        @synchronized(self) {
+            signal = [VJXPinSignal signalFrom:currentSender withData:currentData];
+        }
+        [self performSelectorInBackground:@selector(performSignal:) withObject:signal];
+    }
     return rv;
 }
 
@@ -219,7 +224,18 @@
         else
             currentSender = self;
     }
+    
+    // if we are an output pin and not receivers have been hooked, 
+    // it's useless to perform the signal
+    @synchronized(receivers) {
+        if (direction == kVJXOutputPin && ![receivers count])
+            return;
+    }
     VJXPinSignal *signal = [VJXPinSignal signalFrom:sender withData:data];
+    // Since we need to honor our frequency, we can't wait until the signal 
+    // is propagated to all receiver, otherwise our entity will slowdown its runloop
+    // because of a deep chain of receivers. To avoid affecting the entity we will
+    // perform the selector asynchronously in the background 
     [self performSelectorInBackground:@selector(performSignal:) withObject:signal];
 }
 

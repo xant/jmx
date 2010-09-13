@@ -12,7 +12,6 @@
 		821DE683123925EC00B6A45D /* VJXBoardSelection.m in Sources */ = {isa = PBXBuildFile; fileRef = 821DE682123925EC00B6A45D /* VJXBoardSelection.m */; };
 		82456BA51223CFA200236FE4 /* VJXLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 82456BA41223CFA200236FE4 /* VJXLayer.m */; };
 		82456BBA1223DBE100236FE4 /* VJXQtVideoLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 82456BB61223DBE100236FE4 /* VJXQtVideoLayer.m */; };
-		82456BBB1223DBE100236FE4 /* VJXOpenGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 82456BB81223DBE100236FE4 /* VJXOpenGLView.m */; };
 		82456BC41223DC8300236FE4 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BC31223DC8300236FE4 /* OpenGL.framework */; };
 		82456BC81223DC9900236FE4 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BC71223DC9900236FE4 /* QTKit.framework */; };
 		82456BCC1223DCA700236FE4 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BCB1223DCA700236FE4 /* QuartzCore.framework */; };
@@ -51,6 +50,7 @@
 		AA7931C11233A65400860CD2 /* VJXPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7931C01233A65400860CD2 /* VJXPoint.m */; };
 		AA917B63123BC8EE00001A8B /* VJXEntityInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = AA917B62123BC8EE00001A8B /* VJXEntityInspector.m */; };
 		AA917C01123BD96700001A8B /* VJXEntityInspectorPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA917C00123BD96700001A8B /* VJXEntityInspectorPanel.m */; };
+		AAF179A0123E0A39001319BA /* VJXQtCaptureLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF1799F123E0A39001319BA /* VJXQtCaptureLayer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,8 +70,6 @@
 		82456BA41223CFA200236FE4 /* VJXLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXLayer.m; sourceTree = "<group>"; };
 		82456BB61223DBE100236FE4 /* VJXQtVideoLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXQtVideoLayer.m; sourceTree = "<group>"; };
 		82456BB71223DBE100236FE4 /* VJXQtVideoLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXQtVideoLayer.h; sourceTree = "<group>"; };
-		82456BB81223DBE100236FE4 /* VJXOpenGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXOpenGLView.m; sourceTree = "<group>"; };
-		82456BB91223DBE100236FE4 /* VJXOpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXOpenGLView.h; sourceTree = "<group>"; };
 		82456BC31223DC8300236FE4 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		82456BC71223DC9900236FE4 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
 		82456BCB1223DCA700236FE4 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -142,6 +140,8 @@
 		AA917B62123BC8EE00001A8B /* VJXEntityInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXEntityInspector.m; sourceTree = "<group>"; };
 		AA917BFF123BD96700001A8B /* VJXEntityInspectorPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXEntityInspectorPanel.h; sourceTree = "<group>"; };
 		AA917C00123BD96700001A8B /* VJXEntityInspectorPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXEntityInspectorPanel.m; sourceTree = "<group>"; };
+		AAF1799E123E0A39001319BA /* VJXQtCaptureLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXQtCaptureLayer.h; sourceTree = "<group>"; };
+		AAF1799F123E0A39001319BA /* VJXQtCaptureLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXQtCaptureLayer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,12 +168,16 @@
 				8245763C1227DF2900236FE4 /* GUI */,
 				256AC3D80F4B6AC300CF3369 /* VeeJayAppDelegate.h */,
 				256AC3D90F4B6AC300CF3369 /* VeeJayAppDelegate.m */,
-				82456BB91223DBE100236FE4 /* VJXOpenGLView.h */,
-				82456BB81223DBE100236FE4 /* VJXOpenGLView.m */,
+				AA0F49D11230532F005A1C95 /* VJXOpenGLScreen.h */,
+				AA0F49D21230532F005A1C95 /* VJXOpenGLScreen.m */,
+				AA0F49CE123052EE005A1C95 /* VJXScreen.h */,
+				AA0F49CF123052EE005A1C95 /* VJXScreen.m */,
 				82456FE712256A4A00236FE4 /* VJXImageLayer.h */,
 				82456FE812256A4A00236FE4 /* VJXImageLayer.m */,
 				82456BB71223DBE100236FE4 /* VJXQtVideoLayer.h */,
 				82456BB61223DBE100236FE4 /* VJXQtVideoLayer.m */,
+				AAF1799E123E0A39001319BA /* VJXQtCaptureLayer.h */,
+				AAF1799F123E0A39001319BA /* VJXQtCaptureLayer.m */,
 				82456BA31223CFA200236FE4 /* VJXLayer.h */,
 				82456BA41223CFA200236FE4 /* VJXLayer.m */,
 				AA0F48A6122E7503005A1C95 /* VJXEntity.h */,
@@ -182,10 +186,6 @@
 				AA2BE6501236D31E006087E7 /* VJXThreadedEntity.m */,
 				AA0F48A912302BBA005A1C95 /* VJXPin.h */,
 				AA0F48AA12302BBA005A1C95 /* VJXPin.m */,
-				AA0F49CE123052EE005A1C95 /* VJXScreen.h */,
-				AA0F49CF123052EE005A1C95 /* VJXScreen.m */,
-				AA0F49D11230532F005A1C95 /* VJXOpenGLScreen.h */,
-				AA0F49D21230532F005A1C95 /* VJXOpenGLScreen.m */,
 				AA0F49D412305352005A1C95 /* VJXSoftScreen.h */,
 				AA0F49D512305352005A1C95 /* VJXSoftScreen.m */,
 				AA0F49D71230536C005A1C95 /* VJXExporter.h */,
@@ -390,7 +390,6 @@
 				256AC3DA0F4B6AC300CF3369 /* VeeJayAppDelegate.m in Sources */,
 				82456BA51223CFA200236FE4 /* VJXLayer.m in Sources */,
 				82456BBA1223DBE100236FE4 /* VJXQtVideoLayer.m in Sources */,
-				82456BBB1223DBE100236FE4 /* VJXOpenGLView.m in Sources */,
 				82456FE912256A4A00236FE4 /* VJXImageLayer.m in Sources */,
 				824576451227DF5800236FE4 /* VJXBoardEntityPin.m in Sources */,
 				824576461227DF5800236FE4 /* VJXBoardEntityConnector.m in Sources */,
@@ -422,6 +421,7 @@
 				821DE683123925EC00B6A45D /* VJXBoardSelection.m in Sources */,
 				AA917B63123BC8EE00001A8B /* VJXEntityInspector.m in Sources */,
 				AA917C01123BD96700001A8B /* VJXEntityInspectorPanel.m in Sources */,
+				AAF179A0123E0A39001319BA /* VJXQtCaptureLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

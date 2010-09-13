@@ -70,7 +70,7 @@
             // In any case we won't have more 'unique' frames than the native movie fps ... so if signaling 
             // the frames more often we will just send the same image multiple times (wasting precious cpu time)
             if (sampleCount > 1) // check if we indeed have a sequence of frames
-                self.frequency = [NSNumber numberWithDouble:sampleCount/(qtTimeDuration.timeValue/qtTimeDuration.timeScale)];
+                self.frequency = [NSNumber numberWithDouble:(sampleCount+1)/(qtTimeDuration.timeValue/qtTimeDuration.timeScale)];
             else // or if it's just a still image, set the frequency to 1 sec
                 self.frequency = [NSNumber numberWithDouble:1]; // XXX
                 

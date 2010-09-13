@@ -72,7 +72,12 @@
         NSUInteger nrOutputPins = [theEntity.outputPins count];
         
         int i = 0;
-        for (NSString *pinName in theEntity.inputPins) {
+        NSArray *pins = [[theEntity.inputPins allKeys]
+                         sortedArrayUsingComparator:^(id obj1, id obj2)
+                         {
+                             return [obj1 compare:obj2];
+                         }];
+        for (NSString *pinName in pins) {
             NSPoint origin = NSMakePoint(bounds.origin.x, (((bounds.size.height / nrInputPins) * i++) - (bounds.origin.y - (3.0))));
             VJXBoardEntityOutlet *outlet = [[VJXBoardEntityOutlet alloc] initWithPin:[theEntity.inputPins objectForKey:pinName]
                                                                             andPoint:origin
@@ -82,8 +87,13 @@
             [outlet release];
         }
         
+        pins = [[theEntity.outputPins allKeys]
+                sortedArrayUsingComparator:^(id obj1, id obj2)
+                {
+                    return [obj1 compare:obj2];
+                }];
         i = 0;
-        for (NSString *pinName in theEntity.outputPins) {
+        for (NSString *pinName in pins) {
             NSPoint origin = NSMakePoint(bounds.size.width - ENTITY_OUTLET_WIDTH ,
                                          (((bounds.size.height / nrOutputPins) * i++) - (bounds.origin.y - (3.0))));
             VJXBoardEntityOutlet *outlet = [[VJXBoardEntityOutlet alloc] initWithPin:[theEntity.outputPins objectForKey:pinName]

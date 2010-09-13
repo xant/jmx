@@ -22,7 +22,50 @@
 //
 
 #import "VJXPin.h"
-#import "VJXSignal.h"
+
+@interface VJXPinSignal : NSObject {
+    id data;
+    id sender;
+}
+
+@property (retain) id data;
+@property (retain) id sender;
+
++ signalFrom:(id)sender withData:(id)data;
+- (id)initWithSender:(id)theSender andData:(id)theData;
+
+@end
+
+@implementation VJXPinSignal
+
+@synthesize sender, data;
+
++ (id)signalFrom:(id)sender withData:(id)data
+{
+    id signal = [VJXPinSignal alloc];
+    if (signal) {
+        return [[signal initWithSender:sender andData:data] autorelease];
+    }
+    return nil;
+}
+
+- (id)initWithSender:(id)theSender andData:(id)theData
+{
+    if (self = [super init]) {
+        self.sender = theSender;
+        self.data = theData;
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+    self.sender = nil;
+    self.data = nil;
+    [super dealloc];
+}
+
+@end
 
 @interface VJXPin (private)
 - (BOOL)attachObject:(id)pinReceiver withSelector:(NSString *)pinSignal;
@@ -88,7 +131,7 @@
     }
 }
 
-- (void)performSignal:(VJXSignal *)signal
+- (void)performSignal:(VJXPinSignal *)signal
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     // send the signal to our owner 
@@ -176,7 +219,7 @@
         else
             currentSender = self;
     }
-    VJXSignal *signal = [VJXSignal signalFrom:sender withData:data];
+    VJXPinSignal *signal = [VJXPinSignal signalFrom:sender withData:data];
     [self performSelectorInBackground:@selector(performSignal:) withObject:signal];
 }
 

@@ -102,10 +102,10 @@
             }
             // TODO - compute the effective fps and send it to an output pin 
             //        for debugging purposes
-            [outputFramePin deliverSignal:currentFrame fromSender:self];
-            [outputFrameSizePin deliverSignal:size];
         }
     }
+    [outputFramePin deliverSignal:currentFrame fromSender:self];
+    [outputFrameSizePin deliverSignal:size];
 }
 
 - (CIImage *)currentFrame

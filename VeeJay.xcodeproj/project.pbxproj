@@ -51,6 +51,7 @@
 		AA7931C11233A65400860CD2 /* VJXPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7931C01233A65400860CD2 /* VJXPoint.m */; };
 		AA917B63123BC8EE00001A8B /* VJXEntityInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = AA917B62123BC8EE00001A8B /* VJXEntityInspector.m */; };
 		AA917C01123BD96700001A8B /* VJXEntityInspectorPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA917C00123BD96700001A8B /* VJXEntityInspectorPanel.m */; };
+		AA9183F7123D1E1600001A8B /* VJXSignal.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9183F6123D1E1600001A8B /* VJXSignal.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -142,6 +143,8 @@
 		AA917B62123BC8EE00001A8B /* VJXEntityInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXEntityInspector.m; sourceTree = "<group>"; };
 		AA917BFF123BD96700001A8B /* VJXEntityInspectorPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXEntityInspectorPanel.h; sourceTree = "<group>"; };
 		AA917C00123BD96700001A8B /* VJXEntityInspectorPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXEntityInspectorPanel.m; sourceTree = "<group>"; };
+		AA9183F5123D1E1600001A8B /* VJXSignal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXSignal.h; sourceTree = "<group>"; };
+		AA9183F6123D1E1600001A8B /* VJXSignal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXSignal.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -200,6 +203,8 @@
 				AA7931C01233A65400860CD2 /* VJXPoint.m */,
 				AA0D28A6123436C4009C8690 /* VJXAudioTrack.h */,
 				AA0D28A7123436C4009C8690 /* VJXAudioTrack.m */,
+				AA9183F5123D1E1600001A8B /* VJXSignal.h */,
+				AA9183F6123D1E1600001A8B /* VJXSignal.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -422,6 +427,7 @@
 				821DE683123925EC00B6A45D /* VJXBoardSelection.m in Sources */,
 				AA917B63123BC8EE00001A8B /* VJXEntityInspector.m in Sources */,
 				AA917C01123BD96700001A8B /* VJXEntityInspectorPanel.m in Sources */,
+				AA9183F7123D1E1600001A8B /* VJXSignal.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

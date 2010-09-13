@@ -53,12 +53,12 @@
 
 - (void)tick:(uint64_t)timeStamp
 {
+    NSArray *frames = [imageInputPin readProducers];
     @synchronized(self) {
         if (currentFrame) {
             [currentFrame release];
             currentFrame = nil;
         }
-        NSArray *frames = [imageInputPin readProducers];
         for (CIImage *frame in frames) {
 #if 0
             if ([producer isKindOfClass:[VJXLayer class]]) {

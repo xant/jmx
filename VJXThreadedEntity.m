@@ -62,6 +62,9 @@
 - (void)stop {
     if (worker) {
         [worker cancel];
+        // wait for the thread to really finish otherwise it could
+        // sill retaining something which is supposed to be released
+        // immediately after we return from this method
         while (![worker isFinished])
             [NSThread sleepForTimeInterval:0.001];
         worker = nil;
@@ -89,9 +92,11 @@
 
     double maxDelta = 1.0/[frequency doubleValue];
     
-    timer = [NSTimer scheduledTimerWithTimeInterval:maxDelta target:self selector:@selector(signalTick:) userInfo:nil repeats:YES];
+    timer = [NSTimer timerWithTimeInterval:maxDelta target:self selector:@selector(signalTick:) userInfo:nil repeats:YES];
     active = YES;
-    [[NSRunLoop currentRunLoop] run];
+    NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+    [runLoop addTimer:timer forMode:NSRunLoopCommonModes];
+    [runLoop run];
     [pool drain];
     active = NO;
 }

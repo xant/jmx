@@ -76,8 +76,8 @@
         // a gui animation is in progress. Calling drawRect directly here, instead, 
         // makes rendering happen in the current thread... which is what we really want
         //[view setNeedsDisplay:YES];
-        [view drawRect:NSZeroRect];
     }
+    [view drawRect:NSZeroRect];
 }
 
 @end

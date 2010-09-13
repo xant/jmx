@@ -22,6 +22,7 @@
 //
 
 #import "VJXPin.h"
+#import "VJXSignal.h"
 
 @interface VJXPin (private)
 - (BOOL)attachObject:(id)pinReceiver withSelector:(NSString *)pinSignal;
@@ -68,52 +69,55 @@
     // if the selector expects the correct amount of arguments.
     // this routine is expected to deliver the signals as soon as possible
     // all safety checks must be done before putting new objects in the receivers' table
-    @synchronized(self) {
-        if (data) {
-            if (currentData)
-                [currentData release];
-            currentData = [data retain];
-        }
-        if (sender)
-            currentSender = sender;
-        else
-            currentSender = self;
-
-        switch (selectorArgsNum) {
-            case 0:
-                // some listener could be uninterested to the data, 
-                // but just want to get notified when something travels on a pin
-                [receiver performSelector:selector];
-                break;
-            case 1:
-                // some other listeners could be interested only in the data,
-                // regardless of the sender
-                [receiver performSelector:selector withObject:currentData];
-                break;
-            case 2:
-                // and finally there can be listeners which require to know also who has sent the data
-                [receiver performSelector:selector withObject:currentData withObject:currentSender];
-                break;
-            default:
-                NSLog(@"Unsupported selector : '%@' . It can take up to two arguments\n", selectorName);
-        }
+    switch (selectorArgsNum) {
+        case 0:
+            // some listener could be uninterested to the data, 
+            // but just want to get notified when something travels on a pin
+            [receiver performSelector:selector withObject:nil];
+            break;
+        case 1:
+            // some other listeners could be interested only in the data,
+            // regardless of the sender
+            [receiver performSelector:selector withObject:data];
+            break;
+        case 2:
+            [receiver performSelector:selector withObject:data withObject:sender];
+            break;
+        default:
+            NSLog(@"Unsupported selector : '%@' . It can take up to two arguments\n", selectorName);
     }
+}
+
+- (void)performSignal:(VJXSignal *)signal
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    // send the signal to our owner 
+    // (if we are an input pin and if our owner registered a selector)
+    if (direction == kVJXInputPin && owner && ownerSignal)
+        [self sendData:signal.data toReceiver:owner withSelector:ownerSignal fromSender:signal.sender];
+    
+    // and then propagate it to all receivers
+    @synchronized (receivers) {
+        for (id receiver in receivers)
+            [self sendData:signal.data toReceiver:receiver withSelector:[receivers objectForKey:receiver] fromSender:signal.sender];
+    }
+    [pool drain];
 }
 
 - (BOOL)attachObject:(id)pinReceiver withSelector:(NSString *)pinSignal
 {
     BOOL rv = NO;
-    @synchronized(self) {
-        if ([pinReceiver respondsToSelector:NSSelectorFromString(pinSignal)]) {
-            if ([[pinSignal componentsSeparatedByString:@":"] count]-1 <= 2) {
+    if ([pinReceiver respondsToSelector:NSSelectorFromString(pinSignal)]) {
+        if ([[pinSignal componentsSeparatedByString:@":"] count]-1 <= 2) {
+            @synchronized(receivers) {
                 [receivers setObject:pinSignal forKey:pinReceiver];
-                rv = YES;
-            } else {
-                NSLog(@"Unsupported selector : '%@' . It can take up to two arguments\n", pinSignal);
             }
+            rv = YES;
         } else {
-            NSLog(@"Object %@ doesn't respond to %@\n", pinReceiver, pinSignal);
+            NSLog(@"Unsupported selector : '%@' . It can take up to two arguments\n", pinSignal);
         }
+    } else {
+        NSLog(@"Object %@ doesn't respond to %@\n", pinReceiver, pinSignal);
     }
     // deliver the signal to the just connected receiver
     if (rv == YES)
@@ -123,7 +127,7 @@
 
 - (void)detachObject:(id)pinReceiver
 {
-    @synchronized(self) {
+    @synchronized(receivers) {
         [receivers removeObjectForKey:pinReceiver];
     }
 }
@@ -160,14 +164,20 @@
         default:
             NSLog(@"Unkown pin type!\n");
     }
-    // send the signal to our owner 
-    // (if we are an input pin and if our owner registered a selector)
-    if (direction == kVJXInputPin && owner && ownerSignal)
-        [self sendData:data toReceiver:owner withSelector:ownerSignal fromSender:sender];
-
-    // and then propagate it to all receivers
-    for (id receiver in receivers)
-        [self sendData:data toReceiver:receiver withSelector:[receivers objectForKey:receiver] fromSender:sender];
+    
+    @synchronized(self) {
+        if (data) {
+            if (currentData)
+                [currentData release];
+            currentData = [data retain];
+        }
+        if (sender)
+            currentSender = sender;
+        else
+            currentSender = self;
+    }
+    VJXSignal *signal = [VJXSignal signalFrom:sender withData:data];
+    [self performSelectorInBackground:@selector(performSignal:) withObject:signal];
 }
 
 - (void)allowMultipleConnections:(BOOL)choice
@@ -230,11 +240,14 @@
 }
 
 - (void)disconnectAllPins
-{    
+{
+    NSArray *receiverObjects;
     @synchronized (self) { 
         while ([producers count])
             [self disconnectFromPin:[producers objectAtIndex:0]];
-        NSArray *receiverObjects = [receivers allKeys];
+        @synchronized(receivers) {
+             receiverObjects = [receivers allKeys];
+        }
         for (VJXPin *receiver in receiverObjects)
             [receiver disconnectFromPin:self];
     }
@@ -261,13 +274,13 @@
 - (NSArray *)readProducers
 {
     NSMutableArray *array = [[NSMutableArray alloc] init];
-    //@synchronized(self) {
+    @synchronized(self) {
         for (VJXPin *producer in producers) {
             id value = [producer readPinValue];
             if (value)
                 [array addObject:value];
         }
-    //}
+    }
     return [array autorelease];
 }
 

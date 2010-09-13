@@ -32,7 +32,7 @@
 - (id) init
 {
     if (self = [super init]) {
-        //imageInputPin = [self registerInputPin:@"videoInput" withType:kVJXImagePin andSelector:@"receivedFrame:fromSender:"];
+        [self registerInputPin:@"blendFilter" withType:kVJXStringPin andSelector:@"setBlendFilter:"];
         imageInputPin = [self registerInputPin:@"video" withType:kVJXImagePin];
         [imageInputPin allowMultipleConnections:YES];
         [self registerInputPin:@"videoSize" withType:kVJXSizePin andSelector:@"setOutputSize:"];
@@ -40,9 +40,10 @@
         [imageSizeOutputPin allowMultipleConnections:YES];
         imageOutputPin = [self registerOutputPin:@"video" withType:kVJXImagePin];
         [imageOutputPin allowMultipleConnections:YES];
-        outputSize.width = 640; // HC
-        outputSize.height = 480; // HC
+        NSSize defaultSize = { VJX_MIXER_DEFAULT_VIDEOSIZE_WIDTH, VJX_MIXER_DEFAULT_VIDEOSIZE_HEIGHT };
+        self.outputSize = [VJXSize sizeWithNSSize:defaultSize];
         currentFrame = nil;
+        blendFilter = [[CIFilter filterWithName:VJX_MIXER_DEFAULT_BLEND_FILTER] retain];
     }
     return self;
 }
@@ -50,6 +51,22 @@
 - (void)dealloc
 {    
     [super dealloc];
+}
+
+- (void)setBlendFilter:(NSString *)blendFilterName
+{
+    if (!blendFilter || (blendFilter && ![blendFilterName isEqual:[[blendFilter attributes] 
+                                                                   objectForKey:@"CIAttributeFilterName"]]))
+    {
+        @synchronized(self) {
+            CIFilter *newBlendFilter = [CIFilter filterWithName:blendFilterName];
+            if (newBlendFilter) {
+                if (blendFilter)
+                    [blendFilter release];
+                blendFilter = [newBlendFilter retain];
+            }
+        }
+    }
 }
 
 - (void)tick:(uint64_t)timeStamp
@@ -82,11 +99,14 @@
             if (!currentFrame) {
                 currentFrame = frame;
             } else {
-                CIFilter *blendScreenFilter = [CIFilter filterWithName:@"CIScreenBlendMode"];
-                [blendScreenFilter setDefaults];
-                [blendScreenFilter setValue:frame forKey:@"inputImage"];
-                [blendScreenFilter setValue:currentFrame forKey:@"inputBackgroundImage"];
-                currentFrame = [blendScreenFilter valueForKey:@"outputImage"];
+                /*
+                if (!blendFilter)
+                    blendFilter = [[CIFilter filterWithName:VJX_MIXER_DEFAULT_BLEND_FILTER] retain];
+                 */ 
+                [blendFilter setDefaults];
+                [blendFilter setValue:frame forKey:@"inputImage"];
+                [blendFilter setValue:currentFrame forKey:@"inputBackgroundImage"];
+                currentFrame = [blendFilter valueForKey:@"outputImage"];
             }
         }
         if (currentFrame)

@@ -47,7 +47,9 @@ typedef enum {
     NSString            *name;
     NSMutableDictionary *receivers;
     NSMutableArray      *producers;
+    NSMutableDictionary *properties;
     BOOL                multiple;
+    BOOL                continuous;
     id                  currentData;
     id                  currentSender;
     VJXPinDirection     direction;
@@ -55,11 +57,12 @@ typedef enum {
     NSString            *ownerSignal;
 }
 
-@property (readonly) VJXPinType type;
-@property (readonly) NSString *name;
-@property (readonly) BOOL multiple;
-@property (readonly) VJXPinDirection direction;
-@property (readonly) NSArray *producers;
+@property (readonly)  VJXPinType type;
+@property (readonly)  NSString *name;
+@property (readonly)  BOOL multiple;
+@property (readwrite) BOOL continuous;
+@property (readonly)  VJXPinDirection direction;
+@property (readonly)  NSArray *producers;
 
 + (id)pinWithName:(NSString *)name
           andType:(VJXPinType)pinType
@@ -79,4 +82,7 @@ typedef enum {
 - (id)readPinValue;
 - (NSString *)typeName;
 - (BOOL)moveProducerFromIndex:(NSUInteger)src toIndex:(NSUInteger)dst;
+- (void)setAllowedValues:(NSArray *)values;
+- (NSArray *)allowedValues;
+
 @end

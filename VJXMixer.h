@@ -24,7 +24,9 @@
 #import <Cocoa/Cocoa.h>
 #import "VJXThreadedEntity.h"
 
-
+#define VJX_MIXER_DEFAULT_VIDEOSIZE_WIDTH 640
+#define VJX_MIXER_DEFAULT_VIDEOSIZE_HEIGHT 480
+#define VJX_MIXER_DEFAULT_BLEND_FILTER @"CIScreenBlendMode"
 @interface VJXMixer : VJXThreadedEntity {
 @public
     VJXSize *outputSize;
@@ -36,6 +38,7 @@
     VJXPin *imageOutputPin;
     VJXPin *imageSizeOutputPin;
     CIImage *currentFrame;
+    CIFilter *blendFilter;
     uint64_t lastFrameTime;
 }
 

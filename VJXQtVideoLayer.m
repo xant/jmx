@@ -3,7 +3,7 @@
 //  VeeJay
 //
 //  Created by Igor Sutton on 8/5/10.
-//  Copyright (c) 2010 StrayDev.com. All rights reserved.
+//  Copyright (c) 2010 Dyne.org. All rights reserved.
 //
 //  This file is part of VeeJay
 //
@@ -126,8 +126,8 @@
                 }
 #ifdef __x86_64
                 NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                                       //                                     [NSValue valueWithSize:self.size.nsSize],
-                                       //                                     QTMovieFrameImageSize,
+                                       [NSValue valueWithSize:self.size.nsSize],
+                                       QTMovieFrameImageSize,
                                        QTMovieFrameImageTypeCVPixelBufferRef,
                                        QTMovieFrameImageType,
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
@@ -143,8 +143,8 @@
                 // Setup the attrs dictionary. 
                 // We want to get back a CIImage object of the proper size.
                 NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-//                                     [NSValue valueWithSize:self.size.nsSize],
-//                                     QTMovieFrameImageSize,
+                                       [NSValue valueWithSize:self.size.nsSize],
+                                       QTMovieFrameImageSize,
                                        QTMovieFrameImageTypeCIImage,
                                        QTMovieFrameImageType,
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5

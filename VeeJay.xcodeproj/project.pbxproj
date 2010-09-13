@@ -48,10 +48,10 @@
 		AA2BE6511236D31E006087E7 /* VJXThreadedEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2BE6501236D31E006087E7 /* VJXThreadedEntity.m */; };
 		AA7931BE1233A64800860CD2 /* VJXSize.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7931BD1233A64800860CD2 /* VJXSize.m */; };
 		AA7931C11233A65400860CD2 /* VJXPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7931C01233A65400860CD2 /* VJXPoint.m */; };
-		AA917B63123BC8EE00001A8B /* VJXEntityInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = AA917B62123BC8EE00001A8B /* VJXEntityInspector.m */; };
 		AA917C01123BD96700001A8B /* VJXEntityInspectorPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA917C00123BD96700001A8B /* VJXEntityInspectorPanel.m */; };
 		AAF179A0123E0A39001319BA /* VJXQtCaptureLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF1799F123E0A39001319BA /* VJXQtCaptureLayer.m */; };
 		AAF17AA6123E4F45001319BA /* VJXQtExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF17AA5123E4F45001319BA /* VJXQtExporter.m */; };
+		AAF17BDE123EABBB001319BA /* VJXBoardInputPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF17BDD123EABBB001319BA /* VJXBoardInputPanel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -137,14 +137,14 @@
 		AA7931BD1233A64800860CD2 /* VJXSize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXSize.m; sourceTree = "<group>"; };
 		AA7931BF1233A65400860CD2 /* VJXPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXPoint.h; sourceTree = "<group>"; };
 		AA7931C01233A65400860CD2 /* VJXPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXPoint.m; sourceTree = "<group>"; };
-		AA917B61123BC8EE00001A8B /* VJXEntityInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXEntityInspector.h; sourceTree = "<group>"; };
-		AA917B62123BC8EE00001A8B /* VJXEntityInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXEntityInspector.m; sourceTree = "<group>"; };
 		AA917BFF123BD96700001A8B /* VJXEntityInspectorPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXEntityInspectorPanel.h; sourceTree = "<group>"; };
 		AA917C00123BD96700001A8B /* VJXEntityInspectorPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXEntityInspectorPanel.m; sourceTree = "<group>"; };
 		AAF1799E123E0A39001319BA /* VJXQtCaptureLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXQtCaptureLayer.h; sourceTree = "<group>"; };
 		AAF1799F123E0A39001319BA /* VJXQtCaptureLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXQtCaptureLayer.m; sourceTree = "<group>"; };
 		AAF17AA4123E4F45001319BA /* VJXQtExporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXQtExporter.h; sourceTree = "<group>"; };
 		AAF17AA5123E4F45001319BA /* VJXQtExporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXQtExporter.m; sourceTree = "<group>"; };
+		AAF17BDC123EABBB001319BA /* VJXBoardInputPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXBoardInputPanel.h; sourceTree = "<group>"; };
+		AAF17BDD123EABBB001319BA /* VJXBoardInputPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXBoardInputPanel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -250,6 +250,8 @@
 		8245763C1227DF2900236FE4 /* GUI */ = {
 			isa = PBXGroup;
 			children = (
+				824576581227E0A400236FE4 /* VJXBoardDelegate.h */,
+				824576591227E0A400236FE4 /* VJXBoardDelegate.m */,
 				8245763D1227DF5800236FE4 /* VJXBoardEntityPin.m */,
 				8245763E1227DF5800236FE4 /* VJXBoardEntityPin.h */,
 				8245763F1227DF5800236FE4 /* VJXBoardEntityConnector.m */,
@@ -258,16 +260,14 @@
 				824576421227DF5800236FE4 /* VJXBoardEntity.h */,
 				824576431227DF5800236FE4 /* VJXBoard.m */,
 				824576441227DF5800236FE4 /* VJXBoard.h */,
-				824576581227E0A400236FE4 /* VJXBoardDelegate.h */,
-				824576591227E0A400236FE4 /* VJXBoardDelegate.m */,
 				82B0A4C11237AFB20006D003 /* VJXBoardEntityOutlet.h */,
 				82B0A4C21237AFB20006D003 /* VJXBoardEntityOutlet.m */,
 				821DE681123925EC00B6A45D /* VJXBoardSelection.h */,
 				821DE682123925EC00B6A45D /* VJXBoardSelection.m */,
-				AA917B61123BC8EE00001A8B /* VJXEntityInspector.h */,
-				AA917B62123BC8EE00001A8B /* VJXEntityInspector.m */,
 				AA917BFF123BD96700001A8B /* VJXEntityInspectorPanel.h */,
 				AA917C00123BD96700001A8B /* VJXEntityInspectorPanel.m */,
+				AAF17BDC123EABBB001319BA /* VJXBoardInputPanel.h */,
+				AAF17BDD123EABBB001319BA /* VJXBoardInputPanel.m */,
 			);
 			name = GUI;
 			sourceTree = "<group>";
@@ -464,10 +464,10 @@
 				AA2BE6511236D31E006087E7 /* VJXThreadedEntity.m in Sources */,
 				82B0A4C31237AFB20006D003 /* VJXBoardEntityOutlet.m in Sources */,
 				821DE683123925EC00B6A45D /* VJXBoardSelection.m in Sources */,
-				AA917B63123BC8EE00001A8B /* VJXEntityInspector.m in Sources */,
 				AA917C01123BD96700001A8B /* VJXEntityInspectorPanel.m in Sources */,
 				AAF179A0123E0A39001319BA /* VJXQtCaptureLayer.m in Sources */,
 				AAF17AA6123E4F45001319BA /* VJXQtExporter.m in Sources */,
+				AAF17BDE123EABBB001319BA /* VJXBoardInputPanel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

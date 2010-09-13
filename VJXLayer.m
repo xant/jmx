@@ -80,7 +80,9 @@
             // scale the image to fit the configured layer size
             CIImage *frame = [colorFilter valueForKey:@"outputImage"];
             
-#if 0       // frame should be produced with the correct size already by the layer implementation
+            // frame should be produced with the correct size already by the layer implementation
+            // but if the user requested a size impossible to be produced by the source, 
+            // we scale it here to honor user request for a specific size
             CGRect imageRect = [frame extent];
             // and scale the frame if necessary
             if (size.width != imageRect.size.width || size.height != imageRect.size.height) {
@@ -95,7 +97,6 @@
                 [scaleFilter setValue:frame forKey:@"inputImage"];
                 frame = [scaleFilter valueForKey:@"outputImage"];
             } 
-#endif
             if (frame) {
                 [currentFrame release];
                 currentFrame = [frame retain];

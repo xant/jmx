@@ -95,6 +95,7 @@
         producers = [[NSMutableArray alloc] init];
         direction = pinDirection;
         multiple = NO;
+        continuous = YES;
         currentData = nil;
         currentSender = nil;
         owner = pinOwner;

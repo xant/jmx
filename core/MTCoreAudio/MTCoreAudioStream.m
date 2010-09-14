@@ -96,7 +96,8 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 {
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
-    for (int i = 0; i < inNumberAddresses; i++) {
+    int i;
+    for (i = 0; i < inNumberAddresses; i++) {
         NSMutableDictionary * notificationUserInfo = [NSMutableDictionary dictionaryWithCapacity:4];
         
         [notificationUserInfo setObject:[NSNumber numberWithUnsignedLong:inStream] forKey:_MTCoreAudioStreamIDKey];

@@ -113,7 +113,8 @@ static OSStatus _MTCoreAudioDevicePropertyListener (
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
-    for (int i = 0; i < inNumberAddresses; i++) {
+    int i;
+    for (i = 0; i < inNumberAddresses; i++) {
         NSMutableDictionary * notificationUserInfo = [NSMutableDictionary dictionaryWithCapacity:4];
         
         [notificationUserInfo setObject:[NSNumber numberWithUnsignedLong:inDevice] forKey:_MTCoreAudioDeviceIDKey];
@@ -217,8 +218,8 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, MTCoreAudio
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
         struct AudioObjectPropertyAddress propertyAddress;
         propertyAddress.mSelector = kAudioObjectPropertySelectorWildcard;
-        propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
         propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+        propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
         OSStatus theStatus = AudioObjectAddPropertyListener(kAudioObjectSystemObject, 
                                                        &propertyAddress, 
                                                        _MTCoreAudioHardwarePropertyListener, 
@@ -281,8 +282,10 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, MTCoreAudio
 		return nil;
 	numDevices = theSize / sizeof(AudioDeviceID);
 	deviceList = (AudioDeviceID *) malloc ( theSize );
-	if (deviceList == NULL)
-		return nil;
+	if (deviceList == NULL) {
+		NSLog(@"Can't obtain device list size");
+        return nil;
+    }
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
     theStatus = AudioObjectGetPropertyData( kAudioObjectSystemObject, &propertyAddress, 0, NULL, &theSize, deviceList );
 #else
@@ -290,6 +293,7 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, MTCoreAudio
 #endif
 	if (theStatus != 0)
 	{
+        NSLog(@"Can't obtain device list");
 		free(deviceList);
 		return nil;
 	}
@@ -410,6 +414,7 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, MTCoreAudio
 #endif
 	if (theStatus == 0)
 		return [[self class] deviceWithID:theID];
+    NSLog(@"Can't init defaultDevice %d (%d)", whichDevice, theStatus);
 	return nil;
 }
 
@@ -546,10 +551,10 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, MTCoreAudio
 	theSize = sizeof ( CFStringRef );
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
     AudioObjectPropertyAddress propertyAddress;
-    propertyAddress.mSelector = kAudioHardwarePropertyDeviceForUID; // XXX
+    propertyAddress.mSelector = kAudioDevicePropertyDeviceUID;
     propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
     propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
-    theStatus = AudioObjectGetPropertyData( myDevice, &propertyAddress, 0, NULL, &theSize, &theCFString);
+    theStatus = AudioObjectGetPropertyData( myDevice, &propertyAddress, 0, false, &theSize, &theCFString);
 #else
 	theStatus = AudioDeviceGetProperty ( myDevice, 0, false, kAudioDevicePropertyDeviceUID, &theSize, &theCFString );
 #endif

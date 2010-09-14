@@ -1,5 +1,5 @@
 //
-//  VJXMixer.h
+//  VJXVideoMixer.h
 //  VeeJay
 //
 //  Created by xant on 9/2/10.
@@ -27,7 +27,7 @@
 #define VJX_MIXER_DEFAULT_VIDEOSIZE_WIDTH 640
 #define VJX_MIXER_DEFAULT_VIDEOSIZE_HEIGHT 480
 #define VJX_MIXER_DEFAULT_BLEND_FILTER @"CIScreenBlendMode"
-@interface VJXMixer : VJXThreadedEntity {
+@interface VJXVideoMixer : VJXThreadedEntity {
 @public
     VJXSize *outputSize;
 

@@ -27,7 +27,7 @@
 #import "VJXOpenGLScreen.h"
 #import "VJXImageLayer.h"
 #import "VJXQtCaptureLayer.h"
-#import "VJXMixer.h"
+#import "VJXVideoMixer.h"
 #import "VJXBoard.h"
 #import <QTKit/QTMovie.h>
 #import <VJXEntityInspector.h>
@@ -125,7 +125,7 @@
 
 - (IBAction)addMixerLayer:(id)sender
 {
-    VJXMixer *mixer = [[VJXMixer alloc] init];
+    VJXVideoMixer *mixer = [[VJXVideoMixer alloc] init];
     VJXBoardEntity *entity = [[VJXBoardEntity alloc] initWithEntity:mixer];
     [board addToBoard:entity];
     [mixer start];

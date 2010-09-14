@@ -25,7 +25,7 @@
 
 // HERE FOR TESTING
 #import "VJXOpenGLScreen.h"
-#import "VJXMixer.h"
+#import "VJXVideoMixer.h"
 #import "VJXImageLayer.h"
 #import "VJXQtVideoLayer.h"
 #import "VJXPoint.h"

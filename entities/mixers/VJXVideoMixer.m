@@ -1,5 +1,5 @@
 //
-//  VJXMixer.m
+//  VJXVideoMixer.m
 //  VeeJay
 //
 //  Created by xant on 9/2/10.
@@ -21,11 +21,11 @@
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#import "VJXMixer.h"
+#import "VJXVideoMixer.h"
 #import "VJXLayer.h"
 #import <QuartzCore/QuartzCore.h>
 
-@implementation VJXMixer
+@implementation VJXVideoMixer
 
 @synthesize outputSize;
 

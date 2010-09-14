@@ -22,6 +22,7 @@
 //
 
 #import "VJXOpenGLScreen.h"
+#import <QuartzCore/CIContext.h>
 
 @interface VJXOpenGLView : NSOpenGLView {
     CIImage *currentFrame;

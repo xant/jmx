@@ -30,7 +30,15 @@ static NSString * _DataSourceNameForID ( AudioStreamID theStreamID, UInt32 theDa
 	theTranslation.mOutputData = &theCFString;
 	theTranslation.mOutputDataSize = sizeof ( CFStringRef );
 	theSize = sizeof(AudioValueTranslation);
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyDataSourceNameForIDCFString;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectGetPropertyData( theStreamID, &propertyAddress, 0, NULL, &theSize, &theTranslation);
+#else
 	theStatus = AudioStreamGetProperty ( theStreamID, 0, kAudioDevicePropertyDataSourceNameForIDCFString, &theSize, &theTranslation );
+#endif
 	if (( theStatus == 0 ) && theCFString )
 	{
 		rv = [NSString stringWithString:(NSString *)theCFString];
@@ -54,7 +62,15 @@ static NSString * _ClockSourceNameForID ( AudioStreamID theStreamID, UInt32 theC
 	theTranslation.mOutputData = &theCFString;
 	theTranslation.mOutputDataSize = sizeof ( CFStringRef );
 	theSize = sizeof(AudioValueTranslation);
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyClockSourceNameForIDCFString;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectGetPropertyData( theStreamID, &propertyAddress, 0, NULL, &theSize, &theTranslation);
+#else
 	theStatus = AudioStreamGetProperty ( theStreamID, 0, kAudioDevicePropertyClockSourceNameForIDCFString, &theSize, &theTranslation );
+#endif
 	if (( theStatus == 0 ) && theCFString )
 	{
 		rv = [NSString stringWithString:(NSString *)theCFString];
@@ -67,20 +83,36 @@ static NSString * _ClockSourceNameForID ( AudioStreamID theStreamID, UInt32 theC
 
 static OSStatus _MTCoreAudioStreamPropertyListener (
 	AudioStreamID inStream,
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    //AudioObjectID inObjectID,
+    UInt32 inNumberAddresses,
+    const AudioObjectPropertyAddress inAddresses[],
+#else
 	UInt32 inChannel,
 	AudioDevicePropertyID inPropertyID,
+#endif
 	void * inClientData
 )
 {
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-	NSMutableDictionary * notificationUserInfo = [NSMutableDictionary dictionaryWithCapacity:4];
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    for (int i = 0; i < inNumberAddresses; i++) {
+        NSMutableDictionary * notificationUserInfo = [NSMutableDictionary dictionaryWithCapacity:4];
+        
+        [notificationUserInfo setObject:[NSNumber numberWithUnsignedLong:inStream] forKey:_MTCoreAudioStreamIDKey];
+        [notificationUserInfo setObject:[NSNumber numberWithUnsignedLong:inAddresses[i].mElement] forKey:_MTCoreAudioChannelKey]; // XXX
+        [notificationUserInfo setObject:[NSNumber numberWithUnsignedLong:inAddresses[i].mSelector] forKey:_MTCoreAudioPropertyIDKey];
+        [[NSNotificationCenter defaultCenter] postNotificationName:_MTCoreAudioStreamNotification object:nil userInfo:notificationUserInfo];
+    }
+#else
+    NSMutableDictionary * notificationUserInfo = [NSMutableDictionary dictionaryWithCapacity:4];
 	
 	[notificationUserInfo setObject:[NSNumber numberWithUnsignedLong:inStream] forKey:_MTCoreAudioStreamIDKey];
 	[notificationUserInfo setObject:[NSNumber numberWithUnsignedLong:inChannel] forKey:_MTCoreAudioChannelKey];
 	[notificationUserInfo setObject:[NSNumber numberWithUnsignedLong:inPropertyID] forKey:_MTCoreAudioPropertyIDKey];
-	
 	[[NSNotificationCenter defaultCenter] postNotificationName:_MTCoreAudioStreamNotification object:nil userInfo:notificationUserInfo];
-	
+#endif
+
 	[pool release];
 	
 	return 0;
@@ -105,7 +137,21 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 	parentAudioDevice = theOwningDevice;
 
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_dispatchStreamNotification:) name:_MTCoreAudioStreamNotification object:nil];
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    struct AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioPropertyWildcardPropertyID;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    OSStatus theStatus = AudioObjectAddPropertyListener(theStreamID, 
+                                                        &propertyAddress, 
+                                                        _MTCoreAudioStreamPropertyListener, 
+                                                        NULL);
+    if (theStatus != 0) {
+        // TODO - error messages
+    }   
+#else
 	AudioStreamAddPropertyListener ( theStreamID, kAudioPropertyWildcardChannel, kAudioPropertyWildcardPropertyID, _MTCoreAudioStreamPropertyListener, NULL );
+#endif
 
 	return self;
 }
@@ -117,7 +163,15 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 	UInt32 theDirection;
 	
 	theSize = sizeof(UInt32);
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioStreamPropertyDirection;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectGetPropertyData( myStream, &propertyAddress, 0, NULL, &theSize, &theDirection);
+#else
 	theStatus = AudioStreamGetProperty ( myStream, 0, kAudioStreamPropertyDirection, &theSize, &theDirection );
+#endif
 	if (( theStatus == 0 ) && (theDirection == 1 ))
 		return kMTCoreAudioDeviceRecordDirection;
 	else
@@ -132,7 +186,15 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 	UInt32 theSize;
 	
 	theSize = sizeof ( CFStringRef );
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyDeviceNameCFString;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectGetPropertyData( myStream, &propertyAddress, 0, NULL, &theSize, &theCFString);
+#else
 	theStatus = AudioStreamGetProperty ( myStream, 0, kAudioDevicePropertyDeviceNameCFString, &theSize, &theCFString );
+#endif
 	if ( theStatus != 0 )
 		return nil;
 	if ( theCFString )
@@ -251,7 +313,15 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 	UInt32 theChannel;
 	
 	theSize = sizeof(UInt32);
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioStreamPropertyStartingChannel;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectGetPropertyData( myStream, &propertyAddress, 0, NULL, &theSize, &theChannel);
+#else
 	theStatus = AudioStreamGetProperty ( myStream, 0, kAudioStreamPropertyStartingChannel, &theSize, &theChannel );
+#endif
 	if ( theStatus == 0 )
 		return theChannel;
 	else
@@ -279,7 +349,15 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 	UInt32 theSourceID;
 	
 	theSize = sizeof(UInt32);
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyDataSource;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectGetPropertyData( myStream, &propertyAddress, 0, NULL, &theSize, &theSourceID);
+#else
 	theStatus = AudioStreamGetProperty ( myStream, 0, kAudioDevicePropertyDataSource, &theSize, &theSourceID );
+#endif
 	if (theStatus == 0)
 		return _DataSourceNameForID ( myStream, theSourceID );
 	return nil;
@@ -295,12 +373,24 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 	UInt32 x;
 	NSMutableArray * rv = [NSMutableArray array];
 	
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyDataSources;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectGetPropertyDataSize( myStream, &propertyAddress, 0, NULL, &theSize );
+#else
 	theStatus = AudioStreamGetPropertyInfo ( myStream, 0, kAudioDevicePropertyDataSources, &theSize, NULL );
+#endif
 	if (theStatus != 0)
 		return rv;
 	theSourceIDs = (UInt32 *) malloc ( theSize );
 	numSources = theSize / sizeof(UInt32);
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    theStatus = AudioObjectGetPropertyData( myStream, &propertyAddress, 0, NULL, &theSize, theSourceIDs );
+#else
 	theStatus = AudioStreamGetProperty ( myStream, 0, kAudioDevicePropertyDataSources, &theSize, theSourceIDs );
+#endif
 	if (theStatus != 0)
 	{
 		free(theSourceIDs);
@@ -316,16 +406,29 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 {
 	OSStatus theStatus;
 	UInt32 theSize;
-	Boolean rv;
 	
 	theSize = sizeof(UInt32);
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyDataSource;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectGetPropertyDataSize( myStream, &propertyAddress, 0, NULL, &theSize );
+#else
+    Boolean rv;
+
 	theStatus = AudioStreamGetPropertyInfo ( myStream, 0, kAudioDevicePropertyDataSource, &theSize, &rv );
+#endif
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    return (theStatus == 0) ? YES : NO;
+#else
 	if ( 0 == theStatus )
 		return rv;
 	else
 	{
 		return NO;
 	}
+#endif
 }
 
 - (void)       setDataSource:(NSString *)theSource
@@ -338,13 +441,25 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 	
 	if ( theSource == nil )
 		return;
-	
+    
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyDataSources;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectGetPropertyDataSize( myStream, &propertyAddress, 0, NULL, &theSize );
+#else
 	theStatus = AudioStreamGetPropertyInfo ( myStream, 0, kAudioDevicePropertyDataSources, &theSize, NULL );
+#endif
 	if (theStatus != 0)
 		return;
 	theSourceIDs = (UInt32 *) malloc ( theSize );
 	numSources = theSize / sizeof(UInt32);
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    theStatus = AudioObjectGetPropertyData( myStream, &propertyAddress, 0, NULL, &theSize, theSourceIDs );
+#else
 	theStatus = AudioStreamGetProperty ( myStream, 0, kAudioDevicePropertyDataSources, &theSize, theSourceIDs );
+#endif
 	if (theStatus != 0)
 	{
 		free(theSourceIDs);
@@ -355,7 +470,11 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 	for ( x = 0; x < numSources; x++ )
 	{
 		if ( [theSource compare:_DataSourceNameForID ( myStream, theSourceIDs[x] )] == NSOrderedSame )
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+            theStatus = AudioObjectSetPropertyData( myStream, &propertyAddress, 0, NULL, theSize, &theSourceIDs[x] );
+#else
 			(void) AudioStreamSetProperty ( myStream, NULL, 0, kAudioDevicePropertyDataSource, theSize, &theSourceIDs[x] );
+#endif
 	}
 	free(theSourceIDs);
 }
@@ -367,7 +486,15 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 	UInt32 theSourceID;
 	
 	theSize = sizeof(UInt32);
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyClockSource;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectGetPropertyData( myStream, &propertyAddress, 0, NULL, &theSize, &theSourceID);
+#else
 	theStatus = AudioStreamGetProperty ( myStream, 0, kAudioDevicePropertyClockSource, &theSize, &theSourceID );
+#endif
 	if (theStatus == 0)
 		return _ClockSourceNameForID ( myStream, theSourceID );
 	return nil;
@@ -382,12 +509,24 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 	UInt32 x;
 	NSMutableArray * rv;
 	
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyClockSources;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectGetPropertyDataSize( myStream, &propertyAddress, 0, NULL, &theSize );
+#else
 	theStatus = AudioStreamGetPropertyInfo ( myStream, 0, kAudioDevicePropertyClockSources, &theSize, NULL );
+#endif
 	if (theStatus != 0)
 		return nil;
 	theSourceIDs = (UInt32 *) malloc ( theSize );
 	numSources = theSize / sizeof(UInt32);
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    theStatus = AudioObjectGetPropertyData( myStream, &propertyAddress, 0, NULL, &theSize, theSourceIDs );
+#else
 	theStatus = AudioStreamGetProperty ( myStream, 0, kAudioDevicePropertyClockSources, &theSize, theSourceIDs );
+#endif
 	if (theStatus != 0)
 	{
 		free(theSourceIDs);
@@ -411,12 +550,24 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 	if ( theSource == nil )
 		return;
 	
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyClockSources;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectGetPropertyDataSize( myStream, &propertyAddress, 0, NULL, &theSize );
+#else
 	theStatus = AudioStreamGetPropertyInfo ( myStream, 0, kAudioDevicePropertyClockSources, &theSize, NULL );
+#endif
 	if (theStatus != 0)
 		return;
 	theSourceIDs = (UInt32 *) malloc ( theSize );
 	numSources = theSize / sizeof(UInt32);
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    theStatus = AudioObjectGetPropertyData( myStream, &propertyAddress, 0, NULL, &theSize, theSourceIDs );
+#else
 	theStatus = AudioStreamGetProperty ( myStream, 0, kAudioDevicePropertyClockSources, &theSize, theSourceIDs );
+#endif
 	if (theStatus != 0)
 	{
 		free(theSourceIDs);
@@ -427,7 +578,11 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 	for ( x = 0; x < numSources; x++ )
 	{
 		if ( [theSource compare:_ClockSourceNameForID ( myStream, theSourceIDs[x] )] == NSOrderedSame )
-			(void) AudioStreamSetProperty ( myStream, NULL, 0, kAudioDevicePropertyClockSource, theSize, &theSourceIDs[x] );
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+            theStatus = AudioObjectSetPropertyData( myStream, &propertyAddress, 0, NULL, theSize, &theSourceIDs[x] );
+#else
+            (void) AudioStreamSetProperty ( myStream, NULL, 0, kAudioDevicePropertyClockSource, theSize, &theSourceIDs[x] );
+#endif
 	}
 	free(theSourceIDs);
 }
@@ -445,7 +600,15 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 		theProperty = kAudioDevicePropertyStreamFormat;
 	
 	theSize = sizeof(AudioStreamBasicDescription);
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = theProperty;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectGetPropertyData( myStream, &propertyAddress, 0, NULL, &theSize, &theDescription);
+#else
 	theStatus = AudioStreamGetProperty ( myStream, 0, theProperty, &theSize, &theDescription );
+#endif
 	if (theStatus == 0)
 	{
 		return [[parentAudioDevice streamDescriptionFactory] streamDescriptionWithAudioStreamBasicDescription:theDescription];
@@ -471,13 +634,25 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 
 	rv = [NSMutableArray arrayWithCapacity:1];
 	
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = theProperty;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectGetPropertyDataSize( myStream, &propertyAddress, 0, NULL, &theSize );
+#else
 	theStatus = AudioStreamGetPropertyInfo ( myStream, 0, theProperty, &theSize, NULL );
+#endif
 	if (theStatus != 0)
 		return rv;
 	
 	descriptionArray = (AudioStreamBasicDescription *) malloc ( theSize );
 	numItems = theSize / sizeof(AudioStreamBasicDescription);
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    theStatus = AudioObjectGetPropertyData( myStream, &propertyAddress, 0, NULL, &theSize, descriptionArray );
+#else
 	theStatus = AudioStreamGetProperty ( myStream, 0, theProperty, &theSize, descriptionArray );
+#endif
 	if (theStatus != 0)
 	{
 		free(descriptionArray);
@@ -507,7 +682,15 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 	theASBasicDescription = [theDescription audioStreamBasicDescription];
 	theSize = sizeof(AudioStreamBasicDescription);
 	
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = theProperty;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectSetPropertyData( myStream, &propertyAddress, 0, NULL, theSize, &theASBasicDescription);
+#else
 	theStatus = AudioStreamSetProperty ( myStream, NULL, 0, theProperty, theSize, &theASBasicDescription );
+#endif
 	if (theStatus != 0)
 		printf ("MTCoreAudioStream setStreamDescription:forSide: failed, got %4.4s\n", (char *)&theStatus );
 	return (theStatus == 0);
@@ -531,8 +714,16 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 		
 	theASBasicDescription = [theDescription audioStreamBasicDescription];
 	theSize = sizeof(AudioStreamBasicDescription);
-	
+    
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = theMatchProperty;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectGetPropertyData( myStream, &propertyAddress, 0, NULL, &theSize, &theASBasicDescription);
+#else
 	theStatus = AudioStreamGetProperty ( myStream, 0, theMatchProperty, &theSize, &theASBasicDescription );
+#endif
 	if ( theStatus == 0 )
 	{
 		return [[parentAudioDevice streamDescriptionFactory] streamDescriptionWithAudioStreamBasicDescription:theASBasicDescription];
@@ -555,27 +746,57 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 	rv.isMuted = false;
 	rv.playThruIsSet = false;
 	
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyVolumeScalar;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectGetPropertyDataSize( myStream, &propertyAddress, sizeof(rv.canSetVolume), &rv.canSetVolume, &theSize );
+#else
 	theStatus = AudioStreamGetPropertyInfo ( myStream, theChannel, kAudioDevicePropertyVolumeScalar, &theSize, &rv.canSetVolume );
+#endif
 	if (noErr == theStatus)
 	{
 		rv.hasVolume = true;
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+        theStatus = AudioObjectGetPropertyData( myStream, &propertyAddress, sizeof(rv.canSetVolume), &rv.canSetVolume, &theSize, &rv.theVolume );
+#else
 		theStatus = AudioStreamGetProperty ( myStream, theChannel, kAudioDevicePropertyVolumeScalar, &theSize, &rv.theVolume );
+#endif
 		if (noErr != theStatus)
 			rv.theVolume = 0.0;
 	}
 	
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    propertyAddress.mSelector = kAudioDevicePropertyMute;
+    theStatus = AudioObjectGetPropertyDataSize( myStream, &propertyAddress, sizeof(rv.canMute), &rv.canMute, &theSize );
+#else
 	theStatus = AudioStreamGetPropertyInfo ( myStream, theChannel, kAudioDevicePropertyMute, &theSize, &rv.canMute );
+#endif
 	if (noErr == theStatus)
 	{
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+        theStatus = AudioObjectGetPropertyData( myStream, &propertyAddress, sizeof(rv.canMute), &rv.canMute, &theSize, &tmpBool32 );
+#else
 		theStatus = AudioStreamGetProperty ( myStream, theChannel, kAudioDevicePropertyMute, &theSize, &tmpBool32 );
+#endif
 		if (noErr == theStatus)
 			rv.isMuted = tmpBool32;
 	}
-	
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    propertyAddress.mSelector = kAudioDevicePropertyPlayThru;
+    theStatus = AudioObjectGetPropertyDataSize( myStream, &propertyAddress, sizeof(rv.canPlayThru), &rv.canPlayThru, &theSize );
+#else	
 	theStatus = AudioStreamGetPropertyInfo ( myStream, theChannel, kAudioDevicePropertyPlayThru, &theSize, &rv.canPlayThru );
+#endif
 	if (noErr == theStatus)
 	{
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+        propertyAddress.mSelector = kAudioDevicePropertyPlayThru;
+        theStatus = AudioObjectGetPropertyDataSize( myStream, &propertyAddress, sizeof(rv.canPlayThru), &rv.canPlayThru, &tmpBool32 );
+#else	
 		theStatus = AudioStreamGetProperty ( myStream, theChannel, kAudioDevicePropertyPlayThru, &theSize, &tmpBool32 );
+#endif
 		if (noErr == theStatus)
 			rv.playThruIsSet = tmpBool32;
 	}
@@ -590,7 +811,16 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 	Float32 theVolumeScalar;
 	
 	theSize = sizeof(Float32);
+    
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyVolumeScalar;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = theChannel;
+    theStatus = AudioObjectGetPropertyData( myStream, &propertyAddress, 0, NULL, &theSize, &theVolumeScalar);
+#else
 	theStatus = AudioStreamGetProperty ( myStream, theChannel, kAudioDevicePropertyVolumeScalar, &theSize, &theVolumeScalar );
+#endif
 	if (theStatus == 0)
 		return theVolumeScalar;
 	else
@@ -604,7 +834,15 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 	Float32 theVolumeDecibels;
 	
 	theSize = sizeof(Float32);
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyVolumeDecibels;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = theChannel;
+    theStatus = AudioObjectGetPropertyData( myStream, &propertyAddress, 0, NULL, &theSize, &theVolumeDecibels);
+#else
 	theStatus = AudioStreamGetProperty ( myStream, theChannel, kAudioDevicePropertyVolumeDecibels, &theSize, &theVolumeDecibels );
+#endif
 	if (theStatus == 0)
 		return theVolumeDecibels;
 	else
@@ -617,7 +855,15 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 	UInt32 theSize;
 	
 	theSize = sizeof(Float32);
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyVolumeScalar;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = theChannel;
+    theStatus = AudioObjectSetPropertyData( myStream, &propertyAddress, 0, NULL, theSize, &theVolume);
+#else
 	theStatus = AudioStreamSetProperty ( myStream, NULL, theChannel, kAudioDevicePropertyVolumeScalar, theSize, &theVolume );
+#endif
 }
 
 - (void)    setVolumeDecibels:(Float32)theVolumeDecibels forChannel:(UInt32)theChannel
@@ -626,7 +872,15 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 	UInt32 theSize;
 	
 	theSize = sizeof(Float32);
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyVolumeDecibels;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = theChannel;
+    theStatus = AudioObjectSetPropertyData( myStream, &propertyAddress, 0, NULL, theSize, &theVolumeDecibels);
+#else
 	theStatus = AudioStreamSetProperty ( myStream, NULL, theChannel, kAudioDevicePropertyVolumeDecibels, theSize, &theVolumeDecibels );
+#endif
 }
 
 - (Float32) volumeInDecibelsForVolume:(Float32)theVolume forChannel:(UInt32)theChannel
@@ -637,7 +891,15 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 	
 	theSize = sizeof(Float32);
 	theVolumeDecibels = theVolume;
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyVolumeScalarToDecibels;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = theChannel;
+    theStatus = AudioObjectGetPropertyData( myStream, &propertyAddress, sizeof(Float32), &theVolume, &theSize, &theVolumeDecibels);
+#else
 	theStatus = AudioStreamGetProperty ( myStream, theChannel, kAudioDevicePropertyVolumeScalarToDecibels, &theSize, &theVolumeDecibels );
+#endif
 	if (theStatus == 0)
 		return theVolumeDecibels;
 	else
@@ -652,7 +914,15 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 	
 	theSize = sizeof(Float32);
 	theVolume = theVolumeDecibels;
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyVolumeDecibelsToScalar;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = theChannel;
+    theStatus = AudioObjectGetPropertyData( myStream, &propertyAddress, sizeof(Float32), &theVolumeDecibels, &theSize, &theVolume);
+#else
 	theStatus = AudioStreamGetProperty ( myStream, theChannel, kAudioDevicePropertyVolumeDecibelsToScalar, &theSize, &theVolume );
+#endif
 	if (theStatus == 0)
 		return theVolume;
 	else
@@ -667,7 +937,15 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 	
 	theSize = sizeof(UInt32);
 	if (isMuted) theMuteVal = 1; else theMuteVal = 0;
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyMute;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = theChannel;
+    theStatus = AudioObjectSetPropertyData( myStream, &propertyAddress, 0, NULL, theSize, &theMuteVal);
+#else
 	theStatus = AudioStreamSetProperty ( myStream, NULL, theChannel, kAudioDevicePropertyMute, theSize, &theMuteVal );
+#endif
 }
 
 - (void)    setPlayThru:(BOOL)isPlayingThru forChannel:(UInt32)theChannel
@@ -678,7 +956,15 @@ static OSStatus _MTCoreAudioStreamPropertyListener (
 	
 	theSize = sizeof(UInt32);
 	if (isPlayingThru) thePlayThruVal = 1; else thePlayThruVal = 0;
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyPlayThru;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = theChannel;
+    theStatus = AudioObjectSetPropertyData( myStream, &propertyAddress, 0, NULL, theSize, &thePlayThruVal);
+#else
 	theStatus = AudioStreamSetProperty ( myStream, NULL, theChannel, kAudioDevicePropertyPlayThru, theSize, &thePlayThruVal );
+#endif
 }
 
 - (void) dealloc

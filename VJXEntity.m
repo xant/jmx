@@ -29,6 +29,7 @@
 - (id)init
 {
     if (self = [super init]) {
+        name = @""; // XXX - default name
         inputPins = [[NSMutableDictionary alloc] init];
         outputPins = [[NSMutableDictionary alloc] init];
         [self registerOutputPin:@"active" withType:kVJXNumberPin];
@@ -157,13 +158,13 @@
         [[outputPins objectForKey:key] disconnectAllPins];
 }
 
-@synthesize inputPins, outputPins, name, active;
-
-#pragma mark -
-
-- (NSString *)displayName
+- (NSString *)description
 {
-    return [self className];
+    return [name isEqual:@""]
+           ? [self className]
+           : [NSString stringWithFormat:@"%@:%@", [self className], name];
 }
+
+@synthesize inputPins, outputPins, name, active;
 
 @end

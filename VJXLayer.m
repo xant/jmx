@@ -33,7 +33,7 @@
 {
     if (self = [super init]) {
         currentFrame = nil;
-        name = @"Untitled";
+        name = @"";
         self.saturation = [NSNumber numberWithFloat:1.0];
         self.brightness = [NSNumber numberWithFloat:0.0];
         self.contrast = [NSNumber numberWithFloat:1.0];

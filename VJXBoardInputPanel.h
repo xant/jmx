@@ -12,9 +12,10 @@
 @interface VJXBoardInputPanel : NSPanel {
     IBOutlet NSTextField *pinName;
     IBOutlet NSTabView *inputFieldContainer;
+    VJXPin *pin;
 }
 
-- (void)setPin:(VJXPin *)pin;
+- (void)setPin:(VJXPin *)thePin;
 - (IBAction)sendInput:(id)sender;
 
 @end

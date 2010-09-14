@@ -49,7 +49,7 @@
 }
 
 #pragma mark Properties
-@property (readonly)BOOL active;
+@property (readonly) BOOL active;
 @property (readonly) NSDictionary *inputPins;
 @property (readonly) NSDictionary *outputPins;
 @property (readwrite, copy) NSString *name;

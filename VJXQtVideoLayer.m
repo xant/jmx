@@ -81,6 +81,8 @@
             NSSize movieSize = [firstVideoTrack apertureModeDimensionsForMode:@"QTMovieApertureModeClean"];
             size = [[VJXSize sizeWithNSSize:movieSize] retain];
             self.fps = self.frequency;
+            NSArray *path = [moviePath componentsSeparatedByString:@"/"];
+            self.name = [path lastObject];
         }
         return YES;
     }

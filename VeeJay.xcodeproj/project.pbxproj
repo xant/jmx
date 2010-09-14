@@ -168,8 +168,8 @@
 			isa = PBXGroup;
 			children = (
 				AAF17A90123E4D9D001319BA /* Core */,
-				8245763C1227DF2900236FE4 /* GUI */,
 				AAF17A91123E4DFA001319BA /* Entities */,
+				8245763C1227DF2900236FE4 /* GUI */,
 				256AC3D80F4B6AC300CF3369 /* VeeJayAppDelegate.h */,
 				256AC3D90F4B6AC300CF3369 /* VeeJayAppDelegate.m */,
 			);

@@ -19,6 +19,14 @@
 
 @synthesize entityView, panel;
 
+- (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)aStyle backing:(NSBackingStoreType)bufferingType defer:(BOOL)flag
+{
+    if (self = [super initWithContentRect:contentRect styleMask:aStyle backing:bufferingType defer:flag]) {
+        entityName = nil;
+    }
+    return self;
+}
+
 - (void)unsetEntity:(VJXBoardEntity *)entity
 {
     if (entityView == entity)
@@ -106,7 +114,7 @@
                              }];
             NSString *pinName = [pins objectAtIndex:selectedRow];
             VJXPin *pin = [entityView.entity inputPinWithName:pinName];
-            return [NSString stringWithFormat:@"%@",[pin.producers objectAtIndex:rowIndex]];
+            return [NSString stringWithFormat:@"%@",[[pin.producers objectAtIndex:rowIndex] description]];
         }
     }
     return nil;

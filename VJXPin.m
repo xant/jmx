@@ -74,19 +74,43 @@
 
 @implementation VJXPin
 
-@synthesize type, name, multiple, direction, producers;
+@synthesize type, name, multiple, continuous, direction, producers, allowedValues;
 
 + (id)pinWithName:(NSString *)name
           andType:(VJXPinType)pinType
      forDirection:(VJXPinDirection)pinDirection
           ownedBy:(id)pinOwner
      withSignal:(NSString *)pinSignal
+  allowedValues:(NSArray *)pinValues
 {
-    return [[[VJXPin alloc] initWithName:name andType:pinType forDirection:pinDirection ownedBy:pinOwner withSignal:pinSignal] autorelease];
+    return [[[VJXPin alloc] initWithName:name
+                                 andType:pinType
+                            forDirection:pinDirection
+                                 ownedBy:pinOwner withSignal:pinSignal
+                           allowedValues:pinValues]
+            autorelease];
 }
 
++ (id)pinWithName:(NSString *)name
+          andType:(VJXPinType)pinType
+     forDirection:(VJXPinDirection)pinDirection
+          ownedBy:(id)pinOwner
+       withSignal:(NSString *)pinSignal
+{
+    return [VJXPin pinWithName:name
+                       andType:pinType
+                  forDirection:pinDirection
+                       ownedBy:pinOwner
+                    withSignal:pinSignal
+                 allowedValues:nil];
+}
 
-- (id)initWithName:(NSString *)pinName andType:(VJXPinType)pinType forDirection:(VJXPinDirection)pinDirection ownedBy:(id)pinOwner withSignal:(NSString *)pinSignal
+- (id)initWithName:(NSString *)pinName
+           andType:(VJXPinType)pinType
+      forDirection:(VJXPinDirection)pinDirection
+           ownedBy:(id)pinOwner
+        withSignal:(NSString *)pinSignal
+     allowedValues:(NSArray *)pinValues
 {
     if (self = [super init]) {
         type = pinType;
@@ -100,8 +124,22 @@
         currentSender = nil;
         owner = pinOwner;
         ownerSignal = pinSignal;
+        allowedValues = pinValues;
     }
     return self;
+}
+
+- (id)initWithName:(NSString *)pinName
+           andType:(VJXPinType)pinType
+      forDirection:(VJXPinDirection)pinDirection
+           ownedBy:(id)pinOwner
+        withSignal:(NSString *)pinSignal
+{
+    return [self initWithName:name
+                      andType:pinType
+                 forDirection:pinDirection
+                      ownedBy:pinOwner
+                   withSignal:pinSignal];
 }
 
 - (void)sendData:(id)data toReceiver:(id)receiver withSelector:(NSString *)selectorName fromSender:(id)sender
@@ -377,6 +415,14 @@
         }
     }
     return NO;
+}
+
+- (NSString *)description
+{
+    NSString *ownerName;
+    if ([owner respondsToSelector:@selector(name)])
+        ownerName = [owner performSelector:@selector(name)];
+    return [NSString stringWithFormat:@"%@:%@", ownerName, name];
 }
 
 @end

@@ -55,14 +55,16 @@ typedef enum {
     VJXPinDirection     direction;
     id                  owner;
     NSString            *ownerSignal;
+    NSArray             *allowedValues;
 }
 
 @property (readonly)  VJXPinType type;
 @property (readonly)  NSString *name;
 @property (readonly)  BOOL multiple;
-@property (readwrite) BOOL continuous;
 @property (readonly)  VJXPinDirection direction;
 @property (readonly)  NSArray *producers;
+@property (readonly)  NSArray *allowedValues;
+@property (readwrite) BOOL continuous;
 
 + (id)pinWithName:(NSString *)name
           andType:(VJXPinType)pinType
@@ -70,7 +72,26 @@ typedef enum {
           ownedBy:(id)pinOwner 
        withSignal:(NSString *)pinSignal;
 
-- (id)initWithName:(NSString *)pinName andType:(VJXPinType)pinType forDirection:(VJXPinDirection)pinDirection ownedBy:(id)pinOwner withSignal:(NSString *)pinSignal;
++ (id)pinWithName:(NSString *)name
+          andType:(VJXPinType)pinType
+     forDirection:(VJXPinDirection)pinDirection 
+          ownedBy:(id)pinOwner 
+       withSignal:(NSString *)pinSignal
+    allowedValues:(NSArray *)allowedValues;
+
+- (id)initWithName:(NSString *)pinName
+           andType:(VJXPinType)pinType
+      forDirection:(VJXPinDirection)pinDirection
+           ownedBy:(id)pinOwner
+        withSignal:(NSString *)pinSignal;
+
+- (id)initWithName:(NSString *)pinName
+           andType:(VJXPinType)pinType
+      forDirection:(VJXPinDirection)pinDirection
+           ownedBy:(id)pinOwner
+        withSignal:(NSString *)pinSignal
+     allowedValues:(NSArray *)pinValues;
+
 - (BOOL)connectToPin:(VJXPin *)destinationPin;
 - (void)disconnectFromPin:(VJXPin *)destinationPin;
 - (void)disconnectAllPins;
@@ -82,7 +103,6 @@ typedef enum {
 - (id)readPinValue;
 - (NSString *)typeName;
 - (BOOL)moveProducerFromIndex:(NSUInteger)src toIndex:(NSUInteger)dst;
-- (void)setAllowedValues:(NSArray *)values;
-- (NSArray *)allowedValues;
+- (NSString *)description;
 
 @end

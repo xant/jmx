@@ -46,6 +46,8 @@
             NSData *imageData = [[NSData alloc] initWithContentsOfFile:self.imagePath];
             if (imageData) {
                 self.image = [CIImage imageWithData:imageData];
+                NSArray *path = [file componentsSeparatedByString:@"/"];
+                self.name = [path lastObject];
                 return YES;
             }
         }

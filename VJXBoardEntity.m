@@ -42,9 +42,11 @@
     
     NSTextField *labelView = [[[NSTextField alloc] init] autorelease];
     [labelView setTextColor:[NSColor whiteColor]];
-    [labelView setStringValue:[theEntity displayName]];
+    [labelView setStringValue:[theEntity description]];
     [labelView setBordered:NO];
-    [labelView setEditable:NO];
+    [labelView setEditable:YES];
+    [labelView setFocusRingType:NSFocusRingTypeNone];
+    [labelView setDelegate:self];
     [labelView setDrawsBackground:NO];
     [labelView setFont:[NSFont boldSystemFontOfSize:[NSFont smallSystemFontSize]]];
     [labelView sizeToFit];
@@ -53,6 +55,7 @@
     CGRect labelFrame = [labelView frame];
     labelFrame.origin.x += ENTITY_LABEL_PADDING;
     labelFrame.origin.y = frame.size.height-labelHeight - ENTITY_LABEL_PADDING/2;
+    labelFrame.size.width = width - ENTITY_LABEL_PADDING;
     [labelView setFrame:labelFrame];
     self = [super initWithFrame:frame];
     
@@ -61,6 +64,7 @@
         [self addSubview:self.label];
 
         self.entity = theEntity;
+        self.entity.name = [theEntity description];
         self.selected = NO;
         self.outlets = [NSMutableArray array];
         
@@ -191,8 +195,10 @@
     // new point.
     NSPoint newDragLocation = [theEvent locationInWindow];
     NSPoint newLocation = NSMakePoint((-lastDragLocation.x + newDragLocation.x), (-lastDragLocation.y + newDragLocation.y));
-    [[VJXBoard sharedBoard] shiftSelectedToLocation:newLocation];
-    lastDragLocation = newDragLocation;
+    if (newDragLocation.y <= [[VJXBoard sharedBoard] frame].size.height) {
+        [[VJXBoard sharedBoard] shiftSelectedToLocation:newLocation];
+        lastDragLocation = newDragLocation;
+    }
 }
 
 - (void)mouseUp:(NSEvent *)theEvent
@@ -222,7 +228,7 @@
 
 - (NSString *)description
 {
-    return [self.entity displayName];
+    return [self.entity description];
 }
 
 - (BOOL)inRect:(NSRect)rect
@@ -242,4 +248,9 @@
     [outlets makeObjectsPerformSelector:@selector(updateAllConnectorsFrames)];
 }
 
+- (BOOL)control:(NSControl *)control textShouldEndEditing:(NSText *)fieldEditor
+{
+    entity.name = [fieldEditor string];
+    return YES;
+}
 @end

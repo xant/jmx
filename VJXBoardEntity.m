@@ -195,7 +195,9 @@
     // new point.
     NSPoint newDragLocation = [theEvent locationInWindow];
     NSPoint newLocation = NSMakePoint((-lastDragLocation.x + newDragLocation.x), (-lastDragLocation.y + newDragLocation.y));
-    if (newDragLocation.y <= [[VJXBoard sharedBoard] frame].size.height) {
+    if (newDragLocation.y > 0 && newDragLocation.y <= [[VJXBoard sharedBoard] frame].size.height &&
+        newDragLocation.x > 0 && newDragLocation.x <= [[VJXBoard sharedBoard] frame].size.width)
+    {
         [[VJXBoard sharedBoard] shiftSelectedToLocation:newLocation];
         lastDragLocation = newDragLocation;
     }

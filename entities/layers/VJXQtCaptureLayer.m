@@ -47,6 +47,7 @@
 - (id)init;
 - (void)startCapture:(VJXQtCaptureLayer *)controller;
 - (void)stopCapture;
+- (NSSize)size;
 @end
 
 @implementation VJXQtGrabber : QTCaptureDecompressedVideoOutput
@@ -169,6 +170,10 @@ error:
     
 }
 
+- (NSSize)size
+{
+    return NSMakeSize(width, height);
+}
 
 @end
 
@@ -228,6 +233,22 @@ error:
                                       [NSNumber numberWithInt:kCVPixelFormatType_32ARGB],
                                       (id)kCVPixelBufferPixelFormatTypeKey, nil]];
 }
+
+#pragma mark -
+#pragma mark NSCoding
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:NSStringFromSize([grabber size]) forKey:@"VJXQtCaptureLayerGrabberSize"];
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [self init];
+    [self setSize:[VJXSize sizeWithNSSize:NSSizeFromString([aDecoder decodeObjectForKey:@"VJXQtCaptureLayerGrabberSize"])]];
+    return self;
+}
+
 
 @end
 

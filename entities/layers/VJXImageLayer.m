@@ -93,4 +93,19 @@
     return [NSString stringWithFormat:@"%@", self.imagePath];
 }
 
+#pragma mark -
+#pragma mark NSCoding
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:imagePath forKey:@"VJXImageLayerImagePath"];
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [self init];
+    [self open:[aDecoder decodeObjectForKey:@"VJXImageLayerImagePath"]];
+    return self;
+}
+
 @end

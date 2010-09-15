@@ -230,4 +230,19 @@
     [view drawRect:NSZeroRect];
 }
 
+#pragma mark -
+#pragma mark NSCoding
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:NSStringFromSize(window.frame.size) forKey:@"VJXOpenGLScreenSize"];
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [self initWithSize:NSSizeFromString([aDecoder decodeObjectForKey:@"VJXOpenGLScreenSize"])];
+    return self;
+}
+
+
 @end

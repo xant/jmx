@@ -22,6 +22,8 @@
 		824576481227DF5800236FE4 /* VJXBoard.m in Sources */ = {isa = PBXBuildFile; fileRef = 824576431227DF5800236FE4 /* VJXBoard.m */; };
 		8245765A1227E0A400236FE4 /* VJXBoardDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 824576591227E0A400236FE4 /* VJXBoardDelegate.m */; };
 		82B0A4C31237AFB20006D003 /* VJXBoardEntityOutlet.m in Sources */ = {isa = PBXBuildFile; fileRef = 82B0A4C21237AFB20006D003 /* VJXBoardEntityOutlet.m */; };
+		82EA042F1240BE4A00E28B72 /* VJXDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 82EA042E1240BE4A00E28B72 /* VJXDocument.xib */; };
+		82EA047E1240C2AF00E28B72 /* VJXDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 82EA047D1240C2AF00E28B72 /* VJXDocument.m */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -88,6 +90,9 @@
 		824576591227E0A400236FE4 /* VJXBoardDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXBoardDelegate.m; path = gui/VJXBoardDelegate.m; sourceTree = "<group>"; };
 		82B0A4C11237AFB20006D003 /* VJXBoardEntityOutlet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXBoardEntityOutlet.h; path = gui/VJXBoardEntityOutlet.h; sourceTree = "<group>"; };
 		82B0A4C21237AFB20006D003 /* VJXBoardEntityOutlet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXBoardEntityOutlet.m; path = gui/VJXBoardEntityOutlet.m; sourceTree = "<group>"; };
+		82EA042E1240BE4A00E28B72 /* VJXDocument.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VJXDocument.xib; sourceTree = "<group>"; };
+		82EA047C1240C2AF00E28B72 /* VJXDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXDocument.h; path = gui/VJXDocument.h; sourceTree = "<group>"; };
+		82EA047D1240C2AF00E28B72 /* VJXDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXDocument.m; path = gui/VJXDocument.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* VeeJay-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "VeeJay-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* VeeJay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VeeJay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA0D28A6123436C4009C8690 /* VJXAudioTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXAudioTrack.h; path = entities/layers/VJXAudioTrack.h; sourceTree = "<group>"; };
@@ -234,6 +239,7 @@
 				8D1107310486CEB800E47090 /* VeeJay-Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				1DDD58140DA1D0A300B32029 /* MainMenu.xib */,
+				82EA042E1240BE4A00E28B72 /* VJXDocument.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -268,6 +274,8 @@
 				AA917C00123BD96700001A8B /* VJXEntityInspectorPanel.m */,
 				AAF17BDC123EABBB001319BA /* VJXBoardInputPanel.h */,
 				AAF17BDD123EABBB001319BA /* VJXBoardInputPanel.m */,
+				82EA047C1240C2AF00E28B72 /* VJXDocument.h */,
+				82EA047D1240C2AF00E28B72 /* VJXDocument.m */,
 			);
 			name = GUI;
 			sourceTree = "<group>";
@@ -429,6 +437,7 @@
 			files = (
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
+				82EA042F1240BE4A00E28B72 /* VJXDocument.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -476,6 +485,7 @@
 				AAF179A0123E0A39001319BA /* VJXQtCaptureLayer.m in Sources */,
 				AAF17AA6123E4F45001319BA /* VJXQtExporter.m in Sources */,
 				AAF17BDE123EABBB001319BA /* VJXBoardInputPanel.m in Sources */,
+				82EA047E1240C2AF00E28B72 /* VJXDocument.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

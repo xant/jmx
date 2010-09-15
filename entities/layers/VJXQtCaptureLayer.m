@@ -205,8 +205,10 @@ error:
 
 - (void)dealloc
 {
-	if (grabber)
+	if (grabber) {
 		[grabber release];
+        grabber = nil;
+    }
 	[super dealloc];
 }
 

@@ -33,6 +33,12 @@
     return self;
 }
 
+- (void)dealloc
+{
+    [entities release];
+    [super dealloc];
+}
+
 - (NSString *)windowNibName
 {
     return @"VJXDocument";

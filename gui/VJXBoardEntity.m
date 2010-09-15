@@ -119,7 +119,10 @@
     // that we are going to be destroyed, since 
     // it could still referencing us
     // TODO - we could check this only if we are selected
-    [[VJXBoard inspectorPanel] unsetEntity:self];
+
+    // The inspector will be destroyed when the document window is closed, so
+    // it must be safe to comment the next line for now.
+    // [[VJXBoard inspectorPanel] unsetEntity:self];
     [entity release];
     [label release];
     [outlets release];

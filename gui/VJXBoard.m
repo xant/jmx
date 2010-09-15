@@ -28,6 +28,7 @@
 
 @synthesize currentSelection;
 @synthesize document;
+@synthesize selectedEntities;
 
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
@@ -47,9 +48,22 @@
 - (void)viewWillDraw
 {
     [document.entities makeObjectsPerformSelector:@selector(setNeedsDisplay)];
-    for (id e in document.entities) {
+
+    float maxX = NSMaxX(self.frame);
+    float maxY = NSMaxY(self.frame);
+
+    for (VJXBoardEntity *e in document.entities) {
         [self addSubview:e];
+
+        if (NSMaxX(e.frame) > maxX)
+            maxX = NSMaxX(e.frame);
+
+        if (NSMaxY(e.frame) > maxY)
+            maxY = NSMaxY(e.frame);
     }
+
+    NSRect newFrameRect = NSMakeRect(0.0, 0.0, maxX, maxY);
+    [self setFrame:newFrameRect];
 }
 
 - (void)dealloc

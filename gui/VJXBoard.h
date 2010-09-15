@@ -39,6 +39,7 @@
 
 @property (nonatomic, retain) VJXBoardSelection *currentSelection;
 @property (nonatomic, retain) IBOutlet VJXDocument *document;
+@property (nonatomic, retain) NSMutableArray *selectedEntities;
 
 + (VJXBoard *)sharedBoard;
 + (VJXEntityInspectorPanel *)inspectorPanel;

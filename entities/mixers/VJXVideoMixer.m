@@ -118,4 +118,19 @@
     }
 }   
 
+#pragma mark -
+#pragma mark NSCoding
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:blendFilter.name forKey:@"VJXMixerLayerBlendFilterName"];
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [self init];
+    [self setBlendFilter:[aDecoder decodeObjectForKey:@"VJXMixerLayerBlendFilterName"]];
+    return self;
+}
+
 @end

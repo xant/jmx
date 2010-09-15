@@ -126,6 +126,11 @@
     [super dealloc];
 }
 
+- (void)setNeedsDisplay
+{
+    [self setNeedsDisplay:YES];
+}
+
 - (void)drawRect:(NSRect)dirtyRect {
     
     NSShadow *dropShadow = [[[NSShadow alloc] init] autorelease];
@@ -255,4 +260,23 @@
     entity.name = [fieldEditor string];
     return YES;
 }
+
+#pragma mark -
+#pragma mark NSCoding
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [super encodeWithCoder:aCoder];
+    [aCoder encodeObject:entity forKey:@"VJXEntity"];
+    [aCoder encodeObject:NSStringFromPoint(self.frame.origin) forKey:@"VJXBoardEntityFrameOrigin"];
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [self initWithEntity:[aDecoder decodeObjectForKey:@"VJXEntity"]];
+    NSPoint origin = NSPointFromString([aDecoder decodeObjectForKey:@"VJXBoardEntityFrameOrigin"]);
+    [self setFrameOrigin:origin];
+    return self;
+}
+
 @end

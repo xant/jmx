@@ -19,10 +19,13 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "VJXBoardDelegate.h"
 
 
 @interface VJXDocument : NSDocument {
-
+    NSMutableArray *entities;
 }
+
+@property (nonatomic, retain) NSMutableArray *entities;
 
 @end

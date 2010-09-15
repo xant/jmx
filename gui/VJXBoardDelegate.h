@@ -25,6 +25,7 @@
 #import "VJXBoard.h"
 #import "VJXEntityInspectorPanel.h"
 
+@class VJXBoard;
 
 @interface VJXBoardDelegate : NSObject {
     VJXBoard *board;

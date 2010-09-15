@@ -26,12 +26,12 @@
 
 @implementation VJXBoard
 
-@synthesize currentSelection, entities;
+@synthesize currentSelection;
+@synthesize document;
 
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        entities = [[NSMutableArray alloc] init];
         selectedEntities = [[NSMutableArray alloc] init];
         [self setSelected:nil multiple:NO];
     }
@@ -40,14 +40,21 @@
 
 - (void)awakeFromNib
 {
-    entities = [[NSMutableArray alloc] init];
     selectedEntities = [[NSMutableArray alloc] init];
     [self setNeedsDisplay:YES];
 }
 
+- (void)viewWillDraw
+{
+    [document.entities makeObjectsPerformSelector:@selector(setNeedsDisplay)];
+    for (id e in document.entities) {
+        [self addSubview:e];
+    }
+}
+
 - (void)dealloc
 {
-    [entities release];
+    [document release];
     [selectedEntities release];
     [super dealloc];
 }
@@ -63,7 +70,7 @@
 - (void)addToBoard:(VJXBoardEntity *)theEntity
 {
     [self addSubview:theEntity];
-    [entities addObject:theEntity];
+    [document.entities addObject:theEntity];
 
     // Put focus on the created entity.
     [self setSelected:theEntity multiple:NO];
@@ -80,7 +87,7 @@
 
         // Unselect all entities, and toggle only the one we selected.
         if (!isMultiple) {
-            [entities makeObjectsPerformSelector:@selector(unselect)];
+            [document.entities makeObjectsPerformSelector:@selector(unselect)];
             [selectedEntities removeAllObjects];
         }
 
@@ -88,7 +95,7 @@
         
         // Move the selected entity to the end of the subviews array, making it move
         // to the top of the view hierarchy.
-        if ([entities count] >= 1) {
+        if ([document.entities count] >= 1) {
             NSMutableArray *subviews = [[self subviews] mutableCopy];
             [subviews removeObjectAtIndex:[subviews indexOfObject:theEntity]];
             [subviews addObject:theEntity];
@@ -104,7 +111,7 @@
     lastDragLocation = [theEvent locationInWindow];
 
     // Unselect all the selected entities if the user click on the board.
-    [entities makeObjectsPerformSelector:@selector(unselect)]; 
+    [document.entities makeObjectsPerformSelector:@selector(unselect)]; 
     [selectedEntities removeAllObjects];
 }
 
@@ -126,7 +133,7 @@
                                           abs(thisLocation.x - lastDragLocation.x), 
                                           abs(thisLocation.y - lastDragLocation.y))];
     
-    for (VJXBoardEntity *entity in [self entities]) {
+    for (VJXBoardEntity *entity in document.entities) {
         // Unselect the entity. We'll have all the entities unselected as net
         // result of this operation, if the entity isn't inside the current 
         // selection rect.
@@ -194,8 +201,8 @@ static VJXEntityInspectorPanel *inspectorPanel = nil;
 
 - (void)removeSelectedEntities
 {
-    for (NSUInteger i = 0; i < [entities count]; i++) {
-        VJXBoardEntity *e = [entities objectAtIndex:i];
+    for (NSUInteger i = 0; i < [document.entities count]; i++) {
+        VJXBoardEntity *e = [document.entities objectAtIndex:i];
         if (e.selected) {
             // Remove the entity from the superview.
             //
@@ -206,7 +213,7 @@ static VJXEntityInspectorPanel *inspectorPanel = nil;
 
             // Remove the entity from our entities array, since we won't need
             // it anymore.
-            [entities removeObjectAtIndex:i];
+            [document.entities removeObjectAtIndex:i];
             
             // And remove also from our selectedEntities array...
             [selectedEntities removeObject:e];

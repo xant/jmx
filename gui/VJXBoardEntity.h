@@ -30,7 +30,7 @@
 #define ENTITY_PIN_HEIGHT 11.0
 #define ENTITY_PIN_LEFT_PADDING 6.0
 
-@interface VJXBoardEntity : NSView < NSTextFieldDelegate >
+@interface VJXBoardEntity : NSView <NSTextFieldDelegate,NSCoding>
 {
     VJXEntity *entity;
     NSPoint lastDragLocation;
@@ -51,5 +51,7 @@
 - (void)unselect;
 
 - (void)shiftOffsetToLocation:(NSPoint)aLocation;
+
+- (void)setNeedsDisplay;
 
 @end

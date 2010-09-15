@@ -5,6 +5,10 @@
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>vjx</string>
+			</array>
 			<key>NSDocumentClass</key>
 			<string>VJXDocument</string>
 			<key>CFBundleTypeName</key>

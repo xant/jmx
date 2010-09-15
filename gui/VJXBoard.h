@@ -26,16 +26,19 @@
 #import "VJXBoardEntityConnector.h"
 #import "VJXEntityInspectorPanel.h"
 #import "VJXBoardSelection.h"
+#import "VJXDocument.h"
+
+@class VJXDocument;
 
 @interface VJXBoard : NSView {
     NSPoint lastDragLocation;
     VJXBoardSelection *currentSelection;
-    NSMutableArray *entities;
     NSMutableArray *selectedEntities;
+    VJXDocument *document;
 }
 
-@property (nonatomic,retain) VJXBoardSelection *currentSelection;
-@property (nonatomic,retain) NSMutableArray *entities;
+@property (nonatomic, retain) VJXBoardSelection *currentSelection;
+@property (nonatomic, retain) IBOutlet VJXDocument *document;
 
 + (VJXBoard *)sharedBoard;
 + (VJXEntityInspectorPanel *)inspectorPanel;

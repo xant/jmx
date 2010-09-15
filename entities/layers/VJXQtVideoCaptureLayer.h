@@ -1,5 +1,5 @@
 //
-//  VJXQtCaptureLayer.h
+//  VJXQtVideoCaptureLayer.h
 //  VeeJay
 //
 //  Created by xant on 9/13/10.
@@ -25,14 +25,14 @@
 #import "VJXLayer.h"
 #import <Cocoa/Cocoa.h>
 
-#ifndef __VJXQTCAPTURELAYER_H__
-#define __VJXQTCAPTURELAYER_H__
-@class VJXQtGrabber;
+#ifndef __VJXQTVIDEOCAPTURELAYER_H__
+#define __VJXQTVIDEOCAPTURELAYER_H__
+@class VJXQtVideoGrabber;
 
-@interface VJXQtCaptureLayer : VJXLayer <NSCoding>
+@interface VJXQtVideoCaptureLayer : VJXLayer <NSCoding>
 {
 @private
-	VJXQtGrabber *grabber;
+	VJXQtVideoGrabber *grabber;
 }
 @end
 

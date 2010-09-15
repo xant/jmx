@@ -23,13 +23,10 @@
 
 #import <Cocoa/Cocoa.h>
 #import "VJXEntity.h"
-#import "MTCoreAudio.h"
-
 
 @interface VJXAudioCapture : VJXEntity {
 @private
-    MTCoreAudioDevice * device;
-	MTCoreAudioDirection direction;
+
 }
 
 @end

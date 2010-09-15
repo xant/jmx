@@ -26,7 +26,7 @@
 #import "VJXQtVideoLayer.h"
 #import "VJXOpenGLScreen.h"
 #import "VJXImageLayer.h"
-#import "VJXQtCaptureLayer.h"
+#import "VJXQtVideoCaptureLayer.h"
 #import "VJXVideoMixer.h"
 #import "VJXBoard.h"
 #import <QTKit/QTMovie.h>
@@ -114,7 +114,7 @@
 
 - (IBAction)addCaptureLayer:(id)sender
 {
-    VJXQtCaptureLayer *captureLayer = [[VJXQtCaptureLayer alloc] init];
+    VJXQtVideoCaptureLayer *captureLayer = [[VJXQtVideoCaptureLayer alloc] init];
     VJXBoardEntity *entity = [[VJXBoardEntity alloc] initWithEntity:captureLayer];
     [board addToBoard:entity];
     [captureLayer start];

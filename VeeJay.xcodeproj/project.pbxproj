@@ -36,16 +36,6 @@
 		AA0F49DC12305376005A1C95 /* VJXVideoMixer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA0F49DB12305376005A1C95 /* VJXVideoMixer.m */; };
 		AA0F49DF12305384005A1C95 /* VJXContext.m in Sources */ = {isa = PBXBuildFile; fileRef = AA0F49DE12305384005A1C95 /* VJXContext.m */; };
 		AA27106B1240166500E5B946 /* VJXAudioOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = AA27106A1240166500E5B946 /* VJXAudioOutput.m */; };
-		AA2710E61240A71700E5B946 /* VJXQtAudioInput.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2710E51240A71700E5B946 /* VJXQtAudioInput.m */; };
-		AA2BE3AF1235396F006087E7 /* MTAudioBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2BE39B1235396F006087E7 /* MTAudioBuffer.m */; };
-		AA2BE3B01235396F006087E7 /* MTAudioBufferListUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2BE39D1235396F006087E7 /* MTAudioBufferListUtils.m */; };
-		AA2BE3B11235396F006087E7 /* MTBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2BE39F1235396F006087E7 /* MTBuffer.m */; };
-		AA2BE3B21235396F006087E7 /* MTByteBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2BE3A11235396F006087E7 /* MTByteBuffer.m */; };
-		AA2BE3B31235396F006087E7 /* MTCoreAudioDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2BE3A41235396F006087E7 /* MTCoreAudioDevice.m */; };
-		AA2BE3B41235396F006087E7 /* MTCoreAudioIOProcMux.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2BE3A71235396F006087E7 /* MTCoreAudioIOProcMux.m */; };
-		AA2BE3B51235396F006087E7 /* MTCoreAudioStream.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2BE3A91235396F006087E7 /* MTCoreAudioStream.m */; };
-		AA2BE3B61235396F006087E7 /* MTCoreAudioStreamDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2BE3AB1235396F006087E7 /* MTCoreAudioStreamDescription.m */; };
-		AA2BE3B71235396F006087E7 /* MTDecibelTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2BE3AE1235396F006087E7 /* MTDecibelTransformer.m */; };
 		AA2BE3F312353BA6006087E7 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE3F212353BA6006087E7 /* CoreAudio.framework */; };
 		AA2BE40B12353D5C006087E7 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE40A12353D5C006087E7 /* Accelerate.framework */; };
 		AA2BE6511236D31E006087E7 /* VJXThreadedEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2BE6501236D31E006087E7 /* VJXThreadedEntity.m */; };
@@ -53,7 +43,11 @@
 		AA7931C11233A65400860CD2 /* VJXPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7931C01233A65400860CD2 /* VJXPoint.m */; };
 		AA917C01123BD96700001A8B /* VJXEntityInspectorPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA917C00123BD96700001A8B /* VJXEntityInspectorPanel.m */; };
 		AADEBED61240F7D700A6A06D /* VJXDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 82EA047D1240C2AF00E28B72 /* VJXDocument.m */; };
-		AAF179A0123E0A39001319BA /* VJXQtCaptureLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF1799F123E0A39001319BA /* VJXQtCaptureLayer.m */; };
+		AADEBF7912413B5B00A6A06D /* VJXAudioFile.m in Sources */ = {isa = PBXBuildFile; fileRef = AADEBF7812413B5B00A6A06D /* VJXAudioFile.m */; };
+		AADEBFC812414F7E00A6A06D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */; };
+		AADEBFDF1241546B00A6A06D /* VJXAudioBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = AADEBFDE1241546B00A6A06D /* VJXAudioBuffer.m */; };
+		AADEC0D712416F4600A6A06D /* VJXQtAudioCaptureLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = AADEC0D612416F4600A6A06D /* VJXQtAudioCaptureLayer.m */; };
+		AAF179A0123E0A39001319BA /* VJXQtVideoCaptureLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF1799F123E0A39001319BA /* VJXQtVideoCaptureLayer.m */; };
 		AAF17AA6123E4F45001319BA /* VJXQtExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF17AA5123E4F45001319BA /* VJXQtExporter.m */; };
 		AAF17BDE123EABBB001319BA /* VJXBoardInputPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF17BDD123EABBB001319BA /* VJXBoardInputPanel.m */; };
 /* End PBXBuildFile section */
@@ -115,31 +109,8 @@
 		AA0F49DB12305376005A1C95 /* VJXVideoMixer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXVideoMixer.m; path = entities/mixers/VJXVideoMixer.m; sourceTree = "<group>"; };
 		AA0F49DD12305384005A1C95 /* VJXContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXContext.h; path = core/VJXContext.h; sourceTree = "<group>"; };
 		AA0F49DE12305384005A1C95 /* VJXContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXContext.m; path = core/VJXContext.m; sourceTree = "<group>"; };
-		AA2710691240166500E5B946 /* VJXAudioOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXAudioOutput.h; sourceTree = "<group>"; };
-		AA27106A1240166500E5B946 /* VJXAudioOutput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXAudioOutput.m; sourceTree = "<group>"; };
-		AA2710E41240A71700E5B946 /* VJXQtAudioInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXQtAudioInput.h; sourceTree = "<group>"; };
-		AA2710E51240A71700E5B946 /* VJXQtAudioInput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXQtAudioInput.m; sourceTree = "<group>"; };
-		AA2BE39A1235396F006087E7 /* MTAudioBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTAudioBuffer.h; path = core/MTCoreAudio/MTAudioBuffer.h; sourceTree = "<group>"; };
-		AA2BE39B1235396F006087E7 /* MTAudioBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MTAudioBuffer.m; path = core/MTCoreAudio/MTAudioBuffer.m; sourceTree = "<group>"; };
-		AA2BE39C1235396F006087E7 /* MTAudioBufferListUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTAudioBufferListUtils.h; path = core/MTCoreAudio/MTAudioBufferListUtils.h; sourceTree = "<group>"; };
-		AA2BE39D1235396F006087E7 /* MTAudioBufferListUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MTAudioBufferListUtils.m; path = core/MTCoreAudio/MTAudioBufferListUtils.m; sourceTree = "<group>"; };
-		AA2BE39E1235396F006087E7 /* MTBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTBuffer.h; path = core/MTCoreAudio/MTBuffer.h; sourceTree = "<group>"; };
-		AA2BE39F1235396F006087E7 /* MTBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MTBuffer.m; path = core/MTCoreAudio/MTBuffer.m; sourceTree = "<group>"; };
-		AA2BE3A01235396F006087E7 /* MTByteBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTByteBuffer.h; path = core/MTCoreAudio/MTByteBuffer.h; sourceTree = "<group>"; };
-		AA2BE3A11235396F006087E7 /* MTByteBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MTByteBuffer.m; path = core/MTCoreAudio/MTByteBuffer.m; sourceTree = "<group>"; };
-		AA2BE3A21235396F006087E7 /* MTCoreAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTCoreAudio.h; path = core/MTCoreAudio/MTCoreAudio.h; sourceTree = "<group>"; };
-		AA2BE3A31235396F006087E7 /* MTCoreAudioDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTCoreAudioDevice.h; path = core/MTCoreAudio/MTCoreAudioDevice.h; sourceTree = "<group>"; };
-		AA2BE3A41235396F006087E7 /* MTCoreAudioDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MTCoreAudioDevice.m; path = core/MTCoreAudio/MTCoreAudioDevice.m; sourceTree = "<group>"; };
-		AA2BE3A51235396F006087E7 /* MTCoreAudioDevicePrivateAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTCoreAudioDevicePrivateAdditions.h; path = core/MTCoreAudio/MTCoreAudioDevicePrivateAdditions.h; sourceTree = "<group>"; };
-		AA2BE3A61235396F006087E7 /* MTCoreAudioIOProcMux.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTCoreAudioIOProcMux.h; path = core/MTCoreAudio/MTCoreAudioIOProcMux.h; sourceTree = "<group>"; };
-		AA2BE3A71235396F006087E7 /* MTCoreAudioIOProcMux.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MTCoreAudioIOProcMux.m; path = core/MTCoreAudio/MTCoreAudioIOProcMux.m; sourceTree = "<group>"; };
-		AA2BE3A81235396F006087E7 /* MTCoreAudioStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTCoreAudioStream.h; path = core/MTCoreAudio/MTCoreAudioStream.h; sourceTree = "<group>"; };
-		AA2BE3A91235396F006087E7 /* MTCoreAudioStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MTCoreAudioStream.m; path = core/MTCoreAudio/MTCoreAudioStream.m; sourceTree = "<group>"; };
-		AA2BE3AA1235396F006087E7 /* MTCoreAudioStreamDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTCoreAudioStreamDescription.h; path = core/MTCoreAudio/MTCoreAudioStreamDescription.h; sourceTree = "<group>"; };
-		AA2BE3AB1235396F006087E7 /* MTCoreAudioStreamDescription.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MTCoreAudioStreamDescription.m; path = core/MTCoreAudio/MTCoreAudioStreamDescription.m; sourceTree = "<group>"; };
-		AA2BE3AC1235396F006087E7 /* MTCoreAudioTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTCoreAudioTypes.h; path = core/MTCoreAudio/MTCoreAudioTypes.h; sourceTree = "<group>"; };
-		AA2BE3AD1235396F006087E7 /* MTDecibelTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTDecibelTransformer.h; path = core/MTCoreAudio/MTDecibelTransformer.h; sourceTree = "<group>"; };
-		AA2BE3AE1235396F006087E7 /* MTDecibelTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MTDecibelTransformer.m; path = core/MTCoreAudio/MTDecibelTransformer.m; sourceTree = "<group>"; };
+		AA2710691240166500E5B946 /* VJXAudioOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXAudioOutput.h; path = entities/VJXAudioOutput.h; sourceTree = "<group>"; };
+		AA27106A1240166500E5B946 /* VJXAudioOutput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXAudioOutput.m; path = entities/VJXAudioOutput.m; sourceTree = "<group>"; };
 		AA2BE3F212353BA6006087E7 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		AA2BE40A12353D5C006087E7 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		AA2BE6401236D2C4006087E7 /* VJXThreadedEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXThreadedEntity.h; path = core/VJXThreadedEntity.h; sourceTree = "<group>"; };
@@ -150,8 +121,15 @@
 		AA7931C01233A65400860CD2 /* VJXPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXPoint.m; path = core/VJXPoint.m; sourceTree = "<group>"; };
 		AA917BFF123BD96700001A8B /* VJXEntityInspectorPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXEntityInspectorPanel.h; path = gui/VJXEntityInspectorPanel.h; sourceTree = "<group>"; };
 		AA917C00123BD96700001A8B /* VJXEntityInspectorPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXEntityInspectorPanel.m; path = gui/VJXEntityInspectorPanel.m; sourceTree = "<group>"; };
-		AAF1799E123E0A39001319BA /* VJXQtCaptureLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXQtCaptureLayer.h; path = entities/layers/VJXQtCaptureLayer.h; sourceTree = "<group>"; };
-		AAF1799F123E0A39001319BA /* VJXQtCaptureLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXQtCaptureLayer.m; path = entities/layers/VJXQtCaptureLayer.m; sourceTree = "<group>"; };
+		AADEBF7712413B5B00A6A06D /* VJXAudioFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXAudioFile.h; path = core/VJXAudioFile.h; sourceTree = "<group>"; };
+		AADEBF7812413B5B00A6A06D /* VJXAudioFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXAudioFile.m; path = core/VJXAudioFile.m; sourceTree = "<group>"; };
+		AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		AADEBFDD1241546B00A6A06D /* VJXAudioBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXAudioBuffer.h; path = core/VJXAudioBuffer.h; sourceTree = "<group>"; };
+		AADEBFDE1241546B00A6A06D /* VJXAudioBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXAudioBuffer.m; path = core/VJXAudioBuffer.m; sourceTree = "<group>"; };
+		AADEC0D512416F4600A6A06D /* VJXQtAudioCaptureLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXQtAudioCaptureLayer.h; path = entities/layers/VJXQtAudioCaptureLayer.h; sourceTree = "<group>"; };
+		AADEC0D612416F4600A6A06D /* VJXQtAudioCaptureLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXQtAudioCaptureLayer.m; path = entities/layers/VJXQtAudioCaptureLayer.m; sourceTree = "<group>"; };
+		AAF1799E123E0A39001319BA /* VJXQtVideoCaptureLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXQtVideoCaptureLayer.h; path = entities/layers/VJXQtVideoCaptureLayer.h; sourceTree = "<group>"; };
+		AAF1799F123E0A39001319BA /* VJXQtVideoCaptureLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXQtVideoCaptureLayer.m; path = entities/layers/VJXQtVideoCaptureLayer.m; sourceTree = "<group>"; };
 		AAF17AA4123E4F45001319BA /* VJXQtExporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXQtExporter.h; path = entities/exporters/VJXQtExporter.h; sourceTree = "<group>"; };
 		AAF17AA5123E4F45001319BA /* VJXQtExporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXQtExporter.m; path = entities/exporters/VJXQtExporter.m; sourceTree = "<group>"; };
 		AAF17BDC123EABBB001319BA /* VJXBoardInputPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXBoardInputPanel.h; path = gui/VJXBoardInputPanel.h; sourceTree = "<group>"; };
@@ -169,6 +147,7 @@
 				82456BCC1223DCA700236FE4 /* QuartzCore.framework in Frameworks */,
 				AA2BE3F312353BA6006087E7 /* CoreAudio.framework in Frameworks */,
 				AA2BE40B12353D5C006087E7 /* Accelerate.framework in Frameworks */,
+				AADEBFC812414F7E00A6A06D /* AudioToolbox.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -194,6 +173,7 @@
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 				AA2BE3F212353BA6006087E7 /* CoreAudio.framework */,
 				AA2BE40A12353D5C006087E7 /* Accelerate.framework */,
+				AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -302,35 +282,16 @@
 			name = AudioOutputs;
 			sourceTree = "<group>";
 		};
-		AA2BE38912353941006087E7 /* MTCoreAudio */ = {
+		AADEC0D412416F2200A6A06D /* AudioLayers */ = {
 			isa = PBXGroup;
 			children = (
-				AA2BE39A1235396F006087E7 /* MTAudioBuffer.h */,
-				AA2BE39B1235396F006087E7 /* MTAudioBuffer.m */,
-				AA2BE39C1235396F006087E7 /* MTAudioBufferListUtils.h */,
-				AA2BE39D1235396F006087E7 /* MTAudioBufferListUtils.m */,
-				AA2BE39E1235396F006087E7 /* MTBuffer.h */,
-				AA2BE39F1235396F006087E7 /* MTBuffer.m */,
-				AA2BE3A01235396F006087E7 /* MTByteBuffer.h */,
-				AA2BE3A11235396F006087E7 /* MTByteBuffer.m */,
-				AA2BE3A21235396F006087E7 /* MTCoreAudio.h */,
-				AA2BE3A31235396F006087E7 /* MTCoreAudioDevice.h */,
-				AA2BE3A41235396F006087E7 /* MTCoreAudioDevice.m */,
-				AA2BE3A51235396F006087E7 /* MTCoreAudioDevicePrivateAdditions.h */,
-				AA2BE3A61235396F006087E7 /* MTCoreAudioIOProcMux.h */,
-				AA2BE3A71235396F006087E7 /* MTCoreAudioIOProcMux.m */,
-				AA2BE3A81235396F006087E7 /* MTCoreAudioStream.h */,
-				AA2BE3A91235396F006087E7 /* MTCoreAudioStream.m */,
-				AA2BE3AA1235396F006087E7 /* MTCoreAudioStreamDescription.h */,
-				AA2BE3AB1235396F006087E7 /* MTCoreAudioStreamDescription.m */,
-				AA2BE3AC1235396F006087E7 /* MTCoreAudioTypes.h */,
-				AA2BE3AD1235396F006087E7 /* MTDecibelTransformer.h */,
-				AA2BE3AE1235396F006087E7 /* MTDecibelTransformer.m */,
+				AADEC0D512416F4600A6A06D /* VJXQtAudioCaptureLayer.h */,
+				AADEC0D612416F4600A6A06D /* VJXQtAudioCaptureLayer.m */,
 			);
-			name = MTCoreAudio;
+			name = AudioLayers;
 			sourceTree = "<group>";
 		};
-		AAF17A8D123E4D08001319BA /* Layers */ = {
+		AAF17A8D123E4D08001319BA /* VideoLayers */ = {
 			isa = PBXGroup;
 			children = (
 				AA0D28A6123436C4009C8690 /* VJXAudioCapture.h */,
@@ -339,15 +300,19 @@
 				82456FE812256A4A00236FE4 /* VJXImageLayer.m */,
 				82456BB71223DBE100236FE4 /* VJXQtVideoLayer.h */,
 				82456BB61223DBE100236FE4 /* VJXQtVideoLayer.m */,
-				AAF1799E123E0A39001319BA /* VJXQtCaptureLayer.h */,
-				AAF1799F123E0A39001319BA /* VJXQtCaptureLayer.m */,
+				AAF1799E123E0A39001319BA /* VJXQtVideoCaptureLayer.h */,
+				AAF1799F123E0A39001319BA /* VJXQtVideoCaptureLayer.m */,
 			);
-			name = Layers;
+			name = VideoLayers;
 			sourceTree = "<group>";
 		};
 		AAF17A90123E4D9D001319BA /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				AADEBFDD1241546B00A6A06D /* VJXAudioBuffer.h */,
+				AADEBFDE1241546B00A6A06D /* VJXAudioBuffer.m */,
+				AADEBF7712413B5B00A6A06D /* VJXAudioFile.h */,
+				AADEBF7812413B5B00A6A06D /* VJXAudioFile.m */,
 				AA0F49DD12305384005A1C95 /* VJXContext.h */,
 				AA0F49DE12305384005A1C95 /* VJXContext.m */,
 				AA0F48A6122E7503005A1C95 /* VJXEntity.h */,
@@ -360,7 +325,6 @@
 				AA7931BD1233A64800860CD2 /* VJXSize.m */,
 				AA7931BF1233A65400860CD2 /* VJXPoint.h */,
 				AA7931C01233A65400860CD2 /* VJXPoint.m */,
-				AA2BE38912353941006087E7 /* MTCoreAudio */,
 			);
 			name = Core;
 			sourceTree = "<group>";
@@ -371,14 +335,13 @@
 				AAF17A92123E4E3A001319BA /* VideoOutputs */,
 				AA2710E31240A6B700E5B946 /* AudioOutputs */,
 				AA270ED0123FD84300E5B946 /* Mixers */,
-				AAF17A8D123E4D08001319BA /* Layers */,
+				AADEC0D412416F2200A6A06D /* AudioLayers */,
+				AAF17A8D123E4D08001319BA /* VideoLayers */,
 				AAF17AA7123E4F65001319BA /* Exporters */,
 				82456BA31223CFA200236FE4 /* VJXLayer.h */,
 				82456BA41223CFA200236FE4 /* VJXLayer.m */,
 				AA0F49CE123052EE005A1C95 /* VJXVideoOutput.h */,
 				AA0F49CF123052EE005A1C95 /* VJXVideoOutput.m */,
-				AA2710E41240A71700E5B946 /* VJXQtAudioInput.h */,
-				AA2710E51240A71700E5B946 /* VJXQtAudioInput.m */,
 				AA2710691240166500E5B946 /* VJXAudioOutput.h */,
 				AA27106A1240166500E5B946 /* VJXAudioOutput.m */,
 				AA0F49D71230536C005A1C95 /* VJXExporter.h */,
@@ -487,25 +450,18 @@
 				AA7931BE1233A64800860CD2 /* VJXSize.m in Sources */,
 				AA7931C11233A65400860CD2 /* VJXPoint.m in Sources */,
 				AA0D28A8123436C4009C8690 /* VJXAudioCapture.m in Sources */,
-				AA2BE3AF1235396F006087E7 /* MTAudioBuffer.m in Sources */,
-				AA2BE3B01235396F006087E7 /* MTAudioBufferListUtils.m in Sources */,
-				AA2BE3B11235396F006087E7 /* MTBuffer.m in Sources */,
-				AA2BE3B21235396F006087E7 /* MTByteBuffer.m in Sources */,
-				AA2BE3B31235396F006087E7 /* MTCoreAudioDevice.m in Sources */,
-				AA2BE3B41235396F006087E7 /* MTCoreAudioIOProcMux.m in Sources */,
-				AA2BE3B51235396F006087E7 /* MTCoreAudioStream.m in Sources */,
-				AA2BE3B61235396F006087E7 /* MTCoreAudioStreamDescription.m in Sources */,
-				AA2BE3B71235396F006087E7 /* MTDecibelTransformer.m in Sources */,
 				AA2BE6511236D31E006087E7 /* VJXThreadedEntity.m in Sources */,
 				82B0A4C31237AFB20006D003 /* VJXBoardEntityOutlet.m in Sources */,
 				821DE683123925EC00B6A45D /* VJXBoardSelection.m in Sources */,
 				AA917C01123BD96700001A8B /* VJXEntityInspectorPanel.m in Sources */,
-				AAF179A0123E0A39001319BA /* VJXQtCaptureLayer.m in Sources */,
+				AAF179A0123E0A39001319BA /* VJXQtVideoCaptureLayer.m in Sources */,
 				AAF17AA6123E4F45001319BA /* VJXQtExporter.m in Sources */,
 				AAF17BDE123EABBB001319BA /* VJXBoardInputPanel.m in Sources */,
 				AA27106B1240166500E5B946 /* VJXAudioOutput.m in Sources */,
-				AA2710E61240A71700E5B946 /* VJXQtAudioInput.m in Sources */,
 				AADEBED61240F7D700A6A06D /* VJXDocument.m in Sources */,
+				AADEBF7912413B5B00A6A06D /* VJXAudioFile.m in Sources */,
+				AADEBFDF1241546B00A6A06D /* VJXAudioBuffer.m in Sources */,
+				AADEC0D712416F4600A6A06D /* VJXQtAudioCaptureLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

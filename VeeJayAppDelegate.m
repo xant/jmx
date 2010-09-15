@@ -23,18 +23,12 @@
 
 #import "VeeJayAppDelegate.h"
 
-// HERE FOR TESTING
-#import "VJXOpenGLScreen.h"
-#import "VJXVideoMixer.h"
-#import "VJXImageLayer.h"
-#import "VJXQtVideoLayer.h"
-#import "VJXPoint.h"
-// END OF HERE FOR TESTING
 @implementation VeeJayAppDelegate
 
 @synthesize window, layersTableView;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+
 }
 
 - (void)printFrequency:(id)data andSender:(id)sender

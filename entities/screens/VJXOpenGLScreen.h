@@ -22,11 +22,12 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "VJXScreen.h"
+#import "VJXVideoOutput.h"
 
 @class VJXOpenGLView;
 
-@interface VJXOpenGLScreen : VJXScreen <NSCoding> {
+@interface VJXOpenGLScreen : VJXVideoOutput <NSCoding> {
+
 @private
     NSWindow *window;
     VJXOpenGLView *view;

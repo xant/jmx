@@ -1,5 +1,5 @@
 //
-//  VJXAudioTrack.m
+//  VJXAudioCapture.h
 //  VeeJay
 //
 //  Created by xant on 9/5/10.
@@ -21,9 +21,15 @@
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#import "VJXAudioTrack.h"
+#import <Cocoa/Cocoa.h>
+#import "VJXEntity.h"
+#import "MTCoreAudio.h"
 
 
-@implementation VJXAudioTrack
+@interface VJXAudioCapture : VJXEntity {
+@private
+    MTCoreAudioDevice * device;
+	MTCoreAudioDirection direction;
+}
 
 @end

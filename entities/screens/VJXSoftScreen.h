@@ -22,10 +22,10 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "VJXScreen.h"
+#import "VJXVideoOutput.h"
 
 
-@interface VJXSoftScreen : VJXScreen {
+@interface VJXSoftScreen : VJXVideoOutput {
 
 }
 

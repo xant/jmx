@@ -1,5 +1,5 @@
 //
-//  VJXScreen.m
+//  VJXVideoOutput.m
 //  VeeJay
 //
 //  Created by xant on 9/2/10.
@@ -21,10 +21,10 @@
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#import "VJXScreen.h"
+#import "VJXVideoOutput.h"
 
 
-@implementation VJXScreen
+@implementation VJXVideoOutput
 
 @synthesize size;
 

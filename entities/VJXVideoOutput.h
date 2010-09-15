@@ -1,8 +1,8 @@
 //
-//  VJXAudioTrack.h
+//  VJXVideoOutput.h
 //  VeeJay
 //
-//  Created by xant on 9/5/10.
+//  Created by xant on 9/2/10.
 //  Copyright 2010 Dyne.org. All rights reserved.
 //
 //  This file is part of VeeJay
@@ -24,9 +24,15 @@
 #import <Cocoa/Cocoa.h>
 #import "VJXEntity.h"
 
-
-@interface VJXAudioTrack : VJXEntity {
-
+@interface VJXVideoOutput : VJXEntity {
+@protected
+    CIImage *currentFrame;
+    VJXSize *size;
 }
+
+@property (retain) VJXSize *size;
+
+- (id)initWithSize:(NSSize)screenSize;
+- (void)drawFrame:(CIImage *)frame;
 
 @end

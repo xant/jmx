@@ -1,8 +1,8 @@
 //
-//  VJXScreen.h
+//  VJXAudioCapture.m
 //  VeeJay
 //
-//  Created by xant on 9/2/10.
+//  Created by xant on 9/5/10.
 //  Copyright 2010 Dyne.org. All rights reserved.
 //
 //  This file is part of VeeJay
@@ -21,18 +21,17 @@
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#import <Cocoa/Cocoa.h>
-#import "VJXEntity.h"
+#import "VJXAudioCapture.h"
 
-@interface VJXScreen : VJXEntity {
-@protected
-    CIImage *currentFrame;
-    VJXSize *size;
+
+@implementation VJXAudioCapture
+
+- (id)init
+{
+    if (self = [super init]) {
+        
+    }
+    return self;
 }
-
-@property (retain) VJXSize *size;
-
-- (id)initWithSize:(NSSize)screenSize;
-- (void)drawFrame:(CIImage *)frame;
 
 @end

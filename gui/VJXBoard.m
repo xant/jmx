@@ -44,7 +44,6 @@
 
 - (void)awakeFromNib
 {
-    NSLog(@"board - awakeFromNib: %@", self);
     selected = [[NSMutableArray alloc] init];
     entities = [[NSMutableArray alloc] init];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasCreated:) name:@"VJXEntityWasCreated" object:nil];    

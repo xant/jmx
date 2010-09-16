@@ -1,8 +1,8 @@
 //
-//  VJXQtCaptureLayer.m
+//  VJXQtAudioCaptureLayer.m
 //  VeeJay
 //
-//  Created by xant on 9/13/10.
+//  Created by xant on 9/15/10.
 //  Copyright 2010 Dyne.org. All rights reserved.
 //
 //  This file is part of VeeJay
@@ -20,43 +20,34 @@
 //  You should have received a copy of the GNU General Public License
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
+#import "VJXQtAudioCaptureLayer.h"
 
-#import "VJXQtCaptureLayer.h"
-#include <OpenGL/OpenGL.h>
-#include <OpenGL/gl.h>
-
-#define VJX_GRABBER_WIDTH_MAX 640
-#define VJX_GRABBER_HEIGHT_MAX 480
-
-/* Coming from Apple sample code */
+#include <CoreAudio/CoreAudioTypes.h>
+#import <QTKit/QTKit.h>
 
 /*
  * QTKit Bridge
  */
 
-@interface VJXQtGrabber : QTCaptureDecompressedVideoOutput
+@interface VJXQtAudioGrabber : QTCaptureDecompressedAudioOutput
 {
     QTCaptureDeviceInput         *input;
     QTCaptureMovieFileOutput     *captureOutput;
     QTCaptureSession             *session;
     QTCaptureDevice              *device;
-    int                          width;
-    int                          height;
 }
 
 - (id)init;
-- (void)startCapture:(VJXQtCaptureLayer *)controller;
+- (void)startCapture:(VJXQtAudioCaptureLayer *)controller;
 - (void)stopCapture;
-- (NSSize)size;
 @end
 
-@implementation VJXQtGrabber : QTCaptureDecompressedVideoOutput
+@implementation VJXQtAudioGrabber : QTCaptureDecompressedAudioOutput
 
 - (id)init
 {
     if( self = [super init] ) {
-        width = 352;
-        height = 288;
+
     }
     return self;
 }
@@ -68,22 +59,15 @@
     [super dealloc];
 }
 
-- (void)startCapture:(VJXQtCaptureLayer *)controller
+- (void)startCapture:(VJXQtAudioCaptureLayer *)controller
 {
     NSLog(@"QTCapture opened");
     bool ret = false;
     
     NSError *o_returnedError;
-    width = controller.size.width;
-    height = controller.size.height;
-    /* Hack - using max resolution seems to lower cpu consuption for some reason */
-    int h = (height < VJX_GRABBER_HEIGHT_MAX)
-            ? height
-            : VJX_GRABBER_HEIGHT_MAX;
-    int w = (width < VJX_GRABBER_WIDTH_MAX)
-            ? width
-            : VJX_GRABBER_WIDTH_MAX;
-    device = [QTCaptureDevice defaultInputDeviceWithMediaType: QTMediaTypeVideo];
+
+    // XXX - supports only the default audio input for now
+    device = [QTCaptureDevice defaultInputDeviceWithMediaType: QTMediaTypeSound];
     if( !device )
     {
         NSLog(@"Can't find any Video device");
@@ -110,11 +94,6 @@
         goto error;
     }
     
-    [self setPixelBufferAttributes: [NSDictionary dictionaryWithObjectsAndKeys:
-                                     [NSNumber numberWithInt:h], kCVPixelBufferHeightKey,
-                                     [NSNumber numberWithInt:w], kCVPixelBufferWidthKey, 
-                                     [NSNumber numberWithInt:kCVPixelFormatType_32ARGB],
-                                     (id)kCVPixelBufferPixelFormatTypeKey, nil]];
     
     session = [[QTCaptureSession alloc] init];
     
@@ -170,32 +149,35 @@ error:
     
 }
 
-- (NSSize)size
-{
-    return NSMakeSize(width, height);
-}
-
 @end
 
 
-@implementation VJXQtCaptureLayer : VJXLayer
+@implementation VJXQtAudioCaptureLayer : VJXEntity
 
-- (void)captureOutput:(QTCaptureOutput *)captureOutput 
-  didOutputVideoFrame:(CVImageBufferRef)videoFrame 
-     withSampleBuffer:(QTSampleBuffer *)sampleBuffer 
-       fromConnection:(QTCaptureConnection *)connection
+- (void)captureOutput:(QTCaptureOutput *)captureOutput didOutputAudioSampleBuffer:(QTSampleBuffer *)sampleBuffer
+                                                             fromConnection:(QTCaptureConnection *)connection
 {
-    @synchronized (self) {
-        if (currentFrame)
-            [currentFrame release];
-        currentFrame = [[CIImage imageWithCVImageBuffer:videoFrame] retain];
-    }
+    AudioStreamBasicDescription *format;
+    AudioBufferList buffer;
+    if (currentBuffer)
+        [currentBuffer release];
+    format = (AudioStreamBasicDescription *)[[[sampleBuffer formatDescription]
+                                              attributeForKey:QTFormatDescriptionAudioStreamBasicDescriptionAttribute] value];
+    buffer.mNumberBuffers = 1;
+    buffer.mBuffers[0].mDataByteSize = [sampleBuffer lengthForAllSamples];
+    buffer.mBuffers[0].mNumberChannels = format->mChannelsPerFrame;
+    buffer.mBuffers[0].mData = [sampleBuffer bytesForAllSamples];
+    currentBuffer = [[VJXAudioBuffer audioBufferWithCoreAudioBuffer:&buffer.mBuffers[0] andFormat:nil] retain];
+    
+    [outputPin deliverSignal:[NSNumber numberWithBool:active] fromSender:self];
+    [self outputDefaultSignals:CVGetCurrentHostTime()];
 }
 
 - (id)init
 {
     if (self == [super init]) {
-        grabber = [[VJXQtGrabber alloc] init];
+        grabber = [[VJXQtAudioGrabber alloc] init];
+        outputPin = [self registerOutputPin:@"audio" withType:kVJXAudioPin];
     } else {
         [self dealloc];
         return nil;
@@ -216,24 +198,33 @@ error:
 
 - (void)start
 {
-	[super start];
+    // we don't want the a thread, 
+    // so it's useless to call our super here
+	//[super start];
 	[grabber startCapture:self];
 }
 
 - (void)stop
 {
-	[super stop];
+	//[super stop];
 	[grabber stopCapture];
 }
 
-- (void)setSize:(VJXSize *)newSize
+#pragma mark -
+#pragma mark NSCoding
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
 {
-    [super setSize:newSize];
-    [grabber setPixelBufferAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                      [NSNumber numberWithInt:newSize.height], kCVPixelBufferHeightKey,
-                                      [NSNumber numberWithInt:newSize.width], kCVPixelBufferWidthKey,
-                                      [NSNumber numberWithInt:kCVPixelFormatType_32ARGB],
-                                      (id)kCVPixelBufferPixelFormatTypeKey, nil]];
+    //[aCoder encodeObject:NSStringFromSize([grabber size]) forKey:@"VJXQtVideoCaptureLayerGrabberSize"];
 }
 
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [self init];
+    //[self setSize:[VJXSize sizeWithNSSize:NSSizeFromString([aDecoder decodeObjectForKey:@"VJXQtVideoCaptureLayerGrabberSize"])]];
+    return self;
+}
+
+
 @end
+

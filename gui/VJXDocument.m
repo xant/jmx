@@ -20,7 +20,7 @@
 
 #import "VJXDocument.h"
 #import "VJXQtVideoLayer.h"
-#import "VJXQtCaptureLayer.h"
+#import "VJXQtVideoCaptureLayer.h"
 #import "VJXVideoMixer.h"
 #import "VJXImageLayer.h"
 #import "VJXOpenGLScreen.h"
@@ -120,7 +120,7 @@
 
 - (IBAction)addQtCaptureLayer:(id)sender
 {
-    VJXQtCaptureLayer *entity = [[VJXQtCaptureLayer alloc] init];
+    VJXQtVideoCaptureLayer *entity = [[VJXQtVideoCaptureLayer alloc] init];
     [entities addObject:entity];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:entity];
     [entity release];

@@ -23,8 +23,10 @@
 
 #import <Cocoa/Cocoa.h>
 #import "VJXBoardEntityPin.h"
+#import "VJXBoard.h"
 
 @class VJXBoardEntityPin;
+@class VJXBoard;
 
 enum Direction {
     kSouthEastDirection,
@@ -35,12 +37,14 @@ enum Direction {
 
 @interface VJXBoardEntityConnector : NSView {
     BOOL selected;
+    VJXBoard *board;
     VJXBoardEntityPin *origin;
     VJXBoardEntityPin *destination;
     NSUInteger direction;
 }
 
 @property (assign) BOOL selected;
+@property (assign) VJXBoard *board;
 @property (assign) NSUInteger direction;
 // make this weak references otherwise pins will be overretained an never released
 @property (nonatomic,assign) VJXBoardEntityPin *origin;

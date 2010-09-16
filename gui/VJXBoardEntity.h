@@ -23,6 +23,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "VJXEntity.h"
+#import "VJXBoard.h"
 
 #define ENTITY_LABEL_PADDING 12.0
 #define ENTITY_PIN_MINSPACING 1.5
@@ -30,12 +31,16 @@
 #define ENTITY_PIN_HEIGHT 11.0
 #define ENTITY_PIN_LEFT_PADDING 6.0
 
-@interface VJXBoardEntity : NSView <NSTextFieldDelegate,NSCoding>
+@class VJXBoard;
+
+@interface VJXBoardEntity : NSView <NSTextFieldDelegate>
 {
     VJXEntity *entity;
     NSPoint lastDragLocation;
     NSTextField *label;
     NSMutableArray *outlets;
+
+    VJXBoard *board;
     
     BOOL selected;
 }
@@ -44,8 +49,11 @@
 @property (nonatomic,retain) NSTextField *label;
 @property (nonatomic,assign) BOOL selected;
 @property (nonatomic,retain) NSMutableArray *outlets;
+@property (nonatomic, assign) VJXBoard *board;
 
-- (id)initWithEntity:(VJXEntity *)theEntity;
+- (id)initWithEntity:(VJXEntity *)anEntity;
+- (id)initWithEntity:(VJXEntity *)anEntity board:(VJXBoard *)aBoard;
+
 - (void)toggleSelected;
 - (BOOL)inRect:(NSRect)rect;
 - (void)unselect;

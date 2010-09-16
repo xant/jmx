@@ -15,22 +15,33 @@
 
 @implementation VJXEntityInspectorPanel
 
-@synthesize entityName, pinInspector, inputPins, outputPins, producers;
-
-@synthesize entityView, panel;
+@synthesize entityName;
+@synthesize pinInspector;
+@synthesize inputPins;
+@synthesize outputPins;
+@synthesize producers;
+@synthesize entityView;
+@synthesize panel;
 
 - (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)aStyle backing:(NSBackingStoreType)bufferingType defer:(BOOL)flag
 {
     if (self = [super initWithContentRect:contentRect styleMask:aStyle backing:bufferingType defer:flag]) {
         entityName = nil;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasSelected:) name:@"VJXBoardEntityWasSelected" object:nil];
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [super dealloc];
 }
 
 - (void)unsetEntity:(VJXBoardEntity *)entity
 {
     if (entityView == entity)
-        entityView = nil;
+        self.entityView = nil;
 }
 
 - (void)setEntity:(VJXBoardEntity *)boardEntity
@@ -134,8 +145,7 @@
     return false; // we don't allow editing items for now
 }
 
-- (NSArray *)tableView:(NSTableView *)aTableView namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination 
-forDraggedRowsWithIndexes:(NSIndexSet *)indexSet
+- (NSArray *)tableView:(NSTableView *)aTableView namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination forDraggedRowsWithIndexes:(NSIndexSet *)indexSet
 {
     if (aTableView != producers)
         return nil;
@@ -186,6 +196,12 @@ forDraggedRowsWithIndexes:(NSIndexSet *)indexSet
         }
     }
     return NO;
+}
+
+- (void)anEntityWasSelected:(NSNotification *)aNotification
+{
+    VJXBoardEntity *entity = [aNotification object];
+    [self setEntity:entity];
 }
 
 @end

@@ -26,6 +26,8 @@
 
 @implementation VJXEntity
 
+@synthesize inputPins, outputPins, name, active;
+
 - (id)init
 {
     if (self = [super init]) {
@@ -164,7 +166,5 @@
            ? [self className]
            : [NSString stringWithFormat:@"%@:%@", [self className], name];
 }
-
-@synthesize inputPins, outputPins, name, active;
 
 @end

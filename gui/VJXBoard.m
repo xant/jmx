@@ -28,31 +28,48 @@
 
 @synthesize currentSelection;
 @synthesize document;
-@synthesize selectedEntities;
+@synthesize selected;
+@synthesize entities;
+@synthesize inspectorPanel;
 
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        selectedEntities = [[NSMutableArray alloc] init];
-        [self setSelected:nil multiple:NO];
+        selected = [[NSMutableArray alloc] init];
+        entities = [[NSMutableArray alloc] init];
+        [self toggleSelected:nil multiple:NO];        
     }
     return self;
 }
 
 - (void)awakeFromNib
 {
-    selectedEntities = [[NSMutableArray alloc] init];
+    NSLog(@"board - awakeFromNib: %@", self);
+    selected = [[NSMutableArray alloc] init];
+    entities = [[NSMutableArray alloc] init];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasCreated:) name:@"VJXEntityWasCreated" object:nil];    
     [self setNeedsDisplay:YES];
+}
+
+- (BOOL)isFlipped
+{
+    return YES;
 }
 
 - (void)viewWillDraw
 {
-    [document.entities makeObjectsPerformSelector:@selector(setNeedsDisplay)];
+    // We're calculating the biggest rect that can hold all the entities 
+    // currently living in the board, and setting the board's frame to that 
+    // rect. We should also keep a reference to the minimum size we want the 
+    // board to have, and if the rect is smaller than that resize to the
+    // default.
+    
+    [entities makeObjectsPerformSelector:@selector(setNeedsDisplay)];
 
     float maxX = NSMaxX(self.frame);
     float maxY = NSMaxY(self.frame);
 
-    for (VJXBoardEntity *e in document.entities) {
+    for (VJXBoardEntity *e in entities) {
         [self addSubview:e];
 
         if (NSMaxX(e.frame) > maxX)
@@ -68,8 +85,11 @@
 
 - (void)dealloc
 {
-    [document release];
-    [selectedEntities release];
+    NSLog(@"board dealloc");
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [selected release];
+    [entities release];
+    [currentSelection release];
     [super dealloc];
 }
 
@@ -84,13 +104,13 @@
 - (void)addToBoard:(VJXBoardEntity *)theEntity
 {
     [self addSubview:theEntity];
-    [document.entities addObject:theEntity];
+    [entities addObject:theEntity];
 
     // Put focus on the created entity.
-    [self setSelected:theEntity multiple:NO];
+    [self toggleSelected:theEntity multiple:NO];
 }
 
-- (void)setSelected:(id)theEntity multiple:(BOOL)isMultiple
+- (void)toggleSelected:(id)theEntity multiple:(BOOL)isMultiple
 {
     if ([theEntity isKindOfClass:[VJXBoardEntity class]] ||
         [theEntity isKindOfClass:[VJXBoardEntityConnector class]]) {
@@ -101,32 +121,43 @@
 
         // Unselect all entities, and toggle only the one we selected.
         if (!isMultiple) {
-            [document.entities makeObjectsPerformSelector:@selector(unselect)];
-            [selectedEntities removeAllObjects];
+            [entities makeObjectsPerformSelector:@selector(unselect)];
+            [selected removeAllObjects];
+        }
+
+        
+        // Move the selected entity to the end of the subviews array, making it move
+        // to the top of the view hierarchy.
+        if ([entities count] >= 1) {
+            NSMutableArray *subviews = [[self subviews] mutableCopy];
+            [subviews removeObjectAtIndex:[subviews indexOfObject:theEntity]];
+            [subviews addObject:theEntity];
+            [self setSubviews:subviews];
+            [subviews release];
         }
 
         [theEntity toggleSelected];
         
-        // Move the selected entity to the end of the subviews array, making it move
-        // to the top of the view hierarchy.
-        if ([document.entities count] >= 1) {
-            NSMutableArray *subviews = [[self subviews] mutableCopy];
-            [subviews removeObjectAtIndex:[subviews indexOfObject:theEntity]];
-            [subviews addObject:theEntity];
-            [selectedEntities addObject:theEntity];
-            [self setSubviews:subviews];
-            [subviews release];
+        // Add or remove the entity based on its current selected status.
+        if ([theEntity isKindOfClass:[VJXBoardEntity class]]) {
+            VJXBoardEntity *e = theEntity;
+            if (e.selected) {
+                [selected addObject:e];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXBoardEntityWasSelected" object:theEntity];
+            }
+            else
+                [selected removeObject:e];
         }
     }
 }
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
-    lastDragLocation = [theEvent locationInWindow];
+    lastDragLocation = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 
     // Unselect all the selected entities if the user click on the board.
-    [document.entities makeObjectsPerformSelector:@selector(unselect)]; 
-    [selectedEntities removeAllObjects];
+    [entities makeObjectsPerformSelector:@selector(unselect)]; 
+    [selected removeAllObjects];
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent
@@ -140,6 +171,8 @@
         [self addSubview:currentSelection positioned:NSWindowAbove relativeTo:nil];
     }
     
+    thisLocation = [self convertPoint:thisLocation fromView:nil];
+    
     // Calculate the frame based on the window's coordinates and set the rect
     // as the current selection frame.
     [currentSelection setFrame:NSMakeRect(MIN(thisLocation.x, lastDragLocation.x),
@@ -147,7 +180,7 @@
                                           abs(thisLocation.x - lastDragLocation.x), 
                                           abs(thisLocation.y - lastDragLocation.y))];
     
-    for (VJXBoardEntity *entity in document.entities) {
+    for (VJXBoardEntity *entity in entities) {
         // Unselect the entity. We'll have all the entities unselected as net
         // result of this operation, if the entity isn't inside the current 
         // selection rect.
@@ -161,63 +194,30 @@
     self.currentSelection = nil;
 }
 
-static VJXBoard *sharedBoard = nil;
-static VJXEntityInspectorPanel *inspectorPanel = nil;
-
-+ (VJXBoard *)sharedBoard
-{
-    // XXX - here a create-on-first-use idiom should be adopted.
-    //       If this class is going to be used as singleton,
-    //       new instances shold be forbiddend and constructors/initializers
-    //       should be private.
-    //       Actually the instance is instantiated by the nib file, so we could 
-    //       just have the sharedBoard pointer set through an Outlet
-    return sharedBoard;
-}
-
-+ (VJXEntityInspectorPanel *)inspectorPanel
-{
-    return inspectorPanel;
-}
-
-// XXX - such a message shouldn't exist at all
-//       the shared 'singleton' instance should be created
-//       transparently the first time it is requested
-+ (void)setSharedBoard:(VJXBoard *)aBoard
-{
-    sharedBoard = aBoard;
-}
-
-// XXX - such a message shouldn't exist at all
-//       the shared 'singleton' instance should be created
-//       transparently the first time it is requested
-+ (void)setInspectorPanel:(VJXEntityInspectorPanel *)aPanel
-{
-    inspectorPanel = aPanel;
-}
-
-+ (void)shiftSelectedToLocation:(NSPoint)aLocation
-{
-    [[self sharedBoard] shiftSelectedToLocation:aLocation];
-}
-
 - (void)shiftSelectedToLocation:(NSPoint)aLocation;
 {
-    for (VJXBoardEntity *e in selectedEntities) {
+    for (VJXBoardEntity *e in selected) {
         [e shiftOffsetToLocation:aLocation];
     }
 }
 
-- (BOOL)hasMultipleEntitiesSelected
+- (BOOL)isMultipleSelection
 {
-    return [selectedEntities count] > 1;
+    return [selected count] > 1;
 }
 
-- (void)removeSelectedEntities
+- (IBAction)removeSelected:(id)sender
 {
-    for (NSUInteger i = 0; i < [document.entities count]; i++) {
-        VJXBoardEntity *e = [document.entities objectAtIndex:i];
+    for (NSUInteger i = 0; i < [entities count]; i++) {
+        VJXBoardEntity *e = [entities objectAtIndex:i];
         if (e.selected) {
+
+            // Remove the entity from our internal entities array.
+            [entities removeObject:e];
+
+            // And remove also from our selectedEntities array...
+            [selected removeObject:e];
+
             // Remove the entity from the superview.
             //
             // It seems removeFromSuperview autoreleases the view, instead of
@@ -225,15 +225,26 @@ static VJXEntityInspectorPanel *inspectorPanel = nil;
             // updated until the end of the run loop.
             [e removeFromSuperview];
 
-            // Remove the entity from our entities array, since we won't need
-            // it anymore.
-            [document.entities removeObjectAtIndex:i];
+            // Notify observers we removed the entity.
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasRemoved" object:e.entity];
             
-            // And remove also from our selectedEntities array...
-            [selectedEntities removeObject:e];
+            // Decrease counter because we removed the element.
             i--;
         }
-    }
+    }    
+}
+
+#pragma mark -
+#pragma mark Notifications
+
+- (void)anEntityWasCreated:(NSNotification *)aNotification
+{
+    VJXEntity *anEntity = [aNotification object];
+    VJXBoardEntity *view = [[VJXBoardEntity alloc] initWithEntity:anEntity board:self];
+    [self addToBoard:view];
+    if ([anEntity respondsToSelector:@selector(start)])
+        [anEntity performSelector:@selector(start)];
+    [view release];    
 }
 
 @end

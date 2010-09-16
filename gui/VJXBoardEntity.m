@@ -24,17 +24,25 @@
 #import "VJXBoardEntity.h"
 #import "VJXBoardEntityPin.h"
 #import "VJXBoardEntityOutlet.h"
-#import "VJXBoardDelegate.h"
 #import "VJXEntityInspector.h";
 
 @implementation VJXBoardEntity
 
-@synthesize entity, label, selected, outlets;
+@synthesize entity;
+@synthesize label;
+@synthesize selected;
+@synthesize outlets;
+@synthesize board;
 
-- (id)initWithEntity:(VJXEntity *)theEntity
+- (id)initWithEntity:(VJXEntity *)anEntity
+{
+    return [self initWithEntity:anEntity board:nil];
+}
+
+- (id)initWithEntity:(VJXEntity *)anEntity board:(VJXBoard *)aBoard
 {
 
-    NSUInteger maxNrPins = MAX([theEntity.inputPins count], [theEntity.outputPins count]);
+    NSUInteger maxNrPins = MAX([anEntity.inputPins count], [anEntity.outputPins count]);
 
     CGFloat pinSide = ENTITY_PIN_HEIGHT;
     CGFloat height = pinSide * maxNrPins * ENTITY_PIN_MINSPACING;
@@ -42,7 +50,7 @@
     
     NSTextField *labelView = [[[NSTextField alloc] init] autorelease];
     [labelView setTextColor:[NSColor whiteColor]];
-    [labelView setStringValue:[theEntity description]];
+    [labelView setStringValue:[anEntity description]];
     [labelView setBordered:NO];
     [labelView setEditable:YES];
     [labelView setFocusRingType:NSFocusRingTypeNone];
@@ -63,8 +71,9 @@
         self.label = labelView;
         [self addSubview:self.label];
 
-        self.entity = theEntity;
-        self.entity.name = [theEntity description];
+        self.board = aBoard;
+        self.entity = anEntity;
+        self.entity.name = [anEntity description];
         self.selected = NO;
         self.outlets = [NSMutableArray array];
         
@@ -72,26 +81,27 @@
         bounds.size.height -= (labelHeight + ENTITY_LABEL_PADDING);
         bounds.origin.x += ENTITY_PIN_LEFT_PADDING;
         
-        NSUInteger nrInputPins = [theEntity.inputPins count];
-        NSUInteger nrOutputPins = [theEntity.outputPins count];
+        NSUInteger nrInputPins = [anEntity.inputPins count];
+        NSUInteger nrOutputPins = [anEntity.outputPins count];
         
         int i = 0;
-        NSArray *pins = [[theEntity.inputPins allKeys]
+        NSArray *pins = [[anEntity.inputPins allKeys]
                          sortedArrayUsingComparator:^(id obj1, id obj2)
                          {
                              return [obj1 compare:obj2];
                          }];
         for (NSString *pinName in pins) {
             NSPoint origin = NSMakePoint(bounds.origin.x, (((bounds.size.height / nrInputPins) * i++) - (bounds.origin.y - (3.0))));
-            VJXBoardEntityOutlet *outlet = [[VJXBoardEntityOutlet alloc] initWithPin:[theEntity.inputPins objectForKey:pinName]
+            VJXBoardEntityOutlet *outlet = [[VJXBoardEntityOutlet alloc] initWithPin:[anEntity.inputPins objectForKey:pinName]
                                                                             andPoint:origin
-                                                                            isOutput:NO];
+                                                                            isOutput:NO
+                                                                              entity:self];
             [self addSubview:outlet];
             [self.outlets addObject:outlet];
             [outlet release];
         }
         
-        pins = [[theEntity.outputPins allKeys]
+        pins = [[anEntity.outputPins allKeys]
                 sortedArrayUsingComparator:^(id obj1, id obj2)
                 {
                     return [obj1 compare:obj2];
@@ -100,9 +110,10 @@
         for (NSString *pinName in pins) {
             NSPoint origin = NSMakePoint(bounds.size.width - ENTITY_OUTLET_WIDTH ,
                                          (((bounds.size.height / nrOutputPins) * i++) - (bounds.origin.y - (3.0))));
-            VJXBoardEntityOutlet *outlet = [[VJXBoardEntityOutlet alloc] initWithPin:[theEntity.outputPins objectForKey:pinName]
+            VJXBoardEntityOutlet *outlet = [[VJXBoardEntityOutlet alloc] initWithPin:[anEntity.outputPins objectForKey:pinName]
                                                                             andPoint:origin
-                                                                            isOutput:YES];
+                                                                            isOutput:YES
+                                                                              entity:self];
             [self addSubview:outlet];
             [self.outlets addObject:outlet];
             [outlet release];
@@ -115,14 +126,6 @@
 {
     if ([entity respondsToSelector:@selector(stop)])
         [entity performSelector:@selector(stop)];
-    // we need to ensure telling the inspector 
-    // that we are going to be destroyed, since 
-    // it could still referencing us
-    // TODO - we could check this only if we are selected
-
-    // The inspector will be destroyed when the document window is closed, so
-    // it must be safe to comment the next line for now.
-    // [[VJXBoard inspectorPanel] unsetEntity:self];
     [entity release];
     [label release];
     [outlets release];
@@ -187,11 +190,11 @@
     // one clicked.
     BOOL isMultiple = [theEvent modifierFlags] & NSCommandKeyMask ? YES : NO;
     if (isMultiple) {
-        [[VJXBoard sharedBoard] setSelected:self multiple:YES];        
+        [board toggleSelected:self multiple:YES];        
     }
     else {
-        if (![[VJXBoard sharedBoard] hasMultipleEntitiesSelected]) {
-            [[VJXBoard sharedBoard] setSelected:self multiple:NO];
+        if (![board isMultipleSelection]) {
+            [board toggleSelected:self multiple:NO];
         }
     }
 }
@@ -202,11 +205,13 @@
     // location, then ask the board to shift all the selected elements to the
     // new point.
     NSPoint newDragLocation = [theEvent locationInWindow];
-    NSPoint newLocation = NSMakePoint((-lastDragLocation.x + newDragLocation.x), (-lastDragLocation.y + newDragLocation.y));
-    if (newDragLocation.y > 0 && newDragLocation.y <= [[VJXBoard sharedBoard] frame].size.height &&
-        newDragLocation.x > 0 && newDragLocation.x <= [[VJXBoard sharedBoard] frame].size.width)
-    {
-        [[VJXBoard sharedBoard] shiftSelectedToLocation:newLocation];
+    NSPoint newLocationOffset = NSMakePoint((-lastDragLocation.x + newDragLocation.x), (-lastDragLocation.y + newDragLocation.y));
+    if (newDragLocation.y > 0 && newDragLocation.x > 0) {
+        
+        // We need to invert the y axis ourselves.
+        newLocationOffset.y = -newLocationOffset.y; 
+        
+        [board shiftSelectedToLocation:newLocationOffset];
         lastDragLocation = newDragLocation;
     }
 }
@@ -219,11 +224,6 @@
 
 - (void)setSelected:(BOOL)isSelected
 {
-    // reopen the inspector panel only if this is a new selection
-    if (isSelected && !selected) {
-        [[VJXBoard inspectorPanel] setEntity:self];
-    }
-
     // Whenever the selected status is changed, we need to redraw the entity.
     if (selected != isSelected)
         [self setNeedsDisplay:YES];
@@ -254,6 +254,8 @@
 - (void)shiftOffsetToLocation:(NSPoint)aLocation
 {
     NSRect thisFrame = NSOffsetRect([self frame], aLocation.x, aLocation.y);
+    if (thisFrame.origin.x < 0) thisFrame.origin.x = 0.0;
+    if (thisFrame.origin.y < 0) thisFrame.origin.y = 0.0;
     [self setFrame:thisFrame];
     [outlets makeObjectsPerformSelector:@selector(updateAllConnectorsFrames)];
 }
@@ -262,24 +264,6 @@
 {
     entity.name = [fieldEditor string];
     return YES;
-}
-
-#pragma mark -
-#pragma mark NSCoding
-
-- (void)encodeWithCoder:(NSCoder *)aCoder
-{
-    [super encodeWithCoder:aCoder];
-    [aCoder encodeObject:entity forKey:@"VJXEntity"];
-    [aCoder encodeObject:NSStringFromPoint(self.frame.origin) forKey:@"VJXBoardEntityFrameOrigin"];
-}
-
-- (id)initWithCoder:(NSCoder *)aDecoder
-{
-    self = [self initWithEntity:[aDecoder decodeObjectForKey:@"VJXEntity"]];
-    NSPoint origin = NSPointFromString([aDecoder decodeObjectForKey:@"VJXBoardEntityFrameOrigin"]);
-    [self setFrameOrigin:origin];
-    return self;
 }
 
 @end

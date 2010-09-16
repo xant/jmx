@@ -175,19 +175,4 @@
     return [NSString stringWithFormat:@"%@", self.moviePath];
 }
 
-#pragma mark -
-#pragma mark NSCoding
-
-- (void)encodeWithCoder:(NSCoder *)aCoder
-{
-    [aCoder encodeObject:moviePath forKey:@"VJXQtVideoLayerMoviePath"];
-}
-
-- (id)initWithCoder:(NSCoder *)aDecoder
-{
-    self = [self init];
-    [self open:[aDecoder decodeObjectForKey:@"VJXQtVideoLayerMoviePath"]];
-    return self;
-}
-
 @end

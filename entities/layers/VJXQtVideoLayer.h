@@ -25,7 +25,7 @@
 #import <QTKit/QTKit.h>
 #import "VJXLayer.h"
 
-@interface VJXQtVideoLayer : VJXLayer <NSCoding> {
+@interface VJXQtVideoLayer : VJXLayer {
 @private
     QTMovie *movie;
     NSString *moviePath;

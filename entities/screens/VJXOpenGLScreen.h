@@ -26,7 +26,7 @@
 
 @class VJXOpenGLView;
 
-@interface VJXOpenGLScreen : VJXVideoOutput <NSCoding> {
+@interface VJXOpenGLScreen : VJXVideoOutput {
 
 @private
     NSWindow *window;

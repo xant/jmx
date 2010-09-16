@@ -27,18 +27,26 @@
 
 @implementation VJXBoardEntityPin
 
-@synthesize selected, pin, connectors;
+@synthesize selected;
+@synthesize pin;
+@synthesize connectors;
 
-- (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint
+- (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint outlet:(VJXBoardEntityOutlet *)anOutlet
 {
     NSRect frame = NSMakeRect(thePoint.x, thePoint.y, PIN_OUTLET_WIDTH, PIN_OUTLET_HEIGHT);
     
     if ((self = [super initWithFrame:frame]) != nil) {
+        outlet = anOutlet;
         selected = NO;
         connectors = [[NSMutableArray alloc] init];
         pin = [thePin retain];        
     }
     return self;
+}
+
+- (BOOL)isFlipped
+{
+    return YES;
 }
 
 - (void)dealloc
@@ -97,15 +105,18 @@
 
 - (void)mouseDragged:(NSEvent *)theEvent
 {
+    VJXBoard *board = outlet.entity.board;
+    
     if (!tempConnector) {
         tempConnector = [[VJXBoardEntityConnector alloc] init];
-        [tempConnector setOrigin:self];
-        [[VJXBoard sharedBoard] addSubview:tempConnector positioned:NSWindowBelow relativeTo:nil];
+        tempConnector.origin = self;
+        tempConnector.board = board;        
+        [board addSubview:tempConnector positioned:NSWindowAbove relativeTo:self];
     }
 
-    NSPoint locationInWindow = [theEvent locationInWindow];
-
-    NSPoint thisLocation = [self convertPoint:[self pointAtCenter] toView:[VJXBoard sharedBoard]];
+    NSPoint locationInWindow = [board convertPoint:[theEvent locationInWindow] fromView:nil];
+    
+    NSPoint thisLocation = [self convertPoint:[self pointAtCenter] toView:board];
 
     float minX = MIN(locationInWindow.x, thisLocation.x) - 10.0;
     float minY = MIN(locationInWindow.y, thisLocation.y) - 10.0;
@@ -134,15 +145,16 @@
 
     NSRect frame = NSMakeRect(minX, minY, width, height);
     [tempConnector setFrame:frame];
-
 }
 
 - (void)mouseUp:(NSEvent *)theEvent
 {
-    NSPoint locationInWindow = [theEvent locationInWindow];
+    VJXBoard *board = outlet.entity.board;
+
+    NSPoint locationInWindow = [board convertPoint:[theEvent locationInWindow] fromView:nil];
     locationInWindow.x -= PIN_OUTLET_PADDING;
     locationInWindow.y -= PIN_OUTLET_PADDING;
-    NSView *aView = [[VJXBoard sharedBoard] hitTest:locationInWindow];
+    NSView *aView = [board hitTest:locationInWindow];
     
     BOOL isConnected = NO;
     

@@ -25,12 +25,15 @@
 #import "VJXBoardEntityConnector.h"
 #import "VJXPin.h"
 #import "VJXEntityInspector.h"
+#import "VJXBoardEntityOutlet.h"
+
 
 #define PIN_OUTLET_PADDING 5.0
 #define PIN_OUTLET_WIDTH 20.0
 #define PIN_OUTLET_HEIGHT 20.0
 
 @class VJXBoardEntityConnector;
+@class VJXBoardEntityOutlet;
 
 @interface VJXBoardEntityPin : NSView
 {
@@ -41,13 +44,14 @@
 @private
     VJXBoardEntityConnector *tempConnector;
     VJXEntityInspector *inspector;
+    VJXBoardEntityOutlet *outlet;
 }
 
 @property (nonatomic,assign) BOOL selected;
 @property (nonatomic,readonly) VJXPin *pin;
 @property (nonatomic,readonly) NSArray *connectors;
 
-- (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint;
+- (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint outlet:(VJXBoardEntityOutlet *)anOutlet;
 - (NSPoint)pointAtCenter;
 - (void)updateAllConnectorsFrames;
 - (BOOL)multiple;

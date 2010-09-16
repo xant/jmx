@@ -20,6 +20,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "VJXBoardEntityPin.h"
+#import "VJXBoardEntity.h"
 
 #define ENTITY_OUTLET_WIDTH 120.0
 #define ENTITY_OUTLET_HEIGHT 20.0
@@ -28,18 +29,22 @@
 #define ENTITY_OUTLET_LABEL_PADDING_FOR_OUTPUT (PIN_OUTLET_WIDTH + ENTITY_OUTLET_PIN_PADDING)
 #define ENTITY_OUTLET_LABEL_PADDING_FOR_INPUT (PIN_OUTLET_WIDTH - ENTITY_OUTLET_PIN_PADDING)
 
+@class VJXBoardEntityPin;
+
 @interface VJXBoardEntityOutlet : NSView
 {
     VJXBoardEntityPin *pin;
+    VJXBoardEntity *entity;
     NSTextField *pinName;
     BOOL output;
 }
 
-@property (nonatomic,retain) VJXBoardEntityPin *pin;
-@property (nonatomic,retain) NSTextField *pinName;
-@property (nonatomic,assign) BOOL output;
+@property (nonatomic, assign) VJXBoardEntity *entity;
+@property (nonatomic, retain) VJXBoardEntityPin *pin;
+@property (nonatomic, retain) NSTextField *pinName;
+@property (nonatomic, assign) BOOL output;
 
-- (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint isOutput:(BOOL)isOutput;
+- (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint isOutput:(BOOL)isOutput entity:(VJXBoardEntity *)anEntity;
 - (void)updateAllConnectorsFrames;
 
 @end

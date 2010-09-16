@@ -19,13 +19,39 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "VJXBoardDelegate.h"
+#import "VJXEntity.h"
+#import "VJXBoard.h"
 
+@class VJXBoard;
 
 @interface VJXDocument : NSDocument {
+    VJXBoard *board;
     NSMutableArray *entities;
 }
 
+@property (nonatomic, retain) IBOutlet VJXBoard *board;
 @property (nonatomic, retain) NSMutableArray *entities;
+
+#pragma mark -
+#pragma mark Interface Builder actions
+
+- (IBAction)addQTVideoLayer:(id)sender;
+- (IBAction)addVideoMixer:(id)sender;
+- (IBAction)addImageLayer:(id)sender;
+- (IBAction)addOpenGLScreen:(id)sender;
+- (IBAction)addQtCaptureLayer:(id)sender;
+
+- (IBAction)removeSelected:(id)sender;
+
+#pragma mark -
+#pragma mark Open file
+
+- (void)openFileWithTypes:(NSArray *)types forEntity:(VJXEntity *)entity;
+- (void)openPanelDidEnd:(NSOpenPanel *)panel returnCode:(int)returnCode entity:(VJXEntity *)entity;
+
+#pragma mark -
+#pragma mark Notifications
+
+- (void)anEntityWasRemoved:(NSNotification *)aNotification;
 
 @end

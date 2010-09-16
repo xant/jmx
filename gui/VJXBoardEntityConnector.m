@@ -26,7 +26,11 @@
 
 @implementation VJXBoardEntityConnector
 
-@synthesize selected, direction, origin, destination;
+@synthesize selected;
+@synthesize direction;
+@synthesize origin;
+@synthesize destination;
+@synthesize board;
 
 #define CONNECTOR_LINE_WIDTH 2.0
 #define ORIGIN_OFFSET 10.0
@@ -46,6 +50,11 @@
     [self setOrigin:nil];
     [self setDestination:nil];
     [super dealloc];
+}
+
+- (BOOL)isFlipped
+{
+    return YES;
 }
 
 - (void)drawRect:(NSRect)dirtyRect
@@ -103,8 +112,6 @@
 
 - (void)recalculateFrame
 {
-    VJXBoard *board = [VJXBoard sharedBoard];
-    
     NSPoint originLocation = [origin convertPoint:[origin pointAtCenter] toView:board];
     NSPoint destinationLocation = [destination convertPoint:[destination pointAtCenter] toView:board];
     
@@ -135,7 +142,7 @@
 - (void)mouseDown:(NSEvent *)theEvent
 {
     BOOL isMultiple = [theEvent modifierFlags] & NSCommandKeyMask ? YES : NO;
-    [[VJXBoard sharedBoard] setSelected:self multiple:isMultiple];
+    [board toggleSelected:self multiple:isMultiple];
 }
 
 - (void)toggleSelected

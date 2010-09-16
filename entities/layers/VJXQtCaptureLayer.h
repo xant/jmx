@@ -29,7 +29,7 @@
 #define __VJXQTCAPTURELAYER_H__
 @class VJXQtGrabber;
 
-@interface VJXQtCaptureLayer : VJXLayer <NSCoding>
+@interface VJXQtCaptureLayer : VJXLayer
 {
 @private
 	VJXQtGrabber *grabber;

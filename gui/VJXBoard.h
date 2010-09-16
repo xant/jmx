@@ -26,6 +26,7 @@
 #import "VJXBoardEntityConnector.h"
 #import "VJXEntityInspectorPanel.h"
 #import "VJXBoardSelection.h"
+
 #import "VJXDocument.h"
 
 @class VJXDocument;
@@ -33,26 +34,24 @@
 @interface VJXBoard : NSView {
     NSPoint lastDragLocation;
     VJXBoardSelection *currentSelection;
-    NSMutableArray *selectedEntities;
+    NSMutableArray *selected;
     VJXDocument *document;
+    
+    NSMutableArray *entities;
+    VJXEntityInspectorPanel *inspectorPanel;
 }
 
 @property (nonatomic, retain) VJXBoardSelection *currentSelection;
-@property (nonatomic, retain) IBOutlet VJXDocument *document;
-@property (nonatomic, retain) NSMutableArray *selectedEntities;
+@property (nonatomic, assign) IBOutlet VJXDocument *document;
+@property (nonatomic, retain) NSMutableArray *selected;
+@property (nonatomic, retain) NSMutableArray *entities;
+@property (nonatomic, assign) IBOutlet VJXEntityInspectorPanel *inspectorPanel;
 
-+ (VJXBoard *)sharedBoard;
-+ (VJXEntityInspectorPanel *)inspectorPanel;
-+ (void)setSharedBoard:(VJXBoard *)aBoard;
-+ (void)setInspectorPanel:(NSPanel *)inspectorPanel;
-- (void)setSelected:(id)theEntity multiple:(BOOL)isMultiple;
-
-+ (void)shiftSelectedToLocation:(NSPoint)aLocation;
+- (void)toggleSelected:(id)theEntity multiple:(BOOL)isMultiple;
 - (void)shiftSelectedToLocation:(NSPoint)aLocation;
-
-- (BOOL)hasMultipleEntitiesSelected;
-
-- (void)removeSelectedEntities;
+- (BOOL)isMultipleSelection;
+- (IBAction)removeSelected:(id)sender;
 - (void)addToBoard:(VJXBoardEntity *)theEntity;
+- (void)anEntityWasCreated:(NSNotification *)aNotification;
 
 @end

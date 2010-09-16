@@ -24,7 +24,7 @@
 #import <Cocoa/Cocoa.h>
 #import "VJXLayer.h"
 
-@interface VJXImageLayer : VJXLayer <NSCoding> {
+@interface VJXImageLayer : VJXLayer {
 @private
     CIImage *image;
     NSString *imagePath;

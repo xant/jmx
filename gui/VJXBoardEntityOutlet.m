@@ -22,9 +22,12 @@
 
 @implementation VJXBoardEntityOutlet
 
-@synthesize pin, pinName, output;
+@synthesize pin;
+@synthesize pinName;
+@synthesize output;
+@synthesize entity;
 
-- (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint isOutput:(BOOL)isOutput
+- (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint isOutput:(BOOL)isOutput entity:(VJXBoardEntity *)anEntity;
 {
     NSRect frame;
     frame = NSMakeRect(thePoint.x, thePoint.y, ENTITY_OUTLET_WIDTH, ENTITY_OUTLET_HEIGHT);
@@ -42,7 +45,8 @@
             labelRect = NSMakeRect(ENTITY_OUTLET_LABEL_PADDING_FOR_INPUT, 0.0, ENTITY_OUTLET_LABEL_WIDTH, frame.size.height);
         }
 
-        self.pin = [[[VJXBoardEntityPin alloc] initWithPin:thePin andPoint:pinPoint] autorelease];
+        self.entity = anEntity;
+        self.pin = [[[VJXBoardEntityPin alloc] initWithPin:thePin andPoint:pinPoint outlet:self] autorelease];
         self.output = isOutput;
 
         self.pinName = [[[NSTextField alloc] initWithFrame:labelRect] autorelease];

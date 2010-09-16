@@ -57,6 +57,8 @@
     if( self = [super init] ) {
         width = 352;
         height = 288;
+        session = nil;
+        input = nil;
     }
     return self;
 }
@@ -150,10 +152,11 @@ error:
         if (input) {
             [session removeInput:input];
             [input release];
-            input = NULL;
+            input = nil;
         }
         [session removeOutput:self];
         [session release];
+        session = nil;
     }
     /*
      if (output) {
@@ -165,7 +168,7 @@ error:
         if ([device isOpen])
             [device close];
         [device release];
-        device = NULL;
+        device = nil;
     }
     
 }

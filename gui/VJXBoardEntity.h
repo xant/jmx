@@ -33,7 +33,7 @@
 
 @class VJXBoard;
 
-@interface VJXBoardEntity : NSView <NSTextFieldDelegate>
+@interface VJXBoardEntity : NSView <NSTextFieldDelegate,NSCopying>
 {
     VJXEntity *entity;
     NSPoint lastDragLocation;

@@ -84,7 +84,6 @@
 
 - (void)dealloc
 {
-    NSLog(@"board dealloc");
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [selected release];
     [entities release];
@@ -240,6 +239,9 @@
 {
     VJXEntity *anEntity = [aNotification object];
     VJXBoardEntity *view = [[VJXBoardEntity alloc] initWithEntity:anEntity board:self];
+    NSString *origin = [[aNotification userInfo] objectForKey:@"origin"];
+    if (origin)
+        [view setFrameOrigin:NSPointFromString(origin)];
     [self addToBoard:view];
     if ([anEntity respondsToSelector:@selector(start)])
         [anEntity performSelector:@selector(start)];

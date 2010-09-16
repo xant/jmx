@@ -30,14 +30,19 @@
 
 @implementation VJXDocument
 
-@synthesize entities;
 @synthesize board;
+@synthesize entities;
+@synthesize entitiesFromFile;
+@synthesize entitiesPosition;
 
 - (id)init
 {
     if ((self = [super init]) != nil) {
         entities = [[NSMutableArray alloc] init];
+        entitiesFromFile = [[NSMutableArray alloc] init];
+        entitiesPosition = [[NSMutableDictionary alloc] init];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasRemoved:) name:@"VJXEntityWasRemoved" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasMoved:) name:@"VJXEntityWasMoved" object:nil];
     }
     return self;
 }
@@ -47,6 +52,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [board release];
     [entities release];
+    [entitiesPosition release];
     [super dealloc];
 }
 
@@ -60,28 +66,62 @@
 
 - (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError
 {
-    NSMutableData *data;
-    NSKeyedArchiver *archiver;
+    NSXMLElement *root = (NSXMLElement *)[NSXMLNode elementWithName:@"entities"];
+
+    for (VJXEntity *entity in entities) {
+        NSXMLElement *e = [NSXMLElement elementWithName:[entity className]];
+        NSString *originString = [entitiesPosition objectForKey:entity];
+        NSXMLElement *origin = [NSXMLElement elementWithName:@"origin"];
+        [origin setStringValue:originString];
+        [e addChild:origin];
+        [root addChild:e];
+    }
     
-    data = [NSMutableData data];
-    archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
+    NSXMLDocument *xmlDoc = [[NSXMLDocument alloc] initWithRootElement:root];
+    [xmlDoc setVersion:@"1.0"];
+    [xmlDoc setCharacterEncoding:@"UTF-8"];
     
-    [archiver encodeObject:entities forKey:@"Entities"];
-    [archiver finishEncoding];
-    [archiver release];
+    NSData *data = [xmlDoc XMLDataWithOptions:NSXMLDocumentXMLKind];
+
+    [xmlDoc release];
     
     return data;
 }
 
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError
 {
-    NSKeyedUnarchiver *unarchiver;
+    NSError *error = nil;
+    NSXMLDocument *xmlDoc = [[NSXMLDocument alloc] initWithData:data options:NSXMLDocumentTidyXML error:&error];
+
+    NSXMLNode *aNode = [[xmlDoc rootElement] nextNode];
+
+    if (aNode) {
+        while (1) {
+            NSString *className = [aNode name];
+            Class aClass = NSClassFromString(className);
+            VJXEntity *entity = [[aClass alloc] init];
+            NSXMLNode *origin = [aNode childAtIndex:0];
+            [entitiesPosition setObject:[origin stringValue] forKey:entity];
+            [entities addObject:entity];
+            [entity release];
+            if ((aNode = [aNode nextSibling]) == nil)
+                break;
+        }
+    }
+
+    [xmlDoc release];
     
-    unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
-    entities = [[unarchiver decodeObjectForKey:@"Entities"] retain];
-    [unarchiver finishDecoding];
-    [unarchiver release];
     return YES;
+}
+
+- (void)windowControllerDidLoadNib:(NSWindowController *)windowController
+{
+    NSMutableDictionary *userInfo = nil;
+    for (id e in entities) {
+        userInfo = [NSMutableDictionary dictionary];
+        [userInfo setObject:[entitiesPosition objectForKey:e] forKey:@"origin"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:e userInfo:userInfo];
+    }
 }
 
 #pragma mark -
@@ -175,6 +215,13 @@
 {
     VJXEntity *entity = [aNotification object];
     [entities removeObject:entity];
+}
+
+- (void)anEntityWasMoved:(NSNotification *)aNotification
+{
+    VJXBoardEntity *entity = [aNotification object];
+    NSString *origin = [[aNotification userInfo] objectForKey:@"origin"];
+    [entitiesPosition setObject:origin forKey:entity.entity];
 }
 
 @end

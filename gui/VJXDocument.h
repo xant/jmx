@@ -27,10 +27,14 @@
 @interface VJXDocument : NSDocument {
     VJXBoard *board;
     NSMutableArray *entities;
+    NSMutableArray *entitiesFromFile;
+    NSMutableDictionary *entitiesPosition;
 }
 
 @property (nonatomic, retain) IBOutlet VJXBoard *board;
 @property (nonatomic, retain) NSMutableArray *entities;
+@property (nonatomic, retain) NSMutableArray *entitiesFromFile;
+@property (nonatomic, retain) NSMutableDictionary *entitiesPosition;
 
 #pragma mark -
 #pragma mark Interface Builder actions

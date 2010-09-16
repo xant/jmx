@@ -9,8 +9,11 @@
 #import <Cocoa/Cocoa.h>
 #import "VJXEntity.h"
 
-@interface VJXAudioOutput : VJXEntity {
+@class VJXAudioBuffer;
 
+@interface VJXAudioOutput : VJXEntity {
+    VJXAudioBuffer *currentSample;
 }
+
 
 @end

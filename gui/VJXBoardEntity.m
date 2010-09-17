@@ -221,6 +221,7 @@
 {
     // Cleanup last drag location.
     lastDragLocation = NSZeroPoint;
+    [board notifyChangesToDocument];
 }
 
 - (void)setSelected:(BOOL)isSelected
@@ -257,7 +258,6 @@
     NSRect thisFrame = NSOffsetRect([self frame], aLocation.x, aLocation.y);
     if (thisFrame.origin.x < 0) thisFrame.origin.x = 0.0;
     if (thisFrame.origin.y < 0) thisFrame.origin.y = 0.0;
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasMoved" object:self userInfo:[NSDictionary dictionaryWithObject:NSStringFromPoint(thisFrame.origin) forKey:@"origin"]];
     [self setFrame:thisFrame];
     [outlets makeObjectsPerformSelector:@selector(updateAllConnectorsFrames)];
 }

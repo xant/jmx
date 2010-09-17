@@ -232,6 +232,15 @@
     }    
 }
 
+- (void)notifyChangesToDocument
+{
+    for (VJXBoardEntity *e in entities) {
+        NSPoint origin = [e frame].origin;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasMoved" object:e userInfo:[NSDictionary dictionaryWithObject:NSStringFromPoint(origin) forKey:@"origin"]];
+    }
+
+}
+
 #pragma mark -
 #pragma mark Notifications
 

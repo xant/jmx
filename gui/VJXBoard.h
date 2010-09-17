@@ -52,6 +52,7 @@
 - (BOOL)isMultipleSelection;
 - (IBAction)removeSelected:(id)sender;
 - (void)addToBoard:(VJXBoardEntity *)theEntity;
+- (void)notifyChangesToDocument;
 - (void)anEntityWasCreated:(NSNotification *)aNotification;
 
 @end

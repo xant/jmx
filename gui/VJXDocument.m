@@ -215,6 +215,7 @@
 {
     VJXEntity *entity = [aNotification object];
     [entities removeObject:entity];
+    [entitiesPosition removeObjectForKey:entity];
 }
 
 - (void)anEntityWasMoved:(NSNotification *)aNotification

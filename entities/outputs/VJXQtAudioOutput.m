@@ -8,12 +8,60 @@
 
 #import "VJXQtAudioOutput.h"
 
-@interface VJXAudioReceiver : QTCaptureDeviceInput
+@interface VJXAudioConnection : QTCaptureConnection
 {
+    id owner;
+}
+- (id)initWithOwner:(id)theOwner;
+@property (readonly) id owner;
+@end
+
+@implementation VJXAudioConnection
+@synthesize owner;
+- (id)initWithOwner:(id)theOwner
+{
+    if (self = [super init])
+        owner = theOwner;
+    return self;
+}
+
+- (BOOL)isEnabled
+{
+    return YES;
+}
+
+- (QTFormatDescription *)formatDescription
+{
+    return nil;
+}
+
+- (NSString *)mediaType
+{
+    return QTMediaTypeSound;
+}
+@end
+
+@interface VJXAudioReceiver : QTCaptureInput
+{
+    QTCaptureConnection *connection;
 }
 @end
 
 @implementation VJXAudioReceiver
+
+- (id)init
+{
+    if (self = [super init]) {
+        connection = [[VJXAudioConnection alloc] initWithOwner:self];
+    }
+    return self;
+}
+
+- (NSArray *)connections
+{
+    return [NSArray arrayWithObject:connection];
+}
+
 @end
 
 @implementation VJXQtAudioOutput
@@ -29,25 +77,16 @@
         // Attach the audio output
         [session addOutput:audioOutput error:nil];   
         
-        audioDevices = [[NSArray alloc] initWithArray:[QTCaptureDevice inputDevicesWithMediaType:QTMediaTypeSound]];
-
-        NSArray *myAudioDevices = audioDevices;
-        if ([myAudioDevices count] > 0) {
-            //[self setSelectedAudioDevice:[myAudioDevices objectAtIndex:0]]; // XXX - use the first audiodevice
-        }   
-        
-        // Create a device input for the device and add it to the session
-        audioDeviceInput = [[QTCaptureDeviceInput alloc] initWithDevice:[audioDevices objectAtIndex:0]];
-        
-        if (![session addInput:audioDeviceInput error:&error]) {
+        audioInput = [[VJXAudioReceiver alloc] init];
+        if (![session addInput:audioInput error:&error]) {
             
             // TODO - Error Messages
         }
         // Start the session
         [session startRunning];
-        
-         
     }
     return self;
 }
+
+
 @end

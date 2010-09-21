@@ -13,11 +13,10 @@
 @class VJXAudioReceiver;
 
 @interface VJXQtAudioOutput : VJXAudioOutput {
-    QTCaptureDeviceInput *audioInput;
+    VJXAudioReceiver *audioInput;
     QTCaptureAudioPreviewOutput *audioOutput;
     QTCaptureSession *session;
     NSArray *audioDevices;
-    VJXAudioReceiver *audioDeviceInput;
 }
 
 @end

@@ -28,7 +28,6 @@
 @synthesize window, layersTableView;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-
 }
 
 - (void)printFrequency:(id)data andSender:(id)sender

@@ -218,7 +218,10 @@ error:
 
 - (void)start
 {
-    // we don't want the a thread, 
+    // we don't want a dedicated thread
+    // (QTKit already has its own and it will 
+    //  be calling our delegate method when new
+    //  frames are available) 
     // so it's useless to call our super here
 	//[super start];
 	[grabber startCapture:self];

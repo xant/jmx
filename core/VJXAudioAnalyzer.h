@@ -16,45 +16,40 @@
 #endif
 
 #include <Accelerate/Accelerate.h>
-@class VJXSpectralBufferList;
 @class VJXSpectralChannel;
 
-typedef void (*VJXSpectralFunction)(VJXSpectralBufferList* inSpectra, void* inUserData);
+typedef void (*VJXSpectralFunction)(DSPSplitComplex* spectra, UInt32 numSpectra, void* inUserData);
 
 @interface VJXAudioAnalyzer : NSObject {
 @protected
-	UInt32 mFFTSize;
 	UInt32 mHopSize;
 	UInt32 mNumChannels;
 	UInt32 mMaxFrames;
-    
-	UInt32 mLog2FFTSize;
+    UInt32 mFFTSize;
+    UInt32 mLog2FFTSize;
+
+/*    
 	UInt32 mFFTMask; 
 	UInt32 mFFTByteSize;
 	UInt32 mIOBufSize;
-	UInt32 mIOMask;
-	UInt32 mInputSize;
-	UInt32 mInputPos;
-	UInt32 mOutputPos;
-	UInt32 mInFFTPos;
-	UInt32 mOutFFTPos;
+*/
 	FFTSetup mFFTSetup;
     
-	Float32 mWindow;
+	NSData *mWindow;
 
-	NSMutableArray *mChannels;
+    UInt32 mNumberSpectra;
+	DSPSplitComplex *mDSPSplitComplex;
+    NSMutableArray *channels;
     
-	NSMutableArray *mSpectralBufferList;
-	
 	VJXSpectralFunction mSpectralFunction;
 	void *mUserData;
 }
 
+- (id)initWithSize:(UInt32)fftSize hopSize:(UInt32)hopSize channels:(UInt32)numChannels maxFrames:(UInt32)maxFrames;
 - (void)setSpectralFunction:(VJXSpectralFunction)inFunction clientData:(void*)inUserData;
 //CASpectralProcessor(UInt32 inFFTSize, UInt32 inHopSize, UInt32 inNumChannels, UInt32 inMaxFrames);
-
 - (void)reset;
-- (void)processInput:(AudioBufferList*)input numFrames:(UInt32)numFrames output:(AudioBufferList*)output;
+- (void)process:(UInt32)numFrames input:(AudioBufferList *)input output:(AudioBufferList *)output;
 
 /*
 UInt32 FFTSize() const { return mFFTSize; }

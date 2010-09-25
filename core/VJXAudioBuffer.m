@@ -19,8 +19,12 @@
 - (id)initWithCoreAudioBuffer:(AudioBuffer *)audioBuffer andFormat:(AudioStreamBasicDescription *)audioFormat
 {
     if (self = [super init]) {
-        memcpy(&buffer, audioBuffer, sizeof(AudioBuffer));
-        memcpy(&format, audioFormat, sizeof(AudioStreamBasicDescription));
+        buffer.mDataByteSize = audioBuffer->mDataByteSize;
+        buffer.mNumberChannels = audioBuffer->mNumberChannels;
+        buffer.mData = malloc(audioBuffer->mDataByteSize);
+        memcpy(buffer.mData, audioBuffer->mData, audioBuffer->mDataByteSize);
+        if (audioFormat)
+            memcpy(&format, audioFormat, sizeof(AudioStreamBasicDescription));
         // success
         /*
          *outDataSize = (ALsizei)dataSize;
@@ -33,6 +37,8 @@
 
 - (void)dealloc
 {
+    if (buffer.mData)
+        free(buffer.mData);
     [super dealloc];
 }
 
@@ -69,6 +75,25 @@
 - (NSUInteger)numChannels
 {
     return [self channelsPerFrame];
+}
+
+- (OSStatus)fillComplexBuffer:(AudioBufferList *)ioData countPointer:(UInt32 *)ioNumberFrames waitForData:(Boolean)wait offset:(UInt32)offset
+{
+	unsigned i;
+	//unsigned channelsThisBuffer;
+	unsigned framesToCopy;
+	unsigned framesInBuffer = [self numFrames];
+    //nsigned framesCopied;
+	
+	framesToCopy = MIN ( *ioNumberFrames, framesInBuffer );
+	
+    for (i = 0; i < framesToCopy; i++) {
+        ioData->mBuffers[i].mDataByteSize = framesToCopy * buffer.mNumberChannels * format.mBytesPerFrame;
+        ioData->mBuffers[0].mData = buffer.mData + offset;
+    }
+    ioData->mNumberBuffers = framesToCopy;
+    *ioNumberFrames = framesToCopy;
+    return noErr;
 }
 
 @end

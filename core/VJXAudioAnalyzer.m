@@ -479,7 +479,7 @@ const double two_pi = 2. * M_PI;
 }
 
 
-- (void)getFrequencies:(Float32*)freqs  rate:(Float32)sampleRate
+- (void)getFrequencies:(Float32*)freqs rate:(Float32)sampleRate
 {
 	UInt32 half = mFFTSize >> 1;	
     

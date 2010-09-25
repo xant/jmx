@@ -49,7 +49,6 @@ typedef enum {
 	id < VJXAudioDelegate > delegate;
 	AudioDeviceIOProc ioProc;
     Boolean isRegisteredForNotifications;
-	AudioDeviceIOProc demuxIOProc;
     AudioDeviceIOProcID demuxIOProcID;
     BOOL muxStarted;
     Boolean deviceIOStarted;
@@ -87,5 +86,8 @@ typedef enum {
 - (Boolean) deviceStart;
 - (void) deviceStop;
 - (void) setDevicePaused:(Boolean)shouldPause;
+
+- (Float32)volumeForChannel:(UInt32)theChannel forDirection:(VJXAudioDeviceDirection)theDirection;
+- (void)setVolume:(Float32)theVolume forChannel:(UInt32)theChannel forDirection:(VJXAudioDeviceDirection)theDirection;
 
 @end

@@ -24,6 +24,7 @@
 #import <Cocoa/Cocoa.h>
 #import "VJXSize.h"
 #import "VJXPoint.h"
+#import "VJXAudioBuffer.h"
 
 typedef enum {
     kVJXVoidPin,

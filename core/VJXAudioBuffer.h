@@ -19,5 +19,11 @@
 - (id)initWithCoreAudioBuffer:(AudioBuffer *)buffer andFormat:(AudioStreamBasicDescription *)format;
 - (NSUInteger)numChannels;
 - (NSData *)data;
-
+- (NSUInteger)numFrames;
+- (NSUInteger)bytesPerFrame;
+- (NSUInteger)bitsPerChannel;
+- (NSUInteger)channelsPerFrame;
+- (NSUInteger)sampleRate;
+- (NSUInteger)numChannels;
+- (OSStatus) fillComplexBuffer:(AudioBufferList *)ioData countPointer:(UInt32 *)ioNumberFrames waitForData:(Boolean)wait offset:(UInt32)offset;
 @end

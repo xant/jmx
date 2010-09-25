@@ -25,7 +25,6 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		AA0D28A8123436C4009C8690 /* VJXAudioCapture.m in Sources */ = {isa = PBXBuildFile; fileRef = AA0D28A7123436C4009C8690 /* VJXAudioCapture.m */; };
 		AA0F48A8122E7503005A1C95 /* VJXEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = AA0F48A7122E7503005A1C95 /* VJXEntity.m */; };
 		AA0F48AB12302BBA005A1C95 /* VJXPin.m in Sources */ = {isa = PBXBuildFile; fileRef = AA0F48AA12302BBA005A1C95 /* VJXPin.m */; };
 		AA0F49D0123052EE005A1C95 /* VJXVideoOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = AA0F49CF123052EE005A1C95 /* VJXVideoOutput.m */; };
@@ -92,8 +91,6 @@
 		82EA047D1240C2AF00E28B72 /* VJXDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXDocument.m; path = gui/VJXDocument.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* VeeJay-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "VeeJay-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* VeeJay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VeeJay.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		AA0D28A6123436C4009C8690 /* VJXAudioCapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXAudioCapture.h; path = entities/layers/VJXAudioCapture.h; sourceTree = "<group>"; };
-		AA0D28A7123436C4009C8690 /* VJXAudioCapture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXAudioCapture.m; path = entities/layers/VJXAudioCapture.m; sourceTree = "<group>"; };
 		AA0F48A6122E7503005A1C95 /* VJXEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXEntity.h; path = core/VJXEntity.h; sourceTree = "<group>"; };
 		AA0F48A7122E7503005A1C95 /* VJXEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXEntity.m; path = core/VJXEntity.m; sourceTree = "<group>"; };
 		AA0F48A912302BBA005A1C95 /* VJXPin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXPin.h; path = core/VJXPin.h; sourceTree = "<group>"; };
@@ -305,8 +302,6 @@
 		AAF17A8D123E4D08001319BA /* VideoLayers */ = {
 			isa = PBXGroup;
 			children = (
-				AA0D28A6123436C4009C8690 /* VJXAudioCapture.h */,
-				AA0D28A7123436C4009C8690 /* VJXAudioCapture.m */,
 				82456FE712256A4A00236FE4 /* VJXImageLayer.h */,
 				82456FE812256A4A00236FE4 /* VJXImageLayer.m */,
 				82456BB71223DBE100236FE4 /* VJXQtVideoLayer.h */,
@@ -326,6 +321,8 @@
 				AADEBFDE1241546B00A6A06D /* VJXAudioBuffer.m */,
 				AADEBF7712413B5B00A6A06D /* VJXAudioFile.h */,
 				AADEBF7812413B5B00A6A06D /* VJXAudioFile.m */,
+				AA22351112465D200014B745 /* VJXAudioAnalyzer.h */,
+				AA22351212465D200014B745 /* VJXAudioAnalyzer.m */,
 				AA0F49DD12305384005A1C95 /* VJXContext.h */,
 				AA0F49DE12305384005A1C95 /* VJXContext.m */,
 				AA0F48A6122E7503005A1C95 /* VJXEntity.h */,
@@ -338,8 +335,6 @@
 				AA7931BD1233A64800860CD2 /* VJXSize.m */,
 				AA7931BF1233A65400860CD2 /* VJXPoint.h */,
 				AA7931C01233A65400860CD2 /* VJXPoint.m */,
-				AA22351112465D200014B745 /* VJXAudioAnalyzer.h */,
-				AA22351212465D200014B745 /* VJXAudioAnalyzer.m */,
 			);
 			name = Core;
 			sourceTree = "<group>";
@@ -462,7 +457,6 @@
 				AA0F49DF12305384005A1C95 /* VJXContext.m in Sources */,
 				AA7931BE1233A64800860CD2 /* VJXSize.m in Sources */,
 				AA7931C11233A65400860CD2 /* VJXPoint.m in Sources */,
-				AA0D28A8123436C4009C8690 /* VJXAudioCapture.m in Sources */,
 				AA2BE6511236D31E006087E7 /* VJXThreadedEntity.m in Sources */,
 				82B0A4C31237AFB20006D003 /* VJXBoardEntityOutlet.m in Sources */,
 				821DE683123925EC00B6A45D /* VJXBoardSelection.m in Sources */,

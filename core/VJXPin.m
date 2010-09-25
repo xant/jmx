@@ -248,8 +248,12 @@
             if ([data isKindOfClass:[VJXPoint class]])
                 signalData = data;
             break;
+        case kVJXAudioPin:
+            if ([data isKindOfClass:[VJXAudioBuffer class]])
+                signalData = data;
+            break;
         default:
-            NSLog(@"Unkown pin type!\n");
+            NSLog(@"Unknown pin type!\n");
     }
     
     @synchronized(self) {

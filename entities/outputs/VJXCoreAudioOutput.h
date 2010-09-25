@@ -7,10 +7,11 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "VJXAudioOutput.h"
+#import "VJXAudioDevice.h"
 
-
-@interface VJXCoreAudioOutput : NSObject {
-
+@interface VJXCoreAudioOutput : VJXAudioOutput {
+    VJXAudioDevice *outputDevice;
 }
 
 @end

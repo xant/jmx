@@ -7,13 +7,16 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import <AudioToolbox/AudioConverter.h>
 #import "VJXEntity.h"
 
 @class VJXAudioBuffer;
 
 @interface VJXAudioOutput : VJXEntity {
-    VJXAudioBuffer *currentSample;
+    NSMutableArray *ringBuffer;
+    AudioConverterRef converter;
 }
 
+- (VJXAudioBuffer *)currentSample;
 
 @end

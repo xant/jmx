@@ -30,8 +30,7 @@ static OSStatus demuxIOProc (
                              )
 {
 	VJXAudioDevice *device = (VJXAudioDevice *)inClientData;
-	
-    [device dispatchIOProcsWithTimeStamp:inNow inputData:inInputData inputTime:inInputTime outputData:outOutputData outputTime:inOutputTime];
+    [device dispatchIOProcsWithTimeStamp:inNow inputData:inInputData inputTime:inInputTime outputData:outOutputData outputTime:inOutputTime];  
     return noErr;
 }
 
@@ -319,6 +318,7 @@ static OSStatus VJXAudioDevicePropertyListener (
 	deviceID = theID;
 	delegate = nil;
 	ioProc = NULL;
+    demuxIOProcID = NULL;
     muxStarted = NO;
 	return self;
 }
@@ -626,16 +626,9 @@ finish:
 				break;
 			case kAudioDevicePropertyDataSource:
 				if (theChannel != 0)
-				{
 					NSLog ( @"VJXAudioDevice kAudioDevicePropertyDataSource theChannel != 0" );
-				}
 				if ([(id)delegate respondsToSelector:@selector(audioDeviceSourceDidChange:forDirection:)])
 					[delegate audioDeviceSourceDidChange:self forDirection:theDirection];
-				else if ([(id)delegate respondsToSelector:@selector(audioDeviceSourceDidChange:forChannel:forDirection:)])
-				{
-					NSLog ( @"VJXAudio: delegate method -audioDeviceSourceDidChange:forChannel:forDirection: is deprecated, use audioDeviceSourceDidChange:forDirection:" );
-					[delegate audioDeviceSourceDidChange:self forChannel:theChannel forDirection:theDirection];
-				}
 				break;
 			case kAudioDevicePropertyClockSource:
 				if ([(id)delegate respondsToSelector:@selector(audioDeviceClockSourceDidChange:forChannel:forDirection:)])
@@ -711,7 +704,8 @@ finish:
 - (void) setIOTarget:(id)theTarget withSelector:(SEL)theSelector withClientData:(void *)theClientData
 {
 	[self removeIOTarget];
-	myIOInvocation = [[NSInvocation invocationWithMethodSignature:[self methodSignatureForSelector:@selector(ioCycleForDevice:timeStamp:inputData:inputTime:outputData:outputTime:clientData:)]] retain];
+    SEL selector = @selector(ioCycleForDevice:timeStamp:inputData:inputTime:outputData:outputTime:clientData:);
+	myIOInvocation = [[NSInvocation invocationWithMethodSignature:[self methodSignatureForSelector:selector]] retain];
 	[myIOInvocation setTarget:theTarget];
 	[myIOInvocation setSelector:theSelector];
 	[myIOInvocation setArgument:&self atIndex:2];
@@ -753,8 +747,9 @@ finish:
         if ( noErr != rv )
         {
             // TODO - Error messages
+        } else {
+            muxStarted = YES;
         }
-        muxStarted = YES;
     }
 	return muxStarted;
 }
@@ -784,24 +779,82 @@ finish:
 	}
 }
 
-- (void)dispatchIOProcsWithTimeStamp:(const AudioTimeStamp *)inNow inputData:(const AudioBufferList *)inInputData inputTime:(const AudioTimeStamp *)inInputTime outputData:(AudioBufferList *)outOutputData outputTime:(const AudioTimeStamp *)inOutputTime
+- (void)dispatchIOProcsWithTimeStamp:(AudioTimeStamp *)inNow
+                           inputData:(AudioBufferList *)inInputData
+                           inputTime:(AudioTimeStamp *)inInputTime
+                          outputData:(AudioBufferList *)outOutputData
+                          outputTime:(AudioTimeStamp *)inOutputTime
 {
-	if ( isPaused )
-		return;
-	/*
-	if (myIOProc)
-	{
-		(void)(*myIOProc)( myDevice, inNow, inInputData, inInputTime, outOutputData, inOutputTime, myIOProcClientData );
-	}
-	else */if (myIOInvocation)
-	{
-		[myIOInvocation setArgument:&inNow atIndex:3];
-		[myIOInvocation setArgument:&inInputData atIndex:4];
-		[myIOInvocation setArgument:&inInputTime atIndex:5];
-		[myIOInvocation setArgument:&outOutputData atIndex:6];
-		[myIOInvocation setArgument:&inOutputTime atIndex:7];
-		[myIOInvocation invoke];
-	}
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    @synchronized(self) {
+        if ( isPaused )
+            return;
+        /*
+        if (myIOProc)
+        {
+            (void)(*myIOProc)( myDevice, inNow, inInputData, inInputTime, outOutputData, inOutputTime, myIOProcClientData );
+        }
+        else */if (myIOInvocation)
+        {
+            [myIOInvocation setArgument:&inNow atIndex:3];
+            [myIOInvocation setArgument:&inInputData atIndex:4];
+            [myIOInvocation setArgument:&inInputTime atIndex:5];
+            [myIOInvocation setArgument:&outOutputData atIndex:6];
+            [myIOInvocation setArgument:&inOutputTime atIndex:7];
+            [myIOInvocation invoke];
+        }
+    }
+    [pool drain];
+}
+
+- (Float32)volumeForChannel:(UInt32)theChannel forDirection:(VJXAudioDeviceDirection)theDirection
+{
+	OSStatus theStatus;
+	UInt32 theSize;
+	Float32 theVolumeScalar;
+	
+	theSize = sizeof(Float32);
+#if 1//MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyVolumeScalar;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;//(theDirection == kVJXAudioOutput)  ? kAudioDevicePropertyScopeOutput : kAudioDevicePropertyScopeInput;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;//theChannel;
+    theStatus = AudioObjectGetPropertyData( deviceID, &propertyAddress, 0, NULL, &theSize, &theVolumeScalar );
+#else
+	theStatus = AudioDeviceGetProperty ( deviceID, theChannel, theDirection, kAudioDevicePropertyVolumeScalar, &theSize, &theVolumeScalar );
+#endif
+    if ( theStatus == kAudioHardwareUnknownPropertyError ) {
+        NSLog(@"Unknown hardware property");
+    }
+	if (theStatus == 0) {
+        NSLog(@"CIAO");
+		return theVolumeScalar;
+	}else
+		return 0.0;
+}
+
+- (void)setVolume:(Float32)theVolume forChannel:(UInt32)theChannel forDirection:(VJXAudioDeviceDirection)theDirection
+{
+    OSStatus theStatus;
+    UInt32 theSize;
+    
+    theSize = sizeof(Float32);
+#if 0//MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyVolumeScalar;
+    propertyAddress.mScope = (theDirection == kVJXAudioInput)
+                           ? kAudioDevicePropertyScopeInput
+                           : kAudioDevicePropertyScopeOutput;    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    propertyAddress.mElement = theChannel;
+    theStatus = AudioObjectSetPropertyData( deviceID, &propertyAddress, 0, NULL, theSize, &theVolume );
+#else
+    theStatus = AudioDeviceSetProperty ( deviceID, NULL, theChannel, theDirection, kAudioDevicePropertyVolumeScalar, theSize, &theVolume );
+#endif
+}
+
+- (OSStatus) ioCycleForDevice:(VJXAudioDevice *)theDevice timeStamp:(const AudioTimeStamp *)inNow inputData:(const AudioBufferList *)inInputData inputTime:(const AudioTimeStamp *)inInputTime outputData:(AudioBufferList *)outOutputData outputTime:(const AudioTimeStamp *)inOutputTime clientData:(void *)inClientData
+{
+	return noErr;
 }
 
 @synthesize deviceID;

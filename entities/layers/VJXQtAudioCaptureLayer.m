@@ -157,20 +157,21 @@ error:
 - (void)captureOutput:(QTCaptureOutput *)captureOutput didOutputAudioSampleBuffer:(QTSampleBuffer *)sampleBuffer
                                                              fromConnection:(QTCaptureConnection *)connection
 {
-    AudioStreamBasicDescription *format;
-    AudioBufferList buffer;
-    if (currentBuffer)
-        [currentBuffer release];
-    format = (AudioStreamBasicDescription *)[[[sampleBuffer formatDescription]
-                                              attributeForKey:QTFormatDescriptionAudioStreamBasicDescriptionAttribute] value];
-    buffer.mNumberBuffers = 1;
-    buffer.mBuffers[0].mDataByteSize = [sampleBuffer lengthForAllSamples];
-    buffer.mBuffers[0].mNumberChannels = format->mChannelsPerFrame;
-    buffer.mBuffers[0].mData = [sampleBuffer bytesForAllSamples];
-    currentBuffer = [[VJXAudioBuffer audioBufferWithCoreAudioBuffer:&buffer.mBuffers[0] andFormat:nil] retain];
-    
-    [outputPin deliverSignal:[NSNumber numberWithBool:active] fromSender:self];
-    [self outputDefaultSignals:CVGetCurrentHostTime()];
+    @synchronized(outputPin) {
+        AudioStreamBasicDescription format;
+        AudioBufferList buffer;
+        if (currentBuffer)
+            [currentBuffer release];
+        [[[sampleBuffer formatDescription] attributeForKey:QTFormatDescriptionAudioStreamBasicDescriptionAttribute] getValue:&format];
+        buffer.mNumberBuffers = 1;
+        buffer.mBuffers[0].mDataByteSize = [sampleBuffer lengthForAllSamples];
+        buffer.mBuffers[0].mNumberChannels = format.mChannelsPerFrame;
+        buffer.mBuffers[0].mData = [sampleBuffer bytesForAllSamples];
+        currentBuffer = [[VJXAudioBuffer audioBufferWithCoreAudioBuffer:&buffer.mBuffers[0] andFormat:&format] retain];
+        
+        [outputPin deliverSignal:currentBuffer fromSender:self];
+        [self outputDefaultSignals:CVGetCurrentHostTime()];
+    }
 }
 
 - (id)init

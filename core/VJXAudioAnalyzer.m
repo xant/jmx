@@ -226,36 +226,6 @@ static inline UInt32 NextPowerOfTwo(UInt32 x)
 
 @end
 
-#pragma mark VJXSpectralBufferList
-@interface VJXSpectralBufferList : NSObject
-{
-	UInt32 mNumberSpectra;
-	DSPSplitComplex *mDSPSplitComplex;
-    NSMutableArray *channels;
-}
-@property (assign) UInt32 mNumberSpectra;
-@property (readonly) DSPSplitComplex *mDSPSplitComplex;
-@property (readonly) NSArray *channels;
-- (id)initWithChannels:(UInt32)numChannels size:(UInt32)fftSize frames:(UInt32)maxFrames;
-
-
-@end
-
-@implementation VJXSpectralBufferList
-@synthesize mNumberSpectra, mDSPSplitComplex, channels;
-
-- (id)initWithChannels:(UInt32)numChannels size:(UInt32)fftSize frames:(UInt32)maxFrames
-{
-    if (self = [super init]) {
-
-    }
-    return self;
-}
-
-
-
-@end
-
 #pragma mark VJXAudioAnalyzer
 
 @interface VJXAudioAnalyzer (Private)

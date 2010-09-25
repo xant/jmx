@@ -24,6 +24,8 @@
 #import "VJXVideoMixer.h"
 #import "VJXImageLayer.h"
 #import "VJXOpenGLScreen.h"
+#import "VJXCoreAudioOutput.h"
+#import "VJXQtAudioCaptureLayer.h"
 #import "VJXBoard.h"
 #import <QTKit/QTMovie.h>
 
@@ -164,6 +166,22 @@
     [entities addObject:entity];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:entity];
     [entity release];
+}
+
+- (IBAction)addAudioOutput:(id)sender
+{
+    VJXCoreAudioOutput *entity = [[VJXCoreAudioOutput alloc] init];
+    [entities addObject:entity];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:entity];
+    [entity release];
+}
+
+- (IBAction)addAudioCapture:(id)sender
+{
+    VJXQtAudioCaptureLayer *entity = [[VJXQtAudioCaptureLayer alloc] init];
+    [entities addObject:entity];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:entity];
+    [entity release];   
 }
 
 - (IBAction)removeSelected:(id)sender

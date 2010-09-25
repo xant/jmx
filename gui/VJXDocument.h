@@ -44,7 +44,8 @@
 - (IBAction)addImageLayer:(id)sender;
 - (IBAction)addOpenGLScreen:(id)sender;
 - (IBAction)addQtCaptureLayer:(id)sender;
-
+- (IBAction)addAudioOutput:(id)sender;
+- (IBAction)addAudioCapture:(id)sender;
 - (IBAction)removeSelected:(id)sender;
 
 #pragma mark -

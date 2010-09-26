@@ -54,9 +54,9 @@
             memcpy(bufferList->mBuffers[i].mData, audioBufferList->mBuffers[i].mData, audioBufferList->mBuffers[i].mDataByteSize);
             
             // XXX - unsure if it's really necessary to always de-interleave the buffers (we could do it only if/when necessary)
-            if (bufferList->mBuffers[0].mNumberChannels > 1) { // de-interleave the audio frames (we could need that later)
+            if (bufferList->mBuffers[i].mNumberChannels > 1) { // de-interleave the audio frames (we could need that later)
                 int j;
-                UInt32 numFrames = bufferList->mBuffers[i].mDataByteSize / format.audioStreamBasicDescription.mBytesPerFrame / bufferList->mBuffers[0].mNumberChannels;
+                UInt32 numFrames = bufferList->mBuffers[i].mDataByteSize / format.audioStreamBasicDescription.mBytesPerFrame / bufferList->mBuffers[i].mNumberChannels;
                 deinterleavedBuffer = calloc(bufferList->mBuffers[i].mDataByteSize, 1);
                 uint8_t *channels[bufferList->mBuffers[i].mNumberChannels];
                 
@@ -164,7 +164,9 @@
 	*ioNumberFrames = MIN ( *ioNumberFrames, framesInBuffer );
 
     for (i = 0; i < bufferList->mNumberBuffers; i++) {
-        memcpy(&ioData->mBuffers[i], &bufferList->mBuffers[i], sizeof(AudioBuffer));
+        ioData->mBuffers[i].mData = bufferList->mBuffers[i].mData;
+        ioData->mBuffers[i].mDataByteSize = bufferList->mBuffers[i].mDataByteSize;
+        //memcpy(&ioData->mBuffers[i], &bufferList->mBuffers[i], sizeof(AudioBuffer));
     }
 
     return noErr;

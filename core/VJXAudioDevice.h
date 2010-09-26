@@ -97,9 +97,11 @@ typedef enum {
 - (NSArray *)relatedDevices;
 - (UInt32)channelsForDirection:(VJXAudioDeviceDirection)theDirection;
 
-//- (void) setIOProc:(AudioDeviceIOProc)theIOProc withClientData:(void *)theClientData;
+#if 0
+- (void) setIOProc:(AudioDeviceIOProc)theIOProc withClientData:(void *)theClientData;
+- (void) removeIOProc;
+#endif
 - (void) setIOTarget:(id)theTarget withSelector:(SEL)theSelector withClientData:(void *)theClientData;
-//- (void) removeIOProc;
 - (void) removeIOTarget;
 - (Boolean) deviceStart;
 - (void) deviceStop;

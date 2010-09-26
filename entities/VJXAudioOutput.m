@@ -50,9 +50,11 @@ static OSStatus _FillComplexBufferProc (
 {
     if (self = [super init]) {
         [self registerInputPin:@"audio" withType:kVJXAudioPin andSelector:@"newSample:"];
+        currentSamplePin = [self registerOutputPin:@"currentSample" withType:kVJXAudioPin];
         ringBuffer = [[NSMutableArray alloc] init];
         converter = NULL;
         format = nil; // must be set by superclasses
+        needsBuffering = NO;
     }
     return self;
 }
@@ -95,33 +97,44 @@ static OSStatus _FillComplexBufferProc (
         callbackContext.theConversionBuffer = buffer;
         callbackContext.wait = YES; // XXX
         //UInt32 outputChannels = [buffer numChannels];
-        //if (inputDescription.mSampleRate != outputDescription.mSampleRate) {
-            err = AudioConverterFillComplexBuffer ( converter, _FillComplexBufferProc, &callbackContext, &framesRead, outputBufferList, NULL );
-        /*} else {
+        if (inputDescription.mSampleRate == outputDescription.mSampleRate &&
+            inputDescription.mBytesPerFrame == outputDescription.mBytesPerFrame) {
             err = AudioConverterConvertBuffer (
-                                          converter,
-                                          buffer.buffer.mDataByteSize,
-                                          buffer.buffer.mData,
-                                          &outputBufferList->mBuffers[0].mDataByteSize,
-                                          outputBufferList->mBuffers[0].mData
-                                        );
-        } */
+                                               converter,
+                                               buffer.bufferList->mBuffers[0].mDataByteSize,
+                                               buffer.bufferList->mBuffers[0].mData,
+                                               &outputBufferList->mBuffers[0].mDataByteSize,
+                                               outputBufferList->mBuffers[0].mData
+                                               );
+        } else {
+            err = AudioConverterFillComplexBuffer ( converter, _FillComplexBufferProc, &callbackContext, &framesRead, outputBufferList, NULL );
+        }
         if (err == noErr)
             [ringBuffer addObject:[VJXAudioBuffer audioBufferWithCoreAudioBuffer:&outputBufferList->mBuffers[0] andFormat:&outputDescription]];
         free(outputBufferList->mBuffers[0].mData);
         free(outputBufferList);
+        if ([ringBuffer count] > 100)
+            needsBuffering = NO;
     }
 }
 
 - (VJXAudioBuffer *)currentSample
 {
     VJXAudioBuffer *oldestSample = nil;
+    //NSLog(@"BEFORE: %d\n", [ringBuffer count]);
+    if (needsBuffering)
+        return nil;
     @synchronized(ringBuffer) {
         if ([ringBuffer count]) {
             oldestSample = [[ringBuffer objectAtIndex:0] retain];
             [ringBuffer removeObjectAtIndex:0];
+        } else {
+            return nil;
         }
     }
+    if (oldestSample)
+        [currentSamplePin deliverSignal:oldestSample fromSender:self];
+    //NSLog(@"NOW: %d\n", [ringBuffer count]);
     return [oldestSample autorelease];
 }
 

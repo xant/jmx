@@ -26,6 +26,7 @@
 #import "VJXOpenGLScreen.h"
 #import "VJXCoreAudioOutput.h"
 #import "VJXQtAudioCaptureLayer.h"
+#import "VJXAudioFileLayer.h"
 #import "VJXBoard.h"
 #import <QTKit/QTMovie.h>
 
@@ -182,6 +183,13 @@
     [entities addObject:entity];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:entity];
     [entity release];   
+}
+
+- (IBAction)addAudioFileLayer:(id)sender
+{
+    NSArray *types = [NSArray arrayWithObjects:@"mp3", @"wav", @"aiff", nil];
+    VJXAudioFileLayer *entity = [[VJXAudioFileLayer alloc] init];
+    [self openFileWithTypes:types forEntity:entity];
 }
 
 - (IBAction)removeSelected:(id)sender

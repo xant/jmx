@@ -82,14 +82,14 @@
     // Set the client format to 16 bit signed integer (native-endian) data
 	// Maintain the channel count and sample rate of the original source format
 	theOutputFormat.mSampleRate = fileFormat.mSampleRate;
-	theOutputFormat.mChannelsPerFrame = fileFormat.mChannelsPerFrame;
-    
+	theOutputFormat.mChannelsPerFrame = 2;
+    theOutputFormat.mFormatFlags = kAudioFormatFlagIsFloat | kAudioFormatFlagIsPacked;
 	theOutputFormat.mFormatID = kAudioFormatLinearPCM;
-	theOutputFormat.mBytesPerPacket = 2 * theOutputFormat.mChannelsPerFrame;
+	theOutputFormat.mBytesPerPacket = 4 * theOutputFormat.mChannelsPerFrame;
 	theOutputFormat.mFramesPerPacket = 1;
-	theOutputFormat.mBytesPerFrame = 2 * theOutputFormat.mChannelsPerFrame;
-	theOutputFormat.mBitsPerChannel = 16;
-	theOutputFormat.mFormatFlags = kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked | kAudioFormatFlagIsSignedInteger;
+	theOutputFormat.mBytesPerFrame = 4 * theOutputFormat.mChannelsPerFrame;
+	theOutputFormat.mBitsPerChannel = 32;
+	//theOutputFormat.mFormatFlags = kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked | kAudioFormatFlagIsSignedInteger;
 	
 	// Set the desired client (output) data format
 	err = ExtAudioFileSetProperty(audioFile, kExtAudioFileProperty_ClientDataFormat, sizeof(theOutputFormat), &theOutputFormat);
@@ -112,27 +112,30 @@
 	data = malloc(dataSize);
 	if (data)
 	{
-        UInt32 nFrames;
-		AudioBufferList		theDataBuffer;
-		theDataBuffer.mNumberBuffers = 1;
-		theDataBuffer.mBuffers[0].mDataByteSize = dataSize;
-		theDataBuffer.mBuffers[0].mNumberChannels = theOutputFormat.mChannelsPerFrame;
-		theDataBuffer.mBuffers[0].mData = data;
+        UInt32 nFrames = numFrames;
+		AudioBufferList		*theDataBuffer = calloc(1, sizeof(AudioBufferList));
+		theDataBuffer->mNumberBuffers = 1;
+		theDataBuffer->mBuffers[0].mDataByteSize = dataSize;
+		theDataBuffer->mBuffers[0].mNumberChannels = 2;
+		theDataBuffer->mBuffers[0].mData = data;
 
         // Read the data into an AudioBufferList
-		err = ExtAudioFileRead(audioFile, &nFrames, &theDataBuffer);
+		err = ExtAudioFileRead(audioFile, &nFrames, theDataBuffer);
 		if(err == noErr)
 		{
-            buffer = [VJXAudioBuffer audioBufferWithCoreAudioBuffer:&theDataBuffer.mBuffers[0] 
+            buffer = [VJXAudioBuffer audioBufferWithCoreAudioBufferList:theDataBuffer 
                                                           andFormat:(AudioStreamBasicDescription *)&theOutputFormat];
 		}
 		else 
 		{ 
 			// failure
 			free (data);
+            free(theDataBuffer);
 			NSLog(@"MyGetOpenALAudioData: ExtAudioFileRead FAILED, Error = %ld\n", err);
             return nil;
 		}	
+        free(data);
+        free(theDataBuffer);
     }
     return buffer;
 }

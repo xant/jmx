@@ -46,6 +46,7 @@
 - (IBAction)addQtCaptureLayer:(id)sender;
 - (IBAction)addAudioOutput:(id)sender;
 - (IBAction)addAudioCapture:(id)sender;
+- (IBAction)addAudioFileLayer:(id)sender;
 - (IBAction)removeSelected:(id)sender;
 
 #pragma mark -

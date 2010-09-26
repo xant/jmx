@@ -33,6 +33,8 @@
     NSMutableArray *ringBuffer;
     AudioConverterRef converter;
     VJXAudioFormat *format;
+    VJXPin *currentSamplePin;
+    BOOL needsBuffering;
 }
 
 - (VJXAudioBuffer *)currentSample;

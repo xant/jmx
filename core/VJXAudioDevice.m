@@ -1227,12 +1227,14 @@ finish:
     @synchronized(self) {
         if ( isPaused )
             return;
-        /*
+#if 0        
         if (myIOProc)
         {
             (void)(*myIOProc)( myDevice, inNow, inInputData, inInputTime, outOutputData, inOutputTime, myIOProcClientData );
         }
-        else */if (myIOInvocation)
+        else
+#endif
+        if (myIOInvocation)
         {
             [myIOInvocation setArgument:&inNow atIndex:3];
             [myIOInvocation setArgument:&inInputData atIndex:4];
@@ -1261,7 +1263,6 @@ finish:
         NSLog(@"Unknown hardware property");
     }
 	if (theStatus == 0) {
-        NSLog(@"CIAO");
 		return theVolumeScalar;
 	}else
 		return 0.0;

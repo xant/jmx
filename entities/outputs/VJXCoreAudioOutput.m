@@ -65,6 +65,8 @@
             }
             
         }
+    } else {
+        //NSLog(@"NO FRAME");
     }
 }
 

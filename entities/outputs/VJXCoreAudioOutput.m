@@ -37,6 +37,15 @@
     return self;
 }
 
+- (void)dealloc
+{
+    if (outputDevice) {
+        [outputDevice deviceStop];
+        [outputDevice release];
+    }
+    [super dealloc];
+}
+
 - (void)provideSamplesToDevice:(VJXAudioDevice *)device
                      timeStamp:(AudioTimeStamp *)timeStamp
                      inputData:(AudioBufferList *)inInputData

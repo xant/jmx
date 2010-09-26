@@ -382,6 +382,16 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, VJXAudioDev
 	return nil;
 }
 
+- (void) dealloc
+{
+	if ( isRegisteredForNotifications )
+		[[NSNotificationCenter defaultCenter] removeObserver:self name:kVJXAudioDeviceNotification object:nil];
+	//[self setDelegate:nil];
+	//[self removeIOProc];
+    [self removeIOTarget];
+	[super dealloc];
+}
+
 - (VJXAudioDevice *)initWithDeviceID:(AudioDeviceID)theID
 {
 	[super init];
@@ -1184,12 +1194,15 @@ finish:
 
 - (void) deviceStop
 {
-	if (deviceIOStarted)
+	if (muxStarted)
 	{
 		//[VJXAudioIOProcMux unRegisterDevice:self];
 		// XXX - IMPLEMENT
         // TODO - unregister ioprocs
-        deviceIOStarted = false;
+        AudioDeviceStop ( deviceID, demuxIOProc );
+        OSStatus theStatus = AudioDeviceDestroyIOProcID( deviceID, demuxIOProcID );
+        if (theStatus == noErr)
+            muxStarted = false;
 	}
 }
 

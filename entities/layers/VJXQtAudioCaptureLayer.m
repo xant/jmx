@@ -133,6 +133,7 @@ error:
         }
         [session removeOutput:self];
         [session release];
+        session = nil;
     }
     /*
      if (output) {

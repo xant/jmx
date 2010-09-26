@@ -159,15 +159,12 @@ error:
 {
     @synchronized(outputPin) {
         AudioStreamBasicDescription format;
-        AudioBufferList buffer;
+       // AudioBufferList buffer;
         if (currentBuffer)
             [currentBuffer release];
         [[[sampleBuffer formatDescription] attributeForKey:QTFormatDescriptionAudioStreamBasicDescriptionAttribute] getValue:&format];
-        buffer.mNumberBuffers = 1;
-        buffer.mBuffers[0].mDataByteSize = [sampleBuffer lengthForAllSamples];
-        buffer.mBuffers[0].mNumberChannels = format.mChannelsPerFrame;
-        buffer.mBuffers[0].mData = [sampleBuffer bytesForAllSamples];
-        currentBuffer = [[VJXAudioBuffer audioBufferWithCoreAudioBuffer:&buffer.mBuffers[0] andFormat:&format] retain];
+        AudioBufferList *buffer = [sampleBuffer audioBufferListWithOptions:(QTSampleBufferAudioBufferListOptions)QTSampleBufferAudioBufferListOptionAssure16ByteAlignment];
+        currentBuffer = [[VJXAudioBuffer audioBufferWithCoreAudioBufferList:buffer andFormat:&format] retain];
         
         [outputPin deliverSignal:currentBuffer fromSender:self];
         [self outputDefaultSignals:CVGetCurrentHostTime()];

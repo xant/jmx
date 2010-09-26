@@ -6,6 +6,22 @@
 //  Copyright 2010 Dyne.org. All rights reserved.
 //
 //  based on MTCoreAudio
+//
+//  This file is part of VeeJay
+//
+//  VeeJay is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU Lesser General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  Foobar is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
+//
 
 #import "VJXAudioDevice.h"
 
@@ -109,6 +125,62 @@ static OSStatus VJXAudioDevicePropertyListener (
 	[pool release];
 	
 	return 0;
+}
+
+static NSString * _DataSourceNameForID ( AudioDeviceID theDeviceID, VJXAudioDeviceDirection theDirection, UInt32 theChannel, UInt32 theDataSourceID )
+{
+	OSStatus theStatus;
+	UInt32 theSize;
+	AudioValueTranslation theTranslation;
+	CFStringRef theCFString;
+	NSString * rv;
+	
+	theTranslation.mInputData = &theDataSourceID;
+	theTranslation.mInputDataSize = sizeof(UInt32);
+	theTranslation.mOutputData = &theCFString;
+	theTranslation.mOutputDataSize = sizeof ( CFStringRef );
+	theSize = sizeof(AudioValueTranslation);
+    struct AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyDataSourceNameForIDCFString;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    theStatus = AudioObjectGetPropertyData(theDeviceID, &propertyAddress, 0, NULL, &theSize, &theTranslation);
+	if (( theStatus == 0 ) && theCFString )
+	{
+		rv = [NSString stringWithString:(NSString *)theCFString];
+		CFRelease ( theCFString );
+		return rv;
+	}
+    
+	return nil;
+}
+
+static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, VJXAudioDeviceDirection theDirection, UInt32 theChannel, UInt32 theClockSourceID )
+{
+	OSStatus theStatus;
+	NSString * rv;
+    CFStringRef theCFString;
+    UInt32 theSize;
+    
+    AudioValueTranslation theTranslation;
+	theTranslation.mInputData = &theClockSourceID;
+	theTranslation.mInputDataSize = sizeof(UInt32);
+	theTranslation.mOutputData = &theCFString;
+	theTranslation.mOutputDataSize = sizeof ( CFStringRef );
+    theSize = sizeof(AudioValueTranslation);
+    struct AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyClockSourceNameForIDCFString;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    theStatus = AudioObjectGetPropertyData( theDeviceID, &propertyAddress, 0, NULL, &theSize, &theTranslation );
+	if (( theStatus == 0 ) && theCFString )
+	{
+		rv = [NSString stringWithString:(NSString *)theCFString];
+		CFRelease ( theCFString );
+		return rv;
+	}
+    
+	return nil;
 }
 
 @implementation VJXAudioDevice
@@ -408,6 +480,299 @@ static OSStatus VJXAudioDevicePropertyListener (
 	return [myUID compare:[other deviceUID]];
 }
 
+// real methods
+- (NSString *) dataSourceForDirection:(VJXAudioDeviceDirection)theDirection
+{
+	OSStatus theStatus;
+	UInt32 theSize;
+	UInt32 theSourceID;
+
+	theSize = sizeof(UInt32);
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyDataSource;
+    propertyAddress.mScope = (theDirection == kVJXAudioOutput)  ? kAudioDevicePropertyScopeOutput : kAudioDevicePropertyScopeInput;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectGetPropertyData( deviceID, &propertyAddress, 0, NULL, &theSize, &theSourceID );
+
+	if (theStatus == 0)
+		return _DataSourceNameForID ( deviceID, theDirection, 0, theSourceID );
+	return nil;
+}
+
+- (NSArray *) dataSourcesForDirection:(VJXAudioDeviceDirection)theDirection
+{
+	OSStatus theStatus;
+	UInt32 theSize;
+	UInt32 * theSourceIDs;
+	UInt32 numSources;
+	UInt32 x;
+	NSMutableArray * rv = [NSMutableArray array];
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyDataSources;
+    propertyAddress.mScope = (theDirection == kVJXAudioOutput)  ? kAudioDevicePropertyScopeOutput : kAudioDevicePropertyScopeInput;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    AudioObjectGetPropertyDataSize( deviceID, &propertyAddress, 0, NULL, &theSize );
+
+	if (theStatus != 0)
+		return rv;
+	theSourceIDs = (UInt32 *) malloc ( theSize );
+	numSources = theSize / sizeof(UInt32);
+    theStatus = AudioObjectGetPropertyData( deviceID, &propertyAddress, 0, NULL, &theSize, theSourceIDs );
+	if (theStatus != 0)
+	{
+		free(theSourceIDs);
+		return rv;
+	}
+	for ( x = 0; x < numSources; x++ )
+		[rv addObject:_DataSourceNameForID ( deviceID, theDirection, 0, theSourceIDs[x] )];
+	free(theSourceIDs);
+	return rv;
+}
+
+- (Boolean)canSetDataSourceForDirection:(VJXAudioDeviceDirection)theDirection
+{
+	OSStatus theStatus;
+	UInt32 theSize = 0; // XXX
+	Boolean rv = NO;
+    
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyDataSource;
+    propertyAddress.mScope = (theDirection == kVJXAudioOutput)  ? kAudioDevicePropertyScopeOutput : kAudioDevicePropertyScopeInput;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectGetPropertyDataSize( deviceID, &propertyAddress, 0, NULL, &theSize );
+    if (theSize)
+        rv = YES;
+	if ( 0 == theStatus )
+		return rv;
+	else
+	{
+		return NO;
+	}
+}
+
+- (void)setDataSource:(NSString *)theSource forDirection:(VJXAudioDeviceDirection)theDirection
+{
+	OSStatus theStatus;
+	UInt32 theSize;
+	UInt32 * theSourceIDs;
+	UInt32 numSources;
+	UInt32 x;
+	
+	if ( theSource == nil )
+		return;
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyDataSources;
+    propertyAddress.mScope = (theDirection == kVJXAudioOutput)  ? kAudioDevicePropertyScopeOutput : kAudioDevicePropertyScopeInput;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    AudioObjectGetPropertyDataSize( deviceID, &propertyAddress, 0, NULL, &theSize );
+	if (theStatus != 0)
+		return;
+	theSourceIDs = (UInt32 *) malloc ( theSize );
+	numSources = theSize / sizeof(UInt32);
+    theStatus = AudioObjectGetPropertyData( deviceID, &propertyAddress, 0, NULL, &theSize, theSourceIDs );
+
+	if (theStatus != 0)
+	{
+		free(theSourceIDs);
+		return;
+	}
+	
+	theSize = sizeof(UInt32);
+	for ( x = 0; x < numSources; x++ )
+	{
+		if ( [theSource compare:_DataSourceNameForID ( deviceID, theDirection, 0, theSourceIDs[x] )] == NSOrderedSame )
+            AudioObjectSetPropertyData( deviceID, &propertyAddress, 0, NULL, theSize, &theSourceIDs[x] );
+	}
+	free(theSourceIDs);
+}
+
+- (NSString *)clockSourceForChannel:(UInt32)theChannel forDirection:(VJXAudioDeviceDirection)theDirection
+{
+	OSStatus theStatus;
+	UInt32 theSize;
+	UInt32 theSourceID;
+	
+	theSize = sizeof(UInt32);
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyClockSource;
+    propertyAddress.mScope = (theDirection == kVJXAudioOutput)  ? kAudioDevicePropertyScopeOutput : kAudioDevicePropertyScopeInput;
+    propertyAddress.mElement = theChannel;
+    theStatus = AudioObjectGetPropertyData( deviceID, &propertyAddress, 0, NULL, &theSize, &theSourceID );
+	if (theStatus == 0)
+		return _ClockSourceNameForID ( deviceID, theDirection, theChannel, theSourceID );
+	return nil;
+}
+
+- (NSArray *)clockSourcesForChannel:(UInt32)theChannel forDirection:(VJXAudioDeviceDirection)theDirection
+{
+	OSStatus theStatus;
+	UInt32 theSize;
+	UInt32 * theSourceIDs;
+	UInt32 numSources;
+	UInt32 x;
+	NSMutableArray * rv;
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyClockSources;
+    propertyAddress.mScope = (theDirection == kVJXAudioOutput)  ? kAudioDevicePropertyScopeOutput : kAudioDevicePropertyScopeInput;
+    propertyAddress.mElement = theChannel;
+    theStatus = AudioObjectGetPropertyDataSize( deviceID, &propertyAddress, 0, NULL, &theSize );
+	if (theStatus != 0)
+		return nil;
+	theSourceIDs = (UInt32 *) malloc ( theSize );
+	numSources = theSize / sizeof(UInt32);
+    theStatus = AudioObjectGetPropertyData( deviceID, &propertyAddress, 0, NULL, &theSize, theSourceIDs );
+	if (theStatus != 0)
+	{
+		free(theSourceIDs);
+		return nil;
+	}
+	rv = [NSMutableArray arrayWithCapacity:numSources];
+	for ( x = 0; x < numSources; x++ )
+		[rv addObject:_ClockSourceNameForID ( deviceID, theDirection, theChannel, theSourceIDs[x] )];
+	free(theSourceIDs);
+	return rv;
+}
+
+- (void)setClockSource:(NSString *)theSource forChannel:(UInt32)theChannel forDirection:(VJXAudioDeviceDirection)theDirection
+{
+	OSStatus theStatus;
+	UInt32 theSize;
+	UInt32 * theSourceIDs;
+	UInt32 numSources;
+	UInt32 x;
+	
+	if ( theSource == nil )
+		return;
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyClockSources;
+    propertyAddress.mScope = (theDirection == kVJXAudioOutput)  ? kAudioDevicePropertyScopeOutput : kAudioDevicePropertyScopeInput;
+    propertyAddress.mElement = theChannel;
+    theStatus = AudioObjectGetPropertyDataSize( deviceID, &propertyAddress, 0, NULL, &theSize );
+	if (theStatus != 0)
+		return;
+	theSourceIDs = (UInt32 *) malloc ( theSize );
+	numSources = theSize / sizeof(UInt32);
+    theStatus = AudioObjectGetPropertyData( deviceID, &propertyAddress, 0, NULL, &theSize, theSourceIDs );
+
+	if (theStatus != 0) {
+		free(theSourceIDs);
+		return;
+	}
+	
+	theSize = sizeof(UInt32);
+	for ( x = 0; x < numSources; x++ ) {
+		if ( [theSource compare:_ClockSourceNameForID ( deviceID, theDirection, theChannel, theSourceIDs[x] )] == NSOrderedSame )
+            AudioObjectSetPropertyData( deviceID, &propertyAddress, 0, NULL, theSize, &theSourceIDs[x] );
+	}
+	free(theSourceIDs);
+}
+
+- (UInt32) deviceBufferSizeInFrames
+{
+	OSStatus theStatus;
+	UInt32 theSize;
+	UInt32 frameSize;
+	
+	theSize = sizeof(UInt32);
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyBufferFrameSize;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectGetPropertyData( deviceID, &propertyAddress, 0, NULL, &theSize, &frameSize );
+	return frameSize;
+}
+
+- (UInt32) deviceMaxVariableBufferSizeInFrames
+{
+	OSStatus theStatus;
+	UInt32 theSize;
+	UInt32 frameSize;
+	
+	theSize = sizeof(UInt32);
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyUsesVariableBufferFrameSizes;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectGetPropertyData( deviceID, &propertyAddress, 0, NULL, &theSize, &frameSize );
+	if ( noErr == theStatus )
+		return frameSize;
+	else
+		return [self deviceBufferSizeInFrames];
+}
+
+- (UInt32) deviceMinBufferSizeInFrames
+{
+	OSStatus theStatus;
+	UInt32 theSize;
+	AudioValueRange theRange;
+	
+	theSize = sizeof(AudioValueRange);
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyBufferFrameSizeRange;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectGetPropertyData( deviceID, &propertyAddress, 0, NULL, &theSize, &theRange );
+	return (UInt32) theRange.mMinimum;
+}
+
+- (UInt32) deviceMaxBufferSizeInFrames
+{
+	OSStatus theStatus;
+	UInt32 theSize;
+	AudioValueRange theRange;
+	
+	theSize = sizeof(AudioValueRange);
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyBufferFrameSizeRange;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectGetPropertyData( deviceID, &propertyAddress, 0, NULL, &theSize, &theRange );
+	return (UInt32) theRange.mMaximum;
+}
+
+- (void) setDeviceBufferSizeInFrames:(UInt32)numFrames
+{
+	OSStatus theStatus;
+	UInt32 theSize;
+    
+	theSize = sizeof(UInt32);
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyBufferFrameSize;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectSetPropertyData( deviceID, &propertyAddress, 0, NULL, theSize, &numFrames );
+}
+
+- (UInt32)deviceLatencyFramesForDirection:(VJXAudioDeviceDirection)theDirection
+{
+	OSStatus theStatus;
+	UInt32 theSize;
+	UInt32 latencyFrames;
+	
+	theSize = sizeof(UInt32);
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyLatency;
+    propertyAddress.mScope = (theDirection == kVJXAudioOutput)  ? kAudioDevicePropertyScopeOutput : kAudioDevicePropertyScopeInput;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectGetPropertyData( deviceID, &propertyAddress, 0, NULL, &theSize, &latencyFrames );
+    return latencyFrames;
+}
+
+- (UInt32) deviceSafetyOffsetFramesForDirection:(VJXAudioDeviceDirection)theDirection
+{
+	OSStatus theStatus;
+	UInt32 theSize;
+	UInt32 safetyFrames;
+	
+	theSize = sizeof(UInt32);
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertySafetyOffset;
+    propertyAddress.mScope = (theDirection == kVJXAudioOutput)  ? kAudioDevicePropertyScopeOutput : kAudioDevicePropertyScopeInput;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
+    theStatus = AudioObjectGetPropertyData( deviceID, &propertyAddress, 0, NULL, &theSize, &safetyFrames );
+	return safetyFrames;
+}
+
 - (NSArray *)channelsByStreamForDirection:(VJXAudioDeviceDirection)theDirection
 {
 	OSStatus theStatus;
@@ -428,14 +793,12 @@ static OSStatus VJXAudioDevicePropertyListener (
 		return rv;
 	theList = (AudioBufferList *) malloc ( theSize );
     theStatus = AudioObjectGetPropertyData( deviceID, &propertyAddress, 0, NULL, &theSize, theList );
-	if (theStatus != 0)
-	{
+	if (theStatus != 0) {
 		free(theList);
 		return rv;
 	}
 	
-	for ( x = 0; x < theList->mNumberBuffers; x++ )
-	{
+	for ( x = 0; x < theList->mNumberBuffers; x++ ) {
 		[rv addObject:[NSNumber numberWithUnsignedLong:theList->mBuffers[x].mNumberChannels]];
 	}
 	free(theList);
@@ -459,6 +822,76 @@ static OSStatus VJXAudioDevicePropertyListener (
 }
 
 
+- (VJXAudioFormat *) streamDescriptionForChannel:(UInt32)theChannel forDirection:(VJXAudioDeviceDirection)theDirection
+{
+	OSStatus theStatus;
+	UInt32 theSize;
+	AudioStreamBasicDescription theDescription;
+	
+	theSize = sizeof(AudioStreamBasicDescription);
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyStreamFormat;
+    propertyAddress.mScope = (theDirection == kVJXAudioOutput)  ? kAudioDevicePropertyScopeOutput : kAudioDevicePropertyScopeInput;
+    propertyAddress.mElement = theChannel;
+    theStatus = AudioObjectGetPropertyData( deviceID, &propertyAddress, 0, NULL, &theSize, &theDescription );
+	if (theStatus == 0)
+	{
+		return [VJXAudioFormat formatWithAudioStreamDescription:theDescription];
+	}
+	return nil;
+}
+
+// NSArray of MTCoreAudioStreamDescriptions
+- (NSArray *) streamDescriptionsForChannel:(UInt32)theChannel forDirection:(VJXAudioDeviceDirection)theDirection
+{
+	OSStatus theStatus;
+	UInt32 theSize;
+	UInt32 numItems;
+	UInt32 x;
+	AudioStreamBasicDescription * descriptionArray;
+	NSMutableArray * rv;
+	
+	rv = [NSMutableArray arrayWithCapacity:1];
+	
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyStreamFormats;
+    propertyAddress.mScope = (theDirection == kVJXAudioOutput)  ? kAudioDevicePropertyScopeOutput : kAudioDevicePropertyScopeInput;
+    propertyAddress.mElement = theChannel;
+    theStatus = AudioObjectGetPropertyDataSize( deviceID, &propertyAddress, 0, NULL, &theSize );
+	if (theStatus != 0)
+		return rv;
+	
+	descriptionArray = (AudioStreamBasicDescription *) malloc ( theSize );
+	numItems = theSize / sizeof(AudioStreamBasicDescription);
+    theStatus = AudioObjectGetPropertyData( deviceID, &propertyAddress, 0, NULL, &theSize, descriptionArray );
+	if (theStatus != 0)
+	{
+		free(descriptionArray);
+		return rv;
+	}
+	
+	for ( x = 0; x < numItems; x++ )
+		[rv addObject:[VJXAudioFormat formatWithAudioStreamDescription:descriptionArray[x]]];
+    
+	free(descriptionArray);
+	return rv;
+}
+
+- (Boolean) setStreamDescription:(VJXAudioFormat *)theDescription forChannel:(UInt32)theChannel forDirection:(VJXAudioDeviceDirection)theDirection
+{
+	OSStatus theStatus;
+	UInt32 theSize;
+	AudioStreamBasicDescription theASBasicDescription;
+	
+	theASBasicDescription = [theDescription audioStreamBasicDescription];
+	theSize = sizeof(AudioStreamBasicDescription);
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioDevicePropertyStreamFormat;
+    propertyAddress.mScope = (theDirection == kVJXAudioOutput)  ? kAudioDevicePropertyScopeOutput : kAudioDevicePropertyScopeInput;
+    propertyAddress.mElement = theChannel;
+    theStatus = AudioObjectSetPropertyData( deviceID, &propertyAddress, 0, NULL, theSize, &theASBasicDescription );
+	return (theStatus == 0);
+}
 
 - (NSArray *) relatedDevices
 {
@@ -733,12 +1166,7 @@ finish:
 
         // these can't be done inside the same lock that's held by the IOProc
         // dispatcher, because this can lead to a deadlock with CoreAudio's CAGuard lock
-#if defined(MAC_OS_X_VERSION_10_5) && (MAC_OS_X_VERSION_MIN_REQUIRED>=MAC_OS_X_VERSION_10_5)
         rv = AudioDeviceCreateIOProcID( deviceID, demuxIOProc, self, &demuxIOProcID );
-#else
-        // deprecated in favor of AudioDeviceCreateIOProcID()
-        rv = AudioDeviceAddIOProc ( deviceID, demuxIOProc, self );
-#endif
         if ( noErr == rv )
         {
             rv = AudioDeviceStart ( deviceID, demuxIOProc );
@@ -814,15 +1242,11 @@ finish:
 	Float32 theVolumeScalar;
 	
 	theSize = sizeof(Float32);
-#if 1//MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
     AudioObjectPropertyAddress propertyAddress;
     propertyAddress.mSelector = kAudioDevicePropertyVolumeScalar;
     propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;//(theDirection == kVJXAudioOutput)  ? kAudioDevicePropertyScopeOutput : kAudioDevicePropertyScopeInput;
     propertyAddress.mElement = kAudioObjectPropertyElementWildcard;//theChannel;
     theStatus = AudioObjectGetPropertyData( deviceID, &propertyAddress, 0, NULL, &theSize, &theVolumeScalar );
-#else
-	theStatus = AudioDeviceGetProperty ( deviceID, theChannel, theDirection, kAudioDevicePropertyVolumeScalar, &theSize, &theVolumeScalar );
-#endif
     if ( theStatus == kAudioHardwareUnknownPropertyError ) {
         NSLog(@"Unknown hardware property");
     }
@@ -839,7 +1263,6 @@ finish:
     UInt32 theSize;
     
     theSize = sizeof(Float32);
-#if 0//MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
     AudioObjectPropertyAddress propertyAddress;
     propertyAddress.mSelector = kAudioDevicePropertyVolumeScalar;
     propertyAddress.mScope = (theDirection == kVJXAudioInput)
@@ -847,9 +1270,6 @@ finish:
                            : kAudioDevicePropertyScopeOutput;    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
     propertyAddress.mElement = theChannel;
     theStatus = AudioObjectSetPropertyData( deviceID, &propertyAddress, 0, NULL, theSize, &theVolume );
-#else
-    theStatus = AudioDeviceSetProperty ( deviceID, NULL, theChannel, theDirection, kAudioDevicePropertyVolumeScalar, theSize, &theVolume );
-#endif
 }
 
 - (OSStatus) ioCycleForDevice:(VJXAudioDevice *)theDevice timeStamp:(const AudioTimeStamp *)inNow inputData:(const AudioBufferList *)inInputData inputTime:(const AudioTimeStamp *)inInputTime outputData:(AudioBufferList *)outOutputData outputTime:(const AudioTimeStamp *)inOutputTime clientData:(void *)inClientData

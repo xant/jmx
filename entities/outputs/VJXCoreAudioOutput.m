@@ -30,7 +30,10 @@
 {
     if (self == [super init]) {
         outputDevice = [[VJXAudioDevice defaultOutputDevice] retain];
-        [outputDevice setIOTarget:self withSelector:@selector(provideSamplesToDevice:timeStamp:inputData:inputTime:outputData:outputTime:clientData:) withClientData:self];
+        [outputDevice setIOTarget:self 
+                     withSelector:@selector(provideSamplesToDevice:timeStamp:inputData:inputTime:outputData:outputTime:clientData:)
+                   withClientData:self];
+        // start the device
         [outputDevice deviceStart];
         format = [[outputDevice streamDescriptionForChannel:0 forDirection:kVJXAudioOutput] retain];
     }
@@ -57,13 +60,17 @@
 {
     VJXAudioBuffer *sample = [self currentSample];
     if (sample) {
-        @synchronized(self) {
-            NSData *data = [sample data];
-            if ([data length] <= outOutputData->mBuffers[0].mDataByteSize) {
-                memcpy(outOutputData->mBuffers[0].mData, [data bytes], [data length]);
-                outOutputData->mBuffers[0].mDataByteSize = [data length];
+        int i;
+        @synchronized(outputDevice) {
+            for (i = 0; i < outOutputData->mNumberBuffers; i++) {
+                if (outOutputData->mBuffers[i].mData && sample.bufferList->mNumberBuffers > i) {
+                    memcpy(outOutputData->mBuffers[i].mData,
+                           sample.bufferList->mBuffers[i].mData,
+                           sample.bufferList->mBuffers[i].mDataByteSize);
+                    outOutputData->mBuffers[i].mDataByteSize = sample.bufferList->mBuffers[i].mDataByteSize;
+                    outOutputData->mBuffers[i].mNumberChannels = sample.bufferList->mBuffers[i].mNumberChannels;
+                }
             }
-            
         }
     } else {
         //NSLog(@"NO FRAME");

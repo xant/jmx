@@ -79,7 +79,7 @@
     void *data;
     VJXAudioBuffer *buffer = nil;
 
-    // Set the client format to 16 bit signed integer (native-endian) data
+    // Set the client format to 32bit float data
 	// Maintain the channel count and sample rate of the original source format
 	theOutputFormat.mSampleRate = fileFormat.mSampleRate;
 	theOutputFormat.mChannelsPerFrame = 2;
@@ -89,7 +89,6 @@
 	theOutputFormat.mFramesPerPacket = 1;
 	theOutputFormat.mBytesPerFrame = 4 * theOutputFormat.mChannelsPerFrame;
 	theOutputFormat.mBitsPerChannel = 32;
-	//theOutputFormat.mFormatFlags = kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked | kAudioFormatFlagIsSignedInteger;
 	
 	// Set the desired client (output) data format
 	err = ExtAudioFileSetProperty(audioFile, kExtAudioFileProperty_ClientDataFormat, sizeof(theOutputFormat), &theOutputFormat);

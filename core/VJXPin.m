@@ -404,6 +404,9 @@
         case kVJXPointPin:
             return @"Point";
             break;
+        case kVJXAudioPin:
+            return @"Audio";
+            break;
     }
     return @"Unknown";
 }

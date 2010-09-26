@@ -42,7 +42,6 @@
 {
     if (self = [super init]) {
         int i;
-        uint8_t *deinterleavedBuffer = NULL;
         if (audioFormat)
             format = [[VJXAudioFormat formatWithAudioStreamDescription:*audioFormat] retain];
         bufferList = calloc(1, sizeof(AudioBufferList)+(sizeof(AudioBuffer)*(audioBufferList->mNumberBuffers-1)));
@@ -52,29 +51,38 @@
             bufferList->mBuffers[i].mNumberChannels = audioBufferList->mBuffers[i].mNumberChannels;
             bufferList->mBuffers[i].mData = malloc(audioBufferList->mBuffers[i].mDataByteSize);
             memcpy(bufferList->mBuffers[i].mData, audioBufferList->mBuffers[i].mData, audioBufferList->mBuffers[i].mDataByteSize);
-            
+#if 0 // disable the de-interleave logic until we need it
+            uint8_t *deinterleavedBuffer = NULL;
             // XXX - unsure if it's really necessary to always de-interleave the buffers (we could do it only if/when necessary)
             if (bufferList->mBuffers[i].mNumberChannels > 1) { // de-interleave the audio frames (we could need that later)
                 int j;
-                UInt32 numFrames = bufferList->mBuffers[i].mDataByteSize / format.audioStreamBasicDescription.mBytesPerFrame / bufferList->mBuffers[i].mNumberChannels;
+                UInt32 numFrames = bufferList->mBuffers[i].mDataByteSize / 
+                                   format.audioStreamBasicDescription.mBytesPerFrame / 
+                                   bufferList->mBuffers[i].mNumberChannels;
+                // this buffer will be encapsulated in an NSData 
+                // and will be automatically freed when the NSData will be released
                 deinterleavedBuffer = calloc(bufferList->mBuffers[i].mDataByteSize, 1);
                 uint8_t *channels[bufferList->mBuffers[i].mNumberChannels];
                 
                 // set pointers to the de-interleaved buffer for each channel
                 for (j = 0; j < bufferList->mBuffers[i].mNumberChannels; j++) {
-                    channels[j] = ((uint8_t *)deinterleavedBuffer)+((bufferList->mBuffers[i].mDataByteSize/bufferList->mBuffers[i].mNumberChannels)*j);
+                    channels[j] = ((uint8_t *)deinterleavedBuffer) +
+                                   ((bufferList->mBuffers[i].mDataByteSize/bufferList->mBuffers[i].mNumberChannels)*j);
                 }
                 
                 // and then fill them up
                 for (j = 0; j < numFrames; j++) {
-                    uint8_t *frame = ((uint8_t *)bufferList->mBuffers[i].mData)+(j*audioFormat->mBytesPerFrame*bufferList->mBuffers[i].mNumberChannels);
+                    uint8_t *frame = ((uint8_t *)bufferList->mBuffers[i].mData) +
+                                      (j*audioFormat->mBytesPerFrame*bufferList->mBuffers[i].mNumberChannels);
                     memcpy(channels[0]+j, frame, audioFormat->mBytesPerFrame*bufferList->mBuffers[i].mNumberChannels);
-                    memcpy(channels[1]+j, frame+audioFormat->mBytesPerFrame*bufferList->mBuffers[i].mNumberChannels, audioFormat->mBytesPerFrame*bufferList->mBuffers[i].mNumberChannels);
+                    memcpy(channels[1]+j, frame+audioFormat->mBytesPerFrame*bufferList->mBuffers[i].mNumberChannels,
+                           audioFormat->mBytesPerFrame*bufferList->mBuffers[i].mNumberChannels);
                 }
                 [deinterleaved addObject:[NSData dataWithBytesNoCopy:deinterleavedBuffer
                                                               length:bufferList->mBuffers[i].mDataByteSize
-                                                        freeWhenDone:YES]];
+                                                        freeWhenDone:YES]]; // the NSData will free the allocated deinterleavedBuffer
             }
+#endif
         }
     }
     return self;

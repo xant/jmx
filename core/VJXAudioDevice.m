@@ -1196,9 +1196,6 @@ finish:
 {
 	if (muxStarted)
 	{
-		//[VJXAudioIOProcMux unRegisterDevice:self];
-		// XXX - IMPLEMENT
-        // TODO - unregister ioprocs
         AudioDeviceStop ( deviceID, demuxIOProc );
         OSStatus theStatus = AudioDeviceDestroyIOProcID( deviceID, demuxIOProcID );
         if (theStatus == noErr)

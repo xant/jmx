@@ -10,8 +10,8 @@
 #import "VJXThreadedEntity.h"
 
 typedef enum {
-    kVJXAudioMixerPollingMode,
-    kVJXAudioMixerCollectMode
+    kVJXAudioMixerCollectMode,
+    kVJXAudioMixerAccumulateMode
 } VJXAudioMixerMode;
 
 @class VJXPin;

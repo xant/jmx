@@ -25,7 +25,7 @@
         self.frequency = [NSNumber numberWithDouble:44100/512];
         ringBuffer = [[NSMutableArray alloc] init];
         producers = [[NSMutableDictionary alloc] init];
-        mode = kVJXAudioMixerPollingMode;
+        mode = kVJXAudioMixerCollectMode;
         buffered = NO;
         needsPrebuffering = YES; // this must be initially set to true
                                  // regardless of the 'buffered' flag
@@ -44,7 +44,7 @@
 
 - (void)newSample:(VJXAudioBuffer *)buffer fromSender:(id)sender
 {
-    if (mode == kVJXAudioMixerCollectMode) {
+    if (mode == kVJXAudioMixerAccumulateMode) {
         if ([sender isKindOfClass:[VJXEntity class]]) {
             @synchronized(self) {
                 [producers setObject:buffer forKey:sender];
@@ -56,7 +56,7 @@
 
 - (void)tick:(uint64_t)timeStamp
 {
-    if (mode == kVJXAudioMixerPollingMode) {
+    if (mode == kVJXAudioMixerCollectMode) {
         @synchronized(ringBuffer) {
             if (buffered) {
                 if (needsPrebuffering) {
@@ -106,7 +106,7 @@
             if (currentSample)
                 [ringBuffer addObject:currentSample];
         }
-    } else if (mode == kVJXAudioMixerCollectMode) {
+    } else if (mode == kVJXAudioMixerAccumulateMode) {
         @synchronized(self) {
             if (currentSample)
                 [currentSample release];

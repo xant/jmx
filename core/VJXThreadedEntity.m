@@ -81,9 +81,20 @@
     uint64_t timeStamp = CVGetCurrentHostTime();
     [self tick:timeStamp];
     [self outputDefaultSignals:timeStamp];
-    if ([[NSThread currentThread] isCancelled])
+    if ([[NSThread currentThread] isCancelled]) {
         [timer invalidate];
-
+    }/* else { 
+        NSTimeInterval currentInterval = [timer timeInterval];
+        NSTimeInterval newInterval = 1.0/[frequency doubleValue];
+        if (currentInterval != newInterval) {
+            [timer invalidate];
+            [timer release];
+            timer = [NSTimer timerWithTimeInterval:newInterval target:self selector:@selector(signalTick:) userInfo:nil repeats:YES];
+            active = YES;
+            NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+            [runLoop addTimer:timer forMode:NSRunLoopCommonModes];
+        }
+    }*/
 }
 
 - (void)run
@@ -99,6 +110,12 @@
     [runLoop run];
     [pool drain];
     active = NO;
+}
+
+- (void)setFrequency:(NSNumber *)freq
+{
+    if (freq)
+        frequency = freq;
 }
 
 - (void)outputDefaultSignals:(uint64_t)timeStamp

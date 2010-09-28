@@ -34,6 +34,7 @@
     AudioConverterRef converter;
     VJXAudioFormat *format;
     VJXPin *currentSamplePin;
+    VJXPin *audioInputPin;
     BOOL needsBuffering;
 }
 

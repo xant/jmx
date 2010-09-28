@@ -122,8 +122,10 @@
 		err = ExtAudioFileRead(audioFile, &nFrames, theDataBuffer);
 		if(err == noErr)
 		{
-            buffer = [VJXAudioBuffer audioBufferWithCoreAudioBufferList:theDataBuffer 
-                                                          andFormat:(AudioStreamBasicDescription *)&theOutputFormat];
+            if (nFrames) {
+                buffer = [VJXAudioBuffer audioBufferWithCoreAudioBufferList:theDataBuffer 
+                                                                  andFormat:(AudioStreamBasicDescription *)&theOutputFormat];
+            }
 		}
 		else 
 		{ 
@@ -149,6 +151,7 @@
     return YES;
 }
 
+
 - (NSInteger)currentOffset
 {
     SInt64 offset;
@@ -171,7 +174,19 @@
 
 - (NSUInteger)bitsPerChannel
 {
-    return 16; // XXX
+    return 32; // XXX
+}
+
+- (NSInteger)numFrames
+{
+    UInt32 thePropertySize = sizeof(SInt64);
+    SInt64 numFrames;
+    OSStatus err = ExtAudioFileGetProperty(audioFile, kExtAudioFileProperty_FileLengthFrames, &thePropertySize, &numFrames);
+    if (err != noErr) {
+        // TODO - ErrorMessages
+        return 0;
+    }
+    return numFrames;
 }
 
 @end

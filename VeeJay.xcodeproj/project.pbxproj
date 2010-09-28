@@ -44,6 +44,7 @@
 		AA7931BE1233A64800860CD2 /* VJXSize.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7931BD1233A64800860CD2 /* VJXSize.m */; };
 		AA7931C11233A65400860CD2 /* VJXPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7931C01233A65400860CD2 /* VJXPoint.m */; };
 		AA917C01123BD96700001A8B /* VJXEntityInspectorPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA917C00123BD96700001A8B /* VJXEntityInspectorPanel.m */; };
+		AA9A2E521251CB000078FA8A /* VJXAudioMixer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9A2E511251CB000078FA8A /* VJXAudioMixer.m */; };
 		AA9F747A124E9CFE001FAAC8 /* VJXAudioFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9F7479124E9CFE001FAAC8 /* VJXAudioFormat.m */; };
 		AADAC96A124F7AEA00729ACC /* VJXAudioFileLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = AADAC969124F7AEA00729ACC /* VJXAudioFileLayer.m */; };
 		AADEBED61240F7D700A6A06D /* VJXDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 82EA047D1240C2AF00E28B72 /* VJXDocument.m */; };
@@ -129,6 +130,8 @@
 		AA7931C01233A65400860CD2 /* VJXPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXPoint.m; path = core/VJXPoint.m; sourceTree = "<group>"; };
 		AA917BFF123BD96700001A8B /* VJXEntityInspectorPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXEntityInspectorPanel.h; path = gui/VJXEntityInspectorPanel.h; sourceTree = "<group>"; };
 		AA917C00123BD96700001A8B /* VJXEntityInspectorPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXEntityInspectorPanel.m; path = gui/VJXEntityInspectorPanel.m; sourceTree = "<group>"; };
+		AA9A2E501251CB000078FA8A /* VJXAudioMixer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXAudioMixer.h; path = entities/mixers/VJXAudioMixer.h; sourceTree = "<group>"; };
+		AA9A2E511251CB000078FA8A /* VJXAudioMixer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXAudioMixer.m; path = entities/mixers/VJXAudioMixer.m; sourceTree = "<group>"; };
 		AA9F7478124E9CFE001FAAC8 /* VJXAudioFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXAudioFormat.h; path = core/VJXAudioFormat.h; sourceTree = "<group>"; };
 		AA9F7479124E9CFE001FAAC8 /* VJXAudioFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXAudioFormat.m; path = core/VJXAudioFormat.m; sourceTree = "<group>"; };
 		AADAC968124F7AEA00729ACC /* VJXAudioFileLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXAudioFileLayer.h; path = entities/layers/VJXAudioFileLayer.h; sourceTree = "<group>"; };
@@ -281,6 +284,8 @@
 			children = (
 				AA0F49DA12305376005A1C95 /* VJXVideoMixer.h */,
 				AA0F49DB12305376005A1C95 /* VJXVideoMixer.m */,
+				AA9A2E501251CB000078FA8A /* VJXAudioMixer.h */,
+				AA9A2E511251CB000078FA8A /* VJXAudioMixer.m */,
 			);
 			name = Mixers;
 			sourceTree = "<group>";
@@ -486,6 +491,7 @@
 				AA22351312465D200014B745 /* VJXAudioAnalyzer.m in Sources */,
 				AA9F747A124E9CFE001FAAC8 /* VJXAudioFormat.m in Sources */,
 				AADAC96A124F7AEA00729ACC /* VJXAudioFileLayer.m in Sources */,
+				AA9A2E521251CB000078FA8A /* VJXAudioMixer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

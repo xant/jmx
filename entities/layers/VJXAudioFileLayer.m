@@ -26,11 +26,18 @@
 
 @implementation VJXAudioFileLayer
 
+@synthesize repeat, paused;
+
 - (id)init
 {
     if (self = [super init]) {
         audioFile = nil;
         outputPin = [self registerOutputPin:@"audio" withType:kVJXAudioPin];
+        repeat = YES;
+        paused = NO;
+        [self registerInputPin:@"repeat" withType:kVJXNumberPin andSelector:@"setRepeat:"];
+        [self registerInputPin:@"paused" withType:kVJXNumberPin andSelector:@"setPaused:"];
+        currentSample = nil;
     }
     return self;
 }
@@ -38,12 +45,23 @@
 - (BOOL)open:(NSString *)file
 {
     if (file) {
-        @synchronized(self) {
+        @synchronized(audioFile) {
             audioFile = [[VJXAudioFile audioFileWithURL:[NSURL fileURLWithPath:file]] retain];
             if (audioFile) {
                 self.frequency = [NSNumber numberWithDouble:([audioFile sampleRate]/512.0)];
                 NSArray *path = [file componentsSeparatedByString:@"/"];
                 self.name = [path lastObject];
+                if (samples)
+                    [samples removeAllObjects];
+                else
+                    samples = [[NSMutableArray alloc] init];
+                // preload some frames
+                for (int i = 0; i < 512; i++) { // read some frames in the ringbuffer
+                    VJXAudioBuffer *sample = [audioFile readFrames:512];
+                    if (sample)
+                        [samples addObject:sample];
+                }
+                offset = 0;
                 return YES;
             }
         }
@@ -53,11 +71,37 @@
 
 - (void)tick:(uint64_t)timeStamp
 {
-    if (audioFile) {
-        VJXAudioBuffer *sample = [audioFile readFrames:512];
-        if (sample)
-            [outputPin deliverSignal:sample fromSender:self];
+    @synchronized(audioFile) {
+        if (!paused && audioFile) {
+            if ([samples count]) {
+                if (currentSample)
+                    [currentSample release];
+                currentSample = [[samples objectAtIndex:0] retain];
+                [samples removeObjectAtIndex:0];
+                if (currentSample)
+                    [outputPin deliverSignal:currentSample fromSender:self];
+            } else {
+                if ([audioFile currentOffset] >= [audioFile numFrames] - (512*[audioFile numChannels])) {
+                    if (repeat) { // loop on the file if we have to
+                        [audioFile seekToOffset:0];
+                        currentSample = [audioFile readFrames:512];
+                        if (currentSample)
+                            [outputPin deliverSignal:currentSample fromSender:self];
+                        offset = 0;
+                    }
+                }
+            }
+            offset++;
+            while ([samples count] < 512) { // prebuffer a bunch of frames
+                VJXAudioBuffer *sample = [audioFile readFrames:512];
+                if (sample)
+                    [samples addObject:sample];
+                else
+                    break;
+            }
+        }
     }
+    [super tick:timeStamp];
 }
 
 @end

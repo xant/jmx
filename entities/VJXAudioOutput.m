@@ -49,7 +49,7 @@ static OSStatus _FillComplexBufferProc (
 - (id)init
 {
     if (self = [super init]) {
-        [self registerInputPin:@"audio" withType:kVJXAudioPin andSelector:@"newSample:"];
+        audioInputPin = [self registerInputPin:@"audio" withType:kVJXAudioPin];
         currentSamplePin = [self registerOutputPin:@"currentSample" withType:kVJXAudioPin];
         ringBuffer = [[NSMutableArray alloc] init];
         converter = NULL;
@@ -59,23 +59,19 @@ static OSStatus _FillComplexBufferProc (
     return self;
 }
 
-- (void)newSample:(VJXAudioBuffer *)buffer
+- (VJXAudioBuffer *)currentSample
 {
-    if (!buffer)
-        return;
-    if (!format) {
-        NSLog(@"No output format! (%@)", self); // subclasses should define it at initialization time
-        return;
-    }
+    VJXAudioBuffer *currentSample = nil;
+    VJXAudioBuffer *buffer = [audioInputPin readPinValue];
     AudioStreamBasicDescription inputDescription = buffer.format.audioStreamBasicDescription;
     AudioStreamBasicDescription outputDescription = format.audioStreamBasicDescription;
     if (!converter) { // create on first use
         if ( noErr != AudioConverterNew ( &inputDescription, &outputDescription, &converter )) {
             converter = NULL; // just in case
             // TODO - Error Messages
-            return;
+            return nil;
         } else {
-
+            
             UInt32 primeMethod = kConverterPrimeMethod_None;
             UInt32 srcQuality = kAudioConverterQuality_Max;
             (void) AudioConverterSetProperty ( converter, kAudioConverterPrimeMethod, sizeof(UInt32), &primeMethod );
@@ -85,57 +81,34 @@ static OSStatus _FillComplexBufferProc (
         // TODO - check if inputdescription or outputdescription have changed and, 
         //        if that's the case, reset the converter accordingly
     }
-    @synchronized(ringBuffer) {
-        OSStatus err = noErr;
-        CallbackContext callbackContext;
-        UInt32 framesRead = [buffer numFrames];
-        AudioBufferList *outputBufferList = calloc(sizeof(AudioBufferList), 1);
-        outputBufferList->mNumberBuffers = 1;
-        outputBufferList->mBuffers[0].mDataByteSize = outputDescription.mBytesPerFrame * outputDescription.mChannelsPerFrame * framesRead;
-        outputBufferList->mBuffers[0].mNumberChannels = outputDescription.mChannelsPerFrame;
-        outputBufferList->mBuffers[0].mData = calloc(outputBufferList->mBuffers[0].mDataByteSize, 1);
-        callbackContext.theConversionBuffer = buffer;
-        callbackContext.wait = YES; // XXX
-        //UInt32 outputChannels = [buffer numChannels];
-        if (inputDescription.mSampleRate == outputDescription.mSampleRate &&
-            inputDescription.mBytesPerFrame == outputDescription.mBytesPerFrame) {
-            err = AudioConverterConvertBuffer (
-                                               converter,
-                                               buffer.bufferList->mBuffers[0].mDataByteSize,
-                                               buffer.bufferList->mBuffers[0].mData,
-                                               &outputBufferList->mBuffers[0].mDataByteSize,
-                                               outputBufferList->mBuffers[0].mData
-                                              );
-        } else {
-            err = AudioConverterFillComplexBuffer ( converter, _FillComplexBufferProc, &callbackContext, &framesRead, outputBufferList, NULL );
-        }
-        if (err == noErr)
-            [ringBuffer addObject:[VJXAudioBuffer audioBufferWithCoreAudioBuffer:&outputBufferList->mBuffers[0] andFormat:&outputDescription]];
-        free(outputBufferList->mBuffers[0].mData);
-        free(outputBufferList);
-        if ([ringBuffer count] > 100)
-            needsBuffering = NO;
+    OSStatus err = noErr;
+    CallbackContext callbackContext;
+    UInt32 framesRead = [buffer numFrames];
+    AudioBufferList *outputBufferList = calloc(sizeof(AudioBufferList), 1);
+    outputBufferList->mNumberBuffers = 1;
+    outputBufferList->mBuffers[0].mDataByteSize = outputDescription.mBytesPerFrame * outputDescription.mChannelsPerFrame * framesRead;
+    outputBufferList->mBuffers[0].mNumberChannels = outputDescription.mChannelsPerFrame;
+    outputBufferList->mBuffers[0].mData = calloc(outputBufferList->mBuffers[0].mDataByteSize, 1);
+    callbackContext.theConversionBuffer = buffer;
+    callbackContext.wait = NO; // XXX (actually unused)
+    //UInt32 outputChannels = [buffer numChannels];
+    if (inputDescription.mSampleRate == outputDescription.mSampleRate &&
+        inputDescription.mBytesPerFrame == outputDescription.mBytesPerFrame) {
+        err = AudioConverterConvertBuffer (
+                                           converter,
+                                           buffer.bufferList->mBuffers[0].mDataByteSize,
+                                           buffer.bufferList->mBuffers[0].mData,
+                                           &outputBufferList->mBuffers[0].mDataByteSize,
+                                           outputBufferList->mBuffers[0].mData
+                                           );
+    } else {
+        err = AudioConverterFillComplexBuffer ( converter, _FillComplexBufferProc, &callbackContext, &framesRead, outputBufferList, NULL );
     }
-}
-
-- (VJXAudioBuffer *)currentSample
-{
-    VJXAudioBuffer *oldestSample = nil;
-    //NSLog(@"BEFORE: %d\n", [ringBuffer count]);
-    if (needsBuffering)
-        return nil;
-    @synchronized(ringBuffer) {
-        if ([ringBuffer count]) {
-            oldestSample = [[ringBuffer objectAtIndex:0] retain];
-            [ringBuffer removeObjectAtIndex:0];
-        } else {
-            return nil;
-        }
-    }
-    if (oldestSample)
-        [currentSamplePin deliverSignal:oldestSample fromSender:self];
-    //NSLog(@"NOW: %d\n", [ringBuffer count]);
-    return [oldestSample autorelease];
+    if (err == noErr)
+        currentSample = [VJXAudioBuffer audioBufferWithCoreAudioBuffer:&outputBufferList->mBuffers[0] andFormat:&outputDescription];
+    free(outputBufferList->mBuffers[0].mData);
+    free(outputBufferList);     
+    return currentSample;
 }
 
 - (void)dealloc

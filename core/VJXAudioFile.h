@@ -41,5 +41,5 @@
 - (NSUInteger)numChannels;
 - (NSInteger)currentOffset;
 - (NSUInteger)bitsPerChannel;
-
+- (NSInteger)numFrames;
 @end

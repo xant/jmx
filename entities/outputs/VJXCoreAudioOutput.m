@@ -73,7 +73,7 @@
             }
         }
     } else {
-        //NSLog(@"NO FRAME");
+        NSLog(@"NO FRAME");
     }
 }
 

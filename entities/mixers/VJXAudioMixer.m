@@ -15,6 +15,8 @@
 
 @implementation VJXAudioMixer
 
+@synthesize mode, buffered;
+
 - (id)init
 {
     if (self = [super init]) {

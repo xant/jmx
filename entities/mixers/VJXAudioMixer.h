@@ -32,5 +32,8 @@ typedef enum {
     BOOL buffered;
 }
 
+@property (assign) VJXAudioMixerMode mode;
+@property (assign) BOOL buffered;
+
 @end
 

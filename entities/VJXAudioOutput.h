@@ -30,7 +30,6 @@
 
 @interface VJXAudioOutput : VJXEntity {
 @protected
-    NSMutableArray *ringBuffer;
     AudioConverterRef converter;
     VJXAudioFormat *format;
     VJXPin *currentSamplePin;

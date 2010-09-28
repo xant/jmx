@@ -51,7 +51,6 @@ static OSStatus _FillComplexBufferProc (
     if (self = [super init]) {
         audioInputPin = [self registerInputPin:@"audio" withType:kVJXAudioPin];
         currentSamplePin = [self registerOutputPin:@"currentSample" withType:kVJXAudioPin];
-        ringBuffer = [[NSMutableArray alloc] init];
         converter = NULL;
         format = nil; // must be set by superclasses
         needsBuffering = NO;
@@ -63,6 +62,8 @@ static OSStatus _FillComplexBufferProc (
 {
     VJXAudioBuffer *currentSample = nil;
     VJXAudioBuffer *buffer = [audioInputPin readPinValue];
+    if (!buffer)
+        return nil;
     AudioStreamBasicDescription inputDescription = buffer.format.audioStreamBasicDescription;
     AudioStreamBasicDescription outputDescription = format.audioStreamBasicDescription;
     if (!converter) { // create on first use
@@ -113,8 +114,8 @@ static OSStatus _FillComplexBufferProc (
 
 - (void)dealloc
 {
-    if (ringBuffer)
-        [ringBuffer release];
+    if (format)
+        [format dealloc];
     [super dealloc];
 }
 

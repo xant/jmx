@@ -9,6 +9,11 @@
 #import <Cocoa/Cocoa.h>
 #import "VJXThreadedEntity.h"
 
+typedef enum {
+    kVJXAudioMixerPollingMode,
+    kVJXAudioMixerCollectMode
+} VJXAudioMixerMode;
+
 @class VJXPin;
 @class VJXAudioBuffer;
 
@@ -23,6 +28,8 @@
     NSMutableArray *ringBuffer;
     NSMutableDictionary *producers;
     BOOL needsPrebuffering;
+    VJXAudioMixerMode mode;
+    BOOL buffered;
 }
 
 @end

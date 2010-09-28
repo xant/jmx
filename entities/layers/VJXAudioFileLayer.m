@@ -38,8 +38,20 @@
         [self registerInputPin:@"repeat" withType:kVJXNumberPin andSelector:@"setRepeat:"];
         [self registerInputPin:@"paused" withType:kVJXNumberPin andSelector:@"setPaused:"];
         currentSample = nil;
+        samples = nil;
     }
     return self;
+}
+
+- (void)dealloc
+{
+    if (currentSample)
+        [currentSample release];
+    if (samples)
+        [samples release];
+    if (audioFile)
+        [audioFile release];
+    [super dealloc];
 }
 
 - (BOOL)open:(NSString *)file
@@ -84,7 +96,7 @@
                 if ([audioFile currentOffset] >= [audioFile numFrames] - (512*[audioFile numChannels])) {
                     if (repeat) { // loop on the file if we have to
                         [audioFile seekToOffset:0];
-                        currentSample = [audioFile readFrames:512];
+                        currentSample = [[audioFile readFrames:512] retain];
                         if (currentSample)
                             [outputPin deliverSignal:currentSample fromSender:self];
                         offset = 0;

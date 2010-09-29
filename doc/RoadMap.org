@@ -1,0 +1,17 @@
+#+TITLE: VJX RoadMap
+#+DATE: 29 September 2010
+
+* Frontend
+
+** TODO [#A] obj create by drag  from left bar
+** TODO [#A] obj create text dialog with completion
+** TODO [#B] obj input value sliders and controls
+** TODO [#C] icons on upper right corner of objs
+
+* Backend
+
+** TODO [#A] Audio Spectrum Analyzer
+** TODO [#A] Video Filters
+** TODO [#B] Online Streaming
+** TODO [#C] Scheduler
+

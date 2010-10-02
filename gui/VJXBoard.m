@@ -70,7 +70,7 @@
         // TODO - GENERALIZE
         if ([[VJXQtVideoLayer supportedFileTypes] containsObject:[components lastObject]]) {
             VJXQtVideoLayer *entity = [[VJXQtVideoLayer alloc] init];
-            if (fileName && [entity respondsToSelector:@selector(open:)]) {
+            if (fileName && [entity conformsToProtocol:@protocol(VJXFileRead)]) {
                 [entity performSelector:@selector(open:) withObject:[fileURL absoluteString]];
             }
             
@@ -81,7 +81,7 @@
             [entity release];
         } else if ([[VJXAudioFileLayer supportedFileTypes] containsObject:[components lastObject]]) {
             VJXAudioFileLayer *entity = [[VJXAudioFileLayer alloc] init];
-            if (fileName && [entity respondsToSelector:@selector(open:)]) {
+            if (fileName && [entity conformsToProtocol:@protocol(VJXFileRead)]) {
                 [entity performSelector:@selector(open:) withObject:[fileURL absoluteString]];
             }
             
@@ -305,7 +305,9 @@
     if (origin)
         [view setFrameOrigin:NSPointFromString(origin)];
     [self addToBoard:view];
-    if ([anEntity respondsToSelector:@selector(start)])
+    // XXX - perhaps we should let the user start entities esplicitly
+    //       (and we need to provide seek controls as well)
+    if ([anEntity conformsToProtocol:@protocol(VJXThread)])
         [anEntity performSelector:@selector(start)];
     [view release];    
 }

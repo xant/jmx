@@ -23,9 +23,9 @@
 //
 
 #import "VJXEntity.h"
+#import "VJXThread.h"
 
-//@interface VJXThreadedEntity : VJXEntity <VJXThread> {
-@interface VJXThreadedEntity : VJXEntity {
+@interface VJXThreadedEntity : VJXEntity < VJXThread > {
 @protected
     uint64_t previousTimeStamp;
     NSNumber *frequency;
@@ -39,10 +39,4 @@
 
 @property (retain) NSNumber *frequency;
 
-- (void)start;
-- (void)stop;
-- (void)run;
-// entities should implement this message to trigger 
-// delivering of signals to all their custom output pins
-- (void)tick:(uint64_t)timeStamp;
 @end

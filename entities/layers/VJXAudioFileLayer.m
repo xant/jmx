@@ -86,6 +86,11 @@
     return NO;
 }
 
+- (void)close
+{
+    // TODO - IMPLEMENT
+}
+
 - (void)tick:(uint64_t)timeStamp
 {
     @synchronized(audioFile) {

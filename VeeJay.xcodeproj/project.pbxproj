@@ -134,6 +134,8 @@
 		AA9A2E511251CB000078FA8A /* VJXAudioMixer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXAudioMixer.m; path = entities/mixers/VJXAudioMixer.m; sourceTree = "<group>"; };
 		AA9F7478124E9CFE001FAAC8 /* VJXAudioFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXAudioFormat.h; path = core/VJXAudioFormat.h; sourceTree = "<group>"; };
 		AA9F7479124E9CFE001FAAC8 /* VJXAudioFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXAudioFormat.m; path = core/VJXAudioFormat.m; sourceTree = "<group>"; };
+		AAAB1A8D1256BF4000B40A41 /* VJXThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXThread.h; path = core/VJXThread.h; sourceTree = "<group>"; };
+		AAAB1AF31256C08300B40A41 /* VJXFileRead.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXFileRead.h; path = core/VJXFileRead.h; sourceTree = "<group>"; };
 		AADAC968124F7AEA00729ACC /* VJXAudioFileLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXAudioFileLayer.h; path = entities/layers/VJXAudioFileLayer.h; sourceTree = "<group>"; };
 		AADAC969124F7AEA00729ACC /* VJXAudioFileLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXAudioFileLayer.m; path = entities/layers/VJXAudioFileLayer.m; sourceTree = "<group>"; };
 		AADEBF7712413B5B00A6A06D /* VJXAudioFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXAudioFile.h; path = core/VJXAudioFile.h; sourceTree = "<group>"; };
@@ -350,6 +352,8 @@
 				AA7931BD1233A64800860CD2 /* VJXSize.m */,
 				AA7931BF1233A65400860CD2 /* VJXPoint.h */,
 				AA7931C01233A65400860CD2 /* VJXPoint.m */,
+				AAAB1AF31256C08300B40A41 /* VJXFileRead.h */,
+				AAAB1A8D1256BF4000B40A41 /* VJXThread.h */,
 			);
 			name = Core;
 			sourceTree = "<group>";

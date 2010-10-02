@@ -235,7 +235,7 @@
     
     NSString *filename = [panel filename];
     
-    if (filename && [entity respondsToSelector:@selector(open:)]) {
+    if (filename && [entity conformsToProtocol:@protocol(VJXFileRead)]) {
         [entity performSelector:@selector(open:) withObject:filename];
     }
     

@@ -23,10 +23,11 @@
 
 #import <Cocoa/Cocoa.h>
 #import "VJXThreadedEntity.h"
+#import "VJXFileRead.h"
 
 @class VJXAudioFile;
 
-@interface VJXAudioFileLayer : VJXThreadedEntity {
+@interface VJXAudioFileLayer : VJXThreadedEntity < VJXFileRead > {
 @private
     VJXAudioFile *audioFile;
     VJXAudioBuffer *currentSample;
@@ -39,7 +40,5 @@
 
 @property (assign) BOOL paused;
 @property (assign) BOOL repeat;
-
-+ (NSArray *)supportedFileTypes;
 
 @end

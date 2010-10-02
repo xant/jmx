@@ -24,8 +24,9 @@
 #import <Cocoa/Cocoa.h>
 #import <QTKit/QTKit.h>
 #import "VJXLayer.h"
+#import "VJXFileRead.h"
 
-@interface VJXQtVideoLayer : VJXLayer {
+@interface VJXQtVideoLayer : VJXLayer < VJXFileRead > {
 @private
     QTMovie *movie;
     NSString *moviePath;
@@ -36,8 +37,5 @@
 @property (copy) NSString *moviePath;
 @property (assign) BOOL paused;
 @property (assign) BOOL repeat;
-
-+ (NSArray *)supportedFileTypes;
-- (BOOL)open:(NSString *)file;
 
 @end

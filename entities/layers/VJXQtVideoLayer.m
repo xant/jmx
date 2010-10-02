@@ -89,6 +89,10 @@
     return NO;
 }
 
+- (void)close {
+    // TODO - IMPLEMENT
+}
+
 - (void)dealloc {
     if (movie)
         [movie release];

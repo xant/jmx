@@ -94,23 +94,27 @@
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 { 
+    NSArray *pins = nil;
     if (aTableView == inputPins) {
-        NSArray *pins = [[entityView.entity.inputPins allKeys]
-                         sortedArrayUsingComparator:^(id obj1, id obj2)
-                         {
-                             return [obj1 compare:obj2];
-                         }];
-        
+        @synchronized(entityView.entity) {
+            pins = [[entityView.entity.inputPins allKeys]
+                     sortedArrayUsingComparator:^(id obj1, id obj2)
+                     {
+                         return [obj1 compare:obj2];
+                     }];
+        }
         if ([[aTableColumn identifier] isEqualTo:@"pinName"])
             return [pins objectAtIndex:rowIndex];
         else
             return [[entityView.entity.inputPins objectForKey:[pins objectAtIndex:rowIndex]] typeName];
     } else if (aTableView == outputPins) {
-        NSArray *pins = [[entityView.entity.outputPins allKeys]
-                         sortedArrayUsingComparator:^(id obj1, id obj2)
-                         {
-                             return [obj1 compare:obj2];
-                         }];
+        @synchronized(entityView.entity) {
+            pins = [[entityView.entity.outputPins allKeys]
+                     sortedArrayUsingComparator:^(id obj1, id obj2)
+                     {
+                         return [obj1 compare:obj2];
+                     }];
+        }
         if ([[aTableColumn identifier] isEqualTo:@"pinName"])
             return [pins objectAtIndex:rowIndex];
         else
@@ -118,11 +122,13 @@
     } else if (aTableView == producers) {
         NSInteger selectedRow = [inputPins selectedRow];
         if (selectedRow >= 0) {
-            NSArray *pins = [[entityView.entity.inputPins allKeys]
-                             sortedArrayUsingComparator:^(id obj1, id obj2)
-                             {
-                                 return [obj1 compare:obj2];
-                             }];
+            @synchronized(entityView.entity) {
+                pins = [[entityView.entity.inputPins allKeys]
+                         sortedArrayUsingComparator:^(id obj1, id obj2)
+                         {
+                             return [obj1 compare:obj2];
+                         }];
+            }
             NSString *pinName = [pins objectAtIndex:selectedRow];
             VJXPin *pin = [entityView.entity inputPinWithName:pinName];
             return [NSString stringWithFormat:@"%@",[[pin.producers objectAtIndex:rowIndex] description]];

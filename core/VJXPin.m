@@ -226,38 +226,43 @@
 
 - (void)deliverSignal:(id)data fromSender:(id)sender
 {
-    id signalData = [NSNull null];
     switch (type) {
         case kVJXStringPin:
-            if ([data isKindOfClass:[NSString class]])
-                signalData = data;
+            if (![data isKindOfClass:[NSString class]])
+                return;
             break;
         case kVJXNumberPin:
-            if ([data isKindOfClass:[NSNumber class]])
-                signalData = data;
+            if (![data isKindOfClass:[NSNumber class]])
+                return;
             break;
         case kVJXImagePin:
-            if ([data isKindOfClass:[CIImage class]])
-                signalData = data;
+            if (![data isKindOfClass:[CIImage class]])
+                return;
             break;
         case kVJXSizePin:
-            if ([data isKindOfClass:[VJXSize class]])
-                signalData = data;
+            if (![data isKindOfClass:[VJXSize class]])
+                return;
             break;
         case kVJXPointPin:
-            if ([data isKindOfClass:[VJXPoint class]])
-                signalData = data;
+            if (![data isKindOfClass:[VJXPoint class]])
+                return;
             break;
         case kVJXAudioPin:
-            if ([data isKindOfClass:[VJXAudioBuffer class]])
-                signalData = data;
+            if (![data isKindOfClass:[VJXAudioBuffer class]])
+                return;
             break;
         default:
             NSLog(@"Unknown pin type!\n");
+            return;
     }
     
     @synchronized(self) {
         if (data) {
+            // check if we restrict possible values
+            if (allowedValues && ![allowedValues containsObject:data]) {
+                // TODO - Error Message (a not allowed value has been signaled
+                return;
+            }
             if (currentData)
                 [currentData release];
             currentData = [data retain];

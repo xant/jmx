@@ -34,6 +34,7 @@
     VJXAudioFormat *format;
     VJXPin *currentSamplePin;
     VJXPin *audioInputPin;
+    VJXAudioBuffer *lastSample;
 }
 
 - (VJXAudioBuffer *)currentSample;

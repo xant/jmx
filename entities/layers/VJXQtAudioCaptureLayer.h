@@ -25,10 +25,11 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import "VJXEntity.h"
 #import "VJXAudioBuffer.h"
+#import "VJXThread.h"
 
 @class VJXQtAudioGrabber;
 
-@interface VJXQtAudioCaptureLayer : VJXEntity < NSCoding >
+@interface VJXQtAudioCaptureLayer : VJXEntity < NSCoding, VJXThread >
 {
 @private
 	VJXQtAudioGrabber *grabber;

@@ -39,4 +39,9 @@
 
 @property (retain) NSNumber *frequency;
 
+- (void)run;
+// entities should implement this message to trigger 
+// delivering of signals to all their custom output pins
+- (void)tick:(uint64_t)timeStamp;
+
 @end

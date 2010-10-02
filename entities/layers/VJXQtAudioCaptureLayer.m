@@ -25,6 +25,37 @@
 #include <CoreAudio/CoreAudioTypes.h>
 #import <QTKit/QTKit.h>
 
+
+#pragma mark -
+#pragma mark Converter Callback
+
+typedef struct CallbackContext_t {
+	AudioBufferList * theConversionBuffer;
+	Boolean wait;
+    UInt32 offset;
+} CallbackContext;
+
+static OSStatus _FillComplexBufferProc (
+                                        AudioConverterRef aConveter,
+                                        UInt32 * ioNumberDataPackets,
+                                        AudioBufferList * ioData,
+                                        AudioStreamPacketDescription ** outDataPacketDescription,
+                                        void * inUserData
+                                        )
+{
+	CallbackContext * ctx = inUserData;
+    AudioBufferList *bufferList = ctx->theConversionBuffer;
+	int i;
+    for (i = 0; i < bufferList->mNumberBuffers; i++) {
+        ioData->mBuffers[i].mData = bufferList->mBuffers[i].mData;
+        ioData->mBuffers[i].mDataByteSize = bufferList->mBuffers[i].mDataByteSize;
+        //memcpy(&ioData->mBuffers[i], &bufferList->mBuffers[i], sizeof(AudioBuffer));
+    }
+    return noErr;
+}
+
+#pragma mark -
+#pragma mark VJXQtAudioGrabber
 /*
  * QTKit Bridge
  */
@@ -152,6 +183,8 @@ error:
 
 @end
 
+#pragma mark -
+#pragma mark VJXQtAudioCaptureLayer
 
 @implementation VJXQtAudioCaptureLayer : VJXEntity
 
@@ -165,9 +198,52 @@ error:
             [currentBuffer release];
         [[[sampleBuffer formatDescription] attributeForKey:QTFormatDescriptionAudioStreamBasicDescriptionAttribute] getValue:&format];
         AudioBufferList *buffer = [sampleBuffer audioBufferListWithOptions:(QTSampleBufferAudioBufferListOptions)QTSampleBufferAudioBufferListOptionAssure16ByteAlignment];
-        currentBuffer = [[VJXAudioBuffer audioBufferWithCoreAudioBufferList:buffer andFormat:&format] retain];
         
-        [outputPin deliverSignal:currentBuffer fromSender:self];
+        
+        AudioStreamBasicDescription inputDescription = format;
+        AudioStreamBasicDescription outputDescription = outputFormat;
+        if (!converter) { // create on first use
+            if ( noErr != AudioConverterNew ( &inputDescription, &outputDescription, &converter )) {
+                converter = NULL; // just in case
+                // TODO - Error Messages
+                return;
+            } else {
+                
+                UInt32 primeMethod = kConverterPrimeMethod_None;
+                UInt32 srcQuality = kAudioConverterQuality_Max;
+                (void) AudioConverterSetProperty ( converter, kAudioConverterPrimeMethod, sizeof(UInt32), &primeMethod );
+                (void) AudioConverterSetProperty ( converter, kAudioConverterSampleRateConverterQuality, sizeof(UInt32), &srcQuality );
+            }
+        } else {
+            // TODO - check if inputdescription or outputdescription have changed and, 
+            //        if that's the case, reset the converter accordingly
+        }
+        OSStatus err = noErr;
+        CallbackContext callbackContext;
+        UInt32 framesRead = buffer->mBuffers[0].mDataByteSize / format.mBytesPerFrame / buffer->mBuffers[0].mNumberChannels;
+        AudioBufferList *outputBufferList = calloc(sizeof(AudioBufferList), 1);
+        outputBufferList->mNumberBuffers = 1;
+        outputBufferList->mBuffers[0].mDataByteSize = outputDescription.mBytesPerFrame * outputDescription.mChannelsPerFrame * framesRead;
+        outputBufferList->mBuffers[0].mNumberChannels = outputDescription.mChannelsPerFrame;
+        outputBufferList->mBuffers[0].mData = calloc(outputBufferList->mBuffers[0].mDataByteSize, 1);
+        callbackContext.theConversionBuffer = buffer;
+        callbackContext.wait = NO; // XXX (actually unused)
+        if (inputDescription.mSampleRate == outputDescription.mSampleRate &&
+            inputDescription.mBytesPerFrame == outputDescription.mBytesPerFrame) {
+            err = AudioConverterConvertBuffer (
+                                               converter,
+                                               buffer->mBuffers[0].mDataByteSize,
+                                               buffer->mBuffers[0].mData,
+                                               &outputBufferList->mBuffers[0].mDataByteSize,
+                                               outputBufferList->mBuffers[0].mData
+                                               );
+        } else {
+            err = AudioConverterFillComplexBuffer ( converter, _FillComplexBufferProc, &callbackContext, &framesRead, outputBufferList, NULL );
+        }
+        if (err == noErr)
+            currentBuffer = [[VJXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&outputFormat copy:NO freeOnRelease:YES] retain];    
+        if (currentBuffer)
+            [outputPin deliverSignal:currentBuffer fromSender:self];
         [self outputDefaultSignals:CVGetCurrentHostTime()];
     }
 }
@@ -177,6 +253,16 @@ error:
     if (self == [super init]) {
         grabber = [[VJXQtAudioGrabber alloc] init];
         outputPin = [self registerOutputPin:@"audio" withType:kVJXAudioPin];
+        // Set the client format to 32bit float data
+        // Maintain the channel count and sample rate of the original source format
+        outputFormat.mSampleRate = 44100;
+        outputFormat.mChannelsPerFrame = 2;
+        outputFormat.mFormatFlags = kAudioFormatFlagIsFloat | kAudioFormatFlagIsPacked;
+        outputFormat.mFormatID = kAudioFormatLinearPCM;
+        outputFormat.mBytesPerPacket = 4 * outputFormat.mChannelsPerFrame;
+        outputFormat.mFramesPerPacket = 1;
+        outputFormat.mBytesPerFrame = 4 * outputFormat.mChannelsPerFrame;
+        outputFormat.mBitsPerChannel = 32;
     } else {
         [self dealloc];
         return nil;
@@ -214,13 +300,11 @@ error:
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
-    //[aCoder encodeObject:NSStringFromSize([grabber size]) forKey:@"VJXQtVideoCaptureLayerGrabberSize"];
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
     self = [self init];
-    //[self setSize:[VJXSize sizeWithNSSize:NSSizeFromString([aDecoder decodeObjectForKey:@"VJXQtVideoCaptureLayerGrabberSize"])]];
     return self;
 }
 

@@ -27,13 +27,10 @@ typedef enum {
     uint64_t lastSampleTime;
     NSMutableArray *ringBuffer;
     NSMutableDictionary *producers;
-    BOOL needsPrebuffering;
     VJXAudioMixerMode mode;
-    BOOL buffered;
 }
 
 @property (assign) VJXAudioMixerMode mode;
-@property (assign) BOOL buffered;
 
 @end
 

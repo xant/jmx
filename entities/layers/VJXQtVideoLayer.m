@@ -175,4 +175,8 @@
     return [NSString stringWithFormat:@"%@", self.moviePath];
 }
 
++ (NSArray *)supportedFileTypes
+{
+    return [NSArray arrayWithObjects:@"avi", @"mov", @"mp4", @"pdf", @"html", nil];
+}
 @end

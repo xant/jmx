@@ -37,6 +37,7 @@
 @property (assign) BOOL paused;
 @property (assign) BOOL repeat;
 
++ (NSArray *)supportedFileTypes;
 - (BOOL)open:(NSString *)file;
 
 @end

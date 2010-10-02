@@ -124,7 +124,9 @@
 		{
             if (nFrames) {
                 buffer = [VJXAudioBuffer audioBufferWithCoreAudioBufferList:theDataBuffer 
-                                                                  andFormat:(AudioStreamBasicDescription *)&theOutputFormat];
+                                                                  andFormat:(AudioStreamBasicDescription *)&theOutputFormat
+                                                                       copy:NO
+                                                              freeOnRelease:YES];
             }
 		}
 		else 
@@ -135,8 +137,6 @@
 			NSLog(@"MyGetOpenALAudioData: ExtAudioFileRead FAILED, Error = %ld\n", err);
             return nil;
 		}	
-        free(data);
-        free(theDataBuffer);
     }
     return buffer;
 }

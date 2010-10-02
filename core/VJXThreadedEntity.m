@@ -100,9 +100,7 @@
 - (void)run
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-
-    double maxDelta = 1.0/[frequency doubleValue];
-    
+    double maxDelta = 1.0/[self.frequency doubleValue];
     timer = [NSTimer timerWithTimeInterval:maxDelta target:self selector:@selector(signalTick:) userInfo:nil repeats:YES];
     active = YES;
     NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
@@ -110,12 +108,6 @@
     [runLoop run];
     [pool drain];
     active = NO;
-}
-
-- (void)setFrequency:(NSNumber *)freq
-{
-    if (freq)
-        frequency = freq;
 }
 
 - (void)outputDefaultSignals:(uint64_t)timeStamp

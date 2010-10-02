@@ -22,6 +22,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import <AudioToolbox/AudioToolbox.h>
 #import "VJXEntity.h"
 #import "VJXAudioBuffer.h"
 
@@ -33,8 +34,9 @@
 	VJXQtAudioGrabber *grabber;
     VJXAudioBuffer *currentBuffer;
     VJXPin *outputPin;
+    AudioConverterRef converter;
+    AudioStreamBasicDescription outputFormat;
 }
-
 - (void)start;
 - (void)stop;
 @end

@@ -30,11 +30,6 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
 }
 
-- (void)printFrequency:(id)data andSender:(id)sender
-{
-    NSLog(@"Frequency for %@: %@\n", sender, data); 
-}
-
 - (void)awakeFromNib
 {
     [layersTableView registerForDraggedTypes:[NSArray arrayWithObject:@"LayerTableViewDataType"]];

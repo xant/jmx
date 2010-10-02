@@ -53,7 +53,6 @@ static OSStatus _FillComplexBufferProc (
         currentSamplePin = [self registerOutputPin:@"currentSample" withType:kVJXAudioPin];
         converter = NULL;
         format = nil; // must be set by superclasses
-        needsBuffering = NO;
     }
     return self;
 }
@@ -64,6 +63,10 @@ static OSStatus _FillComplexBufferProc (
     VJXAudioBuffer *buffer = [audioInputPin readPinValue];
     if (!buffer)
         return nil;
+    
+    // sample should need to be converted before being sent to the audio device
+    // the output format depends on the output device and could be different from the 
+    // one used internally (44Khz stereo float32 interleaved)
     AudioStreamBasicDescription inputDescription = buffer.format.audioStreamBasicDescription;
     AudioStreamBasicDescription outputDescription = format.audioStreamBasicDescription;
     if (!converter) { // create on first use
@@ -106,9 +109,7 @@ static OSStatus _FillComplexBufferProc (
         err = AudioConverterFillComplexBuffer ( converter, _FillComplexBufferProc, &callbackContext, &framesRead, outputBufferList, NULL );
     }
     if (err == noErr)
-        currentSample = [VJXAudioBuffer audioBufferWithCoreAudioBuffer:&outputBufferList->mBuffers[0] andFormat:&outputDescription];
-    free(outputBufferList->mBuffers[0].mData);
-    free(outputBufferList);     
+        currentSample = [VJXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&outputDescription copy:NO freeOnRelease:YES];    
     return currentSample;
 }
 

@@ -10,12 +10,9 @@
 #include <Accelerate/Accelerate.h>
 #import "VJXAudioFormat.h"
 
-#define AUDIO_MIXER_PREBUFFERING 0
-#define POLLING_MODE 1
-
 @implementation VJXAudioMixer
 
-@synthesize mode, buffered;
+@synthesize mode;
 
 - (id)init
 {
@@ -28,9 +25,6 @@
         ringBuffer = [[NSMutableArray alloc] init];
         producers = [[NSMutableDictionary alloc] init];
         mode = kVJXAudioMixerCollectMode;
-        buffered = NO;
-        needsPrebuffering = YES; // this must be initially set to true
-                                 // regardless of the 'buffered' flag
     }
     return self;
 }
@@ -59,29 +53,6 @@
 - (void)tick:(uint64_t)timeStamp
 {
     if (mode == kVJXAudioMixerCollectMode) {
-        @synchronized(ringBuffer) {
-            if (buffered) {
-                if (needsPrebuffering) {
-                    if ([ringBuffer count] >= 50) {
-                        needsPrebuffering = NO;
-                    }
-                } else {
-                    if ([ringBuffer count] == 0) {
-                        needsPrebuffering = YES;
-                    } else {
-                        [audioOutputPin deliverSignal:[ringBuffer objectAtIndex:0] fromSender:self];
-                        //NSLog(@"%d\n",[ringBuffer count]);
-                        [ringBuffer removeObjectAtIndex:0];
-                    }
-                }
-            }
-            else {
-                if([ringBuffer count]) {
-                    [audioOutputPin deliverSignal:[ringBuffer objectAtIndex:0] fromSender:self];
-                    [ringBuffer removeObjectAtIndex:0];
-                }
-            }
-        }
         NSArray *samples = [audioInputPin readProducers];
         @synchronized(self) {
             if (currentSample) {
@@ -106,7 +77,7 @@
                 }
             }
             if (currentSample)
-                [ringBuffer addObject:currentSample];
+                [audioOutputPin deliverSignal:currentSample fromSender:self];
         }
     } else if (mode == kVJXAudioMixerAccumulateMode) {
         @synchronized(self) {

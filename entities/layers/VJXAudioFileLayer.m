@@ -28,6 +28,11 @@
 
 @synthesize repeat, paused;
 
++ (NSArray *)supportedFileTypes
+{
+    return [NSArray arrayWithObjects:@"mp3", @"mp2", @"aif", @"aiff", @"wav", nil];
+}
+
 - (id)init
 {
     if (self = [super init]) {

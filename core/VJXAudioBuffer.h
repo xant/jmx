@@ -31,6 +31,7 @@
     AudioBufferList *bufferList;
     VJXAudioFormat *format;
     NSMutableArray *deinterleaved;
+    BOOL freeOnRelease;
 }
 
 @property (readonly) AudioBufferList *bufferList;
@@ -38,8 +39,11 @@
 
 + (id)audioBufferWithCoreAudioBuffer:(AudioBuffer *)buffer andFormat:(AudioStreamBasicDescription *)format;
 + (id)audioBufferWithCoreAudioBufferList:(AudioBufferList *)buffer andFormat:(AudioStreamBasicDescription *)format;
++ (id)audioBufferWithCoreAudioBufferList:(AudioBufferList *)buffer andFormat:(AudioStreamBasicDescription *)format copy:(BOOL)wantsCopy freeOnRelease:(BOOL)wantsFree;
 - (id)initWithCoreAudioBuffer:(AudioBuffer *)buffer andFormat:(AudioStreamBasicDescription *)format;
 - (id)initWithCoreAudioBufferList:(AudioBufferList *)buffer andFormat:(AudioStreamBasicDescription *)format;
+- (id)initWithCoreAudioBufferList:(AudioBufferList *)audioBufferList andFormat:(AudioStreamBasicDescription *)audioFormat copy:(BOOL)wantsCopy freeOnRelease:(BOOL)wantsFree;
+
 - (NSUInteger)numChannels;
 - (NSData *)data;
 - (NSUInteger)numFrames;

@@ -303,8 +303,14 @@
         if (destinationPin.type == type) {
             if (direction == kVJXInputPin) {
                 if (destinationPin.direction != kVJXInputPin) {
-                    if ([producers count] && !multiple)
-                        [self disconnectAllPins];
+                    if ([producers count] && !multiple) {
+                        if (direction == kVJXInputPin) {
+                            [[producers objectAtIndex:0] detachObject:self];
+                            [producers removeObjectAtIndex:0];
+                        } else {
+                            [[producers objectAtIndex:0] disconnectFromPin:self];
+                        }
+                    }
                     if ([destinationPin attachObject:self withSelector:@"deliverSignal:fromSender:"]) {
                         [producers addObject:destinationPin];
                         return YES;
@@ -314,8 +320,14 @@
                 if (direction != kVJXInputPin) 
                     return [destinationPin connectToPin:self];
             } else if (direction == kVJXAnyPin) {
-                if ([producers count] && multiple)
-                    [self disconnectAllPins];
+                if ([producers count] && !multiple) {
+                    if (direction == kVJXInputPin) {
+                        [[producers objectAtIndex:0] detachObject:self];
+                        [producers removeObjectAtIndex:0];
+                    } else {
+                        [[producers objectAtIndex:0] disconnectFromPin:self];
+                    }
+                }
                 if ([destinationPin attachObject:self withSelector:@"deliverSignal:fromSender:"]) {
                     [producers addObject:self];
                     return YES;
@@ -344,7 +356,7 @@
 - (void)disconnectAllPins
 {
     NSArray *receiverObjects;
-    @synchronized (self) { 
+    //@synchronized (self) { 
         while ([producers count])
             [self disconnectFromPin:[producers objectAtIndex:0]];
         @synchronized(receivers) {
@@ -352,7 +364,7 @@
         }
         for (VJXPin *receiver in receiverObjects)
             [receiver disconnectFromPin:self];
-    }
+    //}
 }
 
 - (id)copyWithZone:(NSZone *)zone

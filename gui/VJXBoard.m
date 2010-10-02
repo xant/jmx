@@ -22,7 +22,8 @@
 //
 
 #import "VJXBoard.h"
-
+#import "VJXQtVideoLayer.h"
+#import "VJXAudioFileLayer.h"
 
 @implementation VJXBoard
 
@@ -37,9 +38,61 @@
     if (self) {
         selected = [[NSMutableArray alloc] init];
         entities = [[NSMutableArray alloc] init];
-        [self toggleSelected:nil multiple:NO];        
+        [self toggleSelected:nil multiple:NO];
+        [self registerForDraggedTypes:[NSArray arrayWithObjects:NSURLPboardType,NSFilenamesPboardType,nil]];
     }
     return self;
+}
+
+- (NSDragOperation)draggingEntered:(id < NSDraggingInfo >)sender
+{
+    return NSDragOperationCopy;
+}
+
+- (BOOL)prepareForDragOperation:(id < NSDraggingInfo >)sender
+{
+
+    return YES;//[NSURL URLFromPasteboard: [sender draggingPasteboard]];
+}
+
+- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
+{
+    /*------------------------------------------------------
+     method that should handle the drop data
+     --------------------------------------------------------*/
+    if([sender draggingSource]!=self){
+        NSURL* fileURL;
+        
+        //if the drag comes from a file, set the window title to the filename
+        fileURL=[NSURL URLFromPasteboard: [sender draggingPasteboard]];
+        NSString *fileName = [fileURL lastPathComponent];
+        NSArray *components = [fileName componentsSeparatedByString:@"."];
+        // TODO - GENERALIZE
+        if ([[VJXQtVideoLayer supportedFileTypes] containsObject:[components lastObject]]) {
+            VJXQtVideoLayer *entity = [[VJXQtVideoLayer alloc] init];
+            if (fileName && [entity respondsToSelector:@selector(open:)]) {
+                [entity performSelector:@selector(open:) withObject:[fileURL absoluteString]];
+            }
+            
+            [document.entities addObject:entity];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:entity];
+            
+            [entity release];
+        } else if ([[VJXAudioFileLayer supportedFileTypes] containsObject:[components lastObject]]) {
+            VJXAudioFileLayer *entity = [[VJXAudioFileLayer alloc] init];
+            if (fileName && [entity respondsToSelector:@selector(open:)]) {
+                [entity performSelector:@selector(open:) withObject:[fileURL absoluteString]];
+            }
+            
+            [document.entities addObject:entity];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:entity];
+            
+            [entity release];
+        }
+    }
+    return YES;
 }
 
 - (void)awakeFromNib

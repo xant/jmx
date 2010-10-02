@@ -21,7 +21,7 @@
 @synthesize outputPins;
 @synthesize producers;
 @synthesize entityView;
-@synthesize panel;
+//@synthesize panel;
 
 - (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)aStyle backing:(NSBackingStoreType)bufferingType defer:(BOOL)flag
 {

@@ -133,7 +133,10 @@
 
 - (IBAction)addQTVideoLayer:(id)sender
 {
-    NSArray *types = [QTMovie movieTypesWithOptions:QTIncludeCommonTypes];
+    // XXX - movieTypesWithOptions returns also audio files ... so we need to define a list
+    //       with valid extensions for video files
+    //NSArray *types = [QTMovie movieTypesWithOptions:QTIncludeCommonTypes];
+    NSArray *types = [NSArray arrayWithObjects:@"avi", @"mov", @"pdf", @"html", nil];
     VJXQtVideoLayer *entity = [[VJXQtVideoLayer alloc] init];
     [self openFileWithTypes:types forEntity:entity];
 }

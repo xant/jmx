@@ -60,7 +60,7 @@
     [labelView sizeToFit];
     CGFloat labelHeight = [labelView frame].size.height;
     NSRect frame = NSMakeRect(10.0, 10.0, width, height + labelHeight + ENTITY_LABEL_PADDING);
-    CGRect labelFrame = [labelView frame];
+    NSRect labelFrame = [labelView frame];
     labelFrame.origin.x += ENTITY_LABEL_PADDING;
     labelFrame.origin.y = frame.size.height-labelHeight - ENTITY_LABEL_PADDING/2;
     labelFrame.size.width = width - ENTITY_LABEL_PADDING;

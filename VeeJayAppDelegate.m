@@ -22,14 +22,12 @@
 //
 
 #import "VeeJayAppDelegate.h"
-#import "VJXContext.h"
 
 @implementation VeeJayAppDelegate
 
 @synthesize window, layersTableView;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-    [VJXContext initialize];
 }
 
 - (void)awakeFromNib

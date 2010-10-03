@@ -23,11 +23,12 @@ typedef enum {
 @private
     VJXPin *audioInputPin;
     VJXPin *audioOutputPin;
-    VJXAudioBuffer *currentSample;
+    //VJXAudioBuffer *currentSample;
     uint64_t lastSampleTime;
-    NSMutableArray *ringBuffer;
     NSMutableDictionary *producers;
+    NSMutableArray *preBuffer;
     VJXAudioMixerMode mode;
+    BOOL doPrebuffering;
 }
 
 @property (assign) VJXAudioMixerMode mode;

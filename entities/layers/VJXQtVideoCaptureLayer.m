@@ -149,13 +149,13 @@ error:
 {
     if (session) {
         [session stopRunning];
-        if (input) {
-            [session removeInput:input];
-            [input release];
-            input = nil;
-        }
         [session removeOutput:self];
+       // if (input) {
+        [session removeInput:input];
         [session release];
+        [input release];
+        input = nil;
+        //}
         session = nil;
     }
     /*

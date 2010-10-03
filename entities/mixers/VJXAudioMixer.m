@@ -10,6 +10,9 @@
 #include <Accelerate/Accelerate.h>
 #import "VJXAudioFormat.h"
 
+#define kVJXAudioMixerPreBufferMaxSize 15
+#define kVJXAudioMixerPreBufferMinSize 10
+
 @implementation VJXAudioMixer
 
 @synthesize mode;
@@ -21,18 +24,19 @@
         [audioInputPin allowMultipleConnections:YES];
         audioOutputPin = [self registerOutputPin:@"audio" withType:kVJXAudioPin];
         [audioOutputPin allowMultipleConnections:YES];
-        self.frequency = [NSNumber numberWithDouble:44100/512];
-        ringBuffer = [[NSMutableArray alloc] init];
+        self.frequency = [NSNumber numberWithDouble:44100/512]; // XXX - I'm unsure the mixer really needs to run at double speed
+        preBuffer = [[NSMutableArray alloc] init];
         producers = [[NSMutableDictionary alloc] init];
         mode = kVJXAudioMixerCollectMode;
+        doPrebuffering = YES;
     }
     return self;
 }
 
 - (void)dealloc
 {
-    if (ringBuffer)
-        [ringBuffer release];
+    if (preBuffer)
+        [preBuffer release];
     if (producers)
         [producers release];
     [super dealloc];
@@ -53,16 +57,25 @@
 - (void)tick:(uint64_t)timeStamp
 {
     if (mode == kVJXAudioMixerCollectMode) {
+        if (!doPrebuffering) {
+            if ([preBuffer count]) {
+                VJXAudioBuffer *outSample = [preBuffer objectAtIndex:0];
+                [audioOutputPin deliverSignal:outSample fromSender:self];
+                [preBuffer removeObjectAtIndex:0];
+                [outSample release];
+            }
+        }
         NSArray *samples = [audioInputPin readProducers];
         @synchronized(self) {
-            if (currentSample) {
+            VJXAudioBuffer *currentSample = nil;
+            /*if (currentSample) {
                 [currentSample release];
                 currentSample = nil;
-            }
+            }*/
             for (VJXAudioBuffer *sample in samples) {
                 if (!currentSample) {
                     AudioStreamBasicDescription format = sample.format.audioStreamBasicDescription;
-                    currentSample = [[VJXAudioBuffer audioBufferWithCoreAudioBufferList:sample.bufferList andFormat:&format] retain];
+                    currentSample = [VJXAudioBuffer audioBufferWithCoreAudioBufferList:sample.bufferList andFormat:&format];
                 } else {
                     unsigned x, numSamples;
                     Float32 * srcBuffer, *dstBuffer;
@@ -76,14 +89,22 @@
                     }
                 }
             }
-            if (currentSample)
-                [audioOutputPin deliverSignal:currentSample fromSender:self];
+            if (currentSample) {
+                [preBuffer addObject:[currentSample retain]];
+                if (doPrebuffering) {
+                    if ([preBuffer count] >= kVJXAudioMixerPreBufferMinSize)
+                        doPrebuffering = NO;
+                }
+            }
         }
-    } else if (mode == kVJXAudioMixerAccumulateMode) {
+    }
+#if 0
+    else if (mode == kVJXAudioMixerAccumulateMode) {
         @synchronized(self) {
             if (currentSample)
                 [currentSample release];
             currentSample = nil;
+            //NSMutableArray *toRemove = [[NSMutableArray alloc] init];
             for (VJXEntity *producer in producers) {
                 VJXAudioBuffer *sample = [producers objectForKey:producer];
                 if (!currentSample) {
@@ -101,11 +122,23 @@
                         vDSP_vadd ( srcBuffer, 1, dstBuffer, 1, dstBuffer, 1, numSamples );
                     }
                 }
+                /*
+                @synchronized(audioInputPin) {
+                    if (![audioInputPin.producers containsObject:producer])
+                        [toRemove addObject:producer];
+                }
+                 */
             }
             [audioOutputPin deliverSignal:currentSample fromSender:self];
+            /*
+            // remove outdated producers
+            for (VJXEntity *producer in toRemove)
+                [producers removeObjectForKey:producer];
+            [toRemove removeAllObjects];
+             */
         }
-        [producers removeAllObjects];
     }
+#endif
 }
 
 @end

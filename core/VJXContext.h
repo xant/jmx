@@ -25,7 +25,10 @@
 
 
 @interface VJXContext : NSObject {
-
 }
+
++ (void)initialize;
++ (NSThread *)signalThread;
++ (NSThread *)renderThread;
 
 @end

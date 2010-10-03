@@ -23,7 +23,60 @@
 
 #import "VJXContext.h"
 
+#define kVJXContextSignalWorkers 5
+static NSThread *signalThread[kVJXContextSignalWorkers];
+static NSThread *renderThread = nil;
+static VJXContext *globalContext = nil;
+static BOOL initialized = NO;
+
+@interface VJXContext (Private)
+- (void)runThread;
+@end
 
 @implementation VJXContext
+
++ (void)initialize
+{
+    if (!initialized) {
+        if (!globalContext)
+            globalContext = [[VJXContext alloc] init];
+        for (int i = 0; i < kVJXContextSignalWorkers; i++) {
+            if (!signalThread[i]) {
+                signalThread[i] = [[NSThread alloc] initWithTarget:globalContext selector:@selector(runThread) object:nil];
+                [signalThread[i] start];
+            }
+        }
+        if (!renderThread) {
+            renderThread = [[NSThread alloc] initWithTarget:globalContext selector:@selector(runThread) object:nil];
+            [renderThread start];
+        }
+        initialized = YES;
+    }
+}
+
++ (NSThread *)signalThread
+{
+    static unsigned int sel = 0;
+    return signalThread[++sel%kVJXContextSignalWorkers];
+}
+
++ (NSThread *)renderThread
+{
+    return renderThread;
+}
+
+- (void)runThread
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+    
+    int running = true;
+    [[NSRunLoop currentRunLoop] addPort:[NSMachPort port] forMode:NSDefaultRunLoopMode];
+    while (running && [runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]){
+        //run loop spinned ones
+    }
+    //[runLoop run];
+    [pool drain];
+}
 
 @end

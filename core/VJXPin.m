@@ -22,6 +22,7 @@
 //
 
 #import "VJXPin.h"
+#import "VJXContext.h"
 
 @interface VJXPinSignal : NSObject {
     id data;
@@ -207,7 +208,8 @@
         @synchronized(self) {
             signal = [VJXPinSignal signalFrom:currentSender withData:currentData];
         }
-        [self performSelectorInBackground:@selector(performSignal:) withObject:signal];
+        //[self performSelectorInBackground:@selector(performSignal:) withObject:signal];
+        [self performSelector:@selector(performSignal:) onThread:[VJXContext signalThread] withObject:signal waitUntilDone:NO];
     }
     return rv;
 }
@@ -284,7 +286,8 @@
     // is propagated to all receiver, otherwise our entity will slowdown its runloop
     // because of a deep chain of receivers. To avoid affecting the entity we will
     // perform the selector asynchronously in the background 
-    [self performSelectorInBackground:@selector(performSignal:) withObject:signal];
+    //[self performSelectorInBackground:@selector(performSignal:) withObject:signal];
+    [self performSelector:@selector(performSignal:) onThread:[VJXContext signalThread] withObject:signal waitUntilDone:NO];
 }
 
 - (void)allowMultipleConnections:(BOOL)choice
@@ -334,7 +337,7 @@
                     }
                 }
                 if ([destinationPin attachObject:self withSelector:@"deliverSignal:fromSender:"]) {
-                    [producers addObject:self];
+                    [producers addObject:destinationPin];
                     return YES;
                 }
             } else if (destinationPin.direction == kVJXAnyPin) {
@@ -435,6 +438,7 @@
             VJXPin *obj = [[producers objectAtIndex:src] retain];
             [producers removeObjectAtIndex:src];
             [producers insertObject:obj atIndex:dst];
+            [obj release];
             return YES;
         }
     }

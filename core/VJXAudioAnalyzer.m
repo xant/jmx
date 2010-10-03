@@ -84,31 +84,40 @@ static inline UInt32 NextPowerOfTwo(UInt32 x)
 
 @interface VJXSpectralChannel : NSObject
 {
+    /*
     NSData *mInputBuf;		// log2ceil(FFT size + max frames)
     NSData *mOutputBuf;		// log2ceil(FFT size + max frames)
     NSData *mFFTBuf;		// FFT size
     NSData *mSplitFFTBuf;	// FFT size
-    UInt32  mFFTSize;
-	UInt32  mIOBufSize;
-    UInt32  mMaxFrames;
-    UInt32 mInputPos;
-	UInt32 mOutputPos;
-	UInt32 mInFFTPos;
-	UInt32 mOutFFTPos;
-    UInt32 mInputSize;
-    UInt32 mIOMask;
-	UInt32 mFFTMask; 
-	UInt32 mFFTByteSize;
+    */
+    UInt32 bufLen;
+    UInt32 fftLen;
+    void *inputBuf;
+    void *outputBuf;
+    void *fftBuf;
+    void *splitFFTBuf;
+    UInt32 fftSize;
+	UInt32 ioBufSize;
+    UInt32 maxFrames;
+    UInt32 inputPos;
+	UInt32 outputPos;
+	UInt32 inFFTPos;
+	UInt32 outFFTPos;
+    UInt32 inputSize;
+    UInt32 ioMask;
+	UInt32 fftMask; 
+	UInt32 fftByteSize;
 
 }
-@property (readonly) NSData *mInputBuf;
-@property (readonly) NSData *mOutputBuf;
-@property (readonly) NSData *mFFTBuf;
-@property (readonly) NSData *mSplitFFTBuf;
-@property (readonly) UInt32 mInputSize;
-@property (readonly) UInt32 mFFTSize;
 
-- (id)initWithSize:(UInt32)fftSize frames:(UInt32)maxFrames;
+@property (readonly) void *inputBuf;
+@property (readonly) void *outputBuf;
+@property (readonly) void *fftBuf;
+@property (readonly) void *splitFFTBuf;
+@property (readonly) UInt32 inputSize;
+@property (readonly) UInt32 fftSize;
+
+- (id)initWithSize:(UInt32)size frames:(UInt32)numFrames;
 - (void)reset;
 - (void)copyInput:(AudioBuffer *)input frames:(UInt32)numFrames;
 - (void)copyOutput:(AudioBuffer *)output frame:(UInt32)numFrames;
@@ -118,69 +127,71 @@ static inline UInt32 NextPowerOfTwo(UInt32 x)
 
 @implementation VJXSpectralChannel
 
-@synthesize mInputBuf, mInputSize, mOutputBuf, mFFTBuf, mFFTSize, mSplitFFTBuf;
+@synthesize inputBuf, outputBuf, fftBuf, splitFFTBuf;
+@synthesize inputSize, fftSize;
 
-- (id)initWithSize:(UInt32)fftSize frames:(UInt32)maxFrames
+- (id)initWithSize:(UInt32)size frames:(UInt32)numFrames
 {
     if (self = [super init]) {
-        mFFTSize = fftSize;
-        mMaxFrames = maxFrames;
-        mIOBufSize = NextPowerOfTwo(fftSize + maxFrames);
-        UInt32 bufLen = sizeof(Float32)*mIOBufSize;
-        UInt32 fftLen = sizeof(Float32)*mFFTSize;
-        void *inputBuf = calloc(1, bufLen);
-        void *outputBuf = calloc(1, bufLen);
-        void *fftBuf = calloc(1, fftLen);
-        void *splitFftBuf = calloc(1, fftLen);
-        
-        mInputBuf = [NSData dataWithBytesNoCopy:inputBuf length:bufLen freeWhenDone:YES];
-        mOutputBuf = [NSData dataWithBytesNoCopy:outputBuf length:bufLen freeWhenDone:YES];
-        mFFTBuf = [NSData dataWithBytesNoCopy:fftBuf length:fftLen freeWhenDone:YES];
-        mSplitFFTBuf = [NSData dataWithBytesNoCopy:splitFftBuf length:fftLen freeWhenDone:YES];
-        mFFTMask = mFFTSize - 1;
-        mFFTByteSize = mFFTSize * sizeof(Float32);
-        mIOBufSize = NextPowerOfTwo(mFFTSize + mMaxFrames);
-        mIOMask = mIOBufSize - 1;
-        mInputSize = 0;
-        mInputPos = 0;
-        mOutputPos = -mFFTSize & mIOMask; 
-        mInFFTPos = 0;
-        mOutFFTPos = 0;
-        mIOMask = mIOBufSize - 1;
+        fftSize = size;
+        maxFrames = numFrames;
+        ioBufSize = NextPowerOfTwo(fftSize + maxFrames);
+        bufLen = sizeof(Float32)*ioBufSize;
+        fftLen = sizeof(Float32)*fftSize;
+        inputBuf = calloc(1, bufLen);
+        outputBuf = calloc(1, bufLen);
+        fftBuf = calloc(1, fftLen);
+        splitFFTBuf = calloc(1, fftLen);
+        /*
+        mInputBuf = [[NSData dataWithBytesNoCopy:inputBuf length:bufLen freeWhenDone:YES] retain];
+        mOutputBuf = [[NSData dataWithBytesNoCopy:outputBuf length:bufLen freeWhenDone:YES] retain];
+        mFFTBuf = [[NSData dataWithBytesNoCopy:fftBuf length:fftLen freeWhenDone:YES] retain];
+        mSplitFFTBuf = [[NSData dataWithBytesNoCopy:splitFftBuf length:fftLen freeWhenDone:YES] retain];
+        */
+        fftMask = fftSize - 1;
+        fftByteSize = fftSize * sizeof(Float32);
+        ioBufSize = NextPowerOfTwo(fftSize + maxFrames);
+        ioMask = ioBufSize - 1;
+        inputSize = 0;
+        inputPos = 0;
+        outputPos = -fftSize & ioMask; 
+        inFFTPos = 0;
+        outFFTPos = 0;
+        ioMask = ioBufSize - 1;
     }
     return self;
 }
 
 - (void)reset
 {
-    memset((void *)[mInputBuf bytes], 0, [mInputBuf length]);
-    memset((void *)[mOutputBuf bytes], 0, [mOutputBuf length]);
-    memset((void *)[mFFTBuf bytes], 0, [mFFTBuf length]);
-    mInputPos = 0;
-	mOutputPos = -mFFTSize & mIOMask;
-	mInFFTPos = 0;
-	mOutFFTPos = 0;
+    memset((void *)inputBuf, 0, bufLen);
+    memset((void *)outputBuf, 0, bufLen);
+    memset((void *)fftBuf, 0, fftLen);
+    inputPos = 0;
+	outputPos = -fftSize & ioMask;
+	inFFTPos = 0;
+	outFFTPos = 0;
     //memset([mSplitFFTBuf bytes], 0, [mSplitFFTBuf length]);
 }
 
 - (void)copyInput:(AudioBuffer *)input frames:(UInt32)numFrames
 {
     UInt32 numBytes = numFrames * sizeof(Float32);
-    UInt32 firstPart = mIOBufSize - mInputPos;
+    UInt32 firstPart = ioBufSize - inputPos;
     
 	if (firstPart < numFrames) {
 		UInt32 firstPartBytes = firstPart * sizeof(Float32);
 		UInt32 secondPartBytes = numBytes - firstPartBytes;
-        memcpy((Float32 *)[mInputBuf bytes]+ mInputPos, input->mData, firstPartBytes);
-        memcpy((Float32 *)[mInputBuf bytes], (UInt8*)input->mData + firstPartBytes, secondPartBytes);
+        memcpy((Float32 *)inputBuf+ inputPos, input->mData, firstPartBytes);
+        memcpy((Float32 *)inputBuf, (UInt8*)input->mData + firstPartBytes, secondPartBytes);
 	} else {
 		UInt32 numBytes = numFrames * sizeof(Float32);
-        memcpy((Float32 *)[mInputBuf bytes]+ mInputPos, input->mData, numBytes);
+        memcpy((Float32 *)inputBuf+ inputPos, input->mData, numBytes);
 	}
 	//printf("CopyInput %g %g\n", mChannels[0].mInputBuf[mInputPos], mChannels[0].mInputBuf[(mInputPos + 200) & mIOMask]);
 	//printf("CopyInput mInputPos %u   mIOBufSize %u\n", (unsigned)mInputPos, (unsigned)mIOBufSize);
-	mInputSize += numFrames;
-	mInputPos = (mInputPos + numFrames) & mIOMask;    
+	inputSize += numFrames;
+	inputPos = (inputPos + numFrames) & ioMask;    
 }
 
 - (void)copyOutput:(AudioBuffer *)output frame:(UInt32)numFrames
@@ -188,55 +199,55 @@ static inline UInt32 NextPowerOfTwo(UInt32 x)
      //printf("->CopyOutput %g %g\n", mChannels[0].mOutputBuf[mOutputPos], mChannels[0].mOutputBuf[(mOutputPos + 200) & mIOMask]);
      //printf("CopyOutput mOutputPos %u\n", (unsigned)mOutputPos);
      UInt32 numBytes = numFrames * sizeof(Float32);
-     UInt32 firstPart = mIOBufSize - mOutputPos;
+     UInt32 firstPart = ioBufSize - outputPos;
      if (firstPart < numFrames) {
          UInt32 firstPartBytes = firstPart * sizeof(Float32);
          UInt32 secondPartBytes = numBytes - firstPartBytes;
-         memcpy(output->mData, (Float32 *)[mOutputBuf bytes]+ mOutputPos, firstPartBytes);
-         memcpy((UInt8*)output->mData + firstPartBytes, (Float32 *)[mOutputBuf bytes], secondPartBytes);
-         memset((Float32 *)[mOutputBuf bytes]+ mOutputPos, 0, firstPartBytes);
-         memset((Float32 *)[mOutputBuf bytes], 0, secondPartBytes);
+         memcpy(output->mData, (Float32 *)outputBuf+ outputPos, firstPartBytes);
+         memcpy((UInt8*)output->mData + firstPartBytes, (Float32 *)outputBuf, secondPartBytes);
+         memset((Float32 *)outputBuf+ outputPos, 0, firstPartBytes);
+         memset((Float32 *)outputBuf, 0, secondPartBytes);
      } else {
-         memcpy(output->mData, (Float32 *)[mOutputBuf bytes]+ mOutputPos, numBytes);
-         memset((Float32 *)[mOutputBuf bytes]+ mOutputPos, 0, numBytes);
+         memcpy(output->mData, (Float32 *)outputBuf+ outputPos, numBytes);
+         memset((Float32 *)outputBuf+ outputPos, 0, numBytes);
      }
      //printf("<-CopyOutput %g %g\n", ((Float32*)outOutput->mBuffers[0].mData)[0], ((Float32*)outOutput->mBuffers[0].mData)[200]);
-     mOutputPos = (mOutputPos + numFrames) & mIOMask;
+     outputPos = (outputPos + numFrames) & ioMask;
 }
 
 - (void)copyInputToFFT:(UInt32)mHopSize
 {
     //printf("CopyInputToFFT mInFFTPos %u\n", (unsigned)mInFFTPos);
-	UInt32 firstPart = mIOBufSize - mInFFTPos;
+	UInt32 firstPart = ioBufSize - inFFTPos;
 	UInt32 firstPartBytes = firstPart * sizeof(Float32);
-	if (firstPartBytes < mFFTByteSize) {
-		UInt32 secondPartBytes = mFFTByteSize - firstPartBytes;
-        memcpy((Float32 *)[mFFTBuf bytes], (Float32 *)[mInputBuf bytes] + mInFFTPos, firstPartBytes);
-        memcpy((UInt8*)[mFFTBuf bytes] + firstPartBytes, [mInputBuf bytes], secondPartBytes);
+	if (firstPartBytes < fftByteSize) {
+		UInt32 secondPartBytes = fftByteSize - firstPartBytes;
+        memcpy((Float32 *)fftBuf, (Float32 *)inputBuf + inFFTPos, firstPartBytes);
+        memcpy((UInt8*)fftBuf + firstPartBytes, inputBuf, secondPartBytes);
 	} else {
-        memcpy((Float32 *)[mFFTBuf bytes], (Float32 *)[mInputBuf bytes] + mInFFTPos, mFFTByteSize);
+        memcpy((Float32 *)fftBuf, (Float32 *)inputBuf+ inFFTPos, fftByteSize);
 	}
-	mInputSize -= mHopSize;
-	mInFFTPos = (mInFFTPos + mHopSize) & mIOMask;
+	inputSize -= mHopSize;
+	inFFTPos = (inFFTPos + mHopSize) & ioMask;
 	//printf("CopyInputToFFT %g %g\n", mChannels[0].mFFTBuf()[0], mChannels[0].mFFTBuf()[200]);
 }
 
 - (void)overlapAddOutput:(UInt32)mHopSize
 {
     //printf("OverlapAddOutput mOutFFTPos %u\n", (unsigned)mOutFFTPos);
-	UInt32 firstPart = mIOBufSize - mOutFFTPos;
-	if (firstPart < mFFTSize) {
-		UInt32 secondPart = mFFTSize - firstPart;
-        float* out1 = (Float32 *)[mOutputBuf bytes] + mOutFFTPos;
-        vDSP_vadd(out1, 1, (Float32 *)[mFFTBuf bytes], 1, out1, 1, firstPart);
-        float* out2 = (Float32 *)[mOutputBuf bytes];
-        vDSP_vadd(out2, 1, (Float32 *)[mFFTBuf bytes] + firstPart, 1, out2, 1, secondPart);
+	UInt32 firstPart = ioBufSize - outFFTPos;
+	if (firstPart < fftSize) {
+		UInt32 secondPart = fftSize - firstPart;
+        float* out1 = (Float32 *)outputBuf + outFFTPos;
+        vDSP_vadd(out1, 1, (Float32 *)fftBuf, 1, out1, 1, firstPart);
+        float* out2 = (Float32 *)outputBuf;
+        vDSP_vadd(out2, 1, (Float32 *)fftBuf + firstPart, 1, out2, 1, secondPart);
 	} else {
-        float* out1 = (Float32 *)[mOutputBuf bytes] + mOutFFTPos;
-        vDSP_vadd(out1, 1, (Float32 *)[mFFTBuf bytes], 1, out1, 1, mFFTSize);
+        float* out1 = (Float32 *)outputBuf + outFFTPos;
+        vDSP_vadd(out1, 1, (Float32 *)fftBuf, 1, out1, 1, fftSize);
 	}
 	//printf("OverlapAddOutput %g %g\n", mChannels[0].mOutputBuf[mOutFFTPos], mChannels[0].mOutputBuf[(mOutFFTPos + 200) & mIOMask]);
-	mOutFFTPos = (mOutFFTPos + mHopSize) & mIOMask;
+	outFFTPos = (outFFTPos + mHopSize) & ioMask;
 }
 
 @end
@@ -283,8 +294,8 @@ static inline UInt32 NextPowerOfTwo(UInt32 x)
         mDSPSplitComplex = calloc(numChannels, sizeof(DSPSplitComplex));
         for (i = 0; i < numChannels; i++) {
             VJXSpectralChannel *channel = [[VJXSpectralChannel alloc] initWithSize:(UInt32)fftSize frames:(UInt32)maxFrames];
-            mDSPSplitComplex[i].realp = (void *)[channel.mSplitFFTBuf bytes];
-            mDSPSplitComplex[i].imagp = (void *)[channel.mSplitFFTBuf bytes] + (fftSize >> 1); // XXX
+            mDSPSplitComplex[i].realp = channel.splitFFTBuf;
+            mDSPSplitComplex[i].imagp = channel.splitFFTBuf + (fftSize >> 1); // XXX
             [channels addObject:channel];
             [channel release]; // the channel will be released as soon as it will be removed from the NSArray
         }
@@ -345,7 +356,7 @@ const double two_pi = 2. * M_PI;
     //       Perhaps removing an indirection layer would be a good idea
     VJXSpectralChannel *channel = [channels objectAtIndex:0];
     if (channel)
-        return channel.mInputSize;
+        return channel.inputSize;
     return 0;
 }
 
@@ -383,7 +394,7 @@ const double two_pi = 2. * M_PI;
 {
 	for (UInt32 i=0; i<[channels count]; i++) {
         VJXSpectralChannel *channel = [channels objectAtIndex:i];
-        UInt32 half = channel.mFFTSize >> 1;
+        UInt32 half = channel.fftSize >> 1;
 		DSPSplitComplex	*freqData = &mDSPSplitComplex[i];
         
 		for (UInt32 j=0; j<half; j++){
@@ -418,7 +429,7 @@ const double two_pi = 2. * M_PI;
 	Float32 *win = (Float32 *)[mWindow bytes];
 	if (!win) return;
 	for (UInt32 i=0; i<mNumChannels; i++) {
-		Float32 *x = (Float32 *)[(NSData *)((VJXSpectralChannel *)[channels objectAtIndex:i]).mFFTBuf bytes];
+		Float32 *x = (Float32 *)[(NSData *)((VJXSpectralChannel *)[channels objectAtIndex:i]).fftBuf bytes];
 		vDSP_vmul(x, 1, win, 1, x, 1, mFFTSize);
 	}
 	//printf("DoWindowing %g %g\n", mChannels[0].mFFTBuf()[0], mChannels[0].mFFTBuf()[200]);
@@ -442,7 +453,7 @@ const double two_pi = 2. * M_PI;
 	for (i=0; i<[channels count]; i++) 
 	{
         VJXSpectralChannel *channel = [channels objectAtIndex:i];
-        vDSP_ctoz((DSPComplex*)[channel.mFFTBuf bytes], 2, &mDSPSplitComplex[i], 1, half);
+        vDSP_ctoz((DSPComplex*)channel.fftBuf, 2, &mDSPSplitComplex[i], 1, half);
         vDSP_fft_zrip(mFFTSetup, &mDSPSplitComplex[i], 1, mLog2FFTSize, FFT_FORWARD);
 	}
 	//printf("<-DoFwdFFT %g %g\n", direction, mChannels[0].mFFTBuf()[0], mChannels[0].mFFTBuf()[200]);
@@ -455,10 +466,10 @@ const double two_pi = 2. * M_PI;
 	for (UInt32 i=0; i<mNumChannels; i++) 
 	{
 		vDSP_fft_zrip(mFFTSetup, &mDSPSplitComplex[i], 1, mLog2FFTSize, FFT_INVERSE);
-		vDSP_ztoc(&mDSPSplitComplex[i], 1, (DSPComplex*)[((VJXSpectralChannel *)[channels objectAtIndex:i]).mFFTBuf bytes], 2, half);		
+		vDSP_ztoc(&mDSPSplitComplex[i], 1, (DSPComplex*)((VJXSpectralChannel *)[channels objectAtIndex:i]).fftBuf, 2, half);		
 		float scale = 0.5 / mFFTSize;
-		vDSP_vsmul([((VJXSpectralChannel *)[channels objectAtIndex:i]).mFFTBuf bytes], 1, &scale, 
-                   (void *)[((VJXSpectralChannel *)[channels objectAtIndex:i]).mFFTBuf bytes], 1, mFFTSize);
+		vDSP_vsmul(((VJXSpectralChannel *)[channels objectAtIndex:i]).fftBuf, 1, &scale, 
+                   (void *)((VJXSpectralChannel *)[channels objectAtIndex:i]).fftBuf, 1, mFFTSize);
 	}
 	//printf("<-DoInvFFT %g %g\n", direction, mChannels[0].mFFTBuf()[0], mChannels[0].mFFTBuf()[200]);
 }

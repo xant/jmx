@@ -22,7 +22,8 @@
 //
 
 #import "VJXOpenGLScreen.h"
-#import <QuartzCore/CIContext.h>
+#import <QuartzCore/QuartzCore.h>
+#import "VJXContext.h"
 
 @interface VJXOpenGLView : NSOpenGLView {
     CIImage *currentFrame;
@@ -85,22 +86,21 @@
 
 - (void)drawRect:(NSRect)rect
 {
-    [[self openGLContext] makeCurrentContext];
-    
-    if (CGLLockContext([[self openGLContext] CGLContextObj]) != kCGLNoError)
-        NSLog(@"Could not lock CGLContext");
-    
     @synchronized(self) {
-        NSRect bounds = [self bounds];
-        if (currentFrame != NULL) {
-            CIImage *image = currentFrame;
-            CGRect screenSizeRect = NSRectToCGRect(bounds);
-            [ciContext drawImage:image inRect:screenSizeRect fromRect:screenSizeRect];
-        }
-        [[self openGLContext] flushBuffer];
-        [self setNeedsDisplay:NO];
+        [[self openGLContext] makeCurrentContext];
+        if (CGLLockContext([[self openGLContext] CGLContextObj]) != kCGLNoError)
+            NSLog(@"Could not lock CGLContext");
+                NSRect bounds = [self bounds];
+            CIImage *image = [self.currentFrame retain];
+            if (image != NULL) {
+                CGRect screenSizeRect = NSRectToCGRect(bounds);
+                [ciContext drawImage:image inRect:screenSizeRect fromRect:screenSizeRect];
+                [image release];
+            }
+            [[self openGLContext] flushBuffer];
+            [self setNeedsDisplay:NO];
+        CGLUnlockContext([[self openGLContext] CGLContextObj]);
     }
-    CGLUnlockContext([[self openGLContext] CGLContextObj]);
     
 }
 
@@ -213,6 +213,11 @@
     }
 }
 
+- (void)renderFrame
+{
+    [view drawRect:NSZeroRect];
+}
+
 - (void)drawFrame:(CIImage *)frame
 {
     [super drawFrame:frame];
@@ -227,7 +232,7 @@
         // makes rendering happen in the current thread... which is what we really want
         //[view setNeedsDisplay:YES];
     }
-    [view drawRect:NSZeroRect];
+    [self performSelector:@selector(renderFrame) onThread:[VJXContext renderThread] withObject:nil waitUntilDone:NO];
 }
 
 @end

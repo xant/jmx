@@ -26,6 +26,9 @@
 #import "VJXAudioFormat.h"
 #import <CoreAudio/CoreAudioTypes.h>
 
+#define kVJXAudioOutputPreBufferMaxSize 15
+#define kVJXAudioOutputPreBufferMinSize 10
+
 typedef struct CallbackContext_t {
 	VJXAudioBuffer * theConversionBuffer;
 	Boolean wait;
@@ -49,25 +52,46 @@ static OSStatus _FillComplexBufferProc (
 - (id)init
 {
     if (self = [super init]) {
-        audioInputPin = [self registerInputPin:@"audio" withType:kVJXAudioPin];
+        audioInputPin = [self registerInputPin:@"audio" withType:kVJXAudioPin andSelector:@"newSample:"];
         currentSamplePin = [self registerOutputPin:@"currentSample" withType:kVJXAudioPin];
         converter = NULL;
         format = nil; // must be set by superclasses
-        lastSample = nil;
+        preBuffer = [[[NSMutableArray alloc] init]retain];
+        doPrebuffering = YES;
     }
     return self;
+}
+
+- (void)newSample:(VJXAudioBuffer *)newSample
+{
+    @synchronized(preBuffer) {
+        NSLog(@"DJFGKDF %d\n", [preBuffer count]);
+        if ([preBuffer count] < kVJXAudioOutputPreBufferMaxSize)
+            [preBuffer addObject:[newSample retain]];
+        else if ([preBuffer count] >= kVJXAudioOutputPreBufferMinSize)
+            doPrebuffering = NO;
+        else {
+            doPrebuffering = YES;
+        }
+    }
 }
 
 - (VJXAudioBuffer *)currentSample
 {
     VJXAudioBuffer *currentSample = nil;
-    VJXAudioBuffer *buffer = [audioInputPin readPinValue];
-    if (!buffer || buffer == lastSample)
-        return nil;
+    VJXAudioBuffer *buffer = nil;
+    @synchronized(preBuffer) {
+        if ([preBuffer count] && !doPrebuffering) {
+            buffer = [preBuffer objectAtIndex:0];
+            [preBuffer removeObjectAtIndex:0];
+        }
+    }
     
-    if (lastSample)
-        [lastSample release];
-    lastSample = [buffer retain];
+    if (!buffer)
+        return nil;
+    else
+        [buffer autorelease];
+    
     // sample should need to be converted before being sent to the audio device
     // the output format depends on the output device and could be different from the 
     // one used internally (44Khz stereo float32 interleaved)
@@ -121,8 +145,8 @@ static OSStatus _FillComplexBufferProc (
 {
     if (format)
         [format dealloc];
-    if (lastSample)
-        [lastSample release];
+    if (preBuffer)
+        [preBuffer release];
     [super dealloc];
 }
 

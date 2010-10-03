@@ -65,7 +65,6 @@ static OSStatus _FillComplexBufferProc (
 - (void)newSample:(VJXAudioBuffer *)newSample
 {
     @synchronized(preBuffer) {
-        NSLog(@"DJFGKDF %d\n", [preBuffer count]);
         if ([preBuffer count] < kVJXAudioOutputPreBufferMaxSize)
             [preBuffer addObject:[newSample retain]];
         else if ([preBuffer count] >= kVJXAudioOutputPreBufferMinSize)

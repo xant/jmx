@@ -52,16 +52,7 @@
 - (void)dealloc
 {
     if (connectors) {
-        for (VJXBoardEntityConnector *connector in connectors) {
-            // since the connector is retained by both us and the other 
-            // side of the connection (damn circular references!!)
-            // we need to ensure releasing it in both sides
-            [connector.origin removeConnector:connector];
-            [connector.destination removeConnector:connector];
-            // and now , we still need to remove the connector from the superview
-            // (which is also retaining it)
-            [connector removeFromSuperview];
-        }
+        [self removeAllConnectors];
         [connectors release];
     }
     if (pin)

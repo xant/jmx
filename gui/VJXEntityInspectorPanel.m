@@ -28,6 +28,7 @@
     if (self = [super initWithContentRect:contentRect styleMask:aStyle backing:bufferingType defer:flag]) {
         entityName = nil;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasSelected:) name:@"VJXBoardEntityWasSelected" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasRemoved:) name:@"VJXEntityWasRemoved" object:nil];
     }
     return self;
 }
@@ -95,33 +96,8 @@
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 { 
     NSArray *pins = nil;
-    if (aTableView == inputPins) {
-        @synchronized(entityView.entity) {
-            pins = [[entityView.entity.inputPins allKeys]
-                     sortedArrayUsingComparator:^(id obj1, id obj2)
-                     {
-                         return [obj1 compare:obj2];
-                     }];
-        }
-        if ([[aTableColumn identifier] isEqualTo:@"pinName"])
-            return [pins objectAtIndex:rowIndex];
-        else
-            return [[entityView.entity.inputPins objectForKey:[pins objectAtIndex:rowIndex]] typeName];
-    } else if (aTableView == outputPins) {
-        @synchronized(entityView.entity) {
-            pins = [[entityView.entity.outputPins allKeys]
-                     sortedArrayUsingComparator:^(id obj1, id obj2)
-                     {
-                         return [obj1 compare:obj2];
-                     }];
-        }
-        if ([[aTableColumn identifier] isEqualTo:@"pinName"])
-            return [pins objectAtIndex:rowIndex];
-        else
-            return [[entityView.entity.outputPins objectForKey:[pins objectAtIndex:rowIndex]] typeName];        
-    } else if (aTableView == producers) {
-        NSInteger selectedRow = [inputPins selectedRow];
-        if (selectedRow >= 0) {
+    if (entityView.entity) {
+        if (aTableView == inputPins) {
             @synchronized(entityView.entity) {
                 pins = [[entityView.entity.inputPins allKeys]
                          sortedArrayUsingComparator:^(id obj1, id obj2)
@@ -129,9 +105,36 @@
                              return [obj1 compare:obj2];
                          }];
             }
-            NSString *pinName = [pins objectAtIndex:selectedRow];
-            VJXPin *pin = [entityView.entity inputPinWithName:pinName];
-            return [NSString stringWithFormat:@"%@",[[pin.producers objectAtIndex:rowIndex] description]];
+            if ([[aTableColumn identifier] isEqualTo:@"pinName"])
+                return [pins objectAtIndex:rowIndex];
+            else
+                return [[entityView.entity.inputPins objectForKey:[pins objectAtIndex:rowIndex]] typeName];
+        } else if (aTableView == outputPins) {
+            @synchronized(entityView.entity) {
+                pins = [[entityView.entity.outputPins allKeys]
+                         sortedArrayUsingComparator:^(id obj1, id obj2)
+                         {
+                             return [obj1 compare:obj2];
+                         }];
+            }
+            if ([[aTableColumn identifier] isEqualTo:@"pinName"])
+                return [pins objectAtIndex:rowIndex];
+            else
+                return [[entityView.entity.outputPins objectForKey:[pins objectAtIndex:rowIndex]] typeName];        
+        } else if (aTableView == producers) {
+            NSInteger selectedRow = [inputPins selectedRow];
+            if (selectedRow >= 0) {
+                @synchronized(entityView.entity) {
+                    pins = [[entityView.entity.inputPins allKeys]
+                             sortedArrayUsingComparator:^(id obj1, id obj2)
+                             {
+                                 return [obj1 compare:obj2];
+                             }];
+                }
+                NSString *pinName = [pins objectAtIndex:selectedRow];
+                VJXPin *pin = [entityView.entity inputPinWithName:pinName];
+                return [NSString stringWithFormat:@"%@",[[pin.producers objectAtIndex:rowIndex] description]];
+            }
         }
     }
     return nil;
@@ -208,6 +211,13 @@
 {
     VJXBoardEntity *entity = [aNotification object];
     [self setEntity:entity];
+}
+
+- (void)anEntityWasRemoved:(NSNotification *)aNotification
+{
+    VJXEntity *entity = [aNotification object];
+    if (entityView && entityView.entity == entity)
+        self.entityView = nil; // TODO - clear the listview
 }
 
 @end

@@ -27,7 +27,7 @@
 @property (readonly) NSTableView *producers;
 
 @property (assign) VJXBoardEntity *entityView; // we don't want to retain the entity
-@property (assign) VJXEntityInspectorPanel *panel; // we don't want to retain the entity
+//@property (assign) VJXEntityInspectorPanel *panel; // we don't want to retain the entity
 
 - (void)setEntity:(VJXBoardEntity *)entity;
 - (void)unsetEntity:(VJXBoardEntity *)entity;

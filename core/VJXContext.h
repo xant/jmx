@@ -25,10 +25,15 @@
 
 
 @interface VJXContext : NSObject {
+	NSMutableArray *registeredClasses;
 }
 
 + (void)initialize;
 + (NSThread *)signalThread;
 + (NSThread *)renderThread;
++ (VJXContext *)sharedContext;
+
+- (void)registerClass:(Class)aClass;
+- (NSArray *)registeredClasses;
 
 @end

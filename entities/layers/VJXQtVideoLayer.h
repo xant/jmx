@@ -26,7 +26,7 @@
 #import "VJXLayer.h"
 #import "VJXFileRead.h"
 
-@interface VJXQtVideoLayer : VJXLayer < VJXFileRead > {
+@interface VJXQtVideoLayer : VJXLayer <VJXFileRead> {
 @private
     QTMovie *movie;
     NSString *moviePath;

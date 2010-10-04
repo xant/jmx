@@ -22,12 +22,22 @@
 //
 
 #import "VeeJayAppDelegate.h"
+#import "VJXContext.h"
+#import "VJXVideoMixer.h"
+#import "VJXQtVideoLayer.h"
+#import "VJXOpenGLScreen.h"
 
 @implementation VeeJayAppDelegate
 
 @synthesize window, layersTableView;
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+- (void)applicationWillFinishLaunching:(NSNotification *)notification {
+	VJXContext *sharedContext = [VJXContext sharedContext];
+	[sharedContext registerClass:[VJXVideoMixer class]];
+	[sharedContext registerClass:[VJXQtVideoLayer class]];
+	[sharedContext registerClass:[VJXOpenGLScreen class]];
+	
+	NSLog(@"Registered %i entities", [[sharedContext registeredClasses] count]);
 }
 
 - (void)awakeFromNib

@@ -65,6 +65,25 @@ static BOOL initialized = NO;
     return renderThread;
 }
 
++ (VJXContext *)sharedContext
+{
+	return globalContext;
+}
+
+- (id)init
+{
+	if ((self = [super init]) != nil) {
+		registeredClasses = [[NSMutableArray alloc] init];
+	}
+	return self;
+}
+
+- (void)dealloc
+{
+	[registeredClasses release];
+	[super dealloc];
+}
+
 - (void)runThread
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -77,6 +96,16 @@ static BOOL initialized = NO;
     }
     //[runLoop run];
     [pool drain];
+}
+
+- (void)registerClass:(Class)aClass
+{
+	[registeredClasses addObject:aClass];
+}
+
+- (NSArray *)registeredClasses
+{
+	return (NSArray *)registeredClasses;
 }
 
 @end

@@ -26,11 +26,11 @@
 
 @implementation VJXAudioFileLayer
 
-@synthesize repeat, paused;
+@synthesize repeat;
 
 + (NSArray *)supportedFileTypes
 {
-    return [NSArray arrayWithObjects:@"mp3", @"mp2", @"aif", @"aiff", @"wav", nil];
+    return [NSArray arrayWithObjects:@"mp3", @"mp2", @"aif", @"aiff", @"wav", @"avi", nil];
 }
 
 - (id)init
@@ -39,9 +39,7 @@
         audioFile = nil;
         outputPin = [self registerOutputPin:@"audio" withType:kVJXAudioPin];
         repeat = YES;
-        paused = NO;
         [self registerInputPin:@"repeat" withType:kVJXNumberPin andSelector:@"setRepeat:"];
-        [self registerInputPin:@"paused" withType:kVJXNumberPin andSelector:@"setPaused:"];
         currentSample = nil;
         samples = nil;
     }
@@ -94,7 +92,7 @@
 - (void)tick:(uint64_t)timeStamp
 {
     @synchronized(audioFile) {
-        if (!paused && audioFile) {
+        if (active && audioFile) {
             if ([samples count]) {
                 if (currentSample)
                     [currentSample release];
@@ -121,9 +119,19 @@
                 else
                     break;
             }
+        } else {
+            [outputPin deliverSignal:nil fromSender:self];
         }
     }
     [super tick:timeStamp];
 }
 
+- (void)setRepeat:(id)value
+{
+    repeat = (value && 
+              [value respondsToSelector:@selector(boolValue)] && 
+              [value boolValue])
+    ? YES
+    : NO;
+}
 @end

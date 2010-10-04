@@ -84,5 +84,7 @@
 
 - (void)outputDefaultSignals:(uint64_t)timeStamp;
 
+- (void)activate;
+- (void)deactivate;
 @end
 

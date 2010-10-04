@@ -64,8 +64,10 @@ typedef enum {
 @property (readonly)  BOOL multiple;
 @property (readonly)  VJXPinDirection direction;
 @property (readonly)  NSArray *producers;
+@property (readonly)  NSDictionary *receivers;
 @property (readonly)  NSArray *allowedValues;
 @property (readwrite) BOOL continuous;
+@property (readonly) id owner;
 
 + (id)pinWithName:(NSString *)name
           andType:(VJXPinType)pinType

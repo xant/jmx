@@ -75,7 +75,7 @@
 
 @implementation VJXPin
 
-@synthesize type, name, multiple, continuous, direction, producers, allowedValues;
+@synthesize type, name, multiple, continuous, direction, producers, receivers, allowedValues, owner;
 
 + (id)pinWithName:(NSString *)name
           andType:(VJXPinType)pinType
@@ -228,6 +228,13 @@
 
 - (void)deliverSignal:(id)data fromSender:(id)sender
 {
+    if (!data) {
+        @synchronized(self) {
+            if (currentData)
+                [currentData release];
+            currentData = nil;
+        }
+    }
     switch (type) {
         case kVJXStringPin:
             if (![data isKindOfClass:[NSString class]])

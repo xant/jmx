@@ -33,12 +33,10 @@
     VJXAudioBuffer *currentSample;
     VJXPin *outputPin;
     NSMutableArray *samples;
-    BOOL paused;
     BOOL repeat;
     NSUInteger offset;
 }
 
-@property (assign) BOOL paused;
-@property (assign) BOOL repeat;
+@property (readonly) BOOL repeat;
 
 @end

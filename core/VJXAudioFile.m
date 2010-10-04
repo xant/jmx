@@ -43,6 +43,7 @@
 
         err = ExtAudioFileOpenURL ( (CFURLRef)url, &audioFile );
         if (err != noErr) {
+            NSLog(@"Can't open file");
             // TODO - ErrorMessages
         }
         // Get the audio data format

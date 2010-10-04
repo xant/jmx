@@ -23,8 +23,8 @@
 
 #import "VJXContext.h"
 
-#define kVJXContextSignalWorkers 5
-static NSThread *signalThread[kVJXContextSignalWorkers];
+#define kVJXContextSignalNumWorkers 10
+static NSThread *signalThread[kVJXContextSignalNumWorkers];
 static NSThread *renderThread = nil;
 static VJXContext *globalContext = nil;
 static BOOL initialized = NO;
@@ -40,7 +40,7 @@ static BOOL initialized = NO;
     if (!initialized) {
         if (!globalContext)
             globalContext = [[VJXContext alloc] init];
-        for (int i = 0; i < kVJXContextSignalWorkers; i++) {
+        for (int i = 0; i < kVJXContextSignalNumWorkers; i++) {
             if (!signalThread[i]) {
                 signalThread[i] = [[NSThread alloc] initWithTarget:globalContext selector:@selector(runThread) object:nil];
                 [signalThread[i] start];
@@ -57,7 +57,7 @@ static BOOL initialized = NO;
 + (NSThread *)signalThread
 {
     static unsigned int sel = 0;
-    return signalThread[++sel%kVJXContextSignalWorkers];
+    return signalThread[++sel%kVJXContextSignalNumWorkers];
 }
 
 + (NSThread *)renderThread

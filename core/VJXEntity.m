@@ -167,4 +167,14 @@
            : [NSString stringWithFormat:@"%@:%@", [self className], name];
 }
 
+- (void)activate
+{
+    active = YES;
+}
+
+- (void)deactivate
+{
+    active = NO;
+}
+
 @end

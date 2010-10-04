@@ -73,7 +73,7 @@
             if (fileName && [entity conformsToProtocol:@protocol(VJXFileRead)]) {
                 [entity performSelector:@selector(open:) withObject:[fileURL absoluteString]];
             }
-            
+            [entity start];
             [document.entities addObject:entity];
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:entity];
@@ -84,6 +84,7 @@
             if (fileName && [entity conformsToProtocol:@protocol(VJXFileRead)]) {
                 [entity performSelector:@selector(open:) withObject:[fileURL absoluteString]];
             }
+            [entity start];
             
             [document.entities addObject:entity];
             

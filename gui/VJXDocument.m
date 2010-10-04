@@ -28,6 +28,7 @@
 #import "VJXQtAudioCaptureLayer.h"
 #import "VJXAudioFileLayer.h"
 #import "VJXAudioMixer.h"
+#import "VJXAudioScheduler.h"
 #import "VJXBoard.h"
 #import <QTKit/QTMovie.h>
 
@@ -144,6 +145,7 @@
 - (IBAction)addVideoMixer:(id)sender
 {
     VJXVideoMixer *entity = [[VJXVideoMixer alloc] init];
+    //VJXAudioScheduler *entity = [[VJXAudioScheduler alloc] init];
     [entities addObject:entity];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:entity];
     [entity release];
@@ -191,9 +193,8 @@
 
 - (IBAction)addAudioFileLayer:(id)sender
 {
-    NSArray *types = [NSArray arrayWithObjects:@"mp3", @"wav", @"aiff", nil];
     VJXAudioFileLayer *entity = [[VJXAudioFileLayer alloc] init];
-    [self openFileWithTypes:types forEntity:entity];
+    [self openFileWithTypes:[VJXAudioFileLayer supportedFileTypes] forEntity:entity];
 }
 
 - (IBAction)addAudioMixer:(id)sender

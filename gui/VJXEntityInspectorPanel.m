@@ -23,9 +23,9 @@
 @synthesize entityView;
 //@synthesize panel;
 
-- (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)aStyle backing:(NSBackingStoreType)bufferingType defer:(BOOL)flag
+- (id)initWithFrame:(NSRect)frameRect
 {
-    if (self = [super initWithContentRect:contentRect styleMask:aStyle backing:bufferingType defer:flag]) {
+    if (self = [super initWithFrame:frameRect]) {
         entityName = nil;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasSelected:) name:@"VJXBoardEntityWasSelected" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasRemoved:) name:@"VJXEntityWasRemoved" object:nil];
@@ -47,8 +47,10 @@
 
 - (void)setEntity:(VJXBoardEntity *)boardEntity
 {
+    /*
     if (![self isVisible])
         [self setIsVisible:YES];
+     */
     entityView = boardEntity;
     //[inputPins setDataSource:inspector];
     if ([inputPins dataSource] != self) {

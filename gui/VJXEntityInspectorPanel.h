@@ -10,7 +10,7 @@
 
 @class VJXBoardEntity;
 
-@interface VJXEntityInspectorPanel : NSPanel <NSTableViewDataSource,NSTableViewDelegate> {
+@interface VJXEntityInspectorPanel : NSView <NSTableViewDataSource,NSTableViewDelegate> {
     IBOutlet NSTextField *entityName;
     IBOutlet NSTabView *pinInspector;
     IBOutlet NSTableView *inputPins;

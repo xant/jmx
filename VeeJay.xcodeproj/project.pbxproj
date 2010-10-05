@@ -10,8 +10,6 @@
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		256AC3DA0F4B6AC300CF3369 /* VeeJayAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* VeeJayAppDelegate.m */; };
 		821DE683123925EC00B6A45D /* VJXBoardSelection.m in Sources */ = {isa = PBXBuildFile; fileRef = 821DE682123925EC00B6A45D /* VJXBoardSelection.m */; };
-		822CE016125A74A8000C92F9 /* VJXLibraryTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 822CE015125A74A8000C92F9 /* VJXLibraryTableView.m */; };
-		822CE019125A754E000C92F9 /* VJXLibraryTableViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 822CE018125A754E000C92F9 /* VJXLibraryTableViewDelegate.m */; };
 		82456BA51223CFA200236FE4 /* VJXLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 82456BA41223CFA200236FE4 /* VJXLayer.m */; };
 		82456BBA1223DBE100236FE4 /* VJXQtVideoLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 82456BB61223DBE100236FE4 /* VJXQtVideoLayer.m */; };
 		82456BC41223DC8300236FE4 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BC31223DC8300236FE4 /* OpenGL.framework */; };
@@ -45,6 +43,8 @@
 		AA2BE6511236D31E006087E7 /* VJXThreadedEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2BE6501236D31E006087E7 /* VJXThreadedEntity.m */; };
 		AA718124125899E40068DB2B /* VJXAudioSpectrumAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA718123125899E40068DB2B /* VJXAudioSpectrumAnalyzer.m */; };
 		AA7181381258AFA30068DB2B /* VJXAudioScheduler.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7181371258AFA30068DB2B /* VJXAudioScheduler.m */; };
+		AA718525125B2E560068DB2B /* VJXLibraryTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 822CE015125A74A8000C92F9 /* VJXLibraryTableView.m */; };
+		AA718526125B2E5A0068DB2B /* VJXLibraryTableViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 822CE018125A754E000C92F9 /* VJXLibraryTableViewDelegate.m */; };
 		AA7931BE1233A64800860CD2 /* VJXSize.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7931BD1233A64800860CD2 /* VJXSize.m */; };
 		AA7931C11233A65400860CD2 /* VJXPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7931C01233A65400860CD2 /* VJXPoint.m */; };
 		AA917C01123BD96700001A8B /* VJXEntityInspectorPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA917C00123BD96700001A8B /* VJXEntityInspectorPanel.m */; };
@@ -518,6 +518,8 @@
 				AA9A2E521251CB000078FA8A /* VJXAudioMixer.m in Sources */,
 				AA718124125899E40068DB2B /* VJXAudioSpectrumAnalyzer.m in Sources */,
 				AA7181381258AFA30068DB2B /* VJXAudioScheduler.m in Sources */,
+				AA718525125B2E560068DB2B /* VJXLibraryTableView.m in Sources */,
+				AA718526125B2E5A0068DB2B /* VJXLibraryTableViewDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

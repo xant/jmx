@@ -37,6 +37,6 @@
     NSUInteger offset;
 }
 
-@property (readonly) BOOL repeat;
-
+@property (readwrite) BOOL repeat;
+- (void)doRepeat:(id)value; // input pin setter (we will receive NSNumbers from pins)
 @end

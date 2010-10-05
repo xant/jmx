@@ -39,7 +39,7 @@
         audioFile = nil;
         outputPin = [self registerOutputPin:@"audio" withType:kVJXAudioPin];
         repeat = YES;
-        [self registerInputPin:@"repeat" withType:kVJXNumberPin andSelector:@"setRepeat:"];
+        [self registerInputPin:@"repeat" withType:kVJXNumberPin andSelector:@"doRepeat:"];
         currentSample = nil;
         samples = nil;
     }
@@ -102,12 +102,15 @@
                     [outputPin deliverSignal:currentSample fromSender:self];
             } else {
                 if ([audioFile currentOffset] >= [audioFile numFrames] - (512*[audioFile numChannels])) {
+                    offset = 0;
+                    [audioFile seekToOffset:0];
                     if (repeat) { // loop on the file if we have to
-                        [audioFile seekToOffset:0];
                         currentSample = [[audioFile readFrames:512] retain];
                         if (currentSample)
                             [outputPin deliverSignal:currentSample fromSender:self];
-                        offset = 0;
+                    } else {
+                        active = FALSE;
+                        return;
                     }
                 }
             }
@@ -126,7 +129,7 @@
     [super tick:timeStamp];
 }
 
-- (void)setRepeat:(id)value
+- (void)doRepeat:(id)value
 {
     repeat = (value && 
               [value respondsToSelector:@selector(boolValue)] && 

@@ -144,8 +144,8 @@
 
 - (IBAction)addVideoMixer:(id)sender
 {
-    VJXVideoMixer *entity = [[VJXVideoMixer alloc] init];
-    //VJXAudioScheduler *entity = [[VJXAudioScheduler alloc] init];
+    //VJXVideoMixer *entity = [[VJXVideoMixer alloc] init];
+    VJXAudioScheduler *entity = [[VJXAudioScheduler alloc] init];
     [entities addObject:entity];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:entity];
     [entity release];

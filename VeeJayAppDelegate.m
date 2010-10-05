@@ -22,12 +22,35 @@
 //
 
 #import "VeeJayAppDelegate.h"
+#import "VJXContext.h"
+#import "VJXVideoMixer.h"
+#import "VJXQtVideoLayer.h"
+#import "VJXOpenGLScreen.h"
+#import "VJXImageLayer.h"
+#import "VJXQtVideoCaptureLayer.h"
+#import "VJXAudioFileLayer.h"
+#import "VJXCoreAudioOutput.h"
+#import "VJXQtAudioCaptureLayer.h"
+#import "VJXAudioMixer.h"
 
 @implementation VeeJayAppDelegate
 
 @synthesize window, layersTableView;
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+- (void)applicationWillFinishLaunching:(NSNotification *)notification {
+	VJXContext *sharedContext = [VJXContext sharedContext];
+	[sharedContext registerClass:[VJXVideoMixer class]];
+	[sharedContext registerClass:[VJXImageLayer class]];
+	[sharedContext registerClass:[VJXOpenGLScreen class]];
+	[sharedContext registerClass:[VJXQtVideoCaptureLayer class]];
+	[sharedContext registerClass:[VJXAudioFileLayer class]];
+	[sharedContext registerClass:[VJXQtVideoLayer class]];
+	[sharedContext registerClass:[VJXCoreAudioOutput class]];
+	[sharedContext registerClass:[VJXQtAudioCaptureLayer class]];
+	[sharedContext registerClass:[VJXAudioFileLayer class]];
+	[sharedContext registerClass:[VJXAudioMixer class]];
+	
+	NSLog(@"Registered %i entities", [[sharedContext registeredClasses] count]);
 }
 
 - (void)awakeFromNib

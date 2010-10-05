@@ -10,6 +10,8 @@
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		256AC3DA0F4B6AC300CF3369 /* VeeJayAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* VeeJayAppDelegate.m */; };
 		821DE683123925EC00B6A45D /* VJXBoardSelection.m in Sources */ = {isa = PBXBuildFile; fileRef = 821DE682123925EC00B6A45D /* VJXBoardSelection.m */; };
+		822CE016125A74A8000C92F9 /* VJXLibraryTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 822CE015125A74A8000C92F9 /* VJXLibraryTableView.m */; };
+		822CE019125A754E000C92F9 /* VJXLibraryTableViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 822CE018125A754E000C92F9 /* VJXLibraryTableViewDelegate.m */; };
 		82456BA51223CFA200236FE4 /* VJXLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 82456BA41223CFA200236FE4 /* VJXLayer.m */; };
 		82456BBA1223DBE100236FE4 /* VJXQtVideoLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 82456BB61223DBE100236FE4 /* VJXQtVideoLayer.m */; };
 		82456BC41223DC8300236FE4 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BC31223DC8300236FE4 /* OpenGL.framework */; };
@@ -72,6 +74,10 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		821DE681123925EC00B6A45D /* VJXBoardSelection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXBoardSelection.h; path = gui/VJXBoardSelection.h; sourceTree = "<group>"; };
 		821DE682123925EC00B6A45D /* VJXBoardSelection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXBoardSelection.m; path = gui/VJXBoardSelection.m; sourceTree = "<group>"; };
+		822CE014125A74A8000C92F9 /* VJXLibraryTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXLibraryTableView.h; sourceTree = "<group>"; };
+		822CE015125A74A8000C92F9 /* VJXLibraryTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXLibraryTableView.m; sourceTree = "<group>"; };
+		822CE017125A754E000C92F9 /* VJXLibraryTableViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXLibraryTableViewDelegate.h; sourceTree = "<group>"; };
+		822CE018125A754E000C92F9 /* VJXLibraryTableViewDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXLibraryTableViewDelegate.m; sourceTree = "<group>"; };
 		82456BA31223CFA200236FE4 /* VJXLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXLayer.h; path = entities/VJXLayer.h; sourceTree = "<group>"; };
 		82456BA41223CFA200236FE4 /* VJXLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXLayer.m; path = entities/VJXLayer.m; sourceTree = "<group>"; };
 		82456BB61223DBE100236FE4 /* VJXQtVideoLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXQtVideoLayer.m; path = entities/layers/VJXQtVideoLayer.m; sourceTree = "<group>"; };
@@ -283,6 +289,10 @@
 				AAF17BDD123EABBB001319BA /* VJXBoardInputPanel.m */,
 				82EA047C1240C2AF00E28B72 /* VJXDocument.h */,
 				82EA047D1240C2AF00E28B72 /* VJXDocument.m */,
+				822CE014125A74A8000C92F9 /* VJXLibraryTableView.h */,
+				822CE015125A74A8000C92F9 /* VJXLibraryTableView.m */,
+				822CE017125A754E000C92F9 /* VJXLibraryTableViewDelegate.h */,
+				822CE018125A754E000C92F9 /* VJXLibraryTableViewDelegate.m */,
 			);
 			name = GUI;
 			sourceTree = "<group>";

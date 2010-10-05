@@ -24,6 +24,7 @@
 #import "VJXBoard.h"
 #import "VJXQtVideoLayer.h"
 #import "VJXAudioFileLayer.h"
+#import "VJXFileRead.h"
 
 @implementation VJXBoard
 
@@ -38,29 +39,32 @@
     if (self) {
         selected = [[NSMutableArray alloc] init];
         entities = [[NSMutableArray alloc] init];
+		[self registerForDraggedTypes:[NSArray arrayWithObjects:NSURLPboardType,NSFilenamesPboardType,VJXLibraryTableViewDataType,nil]];
         [self toggleSelected:nil multiple:NO];
-        [self registerForDraggedTypes:[NSArray arrayWithObjects:NSURLPboardType,NSFilenamesPboardType,nil]];
     }
     return self;
 }
 
-- (NSDragOperation)draggingEntered:(id < NSDraggingInfo >)sender
+- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender
 {
     return NSDragOperationCopy;
 }
 
-- (BOOL)prepareForDragOperation:(id < NSDraggingInfo >)sender
+- (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender
 {
-
     return YES;//[NSURL URLFromPasteboard: [sender draggingPasteboard]];
 }
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
 {
-    /*------------------------------------------------------
+	/*------------------------------------------------------
      method that should handle the drop data
      --------------------------------------------------------*/
-    if([sender draggingSource]!=self){
+	
+	// draggingSource returns nil if another application started the drag
+	// operation. We'll assume all drags will either start from Finder or from
+	// our library window.
+    if ([sender draggingSource] == nil) {
         NSURL* fileURL;
         
         //if the drag comes from a file, set the window title to the filename
@@ -93,6 +97,23 @@
             [entity release];
         }
     }
+	else {
+		NSPasteboard *pboard = [sender draggingPasteboard];
+		NSData *data = [pboard dataForType:VJXLibraryTableViewDataType];
+		NSString *className = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+		
+		VJXEntity *entity = [[NSClassFromString(className) alloc] init];
+		
+		if ([entity conformsToProtocol:@protocol(VJXFileRead)]) {
+			[document openFileWithTypes:[[entity class] supportedFileTypes] forEntity:entity];
+		}
+		else {
+			[document.entities addObject:entity];
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:entity];
+			[entity release];			
+		}
+	}
+
     return YES;
 }
 
@@ -100,7 +121,7 @@
 {
     selected = [[NSMutableArray alloc] init];
     entities = [[NSMutableArray alloc] init];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasCreated:) name:@"VJXEntityWasCreated" object:nil];    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasCreated:) name:@"VJXEntityWasCreated" object:nil];
     [self setNeedsDisplay:YES];
 }
 

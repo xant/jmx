@@ -15,8 +15,8 @@
 {
     if (self = [super init]) {
         self.frequency = [NSNumber numberWithDouble:1]; // 1 tick per second
-        startPin = [self registerOutputPin:@"start" withType:kVJXNumberPin];
-        stopPin = [self registerOutputPin:@"stop" withType:kVJXNumberPin];
+        startPin = [self registerInputPin:@"entity" withType:kVJXEntityPin];
+        [startPin allowMultipleConnections:YES];
         currentIndex = 0;
         started = NO;
     }
@@ -26,24 +26,30 @@
 - (void)tick:(uint64_t)timeStamp
 {
     //[startPin deliverSignal:[NSNumber numberWithInt:0]];
-    NSArray *receivers  = [startPin.receivers allKeys];
-    if (receivers && [receivers count]) {
-        VJXAudioFileLayer *audioFile = [[receivers objectAtIndex:currentIndex] owner];
-        if (started) {
-            if (audioFile && !audioFile.active) {
-                currentIndex++;
-                [audioFile activate];
+    NSArray *producers  = startPin.producers;
+    if (producers && [producers count]) {
+        for (int i = 0; i < [producers count]; i++) {
+            VJXPin *producer = [producers objectAtIndex:i];
+            VJXAudioFileLayer *audioFile = [producer readPinValue];
+            if (!audioFile)
+                continue;
+            audioFile.repeat = NO; // ensure keeping repeat set to NO
+            if (i == currentIndex) {
+                if (started) {
+                    if (!audioFile.active) {
+                        currentIndex++;
+                        [[[producers objectAtIndex:currentIndex%[producers count]] readPinValue] activate];
+                        continue;
+                    }
+                } else {
+                    started = YES;
+                    [audioFile activate];
+                }
+            } else {
+                [audioFile deactivate];
             }
-        } else {
-            [[[receivers objectAtIndex:currentIndex] owner] activate];
-            //NSLog(@"%@", [receivers objectAtIndex:0]);
-        }
-        for (VJXPin *receiver in receivers) {
-            if (receiver.owner != audioFile)
-                [receiver.owner deactivate];
         }
     }
-    [stopPin deliverSignal:[NSNumber numberWithInt:0]];
     [super tick:timeStamp];
 }
 

@@ -23,6 +23,7 @@
 
 #import "VJXPin.h"
 #import "VJXContext.h"
+#import "VJXEntity.h"
 
 @interface VJXPinSignal : NSObject {
     id data;
@@ -75,7 +76,7 @@
 
 @implementation VJXPin
 
-@synthesize type, name, multiple, continuous, direction, producers, receivers, allowedValues, owner;
+@synthesize type, name, multiple, continuous, retainData, direction, producers, receivers, allowedValues, owner;
 
 + (id)pinWithName:(NSString *)name
           andType:(VJXPinType)pinType
@@ -121,6 +122,7 @@
         direction = pinDirection;
         multiple = NO;
         continuous = YES;
+        retainData = YES;
         currentData = nil;
         currentSender = nil;
         owner = pinOwner;
@@ -260,6 +262,10 @@
             if (![data isKindOfClass:[VJXAudioBuffer class]])
                 return;
             break;
+        case kVJXEntityPin:
+            if (![data isKindOfClass:[VJXEntity class]])
+                return;
+            break;
         default:
             NSLog(@"Unknown pin type!\n");
             return;
@@ -272,9 +278,15 @@
                 // TODO - Error Message (a not allowed value has been signaled
                 return;
             }
-            if (currentData)
-                [currentData release];
-            currentData = [data retain];
+            if (currentData) {
+                if (!continuous && [currentData isEqual:data])
+                    return;
+                if (retainData)
+                    [currentData release];
+            }
+            currentData = retainData
+                        ? [data retain]
+                        : data;
         }
         if (sender)
             currentSender = sender;
@@ -434,6 +446,9 @@
         case kVJXAudioPin:
             return @"Audio";
             break;
+        case kVJXEntityPin:
+            return @"Entity";
+            break;
     }
     return @"Unknown";
 }
@@ -458,6 +473,20 @@
     if ([owner respondsToSelector:@selector(name)])
         ownerName = [owner performSelector:@selector(name)];
     return [NSString stringWithFormat:@"%@:%@", ownerName, name];
+}
+
+- (void)setRetainData:(BOOL)doRetain
+{
+    @synchronized(self) {
+        if (retainData && !doRetain) {
+            if (currentData)
+                [currentData release];
+        } else if (!retainData && doRetain) {
+            if (currentData)
+                [currentData retain];
+        }
+        retainData = doRetain;
+    }
 }
 
 @end

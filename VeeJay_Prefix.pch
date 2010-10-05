@@ -1,7 +1,8 @@
 //
-// Prefix header for all source files of the 'MoviePlayerD' target in the 'MoviePlayerD' project
+// Prefix header for all source files of the 'VeeJay' target in the 'VeeJay' project
 //
 
 #ifdef __OBJC__
     #import <Cocoa/Cocoa.h>
+	#define VJXLibraryTableViewDataType @"VJXLibraryTableViewDataType"
 #endif

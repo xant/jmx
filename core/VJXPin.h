@@ -26,6 +26,8 @@
 #import "VJXPoint.h"
 #import "VJXAudioBuffer.h"
 
+@class VJXEntity;
+
 typedef enum {
     kVJXVoidPin,
     kVJXStringPin,
@@ -34,6 +36,7 @@ typedef enum {
     kVJXAudioPin,
     kVJXPointPin,
     kVJXSizePin,
+    kVJXEntityPin
 } VJXPinType;
 
 typedef enum {
@@ -51,6 +54,7 @@ typedef enum {
     NSMutableDictionary *properties;
     BOOL                multiple;
     BOOL                continuous;
+    BOOL                retainData;
     id                  currentData;
     id                  currentSender;
     VJXPinDirection     direction;
@@ -67,6 +71,7 @@ typedef enum {
 @property (readonly)  NSDictionary *receivers;
 @property (readonly)  NSArray *allowedValues;
 @property (readwrite) BOOL continuous;
+@property (readwrite) BOOL retainData;
 @property (readonly) id owner;
 
 + (id)pinWithName:(NSString *)name

@@ -60,13 +60,13 @@
 	/*------------------------------------------------------
      method that should handle the drop data
      --------------------------------------------------------*/
-	
+
 	// draggingSource returns nil if another application started the drag
 	// operation. We'll assume all drags will either start from Finder or from
 	// our library window.
     if ([sender draggingSource] == nil) {
         NSURL* fileURL;
-        
+
         //if the drag comes from a file, set the window title to the filename
         fileURL=[NSURL URLFromPasteboard: [sender draggingPasteboard]];
         NSString *fileName = [fileURL lastPathComponent];
@@ -79,9 +79,9 @@
             }
             [entity start];
             [document.entities addObject:entity];
-            
+
             [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:entity];
-            
+
             [entity release];
         } else if ([[VJXAudioFileLayer supportedFileTypes] containsObject:[components lastObject]]) {
             VJXAudioFileLayer *entity = [[VJXAudioFileLayer alloc] init];
@@ -89,11 +89,11 @@
                 [entity performSelector:@selector(open:) withObject:[fileURL absoluteString]];
             }
             [entity start];
-            
+
             [document.entities addObject:entity];
-            
+
             [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:entity];
-            
+
             [entity release];
         }
     }
@@ -101,17 +101,8 @@
 		NSPasteboard *pboard = [sender draggingPasteboard];
 		NSData *data = [pboard dataForType:VJXLibraryTableViewDataType];
 		NSString *className = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-		
-		VJXEntity *entity = [[NSClassFromString(className) alloc] init];
-		
-		if ([entity conformsToProtocol:@protocol(VJXFileRead)]) {
-			[document openFileWithTypes:[[entity class] supportedFileTypes] forEntity:entity];
-		}
-		else {
-			[document.entities addObject:entity];
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:entity];
-			[entity release];			
-		}
+        NSPoint draggingLocation = [self convertPoint:[sender draggingLocation] fromView:nil];
+        [document createEntityWithClass:NSClassFromString(className) atPoint:draggingLocation];
 	}
 
     return YES;
@@ -132,12 +123,12 @@
 
 - (void)viewWillDraw
 {
-    // We're calculating the biggest rect that can hold all the entities 
-    // currently living in the board, and setting the board's frame to that 
-    // rect. We should also keep a reference to the minimum size we want the 
+    // We're calculating the biggest rect that can hold all the entities
+    // currently living in the board, and setting the board's frame to that
+    // rect. We should also keep a reference to the minimum size we want the
     // board to have, and if the rect is smaller than that resize to the
     // default.
-    
+
     [entities makeObjectsPerformSelector:@selector(setNeedsDisplay)];
 
     float maxX = NSMaxX(self.frame);
@@ -189,7 +180,7 @@
         [theEntity isKindOfClass:[VJXBoardEntityConnector class]]) {
         // Add some point, we'll be using a NSArrayController to have references of
         // all entities we have on the board, so the entity selection will be done
-        // thru it instead of this code. Using NSArrayController for that will be 
+        // thru it instead of this code. Using NSArrayController for that will be
         // nice because we can use KVC in IB to create the Inspector palettes.
 
         // Unselect all entities, and toggle only the one we selected.
@@ -198,7 +189,7 @@
             [selected removeAllObjects];
         }
 
-        
+
         // Move the selected entity to the end of the subviews array, making it move
         // to the top of the view hierarchy.
         if ([entities count] >= 1) {
@@ -210,7 +201,7 @@
         }
 
         [theEntity toggleSelected];
-        
+
         // Add or remove the entity based on its current selected status.
         if ([theEntity isKindOfClass:[VJXBoardEntity class]]) {
             VJXBoardEntity *e = theEntity;
@@ -229,7 +220,7 @@
     lastDragLocation = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 
     // Unselect all the selected entities if the user click on the board.
-    [entities makeObjectsPerformSelector:@selector(unselect)]; 
+    [entities makeObjectsPerformSelector:@selector(unselect)];
     [selected removeAllObjects];
 }
 
@@ -243,19 +234,19 @@
         self.currentSelection = [[[VJXBoardSelection alloc] init] autorelease];
         [self addSubview:currentSelection positioned:NSWindowAbove relativeTo:nil];
     }
-    
+
     thisLocation = [self convertPoint:thisLocation fromView:nil];
-    
+
     // Calculate the frame based on the window's coordinates and set the rect
     // as the current selection frame.
     [currentSelection setFrame:NSMakeRect(MIN(thisLocation.x, lastDragLocation.x),
-                                          MIN(thisLocation.y, lastDragLocation.y), 
-                                          abs(thisLocation.x - lastDragLocation.x), 
+                                          MIN(thisLocation.y, lastDragLocation.y),
+                                          abs(thisLocation.x - lastDragLocation.x),
                                           abs(thisLocation.y - lastDragLocation.y))];
-    
+
     for (VJXBoardEntity *entity in entities) {
         // Unselect the entity. We'll have all the entities unselected as net
-        // result of this operation, if the entity isn't inside the current 
+        // result of this operation, if the entity isn't inside the current
         // selection rect.
         [entity setSelected:[entity inRect:[currentSelection frame]]];
     }
@@ -300,11 +291,11 @@
 
             // Notify observers we removed the entity.
             [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasRemoved" object:e.entity];
-            
+
             // Decrease counter because we removed the element.
             i--;
         }
-    }    
+    }
 }
 
 - (void)notifyChangesToDocument
@@ -322,16 +313,27 @@
 - (void)anEntityWasCreated:(NSNotification *)aNotification
 {
     VJXEntity *anEntity = [aNotification object];
-    VJXBoardEntity *view = [[VJXBoardEntity alloc] initWithEntity:anEntity board:self];
-    NSString *origin = [[aNotification userInfo] objectForKey:@"origin"];
-    if (origin)
-        [view setFrameOrigin:NSPointFromString(origin)];
-    [self addToBoard:view];
+    VJXBoardEntity *boardEntity = [[VJXBoardEntity alloc] initWithEntity:anEntity board:self];
+    NSValue *origin = [[aNotification userInfo] objectForKey:@"origin"];
+    NSSize boardEntitySize = [boardEntity frame].size;
+
+    // If origin is provided, then we calculate the real origin based on the
+    // entity board's geometry.
+    if (origin) {
+        NSPoint realOrigin = [origin pointValue];
+        realOrigin.x -= (boardEntitySize.width / 2);
+        realOrigin.y -= (boardEntitySize.height / 2);
+        [boardEntity setFrameOrigin:realOrigin];
+    }
+
+    [self addToBoard:boardEntity];
+
     // XXX - perhaps we should let the user start entities esplicitly
     //       (and we need to provide seek controls as well)
     if ([anEntity conformsToProtocol:@protocol(VJXThread)])
         [anEntity performSelector:@selector(start)];
-    [view release];    
+
+    [boardEntity release];
 }
 
 @end

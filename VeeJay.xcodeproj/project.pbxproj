@@ -45,6 +45,7 @@
 		AA7181381258AFA30068DB2B /* VJXAudioScheduler.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7181371258AFA30068DB2B /* VJXAudioScheduler.m */; };
 		AA718525125B2E560068DB2B /* VJXLibraryTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 822CE015125A74A8000C92F9 /* VJXLibraryTableView.m */; };
 		AA718526125B2E5A0068DB2B /* VJXLibraryTableViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 822CE018125A754E000C92F9 /* VJXLibraryTableViewDelegate.m */; };
+		AA71865A125B8DBE0068DB2B /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA718659125B8DBE0068DB2B /* QuickTime.framework */; };
 		AA7931BE1233A64800860CD2 /* VJXSize.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7931BD1233A64800860CD2 /* VJXSize.m */; };
 		AA7931C11233A65400860CD2 /* VJXPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7931C01233A65400860CD2 /* VJXPoint.m */; };
 		AA917C01123BD96700001A8B /* VJXEntityInspectorPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA917C00123BD96700001A8B /* VJXEntityInspectorPanel.m */; };
@@ -136,6 +137,7 @@
 		AA718123125899E40068DB2B /* VJXAudioSpectrumAnalyzer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXAudioSpectrumAnalyzer.m; path = entities/VJXAudioSpectrumAnalyzer.m; sourceTree = "<group>"; };
 		AA7181361258AFA30068DB2B /* VJXAudioScheduler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXAudioScheduler.h; path = entities/VJXAudioScheduler.h; sourceTree = "<group>"; };
 		AA7181371258AFA30068DB2B /* VJXAudioScheduler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXAudioScheduler.m; path = entities/VJXAudioScheduler.m; sourceTree = "<group>"; };
+		AA718659125B8DBE0068DB2B /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = System/Library/Frameworks/QuickTime.framework; sourceTree = SDKROOT; };
 		AA7931BC1233A64800860CD2 /* VJXSize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXSize.h; path = core/VJXSize.h; sourceTree = "<group>"; };
 		AA7931BD1233A64800860CD2 /* VJXSize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXSize.m; path = core/VJXSize.m; sourceTree = "<group>"; };
 		AA7931BF1233A65400860CD2 /* VJXPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXPoint.h; path = core/VJXPoint.h; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 				AA2BE3F312353BA6006087E7 /* CoreAudio.framework in Frameworks */,
 				AA2BE40B12353D5C006087E7 /* Accelerate.framework in Frameworks */,
 				AADEBFC812414F7E00A6A06D /* AudioToolbox.framework in Frameworks */,
+				AA71865A125B8DBE0068DB2B /* QuickTime.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,6 +206,7 @@
 				AA2BE3F212353BA6006087E7 /* CoreAudio.framework */,
 				AA2BE40A12353D5C006087E7 /* Accelerate.framework */,
 				AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */,
+				AA718659125B8DBE0068DB2B /* QuickTime.framework */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";

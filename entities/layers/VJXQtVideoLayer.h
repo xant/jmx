@@ -23,6 +23,9 @@
 
 #import <Cocoa/Cocoa.h>
 #import <QTKit/QTKit.h>
+#ifndef __x86_64
+#import  <QuickTime/QuickTime.h>
+#endif
 #import "VJXLayer.h"
 #import "VJXFileRead.h"
 
@@ -32,6 +35,9 @@
     NSString *moviePath;
     BOOL paused;
     BOOL repeat;
+#ifndef __x86_64
+    QTVisualContextRef    qtVisualContext;        // the context the movie is playing in
+#endif
 }
 
 @property (copy) NSString *moviePath;

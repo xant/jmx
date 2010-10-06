@@ -103,6 +103,7 @@
 		82EA047D1240C2AF00E28B72 /* VJXDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXDocument.m; path = gui/VJXDocument.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* VeeJay-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "VeeJay-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* VeeJay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VeeJay.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA0522D0125C6424008C9F46 /* VJXSeekable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXSeekable.h; sourceTree = "<group>"; };
 		AA0F48A6122E7503005A1C95 /* VJXEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXEntity.h; path = core/VJXEntity.h; sourceTree = "<group>"; };
 		AA0F48A7122E7503005A1C95 /* VJXEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXEntity.m; path = core/VJXEntity.m; sourceTree = "<group>"; };
 		AA0F48A912302BBA005A1C95 /* VJXPin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXPin.h; path = core/VJXPin.h; sourceTree = "<group>"; };
@@ -378,6 +379,7 @@
 				AA7931C01233A65400860CD2 /* VJXPoint.m */,
 				AAAB1AF31256C08300B40A41 /* VJXFileRead.h */,
 				AAAB1A8D1256BF4000B40A41 /* VJXThread.h */,
+				AA0522D0125C6424008C9F46 /* VJXSeekable.h */,
 			);
 			name = Core;
 			sourceTree = "<group>";

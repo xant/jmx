@@ -14,9 +14,6 @@
 - (id)init
 {
     if (self = [super init]) {
-        self.frequency = [NSNumber numberWithDouble:1]; // 1 tick per second
-        startPin = [self registerInputPin:@"entity" withType:kVJXEntityPin];
-        [startPin allowMultipleConnections:YES];
         currentIndex = 0;
         started = NO;
     }
@@ -26,11 +23,11 @@
 - (void)tick:(uint64_t)timeStamp
 {
     //[startPin deliverSignal:[NSNumber numberWithInt:0]];
-    NSArray *producers  = startPin.producers;
+    NSArray *producers  = audioInputPin.producers;
     if (producers && [producers count]) {
         for (int i = 0; i < [producers count]; i++) {
             VJXPin *producer = [producers objectAtIndex:i];
-            VJXAudioFileLayer *audioFile = [producer readPinValue];
+            VJXAudioFileLayer *audioFile = producer.owner;//[producer readPinValue];
             if (!audioFile)
                 continue;
             audioFile.repeat = NO; // ensure keeping repeat set to NO
@@ -38,7 +35,7 @@
                 if (started) {
                     if (!audioFile.active) {
                         currentIndex++;
-                        [[[producers objectAtIndex:currentIndex%[producers count]] readPinValue] activate];
+                        [((VJXPin *)[producers objectAtIndex:currentIndex%[producers count]]).owner activate];
                         continue;
                     }
                 } else {
@@ -50,7 +47,7 @@
             }
         }
     }
-    [super tick:timeStamp];
+    [super tick:timeStamp]; // let the mixer do its job
 }
 
 @end

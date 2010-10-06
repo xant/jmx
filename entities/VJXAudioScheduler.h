@@ -7,13 +7,10 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "VJXThreadedEntity.h"
-#import "VJXPin.h"
+#import "VJXAudioMixer.h"
 
-@interface VJXAudioScheduler : VJXThreadedEntity {
+@interface VJXAudioScheduler : VJXAudioMixer {
 @private
-    VJXPin *startPin;
-    VJXPin *stopPin;
     NSUInteger currentIndex;
     BOOL started;
 }

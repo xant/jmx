@@ -20,9 +20,9 @@ typedef enum {
 @interface VJXAudioMixer : VJXThreadedEntity {    
 @protected
     NSArray *audioInputs;
-@private
     VJXPin *audioInputPin;
     VJXPin *audioOutputPin;
+@private
     //VJXAudioBuffer *currentSample;
     uint64_t lastSampleTime;
     NSMutableDictionary *producers;

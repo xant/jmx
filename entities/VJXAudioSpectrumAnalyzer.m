@@ -25,7 +25,7 @@
         audioFormat.mFramesPerPacket = 1;
         audioFormat.mBytesPerFrame = 4 * audioFormat.mChannelsPerFrame;
         audioFormat.mBitsPerChannel = 32;
-        UInt32 bufferSize =  4 * audioFormat.mChannelsPerFrame * 512;
+        //UInt32 bufferSize =  4 * audioFormat.mChannelsPerFrame * 512;
         //analyzer = [[VJXAudioAnalyzer alloc] initWithSize:bufferSize hopSize: channels:2 maxFrames:512]
     }
     return self;

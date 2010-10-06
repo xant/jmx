@@ -286,7 +286,6 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
 
 - (void)setSize:(VJXSize *)newSize
 {
-    NSLog(@"ciao");
     return [super setSize:newSize];
 }
 

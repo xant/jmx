@@ -35,13 +35,6 @@
         inputPins = [[NSMutableDictionary alloc] init];
         outputPins = [[NSMutableDictionary alloc] init];
         [self registerOutputPin:@"active" withType:kVJXNumberPin];
-        selfPin = [self registerOutputPin:@"self" withType:kVJXEntityPin];
-        selfPin.continuous = NO;
-        [selfPin deliverSignal:self];
-        // we want a weak reference becasue we are surely going to live longer than the our pin
-        // and if the pin retains us, our [dealloc] won't never be called
-        selfPin.retainData = NO;
-        
     }
     return self;
 }

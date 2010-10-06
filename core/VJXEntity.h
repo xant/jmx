@@ -45,7 +45,6 @@
     NSMutableDictionary *inputPins;
     NSMutableDictionary *outputPins;
     BOOL active;
-    VJXPin *selfPin;
 @private
 }
 

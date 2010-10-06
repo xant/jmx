@@ -36,7 +36,6 @@ typedef enum {
     kVJXAudioPin,
     kVJXPointPin,
     kVJXSizePin,
-    kVJXEntityPin
 } VJXPinType;
 
 typedef enum {
@@ -59,8 +58,10 @@ typedef enum {
     id                  currentSender;
     VJXPinDirection     direction;
     id                  owner;
+    id                  minValue;
+    id                  maxValue;
     NSString            *ownerSignal;
-    NSArray             *allowedValues;
+    NSMutableArray      *allowedValues;
 }
 
 @property (readonly)  VJXPinType type;
@@ -73,6 +74,8 @@ typedef enum {
 @property (readwrite) BOOL continuous;
 @property (readwrite) BOOL retainData;
 @property (readonly) id owner;
+@property (readonly) id minValue;
+@property (readonly) id maxValue;
 
 + (id)pinWithName:(NSString *)name
           andType:(VJXPinType)pinType
@@ -112,5 +115,8 @@ typedef enum {
 - (NSString *)typeName;
 - (BOOL)moveProducerFromIndex:(NSUInteger)src toIndex:(NSUInteger)dst;
 - (NSString *)description;
-
+- (void)addAllowedValue:(id)value;
+- (void)removeAllowedValue:(id)value;
+- (void)addMinLimit:(id)minValue;
+- (void)addMaxLimit:(id)maxValue;
 @end

@@ -23,7 +23,6 @@
 
 #import "VJXPin.h"
 #import "VJXContext.h"
-#import "VJXEntity.h"
 
 @interface VJXPinSignal : NSObject {
     id data;
@@ -76,7 +75,8 @@
 
 @implementation VJXPin
 
-@synthesize type, name, multiple, continuous, retainData, direction, producers, receivers, allowedValues, owner;
+@synthesize type, name, multiple, continuous, retainData, direction, 
+            producers, receivers, allowedValues, owner, minValue, maxValue;
 
 + (id)pinWithName:(NSString *)name
           andType:(VJXPinType)pinType
@@ -127,7 +127,8 @@
         currentSender = nil;
         owner = pinOwner;
         ownerSignal = pinSignal;
-        allowedValues = pinValues;
+        if (pinValues)
+            allowedValues = [[NSMutableArray arrayWithArray:pinValues] retain];
     }
     return self;
 }
@@ -142,7 +143,8 @@
                       andType:pinType
                  forDirection:pinDirection
                       ownedBy:pinOwner
-                   withSignal:pinSignal];
+                   withSignal:pinSignal
+                allowedValues:nil];
 }
 
 - (void)sendData:(id)data toReceiver:(id)receiver withSelector:(NSString *)selectorName fromSender:(id)sender
@@ -228,6 +230,40 @@
     [self deliverSignal:data fromSender:self];
 }
 
+- (BOOL)isCorrectDataType:(id)data
+{
+    switch (type) {
+        case kVJXStringPin:
+            if (![data isKindOfClass:[NSString class]])
+                return NO;
+            break;
+        case kVJXNumberPin:
+            if (![data isKindOfClass:[NSNumber class]])
+                return NO;
+            break;
+        case kVJXImagePin:
+            if (![data isKindOfClass:[CIImage class]])
+                return NO;
+            break;
+        case kVJXSizePin:
+            if (![data isKindOfClass:[VJXSize class]])
+                return NO;
+            break;
+        case kVJXPointPin:
+            if (![data isKindOfClass:[VJXPoint class]])
+                return NO;
+            break;
+        case kVJXAudioPin:
+            if (![data isKindOfClass:[VJXAudioBuffer class]])
+                return NO;
+            break;
+        default:
+            NSLog(@"Unknown pin type!\n");
+            return NO;
+    }
+    return YES;
+}
+
 - (void)deliverSignal:(id)data fromSender:(id)sender
 {
     if (!data) {
@@ -237,76 +273,44 @@
             currentData = nil;
         }
     }
-    switch (type) {
-        case kVJXStringPin:
-            if (![data isKindOfClass:[NSString class]])
-                return;
-            break;
-        case kVJXNumberPin:
-            if (![data isKindOfClass:[NSNumber class]])
-                return;
-            break;
-        case kVJXImagePin:
-            if (![data isKindOfClass:[CIImage class]])
-                return;
-            break;
-        case kVJXSizePin:
-            if (![data isKindOfClass:[VJXSize class]])
-                return;
-            break;
-        case kVJXPointPin:
-            if (![data isKindOfClass:[VJXPoint class]])
-                return;
-            break;
-        case kVJXAudioPin:
-            if (![data isKindOfClass:[VJXAudioBuffer class]])
-                return;
-            break;
-        case kVJXEntityPin:
-            if (![data isKindOfClass:[VJXEntity class]])
-                return;
-            break;
-        default:
-            NSLog(@"Unknown pin type!\n");
-            return;
-    }
-    
-    @synchronized(self) {
-        if (data) {
-            // check if we restrict possible values
-            if (allowedValues && ![allowedValues containsObject:data]) {
-                // TODO - Error Message (a not allowed value has been signaled
-                return;
-            }
-            if (currentData) {
-                if (!continuous && [currentData isEqual:data])
+    if ([self isCorrectDataType:data]) {
+        @synchronized(self) {
+            if (data) {
+                // check if we restrict possible values
+                if (allowedValues && ![allowedValues containsObject:data]) {
+                    // TODO - Error Message (a not allowed value has been signaled
                     return;
-                if (retainData)
-                    [currentData release];
+                }
+                if (currentData) {
+                    if (!continuous && [currentData isEqual:data])
+                        return;
+                    if (retainData)
+                        [currentData release];
+                }
+                currentData = retainData
+                            ? [data retain]
+                            : data;
             }
-            currentData = retainData
-                        ? [data retain]
-                        : data;
+            if (sender)
+                currentSender = sender;
+            else
+                currentSender = self;
         }
-        if (sender)
-            currentSender = sender;
-        else
-            currentSender = self;
+        
+        // if we are an output pin and not receivers have been hooked, 
+        // it's useless to perform the signal
+        @synchronized(receivers) {
+            if (direction == kVJXOutputPin && ![receivers count])
+                return;
+        }
+        VJXPinSignal *signal = [VJXPinSignal signalFrom:sender withData:data];
+        // Since we need to honor our frequency, we can't wait until the signal 
+        // is propagated to all receiver, otherwise our entity will slowdown its runloop
+        // because of a deep chain of receivers. To avoid affecting the entity we will
+        // perform the selector asynchronously in the background 
+        //[self performSelectorInBackground:@selector(performSignal:) withObject:signal];
+        [self performSelector:@selector(performSignal:) onThread:[VJXContext signalThread] withObject:signal waitUntilDone:NO];
     }
-    
-    // if we are an output pin and not receivers have been hooked, 
-    // it's useless to perform the signal
-    @synchronized(receivers) {
-        if (direction == kVJXOutputPin && ![receivers count])
-            return;
-    }
-    VJXPinSignal *signal = [VJXPinSignal signalFrom:sender withData:data];
-    // Since we need to honor our frequency, we can't wait until the signal 
-    // is propagated to all receiver, otherwise our entity will slowdown its runloop
-    // because of a deep chain of receivers. To avoid affecting the entity we will
-    // perform the selector asynchronously in the background 
-    //[self performSelectorInBackground:@selector(performSignal:) withObject:signal];
-    [self performSelector:@selector(performSignal:) onThread:[VJXContext signalThread] withObject:signal waitUntilDone:NO];
 }
 
 - (void)allowMultipleConnections:(BOOL)choice
@@ -321,6 +325,8 @@
     [name release];
     [receivers release];
     [producers release];
+    if (allowedValues)
+        [allowedValues release];
     [super dealloc];
 }
 
@@ -446,9 +452,6 @@
         case kVJXAudioPin:
             return @"Audio";
             break;
-        case kVJXEntityPin:
-            return @"Entity";
-            break;
     }
     return @"Unknown";
 }
@@ -487,6 +490,39 @@
         }
         retainData = doRetain;
     }
+}
+
+- (void)addAllowedValue:(id)value
+{
+    if ([self isCorrectDataType:value]) {
+        if (!allowedValues)
+            allowedValues = [[NSMutableArray alloc] init];
+        [allowedValues addObject:value];
+    }
+}
+
+- (void)removeAllowedValue:(id)value
+{
+    if ([self isCorrectDataType:value] && allowedValues) {
+        [allowedValues removeObject:value];
+        if ([allowedValues count] == 0) {
+            [allowedValues release];
+            allowedValues = nil;
+        }
+    }
+}
+        
+- (void)addMinLimit:(id)value
+{
+    if ([self isCorrectDataType:minValue])
+        minValue = [value retain];
+    
+}
+
+- (void)addMaxLimit:(id)value
+{
+    if ([self isCorrectDataType:maxValue])
+        maxValue = [value retain];
 }
 
 @end

@@ -39,22 +39,13 @@
 #pragma mark -
 #pragma mark Interface Builder actions
 
-- (IBAction)addQTVideoLayer:(id)sender;
-- (IBAction)addVideoMixer:(id)sender;
-- (IBAction)addImageLayer:(id)sender;
-- (IBAction)addOpenGLScreen:(id)sender;
-- (IBAction)addQtCaptureLayer:(id)sender;
-- (IBAction)addAudioOutput:(id)sender;
-- (IBAction)addAudioCapture:(id)sender;
-- (IBAction)addAudioFileLayer:(id)sender;
-- (IBAction)addAudioMixer:(id)sender;
 - (IBAction)removeSelected:(id)sender;
 
 #pragma mark -
 #pragma mark Open file
 
-- (void)openFileWithTypes:(NSArray *)types forEntity:(VJXEntity *)entity;
-- (void)openPanelDidEnd:(NSOpenPanel *)panel returnCode:(int)returnCode entity:(VJXEntity *)entity;
+- (void)openPanelDidEnd:(NSOpenPanel *)panel returnCode:(int)returnCode userInfo:(NSDictionary *)userInfo;
+- (void)createEntityWithClass:(Class)aClass atPoint:(NSPoint)aPoint;
 
 #pragma mark -
 #pragma mark Notifications

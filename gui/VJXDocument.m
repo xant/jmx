@@ -81,15 +81,15 @@
         [e addChild:origin];
         [root addChild:e];
     }
-    
+
     NSXMLDocument *xmlDoc = [[NSXMLDocument alloc] initWithRootElement:root];
     [xmlDoc setVersion:@"1.0"];
     [xmlDoc setCharacterEncoding:@"UTF-8"];
-    
+
     NSData *data = [xmlDoc XMLDataWithOptions:NSXMLDocumentXMLKind];
 
     [xmlDoc release];
-    
+
     return data;
 }
 
@@ -115,7 +115,7 @@
     }
 
     [xmlDoc release];
-    
+
     return YES;
 }
 
@@ -132,79 +132,6 @@
 #pragma mark -
 #pragma mark Interface Builder actions
 
-- (IBAction)addQTVideoLayer:(id)sender
-{
-    // XXX - movieTypesWithOptions returns also audio files ... so we need to define a list
-    //       with valid extensions for video files
-    //NSArray *types = [QTMovie movieTypesWithOptions:QTIncludeCommonTypes];
-    NSArray *types = [NSArray arrayWithObjects:@"avi", @"mov", @"pdf", @"html", nil];
-    VJXQtVideoLayer *entity = [[VJXQtVideoLayer alloc] init];
-    [self openFileWithTypes:types forEntity:entity];
-}
-
-- (IBAction)addVideoMixer:(id)sender
-{
-    //VJXVideoMixer *entity = [[VJXVideoMixer alloc] init];
-    VJXAudioScheduler *entity = [[VJXAudioScheduler alloc] init];
-    [entities addObject:entity];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:entity];
-    [entity release];
-}
-
-- (IBAction)addImageLayer:(id)sender
-{
-    NSArray *types = [NSImage imageTypes];
-    VJXImageLayer *entity = [[VJXImageLayer alloc] init];
-    [entities addObject:entity];
-    [self openFileWithTypes:types forEntity:entity];
-}
-
-- (IBAction)addOpenGLScreen:(id)sender
-{
-    VJXOpenGLScreen *entity = [[VJXOpenGLScreen alloc] init];
-    [entities addObject:entity];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:entity];
-    [entity release];
-}
-
-- (IBAction)addQtCaptureLayer:(id)sender
-{
-    VJXQtVideoCaptureLayer *entity = [[VJXQtVideoCaptureLayer alloc] init];
-    [entities addObject:entity];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:entity];
-    [entity release];
-}
-
-- (IBAction)addAudioOutput:(id)sender
-{
-    VJXCoreAudioOutput *entity = [[VJXCoreAudioOutput alloc] init];
-    [entities addObject:entity];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:entity];
-    [entity release];
-}
-
-- (IBAction)addAudioCapture:(id)sender
-{
-    VJXQtAudioCaptureLayer *entity = [[VJXQtAudioCaptureLayer alloc] init];
-    [entities addObject:entity];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:entity];
-    [entity release];   
-}
-
-- (IBAction)addAudioFileLayer:(id)sender
-{
-    VJXAudioFileLayer *entity = [[VJXAudioFileLayer alloc] init];
-    [self openFileWithTypes:[VJXAudioFileLayer supportedFileTypes] forEntity:entity];
-}
-
-- (IBAction)addAudioMixer:(id)sender
-{
-    VJXAudioMixer *entity = [[VJXAudioMixer alloc] init];
-    [entities addObject:entity];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:entity];
-    [entity release];
-}
-
 - (IBAction)removeSelected:(id)sender
 {
     [board removeSelected:sender];
@@ -213,38 +140,48 @@
 #pragma mark -
 #pragma mark Open file
 
-- (void)openFileWithTypes:(NSArray *)types forEntity:(VJXEntity *)entity
+- (void)openPanelDidEnd:(NSOpenPanel *)panel returnCode:(int)returnCode userInfo:(NSDictionary *)userInfo
 {
-    
-    NSOpenPanel *panel = [NSOpenPanel openPanel];
-    [panel beginSheetForDirectory:nil
-                             file:nil
-                            types:types
-                   modalForWindow:[self windowForSheet]
-                    modalDelegate:self
-                   didEndSelector:@selector(openPanelDidEnd:returnCode:entity:)
-                      contextInfo:entity];
-    [panel setCanChooseFiles:YES];
+    if (returnCode == NSCancelButton)
+        return;
+
+    NSString *filename = [panel filename];
+
+    if (filename) {
+        VJXEntity *anEntity = [[[userInfo objectForKey:@"class"] alloc] init];
+        [(id<VJXFileRead>)anEntity open:filename];
+        [entities addObject:anEntity];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:anEntity userInfo:userInfo];
+        [anEntity release];
+    }
+
+    [userInfo release];
 }
 
-- (void)openPanelDidEnd:(NSOpenPanel *)panel returnCode:(int)returnCode entity:(VJXEntity *)entity
+- (void)createEntityWithClass:(Class)aClass atPoint:(NSPoint)aPoint
 {
-    if (returnCode == NSCancelButton) {
-        [entity release];
-        return;
+    NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
+    [userInfo setObject:[NSValue valueWithPoint:aPoint] forKey:@"origin"];
+
+    if ([aClass conformsToProtocol:@protocol(VJXFileRead)]) {
+        [userInfo setObject:aClass forKey:@"class"];
+
+        NSOpenPanel *panel = [NSOpenPanel openPanel];
+        [panel beginSheetForDirectory:nil
+                                 file:nil
+                                types:[aClass performSelector:@selector(supportedFileTypes)]
+                       modalForWindow:[self windowForSheet]
+                        modalDelegate:self
+                       didEndSelector:@selector(openPanelDidEnd:returnCode:userInfo:)
+                          contextInfo:[userInfo retain]];
     }
-    
-    NSString *filename = [panel filename];
-    
-    if (filename && [entity conformsToProtocol:@protocol(VJXFileRead)]) {
-        [entity performSelector:@selector(open:) withObject:filename];
+    else {
+        VJXEntity *anEntity = [[aClass alloc] init];
+        [entities addObject:anEntity];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:anEntity userInfo:userInfo];
+        [anEntity release];
     }
-    
-    [entities addObject:entity];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:entity];
-    
-    [entity release];
+    [userInfo release];
 }
 
 #pragma mark -

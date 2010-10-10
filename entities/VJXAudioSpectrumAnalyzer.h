@@ -27,7 +27,6 @@
     NSGraphicsContext *imageContext;
     CGLayerRef pathLayer;
     CIImage *currentImage;
-    NSBitmapImageRep *imageStorage;
     VJXPin *imagePin;
 #if DEINTERLEAVE_BUFFER
     AudioBufferList *deinterleavedBuffer;

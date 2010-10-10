@@ -132,7 +132,7 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 16, 32, 64, 125, 250
         [analyzer getMagnitude:spectrumBuffer min:minAmp max:maxAmp];
         
         for (UInt32 i = 0; i < kVJXAudioSpectrumNumFrequencies; i++) {	// for each frequency
-            int offset = frequencies[i]*512/44100;
+            int offset = frequencies[i]*numBins/44100;
             Float32 value = ((Float32 *)spectrumBuffer->mBuffers[0].mData)[offset];
             [(VJXPin *)[frequencyPins objectAtIndex:i] deliverSignal:[NSNumber numberWithFloat:value]];
             //NSLog(@"%d - %f \n", frequencies[i], ((Float32 *)spectrumBuffer->mBuffers[0].mData)[offset]);

@@ -28,9 +28,7 @@
     CGLayerRef pathLayer;
     CIImage *currentImage;
     VJXPin *imagePin;
-#if DEINTERLEAVE_BUFFER
     AudioBufferList *deinterleavedBuffer;
-#endif
 }
 
 @end

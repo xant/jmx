@@ -28,7 +28,7 @@ static void decodeSpectralBuffer(DSPSplitComplex* spectra, UInt32 numSpectra, vo
 */
 
 #define kVJXAudioSpectrumNumFrequencies 14
-static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 64, 80, 125, 200, 250, 500, 800, 1000, 2000, 3000, 4000, 5000, 8000, 16000 }; 
+static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 350, 500, 750, 1000, 2000, 3000, 4000, 5000, 8000, 16000 }; 
 
 @implementation VJXAudioSpectrumAnalyzer
 
@@ -63,20 +63,16 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 64, 80, 125, 200, 25
         minAmp = (Float32*) calloc(2, sizeof(Float32));
         maxAmp = (Float32*) calloc(2, sizeof(Float32));
         
-#if DEINTERLEAVE_BUFFER
         analyzer = [[VJXSpectrumAnalyzer alloc] initWithSize:blockSize hopSize:numBins channels:2 maxFrames:512];
 
         deinterleavedBuffer = calloc(1, sizeof(AudioBufferList) + sizeof(AudioBuffer));
         deinterleavedBuffer->mNumberBuffers = 2;
         deinterleavedBuffer->mBuffers[0].mNumberChannels = 1;
-        deinterleavedBuffer->mBuffers[0].mDataByteSize = sampleSize*256;
-        deinterleavedBuffer->mBuffers[0].mData = calloc(1,sampleSize*256);
+        deinterleavedBuffer->mBuffers[0].mDataByteSize = sampleSize*512;
+        deinterleavedBuffer->mBuffers[0].mData = calloc(1,sampleSize*512);
         deinterleavedBuffer->mBuffers[1].mNumberChannels = 1;
-        deinterleavedBuffer->mBuffers[1].mDataByteSize = sampleSize*256;
-        deinterleavedBuffer->mBuffers[1].mData = calloc(1,sampleSize*256);
-#else
-        analyzer = [[VJXSpectrumAnalyzer alloc] initWithSize:blockSize hopSize:numBins channels:1 maxFrames:512];
-#endif
+        deinterleavedBuffer->mBuffers[1].mDataByteSize = sampleSize*512;
+        deinterleavedBuffer->mBuffers[1].mData = calloc(1,sampleSize*512);
         
         // setup the frequency pins
         frequencyPins = [[NSMutableArray alloc] init];
@@ -119,11 +115,9 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 64, 80, 125, 200, 25
     free(spectrumBuffer->mBuffers[0].mData);
     free(spectrumBuffer->mBuffers[1].mData);
     free(spectrumBuffer);
-#if DEINTERLEAVE_BUFFER
     free(deinterleavedBuffer->mBuffers[0].mData);
     free(deinterleavedBuffer->mBuffers[1].mData);
     free(deinterleavedBuffer);
-#endif
     free(minAmp);
     free(maxAmp);
     if (currentImage)
@@ -135,26 +129,34 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 64, 80, 125, 200, 25
 
 - (void)newSample:(VJXAudioBuffer *)sample
 {
+    if (!sample)
+        return;
     @synchronized(analyzer) {
         AudioBufferList *bufferList = sample.bufferList;
-#if DEINTERLEAVE_BUFFER
-        AudioStreamBasicDescription format = sample.format.audioStreamBasicDescription;
-        UInt32 numFrames = bufferList->mBuffers[0].mDataByteSize / 
-        format.mBytesPerFrame / 
-        bufferList->mBuffers[0].mNumberChannels;
-        // and then fill them up
-        for (j = 0; j < numFrames; j++) {
-            uint8_t *frame = ((uint8_t *)bufferList->mBuffers[0].mData) +
-            (j*4*bufferList->mBuffers[0].mNumberChannels);
-            memcpy(deinterleavedBuffer->mBuffers[0].mData+(j*4), frame, 4);
-            memcpy(deinterleavedBuffer->mBuffers[1].mData+(j*4), frame+ 4, 4);
+        switch (bufferList->mBuffers[0].mNumberChannels == 2) {
+            case 1:
+                memcpy(deinterleavedBuffer->mBuffers[0].mData, bufferList->mBuffers[0].mData, bufferList->mBuffers[0].mDataByteSize);
+                memcpy(deinterleavedBuffer->mBuffers[1].mData, bufferList->mBuffers[0].mData, bufferList->mBuffers[0].mDataByteSize);
+                break;
+            case 2:
+                {
+                    AudioStreamBasicDescription format = sample.format.audioStreamBasicDescription;
+                    UInt32 numFrames = bufferList->mBuffers[0].mDataByteSize / 
+                    format.mBytesPerFrame / 
+                    bufferList->mBuffers[0].mNumberChannels;
+                    for (int j = 0; j < numFrames; j++) {
+                        uint8_t *frame = ((uint8_t *)bufferList->mBuffers[0].mData) +
+                        (j*4*bufferList->mBuffers[0].mNumberChannels);
+                        memcpy(deinterleavedBuffer->mBuffers[0].mData+(j*4), frame, 4);
+                    }
+                }
+                break;
+            default:
+                // TODO - error messages
+                return;
         }
-    
        // NSLog(@"%d", [sample numFrames]);
         [analyzer processForwards:[sample numFrames] input:deinterleavedBuffer];
-#else
-        [analyzer processForwards:[sample numFrames]*2 input:bufferList];
-#endif
 
         [analyzer getMagnitude:spectrumBuffer min:minAmp max:maxAmp];
         NSGraphicsContext *pathContext = nil;
@@ -184,8 +186,9 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 64, 80, 125, 200, 25
         [path release];
         
         for (UInt32 i = 0; i < kVJXAudioSpectrumNumFrequencies; i++) {	// for each frequency
-            int offset = frequencies[i]*numBins/44100;
-            Float32 value = ((Float32 *)spectrumBuffer->mBuffers[0].mData)[offset];
+            int offset = frequencies[i]*numBins/44100*analyzer.numChannels;
+            Float32 value = ((Float32 *)(spectrumBuffer->mBuffers[0].mData))[offset] +
+                            ((Float32 *)(spectrumBuffer->mBuffers[1].mData))[offset];
             if (value < 0.0)
                 value = 0.0;
             [(VJXPin *)[frequencyPins objectAtIndex:i] deliverSignal:[NSNumber numberWithFloat:value]];
@@ -197,7 +200,7 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 64, 80, 125, 200, 25
             frequencyRect.origin.x = i*barWidth;
             frequencyRect.origin.y = 0;
             frequencyRect.size.width = barWidth;
-            frequencyRect.size.height = MIN(value * 2, imageRect.size.height-5);
+            frequencyRect.size.height = MIN(value, imageRect.size.height-5);
             
             NSBezierPath *path = [[NSBezierPath alloc] init];
             [[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.5] setFill];

@@ -55,6 +55,8 @@ typedef void (*VJXSpectralFunction)(DSPSplitComplex* spectra, UInt32 numSpectra,
 	void *userData;
 }
 
+@property (readonly) UInt32 numChannels;
+
 - (id)initWithSize:(UInt32)fftSize hopSize:(UInt32)hopSize channels:(UInt32)numChannels maxFrames:(UInt32)maxFrames;
 - (void)setSpectralFunction:(VJXSpectralFunction)inFunction clientData:(void*)inUserData;
 //CASpectralProcessor(UInt32 inFFTSize, UInt32 inHopSize, UInt32 inNumChannels, UInt32 inMaxFrames);

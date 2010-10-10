@@ -23,7 +23,7 @@
 
 #import "VJXContext.h"
 
-#define kVJXContextSignalNumWorkers 10
+#define kVJXContextSignalNumWorkers 4
 static NSThread *signalThread[kVJXContextSignalNumWorkers];
 static NSThread *renderThread = nil;
 static VJXContext *globalContext = nil;

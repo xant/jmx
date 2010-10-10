@@ -31,33 +31,28 @@
 #endif
 
 #include <Accelerate/Accelerate.h>
-@class VJXSpectralChannel;
-
 typedef void (*VJXSpectralFunction)(DSPSplitComplex* spectra, UInt32 numSpectra, void* inUserData);
+
+@class VJXSpectralChannel;
 
 @interface VJXAudioAnalyzer : NSObject {
 @protected
-	UInt32 mHopSize;
-	UInt32 mNumChannels;
-	UInt32 mMaxFrames;
-    UInt32 mFFTSize;
-    UInt32 mLog2FFTSize;
+	UInt32 hopSize;
+	UInt32 numChannels;
+	UInt32 maxFrames;
+    UInt32 fftSize;
+    UInt32 log2FFTSize;
 
-/*    
-	UInt32 mFFTMask; 
-	UInt32 mFFTByteSize;
-	UInt32 mIOBufSize;
-*/
-	FFTSetup mFFTSetup;
+	FFTSetup fftSetup;
     
-	NSData *mWindow;
+	NSData *window;
 
-    UInt32 mNumberSpectra;
-	DSPSplitComplex *mDSPSplitComplex;
+    UInt32 numberSpectra;
+	DSPSplitComplex *dspSplitComplex;
     NSMutableArray *channels;
     
-	VJXSpectralFunction mSpectralFunction;
-	void *mUserData;
+	VJXSpectralFunction spectralFunction;
+	void *userData;
 }
 
 - (id)initWithSize:(UInt32)fftSize hopSize:(UInt32)hopSize channels:(UInt32)numChannels maxFrames:(UInt32)maxFrames;

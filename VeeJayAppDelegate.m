@@ -33,6 +33,7 @@
 #import "VJXQtAudioCaptureLayer.h"
 #import "VJXAudioMixer.h"
 #import "VJXAudioScheduler.h"
+#import "VJXAudioSpectrumAnalyzer.h"
 
 @implementation VeeJayAppDelegate
 
@@ -51,7 +52,7 @@
 	[sharedContext registerClass:[VJXAudioFileLayer class]];
 	[sharedContext registerClass:[VJXAudioMixer class]];
     [sharedContext registerClass:[VJXAudioScheduler class]];
-
+    [sharedContext registerClass:[VJXAudioSpectrumAnalyzer class]];
 	
 	NSLog(@"Registered %i entities", [[sharedContext registeredClasses] count]);
 }

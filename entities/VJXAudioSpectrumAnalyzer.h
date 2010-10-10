@@ -8,6 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "VJXEntity.h"
+#import <AudioToolbox/AudioConverter.h>
 
 @class VJXAudioAnalyzer;
 
@@ -16,6 +17,13 @@
     VJXPin *audioInputPin;
     AudioStreamBasicDescription audioFormat;
     VJXAudioAnalyzer *analyzer;
+    AudioConverterRef converter;
+    AudioBufferList *spectrumBuffer;
+    Float32 *minAmp;
+    Float32 *maxAmp;
+    AudioBufferList *deinterleavedBuffer;
+    UInt32 blockSize;
+    UInt32 numBins;
 }
 
 @end

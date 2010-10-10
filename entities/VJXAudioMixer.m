@@ -10,7 +10,7 @@
 #include <Accelerate/Accelerate.h>
 #import "VJXAudioFormat.h"
 
-#define kVJXAudioMixerPreBufferMaxSize 15
+#define kVJXAudioMixerPreBufferMaxSize 20
 #define kVJXAudioMixerPreBufferMinSize 10
 
 @implementation VJXAudioMixer

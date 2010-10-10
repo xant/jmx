@@ -84,18 +84,12 @@ static inline UInt32 NextPowerOfTwo(UInt32 x)
 
 @interface VJXSpectralChannel : NSObject
 {
-    /*
-    NSData *mInputBuf;		// log2ceil(FFT size + max frames)
-    NSData *mOutputBuf;		// log2ceil(FFT size + max frames)
-    NSData *mFFTBuf;		// FFT size
-    NSData *mSplitFFTBuf;	// FFT size
-    */
     UInt32 bufLen;
     UInt32 fftLen;
-    void *inputBuf;
-    void *outputBuf;
-    void *fftBuf;
-    void *splitFFTBuf;
+    Float32 *inputBuf;
+    Float32 *outputBuf;
+    Float32 *fftBuf;
+    Float32 *splitFFTBuf;
     UInt32 fftSize;
 	UInt32 ioBufSize;
     UInt32 maxFrames;
@@ -110,10 +104,10 @@ static inline UInt32 NextPowerOfTwo(UInt32 x)
 
 }
 
-@property (readonly) void *inputBuf;
-@property (readonly) void *outputBuf;
-@property (readonly) void *fftBuf;
-@property (readonly) void *splitFFTBuf;
+@property (readonly) Float32 *inputBuf;
+@property (readonly) Float32 *outputBuf;
+@property (readonly) Float32 *fftBuf;
+@property (readonly) Float32 *splitFFTBuf;
 @property (readonly) UInt32 inputSize;
 @property (readonly) UInt32 fftSize;
 
@@ -142,12 +136,6 @@ static inline UInt32 NextPowerOfTwo(UInt32 x)
         outputBuf = calloc(1, bufLen);
         fftBuf = calloc(1, fftLen);
         splitFFTBuf = calloc(1, fftLen);
-        /*
-        mInputBuf = [[NSData dataWithBytesNoCopy:inputBuf length:bufLen freeWhenDone:YES] retain];
-        mOutputBuf = [[NSData dataWithBytesNoCopy:outputBuf length:bufLen freeWhenDone:YES] retain];
-        mFFTBuf = [[NSData dataWithBytesNoCopy:fftBuf length:fftLen freeWhenDone:YES] retain];
-        mSplitFFTBuf = [[NSData dataWithBytesNoCopy:splitFftBuf length:fftLen freeWhenDone:YES] retain];
-        */
         fftMask = fftSize - 1;
         fftByteSize = fftSize * sizeof(Float32);
         ioBufSize = NextPowerOfTwo(fftSize + maxFrames);
@@ -162,6 +150,15 @@ static inline UInt32 NextPowerOfTwo(UInt32 x)
     return self;
 }
 
+- (void)dealloc
+{
+    free(inputBuf);
+    free(outputBuf);
+    free(fftBuf);
+    free(splitFFTBuf);
+    [super dealloc];
+}
+
 - (void)reset
 {
     memset((void *)inputBuf, 0, bufLen);
@@ -171,7 +168,7 @@ static inline UInt32 NextPowerOfTwo(UInt32 x)
 	outputPos = -fftSize & ioMask;
 	inFFTPos = 0;
 	outFFTPos = 0;
-    //memset([mSplitFFTBuf bytes], 0, [mSplitFFTBuf length]);
+    //memset([splitFFTBuf bytes], 0, [splitFFTBuf length]);
 }
 
 - (void)copyInput:(AudioBuffer *)input frames:(UInt32)numFrames
@@ -182,11 +179,10 @@ static inline UInt32 NextPowerOfTwo(UInt32 x)
 	if (firstPart < numFrames) {
 		UInt32 firstPartBytes = firstPart * sizeof(Float32);
 		UInt32 secondPartBytes = numBytes - firstPartBytes;
-        memcpy((Float32 *)inputBuf+ inputPos, input->mData, firstPartBytes);
-        memcpy((Float32 *)inputBuf, (UInt8*)input->mData + firstPartBytes, secondPartBytes);
+        memcpy(inputBuf+ inputPos, input->mData, firstPartBytes);
+        memcpy(inputBuf, (UInt8*)input->mData + firstPartBytes, secondPartBytes);
 	} else {
-		UInt32 numBytes = numFrames * sizeof(Float32);
-        memcpy((Float32 *)inputBuf+ inputPos, input->mData, numBytes);
+        memcpy(inputBuf+ inputPos, input->mData, numBytes);
 	}
 	//printf("CopyInput %g %g\n", mChannels[0].mInputBuf[mInputPos], mChannels[0].mInputBuf[(mInputPos + 200) & mIOMask]);
 	//printf("CopyInput mInputPos %u   mIOBufSize %u\n", (unsigned)mInputPos, (unsigned)mIOBufSize);
@@ -198,34 +194,36 @@ static inline UInt32 NextPowerOfTwo(UInt32 x)
 {
      //printf("->CopyOutput %g %g\n", mChannels[0].mOutputBuf[mOutputPos], mChannels[0].mOutputBuf[(mOutputPos + 200) & mIOMask]);
      //printf("CopyOutput mOutputPos %u\n", (unsigned)mOutputPos);
-     UInt32 numBytes = numFrames * sizeof(Float32);
-     UInt32 firstPart = ioBufSize - outputPos;
-     if (firstPart < numFrames) {
-         UInt32 firstPartBytes = firstPart * sizeof(Float32);
-         UInt32 secondPartBytes = numBytes - firstPartBytes;
-         memcpy(output->mData, (Float32 *)outputBuf+ outputPos, firstPartBytes);
-         memcpy((UInt8*)output->mData + firstPartBytes, (Float32 *)outputBuf, secondPartBytes);
-         memset((Float32 *)outputBuf+ outputPos, 0, firstPartBytes);
-         memset((Float32 *)outputBuf, 0, secondPartBytes);
-     } else {
-         memcpy(output->mData, (Float32 *)outputBuf+ outputPos, numBytes);
-         memset((Float32 *)outputBuf+ outputPos, 0, numBytes);
-     }
-     //printf("<-CopyOutput %g %g\n", ((Float32*)outOutput->mBuffers[0].mData)[0], ((Float32*)outOutput->mBuffers[0].mData)[200]);
-     outputPos = (outputPos + numFrames) & ioMask;
+    if (output->mDataByteSize) {
+        UInt32 numBytes = numFrames * sizeof(Float32);
+        UInt32 firstPart = ioBufSize - outputPos;
+        if (firstPart < numFrames) {
+            UInt32 firstPartBytes = firstPart * sizeof(Float32);
+            UInt32 secondPartBytes = numBytes - firstPartBytes;
+            memcpy(output->mData, (Float32 *)outputBuf+ outputPos, firstPartBytes);
+            memcpy((UInt8*)output->mData + firstPartBytes, (Float32 *)outputBuf, secondPartBytes);
+            memset(outputBuf+ outputPos, 0, firstPartBytes);
+            memset(outputBuf, 0, secondPartBytes);
+        } else {
+            memcpy(output->mData, outputBuf+ outputPos, numBytes);
+            memset(outputBuf+ outputPos, 0, numBytes);
+        }
+        //printf("<-CopyOutput %g %g\n", ((Float32*)outOutput->mBuffers[0].mData)[0], ((Float32*)outOutput->mBuffers[0].mData)[200]);
+        outputPos = (outputPos + numFrames) & ioMask;
+    }
 }
 
 - (void)copyInputToFFT:(UInt32)mHopSize
 {
     //printf("CopyInputToFFT mInFFTPos %u\n", (unsigned)mInFFTPos);
-	UInt32 firstPart = ioBufSize - inFFTPos;
+    UInt32 firstPart = ioBufSize - inFFTPos;
 	UInt32 firstPartBytes = firstPart * sizeof(Float32);
 	if (firstPartBytes < fftByteSize) {
 		UInt32 secondPartBytes = fftByteSize - firstPartBytes;
-        memcpy((Float32 *)fftBuf, (Float32 *)inputBuf + inFFTPos, firstPartBytes);
+        memcpy(fftBuf, inputBuf + inFFTPos, firstPartBytes);
         memcpy((UInt8*)fftBuf + firstPartBytes, inputBuf, secondPartBytes);
 	} else {
-        memcpy((Float32 *)fftBuf, (Float32 *)inputBuf+ inFFTPos, fftByteSize);
+        memcpy(fftBuf, inputBuf+ inFFTPos, fftByteSize);
 	}
 	inputSize -= mHopSize;
 	inFFTPos = (inFFTPos + mHopSize) & ioMask;
@@ -273,34 +271,33 @@ static inline UInt32 NextPowerOfTwo(UInt32 x)
 
 #define OFFSETOF(class, field)((size_t)&((class*)0)->field)
 
-- (id)initWithSize:(UInt32)fftSize hopSize:(UInt32)hopSize channels:(UInt32)numChannels maxFrames:(UInt32)maxFrames
+- (id)initWithSize:(UInt32)size hopSize:(UInt32)hop channels:(UInt32)channelsNum maxFrames:(UInt32)frames
 {
     if (self = [super init]) {
         int i;
 
-        mFFTSize = fftSize;
-        mHopSize = hopSize;
-        mNumChannels = numChannels;
-        mMaxFrames = maxFrames;
-        mLog2FFTSize = Log2Ceil(mFFTSize); 
-        mSpectralFunction = 0;
-        mUserData = 0;
-        void *buffer = calloc(1, mFFTSize * sizeof(Float32));
-        mWindow = [NSData dataWithBytesNoCopy:buffer length:mFFTSize freeWhenDone:YES];
+        fftSize = size; // size of the fft output
+        hopSize = hop; // size of 1 hop
+        numChannels = channelsNum;
+        maxFrames = frames;
+        log2FFTSize = Log2Ceil(fftSize); 
+        spectralFunction = 0;
+        userData = 0;
+        window = calloc(1, fftSize * sizeof(Float32));
         [self sineWindow]; // set default window.
         
         channels = [[NSMutableArray alloc] init];
-        mNumberSpectra = numChannels;
-        mDSPSplitComplex = calloc(numChannels, sizeof(DSPSplitComplex));
+        numberSpectra = numChannels;
+        dspSplitComplex = calloc(numChannels, sizeof(DSPSplitComplex));
         for (i = 0; i < numChannels; i++) {
             VJXSpectralChannel *channel = [[VJXSpectralChannel alloc] initWithSize:(UInt32)fftSize frames:(UInt32)maxFrames];
-            mDSPSplitComplex[i].realp = channel.splitFFTBuf;
-            mDSPSplitComplex[i].imagp = channel.splitFFTBuf + (fftSize >> 1); // XXX
+            dspSplitComplex[i].realp = channel.splitFFTBuf;
+            dspSplitComplex[i].imagp = channel.splitFFTBuf + (fftSize >> 1); // XXX
             [channels addObject:channel];
             [channel release]; // the channel will be released as soon as it will be removed from the NSArray
         }
         
-        mFFTSetup = vDSP_create_fftsetup (mLog2FFTSize, FFT_RADIX2);
+        fftSetup = vDSP_create_fftsetup (log2FFTSize, FFT_RADIX2);
     } else {
         [self dealloc];
         self = nil;
@@ -313,8 +310,9 @@ static inline UInt32 NextPowerOfTwo(UInt32 x)
     while ([channels count]) {
         [channels removeLastObject];
     }
-	[mWindow release];
-	vDSP_destroy_fftsetup(mFFTSetup);
+    if (window)
+        free(window);
+	vDSP_destroy_fftsetup(fftSetup);
     [super dealloc];
 }
 
@@ -328,10 +326,10 @@ const double two_pi = 2. * M_PI;
 
 -(void)hanningWindow
 { 
-    Float32 *data = (Float32 *)[mWindow bytes];
+    Float32 *data = (Float32 *)window;
 	// this is also vector optimized
-	double w = two_pi / (double)(mFFTSize - 1);
-	for (UInt32 i = 0; i < mFFTSize; i++)
+	double w = two_pi / (double)(fftSize - 1);
+	for (UInt32 i = 0; i < fftSize; i++)
 	{
 		data[i] = (0.5 - 0.5 * cos(w * (double)i));	
 	}
@@ -339,9 +337,9 @@ const double two_pi = 2. * M_PI;
 
 - (void)sineWindow
 {
-    Float32 *data = (Float32 *)[mWindow bytes];
-	double w = M_PI / (double)(mFFTSize - 1);
-	for (UInt32 i = 0; i < mFFTSize; i++)
+    Float32 *data = (Float32 *)window;
+	double w = M_PI / (double)(fftSize - 1);
+	for (UInt32 i = 0; i < fftSize; i++)
 	{
 		data[i] = sin(w * (double)i);
 	}
@@ -363,8 +361,9 @@ const double two_pi = 2. * M_PI;
 - (void)copyInput:(AudioBufferList *)input frames:(UInt32)numFrames
 {
     int i;
-    
-    for (i = 0; i < [channels count]; i++) {
+    int channelsNum = MIN([channels count], input->mNumberBuffers);
+    // TODO - deinterleave
+    for (i = 0; i < channelsNum; i++) {
         VJXSpectralChannel *channel = [channels objectAtIndex:i];
         [channel copyInput:&input->mBuffers[i] frames:numFrames];
     }
@@ -381,12 +380,12 @@ const double two_pi = 2. * M_PI;
 }
 
 
-- (void)copyInputToFFT:(UInt32)hopSize
+- (void)copyInputToFFT:(UInt32)hop
 {
     int i;
     for (i = 0; i < [channels count]; i++) {
         VJXSpectralChannel *channel = [channels objectAtIndex:i];
-        [channel copyInputToFFT:hopSize];
+        [channel copyInputToFFT:hop];
     }
 }
 
@@ -395,10 +394,10 @@ const double two_pi = 2. * M_PI;
 	for (UInt32 i=0; i<[channels count]; i++) {
         VJXSpectralChannel *channel = [channels objectAtIndex:i];
         UInt32 half = channel.fftSize >> 1;
-		DSPSplitComplex	*freqData = &mDSPSplitComplex[i];
+		DSPSplitComplex	*freqData = &dspSplitComplex[i];
         
 		for (UInt32 j=0; j<half; j++){
-			printf(" bin[%d]: %lf + %lfi\n", (int) j, freqData->realp[j], freqData->imagp[j]);
+			NSLog(@" bin[%d]: %lf + %lfi\n", (int) j, freqData->realp[j], freqData->imagp[j]);
 		}
 	}
 }
@@ -409,9 +408,9 @@ const double two_pi = 2. * M_PI;
 	[self copyInput:input frames:numFrames];
 	
 	// if enough input to process, then process.
-	while ([self inputSize] >= mFFTSize) 
+	while ([self inputSize] >= fftSize) 
 	{
-		[self copyInputToFFT:mHopSize]; // copy from input buffer to fft buffer
+		[self copyInputToFFT:hopSize]; // copy from input buffer to fft buffer
 		[self doWindowing];
 		[self doFwdFFT];
 		[self processSpectrum];
@@ -426,11 +425,11 @@ const double two_pi = 2. * M_PI;
 
 - (void)doWindowing
 {
-	Float32 *win = (Float32 *)[mWindow bytes];
+	Float32 *win = (Float32 *)window;
 	if (!win) return;
-	for (UInt32 i=0; i<mNumChannels; i++) {
-		Float32 *x = (Float32 *)[(NSData *)((VJXSpectralChannel *)[channels objectAtIndex:i]).fftBuf bytes];
-		vDSP_vmul(x, 1, win, 1, x, 1, mFFTSize);
+	for (UInt32 i = 0; i < numChannels; i++) {
+		Float32 *x = (Float32 *)((VJXSpectralChannel *)[channels objectAtIndex:i]).fftBuf;
+		vDSP_vmul(x, 1, win, 1, x, 1, fftSize);
 	}
 	//printf("DoWindowing %g %g\n", mChannels[0].mFFTBuf()[0], mChannels[0].mFFTBuf()[200]);
 }
@@ -440,7 +439,7 @@ const double two_pi = 2. * M_PI;
     int i;
     for (i = 0; i < [channels count]; i++) {
         VJXSpectralChannel *channel = [channels objectAtIndex:i];
-        [channel overlapAddOutput:mHopSize];
+        [channel overlapAddOutput:hopSize];
     }
 }
 
@@ -449,12 +448,12 @@ const double two_pi = 2. * M_PI;
 {
     UInt32 i;
 	//printf("->DoFwdFFT %g %g\n", mChannels[0].mFFTBuf()[0], mChannels[0].mFFTBuf()[200]);
-	UInt32 half = mFFTSize >> 1;
+	UInt32 half = fftSize >> 1;
 	for (i=0; i<[channels count]; i++) 
 	{
         VJXSpectralChannel *channel = [channels objectAtIndex:i];
-        vDSP_ctoz((DSPComplex*)channel.fftBuf, 2, &mDSPSplitComplex[i], 1, half);
-        vDSP_fft_zrip(mFFTSetup, &mDSPSplitComplex[i], 1, mLog2FFTSize, FFT_FORWARD);
+        vDSP_ctoz((DSPComplex*)channel.fftBuf, 2, &dspSplitComplex[i], 1, half);
+        vDSP_fft_zrip(fftSetup, &dspSplitComplex[i], 1, log2FFTSize, FFT_FORWARD);
 	}
 	//printf("<-DoFwdFFT %g %g\n", direction, mChannels[0].mFFTBuf()[0], mChannels[0].mFFTBuf()[200]);
 }
@@ -462,37 +461,37 @@ const double two_pi = 2. * M_PI;
 - (void)doInvFFT
 {
 	//printf("->DoInvFFT %g %g\n", mChannels[0].mFFTBuf()[0], mChannels[0].mFFTBuf()[200]);
-	UInt32 half = mFFTSize >> 1;
-	for (UInt32 i=0; i<mNumChannels; i++) 
+	UInt32 half = fftSize >> 1;
+	for (UInt32 i = 0; i < numChannels; i++) 
 	{
-		vDSP_fft_zrip(mFFTSetup, &mDSPSplitComplex[i], 1, mLog2FFTSize, FFT_INVERSE);
-		vDSP_ztoc(&mDSPSplitComplex[i], 1, (DSPComplex*)((VJXSpectralChannel *)[channels objectAtIndex:i]).fftBuf, 2, half);		
-		float scale = 0.5 / mFFTSize;
+		vDSP_fft_zrip(fftSetup, &dspSplitComplex[i], 1, log2FFTSize, FFT_INVERSE);
+		vDSP_ztoc(&dspSplitComplex[i], 1, (DSPComplex*)((VJXSpectralChannel *)[channels objectAtIndex:i]).fftBuf, 2, half);		
+		float scale = 0.5 / fftSize;
 		vDSP_vsmul(((VJXSpectralChannel *)[channels objectAtIndex:i]).fftBuf, 1, &scale, 
-                   (void *)((VJXSpectralChannel *)[channels objectAtIndex:i]).fftBuf, 1, mFFTSize);
+                   (void *)((VJXSpectralChannel *)[channels objectAtIndex:i]).fftBuf, 1, fftSize);
 	}
 	//printf("<-DoInvFFT %g %g\n", direction, mChannels[0].mFFTBuf()[0], mChannels[0].mFFTBuf()[200]);
 }
 
 - (void)setSpectralFunction:(VJXSpectralFunction)inFunction clientData:(void*)inUserData
 {
-	mSpectralFunction = inFunction; 
-	mUserData = inUserData;
+	spectralFunction = inFunction; 
+	userData = inUserData;
 }
 
 - (void)processSpectrum
 {
-	if (mSpectralFunction)
-		(mSpectralFunction)(mDSPSplitComplex, mNumberSpectra, mUserData);
+	if (spectralFunction)
+		(spectralFunction)(dspSplitComplex, numberSpectra, userData);
 }
 
 #pragma mark ___Utility___
 
 - (void)getMagnitude:(AudioBufferList*)list min:(Float32*)min max:(Float32*)max 
 {	
-	UInt32 half = mFFTSize >> 1;	
-	for (UInt32 i=0; i<mNumChannels; i++) {
-		DSPSplitComplex	*freqData = &mDSPSplitComplex[i];		
+	UInt32 half = fftSize >> 1;	
+	for (UInt32 i=0; i<numChannels; i++) {
+		DSPSplitComplex	*freqData = &dspSplitComplex[i];		
 		
 		Float32* b = (Float32*) list->mBuffers[i].mData;
 		
@@ -507,10 +506,10 @@ const double two_pi = 2. * M_PI;
 
 - (void)getFrequencies:(Float32*)freqs rate:(Float32)sampleRate
 {
-	UInt32 half = mFFTSize >> 1;	
+	UInt32 half = fftSize >> 1;	
     
 	for (UInt32 i=0; i< half; i++){
-		freqs[i] = ((Float32)(i))*sampleRate/((Float32)mFFTSize);	
+		freqs[i] = ((Float32)(i))*sampleRate/((Float32)fftSize);	
 	}
 }
 
@@ -520,9 +519,9 @@ const double two_pi = 2. * M_PI;
     BOOL processed = NO;
     [self copyInput:inInput frames:inNumFrames];    
 	// if enough input to process, then process.
-	while ([self inputSize] >= mFFTSize) 
+	while ([self inputSize] >= fftSize) 
 	{
-		[self copyInputToFFT:mHopSize]; // copy from input buffer to fft buffer
+		[self copyInputToFFT:hopSize]; // copy from input buffer to fft buffer
 		[self doWindowing];
 		[self doFwdFFT];
 		[self processSpectrum]; // here you would copy the fft results out to a buffer indicated in mUserData, say for sonogram drawing

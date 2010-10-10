@@ -26,8 +26,8 @@
 #import "VJXAudioFormat.h"
 #import <CoreAudio/CoreAudioTypes.h>
 
-#define kVJXAudioOutputPreBufferMaxSize 15
-#define kVJXAudioOutputPreBufferMinSize 10
+#define kVJXAudioOutputPreBufferMaxSize 30
+#define kVJXAudioOutputPreBufferMinSize 15
 
 typedef struct CallbackContext_t {
 	VJXAudioBuffer * theConversionBuffer;

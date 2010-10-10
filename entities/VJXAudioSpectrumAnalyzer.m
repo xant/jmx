@@ -68,6 +68,7 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
         
         analyzer = [[VJXSpectrumAnalyzer alloc] initWithSize:blockSize hopSize:numBins channels:2 maxFrames:512];
 
+        // buffer to store a deinterleaved version of the received sample
         deinterleavedBuffer = calloc(1, sizeof(AudioBufferList) + sizeof(AudioBuffer));
         deinterleavedBuffer->mNumberBuffers = 2;
         deinterleavedBuffer->mBuffers[0].mNumberChannels = 1;
@@ -137,31 +138,41 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
         return;
     @synchronized(analyzer) {
         AudioBufferList *bufferList = sample.bufferList;
-        switch (bufferList->mBuffers[0].mNumberChannels == 2) {
-            case 1:
-                {
+        switch(bufferList->mNumberBuffers) {
+        case 1:
+            switch (bufferList->mBuffers[0].mNumberChannels) {
+            case 1: // we got a mono sample, let's just copy that across all channels
+                for (int i = 0; i < deinterleavedBuffer->mNumberBuffers; i++) {
                     UInt32 sizeToCopy = MIN(bufferList->mBuffers[0].mDataByteSize, 
-                                            deinterleavedBuffer->mBuffers[0].mDataByteSize);
-                    memcpy(deinterleavedBuffer->mBuffers[0].mData, bufferList->mBuffers[0].mData, sizeToCopy);
-                    memcpy(deinterleavedBuffer->mBuffers[1].mData, bufferList->mBuffers[0].mData, sizeToCopy);
-                break;
+                                            deinterleavedBuffer->mBuffers[i].mDataByteSize);
+                    memcpy(deinterleavedBuffer->mBuffers[i].mData, bufferList->mBuffers[0].mData, sizeToCopy);
                 }
+                break;
             case 2:
                 {
-                    AudioStreamBasicDescription format = sample.format.audioStreamBasicDescription;
-                    UInt32 numFrames = bufferList->mBuffers[0].mDataByteSize / 
-                    format.mBytesPerFrame / 
-                    bufferList->mBuffers[0].mNumberChannels;
+                    UInt32 numFrames = [sample numFrames];
                     for (int j = 0; j < numFrames; j++) {
-                        uint8_t *frame = ((uint8_t *)bufferList->mBuffers[0].mData) +
-                        (j*4*bufferList->mBuffers[0].mNumberChannels);
+                        uint8_t *frame = ((uint8_t *)bufferList->mBuffers[0].mData) + (j*8);
                         memcpy(deinterleavedBuffer->mBuffers[0].mData+(j*4), frame, 4);
+                        memcpy(deinterleavedBuffer->mBuffers[1].mData+(j*4), frame + 4, 4);
                     }
                 }
                 break;
-            default:
+            default: // more than 2 channels are not supported yet
                 // TODO - error messages
                 return;
+            }
+            break;
+        case 2: // same number of channels (2 at the moment)
+            for (int i = 0; i < deinterleavedBuffer->mNumberBuffers; i++) {
+                UInt32 sizeToCopy = MIN(bufferList->mBuffers[i].mDataByteSize, 
+                                        deinterleavedBuffer->mBuffers[i].mDataByteSize);
+                memcpy(deinterleavedBuffer->mBuffers[i].mData, bufferList->mBuffers[i].mData, sizeToCopy);
+            }
+            break;
+        default: // buffers with more than 2 channels are not supported yet
+            // TODO - error messages
+            return;
         }
         [analyzer processForwards:[sample numFrames] input:deinterleavedBuffer];
 
@@ -191,7 +202,7 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
         [path release];
         
         for (UInt32 i = 0; i < kVJXAudioSpectrumNumFrequencies; i++) {	// for each frequency
-            int offset = frequencies[i]*numBins/44100;
+            int offset = frequencies[i]*numBins/44100*analyzer.numChannels;
             Float32 value = ((Float32 *)(spectrumBuffer->mBuffers[0].mData))[offset] +
                             ((Float32 *)(spectrumBuffer->mBuffers[1].mData))[offset];
             if (value < 0.0)

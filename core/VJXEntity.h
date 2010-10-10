@@ -50,8 +50,6 @@
 
 #pragma mark Properties
 @property (readonly) BOOL active;
-@property (readonly) NSDictionary *inputPins;
-@property (readonly) NSDictionary *outputPins;
 @property (readwrite, copy) NSString *name;
 
 #pragma mark Pin API
@@ -75,6 +73,10 @@
 - (void)unregisterAllPins;
 - (void)disconnectAllPins;
 
+// autoreleased array of strings (pin names)
+- (NSArray *)inputPins;
+- (NSArray *)outputPins;
+
 - (VJXPin *)inputPinWithName:(NSString *)pinName;
 - (VJXPin *)outputPinWithName:(NSString *)pinName;
 
@@ -86,5 +88,6 @@
 
 - (void)activate;
 - (void)deactivate;
+
 @end
 

@@ -26,7 +26,7 @@
 
 @implementation VJXEntity
 
-@synthesize inputPins, outputPins, name, active;
+@synthesize name, active;
 
 - (id)init
 {
@@ -78,6 +78,24 @@
     [outputPins setObject:[VJXPin pinWithName:pinName andType:pinType forDirection:kVJXOutputPin ownedBy:self withSignal:selector]
                    forKey:pinName];
     return [outputPins objectForKey:pinName];
+}
+
+- (NSArray *)inputPins
+{
+    return [[inputPins allKeys]
+            sortedArrayUsingComparator:^(id obj1, id obj2)
+            {
+                return [obj1 compare:obj2];
+            }];
+}
+
+- (NSArray *)outputPins
+{
+    return [[outputPins allKeys]
+            sortedArrayUsingComparator:^(id obj1, id obj2)
+            {
+                return [obj1 compare:obj2];
+            }];
 }
 
 - (VJXPin *)inputPinWithName:(NSString *)pinName

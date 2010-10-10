@@ -76,17 +76,13 @@
 {
     NSInteger count = 0;
     if (aTableView == inputPins) {
-        count = [entityView.entity.inputPins count];
+        count = [[entityView.entity inputPins] count];
     } else if (aTableView == outputPins) {
-        count = [entityView.entity.outputPins count];
+        count = [[entityView.entity outputPins] count];
     } else if (aTableView == producers) {
         NSInteger selectedRow = [inputPins selectedRow];
         if (selectedRow >= 0) {
-            NSArray *pins = [[entityView.entity.inputPins allKeys]
-                             sortedArrayUsingComparator:^(id obj1, id obj2)
-                             {
-                                 return [obj1 compare:obj2];
-                             }];
+            NSArray *pins = [entityView.entity inputPins];
             NSString *pinName = [pins objectAtIndex:selectedRow];
             VJXPin *pin = [entityView.entity inputPinWithName:pinName];
             return [pin.producers count];
@@ -101,37 +97,25 @@
     if (entityView.entity) {
         if (aTableView == inputPins) {
             @synchronized(entityView.entity) {
-                pins = [[entityView.entity.inputPins allKeys]
-                         sortedArrayUsingComparator:^(id obj1, id obj2)
-                         {
-                             return [obj1 compare:obj2];
-                         }];
+                pins = [entityView.entity inputPins];
             }
             if ([[aTableColumn identifier] isEqualTo:@"pinName"])
                 return [pins objectAtIndex:rowIndex];
             else
-                return [[entityView.entity.inputPins objectForKey:[pins objectAtIndex:rowIndex]] typeName];
+                return [[entityView.entity inputPinWithName:[pins objectAtIndex:rowIndex]] typeName];
         } else if (aTableView == outputPins) {
             @synchronized(entityView.entity) {
-                pins = [[entityView.entity.outputPins allKeys]
-                         sortedArrayUsingComparator:^(id obj1, id obj2)
-                         {
-                             return [obj1 compare:obj2];
-                         }];
+                pins = [entityView.entity outputPins];
             }
             if ([[aTableColumn identifier] isEqualTo:@"pinName"])
                 return [pins objectAtIndex:rowIndex];
             else
-                return [[entityView.entity.outputPins objectForKey:[pins objectAtIndex:rowIndex]] typeName];        
+                return [[entityView.entity outputPinWithName:[pins objectAtIndex:rowIndex]] typeName];        
         } else if (aTableView == producers) {
             NSInteger selectedRow = [inputPins selectedRow];
             if (selectedRow >= 0) {
                 @synchronized(entityView.entity) {
-                    pins = [[entityView.entity.inputPins allKeys]
-                             sortedArrayUsingComparator:^(id obj1, id obj2)
-                             {
-                                 return [obj1 compare:obj2];
-                             }];
+                    pins = [entityView.entity inputPins];
                 }
                 NSString *pinName = [pins objectAtIndex:selectedRow];
                 VJXPin *pin = [entityView.entity inputPinWithName:pinName];
@@ -193,11 +177,7 @@
     if (srcRow >= 0) {
         NSInteger selectedRow = [inputPins selectedRow];
         if (selectedRow >= 0) {
-            NSArray *pins = [[entityView.entity.inputPins allKeys]
-                             sortedArrayUsingComparator:^(id obj1, id obj2)
-                             {
-                                 return [obj1 compare:obj2];
-                             }];
+            NSArray *pins = [entityView.entity inputPins];
             NSString *pinName = [pins objectAtIndex:selectedRow];
             VJXPin *pin = [entityView.entity inputPinWithName:pinName];
             if ([pin moveProducerFromIndex:(NSUInteger)srcRow toIndex:(NSUInteger)(srcRow < row)?row-1:row]) {

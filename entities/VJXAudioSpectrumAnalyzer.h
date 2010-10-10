@@ -10,20 +10,23 @@
 #import "VJXEntity.h"
 #import <AudioToolbox/AudioConverter.h>
 
-@class VJXAudioAnalyzer;
+@class VJXSpectrumAnalyzer;
 
 @interface VJXAudioSpectrumAnalyzer : VJXEntity {
 @private
     VJXPin *audioInputPin;
     AudioStreamBasicDescription audioFormat;
-    VJXAudioAnalyzer *analyzer;
+    VJXSpectrumAnalyzer *analyzer;
     AudioConverterRef converter;
     AudioBufferList *spectrumBuffer;
     Float32 *minAmp;
     Float32 *maxAmp;
-    AudioBufferList *deinterleavedBuffer;
     UInt32 blockSize;
     UInt32 numBins;
+    NSMutableArray *frequencyPins;
+#if DEINTERLEAVE_BUFFER
+    AudioBufferList *deinterleavedBuffer;
+#endif
 }
 
 @end

@@ -1,5 +1,5 @@
 //
-//  VJXAudioAnalyzer.m
+//  VJXSpectrumAnalyzer.m
 //  VeeJay
 //
 //  Created by xant on 9/19/10.
@@ -21,7 +21,7 @@
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#import "VJXAudioAnalyzer.h"
+#import "VJXSpectrumAnalyzer.h"
 
 static __inline__ int CountLeadingZeroes(int arg) {
 #if TARGET_CPU_PPC || TARGET_CPU_PPC64
@@ -250,9 +250,9 @@ static inline UInt32 NextPowerOfTwo(UInt32 x)
 
 @end
 
-#pragma mark VJXAudioAnalyzer
+#pragma mark VJXSpectrumAnalyzer
 
-@interface VJXAudioAnalyzer (Private)
+@interface VJXSpectrumAnalyzer (Private)
 
 - (void)doWindowing;
 - (void)doFwdFFT;
@@ -265,7 +265,7 @@ static inline UInt32 NextPowerOfTwo(UInt32 x)
 - (void)copyInputToFFT:(UInt32)hopSize;
 @end
 
-@implementation VJXAudioAnalyzer
+@implementation VJXSpectrumAnalyzer
 #include <vecLib/vectorOps.h>
 
 

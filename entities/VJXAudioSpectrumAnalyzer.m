@@ -7,9 +7,10 @@
 //
 
 #import "VJXAudioSpectrumAnalyzer.h"
-#import "VJXAudioAnalyzer.h"
+#import "VJXSpectrumAnalyzer.h"
 #import "VJXAudioBuffer.h"
 #import "VJXAudioFormat.h"
+
 /*
 static void decodeSpectralBuffer(DSPSplitComplex* spectra, UInt32 numSpectra, void* inUserData)
 {
@@ -25,6 +26,10 @@ static void decodeSpectralBuffer(DSPSplitComplex* spectra, UInt32 numSpectra, vo
     //NSLog(@"%d", numSpectra);
 }
 */
+
+#define kVJXAudioSpectrumNumFrequencies 15
+static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 16, 32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 128000, 256000 }; 
+
 @implementation VJXAudioSpectrumAnalyzer
 
 - (id)init
@@ -33,42 +38,55 @@ static void decodeSpectralBuffer(DSPSplitComplex* spectra, UInt32 numSpectra, vo
         audioInputPin = [self registerInputPin:@"audio" withType:kVJXAudioPin andSelector:@"newSample:"];
         // Set the client format to 32bit float data
         // Maintain the channel count and sample rate of the original source format
-        audioFormat.mSampleRate = 44100;
-        audioFormat.mChannelsPerFrame = 2;
+        UInt32 sampleSize = sizeof(Float32);
+        audioFormat.mSampleRate = 44100; // HC
+        audioFormat.mChannelsPerFrame = 2; // HC
         audioFormat.mFormatFlags = kAudioFormatFlagIsFloat | kAudioFormatFlagIsPacked;
         audioFormat.mFormatID = kAudioFormatLinearPCM;
-        audioFormat.mBytesPerPacket = 4 * audioFormat.mChannelsPerFrame;
+        audioFormat.mBytesPerPacket = sampleSize * audioFormat.mChannelsPerFrame;
         audioFormat.mFramesPerPacket = 1;
-        audioFormat.mBytesPerFrame = 4 * audioFormat.mChannelsPerFrame;
-        audioFormat.mBitsPerChannel = 32;
+        audioFormat.mBytesPerFrame = sampleSize * audioFormat.mChannelsPerFrame;
+        audioFormat.mBitsPerChannel = 8*sampleSize;
         blockSize = 1024;
         numBins = blockSize>>1;
-        //self.frequency = 44100/512;
         converter = nil;
+        
+        // setup the buffer where the squared magnitude will be put into
         spectrumBuffer = calloc(1, sizeof(AudioBufferList) + sizeof(AudioBuffer));
         spectrumBuffer->mNumberBuffers = 2;
         spectrumBuffer->mBuffers[0].mNumberChannels = 1;
-        spectrumBuffer->mBuffers[0].mData = calloc(1, 4*512);
-        spectrumBuffer->mBuffers[0].mDataByteSize = 4*512;
+        spectrumBuffer->mBuffers[0].mData = calloc(1, sampleSize * numBins);
+        spectrumBuffer->mBuffers[0].mDataByteSize = sampleSize * numBins;
         spectrumBuffer->mBuffers[1].mNumberChannels = 1;
-        spectrumBuffer->mBuffers[1].mData = calloc(1, 4*512);
-        spectrumBuffer->mBuffers[1].mDataByteSize = 4*512;
+        spectrumBuffer->mBuffers[1].mData = calloc(1, sampleSize * numBins);
+        spectrumBuffer->mBuffers[1].mDataByteSize = sampleSize * numBins;
         minAmp = (Float32*) calloc(2, sizeof(Float32));
         maxAmp = (Float32*) calloc(2, sizeof(Float32));
+        
 #if DEINTERLEAVE_BUFFER
-        analyzer = [[VJXAudioAnalyzer alloc] initWithSize:blockSize hopSize:numBins channels:2 maxFrames:512];
+        analyzer = [[VJXSpectrumAnalyzer alloc] initWithSize:blockSize hopSize:numBins channels:2 maxFrames:512];
 
         deinterleavedBuffer = calloc(1, sizeof(AudioBufferList) + sizeof(AudioBuffer));
         deinterleavedBuffer->mNumberBuffers = 2;
         deinterleavedBuffer->mBuffers[0].mNumberChannels = 1;
-        deinterleavedBuffer->mBuffers[0].mDataByteSize = 4*256;
-        deinterleavedBuffer->mBuffers[0].mData = calloc(1,4*256);
+        deinterleavedBuffer->mBuffers[0].mDataByteSize = sampleSize*256;
+        deinterleavedBuffer->mBuffers[0].mData = calloc(1,sampleSize*256);
         deinterleavedBuffer->mBuffers[1].mNumberChannels = 1;
-        deinterleavedBuffer->mBuffers[1].mDataByteSize = 4*256;
-        deinterleavedBuffer->mBuffers[1].mData = calloc(1,4*256);
+        deinterleavedBuffer->mBuffers[1].mDataByteSize = sampleSize*256;
+        deinterleavedBuffer->mBuffers[1].mData = calloc(1,sampleSize*256);
 #else
-        analyzer = [[VJXAudioAnalyzer alloc] initWithSize:blockSize hopSize:numBins channels:1 maxFrames:512];
+        analyzer = [[VJXSpectrumAnalyzer alloc] initWithSize:blockSize hopSize:numBins channels:1 maxFrames:512];
 #endif
+        
+        // setup the frequency pins
+        frequencyPins = [[NSMutableArray alloc] init];
+        for (int i = 0; i < kVJXAudioSpectrumNumFrequencies; i++) {
+            int freq = frequencies[i];
+            NSString *pinName = freq < 1000
+                              ? [NSString stringWithFormat:@"%dHz", freq]
+                              : [NSString stringWithFormat:@"%dKhz", freq/1000]; 
+            [frequencyPins addObject:[self registerOutputPin:pinName withType:kVJXNumberPin]];
+        }
     }
     return self;
 }
@@ -83,6 +101,8 @@ static void decodeSpectralBuffer(DSPSplitComplex* spectra, UInt32 numSpectra, vo
     free(deinterleavedBuffer->mBuffers[1].mData);
     free(deinterleavedBuffer);
 #endif
+    free(minAmp);
+    free(maxAmp);
     [super dealloc];
 }
 
@@ -111,16 +131,25 @@ static void decodeSpectralBuffer(DSPSplitComplex* spectra, UInt32 numSpectra, vo
 
         [analyzer getMagnitude:spectrumBuffer min:minAmp max:maxAmp];
         
-        int frequencies[14] = { 32, 64, 125, 25, 500, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 128000, 256000 }; 
-
-        for (UInt32 i = 0; i < 14; i++) {	// for each frequency
+        for (UInt32 i = 0; i < kVJXAudioSpectrumNumFrequencies; i++) {	// for each frequency
             int offset = frequencies[i]*512/44100;
-            
-            NSLog(@"%d - %f \n", frequencies[i], ((Float32 *)spectrumBuffer->mBuffers[0].mData)[offset]);
-            
+            Float32 value = ((Float32 *)spectrumBuffer->mBuffers[0].mData)[offset];
+            [(VJXPin *)[frequencyPins objectAtIndex:i] deliverSignal:[NSNumber numberWithFloat:value]];
+            //NSLog(@"%d - %f \n", frequencies[i], ((Float32 *)spectrumBuffer->mBuffers[0].mData)[offset]);
         }
     }
     
+}
+
+// override outputPins to return them properly sorted
+- (NSArray *)outputPins
+{
+    NSMutableArray *pinNames = [[NSMutableArray alloc] init];
+    for (VJXPin *pin in frequencyPins) {
+        [pinNames addObject:pin.name];
+    }
+    [pinNames addObject:@"active"];
+    return pinNames;
 }
 
 @end

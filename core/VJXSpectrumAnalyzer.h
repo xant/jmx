@@ -1,5 +1,5 @@
 //
-//  VJXAudioAnalyzer.h
+//  VJXSpectrumAnalyzer.h
 //  VeeJay
 //
 //  Created by xant on 9/19/10.
@@ -35,7 +35,7 @@ typedef void (*VJXSpectralFunction)(DSPSplitComplex* spectra, UInt32 numSpectra,
 
 @class VJXSpectralChannel;
 
-@interface VJXAudioAnalyzer : NSObject {
+@interface VJXSpectrumAnalyzer : NSObject {
 @protected
 	UInt32 hopSize;
 	UInt32 numChannels;

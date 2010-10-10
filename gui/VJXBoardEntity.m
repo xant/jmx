@@ -42,7 +42,7 @@
 - (id)initWithEntity:(VJXEntity *)anEntity board:(VJXBoard *)aBoard
 {
 
-    NSUInteger maxNrPins = MAX([anEntity.inputPins count], [anEntity.outputPins count]);
+    NSUInteger maxNrPins = MAX([[anEntity inputPins] count], [[anEntity outputPins] count]);
 
     CGFloat pinSide = ENTITY_PIN_HEIGHT;
     CGFloat height = pinSide * maxNrPins * ENTITY_PIN_MINSPACING;
@@ -80,19 +80,13 @@
         NSRect bounds = [self bounds];
         bounds.size.height -= (labelHeight + ENTITY_LABEL_PADDING);
         bounds.origin.x += ENTITY_PIN_LEFT_PADDING;
-        
-        NSUInteger nrInputPins = [anEntity.inputPins count];
-        NSUInteger nrOutputPins = [anEntity.outputPins count];
-        
+
         int i = 0;
-        NSArray *pins = [[anEntity.inputPins allKeys]
-                         sortedArrayUsingComparator:^(id obj1, id obj2)
-                         {
-                             return [obj1 compare:obj2];
-                         }];
+        NSArray *pins = [anEntity inputPins];
+        NSUInteger nrInputPins = [pins count];
         for (NSString *pinName in pins) {
             NSPoint origin = NSMakePoint(bounds.origin.x, (((bounds.size.height / nrInputPins) * i++) - (bounds.origin.y - (3.0))));
-            VJXBoardEntityOutlet *outlet = [[VJXBoardEntityOutlet alloc] initWithPin:[anEntity.inputPins objectForKey:pinName]
+            VJXBoardEntityOutlet *outlet = [[VJXBoardEntityOutlet alloc] initWithPin:[anEntity inputPinWithName:pinName]
                                                                             andPoint:origin
                                                                             isOutput:NO
                                                                               entity:self];
@@ -101,16 +95,13 @@
             [outlet release];
         }
         
-        pins = [[anEntity.outputPins allKeys]
-                sortedArrayUsingComparator:^(id obj1, id obj2)
-                {
-                    return [obj1 compare:obj2];
-                }];
+        pins = [anEntity outputPins];
+        NSUInteger nrOutputPins = [pins count];
         i = 0;
         for (NSString *pinName in pins) {
             NSPoint origin = NSMakePoint(bounds.size.width - ENTITY_OUTLET_WIDTH ,
                                          (((bounds.size.height / nrOutputPins) * i++) - (bounds.origin.y - (3.0))));
-            VJXBoardEntityOutlet *outlet = [[VJXBoardEntityOutlet alloc] initWithPin:[anEntity.outputPins objectForKey:pinName]
+            VJXBoardEntityOutlet *outlet = [[VJXBoardEntityOutlet alloc] initWithPin:[anEntity outputPinWithName:pinName]
                                                                             andPoint:origin
                                                                             isOutput:YES
                                                                               entity:self];

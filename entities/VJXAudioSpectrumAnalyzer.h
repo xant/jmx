@@ -15,6 +15,8 @@
 @interface VJXAudioSpectrumAnalyzer : VJXEntity {
 @private
     VJXPin *audioInputPin;
+    VJXPin *imagePin;
+    VJXPin *imageSizePin;
     AudioStreamBasicDescription audioFormat;
     VJXSpectrumAnalyzer *analyzer;
     AudioConverterRef converter;
@@ -27,7 +29,6 @@
     NSGraphicsContext *imageContext;
     CGLayerRef pathLayer;
     CIImage *currentImage;
-    VJXPin *imagePin;
     AudioBufferList *deinterleavedBuffer;
 }
 

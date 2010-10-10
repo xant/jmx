@@ -11,4 +11,5 @@
 - allow to move multiple slected items all together
 - allow to group 'diagrams' and to access such groups as a sort of 'macro' in other diagrams
 - introduce a scripting language (javasript? lua?)
+- implement exporters (file save and streaming)
 - make a website

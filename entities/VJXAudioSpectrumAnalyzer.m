@@ -191,7 +191,7 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
         [path release];
         
         for (UInt32 i = 0; i < kVJXAudioSpectrumNumFrequencies; i++) {	// for each frequency
-            int offset = frequencies[i]*numBins/44100*analyzer.numChannels;
+            int offset = frequencies[i]*numBins/44100;
             Float32 value = ((Float32 *)(spectrumBuffer->mBuffers[0].mData))[offset] +
                             ((Float32 *)(spectrumBuffer->mBuffers[1].mData))[offset];
             if (value < 0.0)

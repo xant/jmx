@@ -191,16 +191,10 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
         imageRect.origin.y = 0;
         imageRect.size.width = kVJXAudioSpectrumImageWidth;
         imageRect.size.height = kVJXAudioSpectrumImageHeight;
-        NSBezierPath *path = [[NSBezierPath alloc] init];
-        [[NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:0.5] setFill];
-        [[NSColor blackColor] setStroke];
-        NSAffineTransform *transform = [[[NSAffineTransform alloc] init] autorelease];
-        [path appendBezierPathWithRoundedRect:imageRect xRadius:4.0 yRadius:4.0];
-        [path transformUsingAffineTransform:transform];
-        [path fill];
-        [path stroke];
-        [path release];
         
+        NSBezierPath *clearPath = [NSBezierPath bezierPathWithRect:imageRect];
+        [[NSColor blackColor] setFill];
+        [clearPath fill];
         for (UInt32 i = 0; i < kVJXAudioSpectrumNumFrequencies; i++) {	// for each frequency
             int offset = frequencies[i]*numBins/44100*analyzer.numChannels;
             Float32 value = ((Float32 *)(spectrumBuffer->mBuffers[0].mData))[offset] +
@@ -213,22 +207,19 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
              //Draw your bezier paths here
             int barWidth = imageRect.size.width/kVJXAudioSpectrumNumFrequencies;
             NSRect frequencyRect;
-            frequencyRect.origin.x = i*barWidth;
+            frequencyRect.origin.x = i*barWidth+2;
             frequencyRect.origin.y = 0;
-            frequencyRect.size.width = barWidth;
+            frequencyRect.size.width = barWidth-4;
             frequencyRect.size.height = MIN(value, imageRect.size.height-5);
             
-            NSBezierPath *path = [[NSBezierPath alloc] init];
-            [[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.5] setFill];
-
+            NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:frequencyRect xRadius:4.0 yRadius:4.0];
+            [[NSColor colorWithDeviceRed:255.0 green:255.0 blue:0.0 alpha:0.5] setFill];
             [[NSColor yellowColor] setStroke];
             NSAffineTransform *transform = [[[NSAffineTransform alloc] init] autorelease];
             //[transform translateXBy:0.5 yBy:0.5];
-            [path appendBezierPathWithRoundedRect:frequencyRect xRadius:4.0 yRadius:4.0];
             [path transformUsingAffineTransform:transform];
             [path fill];
             [path stroke];
-            [path release];
             NSMutableDictionary *attribs = [NSMutableDictionary dictionary];
             [attribs
              setObject:[NSFont labelFontOfSize:10]
@@ -251,12 +242,12 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
             [string drawAtPoint:point];
         }
          
-        @synchronized(self) {
+//        @synchronized(self) {
             if (currentImage)
                  [currentImage release];
              currentImage = [[CIImage imageWithCGLayer:pathLayer] retain];
             [imagePin deliverSignal:currentImage];
-        }
+//        }
     }
     
 }

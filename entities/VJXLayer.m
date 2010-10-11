@@ -73,10 +73,11 @@
             // Apply image parameters
             CIFilter *colorFilter = [CIFilter filterWithName:@"CIColorControls"];
             [colorFilter setDefaults];
-            [colorFilter setValue:saturation forKey:@"inputSaturation"];
-            [colorFilter setValue:brightness forKey:@"inputBrightness"];
-            [colorFilter setValue:contrast forKey:@"inputContrast"];
-            [colorFilter setValue:currentFrame forKey:@"inputImage"];
+            // ensure using accessors (by calling self.property) since they will take care of locking
+            [colorFilter setValue:self.saturation forKey:@"inputSaturation"];
+            [colorFilter setValue:self.brightness forKey:@"inputBrightness"];
+            [colorFilter setValue:self.contrast forKey:@"inputContrast"];
+            [colorFilter setValue:self.currentFrame forKey:@"inputImage"];
             // scale the image to fit the configured layer size
             CIImage *frame = [colorFilter valueForKey:@"outputImage"];
             

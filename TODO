@@ -1,13 +1,13 @@
 - switch to NSOperation for signal delivery
   (instead of handling a fixed number of workers by ourselves)
-- implement an audio-spectrum-visualizer entity (mostly for debugging purposes)
+- allow to provide input values (of any supported type) through the GUI
+- allow applying videofilters 
 - implement audio-prebuffering properly to avoid sporadic clicks when a sample buffer 
   is not produced in time (we don't need that much prebuffering, but a minimum is required
   to avoid clicks)
-- allow to provide input values (of any supported type) through the GUI
+- improve VJXAudioMixer (and possibly VJXAudioScheduler)
 - give as much space as possible on the board (reducing entity/font size ?)
 - extend inspector functionalities
-- allow applying videofilters 
 - allow to move multiple slected items all together
 - allow to group 'diagrams' and to access such groups as a sort of 'macro' in other diagrams
 - introduce a scripting language (javasript? lua?)

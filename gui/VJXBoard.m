@@ -160,10 +160,11 @@
 - (void)drawRect:(NSRect)dirtyRect {
     [[NSColor whiteColor] set];
     NSBezierPath *thePath = [[NSBezierPath alloc] init];
-    [thePath appendBezierPathWithRect:[self bounds]];
+    [thePath appendBezierPathWithRect:dirtyRect];
     [thePath fill];
     [thePath release];
 }
+
 
 - (void)addToBoard:(VJXBoardEntity *)theEntity
 {

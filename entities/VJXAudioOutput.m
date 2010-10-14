@@ -52,48 +52,27 @@ static OSStatus _FillComplexBufferProc (
 - (id)init
 {
     if (self = [super init]) {
-        audioInputPin = [self registerInputPin:@"audio" withType:kVJXAudioPin andSelector:@"newSample:"];
+        audioInputPin = [self registerInputPin:@"audio" withType:kVJXAudioPin];
         currentSamplePin = [self registerOutputPin:@"currentSample" withType:kVJXAudioPin];
         converter = NULL;
         format = nil; // must be set by superclasses
-        preBuffer = [[[NSMutableArray alloc] init]retain];
-        doPrebuffering = YES;
     }
     return self;
 }
 
-- (void)newSample:(VJXAudioBuffer *)newSample
-{
-    @synchronized(preBuffer) {
-        if ([preBuffer count] < kVJXAudioOutputPreBufferMaxSize)
-            [preBuffer addObject:[newSample retain]];
-        else if ([preBuffer count] >= kVJXAudioOutputPreBufferMinSize)
-            doPrebuffering = NO;
-        else {
-            doPrebuffering = YES;
-        }
-    }
-}
 
 - (VJXAudioBuffer *)currentSample
 {
     VJXAudioBuffer *currentSample = nil;
-    VJXAudioBuffer *buffer = nil;
-    @synchronized(preBuffer) {
-        if ([preBuffer count] && !doPrebuffering) {
-            buffer = [preBuffer objectAtIndex:0];
-            [preBuffer removeObjectAtIndex:0];
-        }
-    }
-    
+    VJXAudioBuffer *buffer = (VJXAudioBuffer *)[audioInputPin readPinValue];
+
     if (!buffer)
         return nil;
-    else
-        [buffer autorelease];
     
     // sample should need to be converted before being sent to the audio device
     // the output format depends on the output device and could be different from the 
     // one used internally (44Khz stereo float32 interleaved)
+    
     AudioStreamBasicDescription inputDescription = buffer.format.audioStreamBasicDescription;
     AudioStreamBasicDescription outputDescription = format.audioStreamBasicDescription;
     if (!converter) { // create on first use
@@ -135,8 +114,10 @@ static OSStatus _FillComplexBufferProc (
     } else {
         err = AudioConverterFillComplexBuffer ( converter, _FillComplexBufferProc, &callbackContext, &framesRead, outputBufferList, NULL );
     }
-    if (err == noErr)
-        currentSample = [VJXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&outputDescription copy:NO freeOnRelease:YES];    
+    if (err == noErr) {
+        currentSample = [VJXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&outputDescription copy:NO freeOnRelease:YES];
+        [currentSamplePin deliverSignal:currentSample];
+    }
     return currentSample;
 }
 
@@ -144,8 +125,6 @@ static OSStatus _FillComplexBufferProc (
 {
     if (format)
         [format dealloc];
-    if (preBuffer)
-        [preBuffer release];
     [super dealloc];
 }
 

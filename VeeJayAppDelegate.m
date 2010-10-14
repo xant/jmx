@@ -45,7 +45,6 @@
 	[sharedContext registerClass:[VJXImageLayer class]];
 	[sharedContext registerClass:[VJXOpenGLScreen class]];
 	[sharedContext registerClass:[VJXQtVideoCaptureLayer class]];
-	[sharedContext registerClass:[VJXAudioFileLayer class]];
 	[sharedContext registerClass:[VJXQtVideoLayer class]];
 	[sharedContext registerClass:[VJXCoreAudioOutput class]];
 	[sharedContext registerClass:[VJXQtAudioCaptureLayer class]];

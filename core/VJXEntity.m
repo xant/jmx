@@ -52,10 +52,6 @@
     
 }
 
-- (void)defaultOuputCallback:(id)outputData
-{
-}
-
 - (VJXPin *)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType
 {
     return [self registerInputPin:pinName withType:pinType andSelector:@"defaultInputCallback:"];
@@ -70,7 +66,7 @@
 
 - (VJXPin *)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType
 {
-    return [self registerOutputPin:pinName withType:pinType andSelector:@"defaultOutputCallback:"];
+    return [self registerOutputPin:pinName withType:pinType andSelector:nil];
 }
 
 - (VJXPin *)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector

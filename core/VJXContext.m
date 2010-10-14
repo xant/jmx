@@ -23,9 +23,10 @@
 
 #import "VJXContext.h"
 
+#if !USE_NSOPERATIONS
 #define kVJXContextSignalNumWorkers 4
 static NSThread *signalThread[kVJXContextSignalNumWorkers];
-static NSThread *renderThread = nil;
+#endif
 static VJXContext *globalContext = nil;
 static BOOL initialized = NO;
 
@@ -40,30 +41,38 @@ static BOOL initialized = NO;
     if (!initialized) {
         if (!globalContext)
             globalContext = [[VJXContext alloc] init];
+#if !USE_NSOPERATIONS
         for (int i = 0; i < kVJXContextSignalNumWorkers; i++) {
             if (!signalThread[i]) {
                 signalThread[i] = [[NSThread alloc] initWithTarget:globalContext selector:@selector(runThread) object:nil];
+                [signalThread[i] setName:[NSString stringWithFormat:@"signalThread%d", i]]; 
                 [signalThread[i] start];
             }
         }
-        if (!renderThread) {
-            renderThread = [[NSThread alloc] initWithTarget:globalContext selector:@selector(runThread) object:nil];
-            [renderThread start];
-        }
+#endif
         initialized = YES;
     }
 }
 
+#if !USE_NSOPERATIONS
 + (NSThread *)signalThread
 {
     static unsigned int sel = 0;
     return signalThread[++sel%kVJXContextSignalNumWorkers];
 }
-
-+ (NSThread *)renderThread
+#else
++ (NSOperationQueue *)operationQueue
 {
-    return renderThread;
+    if (globalContext)
+        return globalContext.operationQueue;
+    return nil;
 }
+- (void)initQueue
+{
+    operationQueue = [[NSOperationQueue alloc] init];
+    [operationQueue setMaxConcurrentOperationCount:6];
+}
+#endif
 
 + (VJXContext *)sharedContext
 {
@@ -74,6 +83,9 @@ static BOOL initialized = NO;
 {
 	if ((self = [super init]) != nil) {
 		registeredClasses = [[NSMutableArray alloc] init];
+#if USE_NSOPERATIONS
+        [self initQueue];
+#endif
 	}
 	return self;
 }
@@ -81,6 +93,9 @@ static BOOL initialized = NO;
 - (void)dealloc
 {
 	[registeredClasses release];
+#if USE_NSOPERATIONS
+    [operationQueue release];
+#endif
 	[super dealloc];
 }
 
@@ -107,5 +122,9 @@ static BOOL initialized = NO;
 {
 	return (NSArray *)registeredClasses;
 }
+
+#if USE_NSOPERATIONS
+@synthesize operationQueue;
+#endif
 
 @end

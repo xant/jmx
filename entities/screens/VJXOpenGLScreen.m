@@ -25,18 +25,36 @@
 #import <QuartzCore/QuartzCore.h>
 #import "VJXContext.h"
 
+
 @interface VJXOpenGLView : NSOpenGLView {
     CIImage *currentFrame;
     CIContext *ciContext;
     NSRecursiveLock *lock;
+    CVDisplayLinkRef    displayLink; // the displayLink that runs the show
+    CGDirectDisplayID   viewDisplayID;
 }
 
 @property (retain) CIImage *currentFrame;
 
 - (void)setSize:(NSSize)size;
 - (void)cleanup;
+- (void)renderFrame;
 
 @end
+
+static CVReturn renderCallback(CVDisplayLinkRef displayLink, 
+                               const CVTimeStamp *inNow, 
+                               const CVTimeStamp *inOutputTime, 
+                               CVOptionFlags flagsIn, 
+                               CVOptionFlags *flagsOut, 
+                               void *displayLinkContext)
+{    
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+
+    [(VJXOpenGLView*)displayLinkContext renderFrame];
+    [pool drain];
+    return noErr;
+}
 
 @implementation VJXOpenGLView
 
@@ -50,7 +68,6 @@
         NSOpenGLPFADepthSize, 32,
         0
     };
-    
     NSOpenGLPixelFormat* pixelFormat = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attrs] autorelease];
     return [self initWithFrame:frameRect pixelFormat:pixelFormat];
 }
@@ -67,6 +84,7 @@
 - (void)prepareOpenGL
 {
     if (ciContext == nil) {
+
         [super prepareOpenGL];
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
         ciContext = [[CIContext contextWithCGLContext:[[self openGLContext] CGLContextObj]
@@ -74,6 +92,27 @@
                                            colorSpace:colorSpace
                                               options:nil] retain];
         CGColorSpaceRelease(colorSpace);
+
+        // Create display link 
+        CGOpenGLDisplayMask    totalDisplayMask = 0;
+        int            virtualScreen;
+        GLint        displayMask;
+        NSOpenGLPixelFormat    *openGLPixelFormat = [self pixelFormat];
+
+        [self setNeedsDisplay:YES];
+        viewDisplayID = (CGDirectDisplayID)[[[[[self window] screen] deviceDescription] objectForKey:@"NSScreenNumber"] intValue];  
+        for (virtualScreen = 0; virtualScreen < [openGLPixelFormat  numberOfVirtualScreens]; virtualScreen++)
+        {
+            [openGLPixelFormat getValues:&displayMask forAttribute:NSOpenGLPFAScreenMask forVirtualScreen:virtualScreen];
+            totalDisplayMask |= displayMask;
+        }
+        CVReturn ret = CVDisplayLinkCreateWithCGDisplay(viewDisplayID, &displayLink);
+        if (ret != noErr) {
+            // TODO - Error Messages
+        }
+        // Set up display link callbacks 
+        CVDisplayLinkSetOutputCallback(displayLink, renderCallback, self);
+        CVDisplayLinkStart(displayLink);
         [self setNeedsDisplay:YES];
     }
 }
@@ -84,24 +123,31 @@
     [super dealloc];
 }
 
+- (void)renderFrame
+{
+    [[self openGLContext] makeCurrentContext];
+    if (CGLLockContext([[self openGLContext] CGLContextObj]) != kCGLNoError)
+        NSLog(@"Could not lock CGLContext");
+    NSRect bounds = [self bounds];
+    //@synchronized(self) {
+        //CIImage *image = [self.currentFrame retain];
+        if (self.currentFrame) {
+            CGRect screenSizeRect = NSRectToCGRect(bounds);
+            [ciContext drawImage:self.currentFrame inRect:screenSizeRect fromRect:screenSizeRect];
+        }
+        //[image release];
+        [[self openGLContext] flushBuffer];
+    //}
+    [self setNeedsDisplay:NO];
+    CGLUnlockContext([[self openGLContext] CGLContextObj]);
+}
+
 - (void)drawRect:(NSRect)rect
 {
-    @synchronized(self) {
-        [[self openGLContext] makeCurrentContext];
-        if (CGLLockContext([[self openGLContext] CGLContextObj]) != kCGLNoError)
-            NSLog(@"Could not lock CGLContext");
-                NSRect bounds = [self bounds];
-            CIImage *image = [self.currentFrame retain];
-            if (image != NULL) {
-                CGRect screenSizeRect = NSRectToCGRect(bounds);
-                [ciContext drawImage:image inRect:screenSizeRect fromRect:screenSizeRect];
-                [image release];
-            }
-            [[self openGLContext] flushBuffer];
-            [self setNeedsDisplay:NO];
-        CGLUnlockContext([[self openGLContext] CGLContextObj]);
-    }
-    
+    //@synchronized(self) {
+    //[self renderFrame];
+    [self setNeedsDisplay:NO];
+    //}
 }
 
 // Called by Cocoa when the view's visible rectangle or bounds change.
@@ -136,6 +182,7 @@
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
         CGLUnlockContext([[self openGLContext] CGLContextObj]);
+        [[self openGLContext] flushBuffer];
     }
 }
 
@@ -155,7 +202,7 @@
 
 - (void)setSize:(NSSize)size
 {
-    @synchronized(self) {
+    //@synchronized(self) {
         NSRect actualRect = [[self window ] frame];
         // XXX - we actually don't allow setting a 0-size (for neither width nor height)
         if (size.width && size.height &&
@@ -168,8 +215,9 @@
             newRect.origin.y = actualRect.origin.y;
             [[self window] setFrame:newRect display:NO];
             [[self window] setMovable:YES]; // XXX - this shouldn't be necessary
+            [self setNeedsDisplay:YES]; // triggers reshape
         }
-    }
+    //}
 }
 
 @end
@@ -205,34 +253,20 @@
 
 - (void)setSize:(VJXSize *)newSize
 {
-    @synchronized(self) {
+    //@synchronized(self) {
         if (![newSize isEqual:size]) {
             [super setSize:newSize];
             [view setSize:[newSize nsSize]];
         }
-    }
-}
-
-- (void)renderFrame
-{
-    [view drawRect:NSZeroRect];
+    //}
 }
 
 - (void)drawFrame:(CIImage *)frame
 {
     [super drawFrame:frame];
-    @synchronized(self) {
-        // XXX - this is a leftover from first implementation, storing the current frame
-        //       in the view implementation shouldn't be necessary anymore 
-        view.currentFrame = currentFrame; 
-        
-        // XXX - setting needsDisplay makes rendering happen in the main gui thread
-        // this could lead to undesired behaviours like rendering stopping while 
-        // a gui animation is in progress. Calling drawRect directly here, instead, 
-        // makes rendering happen in the current thread... which is what we really want
-        //[view setNeedsDisplay:YES];
-    }
-    [self performSelector:@selector(renderFrame) onThread:[VJXContext renderThread] withObject:nil waitUntilDone:NO];
+    //@synchronized(view) {
+        view.currentFrame = frame;
+    //}
 }
 
 @end

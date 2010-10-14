@@ -30,6 +30,7 @@
     CGLayerRef pathLayer;
     CIImage *currentImage;
     AudioBufferList *deinterleavedBuffer;
+    UInt32 runcycleCount;
 }
 
 @end

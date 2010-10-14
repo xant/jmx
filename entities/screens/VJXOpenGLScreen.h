@@ -23,6 +23,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "VJXVideoOutput.h"
+#include <QuartzCore/CVDisplayLink.h>
 
 @class VJXOpenGLView;
 

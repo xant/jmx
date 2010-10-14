@@ -23,16 +23,24 @@
 
 #import <Cocoa/Cocoa.h>
 
+#define USE_NSOPERATIONS 0
 
 @interface VJXContext : NSObject {
 	NSMutableArray *registeredClasses;
+#if USE_NSOPERATIONS
+    NSOperationQueue *operationQueue;
+#endif
 }
 
-+ (void)initialize;
+#if USE_NSOPERATIONS
+@property (readonly) NSOperationQueue *operationQueue;
++ (NSOperationQueue *)operationQueue;
+#else
 + (NSThread *)signalThread;
-+ (NSThread *)renderThread;
-+ (VJXContext *)sharedContext;
+#endif
 
++ (VJXContext *)sharedContext;
++ (void)initialize;
 - (void)registerClass:(Class)aClass;
 - (NSArray *)registeredClasses;
 

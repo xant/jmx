@@ -34,8 +34,6 @@
     VJXAudioFormat *format;
     VJXPin *currentSamplePin;
     VJXPin *audioInputPin;
-    NSMutableArray *preBuffer;
-    BOOL doPrebuffering;
 }
 
 - (VJXAudioBuffer *)currentSample;

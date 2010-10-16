@@ -52,22 +52,22 @@ static OSStatus _FillComplexBufferProc (
 - (id)init
 {
     if (self = [super init]) {
-        audioInputPin = [self registerInputPin:@"audio" withType:kVJXAudioPin];
+        audioInputPin = [self registerInputPin:@"audio" withType:kVJXAudioPin andSelector:@"newSample:"];
         currentSamplePin = [self registerOutputPin:@"currentSample" withType:kVJXAudioPin];
         converter = NULL;
         format = nil; // must be set by superclasses
+        samples = [[NSMutableArray alloc] init];
     }
     return self;
 }
 
 
-- (VJXAudioBuffer *)currentSample
+- (void)newSample:(VJXAudioBuffer *)buffer
 {
-    VJXAudioBuffer *currentSample = nil;
-    VJXAudioBuffer *buffer = (VJXAudioBuffer *)[audioInputPin readPinValue];
+    VJXAudioBuffer *newSample = nil;
 
     if (!buffer)
-        return nil;
+        return;
     
     // sample should need to be converted before being sent to the audio device
     // the output format depends on the output device and could be different from the 
@@ -79,7 +79,7 @@ static OSStatus _FillComplexBufferProc (
         if ( noErr != AudioConverterNew ( &inputDescription, &outputDescription, &converter )) {
             converter = NULL; // just in case
             // TODO - Error Messages
-            return nil;
+            return;
         } else {
             
             UInt32 primeMethod = kConverterPrimeMethod_None;
@@ -115,16 +115,36 @@ static OSStatus _FillComplexBufferProc (
         err = AudioConverterFillComplexBuffer ( converter, _FillComplexBufferProc, &callbackContext, &framesRead, outputBufferList, NULL );
     }
     if (err == noErr) {
-        currentSample = [VJXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&outputDescription copy:NO freeOnRelease:YES];
-        [currentSamplePin deliverSignal:currentSample];
+        newSample = [VJXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&outputDescription copy:NO freeOnRelease:YES];
+        [currentSamplePin deliverSignal:newSample];
+        @synchronized(samples) {
+            [samples addObject:newSample];
+        }
     }
-    return currentSample;
+}
+
+- (VJXAudioBuffer *)currentSample
+{
+    VJXAudioBuffer *sample = nil;
+    @synchronized(samples) {
+        if ([samples count]) {
+            sample = [[samples objectAtIndex:0] retain];
+            [samples removeObjectAtIndex:0];
+        }
+    }
+    if (sample)
+        return [sample autorelease];
+    return nil;
 }
 
 - (void)dealloc
 {
     if (format)
         [format dealloc];
+    if (samples) {
+        [samples removeAllObjects];
+        [samples release];
+    }
     [super dealloc];
 }
 

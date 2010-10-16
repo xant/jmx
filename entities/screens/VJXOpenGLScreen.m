@@ -32,6 +32,7 @@
     NSRecursiveLock *lock;
     CVDisplayLinkRef    displayLink; // the displayLink that runs the show
     CGDirectDisplayID   viewDisplayID;
+    uint64_t lastTime;
 }
 
 @property (retain) CIImage *currentFrame;
@@ -50,8 +51,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
                                void *displayLinkContext)
 {    
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-
-    [(VJXOpenGLView*)displayLinkContext renderFrame];
+    [(VJXOpenGLView*)displayLinkContext renderFrame:inNow->hostTime];
     [pool drain];
     return noErr;
 }
@@ -77,6 +77,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     if (self = [super initWithFrame:frameRect pixelFormat:format]) {
         currentFrame = nil;
         ciContext = nil;
+        lastTime = 0;
     }
     return self;
 }
@@ -123,13 +124,16 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     [super dealloc];
 }
 
-- (void)renderFrame
+- (void)renderFrame:(uint64_t)timeStamp
 {
-    [[self openGLContext] makeCurrentContext];
+    if ((timeStamp-lastTime)/1e9 > 1e9/60)
+        return;
+    lastTime = timeStamp;
+  /*  [[self openGLContext] makeCurrentContext];
     if (CGLLockContext([[self openGLContext] CGLContextObj]) != kCGLNoError)
-        NSLog(@"Could not lock CGLContext");
+        NSLog(@"Could not lock CGLContext"); */
     NSRect bounds = [self bounds];
-    //@synchronized(self) {
+    @synchronized(self) {
         //CIImage *image = [self.currentFrame retain];
         if (self.currentFrame) {
             CGRect screenSizeRect = NSRectToCGRect(bounds);
@@ -137,9 +141,9 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         }
         //[image release];
         [[self openGLContext] flushBuffer];
-    //}
+    }
     [self setNeedsDisplay:NO];
-    CGLUnlockContext([[self openGLContext] CGLContextObj]);
+ //   CGLUnlockContext([[self openGLContext] CGLContextObj]);
 }
 
 - (void)drawRect:(NSRect)rect
@@ -162,10 +166,10 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         maxX = NSMaxX(bounds);
         maxY = NSMaxY(bounds);
         [[self openGLContext] makeCurrentContext];
-        
+        /*
         if (CGLLockContext([[self openGLContext] CGLContextObj]) != kCGLNoError)
             NSLog(@"Could not lock CGLContext");
-        
+        */
         glViewport(0, 0, bounds.size.width, bounds.size.height);
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
@@ -181,7 +185,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         glPixelZoom(1.0, 1.0);
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
-        CGLUnlockContext([[self openGLContext] CGLContextObj]);
+        //CGLUnlockContext([[self openGLContext] CGLContextObj]);
         [[self openGLContext] flushBuffer];
     }
 }

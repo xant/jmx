@@ -26,8 +26,9 @@
 #import "VJXFileRead.h"
 
 @class VJXAudioFile;
+@class VJXAudioDevice;
 
-@interface VJXAudioFileLayer : VJXThreadedEntity < VJXFileRead > {
+@interface VJXAudioFileLayer : VJXEntity < VJXFileRead, VJXRunLoop > {
 @private
     VJXAudioFile *audioFile;
     VJXAudioBuffer *currentSample;
@@ -35,8 +36,12 @@
     NSMutableArray *samples;
     BOOL repeat;
     NSUInteger offset;
+    VJXAudioDevice *device; // used to obtain the clock
 }
 
 @property (readwrite) BOOL repeat;
 - (void)doRepeat:(id)value; // input pin setter (we will receive NSNumbers from pins)
+- (void)newSample:(uint64_t)timeStamp;
+- (void)start;
+- (void)stop;
 @end

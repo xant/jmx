@@ -47,9 +47,9 @@ static OSStatus _FillComplexBufferProc (
     AudioBufferList *bufferList = ctx->theConversionBuffer;
 	int i;
     for (i = 0; i < bufferList->mNumberBuffers; i++) {
-        ioData->mBuffers[i].mData = bufferList->mBuffers[i].mData;
-        ioData->mBuffers[i].mDataByteSize = bufferList->mBuffers[i].mDataByteSize;
-        //memcpy(&ioData->mBuffers[i], &bufferList->mBuffers[i], sizeof(AudioBuffer));
+        //ioData->mBuffers[i].mData = bufferList->mBuffers[i].mData;
+        //ioData->mBuffers[i].mDataByteSize = bufferList->mBuffers[i].mDataByteSize;
+        memcpy(&ioData->mBuffers[i], &bufferList->mBuffers[i], sizeof(AudioBuffer));
     }
     return noErr;
 }
@@ -188,66 +188,6 @@ error:
 
 @implementation VJXQtAudioCaptureLayer : VJXEntity
 
-- (void)captureOutput:(QTCaptureOutput *)captureOutput didOutputAudioSampleBuffer:(QTSampleBuffer *)sampleBuffer
-                                                             fromConnection:(QTCaptureConnection *)connection
-{
-    @synchronized(outputPin) {
-        AudioStreamBasicDescription format;
-       // AudioBufferList buffer;
-        if (currentBuffer)
-            [currentBuffer release];
-        [[[sampleBuffer formatDescription] attributeForKey:QTFormatDescriptionAudioStreamBasicDescriptionAttribute] getValue:&format];
-        AudioBufferList *buffer = [sampleBuffer audioBufferListWithOptions:(QTSampleBufferAudioBufferListOptions)QTSampleBufferAudioBufferListOptionAssure16ByteAlignment];
-        
-        
-        AudioStreamBasicDescription inputDescription = format;
-        AudioStreamBasicDescription outputDescription = outputFormat;
-        if (!converter) { // create on first use
-            if ( noErr != AudioConverterNew ( &inputDescription, &outputDescription, &converter )) {
-                converter = NULL; // just in case
-                // TODO - Error Messages
-                return;
-            } else {
-                
-                UInt32 primeMethod = kConverterPrimeMethod_None;
-                UInt32 srcQuality = kAudioConverterQuality_Max;
-                (void) AudioConverterSetProperty ( converter, kAudioConverterPrimeMethod, sizeof(UInt32), &primeMethod );
-                (void) AudioConverterSetProperty ( converter, kAudioConverterSampleRateConverterQuality, sizeof(UInt32), &srcQuality );
-            }
-        } else {
-            // TODO - check if inputdescription or outputdescription have changed and, 
-            //        if that's the case, reset the converter accordingly
-        }
-        OSStatus err = noErr;
-        CallbackContext callbackContext;
-        UInt32 framesRead = buffer->mBuffers[0].mDataByteSize / format.mBytesPerFrame / buffer->mBuffers[0].mNumberChannels;
-        AudioBufferList *outputBufferList = calloc(sizeof(AudioBufferList), 1);
-        outputBufferList->mNumberBuffers = 1;
-        outputBufferList->mBuffers[0].mDataByteSize = outputDescription.mBytesPerFrame * outputDescription.mChannelsPerFrame * framesRead;
-        outputBufferList->mBuffers[0].mNumberChannels = outputDescription.mChannelsPerFrame;
-        outputBufferList->mBuffers[0].mData = calloc(outputBufferList->mBuffers[0].mDataByteSize, 1);
-        callbackContext.theConversionBuffer = buffer;
-        callbackContext.wait = NO; // XXX (actually unused)
-        if (inputDescription.mSampleRate == outputDescription.mSampleRate &&
-            inputDescription.mBytesPerFrame == outputDescription.mBytesPerFrame) {
-            err = AudioConverterConvertBuffer (
-                                               converter,
-                                               buffer->mBuffers[0].mDataByteSize,
-                                               buffer->mBuffers[0].mData,
-                                               &outputBufferList->mBuffers[0].mDataByteSize,
-                                               outputBufferList->mBuffers[0].mData
-                                               );
-        } else {
-            err = AudioConverterFillComplexBuffer ( converter, _FillComplexBufferProc, &callbackContext, &framesRead, outputBufferList, NULL );
-        }
-        if (err == noErr)
-            currentBuffer = [[VJXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&outputFormat copy:NO freeOnRelease:YES] retain];    
-        if (currentBuffer)
-            [outputPin deliverSignal:currentBuffer fromSender:self];
-        [self outputDefaultSignals:CVGetCurrentHostTime()];
-    }
-}
-
 - (id)init
 {
     if (self == [super init]) {
@@ -256,7 +196,7 @@ error:
         // Set the client format to 32bit float data
         // Maintain the channel count and sample rate of the original source format
         outputFormat.mSampleRate = 44100;
-        outputFormat.mChannelsPerFrame = 2;
+        outputFormat.mChannelsPerFrame = 1;
         outputFormat.mFormatFlags = kAudioFormatFlagIsFloat | kAudioFormatFlagIsPacked;
         outputFormat.mFormatID = kAudioFormatLinearPCM;
         outputFormat.mBytesPerPacket = 4 * outputFormat.mChannelsPerFrame;
@@ -279,7 +219,69 @@ error:
 	[super dealloc];
 }
 
-
+- (void)captureOutput:(QTCaptureOutput *)captureOutput didOutputAudioSampleBuffer:(QTSampleBuffer *)sampleBuffer
+                                                             fromConnection:(QTCaptureConnection *)connection
+{
+    //@synchronized(outputPin) {
+        AudioStreamBasicDescription format;
+       // AudioBufferList buffer;
+        if (currentBuffer)
+            [currentBuffer release];
+        [[[sampleBuffer formatDescription] attributeForKey:QTFormatDescriptionAudioStreamBasicDescriptionAttribute] getValue:&format];
+        AudioBufferList *buffer = [sampleBuffer audioBufferListWithOptions:(QTSampleBufferAudioBufferListOptions)QTSampleBufferAudioBufferListOptionAssure16ByteAlignment];
+        
+        
+        AudioStreamBasicDescription inputDescription = format;
+#if 0
+        AudioStreamBasicDescription outputDescription = outputFormat;
+        if (!converter) { // create on first use
+            if ( noErr != AudioConverterNew ( &inputDescription, &outputDescription, &converter )) {
+                converter = NULL; // just in case
+                // TODO - Error Messages
+                return;
+            } else {
+                
+                UInt32 primeMethod = kConverterPrimeMethod_None;
+                UInt32 srcQuality = kAudioConverterQuality_Max;
+                (void) AudioConverterSetProperty ( converter, kAudioConverterPrimeMethod, sizeof(UInt32), &primeMethod );
+                (void) AudioConverterSetProperty ( converter, kAudioConverterSampleRateConverterQuality, sizeof(UInt32), &srcQuality );
+            }
+        } else {
+            // TODO - check if inputdescription or outputdescription have changed and, 
+            //        if that's the case, reset the converter accordingly
+        }
+        OSStatus err = noErr;
+        CallbackContext callbackContext;
+        UInt32 framesRead = buffer->mBuffers[0].mDataByteSize / format.mBytesPerFrame / buffer->mBuffers[0].mNumberChannels;
+        AudioBufferList *outputBufferList = malloc(sizeof(AudioBufferList));
+        outputBufferList->mNumberBuffers = 1;
+        outputBufferList->mBuffers[0].mDataByteSize = outputDescription.mBytesPerFrame * outputDescription.mChannelsPerFrame * framesRead;
+        outputBufferList->mBuffers[0].mNumberChannels = outputDescription.mChannelsPerFrame;
+        outputBufferList->mBuffers[0].mData = malloc(outputBufferList->mBuffers[0].mDataByteSize);
+        callbackContext.theConversionBuffer = buffer;
+        callbackContext.wait = NO; // XXX (actually unused)
+        if (inputDescription.mSampleRate == outputDescription.mSampleRate &&
+            inputDescription.mBytesPerFrame == outputDescription.mBytesPerFrame) {
+            err = AudioConverterConvertBuffer (
+                                               converter,
+                                               buffer->mBuffers[0].mDataByteSize,
+                                               buffer->mBuffers[0].mData,
+                                               &outputBufferList->mBuffers[0].mDataByteSize,
+                                               outputBufferList->mBuffers[0].mData
+                                               );
+        } else {
+            err = AudioConverterFillComplexBuffer ( converter, _FillComplexBufferProc, &callbackContext, &framesRead, outputBufferList, NULL );
+        }
+        if (err == noErr)
+            currentBuffer = [[VJXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&outputFormat copy:NO freeOnRelease:YES] retain];    
+#else
+        currentBuffer = [[VJXAudioBuffer audioBufferWithCoreAudioBufferList:buffer andFormat:&inputDescription copy:YES freeOnRelease:YES] retain];    
+#endif
+        if (currentBuffer)
+            [outputPin deliverSignal:currentBuffer fromSender:self];
+        [self outputDefaultSignals:CVGetCurrentHostTime()];
+    //}
+}
 
 - (void)start
 {

@@ -331,7 +331,7 @@
 
     // XXX - perhaps we should let the user start entities esplicitly
     //       (and we need to provide seek controls as well)
-    if ([anEntity conformsToProtocol:@protocol(VJXThread)])
+    if ([anEntity conformsToProtocol:@protocol(VJXRunLoop)])
         [anEntity performSelector:@selector(start)];
 
     [boardEntity release];

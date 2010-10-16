@@ -23,9 +23,9 @@
 //
 
 #import "VJXEntity.h"
-#import "VJXThread.h"
+#import "VJXRunLoop.h"
 
-@interface VJXThreadedEntity : VJXEntity < VJXThread > {
+@interface VJXThreadedEntity : VJXEntity < VJXRunLoop > {
 @protected
     uint64_t previousTimeStamp;
     NSNumber *frequency;

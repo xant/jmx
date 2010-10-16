@@ -70,7 +70,7 @@ static BOOL initialized = NO;
 - (void)initQueue
 {
     operationQueue = [[NSOperationQueue alloc] init];
-    [operationQueue setMaxConcurrentOperationCount:6];
+    [operationQueue setMaxConcurrentOperationCount:4];
 }
 #endif
 

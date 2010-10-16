@@ -23,6 +23,8 @@
 
 #import "VJXAudioFileLayer.h"
 #import "VJXAudioFile.h"
+#import "VJXAudioDevice.h"
+#import <QuartzCore/QuartzCore.h>
 
 @implementation VJXAudioFileLayer
 
@@ -33,6 +35,21 @@
     return [NSArray arrayWithObjects:@"mp3", @"mp2", @"aif", @"aiff", @"wav", @"avi", nil];
 }
 
+
+- (void)provideSamplesToDevice:(VJXAudioDevice *)device
+                     timeStamp:(AudioTimeStamp *)timeStamp
+                     inputData:(AudioBufferList *)inInputData
+                     inputTime:(AudioTimeStamp *)inInputTime
+                    outputData:(AudioBufferList *)outOutputData
+                    outputTime:(AudioTimeStamp *)inOutputTime
+                    clientData:(VJXAudioFileLayer *)clientData
+
+{
+    [clientData newSample:CVGetCurrentHostTime()];
+    NSLog(@"CIAO1");
+}
+
+
 - (id)init
 {
     if (self = [super init]) {
@@ -42,6 +59,7 @@
         [self registerInputPin:@"repeat" withType:kVJXNumberPin andSelector:@"doRepeat:"];
         currentSample = nil;
         samples = nil;
+        device = nil;
     }
     return self;
 }
@@ -54,6 +72,12 @@
         [samples release];
     if (audioFile)
         [audioFile release];
+    /*
+    NSLog(@"INPUT: %@", [VJXAudioDevice inputDevices]);
+    NSLog(@"OUTPUT: %@", [VJXAudioDevice outputDevices]);
+    */
+    if (device)
+        [device release];
     [super dealloc];
 }
 
@@ -63,7 +87,7 @@
         @synchronized(audioFile) {
             audioFile = [[VJXAudioFile audioFileWithURL:[NSURL fileURLWithPath:file]] retain];
             if (audioFile) {
-                self.frequency = [NSNumber numberWithDouble:([audioFile sampleRate]/512.0)];
+                //self.frequency = [NSNumber numberWithDouble:([audioFile sampleRate]/512.0)*2];
                 NSArray *path = [file componentsSeparatedByString:@"/"];
                 self.name = [path lastObject];
                 if (samples)
@@ -76,7 +100,16 @@
                     if (sample)
                         [samples addObject:sample];
                 }
-                offset = 0;
+                if (device)
+                    [device release];
+                device = [[VJXAudioDevice aggregateDevice:[[VJXAudioDevice defaultOutputDevice] deviceUID] withName:self.name] retain];
+                NSLog(@"%@", [device deviceName]);
+                
+                [device setIOTarget:self 
+                       withSelector:@selector(provideSamplesToDevice:timeStamp:inputData:inputTime:outputData:outputTime:clientData:)
+                     withClientData:self];
+                if (active)
+                    [device deviceStart];
                 return YES;
             }
         }
@@ -89,44 +122,25 @@
     // TODO - IMPLEMENT
 }
 
-- (void)tick:(uint64_t)timeStamp
+- (void)newSample:(uint64_t)timeStamp
 {
-    @synchronized(audioFile) {
-        if (active && audioFile) {
-            if ([samples count]) {
-                if (currentSample)
-                    [currentSample release];
-                currentSample = [[samples objectAtIndex:0] retain];
-                [samples removeObjectAtIndex:0];
-                if (currentSample)
-                    [outputPin deliverSignal:currentSample fromSender:self];
+    VJXAudioBuffer *sample = nil;
+    if (active && audioFile) {
+        sample = [audioFile readFrames:512];
+        if ([audioFile currentOffset] >= [audioFile numFrames] - (512*[audioFile numChannels])) {
+            [audioFile seekToOffset:0];
+            if (repeat) { // loop on the file if we have to
+                sample = [[audioFile readFrames:512] retain];
             } else {
-                if ([audioFile currentOffset] >= [audioFile numFrames] - (512*[audioFile numChannels])) {
-                    offset = 0;
-                    [audioFile seekToOffset:0];
-                    if (repeat) { // loop on the file if we have to
-                        currentSample = [[audioFile readFrames:512] retain];
-                        if (currentSample)
-                            [outputPin deliverSignal:currentSample fromSender:self];
-                    } else {
-                        active = FALSE;
-                        return;
-                    }
-                }
+                active = FALSE;
             }
-            offset++;
-            while ([samples count] < 512) { // prebuffer a bunch of frames
-                VJXAudioBuffer *sample = [audioFile readFrames:512];
-                if (sample)
-                    [samples addObject:sample];
-                else
-                    break;
-            }
-        } else {
-            [outputPin deliverSignal:nil fromSender:self];
         }
-    }
-    [super tick:timeStamp];
+    } 
+    if (sample)
+        [outputPin deliverSignal:sample fromSender:self];
+    else
+        [outputPin deliverSignal:nil fromSender:self];
+    [self outputDefaultSignals:timeStamp];
 }
 
 - (void)doRepeat:(id)value
@@ -137,4 +151,17 @@
     ? YES
     : NO;
 }
+
+- (void)start
+{
+    active = YES;
+    [device deviceStart];
+}
+
+- (void)stop
+{
+    active = NO;
+    [device deviceStop];
+}
+
 @end

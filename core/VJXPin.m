@@ -75,7 +75,7 @@
 
 @implementation VJXPin
 
-@synthesize type, name, multiple, continuous, retainData, direction, 
+@synthesize type, name, multiple, continuous, buffered, retainData, direction, 
             producers, receivers, allowedValues, owner, minValue, maxValue;
 
 + (id)pinWithName:(NSString *)name
@@ -123,6 +123,7 @@
         multiple = NO;
         continuous = YES;
         retainData = YES;
+        buffered = NO;
         currentData = nil;
         currentSender = nil;
         owner = pinOwner;
@@ -274,13 +275,18 @@
 
 - (void)deliverSignal:(id)data fromSender:(id)sender
 {
+    // check if NULL data has been signaled
+    // and if it's the case, clear currentData and return
     if (!data) {
         @synchronized(self) {
             if (currentData)
                 [currentData release];
             currentData = nil;
         }
+        return;
     }
+    // if instead new data arrived, check if it's of the correct type
+    // and propagate the signal if that's the case
     if ([self isCorrectDataType:data]) {
         @synchronized(self) {
             if (data) {

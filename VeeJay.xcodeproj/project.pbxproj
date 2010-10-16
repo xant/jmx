@@ -42,6 +42,7 @@
 		AA2BE3F312353BA6006087E7 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE3F212353BA6006087E7 /* CoreAudio.framework */; };
 		AA2BE40B12353D5C006087E7 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE40A12353D5C006087E7 /* Accelerate.framework */; };
 		AA2BE6511236D31E006087E7 /* VJXThreadedEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2BE6501236D31E006087E7 /* VJXThreadedEntity.m */; };
+		AA49A48F1269D15F0034125D /* VJXRingBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA49A48E1269D15F0034125D /* VJXRingBuffer.m */; };
 		AA718124125899E40068DB2B /* VJXAudioSpectrumAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA718123125899E40068DB2B /* VJXAudioSpectrumAnalyzer.m */; };
 		AA7181381258AFA30068DB2B /* VJXAudioScheduler.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7181371258AFA30068DB2B /* VJXAudioScheduler.m */; };
 		AA718525125B2E560068DB2B /* VJXLibraryTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 822CE015125A74A8000C92F9 /* VJXLibraryTableView.m */; };
@@ -135,6 +136,8 @@
 		AA2BE40A12353D5C006087E7 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		AA2BE6401236D2C4006087E7 /* VJXThreadedEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXThreadedEntity.h; path = core/VJXThreadedEntity.h; sourceTree = "<group>"; };
 		AA2BE6501236D31E006087E7 /* VJXThreadedEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXThreadedEntity.m; path = core/VJXThreadedEntity.m; sourceTree = "<group>"; };
+		AA49A48D1269D15F0034125D /* VJXRingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXRingBuffer.h; path = core/VJXRingBuffer.h; sourceTree = "<group>"; };
+		AA49A48E1269D15F0034125D /* VJXRingBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXRingBuffer.m; path = core/VJXRingBuffer.m; sourceTree = "<group>"; };
 		AA718122125899E40068DB2B /* VJXAudioSpectrumAnalyzer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXAudioSpectrumAnalyzer.h; path = entities/VJXAudioSpectrumAnalyzer.h; sourceTree = "<group>"; };
 		AA718123125899E40068DB2B /* VJXAudioSpectrumAnalyzer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXAudioSpectrumAnalyzer.m; path = entities/VJXAudioSpectrumAnalyzer.m; sourceTree = "<group>"; };
 		AA7181361258AFA30068DB2B /* VJXAudioScheduler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXAudioScheduler.h; path = entities/VJXAudioScheduler.h; sourceTree = "<group>"; };
@@ -149,7 +152,7 @@
 		AA9A2E511251CB000078FA8A /* VJXAudioMixer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXAudioMixer.m; path = entities/VJXAudioMixer.m; sourceTree = "<group>"; };
 		AA9F7478124E9CFE001FAAC8 /* VJXAudioFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXAudioFormat.h; path = core/VJXAudioFormat.h; sourceTree = "<group>"; };
 		AA9F7479124E9CFE001FAAC8 /* VJXAudioFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXAudioFormat.m; path = core/VJXAudioFormat.m; sourceTree = "<group>"; };
-		AAAB1A8D1256BF4000B40A41 /* VJXThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXThread.h; path = core/VJXThread.h; sourceTree = "<group>"; };
+		AAAB1A8D1256BF4000B40A41 /* VJXRunLoop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXRunLoop.h; path = core/VJXRunLoop.h; sourceTree = "<group>"; };
 		AAAB1AF31256C08300B40A41 /* VJXFileRead.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXFileRead.h; path = core/VJXFileRead.h; sourceTree = "<group>"; };
 		AADAC968124F7AEA00729ACC /* VJXAudioFileLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXAudioFileLayer.h; path = entities/layers/VJXAudioFileLayer.h; sourceTree = "<group>"; };
 		AADAC969124F7AEA00729ACC /* VJXAudioFileLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXAudioFileLayer.m; path = entities/layers/VJXAudioFileLayer.m; sourceTree = "<group>"; };
@@ -386,8 +389,10 @@
 				AA7931BF1233A65400860CD2 /* VJXPoint.h */,
 				AA7931C01233A65400860CD2 /* VJXPoint.m */,
 				AAAB1AF31256C08300B40A41 /* VJXFileRead.h */,
-				AAAB1A8D1256BF4000B40A41 /* VJXThread.h */,
+				AAAB1A8D1256BF4000B40A41 /* VJXRunLoop.h */,
 				AA052ABA1261D474008C9F46 /* VJXSeekable.h */,
+				AA49A48D1269D15F0034125D /* VJXRingBuffer.h */,
+				AA49A48E1269D15F0034125D /* VJXRingBuffer.m */,
 			);
 			name = Core;
 			sourceTree = "<group>";
@@ -534,6 +539,7 @@
 				AA7181381258AFA30068DB2B /* VJXAudioScheduler.m in Sources */,
 				AA718525125B2E560068DB2B /* VJXLibraryTableView.m in Sources */,
 				AA718526125B2E5A0068DB2B /* VJXLibraryTableViewDelegate.m in Sources */,
+				AA49A48F1269D15F0034125D /* VJXRingBuffer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

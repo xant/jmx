@@ -88,6 +88,8 @@ typedef enum {
 + (VJXAudioDevice *)deviceWithUID:(NSString *)theUID;
 + (VJXAudioDevice *)defaultSystemOutputDevice;
 
++ (VJXAudioDevice *)aggregateDevice:(NSString *)deviceUID withName:(NSString *)name;
+
 - (VJXAudioDevice *)initWithDeviceID:(AudioDeviceID)theID;
 
 - (AudioDeviceID)deviceID;

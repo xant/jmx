@@ -51,9 +51,10 @@ typedef enum {
     NSMutableDictionary *receivers;
     NSMutableArray      *producers;
     NSMutableDictionary *properties;
-    BOOL                multiple;
-    BOOL                continuous;
-    BOOL                retainData;
+    BOOL                multiple; // default NO
+    BOOL                continuous; // default YES
+    BOOL                retainData; // default YES
+    BOOL                buffered; // default NO
     id                  currentData;
     id                  currentSender;
     VJXPinDirection     direction;
@@ -73,6 +74,7 @@ typedef enum {
 @property (readonly)  NSArray *allowedValues;
 @property (readwrite) BOOL continuous;
 @property (readwrite) BOOL retainData;
+@property (readwrite) BOOL buffered;
 @property (readonly) id owner;
 @property (readonly) id minValue;
 @property (readonly) id maxValue;

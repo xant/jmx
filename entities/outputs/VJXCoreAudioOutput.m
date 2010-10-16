@@ -59,8 +59,6 @@
 
 {
     VJXAudioBuffer *sample = [self currentSample];
-    if (!sample)
-        [NSThread sleepForTimeInterval:0.01];
 
     if (sample) {
         int i;

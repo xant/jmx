@@ -224,7 +224,7 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, VJXAudioDev
     propertyAddress.mScope = (direction == kVJXAudioInput)
                            ? kAudioDevicePropertyScopeInput
                            : kAudioDevicePropertyScopeOutput;
-    propertyAddress.mElement = kAudioObjectPropertyElementMaster;
+    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
     theStatus = AudioObjectGetPropertyDataSize( kAudioObjectSystemObject, &propertyAddress, 0, NULL, &theSize );
     
 	if (theStatus != 0)
@@ -374,6 +374,122 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, VJXAudioDev
 + (VJXAudioDevice *)defaultSystemOutputDevice
 {
 	return [[self class] _defaultDevice:kAudioHardwarePropertyDefaultSystemOutputDevice];
+}
+
++ (VJXAudioDevice *)aggregateDevice:(NSString *)deviceUID withName:(NSString *)name
+{
+    OSStatus osErr = noErr;
+    UInt32 outSize;
+    Boolean outWritable;
+    
+    // Start to create a new aggregate by getting the base audio hardware plugin    
+    osErr = AudioHardwareGetPropertyInfo(kAudioHardwarePropertyPlugInForBundleID, &outSize, &outWritable);
+    if (osErr != noErr)
+        return nil;
+    
+    AudioValueTranslation pluginAVT;
+    
+    CFStringRef inBundleRef = CFSTR("com.apple.audio.CoreAudio");
+    AudioObjectID pluginID;
+    
+    pluginAVT.mInputData = &inBundleRef;
+    pluginAVT.mInputDataSize = sizeof(inBundleRef);
+    pluginAVT.mOutputData = &pluginID;
+    pluginAVT.mOutputDataSize = sizeof(pluginID);
+    
+    osErr = AudioHardwareGetProperty(kAudioHardwarePropertyPlugInForBundleID, &outSize, &pluginAVT);
+    if (osErr != noErr)
+        return nil;
+    
+    
+    CFMutableDictionaryRef aggDeviceDict = CFDictionaryCreateMutable(NULL, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+    
+    NSString *newUID = [NSString stringWithFormat:@"org.vjx.aggregatedevice.%@", name];
+    // add the name of the device to the dictionary
+    CFDictionaryAddValue(aggDeviceDict, CFSTR(kAudioAggregateDeviceNameKey), name);
+    
+    // add our choice of UID for the aggregate device to the dictionary
+    CFDictionaryAddValue(aggDeviceDict, CFSTR(kAudioAggregateDeviceUIDKey), newUID);
+    
+    //-----------------------
+    // Create a CFMutableArray for our sub-device list
+    //-----------------------
+        
+    // we need to append the UID for each device to a CFMutableArray, so create one here
+    CFMutableArrayRef subDevicesArray = CFArrayCreateMutable(NULL, 0, &kCFTypeArrayCallBacks);
+    
+    // just the one sub-device in this example, so append the sub-device's UID to the CFArray
+    CFArrayAppendValue(subDevicesArray, deviceUID);
+    
+    // if you need to add more than one sub-device, then keep calling CFArrayAppendValue here for the other sub-device UIDs
+    
+    //-----------------------
+    // Feed the dictionary to the plugin, to create a blank aggregate device
+    //-----------------------
+    
+    AudioObjectPropertyAddress pluginAOPA;
+    pluginAOPA.mSelector = kAudioPlugInCreateAggregateDevice;
+    pluginAOPA.mScope = kAudioObjectPropertyScopeGlobal;
+    pluginAOPA.mElement = kAudioObjectPropertyElementMaster;
+    UInt32 outDataSize;
+    
+    osErr = AudioObjectGetPropertyDataSize(pluginID, &pluginAOPA, 0, NULL, &outDataSize);
+    if (osErr != noErr)
+        return nil;
+    
+    AudioDeviceID outAggregateDevice;
+    
+    osErr = AudioObjectGetPropertyData(pluginID, &pluginAOPA, sizeof(aggDeviceDict), &aggDeviceDict, &outDataSize, &outAggregateDevice);
+    if (osErr != noErr)
+        return nil;
+    
+    // pause for a bit to make sure that everything completed correctly
+    // this is to work around a bug in the HAL where a new aggregate device seems to disappear briefly after it is created
+    CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.1, false);
+    
+    //-----------------------
+    // Set the sub-device list
+    //-----------------------
+    
+    pluginAOPA.mSelector = kAudioAggregateDevicePropertyFullSubDeviceList;
+    pluginAOPA.mScope = kAudioObjectPropertyScopeGlobal;
+    pluginAOPA.mElement = kAudioObjectPropertyElementMaster;
+    outDataSize = sizeof(CFMutableArrayRef);
+    osErr = AudioObjectSetPropertyData(outAggregateDevice, &pluginAOPA, 0, NULL, outDataSize, &subDevicesArray);
+    if (osErr != noErr)
+        return nil;
+    
+    // pause again to give the changes time to take effect
+    CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.1, false);
+    
+    //-----------------------
+    // Set the master device
+    //-----------------------
+    
+    // set the master device manually (this is the device which will act as the master clock for the aggregate device)
+    // pass in the UID of the device you want to use
+    pluginAOPA.mSelector = kAudioAggregateDevicePropertyMasterSubDevice;
+    pluginAOPA.mScope = kAudioObjectPropertyScopeGlobal;
+    pluginAOPA.mElement = kAudioObjectPropertyElementMaster;
+    outDataSize = sizeof(deviceUID);
+    osErr = AudioObjectSetPropertyData(outAggregateDevice, &pluginAOPA, 0, NULL, outDataSize, &deviceUID);
+    if (osErr != noErr)
+        return nil;
+    
+    // pause again to give the changes time to take effect
+    //CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.1, false);
+    //-----------------------
+    // Clean up
+    //-----------------------
+    
+    // release the CF objects we have created - we don't need them any more
+    CFRelease(aggDeviceDict);
+    CFRelease(subDevicesArray);
+    
+    // release the device UID
+    CFRelease(deviceUID);
+    
+    return [[self class] deviceWithID:outAggregateDevice];
 }
 
 - init // head off -new and bad usage
@@ -677,7 +793,7 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, VJXAudioDev
 	free(theSourceIDs);
 }
 
-- (UInt32) deviceBufferSizeInFrames
+- (UInt32)deviceBufferSizeInFrames
 {
 	OSStatus theStatus;
 	UInt32 theSize;
@@ -1179,6 +1295,7 @@ finish:
         rv = AudioDeviceCreateIOProcID( deviceID, demuxIOProc, self, &demuxIOProcID );
         if ( noErr == rv )
         {
+            
             rv = AudioDeviceStart ( deviceID, demuxIOProc );
         }
         

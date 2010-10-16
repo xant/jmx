@@ -34,6 +34,8 @@
     VJXAudioFormat *format;
     VJXPin *currentSamplePin;
     VJXPin *audioInputPin;
+    VJXAudioBuffer *currentSample;
+    NSMutableArray *samples;
 }
 
 - (VJXAudioBuffer *)currentSample;

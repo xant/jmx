@@ -39,7 +39,7 @@
 
 - (void)setSize:(NSSize)size;
 - (void)cleanup;
-- (void)renderFrame;
+- (void)renderFrame:(uint64_t)timeStamp;
 
 @end
 

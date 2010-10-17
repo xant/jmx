@@ -1345,14 +1345,6 @@
 					<int key="connectionID">225</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">removeSelected:</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="665342405"/>
-					</object>
-					<int key="connectionID">230</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">nextKeyView</string>
 						<reference key="source" ref="587915443"/>
@@ -1391,6 +1383,14 @@
 						<reference key="destination" ref="475330206"/>
 					</object>
 					<int key="connectionID">235</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">removeSelected:</string>
+						<reference key="source" ref="946547812"/>
+						<reference key="destination" ref="665342405"/>
+					</object>
+					<int key="connectionID">236</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -2186,7 +2186,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{387, 1090}, {616, 0}}</string>
+					<string>{{273, 724}, {616, 0}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2214,7 +2214,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">235</int>
+			<int key="maxID">236</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2325,91 +2325,14 @@
 					<string key="className">VJXDocument</string>
 					<string key="superclassName">NSDocument</string>
 					<object class="NSMutableDictionary" key="actions">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>addAudioCapture:</string>
-							<string>addAudioFileLayer:</string>
-							<string>addAudioMixer:</string>
-							<string>addAudioOutput:</string>
-							<string>addImageLayer:</string>
-							<string>addOpenGLScreen:</string>
-							<string>addQTVideoLayer:</string>
-							<string>addQtCaptureLayer:</string>
-							<string>addVideoMixer:</string>
-							<string>removeSelected:</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-						</object>
+						<string key="NS.key.0">removeSelected:</string>
+						<string key="NS.object.0">id</string>
 					</object>
 					<object class="NSMutableDictionary" key="actionInfosByName">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>addAudioCapture:</string>
-							<string>addAudioFileLayer:</string>
-							<string>addAudioMixer:</string>
-							<string>addAudioOutput:</string>
-							<string>addImageLayer:</string>
-							<string>addOpenGLScreen:</string>
-							<string>addQTVideoLayer:</string>
-							<string>addQtCaptureLayer:</string>
-							<string>addVideoMixer:</string>
-							<string>removeSelected:</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<object class="IBActionInfo">
-								<string key="name">addAudioCapture:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">addAudioFileLayer:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">addAudioMixer:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">addAudioOutput:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">addImageLayer:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">addOpenGLScreen:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">addQTVideoLayer:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">addQtCaptureLayer:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">addVideoMixer:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">removeSelected:</string>
-								<string key="candidateClassName">id</string>
-							</object>
+						<string key="NS.key.0">removeSelected:</string>
+						<object class="IBActionInfo" key="NS.object.0">
+							<string key="name">removeSelected:</string>
+							<string key="candidateClassName">id</string>
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="outlets">

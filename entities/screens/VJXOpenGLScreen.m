@@ -120,6 +120,8 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 
 - (void)dealloc
 {
+    CVDisplayLinkStop(displayLink);
+    CVDisplayLinkRelease(displayLink);
     [self cleanup];
     [super dealloc];
 }

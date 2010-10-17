@@ -36,6 +36,7 @@
         // start the device
         [outputDevice deviceStart];
         format = [[outputDevice streamDescriptionForChannel:0 forDirection:kVJXAudioOutput] retain];
+        [outputDevice setDelegate:(VJXCoreAudioOutput *)self];
     }
     return self;
 }
@@ -43,7 +44,6 @@
 - (void)dealloc
 {
     if (outputDevice) {
-        [outputDevice deviceStop];
         [outputDevice release];
     }
     [super dealloc];
@@ -75,6 +75,19 @@
     }/* else {
         NSLog(@"NO FRAME");
     }*/
+}
+
+- (void)audioDeviceClockSourceDidChange:(VJXAudioDevice *)device forChannel:(SInt32)theChannel forDirection:(VJXAudioDeviceDirection)theDirection
+{
+}
+
+- (void)audioDeviceSomethingDidChange:(VJXAudioDevice *)device
+{
+}
+
+- (void)audioDeviceDidOverload:(VJXAudioDevice *)device
+{
+    NSLog(@"Overload!");
 }
 
 @end

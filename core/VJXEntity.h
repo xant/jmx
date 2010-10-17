@@ -41,15 +41,15 @@
 @interface VJXEntity : NSObject <NSCopying> {
 @public
     NSString *name;
+    BOOL active;
 @protected
     NSMutableDictionary *inputPins;
     NSMutableDictionary *outputPins;
-    BOOL active;
 @private
 }
 
 #pragma mark Properties
-@property (readonly) BOOL active;
+@property (readwrite) BOOL active;
 @property (readwrite, copy) NSString *name;
 
 #pragma mark Pin API

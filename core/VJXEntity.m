@@ -34,6 +34,7 @@
         name = @""; // XXX - default name
         inputPins = [[NSMutableDictionary alloc] init];
         outputPins = [[NSMutableDictionary alloc] init];
+        [self registerInputPin:@"active" withType:kVJXNumberPin andSelector:@"setActivePin:"];
         [self registerOutputPin:@"active" withType:kVJXNumberPin];
     }
     return self;
@@ -148,15 +149,6 @@
     return NO;
 }
 
-- (void)setActive:(id)value
-{
-    active = (value && 
-              [value respondsToSelector:@selector(boolValue)] && 
-              [value boolValue])
-           ? YES
-           : NO;
-}
-
 - (id)copyWithZone:(NSZone *)zone
 {
     // we don't want copies, but we want to use such objects as keys of a dictionary
@@ -191,4 +183,13 @@
     active = NO;
 }
 
+- (void)setActivePin:(id)value
+{
+    self.active = (value && 
+              [value respondsToSelector:@selector(boolValue)] && 
+              [value boolValue])
+    ? YES
+    : NO;
+}
+         
 @end

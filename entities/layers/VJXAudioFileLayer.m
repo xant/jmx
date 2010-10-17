@@ -28,7 +28,7 @@
 
 @implementation VJXAudioFileLayer
 
-@synthesize repeat;
+@synthesize repeat, useAggregateDevice;
 
 + (NSArray *)supportedFileTypes
 {
@@ -59,6 +59,7 @@
         currentSample = nil;
         samples = nil;
         device = nil;
+        useAggregateDevice = NO;
     }
     return self;
 }
@@ -71,12 +72,9 @@
         [samples release];
     if (audioFile)
         [audioFile release];
-    /*
-    NSLog(@"INPUT: %@", [VJXAudioDevice inputDevices]);
-    NSLog(@"OUTPUT: %@", [VJXAudioDevice outputDevices]);
-    */
     if (device)
         [device release];
+
     [super dealloc];
 }
 
@@ -86,7 +84,7 @@
         @synchronized(audioFile) {
             audioFile = [[VJXAudioFile audioFileWithURL:[NSURL fileURLWithPath:file]] retain];
             if (audioFile) {
-                //self.frequency = [NSNumber numberWithDouble:([audioFile sampleRate]/512.0)*2];
+                self.frequency = [NSNumber numberWithDouble:([audioFile sampleRate]/512.0)];
                 NSArray *path = [file componentsSeparatedByString:@"/"];
                 self.name = [path lastObject];
                 if (samples)
@@ -99,16 +97,18 @@
                     if (sample)
                         [samples addObject:sample];
                 }
-                if (device)
-                    [device release];
-                device = [[VJXAudioDevice aggregateDevice:[[VJXAudioDevice defaultOutputDevice] deviceUID] withName:self.name] retain];
-                NSLog(@"%@", [device deviceName]);
-                
-                [device setIOTarget:self 
-                       withSelector:@selector(provideSamplesToDevice:timeStamp:inputData:inputTime:outputData:outputTime:clientData:)
-                     withClientData:self];
-                if (active)
-                    [device deviceStart];
+                if (useAggregateDevice) {
+                    if (device)
+                        [device release];
+                    device = [[VJXAudioDevice aggregateDevice:[[VJXAudioDevice defaultInputDevice] deviceUID] withName:self.name] retain];
+                    NSLog(@"%@", [device deviceName]);
+                    
+                    [device setIOTarget:self 
+                           withSelector:@selector(provideSamplesToDevice:timeStamp:inputData:inputTime:outputData:outputTime:clientData:)
+                         withClientData:self];
+                    if (active)
+                        [device deviceStart];
+                }
                 return YES;
             }
         }
@@ -153,14 +153,35 @@
 
 - (void)start
 {
-    active = YES;
-    [device deviceStart];
+    if (active)
+        return;
+    if (useAggregateDevice) {
+        active = YES;
+        [device deviceStart];
+    } else { // start the thread only if don't want to use the aggregate device
+        [super start];
+    }
 }
 
 - (void)stop
 {
-    active = NO;
-    [device deviceStop];
+    if (!active)
+        return;
+    if (useAggregateDevice) {
+        active = YES;
+        [device deviceStop];
+    } else { // start the thread only if don't want to use the aggregate device
+        [super stop];
+    }
+}
+
+- (void)setUseAggregateDevice:(BOOL)value
+{
+    // refulse to change the flag if we are running
+    // TODO - we should just stop/restart and allow 
+    //        changing the mode while running
+    if (!active)
+        useAggregateDevice = value;
 }
 
 @end

@@ -14,7 +14,7 @@
 
 @implementation VJXAudioMixer
 
-@synthesize mode;
+@synthesize useAggregatedDevice;
 
 - (id)init
 {
@@ -23,16 +23,9 @@
         [audioInputPin allowMultipleConnections:YES];
         audioOutputPin = [self registerOutputPin:@"audio" withType:kVJXAudioPin];
         [audioOutputPin allowMultipleConnections:YES];
-        self.frequency = [NSNumber numberWithDouble:44100/512]; // XXX - I'm unsure the mixer really needs to run at double speed
+        self.frequency = [NSNumber numberWithDouble:44100/512];
         samples = [[NSMutableArray alloc] init];
-        device = [[VJXAudioDevice aggregateDevice:[[VJXAudioDevice defaultOutputDevice] deviceUID] withName:@"VJXMixer"] retain];
-        NSLog(@"%@", [device deviceName]);
-        
-        [device setIOTarget:self 
-               withSelector:@selector(provideSamplesToDevice:timeStamp:inputData:inputTime:outputData:outputTime:clientData:)
-             withClientData:self];
-        //if (active)
-            [device deviceStart];
+        useAggregateDevice = YES;
         prefill = YES;
     }
     return self;
@@ -84,6 +77,8 @@
         [samples addObject:[currentSample retain]];
     if ([samples count] > 10)
         prefill = NO;
+    else if ([samples count] == 0)
+        prefill = YES;
     //}
     [super outputDefaultSignals:timeStamp];
 }
@@ -100,14 +95,47 @@
     [clientData tick:CVGetCurrentHostTime()];
 }
 
+
 - (void)start
 {
-    // TODO - implement
+    if (self.active)
+        return;
+    
+    if (useAggregateDevice) {
+        device = [[VJXAudioDevice aggregateDevice:[[VJXAudioDevice defaultInputDevice] deviceUID] withName:@"VJXMixer"] retain];
+        [device setIOTarget:self 
+               withSelector:@selector(provideSamplesToDevice:timeStamp:inputData:inputTime:outputData:outputTime:clientData:)
+             withClientData:self];
+        [self activate];
+        [device deviceStart];
+    } else { // start the thread only if don't want to use the aggregate device
+        [super start];
+    }
 }
 
 - (void)stop
 {
-    // TODO - implement
+    if (!self.active)
+        return;
+    if (useAggregateDevice) {
+        [self deactivate];
+        if (device) {
+            [device deviceStop];
+            [device release];
+            device = nil;
+        }
+    } else { // start the thread only if don't want to use the aggregate device
+        [super stop];
+    }
+}
+
+- (void)setUseAggregateDevice:(BOOL)value
+{
+    // refulse to change the flag if we are running
+    // TODO - we should just stop/restart and allow 
+    //        changing the mode while running
+    if (!self.active)
+        useAggregateDevice = value;
 }
 
 @end

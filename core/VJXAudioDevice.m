@@ -208,7 +208,7 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, VJXAudioDev
 	}
 }
 
-+ (NSArray *)_devicesForDirection:(VJXAudioDeviceDirection)direction
++ (NSArray *)allDevices
 {
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	NSMutableArray * theArray;
@@ -221,9 +221,7 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, VJXAudioDev
 	
     AudioObjectPropertyAddress propertyAddress;
     propertyAddress.mSelector = kAudioHardwarePropertyDevices;
-    propertyAddress.mScope = (direction == kVJXAudioInput)
-                           ? kAudioDevicePropertyScopeInput
-                           : kAudioDevicePropertyScopeOutput;
+    propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
     propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
     theStatus = AudioObjectGetPropertyDataSize( kAudioObjectSystemObject, &propertyAddress, 0, NULL, &theSize );
     
@@ -261,29 +259,29 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, VJXAudioDev
 	return theArray;
 }
 
-+ (NSArray *)allDevices
-{
-	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-	NSMutableArray *theArray;
-    
-    NSArray *inputArray = [self _devicesForDirection:kVJXAudioInput];
-    NSArray *outputArray = [self _devicesForDirection:kVJXAudioOutput];
-    theArray = [NSMutableArray arrayWithArray:inputArray];
-    [theArray addObjectsFromArray:outputArray];
-	[theArray sortUsingSelector:@selector(_compare:)];
-	[pool release];
-	//[theArray autorelease];
-	return theArray;
-}
 
 + (NSArray *)inputDevices
 {
-    return [self _devicesForDirection:kVJXAudioInput];
+    NSEnumerator * deviceEnumerator = [[self allDevices] objectEnumerator];
+	NSMutableArray * rv = [NSMutableArray array];
+	VJXAudioDevice * aDevice;
+	
+	while ( aDevice = [deviceEnumerator nextObject] )
+		if ( [aDevice channelsForDirection:kVJXAudioInput] > 0 )
+            [rv addObject:aDevice];
+    return rv;
 }
 
 + (NSArray *)outputDevices
 {
-    return [self _devicesForDirection:kVJXAudioOutput];
+    NSEnumerator * deviceEnumerator = [[self allDevices] objectEnumerator];
+	NSMutableArray * rv = [NSMutableArray array];
+	VJXAudioDevice * aDevice;
+	
+	while ( aDevice = [deviceEnumerator nextObject] )
+		if ( [aDevice channelsForDirection:kVJXAudioOutput] > 0 )
+            [rv addObject:aDevice];
+    return rv;
 }
 
 + (NSArray *)devicesWithName:(NSString *)theName havingStreamsForDirection:(VJXAudioDeviceDirection)theDirection
@@ -292,10 +290,8 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, VJXAudioDev
 	NSMutableArray * rv = [NSMutableArray array];
 	VJXAudioDevice * aDevice;
 	
-	while ( aDevice = [deviceEnumerator nextObject] )
-	{
-		if ( [theName isEqual:[aDevice deviceName]] && ( [aDevice channelsForDirection:theDirection] > 0 ))
-		{
+	while ( aDevice = [deviceEnumerator nextObject] ) {
+		if ( [theName isEqual:[aDevice deviceName]] && ( [aDevice channelsForDirection:theDirection] > 0 )) {
 			[rv addObject:aDevice];
 		}
 	}
@@ -404,7 +400,7 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, VJXAudioDev
     
     CFMutableDictionaryRef aggDeviceDict = CFDictionaryCreateMutable(NULL, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
     
-    NSString *newUID = [NSString stringWithFormat:@"org.vjx.aggregatedevice.%@", name];
+    NSString *newUID = [NSString stringWithFormat:@"org.vjx.aggregatedevice.%d", random()];
     // add the name of the device to the dictionary
     CFDictionaryAddValue(aggDeviceDict, CFSTR(kAudioAggregateDeviceNameKey), name);
     
@@ -489,7 +485,7 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, VJXAudioDev
     return [[self class] deviceWithID:outAggregateDevice];
 }
 
-- init // head off -new and bad usage
+- (id)init // head off -new and bad usage
 {
 	[self dealloc];
 	return nil;
@@ -499,9 +495,53 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, VJXAudioDev
 {
 	if ( isRegisteredForNotifications )
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:kVJXAudioDeviceNotification object:nil];
-	//[self setDelegate:nil];
+	[self setDelegate:nil];
 	//[self removeIOProc];
     [self removeIOTarget];
+    NSRange textRange;
+    
+    textRange =[[self deviceUID] rangeOfString:@"org.vjx.aggregatedevice"];
+    if (textRange.location != NSNotFound) {
+        OSStatus osErr = noErr;
+        // Start by getting the base audio hardware plugin        
+        UInt32 outSize;
+        Boolean outWritable;
+        osErr = AudioHardwareGetPropertyInfo(kAudioHardwarePropertyPlugInForBundleID, &outSize, &outWritable);
+        if (osErr != noErr) {
+            // TODO - Error Messages
+        }
+        AudioValueTranslation pluginAVT;
+        
+        CFStringRef inBundleRef = CFSTR("com.apple.audio.CoreAudio");
+        AudioObjectID pluginID;
+        
+        pluginAVT.mInputData = &inBundleRef;
+        pluginAVT.mInputDataSize = sizeof(inBundleRef);
+        pluginAVT.mOutputData = &pluginID;
+        pluginAVT.mOutputDataSize = sizeof(pluginID);
+        
+        osErr = AudioHardwareGetProperty(kAudioHardwarePropertyPlugInForBundleID, &outSize, &pluginAVT);
+        if (osErr != noErr) {
+            // TODO - Error Messages
+        }
+        
+        // Feed the AudioDeviceID to the plugin, to destroy the aggregate device        
+        AudioObjectPropertyAddress pluginAOPA;
+        pluginAOPA.mSelector = kAudioPlugInDestroyAggregateDevice;
+        pluginAOPA.mScope = kAudioObjectPropertyScopeGlobal;
+        pluginAOPA.mElement = kAudioObjectPropertyElementMaster;
+        UInt32 outDataSize;
+        
+        osErr = AudioObjectGetPropertyDataSize(pluginID, &pluginAOPA, 0, NULL, &outDataSize);
+        if (osErr != noErr) {
+            // TODO - Error Messages
+        }
+        osErr = AudioObjectGetPropertyData(pluginID, &pluginAOPA, 0, NULL, &outDataSize, &deviceID);
+        if (osErr != noErr) {
+            // TODO - Error MEssages
+        }            
+    }
+
 	[super dealloc];
 }
 
@@ -515,6 +555,7 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, VJXAudioDev
 	ioProc = NULL;
     demuxIOProcID = NULL;
     muxStarted = NO;
+    isRegisteredForNotifications = NO;
 	return self;
 }
 
@@ -1109,26 +1150,26 @@ finish:
 			case kAudioDevicePropertyVolumeDecibels:
 			case kAudioDevicePropertyMute:
 			case kAudioDevicePropertyPlayThru:
-				if ([(id)delegate respondsToSelector:@selector(audioDeviceVolumeInfoDidChange:forChannel:forDirection:)])
+				if ([delegate respondsToSelector:@selector(audioDeviceVolumeInfoDidChange:forChannel:forDirection:)])
 					hasVolumeInfoDidChangeMethod = true;
 				else
 					hasVolumeInfoDidChangeMethod = false;
                 break;
 		}
-		
+
 		switch (thePropertyID)
 		{
 			case kAudioDevicePropertyDeviceIsAlive:
-				if ([(id)delegate respondsToSelector:@selector(audioDeviceDidDie:)])
+				if ([delegate respondsToSelector:@selector(audioDeviceDidDie:)])
 					[delegate audioDeviceDidDie:self];
 				break;
 			case kAudioDeviceProcessorOverload:
-				if ([(id)delegate respondsToSelector:@selector(audioDeviceDidOverload:)])
+				if ([delegate respondsToSelector:@selector(audioDeviceDidOverload:)])
 					[delegate audioDeviceDidOverload:self];
 				break;
 			case kAudioDevicePropertyBufferFrameSize:
 			case kAudioDevicePropertyUsesVariableBufferFrameSizes:
-				if ([(id)delegate respondsToSelector:@selector(audioDeviceBufferSizeInFramesDidChange:)])
+				if ([delegate respondsToSelector:@selector(audioDeviceBufferSizeInFramesDidChange:)])
 					[delegate audioDeviceBufferSizeInFramesDidChange:self];
 				break;
 			case kAudioDevicePropertyStreams:
@@ -1154,28 +1195,28 @@ finish:
 				*/
                 break;
 			case kAudioDevicePropertyNominalSampleRate:
-				if (0 == theChannel && [(id)delegate respondsToSelector:@selector(audioDeviceNominalSampleRateDidChange:)])
+				if (0 == theChannel && [delegate respondsToSelector:@selector(audioDeviceNominalSampleRateDidChange:)])
 					[delegate audioDeviceNominalSampleRateDidChange:self];
 				break;
 			case kAudioDevicePropertyAvailableNominalSampleRates:
-				if (0 == theChannel && [(id)delegate respondsToSelector:@selector(audioDeviceNominalSampleRatesDidChange:)])
+				if (0 == theChannel && [delegate respondsToSelector:@selector(audioDeviceNominalSampleRatesDidChange:)])
 					[delegate audioDeviceNominalSampleRatesDidChange:self];
 				break;
 			case kAudioDevicePropertyVolumeScalar:
                 // case kAudioDevicePropertyVolumeDecibels:
-				if ([(id)delegate respondsToSelector:@selector(audioDeviceVolumeDidChange:forChannel:forDirection:)])
+				if ([delegate respondsToSelector:@selector(audioDeviceVolumeDidChange:forChannel:forDirection:)])
 					[delegate audioDeviceVolumeDidChange:self forChannel:theChannel forDirection:theDirection];
 				else if (hasVolumeInfoDidChangeMethod)
 					[delegate audioDeviceVolumeInfoDidChange:self forChannel:theChannel forDirection:theDirection];
 				break;
 			case kAudioDevicePropertyMute:
-				if ([(id)delegate respondsToSelector:@selector(audioDeviceMuteDidChange:forChannel:forDirection:)])
+				if ([delegate respondsToSelector:@selector(audioDeviceMuteDidChange:forChannel:forDirection:)])
 					[delegate audioDeviceMuteDidChange:self forChannel:theChannel forDirection:theDirection];
 				else if (hasVolumeInfoDidChangeMethod)
 					[delegate audioDeviceVolumeInfoDidChange:self forChannel:theChannel forDirection:theDirection];
 				break;
 			case kAudioDevicePropertyPlayThru:
-				if ([(id)delegate respondsToSelector:@selector(audioDevicePlayThruDidChange:forChannel:forDirection:)])
+				if ([delegate respondsToSelector:@selector(audioDevicePlayThruDidChange:forChannel:forDirection:)])
 					[delegate audioDevicePlayThruDidChange:self forChannel:theChannel forDirection:theDirection];
 				else if (hasVolumeInfoDidChangeMethod)
 					[delegate audioDeviceVolumeInfoDidChange:self forChannel:theChannel forDirection:theDirection];
@@ -1183,18 +1224,17 @@ finish:
 			case kAudioDevicePropertyDataSource:
 				if (theChannel != 0)
 					NSLog ( @"VJXAudioDevice kAudioDevicePropertyDataSource theChannel != 0" );
-				if ([(id)delegate respondsToSelector:@selector(audioDeviceSourceDidChange:forDirection:)])
+				if ([delegate respondsToSelector:@selector(audioDeviceSourceDidChange:forDirection:)])
 					[delegate audioDeviceSourceDidChange:self forDirection:theDirection];
 				break;
 			case kAudioDevicePropertyClockSource:
-				if ([(id)delegate respondsToSelector:@selector(audioDeviceClockSourceDidChange:forChannel:forDirection:)])
+				if ([delegate respondsToSelector:@selector(audioDeviceClockSourceDidChange:forChannel:forDirection:)])
 					[delegate audioDeviceClockSourceDidChange:self forChannel:theChannel forDirection:theDirection];
 				break;
 			case kAudioDevicePropertyDeviceHasChanged:
-				if ([(id)delegate respondsToSelector:@selector(audioDeviceSomethingDidChange:)])
+				if ([delegate respondsToSelector:@selector(audioDeviceSomethingDidChange:)])
 					[delegate audioDeviceSomethingDidChange:self];
 				break;
-				
 		}
 		
 	}

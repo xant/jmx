@@ -64,7 +64,7 @@ typedef enum {
 
 @interface VJXAudioDevice : NSObject {
 	AudioDeviceID deviceID;
-	id < VJXAudioDelegate > delegate;
+	id < VJXAudioDelegate, NSObject > delegate;
 	AudioDeviceIOProc ioProc;
     Boolean isRegisteredForNotifications;
     AudioDeviceIOProcID demuxIOProcID;
@@ -72,7 +72,8 @@ typedef enum {
     Boolean deviceIOStarted;
 	void * myIOProcClientData;
 	NSInvocation * myIOInvocation;
-	Boolean isPaused;    
+	Boolean isPaused;
+    Boolean isAggregate;
 }
 @property (readonly) AudioDeviceID deviceID;
 
@@ -98,6 +99,7 @@ typedef enum {
 - (NSString *)deviceManufacturer;
 - (NSArray *)relatedDevices;
 - (UInt32)channelsForDirection:(VJXAudioDeviceDirection)theDirection;
+- (void)setDelegate:(id)theDelegate;
 
 #if 0
 - (void) setIOProc:(AudioDeviceIOProc)theIOProc withClientData:(void *)theClientData;

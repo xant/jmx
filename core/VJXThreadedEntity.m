@@ -40,7 +40,6 @@
         // and 'effective' frequency , only for debugging purposes
         self.frequency = [NSNumber numberWithDouble:25.0];
         [self registerInputPin:@"frequency" withType:kVJXNumberPin andSelector:@"setFrequency:"];
-        [self registerInputPin:@"active" withType:kVJXNumberPin andSelector:@"setActive:"];
         frequencyPin = [self registerOutputPin:@"frequency" withType:kVJXNumberPin];
         stampCount = 0;
         previousTimeStamp = 0;
@@ -59,6 +58,7 @@
     if (!worker) {
         worker = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
         [worker start];
+        active = YES;
     }
 }
 
@@ -72,6 +72,7 @@
             [NSThread sleepForTimeInterval:0.001];
         [worker release];
         worker = nil;
+        active = NO;
     }
 }
 
@@ -130,6 +131,16 @@
                      fromSender:self];
     //NSLog(@"%@\n", [NSNumber numberWithDouble:rate]);
     [super outputDefaultSignals:timeStamp];
+}
+
+- (void)setActive:(BOOL)value
+{
+    if (active != value) {
+        if (value)
+            [self start];
+        else
+            [self stop];
+    }
 }
 
 @end

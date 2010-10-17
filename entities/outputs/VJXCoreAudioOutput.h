@@ -25,8 +25,8 @@
 #import "VJXAudioOutput.h"
 #import "VJXAudioDevice.h"
 
-@interface VJXCoreAudioOutput : VJXAudioOutput {
+@interface VJXCoreAudioOutput : VJXAudioOutput < VJXAudioDelegate > {
+@private
     VJXAudioDevice *outputDevice;
 }
-
 @end

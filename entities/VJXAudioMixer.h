@@ -9,11 +9,6 @@
 #import <Cocoa/Cocoa.h>
 #import "VJXThreadedEntity.h"
 
-typedef enum {
-    kVJXAudioMixerCollectMode,
-    kVJXAudioMixerAccumulateMode
-} VJXAudioMixerMode;
-
 @class VJXPin;
 @class VJXAudioBuffer;
 @class VJXAudioDevice;
@@ -27,12 +22,11 @@ typedef enum {
     //VJXAudioBuffer *currentSample;
     uint64_t lastSampleTime;
     NSMutableArray *samples;
-    VJXAudioMixerMode mode;
     VJXAudioDevice *device;
-    BOOL prefill;
+    BOOL prefill; // defaults to YES
+    BOOL useAggregateDevice; // defaults to YES
 }
 
-@property (assign) VJXAudioMixerMode mode;
-
+@property (readwrite) BOOL useAggregatedDevice;
 @end
 

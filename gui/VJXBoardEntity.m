@@ -264,4 +264,148 @@
     return [self retain];
 }
 
+
+id controlForVJXPinType(VJXPinType aType)
+{
+	switch (aType) {
+		case kVJXStringPin:
+			return @"String";
+			break;
+		case kVJXNumberPin:
+			return @"Number";
+			break;
+		case kVJXImagePin:
+			return @"Image";
+			break;
+		case kVJXSizePin:
+			return @"Size";
+			break;
+		case kVJXPointPin:
+			return @"Point";
+			break;
+	}
+	
+	return @"None";
+}
+
+- (void)controlPin
+{
+	NSLog(@"%s", _cmd);
+	
+	for (NSString *anInputPinName in self.entity.inputPins) {
+		VJXPin *anInputPin = [self.entity inputPinWithName:anInputPinName];
+		NSLog(@"name: %@, type: %@", anInputPin.name, controlForVJXPinType(anInputPin.type));
+	}
+	
+}
+
+- (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
+{
+	if (!item) {
+		return 2; // input and output
+	}
+
+	if ([item isEqualToString:@"Input"])
+		return [[self.entity inputPins] count];
+	if ([item isEqualToString:@"Output"])
+		return [[self.entity outputPins] count];
+	return 0;
+}
+
+- (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item
+{
+	if ([item isEqualToString:@"Input"] || [item isEqualToString:@"Output"])
+		return YES;
+	return NO;
+}
+
+- (BOOL)outlineView:(NSOutlineView *)outlineView shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item
+{
+	if ([[tableColumn identifier] isEqualToString:@"pinName"])
+		return NO;
+	return YES;
+}
+
+
+- (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item
+{
+	if (!item) {
+		switch (index) {
+			case 0:
+				return @"Input";
+			case 1:
+				return @"Output";
+		}
+	}
+	
+	if ([item isEqualToString:@"Input"])
+		return [[self.entity inputPins] objectAtIndex:index];
+
+	if ([item isEqualToString:@"Output"])
+		return [[self.entity outputPins] objectAtIndex:index];
+	return nil;
+}
+
+- (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
+{
+	
+	if (([item isEqualToString:@"Input"] || [item isEqualToString:@"Output"]) && [[tableColumn identifier] isEqualToString:@"pinName"])
+		return item;
+
+	if ([item isEqualToString:@"Input"] || [item isEqualToString:@"Output"])
+		return @"";
+
+
+	if ([[tableColumn identifier] isEqualToString:@"pinName"])
+		return item;
+	
+	VJXPin *aPin = nil;
+	
+	if ([[self.entity inputPins] indexOfObject:item] != NSNotFound)
+		aPin = [self.entity inputPinWithName:item];
+	else if ([[self.entity outputPins] indexOfObject:item] != NSNotFound)
+		aPin = [self.entity outputPinWithName:item];
+	
+	return aPin ? [aPin readPinValue] : @"TEST";
+}
+
+- (NSCell *)outlineView:(NSOutlineView *)outlineView dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item
+{
+	if (tableColumn == nil)
+		return nil;
+	
+	if ([[tableColumn identifier] isEqualToString:@"pinName"])
+		return nil;
+	
+	VJXPin *aPin = nil;
+	
+	if ([[self.entity inputPins] indexOfObject:item] != NSNotFound)
+		aPin = [self.entity inputPinWithName:item];
+	else if ([[self.entity outputPins] indexOfObject:item] != NSNotFound)
+		aPin = [self.entity outputPinWithName:item];
+
+	if (aPin == nil)
+		return nil;
+	
+	NSCell *returnValue = nil;
+	
+	if (aPin.type == kVJXStringPin) {
+		if ([aPin allowedValues] != nil) {
+			returnValue = [[NSPopUpButtonCell alloc] init];
+			[(NSPopUpButtonCell *)returnValue addItemsWithTitles:[aPin allowedValues]];
+		}
+		else
+			returnValue = [[NSTextFieldCell alloc] init];
+	}
+	else if (aPin.type == kVJXNumberPin) {
+		returnValue = [[NSTextFieldCell alloc] init];
+	}
+	else {
+		returnValue = [[NSButtonCell alloc] init];
+	}
+	
+	return [returnValue autorelease];
+	
+}
+
 @end

@@ -33,7 +33,7 @@
 
 @class VJXBoard;
 
-@interface VJXBoardEntity : NSView <NSTextFieldDelegate,NSCopying>
+@interface VJXBoardEntity : NSView <NSTextFieldDelegate,NSCopying,NSOutlineViewDataSource,NSOutlineViewDelegate>
 {
     VJXEntity *entity;
     NSPoint lastDragLocation;
@@ -61,5 +61,11 @@
 - (void)shiftOffsetToLocation:(NSPoint)aLocation;
 
 - (void)setNeedsDisplay;
+
+- (void)controlPin;
+
+- (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item;
+
+- (NSCell *)outlineView:(NSOutlineView *)outlineView dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item;
 
 @end

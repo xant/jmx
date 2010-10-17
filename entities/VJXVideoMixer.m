@@ -32,7 +32,10 @@
 - (id) init
 {
     if (self = [super init]) {
-        [self registerInputPin:@"blendFilter" withType:kVJXStringPin andSelector:@"setBlendFilter:"];
+        VJXPin *aPin = [self registerInputPin:@"blendFilter" withType:kVJXStringPin andSelector:@"setBlendFilter:"];
+		[aPin addAllowedValue:@"CIScreenBlendMode"];
+		[aPin addAllowedValue:@"CISaturationBlendMode"];
+		[aPin deliverSignal:VJX_MIXER_DEFAULT_BLEND_FILTER];
         imageInputPin = [self registerInputPin:@"video" withType:kVJXImagePin];
         [imageInputPin allowMultipleConnections:YES];
         [self registerInputPin:@"videoSize" withType:kVJXSizePin andSelector:@"setOutputSize:"];
@@ -43,7 +46,7 @@
         NSSize defaultSize = { VJX_MIXER_DEFAULT_VIDEOSIZE_WIDTH, VJX_MIXER_DEFAULT_VIDEOSIZE_HEIGHT };
         self.outputSize = [VJXSize sizeWithNSSize:defaultSize];
         currentFrame = nil;
-        blendFilter = [[CIFilter filterWithName:VJX_MIXER_DEFAULT_BLEND_FILTER] retain];
+		// blendFilter = [[CIFilter filterWithName:VJX_MIXER_DEFAULT_BLEND_FILTER] retain];
     }
     return self;
 }

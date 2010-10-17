@@ -16,6 +16,7 @@
     IBOutlet NSTableView *inputPins;
     IBOutlet NSTableView *outputPins;
     IBOutlet NSTableView *producers;
+	IBOutlet NSOutlineView *pinsProperties;
 @private 
     VJXBoardEntity *entityView; // weak reference
 }
@@ -25,6 +26,7 @@
 @property (readonly) NSTableView *inputPins;
 @property (readonly) NSTableView *outputPins;
 @property (readonly) NSTableView *producers;
+@property (readonly) NSOutlineView *pinsProperties;
 
 @property (assign) VJXBoardEntity *entityView; // we don't want to retain the entity
 //@property (assign) VJXEntityInspectorPanel *panel; // we don't want to retain the entity

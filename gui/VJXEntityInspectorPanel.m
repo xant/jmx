@@ -21,6 +21,7 @@
 @synthesize outputPins;
 @synthesize producers;
 @synthesize entityView;
+@synthesize pinsProperties;
 //@synthesize panel;
 
 - (id)initWithFrame:(NSRect)frameRect
@@ -193,6 +194,9 @@
 {
     VJXBoardEntity *entity = [aNotification object];
     [self setEntity:entity];
+	[self.pinsProperties setDataSource:entity];
+	[self.pinsProperties setDelegate:entity];
+	[self.pinsProperties expandItem:nil expandChildren:YES];
 }
 
 - (void)anEntityWasRemoved:(NSNotification *)aNotification

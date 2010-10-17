@@ -16,6 +16,7 @@ typedef enum {
 
 @class VJXPin;
 @class VJXAudioBuffer;
+@class VJXAudioDevice;
 
 @interface VJXAudioMixer : VJXThreadedEntity {    
 @protected
@@ -25,10 +26,10 @@ typedef enum {
 @private
     //VJXAudioBuffer *currentSample;
     uint64_t lastSampleTime;
-    NSMutableDictionary *producers;
-    NSMutableArray *preBuffer;
+    NSMutableArray *samples;
     VJXAudioMixerMode mode;
-    BOOL doPrebuffering;
+    VJXAudioDevice *device;
+    BOOL prefill;
 }
 
 @property (assign) VJXAudioMixerMode mode;

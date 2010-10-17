@@ -41,7 +41,4 @@
 
 @property (readwrite) BOOL repeat;
 - (void)doRepeat:(id)value; // input pin setter (we will receive NSNumbers from pins)
-- (void)newSample:(uint64_t)timeStamp;
-- (void)start;
-- (void)stop;
 @end

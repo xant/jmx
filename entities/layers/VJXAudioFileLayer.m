@@ -45,8 +45,7 @@
                     clientData:(VJXAudioFileLayer *)clientData
 
 {
-    [clientData newSample:CVGetCurrentHostTime()];
-    NSLog(@"CIAO1");
+    [clientData tick:CVGetCurrentHostTime()];
 }
 
 
@@ -122,7 +121,7 @@
     // TODO - IMPLEMENT
 }
 
-- (void)newSample:(uint64_t)timeStamp
+- (void)tick:(uint64_t)timeStamp
 {
     VJXAudioBuffer *sample = nil;
     if (active && audioFile) {

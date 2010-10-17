@@ -12,4 +12,5 @@
 @protocol VJXRunLoop
 - (void)start;
 - (void)stop;
+- (void)tick:(uint64_t)timeStamp;
 @end

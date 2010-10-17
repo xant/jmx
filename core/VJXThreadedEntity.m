@@ -24,6 +24,10 @@
 #import "VJXThreadedEntity.h"
 #import <QuartzCore/QuartzCore.h>
 
+@interface VJXThreadedEntity (Private)
+- (void)run;
+@end
+
 @implementation VJXThreadedEntity
 
 @synthesize frequency;

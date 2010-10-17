@@ -72,9 +72,9 @@
                 outOutputData->mBuffers[i].mNumberChannels = sample.bufferList->mBuffers[i].mNumberChannels;
             }
         }
-    } else {
+    }/* else {
         NSLog(@"NO FRAME");
-    }
+    }*/
 }
 
 @end

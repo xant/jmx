@@ -460,7 +460,7 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, VJXAudioDev
         return nil;
     
     // pause again to give the changes time to take effect
-    CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.1, false);
+    //CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.1, false);
     
     //-----------------------
     // Set the master device
@@ -485,9 +485,6 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, VJXAudioDev
     // release the CF objects we have created - we don't need them any more
     CFRelease(aggDeviceDict);
     CFRelease(subDevicesArray);
-    
-    // release the device UID
-    CFRelease(deviceUID);
     
     return [[self class] deviceWithID:outAggregateDevice];
 }

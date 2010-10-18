@@ -45,7 +45,7 @@
     
     if ([samples count] && !prefill) {
         VJXAudioBuffer *outSample = [samples objectAtIndex:0];
-        [audioOutputPin deliverSignal:outSample fromSender:self];
+        [audioOutputPin deliverData:outSample fromSender:self];
         [samples removeObjectAtIndex:0];
         [outSample release];
     }

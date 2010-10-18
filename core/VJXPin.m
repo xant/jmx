@@ -342,7 +342,7 @@
         maxValue = [value retain];
 }
 
-- (id)readPinValue
+- (id)readData
 {
     id data;
     @synchronized(self) {
@@ -351,7 +351,12 @@
     return [data autorelease];
 }
 
-- (void)deliverSignal:(id)data fromSender:(id)sender
+- (void)deliverData:(id)data
+{
+    [self deliverData:data fromSender:self];
+}
+
+- (void)deliverData:(id)data fromSender:(id)sender
 {
     // check if NULL data has been signaled
     // and if it's the case, clear currentData and return

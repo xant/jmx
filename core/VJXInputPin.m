@@ -59,7 +59,7 @@
     NSMutableArray *array = [[NSMutableArray alloc] init];
     @synchronized(producers) {
         for (VJXOutputPin *producer in producers) {
-            id value = [producer readPinValue];
+            id value = [producer readData];
             if (value)
                 [array addObject:value];
         }
@@ -93,7 +93,7 @@
                     [[producers objectAtIndex:0] disconnectFromPin:self];
                 }
             }
-            if ([destinationPin attachObject:self withSelector:@"deliverSignal:fromSender:"]) {
+            if ([destinationPin attachObject:self withSelector:@"deliverData:fromSender:"]) {
                 [producers addObject:destinationPin];
                 return YES;
             }

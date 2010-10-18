@@ -169,7 +169,7 @@
 - (void)outputDefaultSignals:(uint64_t)timeStamp
 {
     VJXOutputPin *activePin = [self outputPinWithName:@"active"];    
-    [activePin deliverSignal:[NSNumber numberWithBool:active] fromSender:self];
+    [activePin deliverData:[NSNumber numberWithBool:active] fromSender:self];
 }
 
 - (BOOL)attachObject:(id)receiver withSelector:(NSString *)selector toOutputPin:(NSString *)pinName

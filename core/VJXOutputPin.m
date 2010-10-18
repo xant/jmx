@@ -53,11 +53,6 @@
     [super dealloc];
 }
 
-- (void)deliverSignal:(id)data
-{
-    [self deliverSignal:data fromSender:self];
-}
-
 - (void)performSignal:(VJXPinSignal *)signal
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -70,7 +65,7 @@
     [pool drain];
 }
 
-- (void)deliverSignal:(id)data fromSender:(id)sender
+- (void)deliverData:(id)data fromSender:(id)sender
 {
     // if we are an output pin and not receivers have been hooked, 
     // it's useless to perform the signal
@@ -78,7 +73,7 @@
         if (![receivers count])
             return;
     }
-    [super deliverSignal:data fromSender:sender];
+    [super deliverData:data fromSender:sender];
 }
 
 - (BOOL)attachObject:(id)pinReceiver withSelector:(NSString *)pinSignal

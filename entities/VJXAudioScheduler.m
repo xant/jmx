@@ -22,12 +22,12 @@
 
 - (void)tick:(uint64_t)timeStamp
 {
-    //[startPin deliverSignal:[NSNumber numberWithInt:0]];
+    //[startPin deliverData:[NSNumber numberWithInt:0]];
     NSArray *producers  = audioInputPin.producers;
     if (producers && [producers count]) {
         for (int i = 0; i < [producers count]; i++) {
             VJXPin *producer = [producers objectAtIndex:i];
-            VJXAudioFileLayer *audioFile = producer.owner;//[producer readPinValue];
+            VJXAudioFileLayer *audioFile = producer.owner;//[producer readData];
             if (!audioFile)
                 continue;
             audioFile.repeat = NO; // ensure keeping repeat set to NO

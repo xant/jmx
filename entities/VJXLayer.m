@@ -106,8 +106,8 @@
             //        for debugging purposes
         }
     }
-    [outputFramePin deliverSignal:currentFrame fromSender:self];
-    [outputFrameSizePin deliverSignal:size];
+    [outputFramePin deliverData:currentFrame fromSender:self];
+    [outputFrameSizePin deliverData:size];
 }
 
 - (CIImage *)currentFrame

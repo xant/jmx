@@ -136,9 +136,9 @@
         }
     } 
     if (sample)
-        [outputPin deliverSignal:sample fromSender:self];
+        [outputPin deliverData:sample fromSender:self];
     else
-        [outputPin deliverSignal:nil fromSender:self];
+        [outputPin deliverData:nil fromSender:self];
     [self outputDefaultSignals:timeStamp];
 }
 

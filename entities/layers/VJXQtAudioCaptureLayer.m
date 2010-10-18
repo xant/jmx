@@ -278,7 +278,7 @@ error:
         currentBuffer = [[VJXAudioBuffer audioBufferWithCoreAudioBufferList:buffer andFormat:&inputDescription copy:YES freeOnRelease:YES] retain];    
 #endif
         if (currentBuffer)
-            [outputPin deliverSignal:currentBuffer fromSender:self];
+            [outputPin deliverData:currentBuffer fromSender:self];
         [self outputDefaultSignals:CVGetCurrentHostTime()];
     //}
 }

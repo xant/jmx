@@ -93,7 +93,7 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
         imageSizePin = [self registerOutputPin:@"imageSize" withType:kVJXSizePin];
         [imageSizePin setContinuous:NO];
         NSSize layerSize = { kVJXAudioSpectrumImageWidth, kVJXAudioSpectrumImageHeight };
-        [imageSizePin deliverSignal:[VJXSize sizeWithNSSize:layerSize]];
+        [imageSizePin deliverData:[VJXSize sizeWithNSSize:layerSize]];
     }
     return self;
 }
@@ -182,7 +182,7 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
     if (currentImage)
         [currentImage release];
     currentImage = [[CIImage imageWithCGLayer:pathLayer] retain];
-    [imagePin deliverSignal:currentImage];
+    [imagePin deliverData:currentImage];
     //[imageContext release];
     CGLayerRelease(pathLayer);
 }
@@ -243,7 +243,7 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
                 value = 0.0;
             
             NSNumber *numberValue = [NSNumber numberWithFloat:value];
-            [(VJXOutputPin *)[frequencyPins objectAtIndex:i] deliverSignal:numberValue];
+            [(VJXOutputPin *)[frequencyPins objectAtIndex:i] deliverData:numberValue];
             [frequencyValues addObject:numberValue];
              
 

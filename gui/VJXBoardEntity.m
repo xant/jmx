@@ -351,7 +351,7 @@ id controlForVJXPinType(VJXPinType aType)
 	else if ([[self.entity outputPins] indexOfObject:item] != NSNotFound)
 		aPin = [self.entity outputPinWithName:item];
 	
-	return aPin ? [aPin readPinValue] : @"TEST";
+	return aPin ? [aPin readData] : @"TEST";
 }
 
 - (NSCell *)outlineView:(NSOutlineView *)outlineView dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item

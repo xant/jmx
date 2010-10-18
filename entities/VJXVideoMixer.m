@@ -120,8 +120,8 @@
             [currentFrame retain];
         else // send a black frame
             currentFrame = [[CIImage imageWithColor:[CIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:1.0]] retain];
-        [imageOutputPin deliverSignal:currentFrame fromSender:self];
-        [imageSizeOutputPin deliverSignal:outputSize];
+        [imageOutputPin deliverData:currentFrame fromSender:self];
+        [imageSizeOutputPin deliverData:outputSize];
     }
 }   
 

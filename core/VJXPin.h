@@ -131,7 +131,8 @@ typedef enum {
 - (void)addMaxLimit:(id)maxValue;
 - (void)performSignal:(VJXPinSignal *)signal;
 - (BOOL)isCorrectDataType:(id)data;
-- (id)readPinValue;
-- (void)deliverSignal:(id)data fromSender:(id)sender;
+- (id)readData;
+- (void)deliverData:(id)data; // delivers anonymous data (XXX - perhaps we shouldn't allow this)
+- (void)deliverData:(id)data fromSender:(id)sender;
 - (void)sendData:(id)data toReceiver:(id)receiver withSelector:(NSString *)selectorName fromSender:(id)sender;
 @end

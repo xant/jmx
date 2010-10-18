@@ -116,7 +116,7 @@ static OSStatus _FillComplexBufferProc (
     }
     if (err == noErr) {
         newSample = [VJXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&outputDescription copy:NO freeOnRelease:YES];
-        [currentSamplePin deliverSignal:newSample];
+        [currentSamplePin deliverData:newSample];
         @synchronized(samples) {
             [samples addObject:newSample];
         }

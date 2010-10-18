@@ -33,8 +33,6 @@
 
 @property (readonly)  NSDictionary *receivers;
 
-- (void)deliverSignal:(id)data fromSender:(id)sender;
-- (void)deliverSignal:(id)data;
 - (BOOL)attachObject:(id)pinReceiver withSelector:(NSString *)pinSignal;
 - (void)detachObject:(id)pinReceiver;
 - (BOOL)connectToPin:(VJXInputPin *)destinationPin;

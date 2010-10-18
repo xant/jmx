@@ -127,7 +127,7 @@
     stamps[stampCount++] = timeStamp;
     
     double rate = 1e9/((stamps[stampCount - 1] - stamps[0])/stampCount);
-    [frequencyPin deliverSignal:[NSNumber numberWithDouble:rate]
+    [frequencyPin deliverData:[NSNumber numberWithDouble:rate]
                      fromSender:self];
     //NSLog(@"%@\n", [NSNumber numberWithDouble:rate]);
     [super outputDefaultSignals:timeStamp];

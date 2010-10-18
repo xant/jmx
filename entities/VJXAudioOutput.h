@@ -32,8 +32,8 @@
 @protected
     AudioConverterRef converter;
     VJXAudioFormat *format;
-    VJXPin *currentSamplePin;
-    VJXPin *audioInputPin;
+    VJXOutputPin *currentSamplePin;
+    VJXInputPin *audioInputPin;
     VJXAudioBuffer *currentSample;
     NSMutableArray *samples;
 }

@@ -267,25 +267,10 @@
 
 id controlForVJXPinType(VJXPinType aType)
 {
-	switch (aType) {
-		case kVJXStringPin:
-			return @"String";
-			break;
-		case kVJXNumberPin:
-			return @"Number";
-			break;
-		case kVJXImagePin:
-			return @"Image";
-			break;
-		case kVJXSizePin:
-			return @"Size";
-			break;
-		case kVJXPointPin:
-			return @"Point";
-			break;
-	}
-	
-	return @"None";
+    NSString *name = [VJXPin nameforType:aType];
+	if (name)
+        return name;
+    return @"None";
 }
 
 - (void)controlPin
@@ -293,7 +278,7 @@ id controlForVJXPinType(VJXPinType aType)
 	NSLog(@"%s", _cmd);
 	
 	for (NSString *anInputPinName in self.entity.inputPins) {
-		VJXPin *anInputPin = [self.entity inputPinWithName:anInputPinName];
+		VJXInputPin *anInputPin = [self.entity inputPinWithName:anInputPinName];
 		NSLog(@"name: %@, type: %@", anInputPin.name, controlForVJXPinType(anInputPin.type));
 	}
 	
@@ -360,7 +345,7 @@ id controlForVJXPinType(VJXPinType aType)
 		return item;
 	
 	VJXPin *aPin = nil;
-	
+
 	if ([[self.entity inputPins] indexOfObject:item] != NSNotFound)
 		aPin = [self.entity inputPinWithName:item];
 	else if ([[self.entity outputPins] indexOfObject:item] != NSNotFound)

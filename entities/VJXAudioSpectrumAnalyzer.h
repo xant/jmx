@@ -14,9 +14,9 @@
 
 @interface VJXAudioSpectrumAnalyzer : VJXEntity {
 @private
-    VJXPin *audioInputPin;
-    VJXPin *imagePin;
-    VJXPin *imageSizePin;
+    VJXInputPin *audioInputPin;
+    VJXOutputPin *imagePin;
+    VJXOutputPin *imageSizePin;
     AudioStreamBasicDescription audioFormat;
     VJXSpectrumAnalyzer *analyzer;
     AudioConverterRef converter;

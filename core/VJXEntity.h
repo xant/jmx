@@ -22,7 +22,8 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "VJXPin.h"
+#import "VJXInputPin.h"
+#import "VJXOutputPin.h"
 
 /*
 @protocol VJXThread
@@ -53,17 +54,17 @@
 @property (readwrite, copy) NSString *name;
 
 #pragma mark Pin API
-- (VJXPin *)registerInputPin:(NSString *)pinName
+- (VJXInputPin *)registerInputPin:(NSString *)pinName
                     withType:(VJXPinType)pinType;
 
-- (VJXPin *)registerInputPin:(NSString *)pinName
+- (VJXInputPin *)registerInputPin:(NSString *)pinName
                     withType:(VJXPinType)pinType
                  andSelector:(NSString *)selector;
 
-- (VJXPin *)registerOutputPin:(NSString *)pinName
+- (VJXOutputPin *)registerOutputPin:(NSString *)pinName
                      withType:(VJXPinType)pinType;
 
-- (VJXPin *)registerOutputPin:(NSString *)pinName
+- (VJXOutputPin *)registerOutputPin:(NSString *)pinName
                      withType:(VJXPinType)pinType
                   andSelector:(NSString *)selector;
 
@@ -77,8 +78,8 @@
 - (NSArray *)inputPins;
 - (NSArray *)outputPins;
 
-- (VJXPin *)inputPinWithName:(NSString *)pinName;
-- (VJXPin *)outputPinWithName:(NSString *)pinName;
+- (VJXInputPin *)inputPinWithName:(NSString *)pinName;
+- (VJXOutputPin *)outputPinWithName:(NSString *)pinName;
 
 - (BOOL)attachObject:(id)receiver
         withSelector:(NSString *)selector

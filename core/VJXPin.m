@@ -23,19 +23,8 @@
 
 #import "VJXPin.h"
 #import "VJXContext.h"
-
-@interface VJXPinSignal : NSObject {
-    id data;
-    id sender;
-}
-
-@property (retain) id data;
-@property (retain) id sender;
-
-+ signalFrom:(id)sender withData:(id)data;
-- (id)initWithSender:(id)theSender andData:(id)theData;
-
-@end
+#import "VJXOutputPin.h"
+#import "VJXInputPin.h"
 
 @implementation VJXPinSignal
 
@@ -68,15 +57,10 @@
 
 @end
 
-@interface VJXPin (private)
-- (BOOL)attachObject:(id)pinReceiver withSelector:(NSString *)pinSignal;
-- (void)sendData:(id)data toReceiver:(id)receiver withSelector:(NSString *)selectorName fromSender:(id)sender;
-@end
-
 @implementation VJXPin
 
-@synthesize type, name, multiple, continuous, buffered, retainData, direction, 
-            producers, receivers, allowedValues, owner, minValue, maxValue;
+@synthesize type, name, multiple, continuous, buffered, retainData, 
+            direction, allowedValues, owner, minValue, maxValue;
 
 + (id)pinWithName:(NSString *)name
           andType:(VJXPinType)pinType
@@ -85,7 +69,7 @@
      withSignal:(NSString *)pinSignal
   allowedValues:(NSArray *)pinValues
 {
-    return [[[VJXPin alloc] initWithName:name
+    return [[[[self class] alloc] initWithName:name
                                  andType:pinType
                             forDirection:pinDirection
                                  ownedBy:pinOwner withSignal:pinSignal
@@ -99,7 +83,7 @@
           ownedBy:(id)pinOwner
        withSignal:(NSString *)pinSignal
 {
-    return [VJXPin pinWithName:name
+    return [[self class] pinWithName:name
                        andType:pinType
                   forDirection:pinDirection
                        ownedBy:pinOwner
@@ -114,11 +98,9 @@
         withSignal:(NSString *)pinSignal
      allowedValues:(NSArray *)pinValues
 {
-    if (self = [super init]) {
+    if (self = [self init]) {
         type = pinType;
         name = [pinName retain];
-        receivers = [[NSMutableDictionary alloc] init];
-        producers = [[NSMutableArray alloc] init];
         direction = pinDirection;
         multiple = NO;
         continuous = YES;
@@ -148,34 +130,6 @@
                 allowedValues:nil];
 }
 
-- (void)sendData:(id)data toReceiver:(id)receiver withSelector:(NSString *)selectorName fromSender:(id)sender
-{
-    SEL selector = NSSelectorFromString(selectorName);
-    int selectorArgsNum = [[selectorName componentsSeparatedByString:@":"] count]-1;
-    // checks are now done when registering receivers
-    // so we can avoid checking again now if receiver responds to selector and 
-    // if the selector expects the correct amount of arguments.
-    // this routine is expected to deliver the signals as soon as possible
-    // all safety checks must be done before putting new objects in the receivers' table
-    switch (selectorArgsNum) {
-        case 0:
-            // some listener could be uninterested to the data, 
-            // but just want to get notified when something travels on a pin
-            [receiver performSelector:selector withObject:nil];
-            break;
-        case 1:
-            // some other listeners could be interested only in the data,
-            // regardless of the sender
-            [receiver performSelector:selector withObject:data];
-            break;
-        case 2:
-            [receiver performSelector:selector withObject:data withObject:sender];
-            break;
-        default:
-            NSLog(@"Unsupported selector : '%@' . It can take up to two arguments\n", selectorName);
-    }
-}
-
 - (void)performSignal:(VJXPinSignal *)signal
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -183,60 +137,7 @@
     // (if we are an input pin and if our owner registered a selector)
     if (direction == kVJXInputPin && owner && ownerSignal)
         [self sendData:signal.data toReceiver:owner withSelector:ownerSignal fromSender:signal.sender];
-    
-    // and then propagate it to all receivers
-    @synchronized (receivers) {
-        for (id receiver in receivers)
-            [self sendData:signal.data toReceiver:receiver withSelector:[receivers objectForKey:receiver] fromSender:signal.sender];
-    }
     [pool drain];
-}
-
-- (BOOL)attachObject:(id)pinReceiver withSelector:(NSString *)pinSignal
-{
-    BOOL rv = NO;
-    if ([pinReceiver respondsToSelector:NSSelectorFromString(pinSignal)]) {
-        if ([[pinSignal componentsSeparatedByString:@":"] count]-1 <= 2) {
-            @synchronized(receivers) {
-                [receivers setObject:pinSignal forKey:pinReceiver];
-            }
-            rv = YES;
-        } else {
-            NSLog(@"Unsupported selector : '%@' . It can take up to two arguments\n", pinSignal);
-        }
-    } else {
-        NSLog(@"Object %@ doesn't respond to %@\n", pinReceiver, pinSignal);
-    }
-    // deliver the signal to the just connected receiver
-    if (rv == YES) {
-        VJXPinSignal *signal;
-        @synchronized(self) {
-            signal = [VJXPinSignal signalFrom:currentSender withData:currentData];
-        }
-#if USE_NSOPERATIONS
-        NSBlockOperation *signalDelivery = [NSBlockOperation blockOperationWithBlock:^{
-            [self performSignal:signal];
-        }];
-        [signalDelivery setQueuePriority:NSOperationQueuePriorityVeryHigh];
-        [signalDelivery setThreadPriority:1.0];
-        [[VJXContext operationQueue] addOperation:signalDelivery];
-#else
-        [self performSelector:@selector(performSignal:) onThread:[VJXContext signalThread] withObject:signal waitUntilDone:NO];
-#endif
-    }
-    return rv;
-}
-
-- (void)detachObject:(id)pinReceiver
-{
-    @synchronized(receivers) {
-        [receivers removeObjectForKey:pinReceiver];
-    }
-}
-
-- (void)deliverSignal:(id)data
-{
-    [self deliverSignal:data fromSender:self];
 }
 
 - (BOOL)isCorrectDataType:(id)data
@@ -273,69 +174,6 @@
     return YES;
 }
 
-- (void)deliverSignal:(id)data fromSender:(id)sender
-{
-    // check if NULL data has been signaled
-    // and if it's the case, clear currentData and return
-    if (!data) {
-        @synchronized(self) {
-            if (currentData)
-                [currentData release];
-            currentData = nil;
-        }
-        return;
-    }
-    // if instead new data arrived, check if it's of the correct type
-    // and propagate the signal if that's the case
-    if ([self isCorrectDataType:data]) {
-        @synchronized(self) {
-            if (data) {
-                // check if we restrict possible values
-                if (allowedValues && ![allowedValues containsObject:data]) {
-                    // TODO - Error Message (a not allowed value has been signaled
-                    return;
-                }
-                if (currentData) {
-                    if (!continuous && [currentData isEqual:data])
-                        return;
-                    if (retainData)
-                        [currentData release];
-                }
-                currentData = retainData
-                            ? [data retain]
-                            : data;
-            }
-            if (sender)
-                currentSender = sender;
-            else
-                currentSender = self;
-        }
-        // if we are an output pin and not receivers have been hooked, 
-        // it's useless to perform the signal
-        @synchronized(receivers) {
-            if (direction == kVJXOutputPin && ![receivers count])
-                return;
-        }
-        VJXPinSignal *signal = [VJXPinSignal signalFrom:sender withData:data];
-        // Since we need to honor our frequency, we can't wait until the signal 
-        // is propagated to all receiver, otherwise our entity will slowdown its runloop
-        // because of a deep chain of receivers. To avoid affecting the entity we will
-        // perform the selector asynchronously in the background 
-        //[self performSelectorInBackground:@selector(performSignal:) withObject:signal];
-        //[self performSelector:@selector(performSignal:) onThread:[VJXContext signalThread] withObject:signal waitUntilDone:NO];
-#if USE_NSOPERATIONS
-        NSBlockOperation *signalDelivery = [NSBlockOperation blockOperationWithBlock:^{
-            [self performSignal:signal];
-        }];
-        [signalDelivery setQueuePriority:NSOperationQueuePriorityVeryHigh];
-        [signalDelivery setThreadPriority:1.0];
-        [[VJXContext operationQueue] addOperation:signalDelivery];
-#else
-        [self performSelector:@selector(performSignal:) onThread:[VJXContext signalThread] withObject:signal waitUntilDone:NO];
-#endif
-    }
-}
-
 - (void)allowMultipleConnections:(BOOL)choice
 {
     multiple = choice;
@@ -346,8 +184,6 @@
     if (currentData)
         [currentData release];
     [name release];
-    [receivers release];
-    [producers release];
     if (allowedValues)
         [allowedValues release];
     [super dealloc];
@@ -355,72 +191,21 @@
 
 - (BOOL)connectToPin:(VJXPin *)destinationPin
 {
-    @synchronized(self) {
-        if (destinationPin.type == type) {
-            if (direction == kVJXInputPin) {
-                if (destinationPin.direction != kVJXInputPin) {
-                    if ([producers count] && !multiple) {
-                        if (direction == kVJXInputPin) {
-                            [[producers objectAtIndex:0] detachObject:self];
-                            [producers removeObjectAtIndex:0];
-                        } else {
-                            [[producers objectAtIndex:0] disconnectFromPin:self];
-                        }
-                    }
-                    if ([destinationPin attachObject:self withSelector:@"deliverSignal:fromSender:"]) {
-                        [producers addObject:destinationPin];
-                        return YES;
-                    }
-                }
-            } else if (destinationPin.direction == kVJXInputPin) {
-                if (direction != kVJXInputPin) 
-                    return [destinationPin connectToPin:self];
-            } else if (direction == kVJXAnyPin) {
-                if ([producers count] && !multiple) {
-                    if (direction == kVJXInputPin) {
-                        [[producers objectAtIndex:0] detachObject:self];
-                        [producers removeObjectAtIndex:0];
-                    } else {
-                        [[producers objectAtIndex:0] disconnectFromPin:self];
-                    }
-                }
-                if ([destinationPin attachObject:self withSelector:@"deliverSignal:fromSender:"]) {
-                    [producers addObject:destinationPin];
-                    return YES;
-                }
-            } else if (destinationPin.direction == kVJXAnyPin) {
-                return [destinationPin connectToPin:self];
-            }
-            
-        }
+    if (direction == kVJXOutputPin && destinationPin.direction == kVJXInputPin) {
+        [(VJXOutputPin *)self connectToPin:(VJXInputPin *)destinationPin];
+    } else if (direction == kVJXInputPin && destinationPin.direction == kVJXOutputPin) {
+        [(VJXOutputPin *)destinationPin connectToPin:(VJXInputPin *)self];
     }
     return NO;
 }
 
 - (void)disconnectFromPin:(VJXPin *)destinationPin
 {
-    @synchronized(self) {
-        if (direction == kVJXInputPin) {
-            [destinationPin detachObject:self];
-            [producers removeObjectIdenticalTo:destinationPin];
-        } else {
-            [destinationPin disconnectFromPin:self];
-        }
-    }
 }
 
 - (void)disconnectAllPins
 {
-    NSArray *receiverObjects;
-    //@synchronized (self) { 
-        while ([producers count])
-            [self disconnectFromPin:[producers objectAtIndex:0]];
-        @synchronized(receivers) {
-             receiverObjects = [receivers allKeys];
-        }
-        for (VJXPin *receiver in receiverObjects)
-            [receiver disconnectFromPin:self];
-    //}
+
 }
 
 - (id)copyWithZone:(NSZone *)zone
@@ -432,87 +217,9 @@
     return [self retain];
 }
 
-- (id)readPinValue
++ (NSString *)nameforType:(VJXPinType)aType
 {
-    id data;
-#if 0
-    if (direction == kVJXOutputPin) {
-        if (ownerSignal) {
-            NSLog(@"%@", owner);
-            SEL selector = NSSelectorFromString(ownerSignal);
-            int selectorArgsNum = [[ownerSignal componentsSeparatedByString:@":"] count]-1;
-            id pinData;
-            switch (selectorArgsNum) {
-                case 0:
-                    // some listener could be uninterested to the data, 
-                    // but just want to get notified when something travels on a pin
-                    pinData = [owner performSelector:selector withObject:nil];
-                    @synchronized(self) {
-                        if (currentData)
-                            [currentData release]; 
-                        currentData = retainData
-                                    ? [pinData retain]
-                                    : pinData;
-                    }
-                    break;
-                case 1:
-                    // some other listeners could be interested only in the data,
-                    // regardless of the sender
-                    @synchronized(self) {
-                        pinData = [owner performSelector:selector withObject:self];
-                        if (currentData)
-                            [currentData release];
-                        currentData = retainData
-                                    ? [pinData retain]
-                                    : pinData;
-                    }
-                    break;
-                default:
-                    NSLog(@"Unsupported selector : '%@' . It can take at most 1 argument for output pins\n", ownerSignal);
-                    return nil;
-            }                
-        }
-    } else {
-        @synchronized(producers) {
-            if ([producers count]) {
-                VJXPin *firstProducer = (VJXPin *)[producers objectAtIndex:0]; // XXX
-                id pinData = [firstProducer readPinValue];
-                if (pinData) {
-                    @synchronized(self) {
-                        if (currentData)
-                            [currentData release];
-                        currentData = retainData
-                                    ? [pinData retain]
-                                    : pinData;
-                        currentSender = firstProducer;
-                    }
-                }
-            }
-        }
-    }
-#endif
-    @synchronized(self) {
-        data = [currentData retain];
-    }
-    return [data autorelease];
-}
-
-- (NSArray *)readProducers
-{
-    NSMutableArray *array = [[NSMutableArray alloc] init];
-    @synchronized(producers) {
-        for (VJXPin *producer in producers) {
-            id value = [producer readPinValue];
-            if (value)
-                [array addObject:value];
-        }
-    }
-    return [array autorelease];
-}
-
-- (NSString *)typeName
-{
-    switch (type) {
+    switch (aType) {
         case kVJXStringPin:
             return @"String";
             break;
@@ -532,21 +239,15 @@
             return @"Audio";
             break;
     }
-    return @"Unknown";
+    return nil;
 }
 
-- (BOOL)moveProducerFromIndex:(NSUInteger)src toIndex:(NSUInteger)dst
+- (NSString *)typeName
 {
-    @synchronized(producers) {
-        if ([producers count] > dst) {
-            VJXPin *obj = [[producers objectAtIndex:src] retain];
-            [producers removeObjectAtIndex:src];
-            [producers insertObject:obj atIndex:dst];
-            [obj release];
-            return YES;
-        }
-    }
-    return NO;
+    NSString *aName = [VJXPin nameforType:type];
+    if (aName)
+        return aName;
+    return @"Unknown";
 }
 
 - (NSString *)description
@@ -614,6 +315,95 @@
 {
     if ([self isCorrectDataType:maxValue])
         maxValue = [value retain];
+}
+
+- (id)readPinValue
+{
+    id data;
+    @synchronized(self) {
+        data = [currentData retain];
+    }
+    return [data autorelease];
+}
+
+- (void)deliverSignal:(id)data fromSender:(id)sender
+{
+    // check if NULL data has been signaled
+    // and if it's the case, clear currentData and return
+    if (!data) {
+        @synchronized(self) {
+            if (currentData)
+                [currentData release];
+            currentData = nil;
+        }
+        return;
+    }
+    // if instead new data arrived, check if it's of the correct type
+    // and propagate the signal if that's the case
+    if ([self isCorrectDataType:data]) {
+        @synchronized(self) {
+            if (data) {
+                // check if we restrict possible values
+                if (allowedValues && ![allowedValues containsObject:data]) {
+                    // TODO - Error Message (a not allowed value has been signaled
+                    return;
+                }
+                if (currentData) {
+                    if (!continuous && [currentData isEqual:data])
+                        return;
+                    if (retainData)
+                        [currentData release];
+                }
+                currentData = retainData
+                ? [data retain]
+                : data;
+            }
+            if (sender)
+                currentSender = sender;
+            else
+                currentSender = self;
+        }
+        VJXPinSignal *signal = [VJXPinSignal signalFrom:sender withData:data];
+        
+#if USE_NSOPERATIONS
+        NSBlockOperation *signalDelivery = [NSBlockOperation blockOperationWithBlock:^{
+            [self performSignal:signal];
+        }];
+        [signalDelivery setQueuePriority:NSOperationQueuePriorityVeryHigh];
+        [signalDelivery setThreadPriority:1.0];
+        [[VJXContext operationQueue] addOperation:signalDelivery];
+#else
+        [self performSelector:@selector(performSignal:) onThread:[VJXContext signalThread] withObject:signal waitUntilDone:NO];
+#endif
+    }
+}
+
+- (void)sendData:(id)data toReceiver:(id)receiver withSelector:(NSString *)selectorName fromSender:(id)sender
+{
+    SEL selector = NSSelectorFromString(selectorName);
+    int selectorArgsNum = [[selectorName componentsSeparatedByString:@":"] count]-1;
+    // checks are now done when registering receivers
+    // so we can avoid checking again now if receiver responds to selector and 
+    // if the selector expects the correct amount of arguments.
+    // this routine is expected to deliver the signals as soon as possible
+    // all safety checks must be done before putting new objects in the receivers' table
+    switch (selectorArgsNum) {
+        case 0:
+            // some listener could be uninterested to the data, 
+            // but just want to get notified when something travels on a pin
+            [receiver performSelector:selector withObject:nil];
+            break;
+        case 1:
+            // some other listeners could be interested only in the data,
+            // regardless of the sender
+            [receiver performSelector:selector withObject:data];
+            break;
+        case 2:
+            [receiver performSelector:selector withObject:data withObject:sender];
+            break;
+        default:
+            NSLog(@"Unsupported selector : '%@' . It can take up to two arguments\n", selectorName);
+    }
 }
 
 @end

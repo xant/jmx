@@ -32,7 +32,7 @@
 @private
     NSThread *worker;
     NSTimer  *timer;
-    VJXPin   *frequencyPin;
+    VJXOutputPin   *frequencyPin;
     int64_t stamps[kVJXFpsMaxStamps + 1]; // XXX - 25 should be a constant
     int stampCount;
 }

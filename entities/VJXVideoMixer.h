@@ -35,9 +35,9 @@
 @protected
     NSArray *videoInputs;
 @private
-    VJXPin *imageInputPin;
-    VJXPin *imageOutputPin;
-    VJXPin *imageSizeOutputPin;
+    VJXInputPin *imageInputPin;
+    VJXOutputPin *imageOutputPin;
+    VJXOutputPin *imageSizeOutputPin;
     CIImage *currentFrame;
     CIFilter *blendFilter;
     uint64_t lastFrameTime;

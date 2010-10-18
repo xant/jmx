@@ -186,6 +186,7 @@
 
 - (NSString *)hexDump
 {
+    return nil;
 }
 
 @end;

@@ -60,7 +60,7 @@
 
 - (VJXPin *)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector
 {
-    [inputPins setObject:[VJXPin pinWithName:pinName andType:pinType forDirection:kVJXInputPin ownedBy:self withSignal:selector]
+    [inputPins setObject:[VJXInputPin pinWithName:pinName andType:pinType forDirection:kVJXInputPin ownedBy:self withSignal:selector]
                   forKey:pinName];
     return [inputPins objectForKey:pinName];
 }
@@ -72,7 +72,7 @@
 
 - (VJXPin *)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector
 {
-    [outputPins setObject:[VJXPin pinWithName:pinName andType:pinType forDirection:kVJXOutputPin ownedBy:self withSignal:selector]
+    [outputPins setObject:[VJXOutputPin pinWithName:pinName andType:pinType forDirection:kVJXOutputPin ownedBy:self withSignal:selector]
                    forKey:pinName];
     return [outputPins objectForKey:pinName];
 }
@@ -95,19 +95,19 @@
             }];
 }
 
-- (VJXPin *)inputPinWithName:(NSString *)pinName
+- (VJXInputPin *)inputPinWithName:(NSString *)pinName
 {
     return [inputPins objectForKey:pinName];
 }
 
-- (VJXPin *)outputPinWithName:(NSString *)pinName
+- (VJXOutputPin *)outputPinWithName:(NSString *)pinName
 {
     return [outputPins objectForKey:pinName];
 }
 
 - (void)unregisterInputPin:(NSString *)pinName
 {
-    VJXPin *pin = [inputPins objectForKey:pinName];
+    VJXInputPin *pin = [inputPins objectForKey:pinName];
     if (pin) {
         [inputPins removeObjectForKey:pinName];
         [pin disconnectAllPins];
@@ -116,7 +116,7 @@
 
 - (void)unregisterOutputPin:(NSString *)pinName
 {
-    VJXPin *pin = [outputPins objectForKey:pinName];
+    VJXOutputPin *pin = [outputPins objectForKey:pinName];
     if (pin) {
         [outputPins removeObjectForKey:pinName];
         [pin disconnectAllPins];
@@ -132,17 +132,17 @@
 
 - (void)outputDefaultSignals:(uint64_t)timeStamp
 {
-    VJXPin *activePin = [self outputPinWithName:@"active"];    
+    VJXOutputPin *activePin = [self outputPinWithName:@"active"];    
     [activePin deliverSignal:[NSNumber numberWithBool:active] fromSender:self];
 }
 
 - (BOOL)attachObject:(id)receiver withSelector:(NSString *)selector toOutputPin:(NSString *)pinName
 {
-    VJXPin *pin = [self outputPinWithName:pinName];
+    VJXOutputPin *pin = [self outputPinWithName:pinName];
     if (pin) {
         // create a virtual pin to be attached to the receiver
         // not that the pin will automatically released once disconnected
-        VJXPin *vPin = [VJXPin pinWithName:@"vpin" andType:pin.type forDirection:kVJXInputPin ownedBy:receiver withSignal:selector];
+        VJXInputPin *vPin = [VJXInputPin pinWithName:@"vpin" andType:pin.type forDirection:kVJXInputPin ownedBy:receiver withSignal:selector];
         [pin connectToPin:vPin];
         return YES;
     }

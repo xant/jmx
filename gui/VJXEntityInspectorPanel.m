@@ -85,7 +85,7 @@
         if (selectedRow >= 0) {
             NSArray *pins = [entityView.entity inputPins];
             NSString *pinName = [pins objectAtIndex:selectedRow];
-            VJXPin *pin = [entityView.entity inputPinWithName:pinName];
+            VJXInputPin *pin = [entityView.entity inputPinWithName:pinName];
             return [pin.producers count];
         }
     }
@@ -119,7 +119,7 @@
                     pins = [entityView.entity inputPins];
                 }
                 NSString *pinName = [pins objectAtIndex:selectedRow];
-                VJXPin *pin = [entityView.entity inputPinWithName:pinName];
+                VJXInputPin *pin = [entityView.entity inputPinWithName:pinName];
                 return [NSString stringWithFormat:@"%@",[[pin.producers objectAtIndex:rowIndex] description]];
             }
         }
@@ -180,7 +180,7 @@
         if (selectedRow >= 0) {
             NSArray *pins = [entityView.entity inputPins];
             NSString *pinName = [pins objectAtIndex:selectedRow];
-            VJXPin *pin = [entityView.entity inputPinWithName:pinName];
+            VJXInputPin *pin = [entityView.entity inputPinWithName:pinName];
             if ([pin moveProducerFromIndex:(NSUInteger)srcRow toIndex:(NSUInteger)(srcRow < row)?row-1:row]) {
                 [aTableView reloadData];
                 return YES;

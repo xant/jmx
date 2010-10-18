@@ -37,8 +37,8 @@
     VJXSize  *size;
     
     CIImage *currentFrame;
-    VJXPin *outputFramePin;
-    VJXPin *outputFrameSizePin;
+    VJXOutputPin *outputFramePin;
+    VJXOutputPin *outputFrameSizePin;
 
 @private
 

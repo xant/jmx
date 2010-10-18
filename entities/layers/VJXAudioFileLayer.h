@@ -32,7 +32,7 @@
 @private
     VJXAudioFile *audioFile;
     VJXAudioBuffer *currentSample;
-    VJXPin *outputPin;
+    VJXOutputPin *outputPin;
     NSMutableArray *samples;
     BOOL repeat; // defaults to YES
     NSUInteger offset;

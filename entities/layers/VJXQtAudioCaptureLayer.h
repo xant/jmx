@@ -34,7 +34,7 @@
 @private
 	VJXQtAudioGrabber *grabber;
     VJXAudioBuffer *currentBuffer;
-    VJXPin *outputPin;
+    VJXOutputPin *outputPin;
     AudioConverterRef converter;
     AudioStreamBasicDescription outputFormat;
 }

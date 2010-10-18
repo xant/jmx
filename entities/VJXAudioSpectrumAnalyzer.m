@@ -243,7 +243,7 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
                 value = 0.0;
             
             NSNumber *numberValue = [NSNumber numberWithFloat:value];
-            [(VJXPin *)[frequencyPins objectAtIndex:i] deliverSignal:numberValue];
+            [(VJXOutputPin *)[frequencyPins objectAtIndex:i] deliverSignal:numberValue];
             [frequencyValues addObject:numberValue];
              
 
@@ -259,7 +259,7 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
 - (NSArray *)outputPins
 {
     NSMutableArray *pinNames = [[NSMutableArray alloc] init];
-    for (VJXPin *pin in frequencyPins) {
+    for (VJXOutputPin *pin in frequencyPins) {
         [pinNames addObject:pin.name];
     }
     [pinNames addObject:@"active"];

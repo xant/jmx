@@ -58,6 +58,8 @@
 		AADEBFC812414F7E00A6A06D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */; };
 		AADEBFDF1241546B00A6A06D /* VJXAudioBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = AADEBFDE1241546B00A6A06D /* VJXAudioBuffer.m */; };
 		AADEC0D712416F4600A6A06D /* VJXQtAudioCaptureLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = AADEC0D612416F4600A6A06D /* VJXQtAudioCaptureLayer.m */; };
+		AAE90BC9126CAE6100690915 /* VJXInputPin.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE90BC8126CAE6100690915 /* VJXInputPin.m */; };
+		AAE90BCC126CAE7300690915 /* VJXOutputPin.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE90BCB126CAE7300690915 /* VJXOutputPin.m */; };
 		AAF179A0123E0A39001319BA /* VJXQtVideoCaptureLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF1799F123E0A39001319BA /* VJXQtVideoCaptureLayer.m */; };
 		AAF17AA6123E4F45001319BA /* VJXQtExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF17AA5123E4F45001319BA /* VJXQtExporter.m */; };
 		AAF17BDE123EABBB001319BA /* VJXBoardInputPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF17BDD123EABBB001319BA /* VJXBoardInputPanel.m */; };
@@ -163,6 +165,10 @@
 		AADEBFDE1241546B00A6A06D /* VJXAudioBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXAudioBuffer.m; path = core/VJXAudioBuffer.m; sourceTree = "<group>"; };
 		AADEC0D512416F4600A6A06D /* VJXQtAudioCaptureLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXQtAudioCaptureLayer.h; path = entities/layers/VJXQtAudioCaptureLayer.h; sourceTree = "<group>"; };
 		AADEC0D612416F4600A6A06D /* VJXQtAudioCaptureLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXQtAudioCaptureLayer.m; path = entities/layers/VJXQtAudioCaptureLayer.m; sourceTree = "<group>"; };
+		AAE90BC7126CAE6100690915 /* VJXInputPin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXInputPin.h; path = core/VJXInputPin.h; sourceTree = "<group>"; };
+		AAE90BC8126CAE6100690915 /* VJXInputPin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXInputPin.m; path = core/VJXInputPin.m; sourceTree = "<group>"; };
+		AAE90BCA126CAE7300690915 /* VJXOutputPin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXOutputPin.h; path = core/VJXOutputPin.h; sourceTree = "<group>"; };
+		AAE90BCB126CAE7300690915 /* VJXOutputPin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXOutputPin.m; path = core/VJXOutputPin.m; sourceTree = "<group>"; };
 		AAF1799E123E0A39001319BA /* VJXQtVideoCaptureLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXQtVideoCaptureLayer.h; path = entities/layers/VJXQtVideoCaptureLayer.h; sourceTree = "<group>"; };
 		AAF1799F123E0A39001319BA /* VJXQtVideoCaptureLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXQtVideoCaptureLayer.m; path = entities/layers/VJXQtVideoCaptureLayer.m; sourceTree = "<group>"; };
 		AAF17AA4123E4F45001319BA /* VJXQtExporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXQtExporter.h; path = entities/exporters/VJXQtExporter.h; sourceTree = "<group>"; };
@@ -393,6 +399,10 @@
 				AA052ABA1261D474008C9F46 /* VJXSeekable.h */,
 				AA49A48D1269D15F0034125D /* VJXRingBuffer.h */,
 				AA49A48E1269D15F0034125D /* VJXRingBuffer.m */,
+				AAE90BC7126CAE6100690915 /* VJXInputPin.h */,
+				AAE90BC8126CAE6100690915 /* VJXInputPin.m */,
+				AAE90BCA126CAE7300690915 /* VJXOutputPin.h */,
+				AAE90BCB126CAE7300690915 /* VJXOutputPin.m */,
 			);
 			name = Core;
 			sourceTree = "<group>";
@@ -540,6 +550,8 @@
 				AA718525125B2E560068DB2B /* VJXLibraryTableView.m in Sources */,
 				AA718526125B2E5A0068DB2B /* VJXLibraryTableViewDelegate.m in Sources */,
 				AA49A48F1269D15F0034125D /* VJXRingBuffer.m in Sources */,
+				AAE90BC9126CAE6100690915 /* VJXInputPin.m in Sources */,
+				AAE90BCC126CAE7300690915 /* VJXOutputPin.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

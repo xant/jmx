@@ -28,6 +28,18 @@
 
 @class VJXEntity;
 
+@interface VJXPinSignal : NSObject {
+    id data;
+    id sender;
+}
+
+@property (retain) id data;
+@property (retain) id sender;
+
++ signalFrom:(id)sender withData:(id)data;
+- (id)initWithSender:(id)theSender andData:(id)theData;
+
+@end
 typedef enum {
     kVJXVoidPin,
     kVJXStringPin,
@@ -45,11 +57,9 @@ typedef enum {
 } VJXPinDirection;
 
 @interface VJXPin : NSObject <NSCopying> {
-@private
+@protected
     VJXPinType          type;
     NSString            *name;
-    NSMutableDictionary *receivers;
-    NSMutableArray      *producers;
     NSMutableDictionary *properties;
     BOOL                multiple; // default NO
     BOOL                continuous; // default YES
@@ -69,8 +79,6 @@ typedef enum {
 @property (readonly)  NSString *name;
 @property (readonly)  BOOL multiple;
 @property (readonly)  VJXPinDirection direction;
-@property (readonly)  NSArray *producers;
-@property (readonly)  NSDictionary *receivers;
 @property (readonly)  NSArray *allowedValues;
 @property (readwrite) BOOL continuous;
 @property (readwrite) BOOL retainData;
@@ -78,6 +86,8 @@ typedef enum {
 @property (readonly) id owner;
 @property (readonly) id minValue;
 @property (readonly) id maxValue;
+
++ (NSString *)nameforType:(VJXPinType)aType;
 
 + (id)pinWithName:(NSString *)name
           andType:(VJXPinType)pinType
@@ -108,14 +118,8 @@ typedef enum {
 - (BOOL)connectToPin:(VJXPin *)destinationPin;
 - (void)disconnectFromPin:(VJXPin *)destinationPin;
 - (void)disconnectAllPins;
-- (void)deliverSignal:(id)data fromSender:(id)sender;
-- (void)deliverSignal:(id)data;
 - (void)allowMultipleConnections:(BOOL)choice;
-- (NSArray *)producers;
-- (NSArray *)readProducers;
-- (id)readPinValue;
 - (NSString *)typeName;
-- (BOOL)moveProducerFromIndex:(NSUInteger)src toIndex:(NSUInteger)dst;
 - (NSString *)description;
 - (void)addAllowedValue:(id)value;
 - (void)addAllowedValues:(NSArray *)values;
@@ -123,4 +127,9 @@ typedef enum {
 - (void)removeAllowedValues:(NSArray *)values;
 - (void)addMinLimit:(id)minValue;
 - (void)addMaxLimit:(id)maxValue;
+- (void)performSignal:(VJXPinSignal *)signal;
+- (BOOL)isCorrectDataType:(id)data;
+- (id)readPinValue;
+- (void)deliverSignal:(id)data fromSender:(id)sender;
+- (void)sendData:(id)data toReceiver:(id)receiver withSelector:(NSString *)selectorName fromSender:(id)sender;
 @end

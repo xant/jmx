@@ -16,8 +16,8 @@
 @interface VJXAudioMixer : VJXThreadedEntity {    
 @protected
     NSArray *audioInputs;
-    VJXPin *audioInputPin;
-    VJXPin *audioOutputPin;
+    VJXInputPin *audioInputPin;
+    VJXOutputPin *audioOutputPin;
 @private
     //VJXAudioBuffer *currentSample;
     uint64_t lastSampleTime;

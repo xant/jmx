@@ -36,7 +36,7 @@
 		[aPin addAllowedValue:@"CIScreenBlendMode"];
 		[aPin addAllowedValue:@"CISaturationBlendMode"];
         [aPin addAllowedValue:@"CIHueBlendMode"];
-		[aPin deliverSignal:VJX_MIXER_DEFAULT_BLEND_FILTER];
+		//[aPin deliverSignal:VJX_MIXER_DEFAULT_BLEND_FILTER];
         imageInputPin = [self registerInputPin:@"video" withType:kVJXImagePin];
         [imageInputPin allowMultipleConnections:YES];
         [self registerInputPin:@"videoSize" withType:kVJXSizePin andSelector:@"setOutputSize:"];

@@ -155,7 +155,7 @@
         
         if ([otherPin isConnected] && ![otherPin multiple])
             [otherPin removeAllConnectors];
-
+        
         isConnected = [otherPin.pin connectToPin:self.pin];
 
         if (isConnected) {

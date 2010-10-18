@@ -310,6 +310,10 @@ error:
     return self;
 }
 
+- (void)tick:(uint64_t)timeStamp
+{
+    [self outputDefaultSignals:timeStamp];
+}
 
 @end
 

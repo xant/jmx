@@ -66,15 +66,34 @@
           andType:(VJXPinType)pinType
      forDirection:(VJXPinDirection)pinDirection
           ownedBy:(id)pinOwner
+       withSignal:(NSString *)pinSignal
+    allowedValues:(NSArray *)pinValues
+     initialValue:(id)value
+    
+{
+    return [[[[self class] alloc] initWithName:name
+                                       andType:pinType
+                                  forDirection:pinDirection
+                                       ownedBy:pinOwner withSignal:pinSignal
+                                 allowedValues:pinValues
+                                  initialValue:value]
+            autorelease];
+}
+
++ (id)pinWithName:(NSString *)name
+          andType:(VJXPinType)pinType
+     forDirection:(VJXPinDirection)pinDirection
+          ownedBy:(id)pinOwner
      withSignal:(NSString *)pinSignal
   allowedValues:(NSArray *)pinValues
 {
-    return [[[[self class] alloc] initWithName:name
-                                 andType:pinType
-                            forDirection:pinDirection
-                                 ownedBy:pinOwner withSignal:pinSignal
-                           allowedValues:pinValues]
-            autorelease];
+    return  [[self class] pinWithName:name
+                              andType:pinType
+                         forDirection:pinDirection
+                              ownedBy:pinOwner
+                           withSignal:pinSignal
+                        allowedValues:pinValues
+                         initialValue:nil];
 }
 
 + (id)pinWithName:(NSString *)name
@@ -112,6 +131,23 @@
         withSignal:(NSString *)pinSignal
      allowedValues:(NSArray *)pinValues
 {
+    return [self initWithName:pinName
+                      andType:pinType
+                 forDirection:pinDirection
+                      ownedBy:pinOwner
+                   withSignal:pinSignal
+                allowedValues:pinValues
+                 initialValue:nil];
+}
+
+- (id)initWithName:(NSString *)pinName
+           andType:(VJXPinType)pinType
+      forDirection:(VJXPinDirection)pinDirection
+           ownedBy:(id)pinOwner
+        withSignal:(NSString *)pinSignal
+     allowedValues:(NSArray *)pinValues
+      initialValue:(id)value
+{
     if (self = [super init]) {
         type = pinType;
         name = [pinName retain];
@@ -126,6 +162,10 @@
         ownerSignal = pinSignal;
         if (pinValues)
             allowedValues = [[NSMutableArray arrayWithArray:pinValues] retain];
+        if (value && [self isCorrectDataType:value]) {
+            currentData = [value retain];
+            currentSender = owner;
+        }
     }
     return self;
 }

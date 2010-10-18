@@ -19,13 +19,15 @@
            ownedBy:(id)pinOwner
         withSignal:(NSString *)pinSignal
      allowedValues:(NSArray *)pinValues
+      initialValue:(id)value
 {
     if (self = [super initWithName:pinName
                            andType:pinType
                       forDirection:pinDirection
                            ownedBy:pinOwner
                         withSignal:pinSignal
-                     allowedValues:pinValues])
+                     allowedValues:pinValues
+                      initialValue:value])
     {
         producers = [[NSMutableArray alloc] init];
     }

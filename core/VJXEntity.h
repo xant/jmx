@@ -61,12 +61,24 @@
                     withType:(VJXPinType)pinType
                  andSelector:(NSString *)selector;
 
+- (VJXInputPin *)registerInputPin:(NSString *)pinName
+                         withType:(VJXPinType)pinType
+                      andSelector:(NSString *)selector
+                    allowedValues:(NSArray *)pinValues
+                     initialValue:(id)value;
+
 - (VJXOutputPin *)registerOutputPin:(NSString *)pinName
                      withType:(VJXPinType)pinType;
 
 - (VJXOutputPin *)registerOutputPin:(NSString *)pinName
                      withType:(VJXPinType)pinType
                   andSelector:(NSString *)selector;
+
+- (VJXOutputPin *)registerOutputPin:(NSString *)pinName
+                           withType:(VJXPinType)pinType
+                        andSelector:(NSString *)selector
+                      allowedValues:(NSArray *)pinValues
+                       initialValue:(id)value;
 
 - (void)unregisterInputPin:(NSString *)pinName;
 - (void)unregisterOutputPin:(NSString *)pinName;

@@ -102,6 +102,14 @@ typedef enum {
        withSignal:(NSString *)pinSignal
     allowedValues:(NSArray *)allowedValues;
 
++ (id)pinWithName:(NSString *)name
+          andType:(VJXPinType)pinType
+     forDirection:(VJXPinDirection)pinDirection 
+          ownedBy:(id)pinOwner 
+       withSignal:(NSString *)pinSignal
+    allowedValues:(NSArray *)allowedValues
+     initialValue:(id)value;
+
 - (id)initWithName:(NSString *)pinName
            andType:(VJXPinType)pinType
       forDirection:(VJXPinDirection)pinDirection
@@ -114,6 +122,14 @@ typedef enum {
            ownedBy:(id)pinOwner
         withSignal:(NSString *)pinSignal
      allowedValues:(NSArray *)pinValues;
+
+- (id)initWithName:(NSString *)pinName
+           andType:(VJXPinType)pinType
+      forDirection:(VJXPinDirection)pinDirection
+           ownedBy:(id)pinOwner
+        withSignal:(NSString *)pinSignal
+     allowedValues:(NSArray *)pinValues
+      initialValue:(id)value;
 
 - (BOOL)connectToPin:(VJXPin *)destinationPin;
 - (void)disconnectFromPin:(VJXPin *)destinationPin;

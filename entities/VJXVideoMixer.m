@@ -32,11 +32,14 @@
 - (id) init
 {
     if (self = [super init]) {
-        VJXPin *aPin = [self registerInputPin:@"blendFilter" withType:kVJXStringPin andSelector:@"setBlendFilter:"];
-		[aPin addAllowedValue:@"CIScreenBlendMode"];
-		[aPin addAllowedValue:@"CISaturationBlendMode"];
-        [aPin addAllowedValue:@"CIHueBlendMode"];
-		//[aPin deliverSignal:VJX_MIXER_DEFAULT_BLEND_FILTER];
+        blendFilterPin = [self registerInputPin:@"blendFilter"
+                                       withType:kVJXStringPin
+                                    andSelector:@"setBlendFilter:"
+                                  allowedValues:[NSArray arrayWithObjects:@"CIScreenBlendMode",
+                                                                          @"CISaturationBlendMode",
+                                                                          @"CIHueBlendMode",
+                                                                          nil]
+                                   initialValue:VJX_MIXER_DEFAULT_BLEND_FILTER];
         imageInputPin = [self registerInputPin:@"video" withType:kVJXImagePin];
         [imageInputPin allowMultipleConnections:YES];
         [self registerInputPin:@"videoSize" withType:kVJXSizePin andSelector:@"setOutputSize:"];

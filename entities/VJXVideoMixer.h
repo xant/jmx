@@ -35,6 +35,7 @@
 @protected
     NSArray *videoInputs;
 @private
+    VJXInputPin *blendFilterPin;
     VJXInputPin *imageInputPin;
     VJXOutputPin *imageOutputPin;
     VJXOutputPin *imageSizeOutputPin;

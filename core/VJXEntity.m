@@ -53,27 +53,55 @@
     
 }
 
-- (VJXPin *)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType
+- (VJXInputPin *)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType
 {
     return [self registerInputPin:pinName withType:pinType andSelector:@"defaultInputCallback:"];
 }
 
-- (VJXPin *)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector
+- (VJXInputPin *)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector
 {
-    [inputPins setObject:[VJXInputPin pinWithName:pinName andType:pinType forDirection:kVJXInputPin ownedBy:self withSignal:selector]
+    return [self registerInputPin:pinName withType:pinType andSelector:selector allowedValues:nil initialValue:nil];
+}
+
+- (VJXInputPin *)registerInputPin:(NSString *)pinName 
+                         withType:(VJXPinType)pinType
+                      andSelector:(NSString *)selector
+                    allowedValues:(NSArray *)pinValues
+                     initialValue:(id)value
+{
+    [inputPins setObject:[VJXInputPin pinWithName:pinName
+                                          andType:pinType
+                                     forDirection:kVJXInputPin
+                                          ownedBy:self withSignal:selector
+                                    allowedValues:pinValues
+                                     initialValue:(id)value]
                   forKey:pinName];
     return [inputPins objectForKey:pinName];
 }
 
-- (VJXPin *)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType
+- (VJXOutputPin *)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType
 {
     return [self registerOutputPin:pinName withType:pinType andSelector:nil];
 }
 
-- (VJXPin *)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector
+- (VJXOutputPin *)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector
 {
-    [outputPins setObject:[VJXOutputPin pinWithName:pinName andType:pinType forDirection:kVJXOutputPin ownedBy:self withSignal:selector]
-                   forKey:pinName];
+    return [self registerOutputPin:pinName withType:pinType andSelector:selector allowedValues:nil initialValue:nil];
+}
+
+- (VJXOutputPin *)registerOutputPin:(NSString *)pinName
+                           withType:(VJXPinType)pinType
+                        andSelector:(NSString *)selector
+                      allowedValues:(NSArray *)pinValues
+                       initialValue:(id)value
+{
+    [outputPins setObject:[VJXOutputPin pinWithName:pinName
+                                            andType:pinType
+                                       forDirection:kVJXOutputPin
+                                            ownedBy:self withSignal:selector
+                                      allowedValues:pinValues
+                                       initialValue:(id)value]
+                  forKey:pinName];
     return [outputPins objectForKey:pinName];
 }
 

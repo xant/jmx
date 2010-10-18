@@ -26,41 +26,12 @@
 #import "VJXOutputPin.h"
 #import "VJXInputPin.h"
 
-@implementation VJXPinSignal
-
-@synthesize sender, data;
-
-+ (id)signalFrom:(id)sender withData:(id)data
-{
-    id signal = [VJXPinSignal alloc];
-    if (signal) {
-        return [[signal initWithSender:sender andData:data] autorelease];
-    }
-    return nil;
-}
-
-- (id)initWithSender:(id)theSender andData:(id)theData
-{
-    if (self = [super init]) {
-        self.sender = theSender;
-        self.data = theData;
-    }
-    return self;
-}
-
-- (void)dealloc
-{
-    self.sender = nil;
-    self.data = nil;
-    [super dealloc];
-}
-
-@end
-
 @implementation VJXPin
 
 @synthesize type, name, multiple, continuous, buffered, retainData, 
             direction, allowedValues, owner, minValue, maxValue;
+
+#pragma mark Constructors
 
 + (id)pinWithName:(NSString *)name
           andType:(VJXPinType)pinType
@@ -118,6 +89,8 @@
                       withSignal:pinSignal
                    allowedValues:nil];
 }
+
+#pragma mark Initializers
 
 - (id)initWithName:(NSString *)pinName
            andType:(VJXPinType)pinType
@@ -179,6 +152,8 @@
     [self dealloc];
     return nil;
 }
+
+#pragma mark Implementation
 
 - (void)performSignal:(VJXPinSignal *)signal
 {

@@ -25,21 +25,10 @@
 #import "VJXSize.h"
 #import "VJXPoint.h"
 #import "VJXAudioBuffer.h"
+#import "VJXPinSignal.h"
 
 @class VJXEntity;
 
-@interface VJXPinSignal : NSObject {
-    id data;
-    id sender;
-}
-
-@property (retain) id data;
-@property (retain) id sender;
-
-+ signalFrom:(id)sender withData:(id)data;
-- (id)initWithSender:(id)theSender andData:(id)theData;
-
-@end
 typedef enum {
     kVJXVoidPin,
     kVJXStringPin,

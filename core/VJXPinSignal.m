@@ -1,5 +1,5 @@
 //
-//  VJXInputPin.h
+//  VJXPinSignal.m
 //  VeeJay
 //
 //  Created by xant on 10/18/10.
@@ -21,17 +21,37 @@
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#import <Cocoa/Cocoa.h>
-#import "VJXOutputPin.h"
-#import "VJXPin.h"
+#import "VJXPinSignal.h"
 
-@interface VJXInputPin : VJXPin {
-    NSMutableArray      *producers;
+
+@implementation VJXPinSignal
+
+@synthesize sender, data;
+
++ (id)signalFrom:(id)sender withData:(id)data
+{
+    id signal = [VJXPinSignal alloc];
+    if (signal) {
+        return [[signal initWithSender:sender andData:data] autorelease];
+    }
+    return nil;
 }
-@property (readonly)  NSArray *producers;
 
-- (NSArray *)readProducers;
-- (BOOL)moveProducerFromIndex:(NSUInteger)src toIndex:(NSUInteger)dst;
-- (BOOL)connectToPin:(VJXOutputPin *)destinationPin;
-- (void)disconnectFromPin:(VJXOutputPin *)destinationPin;
+- (id)initWithSender:(id)theSender andData:(id)theData
+{
+    if (self = [super init]) {
+        self.sender = theSender;
+        self.data = theData;
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+    self.sender = nil;
+    self.data = nil;
+    [super dealloc];
+}
+
 @end
+

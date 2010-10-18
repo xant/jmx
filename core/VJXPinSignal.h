@@ -1,5 +1,5 @@
 //
-//  VJXInputPin.h
+//  VJXPinSignal.h
 //  VeeJay
 //
 //  Created by xant on 10/18/10.
@@ -20,18 +20,20 @@
 //  You should have received a copy of the GNU General Public License
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
-
+// NOTE : You don't need to use this class directly,
+//        it's meant to be used internally by Pin implementations
 #import <Cocoa/Cocoa.h>
-#import "VJXOutputPin.h"
-#import "VJXPin.h"
 
-@interface VJXInputPin : VJXPin {
-    NSMutableArray      *producers;
+
+@interface VJXPinSignal : NSObject {
+    id data;
+    id sender;
 }
-@property (readonly)  NSArray *producers;
 
-- (NSArray *)readProducers;
-- (BOOL)moveProducerFromIndex:(NSUInteger)src toIndex:(NSUInteger)dst;
-- (BOOL)connectToPin:(VJXOutputPin *)destinationPin;
-- (void)disconnectFromPin:(VJXOutputPin *)destinationPin;
+@property (retain) id data;
+@property (retain) id sender;
+
++ signalFrom:(id)sender withData:(id)data;
+- (id)initWithSender:(id)theSender andData:(id)theData;
+
 @end

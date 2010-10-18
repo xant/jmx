@@ -28,7 +28,7 @@
 #define VJX_MIXER_DEFAULT_VIDEOSIZE_HEIGHT 480
 #define VJX_MIXER_DEFAULT_BLEND_FILTER @"CIScreenBlendMode"
 
-@interface VJXVideoMixer : VJXEntity < VJXRunLoop > {
+@interface VJXVideoMixer : VJXThreadedEntity {
 @public
     VJXSize *outputSize;
 

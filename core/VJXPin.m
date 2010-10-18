@@ -580,6 +580,12 @@
     }
 }
 
+- (void)addAllowedValues:(NSArray *)values
+{  
+    for (id value in values)
+        [self addAllowedValue:value];
+}
+
 - (void)removeAllowedValue:(id)value
 {
     if ([self isCorrectDataType:value] && allowedValues) {
@@ -590,7 +596,13 @@
         }
     }
 }
-        
+
+- (void)removeAllowedValues:(NSArray *)values
+{
+    for (id value in values)
+        [self removeAllowedValue:value];
+}
+
 - (void)addMinLimit:(id)value
 {
     if ([self isCorrectDataType:minValue])

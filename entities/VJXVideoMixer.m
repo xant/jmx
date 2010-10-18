@@ -35,6 +35,7 @@
         VJXPin *aPin = [self registerInputPin:@"blendFilter" withType:kVJXStringPin andSelector:@"setBlendFilter:"];
 		[aPin addAllowedValue:@"CIScreenBlendMode"];
 		[aPin addAllowedValue:@"CISaturationBlendMode"];
+        [aPin addAllowedValue:@"CIHueBlendMode"];
 		[aPin deliverSignal:VJX_MIXER_DEFAULT_BLEND_FILTER];
         imageInputPin = [self registerInputPin:@"video" withType:kVJXImagePin];
         [imageInputPin allowMultipleConnections:YES];

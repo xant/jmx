@@ -118,7 +118,9 @@ typedef enum {
 - (BOOL)moveProducerFromIndex:(NSUInteger)src toIndex:(NSUInteger)dst;
 - (NSString *)description;
 - (void)addAllowedValue:(id)value;
+- (void)addAllowedValues:(NSArray *)values;
 - (void)removeAllowedValue:(id)value;
+- (void)removeAllowedValues:(NSArray *)values;
 - (void)addMinLimit:(id)minValue;
 - (void)addMaxLimit:(id)maxValue;
 @end

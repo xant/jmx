@@ -29,11 +29,17 @@
 
 @synthesize imagePath, image;
 
++ (NSArray *)supportedFileTypes
+{
+    // TODO - find a better way to return supported image types
+    return [NSArray arrayWithObjects:@"jpg", @"tiff", @"pdf", @"png", @"gif", @"bmp", nil];
+}
+
 - (id)init
 {
     if (self = [super init]) {
         self.image = nil;
-        self.frequency = [NSNumber numberWithDouble:1]; // override frequency
+        self.frequency = [NSNumber numberWithDouble:0.5]; // override frequency
     }
     return self;
 }
@@ -53,6 +59,15 @@
         }
     }
     return NO;
+}
+
+- (void)close
+{
+    if (self.imagePath)
+        [self.imagePath release];
+    self.imagePath = nil;
+    if (self.image)
+        self.image = nil;
 }
 
 - (void)tick:(uint64_t)timeStamp

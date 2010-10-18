@@ -23,8 +23,9 @@
 
 #import <Cocoa/Cocoa.h>
 #import "VJXLayer.h"
+#import "VJXFileRead.h"
 
-@interface VJXImageLayer : VJXLayer {
+@interface VJXImageLayer : VJXLayer < VJXFileRead > {
 @private
     CIImage *image;
     NSString *imagePath;
@@ -32,7 +33,5 @@
 
 @property (retain) CIImage *image;
 @property (copy) NSString *imagePath;
-
-- (BOOL)open:(NSString *)file;
 
 @end

@@ -76,8 +76,6 @@ typedef enum {
 @property (readonly) id minValue;
 @property (readonly) id maxValue;
 
-+ (NSString *)nameforType:(VJXPinType)aType;
-
 + (id)pinWithName:(NSString *)name
           andType:(VJXPinType)pinType
      forDirection:(VJXPinDirection)pinDirection 
@@ -117,6 +115,8 @@ typedef enum {
      allowedValues:(NSArray *)pinValues
       initialValue:(id)value;
 
++ (NSString *)nameforType:(VJXPinType)aType;
+
 - (BOOL)connectToPin:(VJXPin *)destinationPin;
 - (void)disconnectFromPin:(VJXPin *)destinationPin;
 - (void)disconnectAllPins;
@@ -131,8 +131,10 @@ typedef enum {
 - (void)addMaxLimit:(id)maxValue;
 - (void)performSignal:(VJXPinSignal *)signal;
 - (BOOL)isCorrectDataType:(id)data;
+// allows to access the current pin value stored in 'currentData'
 - (id)readData;
-- (void)deliverData:(id)data; // delivers anonymous data (XXX - perhaps we shouldn't allow this)
+// delivers anonymous data (XXX - perhaps we shouldn't allow this)
+- (void)deliverData:(id)data;
+// signals new data to pin's receivers and stores the value in 'currentData'
 - (void)deliverData:(id)data fromSender:(id)sender;
-- (void)sendData:(id)data toReceiver:(id)receiver withSelector:(NSString *)selectorName fromSender:(id)sender;
 @end

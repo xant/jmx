@@ -155,14 +155,29 @@
 
 #pragma mark Implementation
 
-- (void)performSignal:(VJXPinSignal *)signal
++ (NSString *)nameforType:(VJXPinType)aType
 {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    // send the signal to our owner 
-    // (if we are an input pin and if our owner registered a selector)
-    if (direction == kVJXInputPin && owner && ownerSignal)
-        [self sendData:signal.data toReceiver:owner withSelector:ownerSignal fromSender:signal.sender];
-    [pool drain];
+    switch (aType) {
+        case kVJXStringPin:
+            return @"String";
+            break;
+        case kVJXNumberPin:
+            return @"Number";
+            break;
+        case kVJXImagePin:
+            return @"Image";
+            break;
+        case kVJXSizePin:
+            return @"Size";
+            break;
+        case kVJXPointPin:
+            return @"Point";
+            break;
+        case kVJXAudioPin:
+            return @"Audio";
+            break;
+    }
+    return nil;
 }
 
 - (BOOL)isCorrectDataType:(id)data
@@ -240,31 +255,6 @@
     // but since we are to be considered 'immutable' we can adopt what described at the end of :
     // http://developer.apple.com/mac/library/documentation/cocoa/conceptual/MemoryMgmt/Articles/mmImplementCopy.html
     return [self retain];
-}
-
-+ (NSString *)nameforType:(VJXPinType)aType
-{
-    switch (aType) {
-        case kVJXStringPin:
-            return @"String";
-            break;
-        case kVJXNumberPin:
-            return @"Number";
-            break;
-        case kVJXImagePin:
-            return @"Image";
-            break;
-        case kVJXSizePin:
-            return @"Size";
-            break;
-        case kVJXPointPin:
-            return @"Point";
-            break;
-        case kVJXAudioPin:
-            return @"Audio";
-            break;
-    }
-    return nil;
 }
 
 - (NSString *)typeName
@@ -356,6 +346,35 @@
     [self deliverData:data fromSender:self];
 }
 
+// internal use only
+- (void)sendData:(id)data toReceiver:(id)receiver withSelector:(NSString *)selectorName fromSender:(id)sender
+{
+    SEL selector = NSSelectorFromString(selectorName);
+    int selectorArgsNum = [[selectorName componentsSeparatedByString:@":"] count]-1;
+    // checks are now done when registering receivers
+    // so we can avoid checking again now if receiver responds to selector and 
+    // if the selector expects the correct amount of arguments.
+    // this routine is expected to deliver the signals as soon as possible
+    // all safety checks must be done before putting new objects in the receivers' table
+    switch (selectorArgsNum) {
+        case 0:
+            // some listener could be uninterested to the data, 
+            // but just want to get notified when something travels on a pin
+            [receiver performSelector:selector withObject:nil];
+            break;
+        case 1:
+            // some other listeners could be interested only in the data,
+            // regardless of the sender
+            [receiver performSelector:selector withObject:data];
+            break;
+        case 2:
+            [receiver performSelector:selector withObject:data withObject:sender];
+            break;
+        default:
+            NSLog(@"Unsupported selector : '%@' . It can take up to two arguments\n", selectorName);
+    }
+}
+
 - (void)deliverData:(id)data fromSender:(id)sender
 {
     // check if NULL data has been signaled
@@ -408,32 +427,14 @@
     }
 }
 
-- (void)sendData:(id)data toReceiver:(id)receiver withSelector:(NSString *)selectorName fromSender:(id)sender
+- (void)performSignal:(VJXPinSignal *)signal
 {
-    SEL selector = NSSelectorFromString(selectorName);
-    int selectorArgsNum = [[selectorName componentsSeparatedByString:@":"] count]-1;
-    // checks are now done when registering receivers
-    // so we can avoid checking again now if receiver responds to selector and 
-    // if the selector expects the correct amount of arguments.
-    // this routine is expected to deliver the signals as soon as possible
-    // all safety checks must be done before putting new objects in the receivers' table
-    switch (selectorArgsNum) {
-        case 0:
-            // some listener could be uninterested to the data, 
-            // but just want to get notified when something travels on a pin
-            [receiver performSelector:selector withObject:nil];
-            break;
-        case 1:
-            // some other listeners could be interested only in the data,
-            // regardless of the sender
-            [receiver performSelector:selector withObject:data];
-            break;
-        case 2:
-            [receiver performSelector:selector withObject:data withObject:sender];
-            break;
-        default:
-            NSLog(@"Unsupported selector : '%@' . It can take up to two arguments\n", selectorName);
-    }
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    // send the signal to our owner 
+    // (if we are an input pin and if our owner registered a selector)
+    if (direction == kVJXInputPin && owner && ownerSignal)
+        [self sendData:signal.data toReceiver:owner withSelector:ownerSignal fromSender:signal.sender];
+    [pool drain];
 }
 
 @end

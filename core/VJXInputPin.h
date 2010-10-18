@@ -22,8 +22,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "VJXOutputPin.h"
 #import "VJXPin.h"
+
+@class VJXOutputPin;
 
 @interface VJXInputPin : VJXPin {
     NSMutableArray      *producers;

@@ -22,7 +22,7 @@
 //
 
 #import "VJXInputPin.h"
-
+#import "VJXOutputPin.h"
 
 @implementation VJXInputPin
 

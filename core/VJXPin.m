@@ -96,9 +96,23 @@
       forDirection:(VJXPinDirection)pinDirection
            ownedBy:(id)pinOwner
         withSignal:(NSString *)pinSignal
+{
+    return [self initWithName:name
+                      andType:pinType
+                 forDirection:pinDirection
+                      ownedBy:pinOwner
+                   withSignal:pinSignal
+                allowedValues:nil];
+}
+
+- (id)initWithName:(NSString *)pinName
+           andType:(VJXPinType)pinType
+      forDirection:(VJXPinDirection)pinDirection
+           ownedBy:(id)pinOwner
+        withSignal:(NSString *)pinSignal
      allowedValues:(NSArray *)pinValues
 {
-    if (self = [self init]) {
+    if (self = [super init]) {
         type = pinType;
         name = [pinName retain];
         direction = pinDirection;
@@ -116,18 +130,11 @@
     return self;
 }
 
-- (id)initWithName:(NSString *)pinName
-           andType:(VJXPinType)pinType
-      forDirection:(VJXPinDirection)pinDirection
-           ownedBy:(id)pinOwner
-        withSignal:(NSString *)pinSignal
+- (id)init
 {
-    return [self initWithName:name
-                      andType:pinType
-                 forDirection:pinDirection
-                      ownedBy:pinOwner
-                   withSignal:pinSignal
-                allowedValues:nil];
+    // bad usage
+    [self dealloc];
+    return nil;
 }
 
 - (void)performSignal:(VJXPinSignal *)signal
@@ -192,9 +199,9 @@
 - (BOOL)connectToPin:(VJXPin *)destinationPin
 {
     if (direction == kVJXOutputPin && destinationPin.direction == kVJXInputPin) {
-        [(VJXOutputPin *)self connectToPin:(VJXInputPin *)destinationPin];
+        return [(VJXOutputPin *)self connectToPin:(VJXInputPin *)destinationPin];
     } else if (direction == kVJXInputPin && destinationPin.direction == kVJXOutputPin) {
-        [(VJXOutputPin *)destinationPin connectToPin:(VJXInputPin *)self];
+        return [(VJXOutputPin *)destinationPin connectToPin:(VJXInputPin *)self];
     }
     return NO;
 }

@@ -13,9 +13,21 @@
 
 @synthesize producers;
 
-- (id)init {
-    if (self = [super init]) {
-        producers = [[NSMutableDictionary alloc] init];
+- (id)initWithName:(NSString *)pinName
+           andType:(VJXPinType)pinType
+      forDirection:(VJXPinDirection)pinDirection
+           ownedBy:(id)pinOwner
+        withSignal:(NSString *)pinSignal
+     allowedValues:(NSArray *)pinValues
+{
+    if (self = [super initWithName:pinName
+                           andType:pinType
+                      forDirection:pinDirection
+                           ownedBy:pinOwner
+                        withSignal:pinSignal
+                     allowedValues:pinValues])
+    {
+        producers = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -43,7 +55,7 @@
 {
     @synchronized(producers) {
         if ([producers count] > dst) {
-            VJXPin *obj = [[producers objectAtIndex:src] retain];
+            VJXOutputPin *obj = [[producers objectAtIndex:src] retain];
             [producers removeObjectAtIndex:src];
             [producers insertObject:obj atIndex:dst];
             [obj release];
@@ -55,17 +67,21 @@
 
 - (BOOL)connectToPin:(VJXOutputPin *)destinationPin
 {
-    if ([producers count] && !multiple) {
-        if (direction == kVJXInputPin) {
-            [[producers objectAtIndex:0] detachObject:self];
-            [producers removeObjectAtIndex:0];
-        } else {
-            [[producers objectAtIndex:0] disconnectFromPin:self];
+    if (self.type == destinationPin.type) {
+        @synchronized(producers) {
+            if ([producers count] && !multiple) {
+                if (direction == kVJXInputPin) {
+                    [[producers objectAtIndex:0] detachObject:self];
+                    [producers removeObjectAtIndex:0];
+                } else {
+                    [[producers objectAtIndex:0] disconnectFromPin:self];
+                }
+            }
+            if ([destinationPin attachObject:self withSelector:@"deliverSignal:fromSender:"]) {
+                [producers addObject:destinationPin];
+                return YES;
+            }
         }
-    }
-    if ([destinationPin attachObject:self withSelector:@"deliverSignal:fromSender:"]) {
-        [producers addObject:destinationPin];
-        return YES;
     }
     return NO;
 }

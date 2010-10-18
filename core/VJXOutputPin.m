@@ -12,8 +12,21 @@
 @implementation VJXOutputPin
 @synthesize receivers;
 
-- (id)init {
-    if (self = [super init]) {
+
+- (id)initWithName:(NSString *)pinName
+           andType:(VJXPinType)pinType
+      forDirection:(VJXPinDirection)pinDirection
+           ownedBy:(id)pinOwner
+        withSignal:(NSString *)pinSignal
+     allowedValues:(NSArray *)pinValues
+{
+    if (self = [super initWithName:pinName
+                           andType:pinType
+                      forDirection:pinDirection
+                           ownedBy:pinOwner
+                        withSignal:pinSignal
+                     allowedValues:pinValues])
+    {
         receivers = [[NSMutableDictionary alloc] init];
     }
     return self;

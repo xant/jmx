@@ -71,10 +71,13 @@
      initialValue:(id)value
     
 {
-    return [[[[self class] alloc] initWithName:name
+    id pinClass = pinDirection == kVJXInputPin
+                ? [VJXInputPin class]
+                : [VJXOutputPin class];
+    return [[[pinClass alloc]     initWithName:name
                                        andType:pinType
-                                  forDirection:pinDirection
-                                       ownedBy:pinOwner withSignal:pinSignal
+                                       ownedBy:pinOwner
+                                    withSignal:pinSignal
                                  allowedValues:pinValues
                                   initialValue:value]
             autorelease];
@@ -87,7 +90,10 @@
      withSignal:(NSString *)pinSignal
   allowedValues:(NSArray *)pinValues
 {
-    return  [[self class] pinWithName:name
+    id pinClass = pinDirection == kVJXInputPin
+                ? [VJXInputPin class]
+                : [VJXOutputPin class];
+    return  [pinClass pinWithName:name
                               andType:pinType
                          forDirection:pinDirection
                               ownedBy:pinOwner
@@ -102,23 +108,24 @@
           ownedBy:(id)pinOwner
        withSignal:(NSString *)pinSignal
 {
-    return [[self class] pinWithName:name
-                       andType:pinType
-                  forDirection:pinDirection
-                       ownedBy:pinOwner
-                    withSignal:pinSignal
-                 allowedValues:nil];
+    id pinClass = pinDirection == kVJXInputPin
+                ? [VJXInputPin class]
+                : [VJXOutputPin class];
+    return [pinClass pinWithName:name
+                         andType:pinType
+                    forDirection:pinDirection
+                         ownedBy:pinOwner
+                      withSignal:pinSignal
+                   allowedValues:nil];
 }
 
 - (id)initWithName:(NSString *)pinName
            andType:(VJXPinType)pinType
-      forDirection:(VJXPinDirection)pinDirection
            ownedBy:(id)pinOwner
         withSignal:(NSString *)pinSignal
 {
     return [self initWithName:name
                       andType:pinType
-                 forDirection:pinDirection
                       ownedBy:pinOwner
                    withSignal:pinSignal
                 allowedValues:nil];
@@ -126,14 +133,12 @@
 
 - (id)initWithName:(NSString *)pinName
            andType:(VJXPinType)pinType
-      forDirection:(VJXPinDirection)pinDirection
            ownedBy:(id)pinOwner
         withSignal:(NSString *)pinSignal
      allowedValues:(NSArray *)pinValues
 {
     return [self initWithName:pinName
                       andType:pinType
-                 forDirection:pinDirection
                       ownedBy:pinOwner
                    withSignal:pinSignal
                 allowedValues:pinValues
@@ -142,7 +147,6 @@
 
 - (id)initWithName:(NSString *)pinName
            andType:(VJXPinType)pinType
-      forDirection:(VJXPinDirection)pinDirection
            ownedBy:(id)pinOwner
         withSignal:(NSString *)pinSignal
      allowedValues:(NSArray *)pinValues
@@ -151,7 +155,6 @@
     if (self = [super init]) {
         type = pinType;
         name = [pinName retain];
-        direction = pinDirection;
         multiple = NO;
         continuous = YES;
         retainData = YES;

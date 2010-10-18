@@ -69,12 +69,13 @@
                     allowedValues:(NSArray *)pinValues
                      initialValue:(id)value
 {
-    [inputPins setObject:[VJXInputPin pinWithName:pinName
-                                          andType:pinType
-                                     forDirection:kVJXInputPin
-                                          ownedBy:self withSignal:selector
-                                    allowedValues:pinValues
-                                     initialValue:(id)value]
+    [inputPins setObject:[VJXPin pinWithName:pinName
+                                     andType:pinType
+                                forDirection:kVJXInputPin
+                                     ownedBy:self
+                                  withSignal:selector
+                               allowedValues:pinValues
+                                initialValue:(id)value]
                   forKey:pinName];
     return [inputPins objectForKey:pinName];
 }
@@ -84,9 +85,15 @@
     return [self registerOutputPin:pinName withType:pinType andSelector:nil];
 }
 
-- (VJXOutputPin *)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector
+- (VJXOutputPin *)registerOutputPin:(NSString *)pinName
+                           withType:(VJXPinType)pinType
+                        andSelector:(NSString *)selector
 {
-    return [self registerOutputPin:pinName withType:pinType andSelector:selector allowedValues:nil initialValue:nil];
+    return [self registerOutputPin:pinName
+                          withType:pinType
+                       andSelector:selector
+                     allowedValues:nil
+                      initialValue:nil];
 }
 
 - (VJXOutputPin *)registerOutputPin:(NSString *)pinName
@@ -95,12 +102,13 @@
                       allowedValues:(NSArray *)pinValues
                        initialValue:(id)value
 {
-    [outputPins setObject:[VJXOutputPin pinWithName:pinName
-                                            andType:pinType
-                                       forDirection:kVJXOutputPin
-                                            ownedBy:self withSignal:selector
-                                      allowedValues:pinValues
-                                       initialValue:(id)value]
+    [outputPins setObject:[VJXPin pinWithName:pinName
+                                      andType:pinType
+                                 forDirection:kVJXOutputPin
+                                      ownedBy:self
+                                   withSignal:selector
+                                allowedValues:pinValues
+                                 initialValue:(id)value]
                   forKey:pinName];
     return [outputPins objectForKey:pinName];
 }

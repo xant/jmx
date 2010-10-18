@@ -15,7 +15,6 @@
 
 - (id)initWithName:(NSString *)pinName
            andType:(VJXPinType)pinType
-      forDirection:(VJXPinDirection)pinDirection
            ownedBy:(id)pinOwner
         withSignal:(NSString *)pinSignal
      allowedValues:(NSArray *)pinValues
@@ -23,13 +22,13 @@
 {
     if (self = [super initWithName:pinName
                            andType:pinType
-                      forDirection:pinDirection
                            ownedBy:pinOwner
                         withSignal:pinSignal
                      allowedValues:pinValues
                       initialValue:value])
     {
         receivers = [[NSMutableDictionary alloc] init];
+        direction = kVJXOutputPin;
     }
     return self;
 }

@@ -112,20 +112,17 @@ typedef enum {
 
 - (id)initWithName:(NSString *)pinName
            andType:(VJXPinType)pinType
-      forDirection:(VJXPinDirection)pinDirection
            ownedBy:(id)pinOwner
         withSignal:(NSString *)pinSignal;
 
 - (id)initWithName:(NSString *)pinName
            andType:(VJXPinType)pinType
-      forDirection:(VJXPinDirection)pinDirection
            ownedBy:(id)pinOwner
         withSignal:(NSString *)pinSignal
      allowedValues:(NSArray *)pinValues;
 
 - (id)initWithName:(NSString *)pinName
            andType:(VJXPinType)pinType
-      forDirection:(VJXPinDirection)pinDirection
            ownedBy:(id)pinOwner
         withSignal:(NSString *)pinSignal
      allowedValues:(NSArray *)pinValues

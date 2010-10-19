@@ -35,10 +35,7 @@
         blendFilterPin = [self registerInputPin:@"blendFilter"
                                        withType:kVJXStringPin
                                     andSelector:@"setBlendFilter:"
-                                  allowedValues:[NSArray arrayWithObjects:@"CIScreenBlendMode",
-                                                                          @"CISaturationBlendMode",
-                                                                          @"CIHueBlendMode",
-                                                                          nil]
+                                  allowedValues:[CIFilter filterNamesInCategory:kCICategoryCompositeOperation]
                                    initialValue:VJX_MIXER_DEFAULT_BLEND_FILTER];
         imageInputPin = [self registerInputPin:@"video" withType:kVJXImagePin];
         blendFilter = [[CIFilter filterWithName:VJX_MIXER_DEFAULT_BLEND_FILTER] retain];

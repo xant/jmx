@@ -48,7 +48,6 @@
         NSSize defaultSize = { VJX_MIXER_DEFAULT_VIDEOSIZE_WIDTH, VJX_MIXER_DEFAULT_VIDEOSIZE_HEIGHT };
         self.outputSize = [VJXSize sizeWithNSSize:defaultSize];
         currentFrame = nil;
-		// blendFilter = [[CIFilter filterWithName:VJX_MIXER_DEFAULT_BLEND_FILTER] retain];
     }
     return self;
 }

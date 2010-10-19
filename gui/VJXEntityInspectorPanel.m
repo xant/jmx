@@ -202,8 +202,12 @@
 - (void)anEntityWasRemoved:(NSNotification *)aNotification
 {
     VJXEntity *entity = [aNotification object];
-    if (entityView && entityView.entity == entity)
+    if (entityView && entityView.entity == entity) {
+        [self.pinsProperties setDataSource:nil];
+        [self.pinsProperties setDelegate:nil];
+        [self.pinsProperties reloadData];
         self.entityView = nil; // TODO - clear the listview
+    }
 }
 
 @end

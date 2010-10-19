@@ -354,6 +354,19 @@ id controlForVJXPinType(VJXPinType aType)
 	return aPin ? [aPin readData] : @"TEST";
 }
 
+- (void)setStringSelectionPin:(NSOutlineView *)outlineView
+{
+    NSPopUpButtonCell *item = [outlineView selectedCell];
+    NSInteger row = [outlineView selectedRow];
+    NSString *pinName = [outlineView itemAtRow:row];
+    VJXInputPin *aPin = [self.entity inputPinWithName:pinName];
+    if (aPin) {
+        VJXOutputPin *vPin = [VJXPin pinWithName:@"setter" andType:kVJXStringPin forDirection:kVJXOutputPin ownedBy:nil withSignal:nil];
+        [vPin connectToPin:aPin];
+        [vPin deliverData:[item titleOfSelectedItem]];
+    }
+}
+
 - (NSCell *)outlineView:(NSOutlineView *)outlineView dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
 	if (tableColumn == nil)
@@ -375,9 +388,12 @@ id controlForVJXPinType(VJXPinType aType)
 	NSCell *returnValue = nil;
 	
 	if (aPin.type == kVJXStringPin) {
-		if ([aPin allowedValues] != nil) {
+		if (aPin.direction == kVJXInputPin && [aPin allowedValues] != nil) {
 			returnValue = [[NSPopUpButtonCell alloc] init];
 			[(NSPopUpButtonCell *)returnValue addItemsWithTitles:[aPin allowedValues]];
+            [(NSPopUpButtonCell *)returnValue setTarget:self];
+            [(NSPopUpButtonCell *)returnValue setAction:@selector(setStringSelectionPin:)];
+            [(NSPopUpButtonCell *)returnValue setStringValue:aPin.name];
 		}
 		else
 			returnValue = [[NSTextFieldCell alloc] init];

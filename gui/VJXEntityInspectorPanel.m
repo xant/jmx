@@ -15,13 +15,6 @@
 
 @implementation VJXEntityInspectorPanel
 
-@synthesize entityName;
-@synthesize pinInspector;
-@synthesize inputPins;
-@synthesize outputPins;
-@synthesize producers;
-@synthesize entityView;
-@synthesize pinsProperties;
 //@synthesize panel;
 
 - (id)initWithFrame:(NSRect)frameRect

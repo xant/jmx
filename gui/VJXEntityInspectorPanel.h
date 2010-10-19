@@ -21,16 +21,6 @@
     VJXBoardEntity *entityView; // weak reference
 }
 
-@property (readonly) NSTextField *entityName;
-@property (readonly) NSTabView *pinInspector;
-@property (readonly) NSTableView *inputPins;
-@property (readonly) NSTableView *outputPins;
-@property (readonly) NSTableView *producers;
-@property (readonly) NSOutlineView *pinsProperties;
-
-@property (assign) VJXBoardEntity *entityView; // we don't want to retain the entity
-//@property (assign) VJXEntityInspectorPanel *panel; // we don't want to retain the entity
-
 - (void)setEntity:(VJXBoardEntity *)entity;
 - (void)unsetEntity:(VJXBoardEntity *)entity;
 

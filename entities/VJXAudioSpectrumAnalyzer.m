@@ -265,7 +265,7 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
     [pinNames addObject:@"active"];
     [pinNames addObject:@"image"];
     [pinNames addObject:@"imageSize"];
-    return pinNames;
+    return [pinNames autorelease];
 }
 
 @end

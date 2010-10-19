@@ -29,14 +29,9 @@
 @implementation VJXBoard
 
 @synthesize currentSelection;
-@synthesize document;
-@synthesize selected;
-@synthesize entities;
-@synthesize inspectorPanel;
 
 - (id)initWithFrame:(NSRect)frame {
-    self = [super initWithFrame:frame];
-    if (self) {
+    if (self = [super initWithFrame:frame]) {
         selected = [[NSMutableArray alloc] init];
         entities = [[NSMutableArray alloc] init];
 		[self registerForDraggedTypes:[NSArray arrayWithObjects:NSURLPboardType,NSFilenamesPboardType,VJXLibraryTableViewDataType,nil]];
@@ -110,8 +105,6 @@
 
 - (void)awakeFromNib
 {
-    selected = [[NSMutableArray alloc] init];
-    entities = [[NSMutableArray alloc] init];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasCreated:) name:@"VJXBoardEntityWasCreated" object:nil];
     [self setNeedsDisplay:YES];
 }

@@ -34,18 +34,13 @@
 @interface VJXBoard : NSView {
     NSPoint lastDragLocation;
     VJXBoardSelection *currentSelection;
-    NSMutableArray *selected;
-    VJXDocument *document;
-    
+    NSMutableArray *selected;    
     NSMutableArray *entities;
-    VJXEntityInspectorPanel *inspectorPanel;
+    IBOutlet VJXDocument *document;
+    IBOutlet VJXEntityInspectorPanel *inspectorPanel;
 }
 
 @property (nonatomic, retain) VJXBoardSelection *currentSelection;
-@property (nonatomic, assign) IBOutlet VJXDocument *document;
-@property (nonatomic, retain) NSMutableArray *selected;
-@property (nonatomic, retain) NSMutableArray *entities;
-@property (nonatomic, assign) IBOutlet VJXEntityInspectorPanel *inspectorPanel;
 
 - (void)toggleSelected:(id)theEntity multiple:(BOOL)isMultiple;
 - (void)shiftSelectedToLocation:(NSPoint)aLocation;

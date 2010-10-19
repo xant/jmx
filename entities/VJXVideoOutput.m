@@ -44,11 +44,8 @@
 
 - (id)init
 {
-    if (self == [super init]) {
-        NSSize defaultSize = { 640, 480 };
-        return [self initWithSize:defaultSize];
-    }
-    return self;
+    NSSize defaultSize = { 640, 480 };
+    return [self initWithSize:defaultSize];
 }
 
 - (void)drawFrame:(CIImage *)frame

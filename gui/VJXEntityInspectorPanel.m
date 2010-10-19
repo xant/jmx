@@ -40,10 +40,18 @@
     [super dealloc];
 }
 
+- (void)clearTableView:(NSTableView *)tableView
+{
+    [tableView setDataSource:nil];
+    [tableView setDelegate:nil];
+    [tableView reloadData];
+    
+}
+
 - (void)unsetEntity:(VJXBoardEntity *)entity
 {
     if (entityView == entity)
-        self.entityView = nil;
+        entityView = nil;
 }
 
 - (void)setEntity:(VJXBoardEntity *)boardEntity
@@ -194,19 +202,20 @@
 {
     VJXBoardEntity *entity = [aNotification object];
     [self setEntity:entity];
-	[self.pinsProperties setDataSource:entity];
-	[self.pinsProperties setDelegate:entity];
-	[self.pinsProperties expandItem:nil expandChildren:YES];
+	[pinsProperties setDataSource:entity];
+	[pinsProperties setDelegate:entity];
+	[pinsProperties expandItem:nil expandChildren:YES];
 }
 
 - (void)anEntityWasRemoved:(NSNotification *)aNotification
 {
     VJXEntity *entity = [aNotification object];
     if (entityView && entityView.entity == entity) {
-        [self.pinsProperties setDataSource:nil];
-        [self.pinsProperties setDelegate:nil];
-        [self.pinsProperties reloadData];
-        self.entityView = nil; // TODO - clear the listview
+        entityView = nil;
+        [self clearTableView:pinsProperties];
+        [self clearTableView:inputPins];
+        [self clearTableView:outputPins];
+        [self clearTableView:producers];
     }
 }
 

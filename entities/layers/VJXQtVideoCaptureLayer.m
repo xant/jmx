@@ -236,11 +236,13 @@ error:
 - (void)setSize:(VJXSize *)newSize
 {
     [super setSize:newSize];
-    [grabber setPixelBufferAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                      [NSNumber numberWithInt:newSize.height], kCVPixelBufferHeightKey,
-                                      [NSNumber numberWithInt:newSize.width], kCVPixelBufferWidthKey,
-                                      [NSNumber numberWithInt:kCVPixelFormatType_32ARGB],
-                                      (id)kCVPixelBufferPixelFormatTypeKey, nil]];
+    @synchronized(self) {
+        [grabber setPixelBufferAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                          [NSNumber numberWithInt:newSize.height], kCVPixelBufferHeightKey,
+                                          [NSNumber numberWithInt:newSize.width], kCVPixelBufferWidthKey,
+                                          [NSNumber numberWithInt:kCVPixelFormatType_32ARGB],
+                                          (id)kCVPixelBufferPixelFormatTypeKey, nil]];
+    }
 }
 
 @end

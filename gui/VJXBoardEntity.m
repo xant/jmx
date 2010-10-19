@@ -390,10 +390,9 @@ id controlForVJXPinType(VJXPinType aType)
 	if (aPin.type == kVJXStringPin) {
 		if (aPin.direction == kVJXInputPin && [aPin allowedValues] != nil) {
 			returnValue = [[NSPopUpButtonCell alloc] init];
-			[(NSPopUpButtonCell *)returnValue addItemsWithTitles:[aPin allowedValues]];
             [(NSPopUpButtonCell *)returnValue setTarget:self];
             [(NSPopUpButtonCell *)returnValue setAction:@selector(setStringSelectionPin:)];
-            [(NSPopUpButtonCell *)returnValue setStringValue:aPin.name];
+			[(NSPopUpButtonCell *)returnValue addItemsWithTitles:[aPin allowedValues]];
 		}
 		else
 			returnValue = [[NSTextFieldCell alloc] init];
@@ -407,6 +406,18 @@ id controlForVJXPinType(VJXPinType aType)
 	
 	return [returnValue autorelease];
 	
+}
+- (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item;
+{
+    // TODO - check if we are populating the input-pins part of the outlineview
+    if ([cell isKindOfClass:[NSPopUpButtonCell class]]) {
+        // ensure resetting selected values (since the button is re-constructed 
+        // each time that 'outlineView:dataCellForTableColumn:item:' is called
+        NSInteger row = [outlineView selectedRow];
+        NSString *pinName = [outlineView itemAtRow:row];
+        VJXInputPin *aPin = [self.entity inputPinWithName:pinName];
+        [(NSPopUpButtonCell *)cell selectItemWithTitle:[aPin readData]];
+    }
 }
 
 @end

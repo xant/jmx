@@ -28,6 +28,11 @@
 
 @synthesize name, active;
 
+- (void)notifyCreation
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:self];
+}
+
 - (id)init
 {
     if (self = [super init]) {
@@ -36,7 +41,8 @@
         outputPins = [[NSMutableDictionary alloc] init];
         [self registerInputPin:@"active" withType:kVJXNumberPin andSelector:@"setActivePin:"];
         [self registerOutputPin:@"active" withType:kVJXNumberPin];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:self];
+        // delay notification so that the superclass constructor can finish its job
+        [self performSelector:@selector(notifyCreation) withObject:nil afterDelay:0.1];
     }
     return self;
 }

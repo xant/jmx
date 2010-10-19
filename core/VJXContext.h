@@ -30,6 +30,8 @@
 #if USE_NSOPERATIONS
     NSOperationQueue *operationQueue;
 #endif
+@private
+    NSMutableDictionary *entities;
 }
 
 #if USE_NSOPERATIONS
@@ -43,5 +45,5 @@
 + (void)initialize;
 - (void)registerClass:(Class)aClass;
 - (NSArray *)registeredClasses;
-
+- (NSArray *)allEntities;
 @end

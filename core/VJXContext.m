@@ -22,6 +22,7 @@
 //
 
 #import "VJXContext.h"
+#import "VJXEntity.h"
 
 #if !USE_NSOPERATIONS
 #define kVJXContextSignalNumWorkers 4
@@ -82,7 +83,10 @@ static BOOL initialized = NO;
 - (id)init
 {
 	if ((self = [super init]) != nil) {
+        entities = [[NSMutableDictionary alloc] init];
 		registeredClasses = [[NSMutableArray alloc] init];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasCreated:) name:@"VJXEntityWasCreated" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasDestroyed:) name:@"VJXEntityWasDestroyed" object:nil];
 #if USE_NSOPERATIONS
         [self initQueue];
 #endif
@@ -97,6 +101,34 @@ static BOOL initialized = NO;
     [operationQueue release];
 #endif
 	[super dealloc];
+}
+
+- (void)anEntityWasCreated:(NSNotification *)notification
+{
+    VJXEntity *entity = [notification object];
+    @synchronized(self) {
+        NSValue *value = [NSValue valueWithNonretainedObject:entity];
+        [entities setObject:value forKey:[NSString stringWithFormat:@"%d", entity]];
+    }
+}
+
+- (void)anEntityWasDestroyed:(NSNotification *)notification
+{
+    VJXEntity *entity = [notification object];
+    @synchronized(self) {
+        [entities removeObjectForKey:[NSString stringWithFormat:@"%d", entity]];
+    }
+}
+
+- (NSArray *)allEntities
+{
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    @synchronized(self) {
+        for (NSValue *entityValue in [entities allValues]) {
+            [array addObject:(VJXEntity *)[entityValue pointerValue]];
+        }
+    }
+    return [array autorelease];
 }
 
 - (void)runThread

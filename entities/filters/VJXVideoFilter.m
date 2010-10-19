@@ -8,7 +8,7 @@
 
 #import "VJXVideoFilter.h"
 #import <QuartzCore/CIFilter.h>
-
+#import "VJXContext.h"
 @implementation VJXVideoFilter
 
 - (id)init

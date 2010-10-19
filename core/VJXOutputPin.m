@@ -78,6 +78,8 @@
             // we don't have any receiver ... so we only need 
             // to set currentData and then we can return
             @synchronized(self) {
+                if (currentData && retainData)
+                    [currentData release];
                 currentData = retainData
                             ? [data retain]
                             : data;

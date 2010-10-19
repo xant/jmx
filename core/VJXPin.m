@@ -380,7 +380,7 @@
     // and if it's the case, clear currentData and return
     if (!data) {
         @synchronized(self) {
-            if (currentData)
+            if (currentData && retainData)
                 [currentData release];
             currentData = nil;
         }
@@ -390,22 +390,16 @@
     // and propagate the signal if that's the case
     if ([self isCorrectDataType:data]) {
         @synchronized(self) {
-            if (data) {
-                // check if we restrict possible values
-                if (allowedValues && ![allowedValues containsObject:data]) {
-                    // TODO - Error Message (a not allowed value has been signaled
-                    return;
-                }
-                if (currentData) {
-                    if (!continuous && [currentData isEqual:data])
-                        return;
-                    if (retainData)
-                        [currentData release];
-                }
-                currentData = retainData
-                            ? [data retain]
-                            : data;
+            // check if we restrict possible values
+            if (allowedValues && ![allowedValues containsObject:data]) {
+                // TODO - Error Message (a not allowed value has been signaled
+                return;
             }
+            if (currentData && retainData)
+                [currentData release];
+            currentData = retainData
+                        ? [data retain]
+                        : data;
             if (sender)
                 currentSender = sender;
             else

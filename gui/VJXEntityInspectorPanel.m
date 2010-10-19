@@ -15,8 +15,6 @@
 
 @implementation VJXEntityInspectorPanel
 
-//@synthesize panel;
-
 - (id)initWithFrame:(NSRect)frameRect
 {
     if (self = [super initWithFrame:frameRect]) {

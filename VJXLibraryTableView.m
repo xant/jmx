@@ -39,6 +39,7 @@
     [thePath release];
     [className drawInRect:NSMakeRect(10.0, 10.0, size.width, size.height)];
     [anImage unlockFocus];
+    [className release];
 
     return [anImage autorelease];
 }

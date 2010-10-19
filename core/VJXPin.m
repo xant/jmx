@@ -346,7 +346,6 @@
     [self deliverData:data fromSender:self];
 }
 
-// internal use only
 - (void)sendData:(id)data toReceiver:(id)receiver withSelector:(NSString *)selectorName fromSender:(id)sender
 {
     SEL selector = NSSelectorFromString(selectorName);
@@ -404,8 +403,8 @@
                         [currentData release];
                 }
                 currentData = retainData
-                ? [data retain]
-                : data;
+                            ? [data retain]
+                            : data;
             }
             if (sender)
                 currentSender = sender;

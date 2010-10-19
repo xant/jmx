@@ -24,6 +24,10 @@
 #import "VJXOutputPin.h"
 #import "VJXContext.h"
 
+@interface VJXPin (Private)
+- (void)sendData:(id)data toReceiver:(id)receiver withSelector:(NSString *)selectorName fromSender:(id)sender;
+@end
+
 @implementation VJXOutputPin
 @synthesize receivers;
 
@@ -70,8 +74,17 @@
     // if we are an output pin and not receivers have been hooked, 
     // it's useless to perform the signal
     @synchronized(receivers) {
-        if (![receivers count])
+        if (![receivers count]) {
+            // we don't have any receiver ... so we only need 
+            // to set currentData and then we can return
+            @synchronized(self) {
+                currentData = retainData
+                            ? [data retain]
+                            : data;
+                currentSender = sender;
+            }
             return;
+        }
     }
     [super deliverData:data fromSender:sender];
 }

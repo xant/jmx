@@ -36,12 +36,14 @@
         outputPins = [[NSMutableDictionary alloc] init];
         [self registerInputPin:@"active" withType:kVJXNumberPin andSelector:@"setActivePin:"];
         [self registerOutputPin:@"active" withType:kVJXNumberPin];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:self];
     }
     return self;
 }
 
 - (void)dealloc
 {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasDestroyed" object:self];
     [self unregisterAllPins];
     [inputPins release];
     [outputPins release];

@@ -41,6 +41,7 @@
                                                                           nil]
                                    initialValue:VJX_MIXER_DEFAULT_BLEND_FILTER];
         imageInputPin = [self registerInputPin:@"video" withType:kVJXImagePin];
+        blendFilter = [[CIFilter filterWithName:VJX_MIXER_DEFAULT_BLEND_FILTER] retain];
         [imageInputPin allowMultipleConnections:YES];
         [self registerInputPin:@"videoSize" withType:kVJXSizePin andSelector:@"setOutputSize:"];
         imageSizeOutputPin = [self registerOutputPin:@"videoSize" withType:kVJXSizePin];

@@ -80,7 +80,7 @@
             [entity start];
             [document.entities addObject:entity];
 
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:entity];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXBoardEntityWasCreated" object:entity];
 
             [entity release];
         } else if ([[VJXAudioFileLayer supportedFileTypes] containsObject:[components lastObject]]) {
@@ -92,7 +92,7 @@
 
             [document.entities addObject:entity];
 
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:entity];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXBoardEntityWasCreated" object:entity];
 
             [entity release];
         }
@@ -112,7 +112,7 @@
 {
     selected = [[NSMutableArray alloc] init];
     entities = [[NSMutableArray alloc] init];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasCreated:) name:@"VJXEntityWasCreated" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasCreated:) name:@"VJXBoardEntityWasCreated" object:nil];
     [self setNeedsDisplay:YES];
 }
 
@@ -291,7 +291,7 @@
             [e removeFromSuperview];
 
             // Notify observers we removed the entity.
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasRemoved" object:e.entity];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXBoardEntityWasRemoved" object:e.entity];
 
             // Decrease counter because we removed the element.
             i--;
@@ -303,7 +303,7 @@
 {
     for (VJXBoardEntity *e in entities) {
         NSPoint origin = [e frame].origin;
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasMoved" object:e userInfo:[NSDictionary dictionaryWithObject:NSStringFromPoint(origin) forKey:@"origin"]];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXBoardEntityWasMoved" object:e userInfo:[NSDictionary dictionaryWithObject:NSStringFromPoint(origin) forKey:@"origin"]];
     }
 
 }

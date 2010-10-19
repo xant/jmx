@@ -29,7 +29,6 @@
 @interface VJXOpenGLView : NSOpenGLView {
     CIImage *currentFrame;
     CIContext *ciContext;
-    NSRecursiveLock *lock;
     CVDisplayLinkRef    displayLink; // the displayLink that runs the show
     CGDirectDisplayID   viewDisplayID;
     uint64_t lastTime;
@@ -131,9 +130,11 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     if ((timeStamp-lastTime)/1e9 > 1e9/60)
         return;
     lastTime = timeStamp;
-  /*  [[self openGLContext] makeCurrentContext];
+    /*
+    [[self openGLContext] makeCurrentContext];
     if (CGLLockContext([[self openGLContext] CGLContextObj]) != kCGLNoError)
-        NSLog(@"Could not lock CGLContext"); */
+        NSLog(@"Could not lock CGLContext");
+    */
     NSRect bounds = [self bounds];
     @synchronized(self) {
         //CIImage *image = [self.currentFrame retain];
@@ -141,19 +142,17 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
             CGRect screenSizeRect = NSRectToCGRect(bounds);
             [ciContext drawImage:self.currentFrame inRect:screenSizeRect fromRect:screenSizeRect];
         }
-        //[image release];
         [[self openGLContext] flushBuffer];
     }
     [self setNeedsDisplay:NO];
- //   CGLUnlockContext([[self openGLContext] CGLContextObj]);
+    //CGLUnlockContext([[self openGLContext] CGLContextObj]);
 }
 
 - (void)drawRect:(NSRect)rect
 {
-    //@synchronized(self) {
-    //[self renderFrame];
+    // we do rendering in our own thread... we don't want
+    // it to happen in the main application thread
     [self setNeedsDisplay:NO];
-    //}
 }
 
 // Called by Cocoa when the view's visible rectangle or bounds change.
@@ -199,10 +198,6 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         ciContext = nil;
     }
     
-    if (lock) {
-        [lock release];
-        lock = nil;
-    }
     self.currentFrame = nil;
 }
 

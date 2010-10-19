@@ -61,6 +61,7 @@
 		AAE90BC9126CAE6100690915 /* VJXInputPin.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE90BC8126CAE6100690915 /* VJXInputPin.m */; };
 		AAE90BCC126CAE7300690915 /* VJXOutputPin.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE90BCB126CAE7300690915 /* VJXOutputPin.m */; };
 		AAE90E9A126CDDC500690915 /* VJXPinSignal.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE90E99126CDDC500690915 /* VJXPinSignal.m */; };
+		AAE90F8C126D7F5D00690915 /* VJXVideoFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE90F8B126D7F5D00690915 /* VJXVideoFilter.m */; };
 		AAF179A0123E0A39001319BA /* VJXQtVideoCaptureLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF1799F123E0A39001319BA /* VJXQtVideoCaptureLayer.m */; };
 		AAF17AA6123E4F45001319BA /* VJXQtExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF17AA5123E4F45001319BA /* VJXQtExporter.m */; };
 		AAF17BDE123EABBB001319BA /* VJXBoardInputPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF17BDD123EABBB001319BA /* VJXBoardInputPanel.m */; };
@@ -172,6 +173,8 @@
 		AAE90BCB126CAE7300690915 /* VJXOutputPin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXOutputPin.m; path = core/VJXOutputPin.m; sourceTree = "<group>"; };
 		AAE90E98126CDDC500690915 /* VJXPinSignal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXPinSignal.h; path = core/VJXPinSignal.h; sourceTree = "<group>"; };
 		AAE90E99126CDDC500690915 /* VJXPinSignal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXPinSignal.m; path = core/VJXPinSignal.m; sourceTree = "<group>"; };
+		AAE90F8A126D7F5D00690915 /* VJXVideoFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXVideoFilter.h; path = entities/filters/VJXVideoFilter.h; sourceTree = "<group>"; };
+		AAE90F8B126D7F5D00690915 /* VJXVideoFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXVideoFilter.m; path = entities/filters/VJXVideoFilter.m; sourceTree = "<group>"; };
 		AAF1799E123E0A39001319BA /* VJXQtVideoCaptureLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXQtVideoCaptureLayer.h; path = entities/layers/VJXQtVideoCaptureLayer.h; sourceTree = "<group>"; };
 		AAF1799F123E0A39001319BA /* VJXQtVideoCaptureLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXQtVideoCaptureLayer.m; path = entities/layers/VJXQtVideoCaptureLayer.m; sourceTree = "<group>"; };
 		AAF17AA4123E4F45001319BA /* VJXQtExporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXQtExporter.h; path = entities/exporters/VJXQtExporter.h; sourceTree = "<group>"; };
@@ -368,6 +371,8 @@
 				82456BB61223DBE100236FE4 /* VJXQtVideoLayer.m */,
 				AAF1799E123E0A39001319BA /* VJXQtVideoCaptureLayer.h */,
 				AAF1799F123E0A39001319BA /* VJXQtVideoCaptureLayer.m */,
+				AAE90F8A126D7F5D00690915 /* VJXVideoFilter.h */,
+				AAE90F8B126D7F5D00690915 /* VJXVideoFilter.m */,
 			);
 			name = VideoLayers;
 			sourceTree = "<group>";
@@ -558,6 +563,7 @@
 				AAE90BC9126CAE6100690915 /* VJXInputPin.m in Sources */,
 				AAE90BCC126CAE7300690915 /* VJXOutputPin.m in Sources */,
 				AAE90E9A126CDDC500690915 /* VJXPinSignal.m in Sources */,
+				AAE90F8C126D7F5D00690915 /* VJXVideoFilter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

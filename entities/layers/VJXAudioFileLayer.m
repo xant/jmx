@@ -177,7 +177,7 @@
 
 - (void)setUseAggregateDevice:(BOOL)value
 {
-    // refulse to change the flag if we are running
+    // refuse to change the flag if we are running
     // TODO - we should just stop/restart and allow 
     //        changing the mode while running
     if (!active)

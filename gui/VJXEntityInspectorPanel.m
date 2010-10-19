@@ -29,7 +29,7 @@
     if (self = [super initWithFrame:frameRect]) {
         entityName = nil;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasSelected:) name:@"VJXBoardEntityWasSelected" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasRemoved:) name:@"VJXEntityWasRemoved" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasRemoved:) name:@"VJXBoardEntityWasRemoved" object:nil];
     }
     return self;
 }

@@ -46,8 +46,8 @@
         entities = [[NSMutableArray alloc] init];
         entitiesFromFile = [[NSMutableArray alloc] init];
         entitiesPosition = [[NSMutableDictionary alloc] init];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasRemoved:) name:@"VJXEntityWasRemoved" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasMoved:) name:@"VJXEntityWasMoved" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasRemoved:) name:@"VJXBoardEntityWasRemoved" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasMoved:) name:@"VJXBoardEntityWasMoved" object:nil];
     }
     return self;
 }
@@ -125,7 +125,7 @@
     for (id e in entities) {
         userInfo = [NSMutableDictionary dictionary];
         [userInfo setObject:[entitiesPosition objectForKey:e] forKey:@"origin"];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:e userInfo:userInfo];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXBoardEntityWasCreated" object:e userInfo:userInfo];
     }
 }
 
@@ -151,7 +151,7 @@
         VJXEntity *anEntity = [[[userInfo objectForKey:@"class"] alloc] init];
         [(id<VJXFileRead>)anEntity open:filename];
         [entities addObject:anEntity];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:anEntity userInfo:userInfo];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXBoardEntityWasCreated" object:anEntity userInfo:userInfo];
         [anEntity release];
     }
 
@@ -178,7 +178,7 @@
     else {
         VJXEntity *anEntity = [[aClass alloc] init];
         [entities addObject:anEntity];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:anEntity userInfo:userInfo];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXBoardEntityWasCreated" object:anEntity userInfo:userInfo];
         [anEntity release];
     }
     [userInfo release];

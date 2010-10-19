@@ -50,6 +50,7 @@
         // we output at least 1 image
         outputFramePin = [self registerOutputPin:@"frame" withType:kVJXImagePin];
         outputFrameSizePin = [self registerOutputPin:@"frameSize" withType:kVJXSizePin];
+        [outputFrameSizePin setContinuous:NO];
         [outputFrameSizePin allowMultipleConnections:YES];
         // XXX - DEFAULTS
         NSSize defaultLayerSize = { 640, 480 };
@@ -97,7 +98,7 @@
                 [scaleFilter setValue:transform forKey:@"inputTransform"];
                 [scaleFilter setValue:frame forKey:@"inputImage"];
                 frame = [scaleFilter valueForKey:@"outputImage"];
-            } 
+            }
             if (frame) {
                 [currentFrame release];
                 currentFrame = [frame retain];

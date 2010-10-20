@@ -25,17 +25,30 @@
 #import "VJXInputPin.h"
 #import "VJXOutputPin.h"
 
-/*
-@protocol VJXThread
-#pragma mark Thread API
-// entities should implement this message to trigger 
-// delivering of signals to all their custom output pins
-- (void)tick:(uint64_t)timeStamp;
-- (void)start;
-- (void)stop;
-- (void)run;
-@end
-*/
+
+/* this class sends the following notifications
+ *
+ * VJXEntityWasCreated
+ *    object:entity
+ * 
+ * VJXEntityWasDestroyed
+ *    object:entity
+ *
+ * VJXEntityInputPinAdded
+ *    object:entity userInfo:inputPins
+ *
+ * VJXEntityInputPinRemoved
+ *     object:entity userInfo:inputPins
+ *
+ * VJXEntityOutputPinAdded
+ *     object:entity userInfo:outputPins
+ *
+ * VJXEntityOutputPinRemoved
+ *     object:entity userInfo:outputPins
+ *
+ *
+ */
+
 
 #define kVJXFpsMaxStamps 25
 

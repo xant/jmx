@@ -87,7 +87,9 @@
                                allowedValues:pinValues
                                 initialValue:(id)value]
                   forKey:pinName];
-    return [inputPins objectForKey:pinName];
+    VJXInputPin *newPin = [inputPins objectForKey:pinName];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityInputPinAdded" object:self userInfo:[inputPins copy]];
+    return newPin;
 }
 
 - (VJXOutputPin *)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType
@@ -120,7 +122,11 @@
                                 allowedValues:pinValues
                                  initialValue:(id)value]
                   forKey:pinName];
-    return [outputPins objectForKey:pinName];
+    VJXOutputPin *newPin = [outputPins objectForKey:pinName];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityOutputPinAdded" 
+                                                        object:self
+                                                      userInfo:[outputPins copy]];
+    return newPin;
 }
 
 - (NSArray *)inputPins
@@ -158,6 +164,9 @@
         [inputPins removeObjectForKey:pinName];
         [pin disconnectAllPins];
     }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityInputPinRemoved"
+                                                        object:self
+                                                      userInfo:[inputPins copy]];
 }
 
 - (void)unregisterOutputPin:(NSString *)pinName
@@ -167,6 +176,9 @@
         [outputPins removeObjectForKey:pinName];
         [pin disconnectAllPins];
     }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityOutputPinRemoved"
+                                                        object:self 
+                                                      userInfo:[outputPins copy]];
 }
 
 - (void)unregisterAllPins
@@ -188,7 +200,11 @@
     if (pin) {
         // create a virtual pin to be attached to the receiver
         // not that the pin will automatically released once disconnected
-        VJXInputPin *vPin = [VJXInputPin pinWithName:@"vpin" andType:pin.type forDirection:kVJXInputPin ownedBy:receiver withSignal:selector];
+        VJXInputPin *vPin = [VJXInputPin pinWithName:@"vpin"
+                                             andType:pin.type
+                                        forDirection:kVJXInputPin
+                                             ownedBy:receiver
+                                          withSignal:selector];
         [pin connectToPin:vPin];
         return YES;
     }

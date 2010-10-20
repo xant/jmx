@@ -64,8 +64,26 @@
     }
 }
 
-- (void)selectFilter:(NSString *)filter
+- (void)selectFilter:(NSString *)filterName
 {
+    CIFilter *newFilter = [CIFilter filterWithName:filterName];
+    [newFilter setDefaults];
+    NSLog(@"Filter Attributes : %@", [newFilter attributes]);
+    NSArray *inputKeys = [newFilter inputKeys];
+    NSArray *outputKeys = [newFilter outputKeys];
+    NSLog(@"Filter Input params : %@\nFilter Output params%@", inputKeys, outputKeys);
+    @synchronized(self) {
+        [self unregisterAllPins];
+        for (NSString *key in inputKeys) {
+            // TODO - use 'attributes' to determine datatype,
+            //        max/min values and display name
+            if ([key isEqualTo:@"inputImage"]) {
+                [self registerInputPin:key withType:kVJXImagePin];
+            } else {
+                [self registerInputPin:key withType:kVJXNumberPin];
+            }
+        }
+    }
 }
 
 @end

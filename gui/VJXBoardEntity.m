@@ -385,28 +385,30 @@ id controlForVJXPinType(VJXPinType aType)
 	if (aPin == nil)
 		return nil;
 	
-	NSCell *returnValue = nil;
+	NSCell *cell = nil;
 	
 	if (aPin.type == kVJXStringPin) {
 		if (aPin.direction == kVJXInputPin && [aPin allowedValues] != nil) {
-			returnValue = [[NSPopUpButtonCell alloc] init];
-            [(NSPopUpButtonCell *)returnValue setTarget:self];
-            [(NSPopUpButtonCell *)returnValue setAction:@selector(setStringSelectionPin:)];
-			[(NSPopUpButtonCell *)returnValue addItemsWithTitles:[aPin allowedValues]];
+			cell = [[NSPopUpButtonCell alloc] init];
+            [(NSPopUpButtonCell *)cell setTarget:self];
+            [(NSPopUpButtonCell *)cell setAction:@selector(setStringSelectionPin:)];
+            [(NSPopUpButtonCell *)cell addItemsWithTitles:[aPin allowedValues]];
+            //[(NSPopUpButtonCell *)cell selectItemWithTitle:[aPin readData]];
 		}
 		else
-			returnValue = [[NSTextFieldCell alloc] init];
+			cell = [[NSTextFieldCell alloc] init];
 	}
 	else if (aPin.type == kVJXNumberPin) {
-		returnValue = [[NSTextFieldCell alloc] init];
+		cell = [[NSTextFieldCell alloc] init];
 	}
 	else {
-		returnValue = [[NSButtonCell alloc] init];
+		cell = [[NSButtonCell alloc] init];
 	}
 	
-	return [returnValue autorelease];
+	return [cell autorelease];
 	
 }
+
 - (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item;
 {
     // TODO - check if we are populating the input-pins part of the outlineview
@@ -416,6 +418,7 @@ id controlForVJXPinType(VJXPinType aType)
         NSInteger row = [outlineView selectedRow];
         NSString *pinName = [outlineView itemAtRow:row];
         VJXInputPin *aPin = [self.entity inputPinWithName:pinName];
+        //[(NSPopUpButtonCell *)cell addItemsWithTitles:[aPin allowedValues]];
         [(NSPopUpButtonCell *)cell selectItemWithTitle:[aPin readData]];
     }
 }

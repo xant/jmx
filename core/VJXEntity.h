@@ -115,5 +115,7 @@
 - (void)activate;
 - (void)deactivate;
 
+- (void)notifyModifications;
+
 @end
 

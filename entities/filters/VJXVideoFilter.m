@@ -14,6 +14,8 @@
 - (id)init
 {
     if (self = [super init]) {
+        currentFrame = nil;
+        filter = nil;
         inFrame = [self registerInputPin:@"frame" withType:kVJXImagePin andSelector:@"newFrame:"];
         outFrame = [self registerOutputPin:@"frame" withType:kVJXImagePin];
         NSArray *categories = [NSArray arrayWithObjects:kCICategoryDistortionEffect,
@@ -33,10 +35,8 @@
         filterSelector = [self registerInputPin:@"filter"
                                        withType:kVJXStringPin
                                     andSelector:@"selectFilter:"
-                                   allowedValues:knownFilters
+                                  allowedValues:knownFilters
                                    initialValue:[knownFilters objectAtIndex:0]];
-        currentFrame = nil;
-        filter = nil;
     }
     return self;
 }
@@ -59,9 +59,16 @@
             [currentFrame release];
         currentFrame = [frame retain];
         if (filter) {
-            
+            [filter setValue:currentFrame forKey:@"inputImage"];
+            [currentFrame release];
+            currentFrame = [[filter valueForKey:@"outputImage"] retain];
         }
     }
+    [outFrame deliverData:currentFrame];
+}
+
+- (void)setFilterValue:(id)value
+{
 }
 
 - (void)selectFilter:(NSString *)filterName
@@ -73,17 +80,28 @@
     NSArray *outputKeys = [newFilter outputKeys];
     NSLog(@"Filter Input params : %@\nFilter Output params%@", inputKeys, outputKeys);
     @synchronized(self) {
-        [self unregisterAllPins];
+        for (NSString *pinName in [inputPins copy]) {
+            // TODO - extendable [VJXEntity defaultInputPins]
+            if (pinName != @"frame" && pinName != @"filter" && pinName != @"active")
+                [self unregisterInputPin:pinName];
+        }
+        for (NSString *pinName in [outputPins copy]) {
+            // TODO - extendable [VJXEntity defaultOutputPins]
+            if (pinName != @"frame" && pinName != @"active")
+                [self unregisterOutputPin:pinName];
+        }
         for (NSString *key in inputKeys) {
             // TODO - use 'attributes' to determine datatype,
             //        max/min values and display name
-            if ([key isEqualTo:@"inputImage"]) {
-                [self registerInputPin:key withType:kVJXImagePin];
-            } else {
-                [self registerInputPin:key withType:kVJXNumberPin];
+            if (![key isEqualTo:@"inputImage"]) {
+                [self registerInputPin:key withType:kVJXNumberPin andSelector:@"setFilterValue:"];
             }
         }
+        if (filter)
+            [filter release];
+        filter = [newFilter retain];
     }
+    [self notifyModifications];
 }
 
 @end

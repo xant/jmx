@@ -57,10 +57,11 @@ typedef enum {
     id                  currentData;
     id                  currentSender;
     VJXPinDirection     direction;
-    id                  owner;
+    id                  owner; // weak reference (the owner retains us)
     id                  minValue;
     id                  maxValue;
-    NSString            *ownerSignal;
+    id                  ownerUserData; // weak reference (depends on the owner)
+    NSString            *ownerSignal; // weak reference (depends on the owner)
     NSMutableArray      *allowedValues;
 }
 
@@ -87,6 +88,15 @@ typedef enum {
      forDirection:(VJXPinDirection)pinDirection 
           ownedBy:(id)pinOwner 
        withSignal:(NSString *)pinSignal
+         userData:(id)userData;
+
+
++ (id)pinWithName:(NSString *)name
+          andType:(VJXPinType)pinType
+     forDirection:(VJXPinDirection)pinDirection 
+          ownedBy:(id)pinOwner 
+       withSignal:(NSString *)pinSignal
+         userData:(id)userData
     allowedValues:(NSArray *)allowedValues;
 
 + (id)pinWithName:(NSString *)name
@@ -94,6 +104,7 @@ typedef enum {
      forDirection:(VJXPinDirection)pinDirection 
           ownedBy:(id)pinOwner 
        withSignal:(NSString *)pinSignal
+         userData:(id)userData
     allowedValues:(NSArray *)allowedValues
      initialValue:(id)value;
 
@@ -106,12 +117,20 @@ typedef enum {
            andType:(VJXPinType)pinType
            ownedBy:(id)pinOwner
         withSignal:(NSString *)pinSignal
+          userData:(id)userData;
+
+- (id)initWithName:(NSString *)pinName
+           andType:(VJXPinType)pinType
+           ownedBy:(id)pinOwner
+        withSignal:(NSString *)pinSignal
+          userData:(id)userData
      allowedValues:(NSArray *)pinValues;
 
 - (id)initWithName:(NSString *)pinName
            andType:(VJXPinType)pinType
            ownedBy:(id)pinOwner
         withSignal:(NSString *)pinSignal
+          userData:(id)userData
      allowedValues:(NSArray *)pinValues
       initialValue:(id)value;
 

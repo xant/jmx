@@ -32,6 +32,7 @@
            andType:(VJXPinType)pinType
            ownedBy:(id)pinOwner
         withSignal:(NSString *)pinSignal
+          userData:(id)userData
      allowedValues:(NSArray *)pinValues
       initialValue:(id)value
 {
@@ -39,6 +40,7 @@
                            andType:pinType
                            ownedBy:pinOwner
                         withSignal:pinSignal
+                          userData:userData
                      allowedValues:pinValues
                       initialValue:value])
     {

@@ -24,7 +24,7 @@
 #import "VJXBoardEntity.h"
 #import "VJXBoardEntityPin.h"
 #import "VJXBoardEntityOutlet.h"
-#import "VJXEntityInspector.h";
+#import "VJXEntityInspector.h"
 
 @implementation VJXBoardEntity
 
@@ -34,23 +34,18 @@
 @synthesize outlets;
 @synthesize board;
 
-- (id)initWithEntity:(VJXEntity *)anEntity
+- (void)initView
 {
-    return [self initWithEntity:anEntity board:nil];
-}
-
-- (id)initWithEntity:(VJXEntity *)anEntity board:(VJXBoard *)aBoard
-{
-
-    NSUInteger maxNrPins = MAX([[anEntity inputPins] count], [[anEntity outputPins] count]);
-
+    [self setSubviews:[NSArray array]];
+    NSUInteger maxNrPins = MAX([[self.entity inputPins] count], [[self.entity outputPins] count]);
+    
     CGFloat pinSide = ENTITY_PIN_HEIGHT;
     CGFloat height = pinSide * maxNrPins * ENTITY_PIN_MINSPACING;
     CGFloat width = ENTITY_FRAME_WIDTH;
     
     NSTextField *labelView = [[[NSTextField alloc] init] autorelease];
     [labelView setTextColor:[NSColor whiteColor]];
-    [labelView setStringValue:[anEntity description]];
+    [labelView setStringValue:[self.entity description]];
     [labelView setBordered:NO];
     [labelView setEditable:YES];
     [labelView setFocusRingType:NSFocusRingTypeNone];
@@ -58,63 +53,152 @@
     [labelView setDrawsBackground:NO];
     [labelView setFont:[NSFont boldSystemFontOfSize:[NSFont smallSystemFontSize]]];
     [labelView sizeToFit];
-    CGFloat labelHeight = [labelView frame].size.height;
-    NSRect frame = NSMakeRect(10.0, 10.0, width, height + labelHeight + ENTITY_LABEL_PADDING);
+    labelHeight = [labelView frame].size.height;
+    NSRect frame = NSMakeRect([self frame].origin.x, [self frame].origin.y, width, height + labelHeight + ENTITY_LABEL_PADDING);
     NSRect labelFrame = [labelView frame];
     labelFrame.origin.x += ENTITY_LABEL_PADDING;
     labelFrame.origin.y = frame.size.height-labelHeight - ENTITY_LABEL_PADDING/2;
     labelFrame.size.width = width - ENTITY_LABEL_PADDING;
     [labelView setFrame:labelFrame];
-    self = [super initWithFrame:frame];
+    [self setFrame:frame];
+    self.label = labelView;
+    [self addSubview:self.label];
     
-    if (self) {
-        self.label = labelView;
-        [self addSubview:self.label];
+    NSRect bounds = [self bounds];
+    bounds.size.height -= (labelHeight + ENTITY_LABEL_PADDING);
+    bounds.origin.x += ENTITY_PIN_LEFT_PADDING;
+    self.outlets = [NSMutableArray array];
+    int i = 0;
+    NSArray *pins = [self.entity inputPins];
+    NSUInteger nrInputPins = [pins count];
+    for (NSString *pinName in pins) {
+        NSPoint origin = NSMakePoint(bounds.origin.x, (((bounds.size.height / nrInputPins) * i++) - (bounds.origin.y - (3.0))));
+        VJXBoardEntityOutlet *outlet = [[VJXBoardEntityOutlet alloc] initWithPin:[self.entity inputPinWithName:pinName]
+                                                                        andPoint:origin
+                                                                        isOutput:NO
+                                                                          entity:self];
+        [self addSubview:outlet];
+        [self.outlets addObject:outlet];
+        [outlet release];
+    }
+    pins = [self.entity outputPins];
+    NSUInteger nrOutputPins = [pins count];
+    i = 0;
+    for (NSString *pinName in pins) {
+        NSPoint origin = NSMakePoint(bounds.size.width - ENTITY_OUTLET_WIDTH ,
+                                     (((bounds.size.height / nrOutputPins) * i++) - (bounds.origin.y - (3.0))));
+        VJXBoardEntityOutlet *outlet = [[VJXBoardEntityOutlet alloc] initWithPin:[self.entity outputPinWithName:pinName]
+                                                                        andPoint:origin
+                                                                        isOutput:YES
+                                                                          entity:self];
+        [self addSubview:outlet];
+        [self.outlets addObject:outlet];
+        [outlet release];
+    }
+}
 
+- (void)inputPinAdded:(NSNotification *)notification
+{
+    NSDictionary *userInfo = [notification userInfo];
+    NSString *pinName = [userInfo objectForKey:@"pinName"];
+    NSRect frame = [self frame];
+    CGFloat pinSide = ENTITY_PIN_HEIGHT;
+    CGFloat height = pinSide * ([self.outlets count]+1) * ENTITY_PIN_MINSPACING;
+    frame.size.height = height;
+    [self setFrame:frame];
+    NSRect bounds = [self bounds];
+    bounds.size.height -= (labelHeight + ENTITY_LABEL_PADDING);
+    bounds.origin.x += ENTITY_PIN_LEFT_PADDING;    
+    NSLog(@"%@", self.outlets);
+    int i = 0;
+    for (VJXBoardEntityOutlet *pinOutlet in self.outlets) {
+        NSPoint origin = NSMakePoint(bounds.origin.x, (((bounds.size.height / [self.outlets count]+1) * i++) - (bounds.origin.y - (3.0))));
+        NSRect pinFrame = [pinOutlet frame];
+        pinFrame.origin = origin;
+        [pinOutlet setFrame:frame];
+    }
+
+    NSPoint origin = NSMakePoint(bounds.origin.x, (((bounds.size.height / [self.outlets count]+1) * [self.outlets count]+1) - (bounds.origin.y - (3.0))));
+    VJXBoardEntityOutlet *outlet = [[VJXBoardEntityOutlet alloc] initWithPin:[self.entity inputPinWithName:pinName]
+                                                                    andPoint:origin
+                                                                    isOutput:NO
+                                                                      entity:self];
+    [self addSubview:outlet];
+    [self.outlets addObject:outlet];
+    NSRect labelFrame = [self.label frame];
+    labelFrame.origin.y = frame.size.height - labelHeight - ENTITY_LABEL_PADDING / 2;
+    [self.label setFrame:labelFrame];
+    [outlet release];
+}
+
+- (void)inputPinRemoved:(NSNotification *)notification
+{
+    NSDictionary *userInfo = [notification userInfo];
+    NSString *pinName = [userInfo objectForKey:@"pinName"];
+    VJXBoardEntityOutlet *toRemove = nil;
+    for (VJXBoardEntityOutlet *outlet in self.outlets) {
+        if (outlet.pin.pin.name == pinName) {
+            toRemove = outlet;
+            break;
+        }
+    }
+    if (toRemove)
+        [self.outlets removeObject:toRemove];
+    [toRemove removeFromSuperview];
+}
+
+- (void)outputPinAdded:(NSNotification *)notification
+{
+}
+
+- (void)outputPinRemoved:(NSNotification *)notification
+{
+}
+
+
+- (id)initWithEntity:(VJXEntity *)anEntity
+{
+    return [self initWithEntity:anEntity board:nil];
+}
+
+- (id)initWithEntity:(VJXEntity *)anEntity board:(VJXBoard *)aBoard
+{
+    self = [super init];
+    
+    if (self = [super initWithFrame:NSMakeRect(10.0, 10.0, 0, 0)]) {
         self.board = aBoard;
         self.entity = anEntity;
         self.entity.name = [anEntity description];
         self.selected = NO;
-        self.outlets = [NSMutableArray array];
+        //self.outlets = [NSMutableArray array]; // XXX - actually done in initView
+        [self initView];
+        [[NSNotificationCenter defaultCenter] addObserver:self 
+                                                 selector:@selector(inputPinAdded:)
+                                                     name:@"VJXEntityInputPinAdded"
+                                                   object:self.entity];
+        [[NSNotificationCenter defaultCenter] addObserver:self 
+                                                 selector:@selector(inputPinRemoved:)
+                                                     name:@"VJXEntityInputPinRemoved"
+                                                   object:self.entity];
+        [[NSNotificationCenter defaultCenter] addObserver:self 
+                                                 selector:@selector(outputPinAdded:)
+                                                     name:@"VJXEntityOutputPinAdded"
+                                                   object:self.entity];
+        [[NSNotificationCenter defaultCenter] addObserver:self 
+                                                 selector:@selector(outputPinRemoved:)
+                                                     name:@"VJXEntityOutputPinRemoved"
+                                                   object:self.entity];
         
-        NSRect bounds = [self bounds];
-        bounds.size.height -= (labelHeight + ENTITY_LABEL_PADDING);
-        bounds.origin.x += ENTITY_PIN_LEFT_PADDING;
-
-        int i = 0;
-        NSArray *pins = [anEntity inputPins];
-        NSUInteger nrInputPins = [pins count];
-        for (NSString *pinName in pins) {
-            NSPoint origin = NSMakePoint(bounds.origin.x, (((bounds.size.height / nrInputPins) * i++) - (bounds.origin.y - (3.0))));
-            VJXBoardEntityOutlet *outlet = [[VJXBoardEntityOutlet alloc] initWithPin:[anEntity inputPinWithName:pinName]
-                                                                            andPoint:origin
-                                                                            isOutput:NO
-                                                                              entity:self];
-            [self addSubview:outlet];
-            [self.outlets addObject:outlet];
-            [outlet release];
-        }
-        
-        pins = [anEntity outputPins];
-        NSUInteger nrOutputPins = [pins count];
-        i = 0;
-        for (NSString *pinName in pins) {
-            NSPoint origin = NSMakePoint(bounds.size.width - ENTITY_OUTLET_WIDTH ,
-                                         (((bounds.size.height / nrOutputPins) * i++) - (bounds.origin.y - (3.0))));
-            VJXBoardEntityOutlet *outlet = [[VJXBoardEntityOutlet alloc] initWithPin:[anEntity outputPinWithName:pinName]
-                                                                            andPoint:origin
-                                                                            isOutput:YES
-                                                                              entity:self];
-            [self addSubview:outlet];
-            [self.outlets addObject:outlet];
-            [outlet release];
-        }
     }
     return self;
 }
 
 - (void)dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityInputPinAdded" object:entity];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityInputPinRemoved" object:entity];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityOutputPinAdded" object:entity];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityOutputPinRemoved" object:entity];
     if ([entity respondsToSelector:@selector(stop)])
         [entity performSelector:@selector(stop)];
     [entity release];
@@ -322,7 +406,9 @@ id controlForVJXPinType(VJXPinType aType)
 				return @"Output";
 		}
 	}
-	
+    if (![item respondsToSelector:@selector(isEqualToString:)])
+        return nil;
+    
 	if ([item isEqualToString:@"Input"])
 		return [[self.entity inputPins] objectAtIndex:index];
 
@@ -333,7 +419,9 @@ id controlForVJXPinType(VJXPinType aType)
 
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
-	
+	if (![item respondsToSelector:@selector(isEqualToString:)])
+        return @"";
+        
 	if (([item isEqualToString:@"Input"] || [item isEqualToString:@"Output"]) && [[tableColumn identifier] isEqualToString:@"pinName"])
 		return item;
 

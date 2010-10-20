@@ -28,6 +28,11 @@
 
 @synthesize name, active;
 
+- (void)notifyModifications
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasModified" object:self];
+}
+
 - (void)notifyCreation
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasCreated" object:self];
@@ -76,6 +81,7 @@
 - (VJXInputPin *)registerInputPin:(NSString *)pinName 
                          withType:(VJXPinType)pinType
                       andSelector:(NSString *)selector
+                         userData:(id)userData
                     allowedValues:(NSArray *)pinValues
                      initialValue:(id)value
 {
@@ -84,12 +90,30 @@
                                 forDirection:kVJXInputPin
                                      ownedBy:self
                                   withSignal:selector
+                                    userData:userData
                                allowedValues:pinValues
                                 initialValue:(id)value]
                   forKey:pinName];
     VJXInputPin *newPin = [inputPins objectForKey:pinName];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityInputPinAdded" object:self userInfo:[inputPins copy]];
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:newPin, @"pin", pinName, @"pinName", nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityInputPinAdded"
+                                                        object:self
+                                                      userInfo:userInfo];
     return newPin;
+}
+
+- (VJXInputPin *)registerInputPin:(NSString *)pinName 
+                         withType:(VJXPinType)pinType
+                      andSelector:(NSString *)selector
+                    allowedValues:(NSArray *)pinValues
+                     initialValue:(id)value
+{
+    return [self registerInputPin:pinName
+                         withType:pinType
+                      andSelector:selector
+                         userData:nil
+                    allowedValues:pinValues
+                     initialValue:value];
 }
 
 - (VJXOutputPin *)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType
@@ -111,6 +135,7 @@
 - (VJXOutputPin *)registerOutputPin:(NSString *)pinName
                            withType:(VJXPinType)pinType
                         andSelector:(NSString *)selector
+                           userData:(id)userData
                       allowedValues:(NSArray *)pinValues
                        initialValue:(id)value
 {
@@ -119,14 +144,31 @@
                                  forDirection:kVJXOutputPin
                                       ownedBy:self
                                    withSignal:selector
+                                     userData:userData
                                 allowedValues:pinValues
                                  initialValue:(id)value]
-                  forKey:pinName];
+                   forKey:pinName];
     VJXOutputPin *newPin = [outputPins objectForKey:pinName];
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:newPin, @"pin", pinName, @"pinName", nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityOutputPinAdded" 
                                                         object:self
-                                                      userInfo:[outputPins copy]];
+                                                      userInfo:userInfo];
     return newPin;
+}
+
+
+- (VJXOutputPin *)registerOutputPin:(NSString *)pinName
+                           withType:(VJXPinType)pinType
+                        andSelector:(NSString *)selector
+                      allowedValues:(NSArray *)pinValues
+                       initialValue:(id)value
+{
+    return [self registerOutputPin:pinName
+                          withType:pinType
+                       andSelector:selector
+                          userData:nil
+                     allowedValues:pinValues
+                      initialValue:value];
 }
 
 - (NSArray *)inputPins
@@ -159,26 +201,31 @@
 
 - (void)unregisterInputPin:(NSString *)pinName
 {
-    VJXInputPin *pin = [inputPins objectForKey:pinName];
+    VJXInputPin *pin = [[inputPins objectForKey:pinName] retain];
     if (pin) {
         [inputPins removeObjectForKey:pinName];
         [pin disconnectAllPins];
     }
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:pin, @"pin", pinName, @"pinName", nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityInputPinRemoved"
                                                         object:self
-                                                      userInfo:[inputPins copy]];
+                                                      userInfo:userInfo];
+    [pin release];
 }
 
 - (void)unregisterOutputPin:(NSString *)pinName
 {
-    VJXOutputPin *pin = [outputPins objectForKey:pinName];
+    VJXOutputPin *pin = [[outputPins objectForKey:pinName] retain];
     if (pin) {
         [outputPins removeObjectForKey:pinName];
         [pin disconnectAllPins];
     }
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:pin, @"pin", pinName, @"pinName", nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityOutputPinRemoved"
                                                         object:self 
-                                                      userInfo:[outputPins copy]];
+                                                      userInfo:userInfo];
+    // we can now release the pin
+    [pin release];
 }
 
 - (void)unregisterAllPins

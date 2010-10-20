@@ -39,10 +39,10 @@
     NSPoint lastDragLocation;
     NSTextField *label;
     NSMutableArray *outlets;
-
     VJXBoard *board;
-    
     BOOL selected;
+@private
+    CGFloat labelHeight;
 }
 
 @property (nonatomic,retain) VJXEntity *entity;

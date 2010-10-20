@@ -22,6 +22,7 @@
 //
 
 #import "VJXOutputPin.h"
+#import "VJXInputPin.h"
 #import "VJXContext.h"
 
 @interface VJXPin (Private)
@@ -35,6 +36,7 @@
            andType:(VJXPinType)pinType
            ownedBy:(id)pinOwner
         withSignal:(NSString *)pinSignal
+          userData:(id)userData
      allowedValues:(NSArray *)pinValues
       initialValue:(id)value
 {
@@ -42,6 +44,7 @@
                            andType:pinType
                            ownedBy:pinOwner
                         withSignal:pinSignal
+                          userData:userData
                      allowedValues:pinValues
                       initialValue:value])
     {
@@ -135,7 +138,7 @@
 
 - (BOOL)connectToPin:(VJXInputPin *)destinationPin
 {
-    if ((VJXPin *)destinationPin != (VJXPin *)self) 
+    if ((VJXPin *)destinationPin != (VJXPin *)self && destinationPin.direction == kVJXInputPin) 
         return [destinationPin connectToPin:self];
     return NO;
 }

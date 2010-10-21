@@ -18,7 +18,7 @@
 		82456FE912256A4A00236FE4 /* VJXImageLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 82456FE812256A4A00236FE4 /* VJXImageLayer.m */; };
 		824576451227DF5800236FE4 /* VJXBoardEntityPin.m in Sources */ = {isa = PBXBuildFile; fileRef = 8245763D1227DF5800236FE4 /* VJXBoardEntityPin.m */; };
 		824576461227DF5800236FE4 /* VJXBoardEntityConnector.m in Sources */ = {isa = PBXBuildFile; fileRef = 8245763F1227DF5800236FE4 /* VJXBoardEntityConnector.m */; };
-		824576481227DF5800236FE4 /* VJXBoard.m in Sources */ = {isa = PBXBuildFile; fileRef = 824576431227DF5800236FE4 /* VJXBoard.m */; };
+		824576481227DF5800236FE4 /* VJXBoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 824576431227DF5800236FE4 /* VJXBoardView.m */; };
 		82B0A4C31237AFB20006D003 /* VJXBoardEntityOutlet.m in Sources */ = {isa = PBXBuildFile; fileRef = 82B0A4C21237AFB20006D003 /* VJXBoardEntityOutlet.m */; };
 		82EA042F1240BE4A00E28B72 /* VJXDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 82EA042E1240BE4A00E28B72 /* VJXDocument.xib */; };
 		82EA0BB012421E1D00E28B72 /* VJXBoardEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 824576411227DF5800236FE4 /* VJXBoardEntity.m */; };
@@ -99,8 +99,8 @@
 		824576401227DF5800236FE4 /* VJXBoardEntityConnector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXBoardEntityConnector.h; path = gui/VJXBoardEntityConnector.h; sourceTree = "<group>"; };
 		824576411227DF5800236FE4 /* VJXBoardEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXBoardEntity.m; path = gui/VJXBoardEntity.m; sourceTree = "<group>"; };
 		824576421227DF5800236FE4 /* VJXBoardEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXBoardEntity.h; path = gui/VJXBoardEntity.h; sourceTree = "<group>"; };
-		824576431227DF5800236FE4 /* VJXBoard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXBoard.m; path = gui/VJXBoard.m; sourceTree = "<group>"; };
-		824576441227DF5800236FE4 /* VJXBoard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXBoard.h; path = gui/VJXBoard.h; sourceTree = "<group>"; };
+		824576431227DF5800236FE4 /* VJXBoardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXBoardView.m; path = gui/VJXBoardView.m; sourceTree = "<group>"; };
+		824576441227DF5800236FE4 /* VJXBoardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXBoardView.h; path = gui/VJXBoardView.h; sourceTree = "<group>"; };
 		82B0A4C11237AFB20006D003 /* VJXBoardEntityOutlet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXBoardEntityOutlet.h; path = gui/VJXBoardEntityOutlet.h; sourceTree = "<group>"; };
 		82B0A4C21237AFB20006D003 /* VJXBoardEntityOutlet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXBoardEntityOutlet.m; path = gui/VJXBoardEntityOutlet.m; sourceTree = "<group>"; };
 		82EA042E1240BE4A00E28B72 /* VJXDocument.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VJXDocument.xib; sourceTree = "<group>"; };
@@ -297,8 +297,8 @@
 				824576401227DF5800236FE4 /* VJXBoardEntityConnector.h */,
 				824576411227DF5800236FE4 /* VJXBoardEntity.m */,
 				824576421227DF5800236FE4 /* VJXBoardEntity.h */,
-				824576431227DF5800236FE4 /* VJXBoard.m */,
-				824576441227DF5800236FE4 /* VJXBoard.h */,
+				824576431227DF5800236FE4 /* VJXBoardView.m */,
+				824576441227DF5800236FE4 /* VJXBoardView.h */,
 				82B0A4C11237AFB20006D003 /* VJXBoardEntityOutlet.h */,
 				82B0A4C21237AFB20006D003 /* VJXBoardEntityOutlet.m */,
 				821DE681123925EC00B6A45D /* VJXBoardSelection.h */,
@@ -489,7 +489,14 @@
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "VeeJay" */;
 			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* MoviePlayerD */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -524,7 +531,7 @@
 				82456FE912256A4A00236FE4 /* VJXImageLayer.m in Sources */,
 				824576451227DF5800236FE4 /* VJXBoardEntityPin.m in Sources */,
 				824576461227DF5800236FE4 /* VJXBoardEntityConnector.m in Sources */,
-				824576481227DF5800236FE4 /* VJXBoard.m in Sources */,
+				824576481227DF5800236FE4 /* VJXBoardView.m in Sources */,
 				AA0F48A8122E7503005A1C95 /* VJXEntity.m in Sources */,
 				AA0F48AB12302BBA005A1C95 /* VJXPin.m in Sources */,
 				AA0F49D0123052EE005A1C95 /* VJXVideoOutput.m in Sources */,

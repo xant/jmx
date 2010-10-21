@@ -21,12 +21,12 @@
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#import "VJXBoard.h"
+#import "VJXBoardView.h"
 #import "VJXQtVideoLayer.h"
 #import "VJXAudioFileLayer.h"
 #import "VJXFileRead.h"
 
-@implementation VJXBoard
+@implementation VJXBoardView
 
 @synthesize currentSelection;
 

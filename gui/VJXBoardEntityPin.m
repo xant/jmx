@@ -22,7 +22,7 @@
 //
 
 #import "VJXBoardEntityPin.h"
-#import "VJXBoard.h"
+#import "VJXBoardView.h"
 #import "VJXBoardEntityConnector.h"
 
 @implementation VJXBoardEntityPin
@@ -34,12 +34,12 @@
 - (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint outlet:(VJXBoardEntityOutlet *)anOutlet
 {
     NSRect frame = NSMakeRect(thePoint.x, thePoint.y, PIN_OUTLET_WIDTH, PIN_OUTLET_HEIGHT);
-    
+
     if ((self = [super initWithFrame:frame]) != nil) {
         outlet = anOutlet;
         selected = NO;
         connectors = [[NSMutableArray alloc] init];
-        pin = [thePin retain];        
+        pin = [thePin retain];
     }
     return self;
 }
@@ -65,23 +65,23 @@
 - (void)drawRect:(NSRect)dirtyRect
 {
     NSRect bounds = [self bounds];
-    
+
     bounds.origin.x += PIN_OUTLET_PADDING;
     bounds.origin.y += PIN_OUTLET_PADDING;
     bounds.size.width -= (2 * bounds.origin.x);
     bounds.size.height -= (2 * bounds.origin.y);
-    
+
     NSBezierPath *thePath = nil;
-    
-    if (self.selected == YES) 
+
+    if (self.selected == YES)
         [[NSColor yellowColor] setFill];
     else
         [[NSColor whiteColor] setFill];
-    
+
     thePath = [[NSBezierPath alloc] init];
     [thePath appendBezierPathWithOvalInRect:bounds];
     [thePath fill];
-        
+
     [thePath release];
 }
 
@@ -96,17 +96,17 @@
 
 - (void)mouseDragged:(NSEvent *)theEvent
 {
-    VJXBoard *board = outlet.entity.board;
-    
+    VJXBoardView *board = outlet.entity.board;
+
     if (!tempConnector) {
         tempConnector = [[VJXBoardEntityConnector alloc] init];
         tempConnector.origin = self;
-        tempConnector.board = board;        
+        tempConnector.board = board;
         [board addSubview:tempConnector positioned:NSWindowAbove relativeTo:self];
     }
 
     NSPoint locationInWindow = [board convertPoint:[theEvent locationInWindow] fromView:nil];
-    
+
     NSPoint thisLocation = [self convertPoint:[self pointAtCenter] toView:board];
 
     float minX = MIN(locationInWindow.x, thisLocation.x) - 10.0;
@@ -140,39 +140,39 @@
 
 - (void)mouseUp:(NSEvent *)theEvent
 {
-    VJXBoard *board = outlet.entity.board;
+    VJXBoardView *board = outlet.entity.board;
 
     NSPoint locationInWindow = [board convertPoint:[theEvent locationInWindow] fromView:nil];
     locationInWindow.x -= PIN_OUTLET_PADDING;
     locationInWindow.y -= PIN_OUTLET_PADDING;
     NSView *aView = [board hitTest:locationInWindow];
-    
+
     BOOL isConnected = NO;
-    
+
     if ([aView isKindOfClass:[VJXBoardEntityPin class]]) {
-        
+
         VJXBoardEntityPin *otherPin = (VJXBoardEntityPin *)aView;
-        
+
         if ([otherPin isConnected] && ![otherPin multiple])
             [otherPin removeAllConnectors];
-        
+
         isConnected = [otherPin.pin connectToPin:self.pin];
 
         if (isConnected) {
             [tempConnector setOrigin:self];
             [tempConnector setDestination:otherPin];
-            
+
             [otherPin addConnector:tempConnector];
             [self addConnector:tempConnector];
-            
+
             [self updateAllConnectorsFrames];
-            
+
             [tempConnector release];
-            tempConnector = nil;            
+            tempConnector = nil;
         }
     }
-    
-    if (!isConnected) {        
+
+    if (!isConnected) {
         [tempConnector removeFromSuperview];
         [tempConnector release];
         tempConnector = nil;

@@ -31,10 +31,10 @@
 
 @class VJXDocument;
 
-@interface VJXBoard : NSView {
+@interface VJXBoardView : NSView {
     NSPoint lastDragLocation;
     VJXBoardSelection *currentSelection;
-    NSMutableArray *selected;    
+    NSMutableArray *selected;
     NSMutableArray *entities;
     IBOutlet VJXDocument *document;
     IBOutlet VJXEntityInspectorPanel *inspectorPanel;

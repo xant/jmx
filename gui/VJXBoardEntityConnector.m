@@ -22,7 +22,7 @@
 //
 
 #import "VJXBoardEntityConnector.h"
-#import "VJXBoard.h"
+#import "VJXBoardView.h"
 
 @implementation VJXBoardEntityConnector
 
@@ -97,7 +97,7 @@
         [[NSColor yellowColor] setStroke];
     else
         [[NSColor blackColor] setStroke];
-    
+
     NSShadow *lineShadow = [[NSShadow alloc] init];
     [lineShadow setShadowColor:[NSColor blackColor]];
     [lineShadow setShadowBlurRadius:2.5];
@@ -105,7 +105,7 @@
     [lineShadow set];
 
     [thePath stroke];
-    
+
     [thePath release];
     [lineShadow release];
 }
@@ -114,12 +114,12 @@
 {
     NSPoint originLocation = [origin convertPoint:[origin pointAtCenter] toView:board];
     NSPoint destinationLocation = [destination convertPoint:[destination pointAtCenter] toView:board];
-    
+
     float x = MIN(originLocation.x, destinationLocation.x) - ORIGIN_OFFSET;
     float y = MIN(originLocation.y, destinationLocation.y) - ORIGIN_OFFSET;
     float w = abs(originLocation.x - destinationLocation.x) + DESTINATION_OFFSET;
     float h = abs(originLocation.y - destinationLocation.y) + DESTINATION_OFFSET;
-    
+
     direction =
     ((originLocation.x < destinationLocation.x) && (originLocation.y < destinationLocation.y))
     ? kSouthWestDirection
@@ -128,7 +128,7 @@
     : ((originLocation.x > destinationLocation.x) && (originLocation.y > destinationLocation.y))
     ? kNorthEastDirection
     : kNorthWestDirection;
-    
+
     NSRect frame = NSMakeRect(x, y, w + CONNECTOR_LINE_WIDTH, h + CONNECTOR_LINE_WIDTH);
     [self setFrame:frame];
 }

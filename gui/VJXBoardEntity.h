@@ -23,7 +23,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "VJXEntity.h"
-#import "VJXBoard.h"
+#import "VJXBoardView.h"
 
 #define ENTITY_LABEL_PADDING 12.0
 #define ENTITY_PIN_MINSPACING 1.5
@@ -31,7 +31,7 @@
 #define ENTITY_PIN_HEIGHT 11.0
 #define ENTITY_PIN_LEFT_PADDING 6.0
 
-@class VJXBoard;
+@class VJXBoardView;
 
 @interface VJXBoardEntity : NSView <NSTextFieldDelegate,NSCopying,NSOutlineViewDataSource,NSOutlineViewDelegate>
 {
@@ -39,7 +39,7 @@
     NSPoint lastDragLocation;
     NSTextField *label;
     NSMutableArray *outlets;
-    VJXBoard *board;
+    VJXBoardView *board;
     BOOL selected;
 @private
     CGFloat labelHeight;
@@ -49,10 +49,10 @@
 @property (nonatomic,retain) NSTextField *label;
 @property (nonatomic,assign) BOOL selected;
 @property (nonatomic,retain) NSMutableArray *outlets;
-@property (nonatomic, assign) VJXBoard *board;
+@property (nonatomic, assign) VJXBoardView *board;
 
 - (id)initWithEntity:(VJXEntity *)anEntity;
-- (id)initWithEntity:(VJXEntity *)anEntity board:(VJXBoard *)aBoard;
+- (id)initWithEntity:(VJXEntity *)anEntity board:(VJXBoardView *)aBoard;
 
 - (void)toggleSelected;
 - (BOOL)inRect:(NSRect)rect;

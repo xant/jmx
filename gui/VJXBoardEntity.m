@@ -38,11 +38,11 @@
 {
     [self setSubviews:[NSArray array]];
     NSUInteger maxNrPins = MAX([[self.entity inputPins] count], [[self.entity outputPins] count]);
-    
+
     CGFloat pinSide = ENTITY_PIN_HEIGHT;
     CGFloat height = pinSide * maxNrPins * ENTITY_PIN_MINSPACING;
     CGFloat width = ENTITY_FRAME_WIDTH;
-    
+
     NSTextField *labelView = [[[NSTextField alloc] init] autorelease];
     [labelView setTextColor:[NSColor whiteColor]];
     [labelView setStringValue:[self.entity description]];
@@ -63,7 +63,7 @@
     [self setFrame:frame];
     self.label = labelView;
     [self addSubview:self.label];
-    
+
     NSRect bounds = [self bounds];
     bounds.size.height -= (labelHeight + ENTITY_LABEL_PADDING);
     bounds.origin.x += ENTITY_PIN_LEFT_PADDING;
@@ -108,7 +108,7 @@
     [self setFrame:frame];
     NSRect bounds = [self bounds];
     bounds.size.height -= (labelHeight + ENTITY_LABEL_PADDING);
-    bounds.origin.x += ENTITY_PIN_LEFT_PADDING;    
+    bounds.origin.x += ENTITY_PIN_LEFT_PADDING;
     NSLog(@"%@", self.outlets);
     int i = 0;
     for (VJXBoardEntityOutlet *pinOutlet in self.outlets) {
@@ -161,10 +161,10 @@
     return [self initWithEntity:anEntity board:nil];
 }
 
-- (id)initWithEntity:(VJXEntity *)anEntity board:(VJXBoard *)aBoard
+- (id)initWithEntity:(VJXEntity *)anEntity board:(VJXBoardView *)aBoard
 {
     self = [super init];
-    
+
     if (self = [super initWithFrame:NSMakeRect(10.0, 10.0, 0, 0)]) {
         self.board = aBoard;
         self.entity = anEntity;
@@ -172,23 +172,23 @@
         self.selected = NO;
         //self.outlets = [NSMutableArray array]; // XXX - actually done in initView
         [self initView];
-        [[NSNotificationCenter defaultCenter] addObserver:self 
+        [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(inputPinAdded:)
                                                      name:@"VJXEntityInputPinAdded"
                                                    object:self.entity];
-        [[NSNotificationCenter defaultCenter] addObserver:self 
+        [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(inputPinRemoved:)
                                                      name:@"VJXEntityInputPinRemoved"
                                                    object:self.entity];
-        [[NSNotificationCenter defaultCenter] addObserver:self 
+        [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(outputPinAdded:)
                                                      name:@"VJXEntityOutputPinAdded"
                                                    object:self.entity];
-        [[NSNotificationCenter defaultCenter] addObserver:self 
+        [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(outputPinRemoved:)
                                                      name:@"VJXEntityOutputPinRemoved"
                                                    object:self.entity];
-        
+
     }
     return self;
 }
@@ -214,15 +214,15 @@
 }
 
 - (void)drawRect:(NSRect)dirtyRect {
-    
+
     NSShadow *dropShadow = [[[NSShadow alloc] init] autorelease];
-    
+
     [dropShadow setShadowColor:[NSColor blackColor]];
     [dropShadow setShadowBlurRadius:2.5];
     [dropShadow setShadowOffset:NSMakeSize(2.0, -2.0)];
-    
+
     [dropShadow set];
-    
+
     NSBezierPath *thePath = nil;
 
     NSRect rect = NSOffsetRect([self bounds], 4.0, 4.0);
@@ -235,9 +235,9 @@
 
     if (self.selected)
         [[NSColor yellowColor] setStroke];
-    else 
+    else
         [[NSColor blackColor] setStroke];
-    
+
     NSAffineTransform *transform = [[[NSAffineTransform alloc] init] autorelease];
     [transform translateXBy:0.5 yBy:0.5];
     [thePath appendBezierPathWithRoundedRect:rect xRadius:4.0 yRadius:4.0];
@@ -257,16 +257,16 @@
     // Here we keep track of our initial location, so when mouseDragged: message
     // is called it knows the last drag location.
     lastDragLocation = [theEvent locationInWindow];
-    
+
     // If we have the Command key pressed, we assume the user wants to select
     // several entities so we add the entity to the selection. If we have other
     // entities selected (more than one) we don't do anything since we assume
     // the user want to move the selected entities. If we don't have several
-    // entities selected, we unfocus the current selection and focus the 
+    // entities selected, we unfocus the current selection and focus the
     // one clicked.
     BOOL isMultiple = [theEvent modifierFlags] & NSCommandKeyMask ? YES : NO;
     if (isMultiple) {
-        [board toggleSelected:self multiple:YES];        
+        [board toggleSelected:self multiple:YES];
     }
     else {
         if (![board isMultipleSelection]) {
@@ -277,16 +277,16 @@
 
 - (void)mouseDragged:(NSEvent *)theEvent
 {
-    // Calculate the new location based on the last drag location and the 
+    // Calculate the new location based on the last drag location and the
     // location, then ask the board to shift all the selected elements to the
     // new point.
     NSPoint newDragLocation = [theEvent locationInWindow];
     NSPoint newLocationOffset = NSMakePoint((-lastDragLocation.x + newDragLocation.x), (-lastDragLocation.y + newDragLocation.y));
     if (newDragLocation.y > 0 && newDragLocation.x > 0) {
-        
+
         // We need to invert the y axis ourselves.
-        newLocationOffset.y = -newLocationOffset.y; 
-        
+        newLocationOffset.y = -newLocationOffset.y;
+
         [board shiftSelectedToLocation:newLocationOffset];
         lastDragLocation = newDragLocation;
     }
@@ -360,12 +360,12 @@ id controlForVJXPinType(VJXPinType aType)
 - (void)controlPin
 {
 	NSLog(@"%s", _cmd);
-	
+
 	for (NSString *anInputPinName in self.entity.inputPins) {
 		VJXInputPin *anInputPin = [self.entity inputPinWithName:anInputPinName];
 		NSLog(@"name: %@, type: %@", anInputPin.name, controlForVJXPinType(anInputPin.type));
 	}
-	
+
 }
 
 - (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
@@ -408,7 +408,7 @@ id controlForVJXPinType(VJXPinType aType)
 	}
     if (![item respondsToSelector:@selector(isEqualToString:)])
         return nil;
-    
+
 	if ([item isEqualToString:@"Input"])
 		return [[self.entity inputPins] objectAtIndex:index];
 
@@ -421,7 +421,7 @@ id controlForVJXPinType(VJXPinType aType)
 {
 	if (![item respondsToSelector:@selector(isEqualToString:)])
         return @"";
-        
+
 	if (([item isEqualToString:@"Input"] || [item isEqualToString:@"Output"]) && [[tableColumn identifier] isEqualToString:@"pinName"])
 		return item;
 
@@ -431,14 +431,14 @@ id controlForVJXPinType(VJXPinType aType)
 
 	if ([[tableColumn identifier] isEqualToString:@"pinName"])
 		return item;
-	
+
 	VJXPin *aPin = nil;
 
 	if ([[self.entity inputPins] indexOfObject:item] != NSNotFound)
 		aPin = [self.entity inputPinWithName:item];
 	else if ([[self.entity outputPins] indexOfObject:item] != NSNotFound)
 		aPin = [self.entity outputPinWithName:item];
-	
+
 	return aPin ? [aPin readData] : @"TEST";
 }
 
@@ -459,12 +459,12 @@ id controlForVJXPinType(VJXPinType aType)
 {
 	if (tableColumn == nil)
 		return nil;
-	
+
 	if ([[tableColumn identifier] isEqualToString:@"pinName"])
 		return nil;
-	
+
 	VJXPin *aPin = nil;
-	
+
 	if ([[self.entity inputPins] indexOfObject:item] != NSNotFound)
 		aPin = [self.entity inputPinWithName:item];
 	else if ([[self.entity outputPins] indexOfObject:item] != NSNotFound)
@@ -472,9 +472,9 @@ id controlForVJXPinType(VJXPinType aType)
 
 	if (aPin == nil)
 		return nil;
-	
+
 	NSCell *cell = nil;
-	
+
 	if (aPin.type == kVJXStringPin) {
 		if (aPin.direction == kVJXInputPin && [aPin allowedValues] != nil) {
 			cell = [[NSPopUpButtonCell alloc] init];
@@ -492,16 +492,16 @@ id controlForVJXPinType(VJXPinType aType)
 	else {
 		cell = [[NSButtonCell alloc] init];
 	}
-	
+
 	return [cell autorelease];
-	
+
 }
 
 - (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item;
 {
     // TODO - check if we are populating the input-pins part of the outlineview
     if ([cell isKindOfClass:[NSPopUpButtonCell class]]) {
-        // ensure resetting selected values (since the button is re-constructed 
+        // ensure resetting selected values (since the button is re-constructed
         // each time that 'outlineView:dataCellForTableColumn:item:' is called
         NSInteger row = [outlineView selectedRow];
         NSString *pinName = [outlineView itemAtRow:row];

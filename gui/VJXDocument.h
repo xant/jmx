@@ -20,18 +20,18 @@
 
 #import <Cocoa/Cocoa.h>
 #import "VJXEntity.h"
-#import "VJXBoard.h"
+#import "VJXBoardView.h"
 
-@class VJXBoard;
+@class VJXBoardView;
 
 @interface VJXDocument : NSDocument {
-    VJXBoard *board;
+    VJXBoardView *board;
     NSMutableArray *entities;
     NSMutableArray *entitiesFromFile;
     NSMutableDictionary *entitiesPosition;
 }
 
-@property (nonatomic, retain) IBOutlet VJXBoard *board;
+@property (nonatomic, retain) IBOutlet VJXBoardView *board;
 @property (nonatomic, retain) NSMutableArray *entities;
 @property (nonatomic, retain) NSMutableArray *entitiesFromFile;
 @property (nonatomic, retain) NSMutableDictionary *entitiesPosition;

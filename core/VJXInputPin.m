@@ -88,16 +88,13 @@
     if (self.type == destinationPin.type) {
         @synchronized(producers) {
             if ([producers count] && !multiple) {
-                if (direction == kVJXInputPin) {
                     [[producers objectAtIndex:0] detachObject:self];
+                    [super disconnectFromPin:[producers objectAtIndex:0]];
                     [producers removeObjectAtIndex:0];
-                } else {
-                    [[producers objectAtIndex:0] disconnectFromPin:self];
-                }
             }
             if ([destinationPin attachObject:self withSelector:@"deliverData:fromSender:"]) {
                 [producers addObject:destinationPin];
-                return YES;
+                return [super connectToPin:destinationPin];
             }
         }
     }
@@ -110,6 +107,7 @@
         [destinationPin detachObject:self];
         [producers removeObjectIdenticalTo:destinationPin];
     }
+    [super disconnectFromPin:destinationPin];
 }
 
 - (void)disconnectAllPins

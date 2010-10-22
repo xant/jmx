@@ -46,9 +46,6 @@
 }
 
 @property (nonatomic,assign) VJXEntityLayer *selectedLayer;
-@property (nonatomic,assign) VJXConnectorLayer *fakeConnectorLayer;
-@property (nonatomic,assign) VJXPinLayer *hoveredPinLayer;
-
 #pragma mark -
 #pragma mark IBActions
 

@@ -31,15 +31,57 @@
 @synthesize pin;
 @synthesize connectors;
 
+- (void)aPinWasDisconnected:(NSNotification *)notification
+{
+    NSDictionary *userInfo = [notification userInfo];
+    VJXPin *inputPin = [userInfo objectForKey:@"inputPin"];
+    VJXPin *outputPin = [userInfo objectForKey:@"outputPin"];
+    VJXConnectorLayer *toDisconnect = nil;
+    for (VJXConnectorLayer *connector in connectors) {
+        if (connector.originPinLayer == self) {
+            if (connector.destinationPinLayer.pin == inputPin ||
+                connector.destinationPinLayer.pin == outputPin)
+            {
+                toDisconnect = connector;
+                break;
+            }
+        } else {
+            if (connector.originPinLayer.pin == inputPin ||
+                connector.originPinLayer.pin == outputPin)
+            {
+                toDisconnect = connector;
+                break;
+            }
+        }
+    }
+    if (toDisconnect)
+        [toDisconnect disconnect];
+}
+
+- (void)aPinWasConnected:(NSNotification *)notification
+{
+    // do whatever necessary
+}
+
 - (id)initWithPin:(VJXPin *)thePin andPoint:(CGPoint)thePoint outlet:(VJXOutletLayer *)anOutlet
 {
-    if ((self = [super init]) != nil) {
+    self = [super init];
+    if (self) {
         outlet = anOutlet;
         selected = NO;
         connectors = [[NSMutableArray alloc] init];
         self.frame = CGRectMake(thePoint.x, thePoint.y, PIN_OUTLET_WIDTH, PIN_OUTLET_HEIGHT);
         pin = [thePin retain];
+        [[NSNotificationCenter defaultCenter] addObserver:self 
+                                                 selector:@selector(aPinWasConnected:) 
+                                                     name:@"VJXPinConnected"
+                                                   object:thePin];
+        [[NSNotificationCenter defaultCenter] addObserver:self 
+                                                 selector:@selector(aPinWasDisconnected:) 
+                                                     name:@"VJXPinDisconnected"
+                                                   object:thePin];
         [self setupLayer];
+
     }
     return self;
 }
@@ -97,92 +139,6 @@
 - (void)mouseDown:(NSEvent *)theEvent
 {
 }
-
-//- (void)mouseDragged:(NSEvent *)theEvent
-//{
-//    VJXBoardView *board = outlet.entity.board;
-//
-//    if (!tempConnector) {
-//        tempConnector = [[VJXBoardEntityConnector alloc] init];
-//        tempConnector.origin = self;
-//        tempConnector.board = board;
-//        [board addSubview:tempConnector positioned:NSWindowAbove relativeTo:self];
-//    }
-//
-//    NSPoint locationInWindow = [board convertPoint:[theEvent locationInWindow] fromView:nil];
-//
-//    NSPoint thisLocation = [self convertPoint:[self pointAtCenter] toView:board];
-//
-//    float minX = MIN(locationInWindow.x, thisLocation.x) - 10.0;
-//    float minY = MIN(locationInWindow.y, thisLocation.y) - 10.0;
-//    float width = abs(locationInWindow.x - thisLocation.x) + 20.0;
-//    float height = abs(locationInWindow.y - thisLocation.y) + 20.0;
-//
-//    if (width < 6.0) {
-//        width = 6.0;
-//    }
-//    if (height < 6.0) {
-//        height = 6.0;
-//    }
-//
-//    if ((locationInWindow.y < thisLocation.y) && (locationInWindow.x < thisLocation.x)) {
-//        tempConnector.direction = kSouthWestDirection;
-//    }
-//    else if ((locationInWindow.y < thisLocation.y) && (locationInWindow.x > thisLocation.x)) {
-//        tempConnector.direction = kSouthEastDirection;
-//    }
-//    else if ((locationInWindow.y > thisLocation.y) && (locationInWindow.x < thisLocation.x)) {
-//        tempConnector.direction = kNorthWestDirection;
-//    }
-//    else if ((locationInWindow.y > thisLocation.y) && (locationInWindow.x > thisLocation.x)) {
-//        tempConnector.direction = kNorthEastDirection;
-//    }
-//
-//    NSRect frame = NSMakeRect(minX, minY, width, height);
-//    [tempConnector setFrame:frame];
-//}
-//
-//- (void)mouseUp:(NSEvent *)theEvent
-//{
-//    VJXBoardView *board = outlet.entity.board;
-//
-//    NSPoint locationInWindow = [board convertPoint:[theEvent locationInWindow] fromView:nil];
-//    locationInWindow.x -= PIN_OUTLET_PADDING;
-//    locationInWindow.y -= PIN_OUTLET_PADDING;
-//    NSView *aView = [board hitTest:locationInWindow];
-//
-//    BOOL isConnected = NO;
-//
-//    if ([aView isKindOfClass:[VJXPinLayer class]]) {
-//
-//        VJXPinLayer *otherPin = (VJXPinLayer *)aView;
-//
-//        if ([otherPin isConnected] && ![otherPin multiple])
-//            [otherPin removeAllConnectors];
-//
-//        isConnected = [otherPin.pin connectToPin:self.pin];
-//
-//        if (isConnected) {
-//            [tempConnector setOrigin:self];
-//            [tempConnector setDestination:otherPin];
-//
-//            [otherPin addConnector:tempConnector];
-//            [self addConnector:tempConnector];
-//
-//            [self updateAllConnectorsFrames];
-//
-//            [tempConnector release];
-//            tempConnector = nil;
-//        }
-//    }
-//
-//    if (!isConnected) {
-//        [tempConnector removeFromSuperlayer];
-//        [tempConnector release];
-//        tempConnector = nil;
-//    }
-//}
-//
 
 - (CGPoint)pointAtCenter
 {

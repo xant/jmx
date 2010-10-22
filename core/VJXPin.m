@@ -198,9 +198,9 @@
 
 #pragma mark Implementation
 
-+ (NSString *)nameforType:(VJXPinType)aType
++ (NSString *)nameforType:(VJXPinType)type
 {
-    switch (aType) {
+    switch (type) {
         case kVJXStringPin:
             return @"String";
             break;
@@ -274,16 +274,27 @@
 
 - (BOOL)connectToPin:(VJXPin *)destinationPin
 {
-    if (direction == kVJXOutputPin && destinationPin.direction == kVJXInputPin) {
-        return [(VJXOutputPin *)self connectToPin:(VJXInputPin *)destinationPin];
-    } else if (direction == kVJXInputPin && destinationPin.direction == kVJXOutputPin) {
-        return [(VJXOutputPin *)destinationPin connectToPin:(VJXInputPin *)self];
-    }
-    return NO;
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:destinationPin, @"outputPin", self, @"inputPin", nil];
+    // send a connect notification for all involved pins
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXPinConnected" 
+                                                        object:self
+                                                      userInfo:userInfo];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXPinConnected" 
+                                                        object:destinationPin
+                                                      userInfo:userInfo];
+    return YES;
 }
 
 - (void)disconnectFromPin:(VJXPin *)destinationPin
 {
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:destinationPin, @"outputPin", self, @"inputPin", nil];
+    // send a disconnect notification for all the involved pins
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXPinDisconnected" 
+                                                        object:self
+                                                      userInfo:userInfo];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXPinDisconnected" 
+                                                        object:destinationPin
+                                                      userInfo:userInfo];
 }
 
 - (void)disconnectAllPins

@@ -35,7 +35,8 @@
 
 - (id)initWithOriginPinLayer:(VJXPinLayer *)anOriginPinLayer
 {
-    if ((self = [super init]) != nil) {
+    self = [super init];
+    if (self) {
         self.originPinLayer = anOriginPinLayer;
         self.destinationPinLayer = nil;
     }
@@ -130,8 +131,13 @@
 
 - (void)disconnect
 {
+    [self removeFromSuperlayer];
+    NSLog(@"retain1 %d", [self retainCount]);
     [originPinLayer removeConnector:self];
     [destinationPinLayer removeConnector:self];
+    self.originPinLayer = nil;
+    self.destinationPinLayer = nil;
+    NSLog(@"retain2 %d", [self retainCount]);
 }
 
 - (void)toggleSelected

@@ -134,7 +134,7 @@ typedef enum {
      allowedValues:(NSArray *)pinValues
       initialValue:(id)value;
 
-+ (NSString *)nameforType:(VJXPinType)aType;
++ (NSString *)nameforType:(VJXPinType)type;
 
 - (BOOL)connectToPin:(VJXPin *)destinationPin;
 - (void)disconnectFromPin:(VJXPin *)destinationPin;
@@ -156,6 +156,6 @@ typedef enum {
 - (void)deliverData:(id)data;
 // signals new data to pin's receivers and stores the value in 'currentData'
 - (void)deliverData:(id)data fromSender:(id)sender;
-- (BOOL)canConnectToPin:(VJXPin *)aPin;
+- (BOOL)canConnectToPin:(VJXPin *)pin;
 
 @end

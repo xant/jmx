@@ -80,12 +80,12 @@
     NSArray *outputKeys = [newFilter outputKeys];
     NSLog(@"Filter Input params : %@\nFilter Output params%@", inputKeys, outputKeys);
     @synchronized(self) {
-        for (NSString *pinName in [inputPins copy]) {
+        for (NSString *pinName in [[inputPins copy] autorelease]) {
             // TODO - extendable [VJXEntity defaultInputPins]
             if (pinName != @"frame" && pinName != @"filter" && pinName != @"active")
                 [self unregisterInputPin:pinName];
         }
-        for (NSString *pinName in [outputPins copy]) {
+        for (NSString *pinName in [[outputPins copy] autorelease]) {
             // TODO - extendable [VJXEntity defaultOutputPins]
             if (pinName != @"frame" && pinName != @"active")
                 [self unregisterOutputPin:pinName];

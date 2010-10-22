@@ -30,14 +30,13 @@
 @implementation VJXBoardView
 
 @synthesize selectedLayer;
-@synthesize fakeConnectorLayer;
-@synthesize hoveredPinLayer;
 
 #pragma mark -
 #pragma mark Initialization
 
 - (id)initWithFrame:(NSRect)frame {
-    if (self = [super initWithFrame:frame]) {
+    self = [super initWithFrame:frame];
+    if (self) {
         selected = [[NSMutableArray alloc] init];
         entities = [[NSMutableArray alloc] init];
 		[self registerForDraggedTypes:[NSArray arrayWithObjects:NSURLPboardType,NSFilenamesPboardType,VJXLibraryTableViewDataType,nil]];
@@ -177,11 +176,11 @@
 
     if (aPinLayer) {
         CGPoint pointAtCenter = [self.layer convertPoint:[aPinLayer pointAtCenter] fromLayer:aPinLayer];
-        self.fakeConnectorLayer = [[[VJXConnectorLayer alloc] initWithOriginPinLayer:aPinLayer] autorelease];
+        fakeConnectorLayer = [[[VJXConnectorLayer alloc] initWithOriginPinLayer:aPinLayer] autorelease];
         [aPinLayer addConnector:fakeConnectorLayer];
         fakeConnectorLayer.initialPosition = pointAtCenter;
         fakeConnectorLayer.boardView = self;
-        [self.layer addSublayer:self.fakeConnectorLayer];
+        [self.layer addSublayer:fakeConnectorLayer];
     }
 }
 
@@ -204,12 +203,12 @@
     if (aPinLayer) {
         if ([fakeConnectorLayer.originPinLayer.pin canConnectToPin:aPinLayer.pin]) {
             [hoveredPinLayer unfocus];
-            self.hoveredPinLayer = aPinLayer;
+            hoveredPinLayer = aPinLayer;
             [hoveredPinLayer focus];
         }
         else {
-            [self.hoveredPinLayer unfocus];
-            self.hoveredPinLayer = nil;
+            [hoveredPinLayer unfocus];
+            hoveredPinLayer = nil;
         }
     }
 }
@@ -224,7 +223,7 @@
         }
         else
             [fakeConnectorLayer removeFromSuperlayer];
-        self.fakeConnectorLayer = nil;
+        fakeConnectorLayer = nil;
     }
 
     [hoveredPinLayer unfocus];

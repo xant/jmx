@@ -43,7 +43,8 @@
 
 - (id)initWithEntity:(VJXEntity *)anEntity board:(VJXBoardView *)aBoard
 {
-    if ((self = [super init]) != nil) {
+    self = [super init];
+    if (self) {
         self.geometryFlipped = YES;
         self.outlets = [NSMutableArray array];
         self.inlets = [NSMutableArray array];

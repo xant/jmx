@@ -13,7 +13,7 @@
 
 - (id)init
 {
-    if ((self = [super init]) != nil) {
+    if (self = [super init]) {
         self.geometryFlipped = NO;
         [self setupBoard];
         [self setNeedsDisplay];

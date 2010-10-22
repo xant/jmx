@@ -29,7 +29,8 @@
 
 - (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint isOutput:(BOOL)isOutput entity:(VJXEntityLayer *)anEntity;
 {
-    if ((self = [super init]) != nil) {
+    self = [super init];
+    if (self) {
 
         CGColorRef backgroundColor_ = CGColorCreateGenericRGB(0.0f, 0.0f, 0.0f, 0.0f);
         self.backgroundColor = NULL;

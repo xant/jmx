@@ -33,7 +33,6 @@
 
 @interface VJXBoardView : NSView {
     CGPoint lastDragLocation;
-    VJXBoardSelection *currentSelection;
     VJXEntityLayer *selectedLayer;
     NSMutableArray *selected;
     NSMutableArray *entities;
@@ -41,10 +40,19 @@
     IBOutlet VJXEntityInspectorPanel *inspectorPanel;
 }
 
-@property (nonatomic, retain) VJXBoardSelection *currentSelection;
 @property (assign) VJXEntityLayer *selectedLayer;
 
-- (void)addToBoard:(VJXEntityLayer *)theEntity;
+#pragma mark -
+#pragma mark Notifications
+
 - (void)anEntityWasCreated:(NSNotification *)aNotification;
+
+#pragma mark -
+#pragma mark Helpers
+
+- (void)addToBoard:(VJXEntityLayer *)theEntity;
+- (CGPoint)translatePointToBoardLayer:(NSPoint)aPoint;
+- (VJXEntityLayer *)entityLayerAtPoint:(CGPoint)aPoint;
+- (CGFloat)maxZPosition;
 
 @end

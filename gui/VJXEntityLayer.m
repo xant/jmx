@@ -149,12 +149,12 @@
 
 - (void)reorderOutlets
 {
-    [self setupPinsLayers:self.inlets startingPoint:CGPointMake(self.bounds.origin.x, ENTITY_LABEL_HEIGHT) output:NO];
-    [self setupPinsLayers:self.outlets startingPoint:CGPointMake(self.bounds.size.width - ENTITY_OUTLET_WIDTH, ENTITY_LABEL_HEIGHT) output:YES];
+    [self setupPinsLayers:self.inlets startAtPoint:CGPointMake(self.bounds.origin.x, ENTITY_LABEL_HEIGHT) output:NO];
+    [self setupPinsLayers:self.outlets startAtPoint:CGPointMake(self.bounds.size.width - ENTITY_OUTLET_WIDTH, ENTITY_LABEL_HEIGHT) output:YES];
     [self setNeedsDisplay];
 }
 
-- (void)setupPinsLayers:(NSArray *)pinLayers startingPoint:(CGPoint)aPoint output:(BOOL)isOutput
+- (void)setupPinsLayers:(NSArray *)pinLayers startAtPoint:(CGPoint)aPoint output:(BOOL)isOutput
 {
     int y = aPoint.y;
     for (VJXOutletLayer *outlet in pinLayers) {
@@ -184,15 +184,18 @@
     NSDictionary *userInfo = [notification userInfo];
     NSString *pinName = [userInfo objectForKey:@"pinName"];
     VJXOutletLayer *toRemove = nil;
+
     for (VJXOutletLayer *outlet in self.inlets) {
         if (outlet.pin.pin.name == pinName) {
             toRemove = outlet;
             break;
         }
     }
-    if (toRemove)
+
+    if (toRemove) {
         [self.inlets removeObject:toRemove];
-    [toRemove removeFromSuperlayer];
+        [toRemove removeFromSuperlayer];
+    }
 }
 
 - (void)outputPinAdded:(NSNotification *)notification

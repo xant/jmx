@@ -29,8 +29,10 @@
 
 @implementation VJXBoardView
 
-@synthesize currentSelection;
 @synthesize selectedLayer;
+
+#pragma mark -
+#pragma mark Initialization
 
 - (id)initWithFrame:(NSRect)frame {
     if (self = [super initWithFrame:frame]) {
@@ -55,9 +57,33 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [selected release];
     [entities release];
-    [currentSelection release];
     [super dealloc];
 }
+
+#pragma mark -
+#pragma mark Getters and setters
+
+- (void)setSelectedLayer:(VJXEntityLayer *)aLayer
+{
+    if (aLayer == selectedLayer)
+        return;
+
+    if (aLayer != nil)
+        [aLayer select];
+
+    if (selectedLayer != nil)
+        [selectedLayer unselect];
+
+    selectedLayer = aLayer;
+
+    if (!selectedLayer)
+        return;
+
+    aLayer.zPosition = [self maxZPosition];
+}
+
+#pragma mark -
+#pragma mark Dragging operations
 
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender
 {
@@ -122,64 +148,23 @@
     return YES;
 }
 
-- (void)addToBoard:(VJXEntityLayer *)theEntity
-{
-    [self.layer addSublayer:theEntity];
-    [entities addObject:theEntity];
-    self.selectedLayer = theEntity;
-}
-
-- (void)setSelectedLayer:(VJXEntityLayer *)aLayer
-{
-    if (aLayer == selectedLayer)
-        return;
-
-    if (aLayer != nil)
-        [aLayer select];
-
-    if (selectedLayer != nil)
-        [selectedLayer unselect];
-
-    selectedLayer = aLayer;
-
-    if (!selectedLayer)
-        return;
-
-    CGFloat zPosition = aLayer.zPosition;
-
-    for (CALayer *l in entities) {
-        if (l.zPosition >= zPosition)
-            zPosition = l.zPosition + 0.1f;
-    }
-
-    aLayer.zPosition = zPosition;
-}
+#pragma mark -
+#pragma mark Mouse events
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
-    NSPoint localPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-    NSPoint rootPoint = [self convertPointToBase:localPoint];
-    CGPoint locationInWindow = NSPointToCGPoint(rootPoint);
-    CALayer *aLayer = [self.layer hitTest:locationInWindow];
+    self.selectedLayer = [self entityLayerAtPoint:[theEvent locationInWindow]];
 
-    if ([aLayer isKindOfClass:[VJXEntityLayer class]]) {
-        VJXEntityLayer *entityLayer = (VJXEntityLayer *)aLayer;
-        self.selectedLayer = entityLayer;
-    }
-    else {
-        self.selectedLayer = nil;
+    if (!selectedLayer) {
+        // Should create a selection layer on top of everything.
     }
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent
 {
-    NSPoint localPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-    NSPoint rootPoint = [self convertPointToBase:localPoint];
-    CGPoint newDragLocation = NSPointToCGPoint(rootPoint);
-
     [CATransaction begin];
     [CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
-    self.selectedLayer.position = newDragLocation;
+    self.selectedLayer.position = [self translatePointToBoardLayer:[theEvent locationInWindow]];
     [CATransaction commit];
 }
 
@@ -193,13 +178,50 @@
 - (void)anEntityWasCreated:(NSNotification *)aNotification
 {
     VJXEntity *anEntity = [aNotification object];
-    VJXEntityLayer *boardEntity = [[VJXEntityLayer alloc] initWithEntity:anEntity board:self];
-    [self addToBoard:boardEntity];
+    [self addToBoard:[[[VJXEntityLayer alloc] initWithEntity:anEntity board:self] autorelease]];
 
     if ([anEntity conformsToProtocol:@protocol(VJXRunLoop)])
         [anEntity performSelector:@selector(start)];
+}
 
-    [boardEntity release];
+#pragma mark -
+#pragma mark Helpers
+
+- (void)addToBoard:(VJXEntityLayer *)theEntity
+{
+    [self.layer addSublayer:theEntity];
+    [entities addObject:theEntity];
+    self.selectedLayer = theEntity;
+}
+
+- (CGPoint)translatePointToBoardLayer:(NSPoint)aPoint
+{
+    NSPoint localPoint = [self convertPoint:aPoint fromView:nil];
+    NSPoint rootPoint = [self convertPointToBase:localPoint];
+    CGPoint translatedPoint = NSPointToCGPoint(rootPoint);
+    return translatedPoint;
+}
+
+- (VJXEntityLayer *)entityLayerAtPoint:(NSPoint)aPoint
+{
+    CALayer *aLayer = [self.layer hitTest:[self translatePointToBoardLayer:aPoint]];
+
+    if ([aLayer isKindOfClass:[VJXEntityLayer class]])
+        return (VJXEntityLayer *)aLayer;
+
+    return nil;
+}
+
+- (CGFloat)maxZPosition
+{
+    CGFloat zPosition = ((CALayer *)[[self.layer sublayers] objectAtIndex:0]).zPosition;
+
+    for (CALayer *l in entities) {
+        if (l.zPosition >= zPosition)
+            zPosition = l.zPosition + 0.1f;
+    }
+
+    return zPosition;
 }
 
 @end

@@ -50,6 +50,11 @@
 @property (nonatomic,assign) VJXPinLayer *hoveredPinLayer;
 
 #pragma mark -
+#pragma mark IBActions
+
+- (IBAction)removeSelected:(id)sender;
+
+#pragma mark -
 #pragma mark Notifications
 
 - (void)anEntityWasCreated:(NSNotification *)aNotification;

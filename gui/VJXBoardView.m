@@ -63,6 +63,15 @@
 }
 
 #pragma mark -
+#pragma mark IBActions
+
+- (IBAction)removeSelected:(id)sender
+{
+    [selectedLayer removeFromSuperlayer];
+    selectedLayer = nil;
+}
+
+#pragma mark -
 #pragma mark Getters and setters
 
 - (void)setSelectedLayer:(VJXEntityLayer *)aLayer

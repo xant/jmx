@@ -79,30 +79,30 @@ typedef enum {
 
 + (id)pinWithName:(NSString *)name
           andType:(VJXPinType)pinType
-     forDirection:(VJXPinDirection)pinDirection 
-          ownedBy:(id)pinOwner 
+     forDirection:(VJXPinDirection)pinDirection
+          ownedBy:(id)pinOwner
        withSignal:(NSString *)pinSignal;
 
 + (id)pinWithName:(NSString *)name
           andType:(VJXPinType)pinType
-     forDirection:(VJXPinDirection)pinDirection 
-          ownedBy:(id)pinOwner 
+     forDirection:(VJXPinDirection)pinDirection
+          ownedBy:(id)pinOwner
        withSignal:(NSString *)pinSignal
          userData:(id)userData;
 
 
 + (id)pinWithName:(NSString *)name
           andType:(VJXPinType)pinType
-     forDirection:(VJXPinDirection)pinDirection 
-          ownedBy:(id)pinOwner 
+     forDirection:(VJXPinDirection)pinDirection
+          ownedBy:(id)pinOwner
        withSignal:(NSString *)pinSignal
          userData:(id)userData
     allowedValues:(NSArray *)allowedValues;
 
 + (id)pinWithName:(NSString *)name
           andType:(VJXPinType)pinType
-     forDirection:(VJXPinDirection)pinDirection 
-          ownedBy:(id)pinOwner 
+     forDirection:(VJXPinDirection)pinDirection
+          ownedBy:(id)pinOwner
        withSignal:(NSString *)pinSignal
          userData:(id)userData
     allowedValues:(NSArray *)allowedValues
@@ -156,4 +156,6 @@ typedef enum {
 - (void)deliverData:(id)data;
 // signals new data to pin's receivers and stores the value in 'currentData'
 - (void)deliverData:(id)data fromSender:(id)sender;
+- (BOOL)canConnectToPin:(VJXPin *)aPin;
+
 @end

@@ -37,6 +37,7 @@
 @interface VJXBoardView : NSView {
     CGPoint lastDragLocation;
     VJXEntityLayer *selectedLayer;
+    VJXPinLayer *hoveredPinLayer;
     VJXConnectorLayer *fakeConnectorLayer;
     NSMutableArray *selected;
     NSMutableArray *entities;
@@ -46,6 +47,7 @@
 
 @property (assign) VJXEntityLayer *selectedLayer;
 @property (assign) VJXConnectorLayer *fakeConnectorLayer;
+@property (assign) VJXPinLayer *hoveredPinLayer;
 
 #pragma mark -
 #pragma mark Notifications

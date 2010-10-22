@@ -28,36 +28,72 @@
 
 @synthesize selected;
 @synthesize direction;
-//@synthesize origin;
-//@synthesize destination;
+@synthesize originPinLayer;
+@synthesize destinationPinLayer;
 @synthesize boardView;
 @synthesize initialPosition;
 
+- (id)initWithOriginPinLayer:(VJXPinLayer *)anOriginPinLayer
+{
+    if ((self = [super init]) != nil) {
+        self.originPinLayer = anOriginPinLayer;
+        self.destinationPinLayer = nil;
+    }
+    return self;
+}
+
 - (void)dealloc
 {
-//    [self setOrigin:nil];
-//    [self setDestination:nil];
+    self.originPinLayer = nil;
+    self.destinationPinLayer = nil;
     [super dealloc];
 }
 
 - (void)drawInContext:(CGContextRef)theContext
 {
-    NSLog(@"%s", _cmd);
     CGContextSaveGState(theContext);
 
     CGColorRef backgroundColor_ = CGColorCreateGenericRGB(0.0f, 0.0f, 0.0f, 0.1f);
+    CGColorRef foregroundColor_ = CGColorCreateGenericRGB(0.0f, 0.0f, 0.0f, 0.5f);
 
     CGMutablePathRef thePath = CGPathCreateMutable();
 
-    CGPathAddRect(thePath, NULL, self.bounds);
-
     CGContextSetFillColorWithColor(theContext, backgroundColor_);
+    CGContextSetStrokeColorWithColor(theContext, foregroundColor_);
+
+    CGPoint initialPoint, endPoint, controlPoint1, controlPoint2;
+
+    CGRect frame = self.bounds;
+
+    CGFloat scale = frame.size.width > frame.size.height
+    ? frame.size.width / frame.size.height
+    : frame.size.height / frame.size.width;
+
+    if ((direction == kSouthEastDirection) || (direction == kNorthWestDirection)) {
+        initialPoint = CGPointMake(ORIGIN_OFFSET, frame.size.height - ORIGIN_OFFSET);
+        endPoint = CGPointMake(frame.size.width - ORIGIN_OFFSET, ORIGIN_OFFSET);
+        controlPoint1 = CGPointMake(frame.size.width / scale, frame.size.height - ORIGIN_OFFSET);
+        controlPoint2 = CGPointMake(frame.size.width - (frame.size.width / scale), ORIGIN_OFFSET);
+    }
+    else {
+        initialPoint = CGPointMake(ORIGIN_OFFSET, ORIGIN_OFFSET);
+        endPoint = CGPointMake(frame.size.width - ORIGIN_OFFSET, frame.size.height - ORIGIN_OFFSET);
+        controlPoint1 = CGPointMake(frame.size.width / scale, ORIGIN_OFFSET);
+        controlPoint2 = CGPointMake(frame.size.width - (frame.size.width / scale), frame.size.height - ORIGIN_OFFSET);
+    }
+
+    CGPathMoveToPoint(thePath, NULL, initialPoint.x, initialPoint.y);
+    CGPathAddCurveToPoint(thePath, NULL, controlPoint1.x, controlPoint1.y, controlPoint2.x, controlPoint2.y, endPoint.x, endPoint.y);
 
     CGContextAddPath(theContext, thePath);
+    CGContextSetLineWidth(theContext, CONNECTOR_LINE_WIDTH);
+    CGContextStrokePath(theContext);
 
-    CGContextFillPath(theContext);
+//    NSLog(@"d:%i, i:%@ → e:%@", direction, NSStringFromPoint(NSPointFromCGPoint(initialPoint)), NSStringFromPoint(NSPointFromCGPoint(endPoint)));
 
     CFRelease(thePath);
+    CFRelease(backgroundColor_);
+    CFRelease(foregroundColor_);
 
     CGContextRestoreGState(theContext);
 }
@@ -66,6 +102,15 @@
 {
     CGPoint originLocation = self.initialPosition;
     CGPoint destinationLocation = aPoint;
+
+    direction =
+    ((originLocation.x < destinationLocation.x) && (originLocation.y < destinationLocation.y))
+    ? kSouthWestDirection
+    : ((originLocation.x > destinationLocation.x) && (originLocation.y < destinationLocation.y))
+    ? kSouthEastDirection
+    : ((originLocation.x > destinationLocation.x) && (originLocation.y > destinationLocation.y))
+    ? kNorthEastDirection
+    : kNorthWestDirection;
 
     CGFloat x = MIN(originLocation.x, destinationLocation.x) - ORIGIN_OFFSET;
     CGFloat y = MIN(originLocation.y, destinationLocation.y) - ORIGIN_OFFSET;

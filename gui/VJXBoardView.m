@@ -31,6 +31,7 @@
 
 @synthesize selectedLayer;
 @synthesize fakeConnectorLayer;
+@synthesize hoveredPinLayer;
 
 #pragma mark -
 #pragma mark Initialization
@@ -167,7 +168,7 @@
 
     if (aPinLayer) {
         CGPoint pointAtCenter = [self.layer convertPoint:[aPinLayer pointAtCenter] fromLayer:aPinLayer];
-        self.fakeConnectorLayer = [[[VJXConnectorLayer alloc] init] autorelease];
+        self.fakeConnectorLayer = [[[VJXConnectorLayer alloc] initWithOriginPinLayer:aPinLayer] autorelease];
         fakeConnectorLayer.initialPosition = pointAtCenter;
         fakeConnectorLayer.boardView = self;
         [self.layer addSublayer:self.fakeConnectorLayer];
@@ -187,6 +188,19 @@
         self.selectedLayer.position = [self translatePointToBoardLayer:[theEvent locationInWindow]];
     }
     [CATransaction commit];
+
+    VJXPinLayer *aPinLayer = [self pinLayerAtPoint:[theEvent locationInWindow]];
+    if (aPinLayer) {
+        if ([self.fakeConnectorLayer.originPinLayer.pin canConnectToPin:aPinLayer.pin]) {
+            [self.hoveredPinLayer unfocus];
+            self.hoveredPinLayer = aPinLayer;
+            [self.hoveredPinLayer focus];
+        }
+        else {
+            [self.hoveredPinLayer unfocus];
+            self.hoveredPinLayer = nil;
+        }
+    }
 }
 
 - (void)mouseUp:(NSEvent *)theEvent
@@ -195,6 +209,9 @@
         [self.fakeConnectorLayer removeFromSuperlayer];
         self.fakeConnectorLayer = nil;
     }
+
+    [self.hoveredPinLayer unfocus];
+    self.hoveredPinLayer = nil;
 }
 
 #pragma mark -

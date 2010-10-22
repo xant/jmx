@@ -241,4 +241,18 @@
     self.selected = !self.selected;
 }
 
+- (void)focus
+{
+    CGColorRef *backgroundColor_ = CGColorCreateGenericRGB(0.0f, 1.0f, 0.0f, 1.0f);
+    self.backgroundColor = backgroundColor_;
+    CFRelease(backgroundColor_);
+}
+
+- (void)unfocus
+{
+    CGColorRef *backgroundColor_ = CGColorCreateGenericRGB(1.0f, 0.0f, 0.0f, 1.0f);
+    self.backgroundColor = backgroundColor_;
+    CFRelease(backgroundColor_);
+}
+
 @end

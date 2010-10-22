@@ -58,4 +58,7 @@
 - (void)toggleSelected;
 - (void)setupLayer;
 
+- (void)focus;
+- (void)unfocus;
+
 @end

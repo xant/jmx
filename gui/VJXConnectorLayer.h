@@ -41,8 +41,8 @@ enum Direction {
     BOOL selected;
     VJXBoardView *boardView;
     CGPoint initialPosition;
-//    VJXPinLayer *origin;
-//    VJXPinLayer *destination;
+    VJXPinLayer *originPinLayer;
+    VJXPinLayer *destinationPinLayer;
     NSUInteger direction;
 }
 
@@ -52,11 +52,12 @@ enum Direction {
 @property (assign) NSUInteger direction;
 
 // make this weak references otherwise pins will be overretained an never released
-//@property (nonatomic,assign) VJXPinLayer *origin;
-//@property (nonatomic,assign) VJXPinLayer *destination;
+@property (nonatomic,assign) VJXPinLayer *originPinLayer;
+@property (nonatomic,assign) VJXPinLayer *destinationPinLayer;
+
+- (id)initWithOriginPinLayer:(VJXPinLayer *)anOriginPinLayer;
 
 - (void)toggleSelected;
-
 - (void)recalculateFrameWithPoint:(CGPoint)aPoint;
 
 @end

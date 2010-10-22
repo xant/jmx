@@ -28,7 +28,7 @@
 
 @implementation VJXPin
 
-@synthesize type, name, multiple, continuous, buffered, retainData, 
+@synthesize type, name, multiple, continuous, buffered, retainData,
             direction, allowedValues, owner, minValue, maxValue;
 
 #pragma mark Constructors
@@ -41,7 +41,7 @@
          userData:(id)userData
     allowedValues:(NSArray *)pinValues
      initialValue:(id)value
-    
+
 {
     id pinClass = pinDirection == kVJXInputPin
                 ? [VJXInputPin class]
@@ -340,7 +340,7 @@
 }
 
 - (void)addAllowedValues:(NSArray *)values
-{  
+{
     for (id value in values)
         [self addAllowedValue:value];
 }
@@ -366,7 +366,7 @@
 {
     if ([self isCorrectDataType:minValue])
         minValue = [value retain];
-    
+
 }
 
 - (void)addMaxLimit:(id)value
@@ -394,13 +394,13 @@
     SEL selector = NSSelectorFromString(selectorName);
     int selectorArgsNum = [[selectorName componentsSeparatedByString:@":"] count]-1;
     // checks are now done when registering receivers
-    // so we can avoid checking again now if receiver responds to selector and 
+    // so we can avoid checking again now if receiver responds to selector and
     // if the selector expects the correct amount of arguments.
     // this routine is expected to deliver the signals as soon as possible
     // all safety checks must be done before putting new objects in the receivers' table
     switch (selectorArgsNum) {
         case 0:
-            // some listener could be uninterested to the data, 
+            // some listener could be uninterested to the data,
             // but just want to get notified when something travels on a pin
             [receiver performSelector:selector withObject:nil];
             break;
@@ -449,7 +449,7 @@
                 currentSender = self;
         }
         VJXPinSignal *signal = [VJXPinSignal signalFrom:sender withData:data];
-        
+
 #if USE_NSOPERATIONS
         NSBlockOperation *signalDelivery = [NSBlockOperation blockOperationWithBlock:^{
             [self performSignal:signal];
@@ -466,11 +466,16 @@
 - (void)performSignal:(VJXPinSignal *)signal
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    // send the signal to our owner 
+    // send the signal to our owner
     // (if we are an input pin and if our owner registered a selector)
     if (direction == kVJXInputPin && owner && ownerSignal)
         [self sendData:signal.data toReceiver:owner withSelector:ownerSignal fromSender:signal.sender];
     [pool drain];
+}
+
+- (BOOL)canConnectToPin:(VJXPin *)aPin
+{
+    return (self.type == aPin.type && self.direction != aPin.direction) ? YES : NO;
 }
 
 @end

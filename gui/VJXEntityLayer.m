@@ -417,4 +417,10 @@ id controlForVJXPinType(VJXPinType aType)
     }
 }
 
+- (void)updateConnectors
+{
+    [outlets makeObjectsPerformSelector:@selector(updateAllConnectorsFrames)];
+    [inlets makeObjectsPerformSelector:@selector(updateAllConnectorsFrames)];
+}
+
 @end

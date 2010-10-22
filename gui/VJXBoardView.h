@@ -45,9 +45,9 @@
     IBOutlet VJXEntityInspectorPanel *inspectorPanel;
 }
 
-@property (assign) VJXEntityLayer *selectedLayer;
-@property (assign) VJXConnectorLayer *fakeConnectorLayer;
-@property (assign) VJXPinLayer *hoveredPinLayer;
+@property (nonatomic,assign) VJXEntityLayer *selectedLayer;
+@property (nonatomic,assign) VJXConnectorLayer *fakeConnectorLayer;
+@property (nonatomic,assign) VJXPinLayer *hoveredPinLayer;
 
 #pragma mark -
 #pragma mark Notifications

@@ -100,117 +100,45 @@
 
 - (void)recalculateFrameWithPoint:(CGPoint)aPoint
 {
-    CGPoint originLocation = self.initialPosition;
-    CGPoint destinationLocation = aPoint;
+    [self recalculateFrameWithPoint:aPoint andPoint:self.initialPosition];
+}
 
+- (void)recalculateFrameWithPoint:(CGPoint)originPoint andPoint:(CGPoint)destinationPoint
+{
     direction =
-    ((originLocation.x < destinationLocation.x) && (originLocation.y < destinationLocation.y))
+    ((originPoint.x < destinationPoint.x) && (originPoint.y < destinationPoint.y))
     ? kSouthWestDirection
-    : ((originLocation.x > destinationLocation.x) && (originLocation.y < destinationLocation.y))
+    : ((originPoint.x > destinationPoint.x) && (originPoint.y < destinationPoint.y))
     ? kSouthEastDirection
-    : ((originLocation.x > destinationLocation.x) && (originLocation.y > destinationLocation.y))
+    : ((originPoint.x > destinationPoint.x) && (originPoint.y > destinationPoint.y))
     ? kNorthEastDirection
     : kNorthWestDirection;
 
-    CGFloat x = MIN(originLocation.x, destinationLocation.x) - ORIGIN_OFFSET;
-    CGFloat y = MIN(originLocation.y, destinationLocation.y) - ORIGIN_OFFSET;
-    CGFloat w = abs(originLocation.x - destinationLocation.x) + DESTINATION_OFFSET;
-    CGFloat h = abs(originLocation.y - destinationLocation.y) + DESTINATION_OFFSET;
+    CGFloat x = MIN(originPoint.x, destinationPoint.x) - ORIGIN_OFFSET;
+    CGFloat y = MIN(originPoint.y, destinationPoint.y) - ORIGIN_OFFSET;
+    CGFloat w = abs(originPoint.x - destinationPoint.x) + DESTINATION_OFFSET;
+    CGFloat h = abs(originPoint.y - destinationPoint.y) + DESTINATION_OFFSET;
 
     self.frame = CGRectMake(x, y, w, h);
+    [self setNeedsDisplay];
 }
 
-//- (void)drawRect:(NSRect)dirtyRect
-//{
-//    NSBezierPath *thePath = [[NSBezierPath alloc] init];
-//
-//#if 0
-//    [[NSColor colorWithDeviceRed:1.0 green:0.0 blue:0.0 alpha:0.25] setFill];
-//    [thePath appendBezierPathWithRect:[self bounds]];
-//    [thePath fill];
-//    [thePath closePath];
-//#endif
-//    [thePath setLineWidth:CONNECTOR_LINE_WIDTH];
-//
-//    NSPoint initialPoint, endPoint, controlPoint1, controlPoint2;
-//    NSRect frame = [self frame];
-//
-//    float scale = frame.size.width > frame.size.height
-//    ? frame.size.width / frame.size.height
-//    : frame.size.height / frame.size.width;
-//
-//    if ((direction == kSouthEastDirection) || (direction == kNorthWestDirection)) {
-//        initialPoint = NSMakePoint(ORIGIN_OFFSET, frame.size.height - ORIGIN_OFFSET);
-//        endPoint = NSMakePoint(frame.size.width - ORIGIN_OFFSET, ORIGIN_OFFSET);
-//        controlPoint1 = NSMakePoint(frame.size.width / scale, frame.size.height - ORIGIN_OFFSET);
-//        controlPoint2 = NSMakePoint(frame.size.width - (frame.size.width / scale), ORIGIN_OFFSET);
-//    }
-//    else {
-//        initialPoint = NSMakePoint(ORIGIN_OFFSET, ORIGIN_OFFSET);
-//        endPoint = NSMakePoint(frame.size.width - ORIGIN_OFFSET, frame.size.height - ORIGIN_OFFSET);
-//        controlPoint1 = NSMakePoint(frame.size.width / scale, ORIGIN_OFFSET);
-//        controlPoint2 = NSMakePoint(frame.size.width - (frame.size.width / scale), frame.size.height - ORIGIN_OFFSET);
-//    }
-//
-//    [thePath moveToPoint:initialPoint];
-//    [thePath curveToPoint:endPoint controlPoint1:controlPoint1 controlPoint2:controlPoint2];
-//    [thePath setLineCapStyle:NSRoundLineCapStyle];
-//
-//    if (self.selected)
-//        [[NSColor yellowColor] setStroke];
-//    else
-//        [[NSColor blackColor] setStroke];
-//
-//    NSShadow *lineShadow = [[NSShadow alloc] init];
-//    [lineShadow setShadowColor:[NSColor blackColor]];
-//    [lineShadow setShadowBlurRadius:2.5];
-//    [lineShadow setShadowOffset:NSMakeSize(CONNECTOR_LINE_WIDTH, - CONNECTOR_LINE_WIDTH)];
-//    [lineShadow set];
-//
-//    [thePath stroke];
-//
-//    [thePath release];
-//    [lineShadow release];
-//}
-//
-//- (void)recalculateFrame
-//{
-//    NSPoint originLocation = [origin convertPoint:[origin pointAtCenter] toView:board];
-//    NSPoint destinationLocation = [destination convertPoint:[destination pointAtCenter] toView:board];
-//
-//    float x = MIN(originLocation.x, destinationLocation.x) - ORIGIN_OFFSET;
-//    float y = MIN(originLocation.y, destinationLocation.y) - ORIGIN_OFFSET;
-//    float w = abs(originLocation.x - destinationLocation.x) + DESTINATION_OFFSET;
-//    float h = abs(originLocation.y - destinationLocation.y) + DESTINATION_OFFSET;
-//
-//    direction =
-//    ((originLocation.x < destinationLocation.x) && (originLocation.y < destinationLocation.y))
-//    ? kSouthWestDirection
-//    : ((originLocation.x > destinationLocation.x) && (originLocation.y < destinationLocation.y))
-//    ? kSouthEastDirection
-//    : ((originLocation.x > destinationLocation.x) && (originLocation.y > destinationLocation.y))
-//    ? kNorthEastDirection
-//    : kNorthWestDirection;
-//
-//    NSRect frame = NSMakeRect(x, y, w + CONNECTOR_LINE_WIDTH, h + CONNECTOR_LINE_WIDTH);
-//    [self setFrame:frame];
-//}
+- (void)recalculateFrame
+{
+    CGPoint originPoint = [boardView.layer convertPoint:[originPinLayer pointAtCenter] fromLayer:originPinLayer];
+    CGPoint destinationPoint = [boardView.layer convertPoint:[destinationPinLayer pointAtCenter] fromLayer:destinationPinLayer];
+    [self recalculateFrameWithPoint:originPoint andPoint:destinationPoint];
+}
 
 - (void)disconnect
 {
-//    [self.origin removeConnector:self];
-//    [self.destination removeConnector:self];
-}
-
-- (void)mouseDown:(NSEvent *)theEvent
-{
+    [originPinLayer removeConnector:self];
+    [destinationPinLayer removeConnector:self];
 }
 
 - (void)toggleSelected
 {
     self.selected = !self.selected;
-//    [self.origin toggleSelected];
-//    [self.destination toggleSelected];
 }
 
 - (void)setSelected:(BOOL)isSelected

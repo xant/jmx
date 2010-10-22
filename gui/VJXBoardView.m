@@ -169,6 +169,7 @@
     if (aPinLayer) {
         CGPoint pointAtCenter = [self.layer convertPoint:[aPinLayer pointAtCenter] fromLayer:aPinLayer];
         self.fakeConnectorLayer = [[[VJXConnectorLayer alloc] initWithOriginPinLayer:aPinLayer] autorelease];
+        [aPinLayer addConnector:fakeConnectorLayer];
         fakeConnectorLayer.initialPosition = pointAtCenter;
         fakeConnectorLayer.boardView = self;
         [self.layer addSublayer:self.fakeConnectorLayer];
@@ -185,16 +186,17 @@
         [fakeConnectorLayer setNeedsDisplay];
     }
     else if (selectedLayer) {
-        self.selectedLayer.position = [self translatePointToBoardLayer:[theEvent locationInWindow]];
+        selectedLayer.position = [self translatePointToBoardLayer:[theEvent locationInWindow]];
+        [selectedLayer updateConnectors];
     }
     [CATransaction commit];
 
     VJXPinLayer *aPinLayer = [self pinLayerAtPoint:[theEvent locationInWindow]];
     if (aPinLayer) {
-        if ([self.fakeConnectorLayer.originPinLayer.pin canConnectToPin:aPinLayer.pin]) {
-            [self.hoveredPinLayer unfocus];
+        if ([fakeConnectorLayer.originPinLayer.pin canConnectToPin:aPinLayer.pin]) {
+            [hoveredPinLayer unfocus];
             self.hoveredPinLayer = aPinLayer;
-            [self.hoveredPinLayer focus];
+            [hoveredPinLayer focus];
         }
         else {
             [self.hoveredPinLayer unfocus];
@@ -206,12 +208,19 @@
 - (void)mouseUp:(NSEvent *)theEvent
 {
     if (fakeConnectorLayer) {
-        [self.fakeConnectorLayer removeFromSuperlayer];
+        if (hoveredPinLayer && [fakeConnectorLayer.originPinLayer.pin canConnectToPin:hoveredPinLayer.pin]) {
+            [fakeConnectorLayer.originPinLayer.pin connectToPin:fakeConnectorLayer.destinationPinLayer.pin];
+            fakeConnectorLayer.destinationPinLayer = hoveredPinLayer;
+            [hoveredPinLayer addConnector:fakeConnectorLayer];
+        }
+        else
+            [fakeConnectorLayer removeFromSuperlayer];
         self.fakeConnectorLayer = nil;
     }
 
-    [self.hoveredPinLayer unfocus];
-    self.hoveredPinLayer = nil;
+
+    [hoveredPinLayer unfocus];
+    hoveredPinLayer = nil;
 }
 
 #pragma mark -

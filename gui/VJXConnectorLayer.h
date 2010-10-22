@@ -59,5 +59,6 @@ enum Direction {
 
 - (void)toggleSelected;
 - (void)recalculateFrameWithPoint:(CGPoint)aPoint;
+- (void)recalculateFrameWithPoint:(CGPoint)originPoint andPoint:(CGPoint)destinationPoint;
 
 @end

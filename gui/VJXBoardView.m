@@ -141,8 +141,7 @@
 		NSPasteboard *pboard = [sender draggingPasteboard];
 		NSData *data = [pboard dataForType:VJXLibraryTableViewDataType];
 		NSString *className = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-        NSPoint draggingLocation = [self convertPoint:[sender draggingLocation] fromView:nil];
-        [document createEntityWithClass:NSClassFromString(className) atPoint:draggingLocation];
+        [document createEntityWithClass:NSClassFromString(className) atPoint:[sender draggingLocation]];
 	}
 
     return YES;
@@ -178,7 +177,14 @@
 - (void)anEntityWasCreated:(NSNotification *)aNotification
 {
     VJXEntity *anEntity = [aNotification object];
-    [self addToBoard:[[[VJXEntityLayer alloc] initWithEntity:anEntity board:self] autorelease]];
+    VJXEntityLayer *entityLayer = [[[VJXEntityLayer alloc] initWithEntity:anEntity board:self] autorelease];
+
+    NSValue *pointValue = [[aNotification userInfo] valueForKey:@"origin"];
+
+    if (pointValue)
+        entityLayer.position = [self translatePointToBoardLayer:[pointValue pointValue]];
+
+    [self addToBoard:entityLayer];
 
     if ([anEntity conformsToProtocol:@protocol(VJXRunLoop)])
         [anEntity performSelector:@selector(start)];

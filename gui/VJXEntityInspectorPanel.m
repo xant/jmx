@@ -47,7 +47,7 @@
 
 - (void)setEntity:(VJXEntityLayer *)anEntityLayer
 {
-    entityLayer = entityLayer;
+    entityLayer = anEntityLayer;
 
     //[inputPins setDataSource:inspector];
     if ([inputPins dataSource] != self) {
@@ -60,6 +60,7 @@
         [outputPins setDelegate:self];
     }
     [outputPins reloadData];
+
     if ([producers dataSource] != self) {
         [producers setDataSource:self];
         [producers setDelegate:self];

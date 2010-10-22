@@ -9,6 +9,6 @@
 #import "NSColorExtensions.h"
 
 
-@implementation NSColorExtensions
+@implementation NSColor (VeeJay)
 
 @end

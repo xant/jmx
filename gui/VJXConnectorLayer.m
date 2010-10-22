@@ -89,8 +89,6 @@
     CGContextSetLineWidth(theContext, CONNECTOR_LINE_WIDTH);
     CGContextStrokePath(theContext);
 
-//    NSLog(@"d:%i, i:%@ → e:%@", direction, NSStringFromPoint(NSPointFromCGPoint(initialPoint)), NSStringFromPoint(NSPointFromCGPoint(endPoint)));
-
     CFRelease(thePath);
     CFRelease(backgroundColor_);
     CFRelease(foregroundColor_);

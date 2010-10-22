@@ -209,7 +209,7 @@
 {
     if (fakeConnectorLayer) {
         if (hoveredPinLayer && [fakeConnectorLayer.originPinLayer.pin canConnectToPin:hoveredPinLayer.pin]) {
-            [fakeConnectorLayer.originPinLayer.pin connectToPin:fakeConnectorLayer.destinationPinLayer.pin];
+            [fakeConnectorLayer.originPinLayer.pin connectToPin:hoveredPinLayer.pin];
             fakeConnectorLayer.destinationPinLayer = hoveredPinLayer;
             [hoveredPinLayer addConnector:fakeConnectorLayer];
         }
@@ -217,7 +217,6 @@
             [fakeConnectorLayer removeFromSuperlayer];
         self.fakeConnectorLayer = nil;
     }
-
 
     [hoveredPinLayer unfocus];
     hoveredPinLayer = nil;

@@ -23,17 +23,21 @@
 
 #import <Cocoa/Cocoa.h>
 #import "VJXEntityLayer.h"
-#import "VJXBoardEntityConnector.h"
+#import "VJXConnectorLayer.h"
+#import "VJXPinLayer.h"
 #import "VJXEntityInspectorPanel.h"
 #import "VJXBoardSelection.h"
 
 #import "VJXDocument.h"
 
 @class VJXDocument;
+@class VJXPinLayer;
+@class VJXConnectorLayer;
 
 @interface VJXBoardView : NSView {
     CGPoint lastDragLocation;
     VJXEntityLayer *selectedLayer;
+    VJXConnectorLayer *fakeConnectorLayer;
     NSMutableArray *selected;
     NSMutableArray *entities;
     IBOutlet VJXDocument *document;
@@ -41,6 +45,7 @@
 }
 
 @property (assign) VJXEntityLayer *selectedLayer;
+@property (assign) VJXConnectorLayer *fakeConnectorLayer;
 
 #pragma mark -
 #pragma mark Notifications
@@ -53,6 +58,7 @@
 - (void)addToBoard:(VJXEntityLayer *)theEntity;
 - (CGPoint)translatePointToBoardLayer:(NSPoint)aPoint;
 - (VJXEntityLayer *)entityLayerAtPoint:(CGPoint)aPoint;
+- (VJXPinLayer *)pinLayerAtPoint:(CGPoint)aPoint;
 - (CGFloat)maxZPosition;
 
 @end

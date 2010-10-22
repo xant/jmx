@@ -39,19 +39,16 @@
 
 }
 
-- (void)unsetEntity:(VJXEntityLayer *)entity
+- (void)unsetEntity:(VJXEntityLayer *)anEntityLayer
 {
-    if (entityView == entity)
-        entityView = nil;
+    if (entityLayer == anEntityLayer)
+        entityLayer = nil;
 }
 
-- (void)setEntity:(VJXEntityLayer *)boardEntity
+- (void)setEntity:(VJXEntityLayer *)anEntityLayer
 {
-    /*
-    if (![self isVisible])
-        [self setIsVisible:YES];
-     */
-    entityView = boardEntity;
+    entityLayer = entityLayer;
+
     //[inputPins setDataSource:inspector];
     if ([inputPins dataSource] != self) {
         [inputPins setDataSource:self];
@@ -67,24 +64,26 @@
         [producers setDataSource:self];
         [producers setDelegate:self];
         [producers registerForDraggedTypes:[NSArray arrayWithObject:@"PinRowIndex"]];
-
     }
     [producers reloadData];
 }
+
+#pragma mark -
+#pragma mark NSTableViewDelegate
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
     NSInteger count = 0;
     if (aTableView == inputPins) {
-        count = [[entityView.entity inputPins] count];
+        count = [[entityLayer.entity inputPins] count];
     } else if (aTableView == outputPins) {
-        count = [[entityView.entity outputPins] count];
+        count = [[entityLayer.entity outputPins] count];
     } else if (aTableView == producers) {
         NSInteger selectedRow = [inputPins selectedRow];
         if (selectedRow >= 0) {
-            NSArray *pins = [entityView.entity inputPins];
+            NSArray *pins = [entityLayer.entity inputPins];
             NSString *pinName = [pins objectAtIndex:selectedRow];
-            VJXInputPin *pin = [entityView.entity inputPinWithName:pinName];
+            VJXInputPin *pin = [entityLayer.entity inputPinWithName:pinName];
             return [pin.producers count];
         }
     }
@@ -94,31 +93,31 @@
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
     NSArray *pins = nil;
-    if (entityView.entity) {
+    if (entityLayer.entity) {
         if (aTableView == inputPins) {
-            @synchronized(entityView.entity) {
-                pins = [entityView.entity inputPins];
+            @synchronized(entityLayer.entity) {
+                pins = [entityLayer.entity inputPins];
             }
             if ([[aTableColumn identifier] isEqualTo:@"pinName"])
                 return [pins objectAtIndex:rowIndex];
             else
-                return [[entityView.entity inputPinWithName:[pins objectAtIndex:rowIndex]] typeName];
+                return [[entityLayer.entity inputPinWithName:[pins objectAtIndex:rowIndex]] typeName];
         } else if (aTableView == outputPins) {
-            @synchronized(entityView.entity) {
-                pins = [entityView.entity outputPins];
+            @synchronized(entityLayer.entity) {
+                pins = [entityLayer.entity outputPins];
             }
             if ([[aTableColumn identifier] isEqualTo:@"pinName"])
                 return [pins objectAtIndex:rowIndex];
             else
-                return [[entityView.entity outputPinWithName:[pins objectAtIndex:rowIndex]] typeName];
+                return [[entityLayer.entity outputPinWithName:[pins objectAtIndex:rowIndex]] typeName];
         } else if (aTableView == producers) {
             NSInteger selectedRow = [inputPins selectedRow];
             if (selectedRow >= 0) {
-                @synchronized(entityView.entity) {
-                    pins = [entityView.entity inputPins];
+                @synchronized(entityLayer.entity) {
+                    pins = [entityLayer.entity inputPins];
                 }
                 NSString *pinName = [pins objectAtIndex:selectedRow];
-                VJXInputPin *pin = [entityView.entity inputPinWithName:pinName];
+                VJXInputPin *pin = [entityLayer.entity inputPinWithName:pinName];
                 return [NSString stringWithFormat:@"%@",[[pin.producers objectAtIndex:rowIndex] description]];
             }
         }
@@ -177,9 +176,9 @@
     if (srcRow >= 0) {
         NSInteger selectedRow = [inputPins selectedRow];
         if (selectedRow >= 0) {
-            NSArray *pins = [entityView.entity inputPins];
+            NSArray *pins = [entityLayer.entity inputPins];
             NSString *pinName = [pins objectAtIndex:selectedRow];
-            VJXInputPin *pin = [entityView.entity inputPinWithName:pinName];
+            VJXInputPin *pin = [entityLayer.entity inputPinWithName:pinName];
             if ([pin moveProducerFromIndex:(NSUInteger)srcRow toIndex:(NSUInteger)(srcRow < row)?row-1:row]) {
                 [aTableView reloadData];
                 return YES;
@@ -189,12 +188,15 @@
     return NO;
 }
 
+#pragma mark -
+#pragma mark Notifications
+
 - (void)anEntityWasSelected:(NSNotification *)aNotification
 {
-    VJXEntityLayer *entityLayer = [aNotification object];
-    [self setEntity:entityLayer];
-	[pinsProperties setDataSource:entityLayer];
-	[pinsProperties setDelegate:entityLayer];
+    VJXEntityLayer *anEntityLayer = [aNotification object];
+    [self setEntity:anEntityLayer];
+	[pinsProperties setDataSource:anEntityLayer];
+	[pinsProperties setDelegate:anEntityLayer];
 	[pinsProperties expandItem:nil expandChildren:YES];
     [pinsProperties reloadData];
 }
@@ -202,8 +204,8 @@
 - (void)anEntityWasRemoved:(NSNotification *)aNotification
 {
     VJXEntity *entity = [aNotification object];
-    if (entityView && entityView.entity == entity) {
-        entityView = nil;
+    if (entityLayer && entityLayer.entity == entity) {
+        entityLayer = nil;
         [self clearTableView:pinsProperties];
         [self clearTableView:inputPins];
         [self clearTableView:outputPins];

@@ -21,7 +21,7 @@
 		82456BCC1223DCA700236FE4 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BCB1223DCA700236FE4 /* QuartzCore.framework */; };
 		82456FE912256A4A00236FE4 /* VJXImageLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 82456FE812256A4A00236FE4 /* VJXImageLayer.m */; };
 		824576451227DF5800236FE4 /* VJXPinLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8245763D1227DF5800236FE4 /* VJXPinLayer.m */; };
-		824576461227DF5800236FE4 /* VJXBoardEntityConnector.m in Sources */ = {isa = PBXBuildFile; fileRef = 8245763F1227DF5800236FE4 /* VJXBoardEntityConnector.m */; };
+		824576461227DF5800236FE4 /* VJXConnectorLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8245763F1227DF5800236FE4 /* VJXConnectorLayer.m */; };
 		824576481227DF5800236FE4 /* VJXBoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 824576431227DF5800236FE4 /* VJXBoardView.m */; };
 		82B0A4C31237AFB20006D003 /* VJXOutletLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 82B0A4C21237AFB20006D003 /* VJXOutletLayer.m */; };
 		82EA042F1240BE4A00E28B72 /* VJXDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 82EA042E1240BE4A00E28B72 /* VJXDocument.xib */; };
@@ -108,8 +108,8 @@
 		82456FE812256A4A00236FE4 /* VJXImageLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXImageLayer.m; path = entities/layers/VJXImageLayer.m; sourceTree = "<group>"; };
 		8245763D1227DF5800236FE4 /* VJXPinLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXPinLayer.m; path = gui/VJXPinLayer.m; sourceTree = "<group>"; };
 		8245763E1227DF5800236FE4 /* VJXPinLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXPinLayer.h; path = gui/VJXPinLayer.h; sourceTree = "<group>"; };
-		8245763F1227DF5800236FE4 /* VJXBoardEntityConnector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXBoardEntityConnector.m; path = gui/VJXBoardEntityConnector.m; sourceTree = "<group>"; };
-		824576401227DF5800236FE4 /* VJXBoardEntityConnector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXBoardEntityConnector.h; path = gui/VJXBoardEntityConnector.h; sourceTree = "<group>"; };
+		8245763F1227DF5800236FE4 /* VJXConnectorLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXConnectorLayer.m; path = gui/VJXConnectorLayer.m; sourceTree = "<group>"; };
+		824576401227DF5800236FE4 /* VJXConnectorLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXConnectorLayer.h; path = gui/VJXConnectorLayer.h; sourceTree = "<group>"; };
 		824576411227DF5800236FE4 /* VJXEntityLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXEntityLayer.m; path = gui/VJXEntityLayer.m; sourceTree = "<group>"; };
 		824576421227DF5800236FE4 /* VJXEntityLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXEntityLayer.h; path = gui/VJXEntityLayer.h; sourceTree = "<group>"; };
 		824576431227DF5800236FE4 /* VJXBoardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXBoardView.m; path = gui/VJXBoardView.m; sourceTree = "<group>"; };
@@ -316,8 +316,8 @@
 			children = (
 				8245763D1227DF5800236FE4 /* VJXPinLayer.m */,
 				8245763E1227DF5800236FE4 /* VJXPinLayer.h */,
-				8245763F1227DF5800236FE4 /* VJXBoardEntityConnector.m */,
-				824576401227DF5800236FE4 /* VJXBoardEntityConnector.h */,
+				8245763F1227DF5800236FE4 /* VJXConnectorLayer.m */,
+				824576401227DF5800236FE4 /* VJXConnectorLayer.h */,
 				824576411227DF5800236FE4 /* VJXEntityLayer.m */,
 				824576421227DF5800236FE4 /* VJXEntityLayer.h */,
 				824576431227DF5800236FE4 /* VJXBoardView.m */,
@@ -560,7 +560,7 @@
 				82456BBA1223DBE100236FE4 /* VJXQtVideoLayer.m in Sources */,
 				82456FE912256A4A00236FE4 /* VJXImageLayer.m in Sources */,
 				824576451227DF5800236FE4 /* VJXPinLayer.m in Sources */,
-				824576461227DF5800236FE4 /* VJXBoardEntityConnector.m in Sources */,
+				824576461227DF5800236FE4 /* VJXConnectorLayer.m in Sources */,
 				824576481227DF5800236FE4 /* VJXBoardView.m in Sources */,
 				AA0F48A8122E7503005A1C95 /* VJXEntity.m in Sources */,
 				AA0F48AB12302BBA005A1C95 /* VJXPin.m in Sources */,

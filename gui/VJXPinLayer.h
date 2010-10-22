@@ -22,13 +22,13 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "VJXBoardEntityConnector.h"
+#import "VJXConnectorLayer.h"
 #import "VJXPin.h"
 #import "VJXEntityInspector.h"
 #import "VJXOutletLayer.h"
 #import "VJXGUIConstants.h"
 
-@class VJXBoardEntityConnector;
+@class VJXConnectorLayer;
 @class VJXOutletLayer;
 
 @interface VJXPinLayer : CALayer
@@ -38,7 +38,7 @@
     VJXPin *pin;
     NSMutableArray *connectors;
 @private
-    VJXBoardEntityConnector *tempConnector;
+    VJXConnectorLayer *tempConnector;
     VJXEntityInspector *inspector;
     VJXOutletLayer *outlet;
 }
@@ -48,11 +48,11 @@
 @property (nonatomic,readonly) NSArray *connectors;
 
 - (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint outlet:(VJXOutletLayer *)anOutlet;
-- (NSPoint)pointAtCenter;
+- (CGPoint)pointAtCenter;
 - (void)updateAllConnectorsFrames;
 - (BOOL)multiple;
-- (void)addConnector:(VJXBoardEntityConnector *)theConnector;
-- (void)removeConnector:(VJXBoardEntityConnector *)theConnector;
+- (void)addConnector:(VJXConnectorLayer *)theConnector;
+- (void)removeConnector:(VJXConnectorLayer *)theConnector;
 - (void)removeAllConnectors;
 - (BOOL)isConnected;
 - (void)toggleSelected;

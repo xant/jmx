@@ -23,7 +23,7 @@
 
 #import "VJXPinLayer.h"
 #import "VJXBoardView.h"
-#import "VJXBoardEntityConnector.h"
+#import "VJXConnectorLayer.h"
 
 @implementation VJXPinLayer
 
@@ -141,53 +141,54 @@
 //    NSRect frame = NSMakeRect(minX, minY, width, height);
 //    [tempConnector setFrame:frame];
 //}
+//
+//- (void)mouseUp:(NSEvent *)theEvent
+//{
+//    VJXBoardView *board = outlet.entity.board;
+//
+//    NSPoint locationInWindow = [board convertPoint:[theEvent locationInWindow] fromView:nil];
+//    locationInWindow.x -= PIN_OUTLET_PADDING;
+//    locationInWindow.y -= PIN_OUTLET_PADDING;
+//    NSView *aView = [board hitTest:locationInWindow];
+//
+//    BOOL isConnected = NO;
+//
+//    if ([aView isKindOfClass:[VJXPinLayer class]]) {
+//
+//        VJXPinLayer *otherPin = (VJXPinLayer *)aView;
+//
+//        if ([otherPin isConnected] && ![otherPin multiple])
+//            [otherPin removeAllConnectors];
+//
+//        isConnected = [otherPin.pin connectToPin:self.pin];
+//
+//        if (isConnected) {
+//            [tempConnector setOrigin:self];
+//            [tempConnector setDestination:otherPin];
+//
+//            [otherPin addConnector:tempConnector];
+//            [self addConnector:tempConnector];
+//
+//            [self updateAllConnectorsFrames];
+//
+//            [tempConnector release];
+//            tempConnector = nil;
+//        }
+//    }
+//
+//    if (!isConnected) {
+//        [tempConnector removeFromSuperlayer];
+//        [tempConnector release];
+//        tempConnector = nil;
+//    }
+//}
+//
 
-- (void)mouseUp:(NSEvent *)theEvent
+- (CGPoint)pointAtCenter
 {
-    VJXBoardView *board = outlet.entity.board;
-
-    NSPoint locationInWindow = [board convertPoint:[theEvent locationInWindow] fromView:nil];
-    locationInWindow.x -= PIN_OUTLET_PADDING;
-    locationInWindow.y -= PIN_OUTLET_PADDING;
-    NSView *aView = [board hitTest:locationInWindow];
-
-    BOOL isConnected = NO;
-
-    if ([aView isKindOfClass:[VJXPinLayer class]]) {
-
-        VJXPinLayer *otherPin = (VJXPinLayer *)aView;
-
-        if ([otherPin isConnected] && ![otherPin multiple])
-            [otherPin removeAllConnectors];
-
-        isConnected = [otherPin.pin connectToPin:self.pin];
-
-        if (isConnected) {
-            [tempConnector setOrigin:self];
-            [tempConnector setDestination:otherPin];
-
-            [otherPin addConnector:tempConnector];
-            [self addConnector:tempConnector];
-
-            [self updateAllConnectorsFrames];
-
-            [tempConnector release];
-            tempConnector = nil;
-        }
-    }
-
-    if (!isConnected) {
-        [tempConnector removeFromSuperview];
-        [tempConnector release];
-        tempConnector = nil;
-    }
-}
-
-- (NSPoint)pointAtCenter
-{
-    NSPoint origin = [self bounds].origin;
-    NSSize size = [self bounds].size;
-    NSPoint center = NSMakePoint(origin.x + (size.width / 2), origin.y + (size.height / 2));
+    CGPoint origin = [self bounds].origin;
+    CGSize size = [self bounds].size;
+    CGPoint center = CGPointMake(origin.x + (size.width / 2), origin.y + (size.height / 2));
     return center;
 }
 
@@ -206,27 +207,27 @@
     return [connectors count] ? YES : NO;
 }
 
-- (void)addConnector:(VJXBoardEntityConnector *)theConnector
+- (void)addConnector:(VJXConnectorLayer *)theConnector
 {
     [connectors addObject:theConnector];
 }
 
-- (void)removeConnector:(VJXBoardEntityConnector *)theConnector
+- (void)removeConnector:(VJXConnectorLayer *)theConnector
 {
     [connectors removeObject:theConnector];
 }
 
 - (void)removeAllConnectors
 {
-    for (VJXBoardEntityConnector *connector in connectors) {
-        if (connector.origin == self) {
-            [connector.destination removeConnector:connector];
-        } else {
-            [connector.origin removeConnector:connector];
-        }
-        [connector removeFromSuperview];
-    }
-    [connectors removeAllObjects];
+//    for (VJXConnectorLayer *connector in connectors) {
+//        if (connector.origin == self) {
+//            [connector.destination removeConnector:connector];
+//        } else {
+//            [connector.origin removeConnector:connector];
+//        }
+//        [connector removeFromSuperview];
+//    }
+//    [connectors removeAllObjects];
 }
 
 - (void)setSelected:(BOOL)isSelected

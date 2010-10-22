@@ -30,6 +30,7 @@
 @implementation VJXBoardView
 
 @synthesize selectedLayer;
+@synthesize fakeConnectorLayer;
 
 #pragma mark -
 #pragma mark Initialization
@@ -154,10 +155,22 @@
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
-    self.selectedLayer = [self entityLayerAtPoint:[theEvent locationInWindow]];
+    NSPoint locationInWindow = [theEvent locationInWindow];
+
+    self.selectedLayer = [self entityLayerAtPoint:locationInWindow];
 
     if (!selectedLayer) {
         // Should create a selection layer on top of everything.
+    }
+
+    VJXPinLayer *aPinLayer = [self pinLayerAtPoint:locationInWindow];
+
+    if (aPinLayer) {
+        CGPoint pointAtCenter = [self.layer convertPoint:[aPinLayer pointAtCenter] fromLayer:aPinLayer];
+        self.fakeConnectorLayer = [[[VJXConnectorLayer alloc] init] autorelease];
+        fakeConnectorLayer.initialPosition = pointAtCenter;
+        fakeConnectorLayer.boardView = self;
+        [self.layer addSublayer:self.fakeConnectorLayer];
     }
 }
 
@@ -165,12 +178,23 @@
 {
     [CATransaction begin];
     [CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
-    self.selectedLayer.position = [self translatePointToBoardLayer:[theEvent locationInWindow]];
+    if (fakeConnectorLayer) {
+        NSPoint currentLocation = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        [fakeConnectorLayer recalculateFrameWithPoint:*(CGPoint*)&currentLocation];
+        [fakeConnectorLayer setNeedsDisplay];
+    }
+    else if (selectedLayer) {
+        self.selectedLayer.position = [self translatePointToBoardLayer:[theEvent locationInWindow]];
+    }
     [CATransaction commit];
 }
 
 - (void)mouseUp:(NSEvent *)theEvent
 {
+    if (fakeConnectorLayer) {
+        [self.fakeConnectorLayer removeFromSuperlayer];
+        self.fakeConnectorLayer = nil;
+    }
 }
 
 #pragma mark -
@@ -208,6 +232,16 @@
     NSPoint rootPoint = [self convertPointToBase:localPoint];
     CGPoint translatedPoint = NSPointToCGPoint(rootPoint);
     return translatedPoint;
+}
+
+- (VJXPinLayer *)pinLayerAtPoint:(NSPoint)aPoint
+{
+    CALayer *aLayer = [self.layer hitTest:[self translatePointToBoardLayer:aPoint]];
+
+    if ([aLayer isKindOfClass:[VJXPinLayer class]])
+        return (VJXPinLayer *)aLayer;
+
+    return nil;
 }
 
 - (VJXEntityLayer *)entityLayerAtPoint:(NSPoint)aPoint

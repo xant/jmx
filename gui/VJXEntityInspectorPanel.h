@@ -18,7 +18,7 @@
     IBOutlet NSTableView *producers;
 	IBOutlet NSOutlineView *pinsProperties;
 @private
-    VJXEntityLayer *entityView; // weak reference
+    VJXEntityLayer *entityLayer; // weak reference
 }
 
 - (void)setEntity:(VJXEntityLayer *)entity;

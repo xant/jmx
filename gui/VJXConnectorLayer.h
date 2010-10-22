@@ -22,8 +22,10 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import <QuartzCore/QuartzCore.h>
 #import "VJXPinLayer.h"
 #import "VJXBoardView.h"
+#import "VJXGUIConstants.h"
 
 @class VJXPinLayer;
 @class VJXBoardView;
@@ -35,21 +37,26 @@ enum Direction {
     kNorthWestDirection
 };
 
-@interface VJXBoardEntityConnector : NSView {
+@interface VJXConnectorLayer : CALayer {
     BOOL selected;
-    VJXBoardView *board;
-    VJXPinLayer *origin;
-    VJXPinLayer *destination;
+    VJXBoardView *boardView;
+    CGPoint initialPosition;
+//    VJXPinLayer *origin;
+//    VJXPinLayer *destination;
     NSUInteger direction;
 }
 
 @property (assign) BOOL selected;
-@property (assign) VJXBoardView *board;
+@property (assign) VJXBoardView *boardView;
+@property (assign) CGPoint initialPosition;
 @property (assign) NSUInteger direction;
+
 // make this weak references otherwise pins will be overretained an never released
-@property (nonatomic,assign) VJXPinLayer *origin;
-@property (nonatomic,assign) VJXPinLayer *destination;
+//@property (nonatomic,assign) VJXPinLayer *origin;
+//@property (nonatomic,assign) VJXPinLayer *destination;
 
 - (void)toggleSelected;
+
+- (void)recalculateFrameWithPoint:(CGPoint)aPoint;
 
 @end

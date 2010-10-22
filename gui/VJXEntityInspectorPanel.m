@@ -7,10 +7,10 @@
 //
 
 #import "VJXEntityInspectorPanel.h"
-#import "VJXBoardEntity.h"
+#import "VJXEntityLayer.h"
 
 @interface VJXEntityInspectorPanel (Private)
-- (void)setEntity:(VJXBoardEntity *)entity;
+- (void)setEntity:(VJXEntityLayer *)entity;
 @end
 
 @implementation VJXEntityInspectorPanel
@@ -36,16 +36,16 @@
     [tableView setDataSource:nil];
     [tableView setDelegate:nil];
     [tableView reloadData];
-    
+
 }
 
-- (void)unsetEntity:(VJXBoardEntity *)entity
+- (void)unsetEntity:(VJXEntityLayer *)entity
 {
     if (entityView == entity)
         entityView = nil;
 }
 
-- (void)setEntity:(VJXBoardEntity *)boardEntity
+- (void)setEntity:(VJXEntityLayer *)boardEntity
 {
     /*
     if (![self isVisible])
@@ -67,7 +67,7 @@
         [producers setDataSource:self];
         [producers setDelegate:self];
         [producers registerForDraggedTypes:[NSArray arrayWithObject:@"PinRowIndex"]];
-        
+
     }
     [producers reloadData];
 }
@@ -92,7 +92,7 @@
 }
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
-{ 
+{
     NSArray *pins = nil;
     if (entityView.entity) {
         if (aTableView == inputPins) {
@@ -110,7 +110,7 @@
             if ([[aTableColumn identifier] isEqualTo:@"pinName"])
                 return [pins objectAtIndex:rowIndex];
             else
-                return [[entityView.entity outputPinWithName:[pins objectAtIndex:rowIndex]] typeName];        
+                return [[entityView.entity outputPinWithName:[pins objectAtIndex:rowIndex]] typeName];
         } else if (aTableView == producers) {
             NSInteger selectedRow = [inputPins selectedRow];
             if (selectedRow >= 0) {
@@ -151,7 +151,7 @@
 {
     if (aTableView != producers)
         return NO;
-    
+
     NSUInteger row = [rowIndexes firstIndex];
     [pboard addTypes:[NSArray arrayWithObjects:@"PinRowIndex", nil] owner:(id)self];
     [pboard setData:[NSData dataWithBytes:&row length:sizeof(NSUInteger)] forType:@"PinRowIndex"];
@@ -159,12 +159,12 @@
 }
 
 
-- (NSDragOperation)tableView:(NSTableView *)aTableView validateDrop:(id < NSDraggingInfo >)info proposedRow:(NSInteger)row 
+- (NSDragOperation)tableView:(NSTableView *)aTableView validateDrop:(id < NSDraggingInfo >)info proposedRow:(NSInteger)row
        proposedDropOperation:(NSTableViewDropOperation)operation
 {
     NSDragOperation dragOp = NSDragOperationMove;
     [aTableView setDropRow: row
-             dropOperation: NSTableViewDropAbove];   
+             dropOperation: NSTableViewDropAbove];
     return dragOp;
 }
 
@@ -191,7 +191,7 @@
 
 - (void)anEntityWasSelected:(NSNotification *)aNotification
 {
-    VJXBoardEntity *entity = [aNotification object];
+    VJXEntityLayer *entity = [aNotification object];
     [self setEntity:entity];
 	[pinsProperties setDataSource:entity];
 	[pinsProperties setDelegate:entity];

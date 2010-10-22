@@ -22,23 +22,22 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import <QuartzCore/QuartzCore.h>
 #import "VJXEntity.h"
 #import "VJXBoardView.h"
-
-#define ENTITY_LABEL_PADDING 12.0
-#define ENTITY_PIN_MINSPACING 1.5
-#define ENTITY_FRAME_WIDTH 220.0
-#define ENTITY_PIN_HEIGHT 11.0
-#define ENTITY_PIN_LEFT_PADDING 6.0
+#import "VJXPinLayer.h"
+#import "VJXGUIConstants.h"
 
 @class VJXBoardView;
 
-@interface VJXBoardEntity : NSView <NSTextFieldDelegate,NSCopying,NSOutlineViewDataSource,NSOutlineViewDelegate>
+// @interface VJXBoardEntity : NSView <NSTextFieldDelegate,NSCopying,NSOutlineViewDataSource,NSOutlineViewDelegate>
+@interface VJXEntityLayer : CALayer <NSTextFieldDelegate,NSCopying,NSOutlineViewDataSource,NSOutlineViewDelegate>
 {
     VJXEntity *entity;
     NSPoint lastDragLocation;
     NSTextField *label;
     NSMutableArray *outlets;
+    NSMutableArray *inlets;
     VJXBoardView *board;
     BOOL selected;
 @private
@@ -49,10 +48,20 @@
 @property (nonatomic,retain) NSTextField *label;
 @property (nonatomic,assign) BOOL selected;
 @property (nonatomic,retain) NSMutableArray *outlets;
+@property (nonatomic,retain) NSMutableArray *inlets;
 @property (nonatomic, assign) VJXBoardView *board;
 
 - (id)initWithEntity:(VJXEntity *)anEntity;
 - (id)initWithEntity:(VJXEntity *)anEntity board:(VJXBoardView *)aBoard;
+
+- (VJXPin *)inputPinWithName:(NSString *)aPinName;
+- (VJXPin *)outputPinWithName:(NSString *)aPinName;
+
+- (void)recalculateFrame;
+- (void)reorderOutlets;
+- (void)select;
+- (void)unselect;
+
 
 - (void)toggleSelected;
 - (BOOL)inRect:(NSRect)rect;
@@ -60,12 +69,13 @@
 
 - (void)shiftOffsetToLocation:(NSPoint)aLocation;
 
-- (void)setNeedsDisplay;
-
 - (void)controlPin;
 
 - (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item;
 
 - (NSCell *)outlineView:(NSOutlineView *)outlineView dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item;
+
+- (void)setupPinsLayers:(NSArray *)pins startingPoint:(CGPoint)aPoint output:(BOOL)isOutput;
+- (void)setupLayer;
 
 @end

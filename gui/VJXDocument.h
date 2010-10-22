@@ -39,8 +39,6 @@
 #pragma mark -
 #pragma mark Interface Builder actions
 
-- (IBAction)removeSelected:(id)sender;
-
 #pragma mark -
 #pragma mark Open file
 

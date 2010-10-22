@@ -25,17 +25,13 @@
 #import "VJXBoardEntityConnector.h"
 #import "VJXPin.h"
 #import "VJXEntityInspector.h"
-#import "VJXBoardEntityOutlet.h"
-
-
-#define PIN_OUTLET_PADDING 5.0
-#define PIN_OUTLET_WIDTH 20.0
-#define PIN_OUTLET_HEIGHT 20.0
+#import "VJXOutletLayer.h"
+#import "VJXGUIConstants.h"
 
 @class VJXBoardEntityConnector;
-@class VJXBoardEntityOutlet;
+@class VJXOutletLayer;
 
-@interface VJXBoardEntityPin : NSView
+@interface VJXPinLayer : CALayer
 {
     BOOL selected;
 @protected
@@ -44,14 +40,14 @@
 @private
     VJXBoardEntityConnector *tempConnector;
     VJXEntityInspector *inspector;
-    VJXBoardEntityOutlet *outlet;
+    VJXOutletLayer *outlet;
 }
 
 @property (nonatomic,assign) BOOL selected;
 @property (nonatomic,readonly) VJXPin *pin;
 @property (nonatomic,readonly) NSArray *connectors;
 
-- (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint outlet:(VJXBoardEntityOutlet *)anOutlet;
+- (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint outlet:(VJXOutletLayer *)anOutlet;
 - (NSPoint)pointAtCenter;
 - (void)updateAllConnectorsFrames;
 - (BOOL)multiple;
@@ -60,5 +56,6 @@
 - (void)removeAllConnectors;
 - (BOOL)isConnected;
 - (void)toggleSelected;
+- (void)setupLayer;
 
 @end

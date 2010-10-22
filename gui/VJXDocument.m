@@ -29,7 +29,7 @@
 #import "VJXAudioFileLayer.h"
 #import "VJXAudioMixer.h"
 #import "VJXAudioScheduler.h"
-#import "VJXBoard.h"
+#import "VJXBoardView.h"
 #import <QTKit/QTMovie.h>
 
 
@@ -132,11 +132,6 @@
 #pragma mark -
 #pragma mark Interface Builder actions
 
-- (IBAction)removeSelected:(id)sender
-{
-    [board removeSelected:sender];
-}
-
 #pragma mark -
 #pragma mark Open file
 
@@ -196,7 +191,7 @@
 
 - (void)anEntityWasMoved:(NSNotification *)aNotification
 {
-    VJXBoardEntity *entity = [aNotification object];
+    VJXEntityLayer *entity = [aNotification object];
     NSString *origin = [[aNotification userInfo] objectForKey:@"origin"];
     [entitiesPosition setObject:origin forKey:entity.entity];
 }

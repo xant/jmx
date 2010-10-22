@@ -19,32 +19,25 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "VJXBoardEntityPin.h"
-#import "VJXBoardEntity.h"
+#import <QuartzCore/QuartzCore.h>
+#import "VJXPinLayer.h"
+#import "VJXEntityLayer.h"
+#import "VJXGUIConstants.h"
 
-#define ENTITY_OUTLET_WIDTH 120.0
-#define ENTITY_OUTLET_HEIGHT 20.0
-#define ENTITY_OUTLET_LABEL_WIDTH 100.0
-#define ENTITY_OUTLET_PIN_PADDING 5.0
-#define ENTITY_OUTLET_LABEL_PADDING_FOR_OUTPUT (PIN_OUTLET_WIDTH + ENTITY_OUTLET_PIN_PADDING)
-#define ENTITY_OUTLET_LABEL_PADDING_FOR_INPUT (PIN_OUTLET_WIDTH - ENTITY_OUTLET_PIN_PADDING)
+@class VJXPinLayer;
 
-@class VJXBoardEntityPin;
-
-@interface VJXBoardEntityOutlet : NSView
+@interface VJXOutletLayer : CALayer
 {
-    VJXBoardEntityPin *pin;
-    VJXBoardEntity *entity;
-    NSTextField *pinName;
+    VJXPinLayer *pin;
+    VJXEntityLayer *entity;
     BOOL output;
 }
 
-@property (nonatomic, assign) VJXBoardEntity *entity;
-@property (nonatomic, retain) VJXBoardEntityPin *pin;
-@property (nonatomic, retain) NSTextField *pinName;
+@property (nonatomic, assign) VJXEntityLayer *entity;
+@property (nonatomic, retain) VJXPinLayer *pin;
 @property (nonatomic, assign) BOOL output;
 
-- (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint isOutput:(BOOL)isOutput entity:(VJXBoardEntity *)anEntity;
+- (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint isOutput:(BOOL)isOutput entity:(VJXEntityLayer *)anEntity;
 - (void)updateAllConnectorsFrames;
 
 @end

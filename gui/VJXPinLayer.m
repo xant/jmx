@@ -21,27 +21,36 @@
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#import "VJXBoardEntityPin.h"
+#import "VJXPinLayer.h"
 #import "VJXBoardView.h"
 #import "VJXBoardEntityConnector.h"
 
-@implementation VJXBoardEntityPin
+@implementation VJXPinLayer
 
 @synthesize selected;
 @synthesize pin;
 @synthesize connectors;
 
-- (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint outlet:(VJXBoardEntityOutlet *)anOutlet
+- (id)initWithPin:(VJXPin *)thePin andPoint:(CGPoint)thePoint outlet:(VJXOutletLayer *)anOutlet
 {
-    NSRect frame = NSMakeRect(thePoint.x, thePoint.y, PIN_OUTLET_WIDTH, PIN_OUTLET_HEIGHT);
-
-    if ((self = [super initWithFrame:frame]) != nil) {
+    if ((self = [super init]) != nil) {
         outlet = anOutlet;
         selected = NO;
         connectors = [[NSMutableArray alloc] init];
+        self.frame = CGRectMake(thePoint.x, thePoint.y, PIN_OUTLET_WIDTH, PIN_OUTLET_HEIGHT);
         pin = [thePin retain];
+        [self setupLayer];
     }
     return self;
+}
+
+- (void)setupLayer
+{
+    CGColorRef backgroundColor_ = CGColorCreateGenericRGB(1.0f, 0.0f, 0.0f, 1.0f);
+    self.backgroundColor = backgroundColor_;
+    self.borderColor = NULL;
+    self.borderWidth = 0.0f;
+    CFRelease(backgroundColor_);
 }
 
 - (BOOL)isFlipped
@@ -85,58 +94,53 @@
     [thePath release];
 }
 
-- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
-{
-    return YES;
-}
-
 - (void)mouseDown:(NSEvent *)theEvent
 {
 }
 
-- (void)mouseDragged:(NSEvent *)theEvent
-{
-    VJXBoardView *board = outlet.entity.board;
-
-    if (!tempConnector) {
-        tempConnector = [[VJXBoardEntityConnector alloc] init];
-        tempConnector.origin = self;
-        tempConnector.board = board;
-        [board addSubview:tempConnector positioned:NSWindowAbove relativeTo:self];
-    }
-
-    NSPoint locationInWindow = [board convertPoint:[theEvent locationInWindow] fromView:nil];
-
-    NSPoint thisLocation = [self convertPoint:[self pointAtCenter] toView:board];
-
-    float minX = MIN(locationInWindow.x, thisLocation.x) - 10.0;
-    float minY = MIN(locationInWindow.y, thisLocation.y) - 10.0;
-    float width = abs(locationInWindow.x - thisLocation.x) + 20.0;
-    float height = abs(locationInWindow.y - thisLocation.y) + 20.0;
-
-    if (width < 6.0) {
-        width = 6.0;
-    }
-    if (height < 6.0) {
-        height = 6.0;
-    }
-
-    if ((locationInWindow.y < thisLocation.y) && (locationInWindow.x < thisLocation.x)) {
-        tempConnector.direction = kSouthWestDirection;
-    }
-    else if ((locationInWindow.y < thisLocation.y) && (locationInWindow.x > thisLocation.x)) {
-        tempConnector.direction = kSouthEastDirection;
-    }
-    else if ((locationInWindow.y > thisLocation.y) && (locationInWindow.x < thisLocation.x)) {
-        tempConnector.direction = kNorthWestDirection;
-    }
-    else if ((locationInWindow.y > thisLocation.y) && (locationInWindow.x > thisLocation.x)) {
-        tempConnector.direction = kNorthEastDirection;
-    }
-
-    NSRect frame = NSMakeRect(minX, minY, width, height);
-    [tempConnector setFrame:frame];
-}
+//- (void)mouseDragged:(NSEvent *)theEvent
+//{
+//    VJXBoardView *board = outlet.entity.board;
+//
+//    if (!tempConnector) {
+//        tempConnector = [[VJXBoardEntityConnector alloc] init];
+//        tempConnector.origin = self;
+//        tempConnector.board = board;
+//        [board addSubview:tempConnector positioned:NSWindowAbove relativeTo:self];
+//    }
+//
+//    NSPoint locationInWindow = [board convertPoint:[theEvent locationInWindow] fromView:nil];
+//
+//    NSPoint thisLocation = [self convertPoint:[self pointAtCenter] toView:board];
+//
+//    float minX = MIN(locationInWindow.x, thisLocation.x) - 10.0;
+//    float minY = MIN(locationInWindow.y, thisLocation.y) - 10.0;
+//    float width = abs(locationInWindow.x - thisLocation.x) + 20.0;
+//    float height = abs(locationInWindow.y - thisLocation.y) + 20.0;
+//
+//    if (width < 6.0) {
+//        width = 6.0;
+//    }
+//    if (height < 6.0) {
+//        height = 6.0;
+//    }
+//
+//    if ((locationInWindow.y < thisLocation.y) && (locationInWindow.x < thisLocation.x)) {
+//        tempConnector.direction = kSouthWestDirection;
+//    }
+//    else if ((locationInWindow.y < thisLocation.y) && (locationInWindow.x > thisLocation.x)) {
+//        tempConnector.direction = kSouthEastDirection;
+//    }
+//    else if ((locationInWindow.y > thisLocation.y) && (locationInWindow.x < thisLocation.x)) {
+//        tempConnector.direction = kNorthWestDirection;
+//    }
+//    else if ((locationInWindow.y > thisLocation.y) && (locationInWindow.x > thisLocation.x)) {
+//        tempConnector.direction = kNorthEastDirection;
+//    }
+//
+//    NSRect frame = NSMakeRect(minX, minY, width, height);
+//    [tempConnector setFrame:frame];
+//}
 
 - (void)mouseUp:(NSEvent *)theEvent
 {
@@ -149,9 +153,9 @@
 
     BOOL isConnected = NO;
 
-    if ([aView isKindOfClass:[VJXBoardEntityPin class]]) {
+    if ([aView isKindOfClass:[VJXPinLayer class]]) {
 
-        VJXBoardEntityPin *otherPin = (VJXBoardEntityPin *)aView;
+        VJXPinLayer *otherPin = (VJXPinLayer *)aView;
 
         if ([otherPin isConnected] && ![otherPin multiple])
             [otherPin removeAllConnectors];
@@ -228,7 +232,7 @@
 - (void)setSelected:(BOOL)isSelected
 {
     selected = isSelected;
-    [self setNeedsDisplay:YES];
+    [self setNeedsDisplay];
 }
 
 - (void)toggleSelected

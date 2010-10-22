@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "VJXBoardEntity.h"
+#import "VJXEntityLayer.h"
 #import "VJXEntityInspectorPanel.h"
 
 @interface VJXEntityInspector : NSObject  {

@@ -22,7 +22,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "VJXBoardEntity.h"
+#import "VJXEntityLayer.h"
 #import "VJXBoardEntityConnector.h"
 #import "VJXEntityInspectorPanel.h"
 #import "VJXBoardSelection.h"
@@ -32,8 +32,9 @@
 @class VJXDocument;
 
 @interface VJXBoardView : NSView {
-    NSPoint lastDragLocation;
+    CGPoint lastDragLocation;
     VJXBoardSelection *currentSelection;
+    VJXEntityLayer *selectedLayer;
     NSMutableArray *selected;
     NSMutableArray *entities;
     IBOutlet VJXDocument *document;
@@ -41,13 +42,9 @@
 }
 
 @property (nonatomic, retain) VJXBoardSelection *currentSelection;
+@property (assign) VJXEntityLayer *selectedLayer;
 
-- (void)toggleSelected:(id)theEntity multiple:(BOOL)isMultiple;
-- (void)shiftSelectedToLocation:(NSPoint)aLocation;
-- (BOOL)isMultipleSelection;
-- (IBAction)removeSelected:(id)sender;
-- (void)addToBoard:(VJXBoardEntity *)theEntity;
-- (void)notifyChangesToDocument;
+- (void)addToBoard:(VJXEntityLayer *)theEntity;
 - (void)anEntityWasCreated:(NSNotification *)aNotification;
 
 @end

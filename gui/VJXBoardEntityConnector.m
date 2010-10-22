@@ -110,28 +110,28 @@
     [lineShadow release];
 }
 
-- (void)recalculateFrame
-{
-    NSPoint originLocation = [origin convertPoint:[origin pointAtCenter] toView:board];
-    NSPoint destinationLocation = [destination convertPoint:[destination pointAtCenter] toView:board];
-
-    float x = MIN(originLocation.x, destinationLocation.x) - ORIGIN_OFFSET;
-    float y = MIN(originLocation.y, destinationLocation.y) - ORIGIN_OFFSET;
-    float w = abs(originLocation.x - destinationLocation.x) + DESTINATION_OFFSET;
-    float h = abs(originLocation.y - destinationLocation.y) + DESTINATION_OFFSET;
-
-    direction =
-    ((originLocation.x < destinationLocation.x) && (originLocation.y < destinationLocation.y))
-    ? kSouthWestDirection
-    : ((originLocation.x > destinationLocation.x) && (originLocation.y < destinationLocation.y))
-    ? kSouthEastDirection
-    : ((originLocation.x > destinationLocation.x) && (originLocation.y > destinationLocation.y))
-    ? kNorthEastDirection
-    : kNorthWestDirection;
-
-    NSRect frame = NSMakeRect(x, y, w + CONNECTOR_LINE_WIDTH, h + CONNECTOR_LINE_WIDTH);
-    [self setFrame:frame];
-}
+//- (void)recalculateFrame
+//{
+//    NSPoint originLocation = [origin convertPoint:[origin pointAtCenter] toView:board];
+//    NSPoint destinationLocation = [destination convertPoint:[destination pointAtCenter] toView:board];
+//
+//    float x = MIN(originLocation.x, destinationLocation.x) - ORIGIN_OFFSET;
+//    float y = MIN(originLocation.y, destinationLocation.y) - ORIGIN_OFFSET;
+//    float w = abs(originLocation.x - destinationLocation.x) + DESTINATION_OFFSET;
+//    float h = abs(originLocation.y - destinationLocation.y) + DESTINATION_OFFSET;
+//
+//    direction =
+//    ((originLocation.x < destinationLocation.x) && (originLocation.y < destinationLocation.y))
+//    ? kSouthWestDirection
+//    : ((originLocation.x > destinationLocation.x) && (originLocation.y < destinationLocation.y))
+//    ? kSouthEastDirection
+//    : ((originLocation.x > destinationLocation.x) && (originLocation.y > destinationLocation.y))
+//    ? kNorthEastDirection
+//    : kNorthWestDirection;
+//
+//    NSRect frame = NSMakeRect(x, y, w + CONNECTOR_LINE_WIDTH, h + CONNECTOR_LINE_WIDTH);
+//    [self setFrame:frame];
+//}
 
 - (void)disconnect
 {
@@ -141,8 +141,6 @@
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
-    BOOL isMultiple = [theEvent modifierFlags] & NSCommandKeyMask ? YES : NO;
-    [board toggleSelected:self multiple:isMultiple];
 }
 
 - (void)toggleSelected

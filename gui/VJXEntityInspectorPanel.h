@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class VJXBoardEntity;
+@class VJXEntityLayer;
 
 @interface VJXEntityInspectorPanel : NSView <NSTableViewDataSource,NSTableViewDelegate> {
     IBOutlet NSTextField *entityName;
@@ -17,12 +17,12 @@
     IBOutlet NSTableView *outputPins;
     IBOutlet NSTableView *producers;
 	IBOutlet NSOutlineView *pinsProperties;
-@private 
-    VJXBoardEntity *entityView; // weak reference
+@private
+    VJXEntityLayer *entityView; // weak reference
 }
 
-- (void)setEntity:(VJXBoardEntity *)entity;
-- (void)unsetEntity:(VJXBoardEntity *)entity;
+- (void)setEntity:(VJXEntityLayer *)entity;
+- (void)unsetEntity:(VJXEntityLayer *)entity;
 
 - (void)anEntityWasSelected:(NSNotification *)aNotification;
 

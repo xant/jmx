@@ -10,18 +10,22 @@
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		256AC3DA0F4B6AC300CF3369 /* VeeJayAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* VeeJayAppDelegate.m */; };
 		821DE683123925EC00B6A45D /* VJXBoardSelection.m in Sources */ = {isa = PBXBuildFile; fileRef = 821DE682123925EC00B6A45D /* VJXBoardSelection.m */; };
+		822C001212710BDE0053A5C7 /* VJXEntityLabelLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 822C001112710BDE0053A5C7 /* VJXEntityLabelLayer.m */; };
+		822CF8EF127058F80053A5C7 /* VJXBoardLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 822CF8EE127058F80053A5C7 /* VJXBoardLayer.m */; };
+		822CF94112705C2C0053A5C7 /* NSColorExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 822CF94012705C2C0053A5C7 /* NSColorExtensions.m */; };
+		822CFE361270F76D0053A5C7 /* VJXOutletLabelLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 822CFE351270F76D0053A5C7 /* VJXOutletLabelLayer.m */; };
 		82456BA51223CFA200236FE4 /* VJXLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 82456BA41223CFA200236FE4 /* VJXLayer.m */; };
 		82456BBA1223DBE100236FE4 /* VJXQtVideoLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 82456BB61223DBE100236FE4 /* VJXQtVideoLayer.m */; };
 		82456BC41223DC8300236FE4 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BC31223DC8300236FE4 /* OpenGL.framework */; };
 		82456BC81223DC9900236FE4 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BC71223DC9900236FE4 /* QTKit.framework */; };
 		82456BCC1223DCA700236FE4 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BCB1223DCA700236FE4 /* QuartzCore.framework */; };
 		82456FE912256A4A00236FE4 /* VJXImageLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 82456FE812256A4A00236FE4 /* VJXImageLayer.m */; };
-		824576451227DF5800236FE4 /* VJXBoardEntityPin.m in Sources */ = {isa = PBXBuildFile; fileRef = 8245763D1227DF5800236FE4 /* VJXBoardEntityPin.m */; };
+		824576451227DF5800236FE4 /* VJXPinLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8245763D1227DF5800236FE4 /* VJXPinLayer.m */; };
 		824576461227DF5800236FE4 /* VJXBoardEntityConnector.m in Sources */ = {isa = PBXBuildFile; fileRef = 8245763F1227DF5800236FE4 /* VJXBoardEntityConnector.m */; };
 		824576481227DF5800236FE4 /* VJXBoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 824576431227DF5800236FE4 /* VJXBoardView.m */; };
-		82B0A4C31237AFB20006D003 /* VJXBoardEntityOutlet.m in Sources */ = {isa = PBXBuildFile; fileRef = 82B0A4C21237AFB20006D003 /* VJXBoardEntityOutlet.m */; };
+		82B0A4C31237AFB20006D003 /* VJXOutletLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 82B0A4C21237AFB20006D003 /* VJXOutletLayer.m */; };
 		82EA042F1240BE4A00E28B72 /* VJXDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 82EA042E1240BE4A00E28B72 /* VJXDocument.xib */; };
-		82EA0BB012421E1D00E28B72 /* VJXBoardEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 824576411227DF5800236FE4 /* VJXBoardEntity.m */; };
+		82EA0BB012421E1D00E28B72 /* VJXEntityLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 824576411227DF5800236FE4 /* VJXEntityLayer.m */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -80,10 +84,19 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		821DE681123925EC00B6A45D /* VJXBoardSelection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXBoardSelection.h; path = gui/VJXBoardSelection.h; sourceTree = "<group>"; };
 		821DE682123925EC00B6A45D /* VJXBoardSelection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXBoardSelection.m; path = gui/VJXBoardSelection.m; sourceTree = "<group>"; };
+		822C001012710BDE0053A5C7 /* VJXEntityLabelLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXEntityLabelLayer.h; sourceTree = "<group>"; };
+		822C001112710BDE0053A5C7 /* VJXEntityLabelLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXEntityLabelLayer.m; sourceTree = "<group>"; };
 		822CE014125A74A8000C92F9 /* VJXLibraryTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXLibraryTableView.h; sourceTree = "<group>"; };
 		822CE015125A74A8000C92F9 /* VJXLibraryTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXLibraryTableView.m; sourceTree = "<group>"; };
 		822CE017125A754E000C92F9 /* VJXLibraryTableViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXLibraryTableViewDelegate.h; sourceTree = "<group>"; };
 		822CE018125A754E000C92F9 /* VJXLibraryTableViewDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXLibraryTableViewDelegate.m; sourceTree = "<group>"; };
+		822CF8ED127058F80053A5C7 /* VJXBoardLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXBoardLayer.h; sourceTree = "<group>"; };
+		822CF8EE127058F80053A5C7 /* VJXBoardLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXBoardLayer.m; sourceTree = "<group>"; };
+		822CF93F12705C2C0053A5C7 /* NSColorExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSColorExtensions.h; sourceTree = "<group>"; };
+		822CF94012705C2C0053A5C7 /* NSColorExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSColorExtensions.m; sourceTree = "<group>"; };
+		822CFAEA127076B10053A5C7 /* VJXGUIConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXGUIConstants.h; sourceTree = "<group>"; };
+		822CFE341270F76D0053A5C7 /* VJXOutletLabelLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXOutletLabelLayer.h; sourceTree = "<group>"; };
+		822CFE351270F76D0053A5C7 /* VJXOutletLabelLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXOutletLabelLayer.m; sourceTree = "<group>"; };
 		82456BA31223CFA200236FE4 /* VJXLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXLayer.h; path = entities/VJXLayer.h; sourceTree = "<group>"; };
 		82456BA41223CFA200236FE4 /* VJXLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXLayer.m; path = entities/VJXLayer.m; sourceTree = "<group>"; };
 		82456BB61223DBE100236FE4 /* VJXQtVideoLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXQtVideoLayer.m; path = entities/layers/VJXQtVideoLayer.m; sourceTree = "<group>"; };
@@ -93,16 +106,16 @@
 		82456BCB1223DCA700236FE4 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		82456FE712256A4A00236FE4 /* VJXImageLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXImageLayer.h; path = entities/layers/VJXImageLayer.h; sourceTree = "<group>"; };
 		82456FE812256A4A00236FE4 /* VJXImageLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXImageLayer.m; path = entities/layers/VJXImageLayer.m; sourceTree = "<group>"; };
-		8245763D1227DF5800236FE4 /* VJXBoardEntityPin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXBoardEntityPin.m; path = gui/VJXBoardEntityPin.m; sourceTree = "<group>"; };
-		8245763E1227DF5800236FE4 /* VJXBoardEntityPin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXBoardEntityPin.h; path = gui/VJXBoardEntityPin.h; sourceTree = "<group>"; };
+		8245763D1227DF5800236FE4 /* VJXPinLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXPinLayer.m; path = gui/VJXPinLayer.m; sourceTree = "<group>"; };
+		8245763E1227DF5800236FE4 /* VJXPinLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXPinLayer.h; path = gui/VJXPinLayer.h; sourceTree = "<group>"; };
 		8245763F1227DF5800236FE4 /* VJXBoardEntityConnector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXBoardEntityConnector.m; path = gui/VJXBoardEntityConnector.m; sourceTree = "<group>"; };
 		824576401227DF5800236FE4 /* VJXBoardEntityConnector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXBoardEntityConnector.h; path = gui/VJXBoardEntityConnector.h; sourceTree = "<group>"; };
-		824576411227DF5800236FE4 /* VJXBoardEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXBoardEntity.m; path = gui/VJXBoardEntity.m; sourceTree = "<group>"; };
-		824576421227DF5800236FE4 /* VJXBoardEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXBoardEntity.h; path = gui/VJXBoardEntity.h; sourceTree = "<group>"; };
+		824576411227DF5800236FE4 /* VJXEntityLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXEntityLayer.m; path = gui/VJXEntityLayer.m; sourceTree = "<group>"; };
+		824576421227DF5800236FE4 /* VJXEntityLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXEntityLayer.h; path = gui/VJXEntityLayer.h; sourceTree = "<group>"; };
 		824576431227DF5800236FE4 /* VJXBoardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXBoardView.m; path = gui/VJXBoardView.m; sourceTree = "<group>"; };
 		824576441227DF5800236FE4 /* VJXBoardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXBoardView.h; path = gui/VJXBoardView.h; sourceTree = "<group>"; };
-		82B0A4C11237AFB20006D003 /* VJXBoardEntityOutlet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXBoardEntityOutlet.h; path = gui/VJXBoardEntityOutlet.h; sourceTree = "<group>"; };
-		82B0A4C21237AFB20006D003 /* VJXBoardEntityOutlet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXBoardEntityOutlet.m; path = gui/VJXBoardEntityOutlet.m; sourceTree = "<group>"; };
+		82B0A4C11237AFB20006D003 /* VJXOutletLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXOutletLayer.h; path = gui/VJXOutletLayer.h; sourceTree = "<group>"; };
+		82B0A4C21237AFB20006D003 /* VJXOutletLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXOutletLayer.m; path = gui/VJXOutletLayer.m; sourceTree = "<group>"; };
 		82EA042E1240BE4A00E28B72 /* VJXDocument.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VJXDocument.xib; sourceTree = "<group>"; };
 		82EA047C1240C2AF00E28B72 /* VJXDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXDocument.h; path = gui/VJXDocument.h; sourceTree = "<group>"; };
 		82EA047D1240C2AF00E28B72 /* VJXDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXDocument.m; path = gui/VJXDocument.m; sourceTree = "<group>"; };
@@ -205,6 +218,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				822CF93E12705C170053A5C7 /* Extensions */,
 				AAF17A90123E4D9D001319BA /* Core */,
 				AAF17A91123E4DFA001319BA /* Entities */,
 				8245763C1227DF2900236FE4 /* GUI */,
@@ -288,19 +302,28 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		822CF93E12705C170053A5C7 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				822CF93F12705C2C0053A5C7 /* NSColorExtensions.h */,
+				822CF94012705C2C0053A5C7 /* NSColorExtensions.m */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
 		8245763C1227DF2900236FE4 /* GUI */ = {
 			isa = PBXGroup;
 			children = (
-				8245763D1227DF5800236FE4 /* VJXBoardEntityPin.m */,
-				8245763E1227DF5800236FE4 /* VJXBoardEntityPin.h */,
+				8245763D1227DF5800236FE4 /* VJXPinLayer.m */,
+				8245763E1227DF5800236FE4 /* VJXPinLayer.h */,
 				8245763F1227DF5800236FE4 /* VJXBoardEntityConnector.m */,
 				824576401227DF5800236FE4 /* VJXBoardEntityConnector.h */,
-				824576411227DF5800236FE4 /* VJXBoardEntity.m */,
-				824576421227DF5800236FE4 /* VJXBoardEntity.h */,
+				824576411227DF5800236FE4 /* VJXEntityLayer.m */,
+				824576421227DF5800236FE4 /* VJXEntityLayer.h */,
 				824576431227DF5800236FE4 /* VJXBoardView.m */,
 				824576441227DF5800236FE4 /* VJXBoardView.h */,
-				82B0A4C11237AFB20006D003 /* VJXBoardEntityOutlet.h */,
-				82B0A4C21237AFB20006D003 /* VJXBoardEntityOutlet.m */,
+				82B0A4C11237AFB20006D003 /* VJXOutletLayer.h */,
+				82B0A4C21237AFB20006D003 /* VJXOutletLayer.m */,
 				821DE681123925EC00B6A45D /* VJXBoardSelection.h */,
 				821DE682123925EC00B6A45D /* VJXBoardSelection.m */,
 				AA917BFF123BD96700001A8B /* VJXEntityInspectorPanel.h */,
@@ -313,6 +336,13 @@
 				822CE015125A74A8000C92F9 /* VJXLibraryTableView.m */,
 				822CE017125A754E000C92F9 /* VJXLibraryTableViewDelegate.h */,
 				822CE018125A754E000C92F9 /* VJXLibraryTableViewDelegate.m */,
+				822CF8ED127058F80053A5C7 /* VJXBoardLayer.h */,
+				822CF8EE127058F80053A5C7 /* VJXBoardLayer.m */,
+				822CFAEA127076B10053A5C7 /* VJXGUIConstants.h */,
+				822CFE341270F76D0053A5C7 /* VJXOutletLabelLayer.h */,
+				822CFE351270F76D0053A5C7 /* VJXOutletLabelLayer.m */,
+				822C001012710BDE0053A5C7 /* VJXEntityLabelLayer.h */,
+				822C001112710BDE0053A5C7 /* VJXEntityLabelLayer.m */,
 			);
 			name = GUI;
 			sourceTree = "<group>";
@@ -529,7 +559,7 @@
 				82456BA51223CFA200236FE4 /* VJXLayer.m in Sources */,
 				82456BBA1223DBE100236FE4 /* VJXQtVideoLayer.m in Sources */,
 				82456FE912256A4A00236FE4 /* VJXImageLayer.m in Sources */,
-				824576451227DF5800236FE4 /* VJXBoardEntityPin.m in Sources */,
+				824576451227DF5800236FE4 /* VJXPinLayer.m in Sources */,
 				824576461227DF5800236FE4 /* VJXBoardEntityConnector.m in Sources */,
 				824576481227DF5800236FE4 /* VJXBoardView.m in Sources */,
 				AA0F48A8122E7503005A1C95 /* VJXEntity.m in Sources */,
@@ -543,7 +573,7 @@
 				AA7931BE1233A64800860CD2 /* VJXSize.m in Sources */,
 				AA7931C11233A65400860CD2 /* VJXPoint.m in Sources */,
 				AA2BE6511236D31E006087E7 /* VJXThreadedEntity.m in Sources */,
-				82B0A4C31237AFB20006D003 /* VJXBoardEntityOutlet.m in Sources */,
+				82B0A4C31237AFB20006D003 /* VJXOutletLayer.m in Sources */,
 				821DE683123925EC00B6A45D /* VJXBoardSelection.m in Sources */,
 				AA917C01123BD96700001A8B /* VJXEntityInspectorPanel.m in Sources */,
 				AAF179A0123E0A39001319BA /* VJXQtVideoCaptureLayer.m in Sources */,
@@ -551,7 +581,7 @@
 				AAF17BDE123EABBB001319BA /* VJXBoardInputPanel.m in Sources */,
 				AA27106B1240166500E5B946 /* VJXAudioOutput.m in Sources */,
 				AADEBED61240F7D700A6A06D /* VJXDocument.m in Sources */,
-				82EA0BB012421E1D00E28B72 /* VJXBoardEntity.m in Sources */,
+				82EA0BB012421E1D00E28B72 /* VJXEntityLayer.m in Sources */,
 				AADEBF7912413B5B00A6A06D /* VJXAudioFile.m in Sources */,
 				AADEBFDF1241546B00A6A06D /* VJXAudioBuffer.m in Sources */,
 				AADEC0D712416F4600A6A06D /* VJXQtAudioCaptureLayer.m in Sources */,
@@ -571,6 +601,10 @@
 				AAE90BCC126CAE7300690915 /* VJXOutputPin.m in Sources */,
 				AAE90E9A126CDDC500690915 /* VJXPinSignal.m in Sources */,
 				AAE90F8C126D7F5D00690915 /* VJXVideoFilter.m in Sources */,
+				822CF8EF127058F80053A5C7 /* VJXBoardLayer.m in Sources */,
+				822CF94112705C2C0053A5C7 /* NSColorExtensions.m in Sources */,
+				822CFE361270F76D0053A5C7 /* VJXOutletLabelLayer.m in Sources */,
+				822C001212710BDE0053A5C7 /* VJXEntityLabelLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

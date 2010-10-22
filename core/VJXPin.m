@@ -473,9 +473,9 @@
     [pool drain];
 }
 
-- (BOOL)canConnectToPin:(VJXPin *)aPin
+- (BOOL)canConnectToPin:(VJXPin *)pin
 {
-    return (self.type == aPin.type && self.direction != aPin.direction) ? YES : NO;
+    return (type == pin.type && direction != pin.direction) ? YES : NO;
 }
 
 @end

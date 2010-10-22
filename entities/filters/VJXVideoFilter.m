@@ -58,18 +58,23 @@
     @synchronized(self) {
         if (currentFrame)
             [currentFrame release];
-        currentFrame = [frame retain];
         if (filter) {
-            [filter setValue:currentFrame forKey:@"inputImage"];
-            [currentFrame release];
+            [filter setValue:frame forKey:@"inputImage"];
             currentFrame = [[filter valueForKey:@"outputImage"] retain];
+        } else {
+            currentFrame = [frame retain];
         }
+        [outFrame deliverData:currentFrame];
     }
-    [outFrame deliverData:currentFrame];
 }
 
-- (void)setFilterValue:(id)value
+- (void)setFilterValue:(id)value userData:(id)userData
 {
+    NSString *pinName = (NSString *)userData;
+    @synchronized(self) {
+    if (filter)
+        [filter setValue:value forKey:pinName];
+    }
 }
 
 - (void)selectFilter:(NSString *)filterName
@@ -95,7 +100,7 @@
             // TODO - use 'attributes' to determine datatype,
             //        max/min values and display name
             if (![key isEqualTo:@"inputImage"]) {
-                [self registerInputPin:key withType:kVJXNumberPin andSelector:@"setFilterValue:"];
+                [self registerInputPin:key withType:kVJXNumberPin andSelector:@"setFilterValue:userData:" userData:key];
             }
         }
         if (filter)

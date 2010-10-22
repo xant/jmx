@@ -50,6 +50,8 @@
         [self registerInputPin:@"active" withType:kVJXNumberPin andSelector:@"setActivePin:"];
         [self registerOutputPin:@"active" withType:kVJXNumberPin];
         // delay notification so that the superclass constructor can finish its job
+        // since this selector is going to be called in this same thread, we know for sure
+        // that it's going to be called after the init-chain has been fully executede
         [self performSelector:@selector(notifyCreation) withObject:nil afterDelay:0.1];
     }
     return self;
@@ -77,6 +79,11 @@
 - (VJXInputPin *)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector
 {
     return [self registerInputPin:pinName withType:pinType andSelector:selector allowedValues:nil initialValue:nil];
+}
+
+- (VJXInputPin *)registerInputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector userData:(id)userData
+{
+    return [self registerInputPin:pinName withType:pinType andSelector:selector userData:userData allowedValues:nil initialValue:nil];
 }
 
 - (VJXInputPin *)registerInputPin:(NSString *)pinName 
@@ -131,6 +138,11 @@
                        andSelector:selector
                      allowedValues:nil
                       initialValue:nil];
+}
+
+- (VJXOutputPin *)registerOutputPin:(NSString *)pinName withType:(VJXPinType)pinType andSelector:(NSString *)selector userData:(id)userData
+{
+    return [self registerOutputPin:pinName withType:pinType andSelector:selector userData:userData allowedValues:nil initialValue:nil];
 }
 
 - (VJXOutputPin *)registerOutputPin:(NSString *)pinName

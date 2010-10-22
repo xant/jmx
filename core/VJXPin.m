@@ -422,7 +422,7 @@
             [receiver performSelector:selector withObject:data];
             break;
         case 2:
-            [receiver performSelector:selector withObject:data withObject:sender];
+            [receiver performSelector:selector withObject:data withObject:ownerUserData];
             break;
         default:
             NSLog(@"Unsupported selector : '%@' . It can take up to two arguments\n", selectorName);
@@ -460,8 +460,8 @@
             else
                 currentSender = self;
         }
-        VJXPinSignal *signal = [VJXPinSignal signalFrom:sender withData:data];
-
+        VJXPinSignal *signal = [VJXPinSignal signalFromSender:sender receiver:owner data:data];
+        
 #if USE_NSOPERATIONS
         NSBlockOperation *signalDelivery = [NSBlockOperation blockOperationWithBlock:^{
             [self performSignal:signal];
@@ -480,8 +480,8 @@
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     // send the signal to our owner
     // (if we are an input pin and if our owner registered a selector)
-    if (direction == kVJXInputPin && owner && ownerSignal)
-        [self sendData:signal.data toReceiver:owner withSelector:ownerSignal fromSender:signal.sender];
+    if (direction == kVJXInputPin && ownerSignal)
+        [self sendData:signal.data toReceiver:signal.receiver withSelector:ownerSignal fromSender:signal.sender];
     [pool drain];
 }
 

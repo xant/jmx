@@ -234,24 +234,22 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
 
         [analyzer getMagnitude:spectrumBuffer min:minAmp max:maxAmp];
         
-
-        NSMutableArray *frequencyValues = [[NSMutableArray alloc] init];
-        for (UInt32 i = 0; i < kVJXAudioSpectrumNumFrequencies; i++) {	// for each frequency
-            int offset = frequencies[i]*numBins/44100*analyzer.numChannels;
-            Float32 value = (((Float32 *)(spectrumBuffer->mBuffers[0].mData))[offset] +
-                            ((Float32 *)(spectrumBuffer->mBuffers[1].mData))[offset]) * 0.5;
-            if (value < 0.0)
-                value = 0.0;
-            
-            NSNumber *numberValue = [NSNumber numberWithFloat:value];
-            [(VJXOutputPin *)[frequencyPins objectAtIndex:i] deliverData:numberValue];
-            [frequencyValues addObject:numberValue];
-             
-
-        }
-        if (runcycleCount%5 == 0) // draw the image only once every 5 samples
+        if (runcycleCount%5 == 0) { // draw the image only once every 5 samples
+            NSMutableArray *frequencyValues = [[NSMutableArray alloc] init];
+            for (UInt32 i = 0; i < kVJXAudioSpectrumNumFrequencies; i++) {	// for each frequency
+                int offset = frequencies[i]*numBins/44100*analyzer.numChannels;
+                Float32 value = (((Float32 *)(spectrumBuffer->mBuffers[0].mData))[offset] +
+                                 ((Float32 *)(spectrumBuffer->mBuffers[1].mData))[offset]) * 0.5;
+                if (value < 0.0)
+                    value = 0.0;
+                
+                NSNumber *numberValue = [NSNumber numberWithFloat:value];
+                [(VJXOutputPin *)[frequencyPins objectAtIndex:i] deliverData:numberValue];
+                [frequencyValues addObject:numberValue];
+            }
             [self drawSpectrumImage:frequencyValues];
-        [frequencyValues release];
+            [frequencyValues release];
+        }
         runcycleCount++;
     }
 }

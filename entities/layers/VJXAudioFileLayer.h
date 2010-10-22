@@ -33,7 +33,6 @@
     VJXAudioFile *audioFile;
     VJXAudioBuffer *currentSample;
     VJXOutputPin *outputPin;
-    NSMutableArray *samples;
     BOOL repeat; // defaults to YES
     NSUInteger offset;
     VJXAudioDevice *device; // used to obtain the clock

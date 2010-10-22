@@ -19,4 +19,6 @@
     NSMutableArray *knownFilters;
 }
 
+- (void)setFilterValue:(id)value userData:(id)userData;
+
 @end

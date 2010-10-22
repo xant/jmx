@@ -75,8 +75,20 @@
                  andSelector:(NSString *)selector;
 
 - (VJXInputPin *)registerInputPin:(NSString *)pinName
+                         withType:(VJXPinType)pinType 
+                      andSelector:(NSString *)selector
+                         userData:(id)userData;
+
+- (VJXInputPin *)registerInputPin:(NSString *)pinName
                          withType:(VJXPinType)pinType
                       andSelector:(NSString *)selector
+                    allowedValues:(NSArray *)pinValues
+                     initialValue:(id)value;
+
+- (VJXInputPin *)registerInputPin:(NSString *)pinName 
+                         withType:(VJXPinType)pinType
+                      andSelector:(NSString *)selector
+                         userData:(id)userData
                     allowedValues:(NSArray *)pinValues
                      initialValue:(id)value;
 
@@ -86,6 +98,18 @@
 - (VJXOutputPin *)registerOutputPin:(NSString *)pinName
                      withType:(VJXPinType)pinType
                   andSelector:(NSString *)selector;
+
+- (VJXOutputPin *)registerOutputPin:(NSString *)pinName
+                           withType:(VJXPinType)pinType 
+                        andSelector:(NSString *)selector
+                           userData:(id)userData;
+
+- (VJXOutputPin *)registerOutputPin:(NSString *)pinName
+                           withType:(VJXPinType)pinType
+                        andSelector:(NSString *)selector
+                           userData:(id)userData
+                      allowedValues:(NSArray *)pinValues
+                       initialValue:(id)value;
 
 - (VJXOutputPin *)registerOutputPin:(NSString *)pinName
                            withType:(VJXPinType)pinType

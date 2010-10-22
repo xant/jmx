@@ -28,6 +28,9 @@
 @class VJXAudioBuffer;
 @class VJXAudioFormat;
 
+#define kVJXAudioOutputRingbufferSize 128
+#define kVJXAudioOutputMaxFrames 512
+
 @interface VJXAudioOutput : VJXEntity {
 @protected
     AudioConverterRef converter;
@@ -36,6 +39,12 @@
     VJXInputPin *audioInputPin;
     VJXAudioBuffer *currentSample;
     NSMutableArray *samples;
+    AudioStreamBasicDescription outputDescription;
+    AudioBufferList *outputBufferList;
+    void *ringbuffer;
+    UInt32 readOffset;
+    UInt32 chunkSize;
+    BOOL prefill;
 }
 
 - (VJXAudioBuffer *)currentSample;

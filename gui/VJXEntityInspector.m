@@ -7,6 +7,5 @@
 //
 
 #import "VJXEntityInspector.h"
-#import "VJXBoardDelegate.h"
 
 @end

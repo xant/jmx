@@ -58,7 +58,6 @@
         repeat = YES;
         [self registerInputPin:@"repeat" withType:kVJXNumberPin andSelector:@"doRepeat:"];
         currentSample = nil;
-        samples = nil;
         device = nil;
         useAggregateDevice = NO;
     }
@@ -69,8 +68,6 @@
 {
     if (currentSample)
         [currentSample release];
-    if (samples)
-        [samples release];
     if (audioFile)
         [audioFile release];
     if (device)
@@ -88,16 +85,6 @@
                 self.frequency = [NSNumber numberWithDouble:([audioFile sampleRate]/512.0)];
                 NSArray *path = [file componentsSeparatedByString:@"/"];
                 self.name = [path lastObject];
-                if (samples)
-                    [samples removeAllObjects];
-                else
-                    samples = [[NSMutableArray alloc] init];
-                // preload some frames
-                for (int i = 0; i < 512; i++) { // read some frames in the ringbuffer
-                    VJXAudioBuffer *sample = [audioFile readFrames:512];
-                    if (sample)
-                        [samples addObject:sample];
-                }
                 if (useAggregateDevice) {
                     if (device)
                         [device release];

@@ -28,17 +28,16 @@
 
 - (id)init
 {
-    self = [super init];
-    if (self) {
-        outputDevice = [[VJXAudioDevice defaultOutputDevice] retain];
-        [outputDevice setIOTarget:self 
-                     withSelector:@selector(provideSamplesToDevice:timeStamp:inputData:inputTime:outputData:outputTime:clientData:)
-                   withClientData:self];
-        // start the device
-        [outputDevice deviceStart];
-        format = [[outputDevice streamDescriptionForChannel:0 forDirection:kVJXAudioOutput] retain];
-        [outputDevice setDelegate:(VJXCoreAudioOutput *)self];
-    }
+    outputDevice = [[VJXAudioDevice defaultOutputDevice] retain];
+    [outputDevice setIOTarget:self 
+                 withSelector:@selector(provideSamplesToDevice:timeStamp:inputData:inputTime:outputData:outputTime:clientData:)
+               withClientData:self];
+    // start the device
+    [outputDevice deviceStart];
+    format = [[outputDevice streamDescriptionForChannel:0 forDirection:kVJXAudioOutput] retain];
+    [outputDevice setDelegate:(VJXCoreAudioOutput *)self];
+    [super init]; // we know that our parent won't never return nil and we need
+                  // its initializer to be run after we have set the format
     return self;
 }
 

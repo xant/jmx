@@ -56,8 +56,17 @@ static OSStatus _FillComplexBufferProc (
         audioInputPin = [self registerInputPin:@"audio" withType:kVJXAudioPin andSelector:@"newSample:"];
         currentSamplePin = [self registerOutputPin:@"currentSample" withType:kVJXAudioPin];
         converter = NULL;
-        format = nil; // must be set by superclasses
         samples = [[NSMutableArray alloc] init];
+        outputDescription = format.audioStreamBasicDescription;
+        outputBufferList = calloc(sizeof(AudioBufferList), 1);
+        outputBufferList->mNumberBuffers = 1;
+        chunkSize = outputDescription.mBytesPerFrame * outputDescription.mChannelsPerFrame * kVJXAudioOutputMaxFrames;
+        outputBufferList->mBuffers[0].mDataByteSize = chunkSize;
+        outputBufferList->mBuffers[0].mNumberChannels = outputDescription.mChannelsPerFrame;
+        // preallocate the buffer used for outputsamples
+        ringbuffer = malloc(outputBufferList->mBuffers[0].mDataByteSize*kVJXAudioOutputRingbufferSize);
+        readOffset = 0;
+        prefill = YES;
     }
     return self;
 }
@@ -75,7 +84,6 @@ static OSStatus _FillComplexBufferProc (
     // one used internally (44Khz stereo float32 interleaved)
     
     AudioStreamBasicDescription inputDescription = buffer.format.audioStreamBasicDescription;
-    AudioStreamBasicDescription outputDescription = format.audioStreamBasicDescription;
     if (!converter) { // create on first use
         if ( noErr != AudioConverterNew ( &inputDescription, &outputDescription, &converter )) {
             converter = NULL; // just in case
@@ -95,11 +103,9 @@ static OSStatus _FillComplexBufferProc (
     OSStatus err = noErr;
     CallbackContext callbackContext;
     UInt32 framesRead = [buffer numFrames];
-    AudioBufferList *outputBufferList = calloc(sizeof(AudioBufferList), 1);
-    outputBufferList->mNumberBuffers = 1;
+    // TODO - check if framesRead is > 512
     outputBufferList->mBuffers[0].mDataByteSize = outputDescription.mBytesPerFrame * outputDescription.mChannelsPerFrame * framesRead;
-    outputBufferList->mBuffers[0].mNumberChannels = outputDescription.mChannelsPerFrame;
-    outputBufferList->mBuffers[0].mData = calloc(outputBufferList->mBuffers[0].mDataByteSize, 1);
+    outputBufferList->mBuffers[0].mData = ringbuffer+(readOffset++%kVJXAudioOutputRingbufferSize)*chunkSize;
     callbackContext.theConversionBuffer = buffer;
     callbackContext.wait = NO; // XXX (actually unused)
     //UInt32 outputChannels = [buffer numChannels];
@@ -116,10 +122,12 @@ static OSStatus _FillComplexBufferProc (
         err = AudioConverterFillComplexBuffer ( converter, _FillComplexBufferProc, &callbackContext, &framesRead, outputBufferList, NULL );
     }
     if (err == noErr) {
-        newSample = [VJXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&outputDescription copy:NO freeOnRelease:YES];
+        newSample = [VJXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&outputDescription copy:NO freeOnRelease:NO];
         [currentSamplePin deliverData:newSample];
         @synchronized(samples) {
             [samples addObject:newSample];
+            if ([samples count] > 25)
+                prefill = NO;
         }
     }
 }
@@ -128,7 +136,7 @@ static OSStatus _FillComplexBufferProc (
 {
     VJXAudioBuffer *sample = nil;
     @synchronized(samples) {
-        if ([samples count]) {
+        if ([samples count] && !prefill) {
             sample = [[samples objectAtIndex:0] retain];
             [samples removeObjectAtIndex:0];
         }
@@ -146,6 +154,8 @@ static OSStatus _FillComplexBufferProc (
         [samples removeAllObjects];
         [samples release];
     }
+    if (ringbuffer)
+        free(ringbuffer);
     [super dealloc];
 }
 

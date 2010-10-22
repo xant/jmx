@@ -28,12 +28,14 @@
 @interface VJXPinSignal : NSObject {
     id data;
     id sender;
+    id receiver;
 }
 
 @property (retain) id data;
 @property (retain) id sender;
+@property (retain) id receiver;
 
-+ signalFrom:(id)sender withData:(id)data;
-- (id)initWithSender:(id)theSender andData:(id)theData;
++ signalFromSender:(id)sender receiver:(id)receiver data:(id)data;
+- (id)initWithSender:(id)theSender receiver:(id)theReceiver data:(id)theData;
 
 @end

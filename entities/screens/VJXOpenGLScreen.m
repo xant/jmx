@@ -131,22 +131,22 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     if ((timeStamp-lastTime)/1e9 > 1e9/60)
         return;
     lastTime = timeStamp;
-    /*
-    [[self openGLContext] makeCurrentContext];
+    
     if (CGLLockContext([[self openGLContext] CGLContextObj]) != kCGLNoError)
         NSLog(@"Could not lock CGLContext");
-    */
+    [[self openGLContext] makeCurrentContext];
     NSRect bounds = [self bounds];
     @synchronized(self) {
-        //CIImage *image = [self.currentFrame retain];
-        if (self.currentFrame) {
+        CIImage *image = [self.currentFrame retain];
+        if (image && ciContext) {
             CGRect screenSizeRect = NSRectToCGRect(bounds);
-            [ciContext drawImage:self.currentFrame inRect:screenSizeRect fromRect:screenSizeRect];
+            [ciContext drawImage:image inRect:screenSizeRect fromRect:screenSizeRect];
+            [image release];
         }
         [[self openGLContext] flushBuffer];
     }
     [self setNeedsDisplay:NO];
-    //CGLUnlockContext([[self openGLContext] CGLContextObj]);
+    CGLUnlockContext([[self openGLContext] CGLContextObj]);
 }
 
 - (void)drawRect:(NSRect)rect
@@ -194,9 +194,11 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 
 - (void)cleanup
 {
-    if (ciContext) {
-        [ciContext release];
-        ciContext = nil;
+    @synchronized(self) {
+        if (ciContext) {
+            [ciContext release];
+            ciContext = nil;
+        }
     }
     
     self.currentFrame = nil;
@@ -212,7 +214,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
              size.height != actualRect.size.height))
         {
             NSRect newRect = NSMakeRect(0, 0, size.width, size.height);
-            [self setFrame:newRect];
+            [self setBounds:newRect];
             newRect.origin.x = actualRect.origin.x;
             newRect.origin.y = actualRect.origin.y;
             [[self window] setFrame:newRect display:NO];

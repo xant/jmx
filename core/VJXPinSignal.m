@@ -26,23 +26,24 @@
 
 @implementation VJXPinSignal
 
-@synthesize sender, data;
+@synthesize sender, data, receiver;
 
-+ (id)signalFrom:(id)sender withData:(id)data
++ (id)signalFromSender:(id)sender receiver:(id)receiver data:(id)data
 {
     id signal = [VJXPinSignal alloc];
     if (signal) {
-        return [[signal initWithSender:sender andData:data] autorelease];
+        return [[signal initWithSender:sender receiver:receiver data:data] autorelease];
     }
     return nil;
 }
 
-- (id)initWithSender:(id)theSender andData:(id)theData
+- (id)initWithSender:(id)theSender receiver:(id)theReceiver data:(id)theData
 {
     self = [super init];
     if (self) {
         self.sender = theSender;
         self.data = theData;
+        self.receiver = theReceiver;
     }
     return self;
 }
@@ -51,6 +52,7 @@
 {
     self.sender = nil;
     self.data = nil;
+    self.receiver = nil;
     [super dealloc];
 }
 

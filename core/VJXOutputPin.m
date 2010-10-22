@@ -66,8 +66,10 @@
     [super performSignal:signal];
     // and then propagate it to all receivers
     @synchronized (receivers) {
-        for (id receiver in receivers)
-            [self sendData:signal.data toReceiver:receiver withSelector:[receivers objectForKey:receiver] fromSender:signal.sender];
+        for (id receiver in receivers) {
+            signal.receiver = receiver;
+            [self sendData:signal.data toReceiver:signal.receiver withSelector:[receivers objectForKey:receiver] fromSender:signal.sender];
+        }
     }
     [pool drain];
 }
@@ -111,20 +113,12 @@
     }
     // deliver the signal to the just connected receiver
     if (rv == YES) {
-        VJXPinSignal *signal;
+        VJXPinSignal *signal = nil;
         @synchronized(self) {
-            signal = [VJXPinSignal signalFrom:currentSender withData:currentData];
+            signal = [VJXPinSignal signalFromSender:currentSender receiver:pinReceiver data:currentData];
         }
-#if USE_NSOPERATIONS
-        NSBlockOperation *signalDelivery = [NSBlockOperation blockOperationWithBlock:^{
-            [self performSignal:signal];
-        }];
-        [signalDelivery setQueuePriority:NSOperationQueuePriorityVeryHigh];
-        [signalDelivery setThreadPriority:1.0];
-        [[VJXContext operationQueue] addOperation:signalDelivery];
-#else
-        [self performSelector:@selector(performSignal:) onThread:[VJXContext signalThread] withObject:signal waitUntilDone:NO];
-#endif
+        if (signal) // send the signal on-connect
+            [self sendData:signal.data toReceiver:signal.receiver withSelector:pinSignal fromSender:currentSender];
     }
     return rv;
 }

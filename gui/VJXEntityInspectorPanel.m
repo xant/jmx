@@ -191,11 +191,12 @@
 
 - (void)anEntityWasSelected:(NSNotification *)aNotification
 {
-    VJXEntityLayer *entity = [aNotification object];
-    [self setEntity:entity];
-	[pinsProperties setDataSource:entity];
-	[pinsProperties setDelegate:entity];
+    VJXEntityLayer *entityLayer = [aNotification object];
+    [self setEntity:entityLayer];
+	[pinsProperties setDataSource:entityLayer];
+	[pinsProperties setDelegate:entityLayer];
 	[pinsProperties expandItem:nil expandChildren:YES];
+    [pinsProperties reloadData];
 }
 
 - (void)anEntityWasRemoved:(NSNotification *)aNotification

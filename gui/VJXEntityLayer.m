@@ -233,8 +233,6 @@
         [self select];
     else
         [self unselect];
-
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXBoardEntityWasSelected" object:self];
 }
 
 - (void)toggleSelected

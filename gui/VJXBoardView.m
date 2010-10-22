@@ -76,6 +76,8 @@
 
     selectedLayer = aLayer;
 
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXBoardEntityWasSelected" object:self.selectedLayer];
+
     if (!selectedLayer)
         return;
 

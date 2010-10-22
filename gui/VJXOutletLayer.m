@@ -65,6 +65,8 @@
         self.output = isOutput;
 
         [self addSublayer:pin];
+
+        [self setNeedsDisplay];
     }
     return self;
 }

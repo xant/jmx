@@ -128,13 +128,17 @@
 
     [self recalculateFrame];
     [self reorderOutlets];
+    [self setNeedsDisplay];
 }
 
 - (void)recalculateFrame
 {
     NSUInteger maxOutlets = MAX([self.inlets count], [self.outlets count]);
     CGFloat expectedFrameWidth = ((maxOutlets - 1) * ENTITY_OUTLET_MIN_SPACING) + (maxOutlets * ENTITY_OUTLET_HEIGHT) + ENTITY_LABEL_HEIGHT;
-    self.frame = CGRectMake(10.0f, 10.0f, ENTITY_FRAME_WIDTH + (2 * ENTITY_FRAME_PADDING), expectedFrameWidth + (2 * ENTITY_FRAME_PADDING));
+    CGRect f = self.frame;
+    f.size = CGSizeMake(ENTITY_FRAME_WIDTH + (2 * ENTITY_FRAME_PADDING), expectedFrameWidth + (2 * ENTITY_FRAME_PADDING));
+    self.frame = f;
+    [self setNeedsDisplay];
 }
 
 - (VJXPin *)outputPinWithName:(NSString *)aPinName
@@ -151,7 +155,6 @@
 {
     [self setupPinsLayers:self.inlets startAtPoint:CGPointMake(self.bounds.origin.x, ENTITY_LABEL_HEIGHT) output:NO];
     [self setupPinsLayers:self.outlets startAtPoint:CGPointMake(self.bounds.size.width - ENTITY_OUTLET_WIDTH, ENTITY_LABEL_HEIGHT) output:YES];
-    [self setNeedsDisplay];
 }
 
 - (void)setupPinsLayers:(NSArray *)pinLayers startAtPoint:(CGPoint)aPoint output:(BOOL)isOutput
@@ -176,6 +179,7 @@
     [self.inlets addObject:outlet];
     [outlet release];
 
+    [self recalculateFrame];
     [self reorderOutlets];
 }
 
@@ -415,6 +419,7 @@ id controlForVJXPinType(VJXPinType aType)
         //[(NSPopUpButtonCell *)cell addItemsWithTitles:[aPin allowedValues]];
         [(NSPopUpButtonCell *)cell selectItemWithTitle:[aPin readData]];
     }
+    [self setNeedsDisplay];
 }
 
 - (void)updateConnectors

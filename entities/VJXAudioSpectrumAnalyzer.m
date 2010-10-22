@@ -37,7 +37,8 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
 
 - (id)init
 {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         audioInputPin = [self registerInputPin:@"audio" withType:kVJXAudioPin andSelector:@"newSample:"];
         // Set the client format to 32bit float data
         // Maintain the channel count and sample rate of the original source format

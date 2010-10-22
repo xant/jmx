@@ -54,7 +54,8 @@
 
 - (id)init
 {
-    if( self = [super init] ) {
+    self = [super init];
+    if(self) {
         width = 352;
         height = 288;
         session = nil;
@@ -196,7 +197,8 @@ error:
 
 - (id)init
 {
-    if (self == [super init]) {
+    self = [super init];
+    if (self) {
         grabber = [[VJXQtVideoGrabber alloc] init];
     } else {
         [self dealloc];

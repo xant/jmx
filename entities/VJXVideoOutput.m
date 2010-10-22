@@ -30,7 +30,8 @@
 
 - (id)initWithSize:(NSSize)screenSize
 {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         currentFrame = nil;
         self.size = [VJXSize sizeWithNSSize:screenSize];    
         [self registerInputPin:@"frame" withType:kVJXImagePin andSelector:@"drawFrame:"];

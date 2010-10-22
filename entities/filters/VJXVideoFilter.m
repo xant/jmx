@@ -13,7 +13,8 @@
 
 - (id)init
 {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         currentFrame = nil;
         filter = nil;
         inFrame = [self registerInputPin:@"frame" withType:kVJXImagePin andSelector:@"newFrame:"];

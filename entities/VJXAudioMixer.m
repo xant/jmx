@@ -18,7 +18,8 @@
 
 - (id)init
 {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         audioInputPin = [self registerInputPin:@"audio" withType:kVJXAudioPin];
         [audioInputPin allowMultipleConnections:YES];
         audioOutputPin = [self registerOutputPin:@"audio" withType:kVJXAudioPin];

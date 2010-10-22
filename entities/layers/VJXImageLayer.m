@@ -37,7 +37,8 @@
 
 - (id)init
 {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         self.image = nil;
         self.frequency = [NSNumber numberWithDouble:0.5]; // override frequency
     }

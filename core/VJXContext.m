@@ -82,7 +82,8 @@ static BOOL initialized = NO;
 
 - (id)init
 {
-	if ((self = [super init]) != nil) {
+    self = [super init];
+	if (self) {
         entities = [[NSMutableDictionary alloc] init];
 		registeredClasses = [[NSMutableArray alloc] init];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasCreated:) name:@"VJXEntityWasCreated" object:nil];

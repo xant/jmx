@@ -42,7 +42,8 @@
 {
     // TODO - start using debug messages activated by some flag
     //NSLog(@"Initializing %@", [self class]);
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         name = @""; // XXX - default name
         inputPins = [[NSMutableDictionary alloc] init];
         outputPins = [[NSMutableDictionary alloc] init];

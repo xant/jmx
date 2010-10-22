@@ -35,7 +35,8 @@
 @synthesize owner;
 - (id)initWithOwner:(id)theOwner
 {
-    if (self = [super init])
+    self = [super init];
+    if (self)
         owner = theOwner;
     return self;
 }
@@ -66,7 +67,8 @@
 
 - (id)init
 {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         connection = [[VJXAudioConnection alloc] initWithOwner:self];
     }
     return self;
@@ -82,7 +84,8 @@
 @implementation VJXQtAudioOutput
 - (id)init
 {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         NSError *error = nil;
 
         // Create a capture session

@@ -12,7 +12,8 @@
 
 - (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)aStyle backing:(NSBackingStoreType)bufferingType defer:(BOOL)flag
 {
-    if (self = [super initWithContentRect:contentRect styleMask:aStyle backing:bufferingType defer:flag]) {
+    self = [super initWithContentRect:contentRect styleMask:aStyle backing:bufferingType defer:flag];
+    if (self) {
         pin = nil;
     }
     return self;

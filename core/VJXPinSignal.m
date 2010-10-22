@@ -39,7 +39,8 @@
 
 - (id)initWithSender:(id)theSender andData:(id)theData
 {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         self.sender = theSender;
         self.data = theData;
     }

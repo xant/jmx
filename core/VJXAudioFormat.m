@@ -38,7 +38,8 @@
 
 - (id)initWithAudioStreamDescription:(AudioStreamBasicDescription)formatDescription
 {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         memcpy(&audioStreamBasicDescription, &formatDescription, sizeof(audioStreamBasicDescription));
     }
     return self;

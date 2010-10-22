@@ -45,7 +45,8 @@
 
 - (id)initWithCoreAudioBufferList:(AudioBufferList *)audioBufferList andFormat:(AudioStreamBasicDescription *)audioFormat copy:(BOOL)wantsCopy freeOnRelease:(BOOL)wantsFree
 {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         int i;
         freeOnRelease = wantsFree;
         if (audioFormat)

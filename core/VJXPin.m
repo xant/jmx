@@ -167,7 +167,8 @@
      allowedValues:(NSArray *)pinValues
       initialValue:(id)value
 {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         type = pinType;
         name = [pinName retain];
         multiple = NO;

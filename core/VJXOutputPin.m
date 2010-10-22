@@ -40,14 +40,14 @@
      allowedValues:(NSArray *)pinValues
       initialValue:(id)value
 {
-    if (self = [super initWithName:pinName
-                           andType:pinType
-                           ownedBy:pinOwner
-                        withSignal:pinSignal
-                          userData:userData
-                     allowedValues:pinValues
-                      initialValue:value])
-    {
+    self = [super initWithName:pinName
+                       andType:pinType
+                       ownedBy:pinOwner
+                    withSignal:pinSignal
+                      userData:userData
+                 allowedValues:pinValues
+                  initialValue:value];
+    if (self) {
         receivers = [[NSMutableDictionary alloc] init];
         direction = kVJXOutputPin;
     }

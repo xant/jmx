@@ -28,7 +28,8 @@
 }
 - (id)initWithSize:(UInt64)_size;
 {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         size = _size + 1;;
         buf = malloc(size);
         if(!buf)

@@ -77,7 +77,8 @@ static OSStatus _FillComplexBufferProc (
 
 - (id)init
 {
-    if( self = [super init] ) {
+    self = [super init];
+    if( self ) {
 
     }
     return self;
@@ -190,7 +191,8 @@ error:
 
 - (id)init
 {
-    if (self == [super init]) {
+    self = [super init];
+    if (self) {
         grabber = [[VJXQtAudioGrabber alloc] init];
         outputPin = [self registerOutputPin:@"audio" withType:kVJXAudioPin];
         // Set the client format to 32bit float data

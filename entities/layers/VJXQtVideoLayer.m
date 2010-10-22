@@ -49,7 +49,8 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
 
 - (id)init
 {
-    if ((self = [super init])) {
+    self = [super init];
+    if (self) {
         movie = nil;
         moviePath = nil;
         repeat = YES;

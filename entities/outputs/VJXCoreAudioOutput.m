@@ -28,7 +28,8 @@
 
 - (id)init
 {
-    if (self == [super init]) {
+    self = [super init];
+    if (self) {
         outputDevice = [[VJXAudioDevice defaultOutputDevice] retain];
         [outputDevice setIOTarget:self 
                      withSelector:@selector(provideSamplesToDevice:timeStamp:inputData:inputTime:outputData:outputTime:clientData:)

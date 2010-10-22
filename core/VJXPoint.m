@@ -36,7 +36,8 @@
 
 - (id)initWithNSPoint:(NSPoint)point
 {
-    if (self == [super init]) {
+    self = [super init];
+    if (self) {
         self.nsPoint = point;
     }
     return self;
@@ -44,7 +45,8 @@
 
 - (id)init
 {
-    if (self = [super init])
+    self = [super init];
+    if (self)
         return [self initWithNSPoint:NSZeroPoint];
     return self;
 }

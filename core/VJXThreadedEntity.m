@@ -34,7 +34,8 @@
 
 - (id)init
 {
-    if (self == [super init]) {
+    self = [super init];
+    if (self) {
         worker = nil;
         timer = nil;
         // and 'effective' frequency , only for debugging purposes

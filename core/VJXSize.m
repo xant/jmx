@@ -36,7 +36,8 @@
 
 - (id)initWithNSSize:(NSSize)size
 {
-    if (self == [super init]) {
+    self = [super init];
+    if (self) {
         self.nsSize = size;
     }
     return self;
@@ -44,7 +45,8 @@
 
 - (id)init
 {
-    if (self = [super init])
+    self = [super init];
+    if (self)
         return [self initWithNSSize:NSZeroSize];
     return self;
 }

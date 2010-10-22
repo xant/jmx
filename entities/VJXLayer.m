@@ -31,7 +31,8 @@
 
 - (id)init
 {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         currentFrame = nil;
         name = @"";
         self.saturation = [NSNumber numberWithFloat:1.0];

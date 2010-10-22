@@ -73,7 +73,8 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 
 - (id)initWithFrame:(NSRect)frameRect pixelFormat:(NSOpenGLPixelFormat *)format
 {
-    if (self = [super initWithFrame:frameRect pixelFormat:format]) {
+    self = [super initWithFrame:frameRect pixelFormat:format];
+    if (self) {
         currentFrame = nil;
         ciContext = nil;
         lastTime = 0;
@@ -229,7 +230,8 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 
 - (id)initWithSize:(NSSize)screenSize
 {
-    if (self = [super initWithSize:screenSize]) {
+    self = [super initWithSize:screenSize];
+    if (self) {
         NSRect frame = NSMakeRect(0, 0, size.width, size.height);
         window = [[NSWindow alloc] initWithContentRect:frame                                          
                                              styleMask:NSTitledWindowMask|NSMiniaturizableWindowMask

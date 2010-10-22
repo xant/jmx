@@ -36,14 +36,14 @@
      allowedValues:(NSArray *)pinValues
       initialValue:(id)value
 {
-    if (self = [super initWithName:pinName
-                           andType:pinType
-                           ownedBy:pinOwner
-                        withSignal:pinSignal
-                          userData:userData
-                     allowedValues:pinValues
-                      initialValue:value])
-    {
+    self = [super initWithName:pinName
+                       andType:pinType
+                       ownedBy:pinOwner
+                    withSignal:pinSignal
+                      userData:userData
+                 allowedValues:pinValues
+                  initialValue:value];    
+    if (self) {
         producers = [[NSMutableArray alloc] init];
         direction = kVJXInputPin;
     }

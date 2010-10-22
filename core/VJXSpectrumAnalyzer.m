@@ -126,7 +126,8 @@ static inline UInt32 NextPowerOfTwo(UInt32 x)
 
 - (id)initWithSize:(UInt32)size frames:(UInt32)numFrames
 {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         fftSize = size;
         maxFrames = numFrames;
         ioBufSize = NextPowerOfTwo(fftSize + maxFrames);
@@ -273,7 +274,8 @@ static inline UInt32 NextPowerOfTwo(UInt32 x)
 
 - (id)initWithSize:(UInt32)size hopSize:(UInt32)hop channels:(UInt32)channelsNum maxFrames:(UInt32)frames
 {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         int i;
 
         fftSize = size; // size of the fft output

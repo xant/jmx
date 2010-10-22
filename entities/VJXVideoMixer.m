@@ -31,7 +31,8 @@
 
 - (id) init
 {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         blendFilterPin = [self registerInputPin:@"blendFilter"
                                        withType:kVJXStringPin
                                     andSelector:@"setBlendFilter:"

@@ -38,7 +38,8 @@
 - (id)initWithURL:(NSURL *)url
 {
     OSStatus err = noErr;
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         UInt32 thePropertySize = sizeof(fileFormat);
 
         err = ExtAudioFileOpenURL ( (CFURLRef)url, &audioFile );

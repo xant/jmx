@@ -51,7 +51,8 @@
 
 - (id)init
 {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         audioFile = nil;
         outputPin = [self registerOutputPin:@"audio" withType:kVJXAudioPin];
         repeat = YES;

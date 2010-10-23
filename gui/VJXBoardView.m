@@ -204,16 +204,13 @@
     [CATransaction commit];
 
     VJXPinLayer *aPinLayer = [self pinLayerAtPoint:[theEvent locationInWindow]];
-    if (aPinLayer) {
-        if ([fakeConnectorLayer.originPinLayer.pin canConnectToPin:aPinLayer.pin]) {
-            [hoveredPinLayer unfocus];
-            hoveredPinLayer = aPinLayer;
-            [hoveredPinLayer focus];
-        }
-        else {
-            [hoveredPinLayer unfocus];
-            hoveredPinLayer = nil;
-        }
+    if (aPinLayer && [fakeConnectorLayer.originPinLayer.pin canConnectToPin:aPinLayer.pin]) {
+        [hoveredPinLayer unfocus];
+        hoveredPinLayer = aPinLayer;
+        [hoveredPinLayer focus];
+    } else {
+        [hoveredPinLayer unfocus];
+        hoveredPinLayer = nil;
     }
 }
 

@@ -72,8 +72,9 @@
 {
     NSString *pinName = (NSString *)userData;
     @synchronized(self) {
-    if (filter)
-        [filter setValue:value forKey:pinName];
+        if (filter) {
+            [filter setValue:value forKey:pinName];
+        }
     }
 }
 

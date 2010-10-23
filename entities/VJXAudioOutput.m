@@ -74,11 +74,11 @@ static OSStatus _FillComplexBufferProc (
 
 - (void)newSample:(VJXAudioBuffer *)buffer
 {
-    VJXAudioBuffer *newSample = nil;
+    //VJXAudioBuffer *newSample = nil;
 
     if (!buffer)
         return;
-    
+#if 0
     // sample should need to be converted before being sent to the audio device
     // the output format depends on the output device and could be different from the 
     // one used internally (44Khz stereo float32 interleaved)
@@ -122,14 +122,14 @@ static OSStatus _FillComplexBufferProc (
         err = AudioConverterFillComplexBuffer ( converter, _FillComplexBufferProc, &callbackContext, &framesRead, outputBufferList, NULL );
     }
     if (err == noErr) {
-        newSample = [VJXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&outputDescription copy:NO freeOnRelease:NO];
-        [currentSamplePin deliverData:newSample];
+#endif
+        //[VJXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&inputDescription copy:NO freeOnRelease:NO];
         @synchronized(samples) {
-            [samples addObject:newSample];
+            [samples addObject:buffer];
             if ([samples count] > 25)
                 prefill = NO;
         }
-    }
+//    }
 }
 
 - (VJXAudioBuffer *)currentSample

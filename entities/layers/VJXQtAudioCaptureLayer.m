@@ -198,7 +198,7 @@ error:
         // Set the client format to 32bit float data
         // Maintain the channel count and sample rate of the original source format
         outputFormat.mSampleRate = 44100;
-        outputFormat.mChannelsPerFrame = 1;
+        outputFormat.mChannelsPerFrame = 2  ;
         outputFormat.mFormatFlags = kAudioFormatFlagIsFloat | kAudioFormatFlagIsPacked;
         outputFormat.mFormatID = kAudioFormatLinearPCM;
         outputFormat.mBytesPerPacket = 4 * outputFormat.mChannelsPerFrame;
@@ -232,9 +232,8 @@ error:
         [[[sampleBuffer formatDescription] attributeForKey:QTFormatDescriptionAudioStreamBasicDescriptionAttribute] getValue:&format];
         AudioBufferList *buffer = [sampleBuffer audioBufferListWithOptions:(QTSampleBufferAudioBufferListOptions)QTSampleBufferAudioBufferListOptionAssure16ByteAlignment];
         
-        
+        // convert the sample to the internal format
         AudioStreamBasicDescription inputDescription = format;
-#if 0
         AudioStreamBasicDescription outputDescription = outputFormat;
         if (!converter) { // create on first use
             if ( noErr != AudioConverterNew ( &inputDescription, &outputDescription, &converter )) {
@@ -276,9 +275,7 @@ error:
         }
         if (err == noErr)
             currentBuffer = [[VJXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&outputFormat copy:NO freeOnRelease:YES] retain];    
-#else
-        currentBuffer = [[VJXAudioBuffer audioBufferWithCoreAudioBufferList:buffer andFormat:&inputDescription copy:YES freeOnRelease:YES] retain];    
-#endif
+
         if (currentBuffer)
             [outputPin deliverData:currentBuffer fromSender:self];
         [self outputDefaultSignals:CVGetCurrentHostTime()];

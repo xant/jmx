@@ -27,10 +27,9 @@ static void decodeSpectralBuffer(DSPSplitComplex* spectra, UInt32 numSpectra, vo
 }
 */
 
-#define kVJXAudioSpectrumImageWidth 400
-#define kVJXAudioSpectrumImageHeight 300
+#define kVJXAudioSpectrumImageWidth 320
+#define kVJXAudioSpectrumImageHeight 240
 
-#define kVJXAudioSpectrumNumFrequencies 14
 static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 350, 500, 750, 1000, 2000, 3000, 4000, 5000, 8000, 16000 }; 
 
 @implementation VJXAudioSpectrumAnalyzer
@@ -116,13 +115,13 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
     [super dealloc];
 }
 
-- (void)drawSpectrumImage:(NSArray *)frequencyValues
+// TODO - optimize
+- (void)drawSpectrumImage
 {
     NSGraphicsContext *pathContext = nil;
     
     // initialize the coregraphics context where to draw a graphical representation
     // of the audiospectrum
-    //If you're only using this from within -drawRect:, you can use
     NSBitmapImageRep *imageStorage = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil
                                                                              pixelsWide:kVJXAudioSpectrumImageWidth
                                                                              pixelsHigh:kVJXAudioSpectrumImageHeight
@@ -136,8 +135,7 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
     imageContext = [NSGraphicsContext graphicsContextWithBitmapImageRep:imageStorage];
     [imageStorage release];
     CGSize layerSize = { kVJXAudioSpectrumImageWidth, kVJXAudioSpectrumImageHeight };
-    pathLayer = CGLayerCreateWithContext( [imageContext graphicsPort],
-                                         layerSize , NULL );
+    pathLayer = CGLayerCreateWithContext( [imageContext graphicsPort], layerSize , NULL );
     
     
     pathContext = [NSGraphicsContext
@@ -145,8 +143,8 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
                    flipped:NO];
     
     [NSGraphicsContext setCurrentContext:pathContext];
-    for (int i = 0; i < [frequencyValues count]; i++) {
-        Float32 value = [(NSNumber *)[frequencyValues objectAtIndex:i] floatValue];
+    for (int i = 0; i < kVJXAudioSpectrumNumFrequencies; i++) {
+        Float32 value = frequencyValues[i];
         //Draw your bezier paths here
         int barWidth = kVJXAudioSpectrumImageWidth/kVJXAudioSpectrumNumFrequencies;
         NSRect frequencyRect;
@@ -184,7 +182,6 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
         [currentImage release];
     currentImage = [[CIImage imageWithCGLayer:pathLayer] retain];
     [imagePin deliverData:currentImage];
-    //[imageContext release];
     CGLayerRelease(pathLayer);
 }
 
@@ -234,21 +231,19 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
 
         [analyzer getMagnitude:spectrumBuffer min:minAmp max:maxAmp];
         
+        for (UInt32 i = 0; i < kVJXAudioSpectrumNumFrequencies; i++) {	// for each frequency
+            int offset = frequencies[i]*numBins/44100*analyzer.numChannels;
+            Float32 value = (((Float32 *)(spectrumBuffer->mBuffers[0].mData))[offset] +
+                             ((Float32 *)(spectrumBuffer->mBuffers[1].mData))[offset]) * 0.5;
+            if (value < 0.0)
+                value = 0.0;
+            
+            NSNumber *numberValue = [NSNumber numberWithFloat:value];
+            [(VJXOutputPin *)[frequencyPins objectAtIndex:i] deliverData:numberValue];
+            frequencyValues[i] = value;
+        }
         if (runcycleCount%5 == 0) { // draw the image only once every 5 samples
-            NSMutableArray *frequencyValues = [[NSMutableArray alloc] init];
-            for (UInt32 i = 0; i < kVJXAudioSpectrumNumFrequencies; i++) {	// for each frequency
-                int offset = frequencies[i]*numBins/44100*analyzer.numChannels;
-                Float32 value = (((Float32 *)(spectrumBuffer->mBuffers[0].mData))[offset] +
-                                 ((Float32 *)(spectrumBuffer->mBuffers[1].mData))[offset]) * 0.5;
-                if (value < 0.0)
-                    value = 0.0;
-                
-                NSNumber *numberValue = [NSNumber numberWithFloat:value];
-                [(VJXOutputPin *)[frequencyPins objectAtIndex:i] deliverData:numberValue];
-                [frequencyValues addObject:numberValue];
-            }
-            [self drawSpectrumImage:frequencyValues];
-            [frequencyValues release];
+            [self drawSpectrumImage];
         }
         runcycleCount++;
     }

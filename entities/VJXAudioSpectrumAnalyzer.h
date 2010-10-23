@@ -10,6 +10,8 @@
 #import "VJXEntity.h"
 #import <AudioToolbox/AudioConverter.h>
 
+#define kVJXAudioSpectrumNumFrequencies 14
+
 @class VJXSpectrumAnalyzer;
 
 @interface VJXAudioSpectrumAnalyzer : VJXEntity {
@@ -31,6 +33,7 @@
     CIImage *currentImage;
     AudioBufferList *deinterleavedBuffer;
     UInt32 runcycleCount;
+    Float32 frequencyValues[kVJXAudioSpectrumNumFrequencies];
 }
 
 @end

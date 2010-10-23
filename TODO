@@ -1,3 +1,4 @@
+- parse filter attributes to determine 'mandatory' parameters (and avoid crashes)
 - introduce a scripting language (javasript? lua?)
 - allow to provide input values (of any supported type) through the GUI
 - give as much space as possible on the board (reducing entity/font size ?)

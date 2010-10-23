@@ -44,7 +44,7 @@
     //NSLog(@"Initializing %@", [self class]);
     self = [super init];
     if (self) {
-        name = @""; // XXX - default name
+        name = [self description];
         inputPins = [[NSMutableDictionary alloc] init];
         outputPins = [[NSMutableDictionary alloc] init];
         [self registerInputPin:@"active" withType:kVJXNumberPin andSelector:@"setActivePin:"];
@@ -291,7 +291,7 @@
 
 - (NSString *)description
 {
-    return [name isEqual:@""]
+    return (!name || [name isEqual:@""])
            ? [self className]
            : [NSString stringWithFormat:@"%@:%@", [self className], name];
 }

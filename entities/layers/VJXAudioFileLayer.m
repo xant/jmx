@@ -117,7 +117,7 @@
         if ([audioFile currentOffset] >= [audioFile numFrames] - (512*[audioFile numChannels])) {
             [audioFile seekToOffset:0];
             if (repeat) { // loop on the file if we have to
-                sample = [[audioFile readFrames:512] retain];
+                sample = [audioFile readFrames:512];
             } else {
                 active = FALSE;
             }

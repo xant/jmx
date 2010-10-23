@@ -50,7 +50,6 @@
         self.inlets = [NSMutableArray array];
         self.board = aBoard;
         self.entity = anEntity;
-        self.entity.name = [anEntity description];
         self.selected = NO;
 
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -77,17 +76,24 @@
 
 - (void)dealloc
 {
-    NSLog(@"NO ONE CALLS ME");
+    NSLog(@"VJXEntityLayer dealloc called");
+    [label release];
+    /*for (VJXConnectorLayer *connector in outlets) {
+        [connector disconnect];
+    }*/
+    [outlets release];
+    /*for (VJXConnectorLayer *connector in inlets) {
+        [connector disconnect];
+    }*/
+    [inlets release];
+    if ([entity respondsToSelector:@selector(stop)])
+        [entity performSelector:@selector(stop)];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityInputPinAdded" object:entity];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityInputPinRemoved" object:entity];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityOutputPinAdded" object:entity];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityOutputPinRemoved" object:entity];
-    if ([entity respondsToSelector:@selector(stop)])
-        [entity performSelector:@selector(stop)];
     [entity release];
-
-    [label release];
-    [outlets release];
+    NSLog(@"entiti retain count %d", [entity retainCount]);
     [super dealloc];
 }
 

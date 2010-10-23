@@ -79,7 +79,6 @@
 
 - (void)dealloc
 {
-    self.pin = nil;
     [super dealloc];
 }
 

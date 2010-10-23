@@ -34,7 +34,7 @@
 }
 
 @property (nonatomic, assign) VJXEntityLayer *entity;
-@property (nonatomic, retain) VJXPinLayer *pin;
+@property (nonatomic, assign) VJXPinLayer *pin;
 @property (nonatomic, assign) BOOL output;
 
 - (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint isOutput:(BOOL)isOutput entity:(VJXEntityLayer *)anEntity;

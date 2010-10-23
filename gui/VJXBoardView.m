@@ -66,10 +66,13 @@
 
 - (IBAction)removeSelected:(id)sender
 {
-    NSLog(@"%d", [selectedLayer retainCount]);
-    [selectedLayer removeFromSuperlayer];
-    NSLog(@"%d", [selectedLayer retainCount]);
-    selectedLayer = nil;
+    VJXEntityLayer *layer = selectedLayer;
+    if (layer) {
+        [self setSelectedLayer:nil];
+        [layer removeFromSuperlayer];
+        [entities removeObject:layer];
+        //[[NSNotificationCenter defaultCenter] postNotificationName:@"VJXBoardEntityWasRemoved" object:layer];
+    }
 }
 
 #pragma mark -

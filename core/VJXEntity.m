@@ -59,6 +59,7 @@
 
 - (void)dealloc
 {
+    NSLog(@"VJXEntity dealloc called!!");
     [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityWasDestroyed" object:self];
     [self unregisterAllPins];
     [inputPins release];

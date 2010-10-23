@@ -105,20 +105,20 @@ static BOOL initialized = NO;
 }
 
 - (void)anEntityWasCreated:(NSNotification *)notification
-{/*
+{
     VJXEntity *entity = [notification object];
     @synchronized(self) {
         NSValue *value = [NSValue valueWithNonretainedObject:entity];
         [entities setObject:value forKey:[NSString stringWithFormat:@"%d", entity]];
-    }*/
+    }
 }
 
 - (void)anEntityWasDestroyed:(NSNotification *)notification
-{/*
+{
     VJXEntity *entity = [notification object];
     @synchronized(self) {
         [entities removeObjectForKey:[NSString stringWithFormat:@"%d", entity]];
-    }*/
+    }
 }
 
 - (NSArray *)allEntities

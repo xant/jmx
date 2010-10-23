@@ -185,19 +185,15 @@
 - (void)anEntityWasRemoved:(NSNotification *)aNotification
 {
     VJXEntity *entity = [aNotification object];
-    if (entity) {
-        [entitiesPosition removeObjectForKey:entity];
-        [entities removeObject:entity];
-    }
+    [entitiesPosition removeObjectForKey:entity];
+    [entities removeObject:entity];
 }
 
 - (void)anEntityWasMoved:(NSNotification *)aNotification
 {
     VJXEntityLayer *entity = [aNotification object];
-    if (entity) {
-        NSString *origin = [[aNotification userInfo] objectForKey:@"origin"];
-        [entitiesPosition setObject:origin forKey:entity.entity];
-    }
+    NSString *origin = [[aNotification userInfo] objectForKey:@"origin"];
+    [entitiesPosition setObject:origin forKey:entity.entity];
 }
 
 @end

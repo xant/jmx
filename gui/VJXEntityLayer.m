@@ -76,26 +76,23 @@
 
 - (void)dealloc
 {
-    NSLog(@"VJXEntityLayer dealloc called");
+    //NSLog(@"VJXEntityLayer dealloc called");
     [label release];
-    /*for (VJXConnectorLayer *connector in outlets) {
-        [connector disconnect];
-    }*/
+
     [outlets release];
-    /*for (VJXConnectorLayer *connector in inlets) {
-        [connector disconnect];
-    }*/
+
     [inlets release];
-    if ([entity respondsToSelector:@selector(stop)])
-        [entity performSelector:@selector(stop)];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityInputPinAdded" object:entity];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityInputPinRemoved" object:entity];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityOutputPinAdded" object:entity];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityOutputPinRemoved" object:entity];
+    if (entity) {
+        if ([entity respondsToSelector:@selector(stop)])
+            [entity performSelector:@selector(stop)];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityInputPinAdded" object:entity];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityInputPinRemoved" object:entity];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityOutputPinAdded" object:entity];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityOutputPinRemoved" object:entity];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXBoardEntityWasRemoved" object:entity];
-    [entity release];
-   // NSLog(@"entity retain count %d", [entity retainCount]);
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXBoardEntityWasRemoved" object:entity];
+        [entity release];
+    }
     [super dealloc];
 }
 

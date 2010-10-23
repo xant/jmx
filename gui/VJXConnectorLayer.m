@@ -45,7 +45,6 @@
 
 - (void)dealloc
 {
-    NSLog(@"B:AH");
     self.originPinLayer = nil;
     self.destinationPinLayer = nil;
     [super dealloc];

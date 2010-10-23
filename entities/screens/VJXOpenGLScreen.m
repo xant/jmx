@@ -217,6 +217,12 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
             [self setBounds:newRect];
             newRect.origin.x = actualRect.origin.x;
             newRect.origin.y = actualRect.origin.y;
+            NSRect frame = NSMakeRect (0, 0, 100, 100);
+            NSRect contentRect;
+            contentRect = [NSWindow contentRectForFrameRect: frame
+                                                  styleMask: NSTitledWindowMask];
+            
+            newRect.size.height += (frame.size.height - contentRect.size.height);
             [[self window] setFrame:newRect display:NO];
             [[self window] setMovable:YES]; // XXX - this shouldn't be necessary
             [self setNeedsDisplay:YES]; // triggers reshape

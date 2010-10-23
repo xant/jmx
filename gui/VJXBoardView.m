@@ -66,7 +66,9 @@
 
 - (IBAction)removeSelected:(id)sender
 {
+    NSLog(@"%d", [selectedLayer retainCount]);
     [selectedLayer removeFromSuperlayer];
+    NSLog(@"%d", [selectedLayer retainCount]);
     selectedLayer = nil;
 }
 

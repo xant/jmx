@@ -77,6 +77,7 @@
 
 - (void)dealloc
 {
+    NSLog(@"NO ONE CALLS ME");
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityInputPinAdded" object:entity];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityInputPinRemoved" object:entity];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityOutputPinAdded" object:entity];

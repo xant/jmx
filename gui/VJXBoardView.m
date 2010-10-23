@@ -71,7 +71,6 @@
         [self setSelectedLayer:nil];
         [layer removeFromSuperlayer];
         [entities removeObject:layer];
-        //[[NSNotificationCenter defaultCenter] postNotificationName:@"VJXBoardEntityWasRemoved" object:layer];
     }
 }
 

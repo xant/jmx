@@ -92,8 +92,10 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityInputPinRemoved" object:entity];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityOutputPinAdded" object:entity];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityOutputPinRemoved" object:entity];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXBoardEntityWasRemoved" object:entity];
     [entity release];
-    NSLog(@"entity retain count %d", [entity retainCount]);
+   // NSLog(@"entity retain count %d", [entity retainCount]);
     [super dealloc];
 }
 

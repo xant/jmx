@@ -51,12 +51,14 @@
 
         if (isOutput) {
             thePinPoint = CGPointMake(self.frame.size.width - ENTITY_OUTLET_LABEL_PADDING_FOR_OUTPUT, 0.0f);
-            labelLayer.frame = CGRectMake(0.0f, (ENTITY_OUTLET_HEIGHT - ENTITY_OUTLET_FONT_SIZE) / 2, ENTITY_OUTLET_LABEL_WIDTH, self.frame.size.height);
+            labelLayer.frame = CGRectMake(0.0f, (ENTITY_OUTLET_HEIGHT - ENTITY_OUTLET_FONT_SIZE) / 2, 
+                                                 ENTITY_OUTLET_LABEL_WIDTH, self.frame.size.height);
             labelLayer.alignmentMode = kCAAlignmentRight;
         }
         else {
             thePinPoint = CGPointMake(ENTITY_OUTLET_LABEL_PADDING_FOR_INPUT, 0.0f);
-            labelLayer.frame = CGRectMake(self.frame.size.width - ENTITY_OUTLET_LABEL_WIDTH, 0.0f, ENTITY_OUTLET_LABEL_WIDTH, self.frame.size.height);
+            labelLayer.frame = CGRectMake(self.frame.size.width - ENTITY_OUTLET_LABEL_WIDTH, 0.0f,
+                                          ENTITY_OUTLET_LABEL_WIDTH, self.frame.size.height);
         }
 
         [self addSublayer:labelLayer];

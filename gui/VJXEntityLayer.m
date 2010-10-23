@@ -93,7 +93,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityOutputPinAdded" object:entity];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityOutputPinRemoved" object:entity];
     [entity release];
-    NSLog(@"entiti retain count %d", [entity retainCount]);
+    NSLog(@"entity retain count %d", [entity retainCount]);
     [super dealloc];
 }
 

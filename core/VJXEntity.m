@@ -44,7 +44,7 @@
     //NSLog(@"Initializing %@", [self class]);
     self = [super init];
     if (self) {
-        name = [self description];
+        self.name = [self description];
         inputPins = [[NSMutableDictionary alloc] init];
         outputPins = [[NSMutableDictionary alloc] init];
         [self registerInputPin:@"active" withType:kVJXNumberPin andSelector:@"setActivePin:"];

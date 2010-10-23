@@ -26,8 +26,9 @@
         [audioOutputPin allowMultipleConnections:YES];
         self.frequency = [NSNumber numberWithDouble:44100/512];
         samples = [[NSMutableArray alloc] init];
-        useAggregateDevice = YES;
+        useAggregateDevice = NO;
         prefill = YES;
+        format = nil;
     }
     return self;
 }
@@ -47,20 +48,16 @@
     if ([samples count] && !prefill) {
         VJXAudioBuffer *outSample = [samples objectAtIndex:0];
         [audioOutputPin deliverData:outSample fromSender:self];
-        [samples removeObjectAtIndex:0];
-        [outSample release];
+        @synchronized(samples) {
+            [samples removeObjectAtIndex:0];
+        }
     }
     NSArray *newSamples = [audioInputPin readProducers];
-    //@synchronized(self) {
     VJXAudioBuffer *currentSample = nil;
-    /*if (currentSample) {
-     [currentSample release];
-     currentSample = nil;
-     }*/
     for (VJXAudioBuffer *sample in newSamples) {
         if (!currentSample) {
-            AudioStreamBasicDescription format = sample.format.audioStreamBasicDescription;
-            currentSample = [VJXAudioBuffer audioBufferWithCoreAudioBufferList:sample.bufferList andFormat:&format];
+            AudioStreamBasicDescription sampleFormat = sample.format.audioStreamBasicDescription;
+            currentSample = [VJXAudioBuffer audioBufferWithCoreAudioBufferList:sample.bufferList andFormat:&sampleFormat];
         } else {
             unsigned x, numSamples;
             Float32 * srcBuffer, *dstBuffer;
@@ -74,13 +71,15 @@
             }
         }
     }
-    if (currentSample)
-        [samples addObject:[currentSample retain]];
+    if (currentSample) {
+        @synchronized(samples) {
+            [samples addObject:currentSample];
+        }
+    }
     if ([samples count] > 10)
         prefill = NO;
     else if ([samples count] == 0)
         prefill = YES;
-    //}
     [super outputDefaultSignals:timeStamp];
 }
 
@@ -93,6 +92,26 @@
                     clientData:(VJXAudioMixer *)clientData
 
 {
+    if ([samples count]) {
+        VJXAudioBuffer *sample = nil;
+        @synchronized(samples) {
+            sample = [[samples objectAtIndex:0] retain];
+            if (sample) {
+                int i;
+                for (i = 0; i < inInputData->mNumberBuffers; i++) {
+                    SInt32 bytesToCopy = MIN(inInputData->mBuffers[i].mDataByteSize, sample.bufferList->mBuffers[i].mDataByteSize);
+                    if (inInputData->mBuffers[i].mData && sample.bufferList->mNumberBuffers > i) {
+                        memcpy(inInputData->mBuffers[i].mData,
+                               sample.bufferList->mBuffers[i].mData,
+                               bytesToCopy);
+                        inInputData->mBuffers[i].mDataByteSize = bytesToCopy;
+                        inInputData->mBuffers[i].mNumberChannels = sample.bufferList->mBuffers[i].mNumberChannels;
+                    }
+                }
+            }
+        }
+        
+    }
     [clientData tick:CVGetCurrentHostTime()];
 }
 
@@ -103,10 +122,11 @@
         return;
     
     if (useAggregateDevice) {
-        device = [[VJXAudioDevice aggregateDevice:[[VJXAudioDevice defaultInputDevice] deviceUID] withName:@"VJXMixer"] retain];
+        device = [[VJXAudioDevice aggregateDevice:@"VJXMixerNew"] retain];
         [device setIOTarget:self 
                withSelector:@selector(provideSamplesToDevice:timeStamp:inputData:inputTime:outputData:outputTime:clientData:)
              withClientData:self];
+        format = [[device streamDescriptionForChannel:0 forDirection:kVJXAudioInput] retain];
         [self activate];
         [device deviceStart];
     } else { // start the thread only if don't want to use the aggregate device
@@ -124,6 +144,8 @@
             [device deviceStop];
             [device release];
             device = nil;
+            [format release];
+            format = nil;
         }
     } else { // start the thread only if don't want to use the aggregate device
         [super stop];

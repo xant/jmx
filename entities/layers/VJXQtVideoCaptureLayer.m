@@ -200,6 +200,7 @@ error:
     self = [super init];
     if (self) {
         grabber = [[VJXQtVideoGrabber alloc] init];
+        self.name = @"VJXQtVideoCapture";
     } else {
         [self dealloc];
         return nil;

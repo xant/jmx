@@ -147,9 +147,9 @@
     NSArray *receiverObjects;
     @synchronized(receivers) {
         receiverObjects = [receivers allKeys];
+        for (VJXPin *receiver in receiverObjects)
+            [receiver disconnectFromPin:self];
     }
-    for (VJXPin *receiver in receiverObjects)
-        [receiver disconnectFromPin:self];
 }
 
 @end

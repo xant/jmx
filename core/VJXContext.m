@@ -25,7 +25,7 @@
 #import "VJXEntity.h"
 
 #if !USE_NSOPERATIONS
-#define kVJXContextSignalNumWorkers 4
+#define kVJXContextSignalNumWorkers 6
 static NSThread *signalThread[kVJXContextSignalNumWorkers];
 #endif
 static VJXContext *globalContext = nil;

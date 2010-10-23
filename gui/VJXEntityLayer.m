@@ -115,7 +115,7 @@
     labelLayer.borderWidth = 0.0f;
     labelLayer.backgroundColor = NULL;
     labelLayer.fontSize = ENTITY_LABEL_FONT_SIZE;
-    labelLayer.frame = CGRectMake(ENTITY_FRAME_PADDING, ENTITY_FRAME_PADDING, ENTITY_LABEL_WIDTH, ENTITY_LABEL_HEIGHT);
+    labelLayer.frame = CGRectMake(ENTITY_FRAME_WIDTH_PADDING, ENTITY_FRAME_HEIGHT_PADDING, ENTITY_LABEL_WIDTH, ENTITY_LABEL_HEIGHT);
     [self addSublayer:labelLayer];
     [labelLayer release];
 
@@ -141,9 +141,9 @@
 - (void)recalculateFrame
 {
     NSUInteger maxOutlets = MAX([self.inlets count], [self.outlets count]);
-    CGFloat expectedFrameWidth = ((maxOutlets - 1) * ENTITY_OUTLET_MIN_SPACING) + (maxOutlets * ENTITY_OUTLET_HEIGHT) + ENTITY_LABEL_HEIGHT;
+    CGFloat expectedFrameHeight = ((maxOutlets - 1) * ENTITY_OUTLET_MIN_SPACING) + (maxOutlets * ENTITY_OUTLET_HEIGHT) + ENTITY_LABEL_HEIGHT;
     CGRect f = self.frame;
-    f.size = CGSizeMake(ENTITY_FRAME_WIDTH + (2 * ENTITY_FRAME_PADDING), expectedFrameWidth + (2 * ENTITY_FRAME_PADDING));
+    f.size = CGSizeMake(ENTITY_FRAME_WIDTH + (2 * ENTITY_FRAME_WIDTH_PADDING), expectedFrameHeight + (2 * ENTITY_FRAME_HEIGHT_PADDING));
     self.frame = f;
     [self setNeedsDisplay];
 }

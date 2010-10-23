@@ -23,6 +23,8 @@
     uint64_t lastSampleTime;
     NSMutableArray *samples;
     VJXAudioDevice *device;
+    VJXAudioFormat *format;
+
     BOOL prefill; // defaults to YES
     BOOL useAggregateDevice; // defaults to YES
 }

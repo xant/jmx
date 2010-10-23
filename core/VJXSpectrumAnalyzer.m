@@ -23,6 +23,9 @@
 
 #import "VJXSpectrumAnalyzer.h"
 
+#undef memcpy
+#define memcpy(__dst, __src, len) bcopy(__src, __dst, len)
+
 static __inline__ int CountLeadingZeroes(int arg) {
 #if TARGET_CPU_PPC || TARGET_CPU_PPC64
 	__asm__ volatile("cntlzw %0, %1" : "=r" (arg) : "r" (arg));

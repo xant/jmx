@@ -372,7 +372,7 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, VJXAudioDev
 	return [[self class] _defaultDevice:kAudioHardwarePropertyDefaultSystemOutputDevice];
 }
 
-+ (VJXAudioDevice *)aggregateDevice:(NSString *)deviceUID withName:(NSString *)name
++ (VJXAudioDevice *)aggregateDevice:(NSString *)name
 {
     OSStatus osErr = noErr;
     UInt32 outSize;
@@ -412,10 +412,10 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, VJXAudioDev
     //-----------------------
         
     // we need to append the UID for each device to a CFMutableArray, so create one here
-    CFMutableArrayRef subDevicesArray = CFArrayCreateMutable(NULL, 0, &kCFTypeArrayCallBacks);
+    //CFMutableArrayRef subDevicesArray = CFArrayCreateMutable(NULL, 0, &kCFTypeArrayCallBacks);
     
     // just the one sub-device in this example, so append the sub-device's UID to the CFArray
-    CFArrayAppendValue(subDevicesArray, deviceUID);
+    //CFArrayAppendValue(subDevicesArray, deviceUID);
     
     // if you need to add more than one sub-device, then keep calling CFArrayAppendValue here for the other sub-device UIDs
     
@@ -451,12 +451,12 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, VJXAudioDev
     pluginAOPA.mScope = kAudioObjectPropertyScopeGlobal;
     pluginAOPA.mElement = kAudioObjectPropertyElementMaster;
     outDataSize = sizeof(CFMutableArrayRef);
-    osErr = AudioObjectSetPropertyData(outAggregateDevice, &pluginAOPA, 0, NULL, outDataSize, &subDevicesArray);
-    if (osErr != noErr)
-        return nil;
+    //osErr = AudioObjectSetPropertyData(outAggregateDevice, &pluginAOPA, 0, NULL, outDataSize, &subDevicesArray);
+    //if (osErr != noErr)
+      //  return nil;
     
     // pause again to give the changes time to take effect
-    //CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.1, false);
+    CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.1, false);
     
     //-----------------------
     // Set the master device
@@ -467,20 +467,20 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, VJXAudioDev
     pluginAOPA.mSelector = kAudioAggregateDevicePropertyMasterSubDevice;
     pluginAOPA.mScope = kAudioObjectPropertyScopeGlobal;
     pluginAOPA.mElement = kAudioObjectPropertyElementMaster;
-    outDataSize = sizeof(deviceUID);
-    osErr = AudioObjectSetPropertyData(outAggregateDevice, &pluginAOPA, 0, NULL, outDataSize, &deviceUID);
-    if (osErr != noErr)
-        return nil;
+    //outDataSize = sizeof(deviceUID);
+    //osErr = AudioObjectSetPropertyData(outAggregateDevice, &pluginAOPA, 0, NULL, outDataSize, &deviceUID);
+    //if (osErr != noErr)
+      //  return nil;
     
     // pause again to give the changes time to take effect
-    //CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.1, false);
+    CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.1, false);
     //-----------------------
     // Clean up
     //-----------------------
     
     // release the CF objects we have created - we don't need them any more
     CFRelease(aggDeviceDict);
-    CFRelease(subDevicesArray);
+    //CFRelease(subDevicesArray);
     
     return [[self class] deviceWithID:outAggregateDevice];
 }

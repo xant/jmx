@@ -27,6 +27,10 @@ static void decodeSpectralBuffer(DSPSplitComplex* spectra, UInt32 numSpectra, vo
 }
 */
 
+// XXX - just a test
+#undef memcpy
+#define memcpy(__dst, __src, __size) bcopy(__src, __dst, __size)
+
 #define kVJXAudioSpectrumImageWidth 320
 #define kVJXAudioSpectrumImageHeight 240
 

@@ -103,11 +103,13 @@
 
 - (void)disconnectFromPin:(VJXOutputPin *)destinationPin
 {
+    [destinationPin retain];
     @synchronized(producers) {
         [destinationPin detachObject:self];
         [producers removeObjectIdenticalTo:destinationPin];
     }
     [super disconnectFromPin:destinationPin];
+    [destinationPin release];
 }
 
 - (void)disconnectAllPins

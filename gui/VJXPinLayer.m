@@ -64,7 +64,7 @@
     // do whatever necessary
 }
 
-- (id)initWithPin:(VJXPin *)thePin andPoint:(CGPoint)thePoint outlet:(VJXOutletLayer *)anOutlet
+- (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint outlet:(VJXOutletLayer *)anOutlet
 {
     self = [super init];
     if (self) {

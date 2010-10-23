@@ -35,11 +35,8 @@
     VJXOutputPin *outputPin;
     BOOL repeat; // defaults to YES
     NSUInteger offset;
-    VJXAudioDevice *device; // used to obtain the clock
-    BOOL useAggregateDevice; // defaults to NO
 }
 
 @property (readwrite) BOOL repeat;
-@property (readwrite) BOOL useAggregateDevice;
 - (void)doRepeat:(id)value; // input pin setter (we will receive NSNumbers from pins)
 @end

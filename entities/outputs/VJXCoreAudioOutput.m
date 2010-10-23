@@ -65,16 +65,16 @@
         for (i = 0; i < outOutputData->mNumberBuffers; i++) {
             SInt32 bytesToCopy = MIN(outOutputData->mBuffers[i].mDataByteSize, sample.bufferList->mBuffers[i].mDataByteSize);
             if (outOutputData->mBuffers[i].mData && sample.bufferList->mNumberBuffers > i) {
-                memcpy(outOutputData->mBuffers[i].mData,
-                       sample.bufferList->mBuffers[i].mData,
+                bcopy(sample.bufferList->mBuffers[i].mData,
+                      outOutputData->mBuffers[i].mData,
                        bytesToCopy);
                 outOutputData->mBuffers[i].mDataByteSize = bytesToCopy;
                 outOutputData->mBuffers[i].mNumberChannels = sample.bufferList->mBuffers[i].mNumberChannels;
             }
         }
-    }/* else {
-        NSLog(@"NO FRAME");
-    }*/
+    } else {
+        //NSLog(@"NO FRAME");
+    }
 }
 
 - (void)audioDeviceClockSourceDidChange:(VJXAudioDevice *)device forChannel:(SInt32)theChannel forDirection:(VJXAudioDeviceDirection)theDirection

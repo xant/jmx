@@ -132,23 +132,21 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         return;
     lastTime = timeStamp;
     
-    if (CGLLockContext([[self openGLContext] CGLContextObj]) != kCGLNoError)
-        NSLog(@"Could not lock CGLContext");
-    [[self openGLContext] makeCurrentContext];
+    //if (CGLLockContext([[self openGLContext] CGLContextObj]) != kCGLNoError)
+    //    NSLog(@"Could not lock CGLContext");
+    //[[self openGLContext] makeCurrentContext];
     NSRect bounds = [self bounds];
-    @synchronized(self) {
-        CIImage *image = [self.currentFrame retain];
-        if (image && ciContext) {
-            CGRect screenSizeRect = NSRectToCGRect(bounds);
-            @synchronized(viewDisplayID) {
-                [ciContext drawImage:image inRect:screenSizeRect fromRect:screenSizeRect];
-            }
-            [image release];
+    CIImage *image = [self.currentFrame retain];
+    if (image && ciContext) {
+        CGRect screenSizeRect = NSRectToCGRect(bounds);
+        @synchronized([[self window] screen]) {
+            [ciContext drawImage:image inRect:screenSizeRect fromRect:screenSizeRect];
         }
-        [[self openGLContext] flushBuffer];
+        [image release];
     }
+    [[self openGLContext] flushBuffer];
     [self setNeedsDisplay:NO];
-    CGLUnlockContext([[self openGLContext] CGLContextObj]);
+    //CGLUnlockContext([[self openGLContext] CGLContextObj]);
 }
 
 - (void)drawRect:(NSRect)rect

@@ -23,31 +23,16 @@
 
 #import "VJXAudioFileLayer.h"
 #import "VJXAudioFile.h"
-#import "VJXAudioDevice.h"
 #import <QuartzCore/QuartzCore.h>
 
 @implementation VJXAudioFileLayer
 
-@synthesize repeat, useAggregateDevice;
+@synthesize repeat;
 
 + (NSArray *)supportedFileTypes
 {
     return [NSArray arrayWithObjects:@"mp3", @"mp2", @"aif", @"aiff", @"wav", @"avi", nil];
 }
-
-
-- (void)provideSamplesToDevice:(VJXAudioDevice *)device
-                     timeStamp:(AudioTimeStamp *)timeStamp
-                     inputData:(AudioBufferList *)inInputData
-                     inputTime:(AudioTimeStamp *)inInputTime
-                    outputData:(AudioBufferList *)outOutputData
-                    outputTime:(AudioTimeStamp *)inOutputTime
-                    clientData:(VJXAudioFileLayer *)clientData
-
-{
-    [clientData tick:CVGetCurrentHostTime()];
-}
-
 
 - (id)init
 {
@@ -58,8 +43,6 @@
         repeat = YES;
         [self registerInputPin:@"repeat" withType:kVJXNumberPin andSelector:@"doRepeat:"];
         currentSample = nil;
-        device = nil;
-        useAggregateDevice = NO;
     }
     return self;
 }
@@ -70,9 +53,6 @@
         [currentSample release];
     if (audioFile)
         [audioFile release];
-    if (device)
-        [device release];
-
     [super dealloc];
 }
 
@@ -85,18 +65,6 @@
                 self.frequency = [NSNumber numberWithDouble:([audioFile sampleRate]/512.0)];
                 NSArray *path = [file componentsSeparatedByString:@"/"];
                 self.name = [path lastObject];
-                if (useAggregateDevice) {
-                    if (device)
-                        [device release];
-                    device = [[VJXAudioDevice aggregateDevice:[[VJXAudioDevice defaultInputDevice] deviceUID] withName:self.name] retain];
-                    NSLog(@"%@", [device deviceName]);
-                    
-                    [device setIOTarget:self 
-                           withSelector:@selector(provideSamplesToDevice:timeStamp:inputData:inputTime:outputData:outputTime:clientData:)
-                         withClientData:self];
-                    if (active)
-                        [device deviceStart];
-                }
                 return YES;
             }
         }
@@ -137,39 +105,6 @@
               [value boolValue])
     ? YES
     : NO;
-}
-
-- (void)start
-{
-    if (active)
-        return;
-    if (useAggregateDevice) {
-        active = YES;
-        [device deviceStart];
-    } else { // start the thread only if don't want to use the aggregate device
-        [super start];
-    }
-}
-
-- (void)stop
-{
-    if (!active)
-        return;
-    if (useAggregateDevice) {
-        active = YES;
-        [device deviceStop];
-    } else { // start the thread only if don't want to use the aggregate device
-        [super stop];
-    }
-}
-
-- (void)setUseAggregateDevice:(BOOL)value
-{
-    // refuse to change the flag if we are running
-    // TODO - we should just stop/restart and allow 
-    //        changing the mode while running
-    if (!active)
-        useAggregateDevice = value;
 }
 
 @end

@@ -29,7 +29,6 @@
 
 @synthesize selected;
 @synthesize pin;
-@synthesize connectors;
 
 - (void)aPinWasDisconnected:(NSNotification *)notification
 {
@@ -37,20 +36,22 @@
     VJXPin *inputPin = [userInfo objectForKey:@"inputPin"];
     VJXPin *outputPin = [userInfo objectForKey:@"outputPin"];
     VJXConnectorLayer *toDisconnect = nil;
-    for (VJXConnectorLayer *connector in connectors) {
-        if (connector.originPinLayer == self) {
-            if (connector.destinationPinLayer.pin == inputPin ||
-                connector.destinationPinLayer.pin == outputPin)
-            {
-                toDisconnect = connector;
-                break;
-            }
-        } else {
-            if (connector.originPinLayer.pin == inputPin ||
-                connector.originPinLayer.pin == outputPin)
-            {
-                toDisconnect = connector;
-                break;
+    @synchronized(connectors) {
+        for (VJXConnectorLayer *connector in connectors) {
+            if (connector.originPinLayer == self) {
+                if (connector.destinationPinLayer.pin == inputPin ||
+                    connector.destinationPinLayer.pin == outputPin)
+                {
+                    toDisconnect = connector;
+                    break;
+                }
+            } else {
+                if (connector.originPinLayer.pin == inputPin ||
+                    connector.originPinLayer.pin == outputPin)
+                {
+                    toDisconnect = connector;
+                    break;
+                }
             }
         }
     }
@@ -150,7 +151,9 @@
 
 - (void)updateAllConnectorsFrames
 {
-    [connectors makeObjectsPerformSelector:@selector(recalculateFrame)];
+    @synchronized(connectors) {
+        [connectors makeObjectsPerformSelector:@selector(recalculateFrame)];
+    }
 }
 
 - (BOOL)multiple
@@ -160,17 +163,25 @@
 
 - (BOOL)isConnected
 {
-    return [connectors count] ? YES : NO;
+    NSUInteger count;
+    @synchronized(connectors) {
+        count = [connectors count] ? YES : NO;
+    }
+    return count;
 }
 
 - (void)addConnector:(VJXConnectorLayer *)theConnector
 {
-    [connectors addObject:theConnector];
+    @synchronized(connectors) {
+        [connectors addObject:theConnector];
+    }
 }
 
 - (void)removeConnector:(VJXConnectorLayer *)theConnector
 {
-    [connectors removeObject:theConnector];
+    @synchronized(connectors) {
+        [connectors removeObject:theConnector];
+    }
 }
 
 - (void)removeAllConnectors

@@ -36,16 +36,15 @@
     BOOL selected;
 @protected
     VJXPin *pin;
-    NSMutableArray *connectors;
 @private
     VJXConnectorLayer *tempConnector;
     VJXEntityInspector *inspector;
     VJXOutletLayer *outlet;
+    NSMutableArray *connectors;
 }
 
 @property (nonatomic,assign) BOOL selected;
 @property (nonatomic,readonly) VJXPin *pin;
-@property (nonatomic,readonly) NSArray *connectors;
 
 - (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint outlet:(VJXOutletLayer *)anOutlet;
 - (CGPoint)pointAtCenter;

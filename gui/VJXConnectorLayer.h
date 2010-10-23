@@ -52,8 +52,10 @@ enum Direction {
 @property (assign) NSUInteger direction;
 
 // make this weak references otherwise pins will be overretained an never released
-@property (nonatomic,assign) VJXPinLayer *originPinLayer;
-@property (nonatomic,assign) VJXPinLayer *destinationPinLayer;
+// the following two properties must be defined as atomic because can be accessed
+// by differnt threads (since pins can be disconnected in any moment)
+@property (assign) VJXPinLayer *originPinLayer;
+@property (assign) VJXPinLayer *destinationPinLayer;
 
 - (id)initWithOriginPinLayer:(VJXPinLayer *)anOriginPinLayer;
 

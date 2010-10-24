@@ -122,7 +122,7 @@
         return;
     
     if (useAggregateDevice) {
-        device = [[VJXAudioDevice aggregateDevice:@"VJXMixerNew"] retain];
+        device = [[VJXAudioDevice aggregateDevice:@"VJXMixer"] retain];
         [device setIOTarget:self 
                withSelector:@selector(provideSamplesToDevice:timeStamp:inputData:inputTime:outputData:outputTime:clientData:)
              withClientData:self];

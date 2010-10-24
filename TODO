@@ -1,4 +1,5 @@
 - allow to provide input values (of any supported type) through the GUI
+- VJXTextLayer
 - parse filter attributes to determine 'mandatory' parameters (and avoid crashes)
 - give as much space as possible on the board (reducing entity/font size ?)
 - improve VJXAudioMixer (and possibly VJXAudioScheduler)

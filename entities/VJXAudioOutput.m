@@ -63,10 +63,11 @@ static OSStatus _FillComplexBufferProc (
         outputBufferList->mBuffers[0].mDataByteSize = chunkSize;
         outputBufferList->mBuffers[0].mNumberChannels = outputDescription.mChannelsPerFrame;
         // preallocate the buffer used for outputsamples
-        convertedBuffer = malloc(outputBufferList->mBuffers[0].mDataByteSize*kVJXAudioOutputRingbufferSize);
+        convertedBuffer = malloc(outputBufferList->mBuffers[0].mDataByteSize*kVJXAudioOutputConvertedBufferSize);
         convertedOffset = 0;
         needsPrefill = YES;
         rOffset = wOffset = 0;
+        memset(samples, 0, sizeof(samples));
     }
     return self;
 }
@@ -105,7 +106,7 @@ static OSStatus _FillComplexBufferProc (
     UInt32 framesRead = [buffer numFrames];
     // TODO - check if framesRead is > 512
     outputBufferList->mBuffers[0].mDataByteSize = outputDescription.mBytesPerFrame * outputDescription.mChannelsPerFrame * framesRead;
-    outputBufferList->mBuffers[0].mData = convertedBuffer+(convertedOffset++%kVJXAudioOutputRingbufferSize)*chunkSize;
+    outputBufferList->mBuffers[0].mData = convertedBuffer+(convertedOffset++%kVJXAudioOutputConvertedBufferSize)*chunkSize;
     callbackContext.theConversionBuffer = buffer;
     callbackContext.wait = NO; // XXX (actually unused)
     //UInt32 outputChannels = [buffer numChannels];
@@ -121,21 +122,29 @@ static OSStatus _FillComplexBufferProc (
     } else {
         err = AudioConverterFillComplexBuffer ( converter, _FillComplexBufferProc, &callbackContext, &framesRead, outputBufferList, NULL );
     }
-    if (err != noErr)
+    if (err != noErr) {
         samples[wOffset++%kVJXAudioOutputSamplesBufferCount] = [[VJXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&inputDescription copy:NO freeOnRelease:NO] retain];
+    }
 #else
-        samples[wOffset++%kVJXAudioOutputSamplesBufferCount] = [buffer retain];   
+    VJXAudioBuffer *previousSample;
+    previousSample = samples[wOffset%kVJXAudioOutputSamplesBufferCount];
+    samples[wOffset++%kVJXAudioOutputSamplesBufferCount] = [buffer retain];
+    // let's have the buffer released next time the active pool is drained
+    // we want to return as soon as possible
+    if (previousSample)
+        [previousSample autorelease];
 #endif
     if (wOffset > kVJXAudioOutputSamplesBufferPrefillCount)
         needsPrefill = NO;
 }
 
+// this will only be called by the audiooutput mainthred
 - (VJXAudioBuffer *)currentSample
 {
     //NSLog(@"r: %d - w: %d", rOffset % kVJXAudioOutputSamplesBufferCount , wOffset % kVJXAudioOutputSamplesBufferCount);
     VJXAudioBuffer *sample = nil;
     if (rOffset < wOffset && !needsPrefill) {
-        sample = [samples[rOffset++%kVJXAudioOutputSamplesBufferCount] autorelease];
+        sample = samples[rOffset++%kVJXAudioOutputSamplesBufferCount];
     }
     return sample;
 }

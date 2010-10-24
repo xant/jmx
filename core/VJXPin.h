@@ -67,6 +67,7 @@ typedef enum {
     id                  ownerUserData; // weak reference (depends on the owner)
     NSString            *ownerSignal; // weak reference (depends on the owner)
     NSMutableArray      *allowedValues;
+    NSRecursiveLock     *writersLock;
 }
 
 @property (readonly)  VJXPinType type;

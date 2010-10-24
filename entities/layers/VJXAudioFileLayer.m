@@ -62,7 +62,7 @@
         @synchronized(audioFile) {
             audioFile = [[VJXAudioFile audioFileWithURL:[NSURL fileURLWithPath:file]] retain];
             if (audioFile) {
-                self.frequency = [NSNumber numberWithDouble:([audioFile sampleRate]/512.0)+1];
+                self.frequency = [NSNumber numberWithDouble:([audioFile sampleRate]/512.0)];
                 NSArray *path = [file componentsSeparatedByString:@"/"];
                 self.name = [path lastObject];
                 return YES;
@@ -81,11 +81,11 @@
 {
     VJXAudioBuffer *sample = nil;
     if (active && audioFile) {
-        sample = [audioFile readFrames:512];
+        sample = [audioFile readSample];
         if ([audioFile currentOffset] >= [audioFile numFrames] - (512*[audioFile numChannels])) {
             [audioFile seekToOffset:0];
             if (repeat) { // loop on the file if we have to
-                sample = [audioFile readFrames:512];
+                sample = [audioFile readSample];
             } else {
                 active = FALSE;
             }

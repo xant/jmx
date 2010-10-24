@@ -58,6 +58,7 @@
 {
     if (!worker) {
         worker = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
+        [worker setThreadPriority:1.0];
         [worker start];
         active = YES;
     }

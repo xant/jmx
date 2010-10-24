@@ -24,8 +24,9 @@
 #import "VJXContext.h"
 #import "VJXEntity.h"
 
-#if !USE_NSOPERATIONS
 #define kVJXContextSignalNumWorkers 6
+
+#if !USE_NSOPERATIONS
 static NSThread *signalThread[kVJXContextSignalNumWorkers];
 #endif
 static VJXContext *globalContext = nil;
@@ -71,7 +72,7 @@ static BOOL initialized = NO;
 - (void)initQueue
 {
     operationQueue = [[NSOperationQueue alloc] init];
-    [operationQueue setMaxConcurrentOperationCount:4];
+    [operationQueue setMaxConcurrentOperationCount:kVJXContextSignalNumWorkers];
 }
 #endif
 

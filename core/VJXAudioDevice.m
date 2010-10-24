@@ -602,7 +602,7 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, VJXAudioDev
 	if ( theStatus != 0 || theCFString == NULL )
 		return nil;
 	rv = [NSString stringWithString:(NSString *)theCFString];
-	CFRelease ( theCFString );
+	CFRelease ( theCFString);
 	return rv;
 }
 

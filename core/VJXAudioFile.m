@@ -35,13 +35,30 @@
     return obj;
 }
 
+- (void)fillBuffer
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    @synchronized(self) {
+        while (wOffset-rOffset < kVJXAudioFileBufferCount/2) {
+            VJXAudioBuffer *newSample = [self readFrames:512];
+            if (newSample)
+                samples[wOffset++%kVJXAudioFileBufferCount] = [newSample retain];
+            else 
+                break;
+        }
+        isFilling = NO;
+    }
+    [pool drain];
+}
+
 - (id)initWithURL:(NSURL *)url
 {
     OSStatus err = noErr;
     self = [super init];
     if (self) {
         UInt32 thePropertySize = sizeof(fileFormat);
-
+        rOffset = wOffset = 0;
+        isFilling = NO;
         err = ExtAudioFileOpenURL ( (CFURLRef)url, &audioFile );
         if (err != noErr) {
             NSLog(@"Can't open file");
@@ -51,6 +68,8 @@
         err = ExtAudioFileGetProperty(audioFile, kExtAudioFileProperty_FileDataFormat, &thePropertySize, &fileFormat);
         if (err != noErr) {
             // TODO - ErrorMessages
+        } else {
+            [self fillBuffer];
         }
     }
     if (err != noErr) {
@@ -67,9 +86,14 @@
     [super dealloc];
 }
 
-- (VJXAudioBuffer *)readFrame
+- (VJXAudioBuffer *)readSample
 {
-    return [self readFrames:1];
+    VJXAudioBuffer *sample = [samples[rOffset++%kVJXAudioFileBufferCount] autorelease];
+    if (wOffset - rOffset < kVJXAudioFileBufferCount / 4 && !isFilling) {
+        isFilling = YES;
+        [self performSelectorInBackground:@selector(fillBuffer) withObject:nil];
+    }
+    return sample;
 }
 
 - (VJXAudioBuffer *)readFrames:(NSUInteger)numFrames

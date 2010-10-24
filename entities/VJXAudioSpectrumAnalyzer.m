@@ -98,6 +98,24 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
         [imageSizePin setContinuous:NO];
         NSSize layerSize = { kVJXAudioSpectrumImageWidth, kVJXAudioSpectrumImageHeight };
         [imageSizePin deliverData:[VJXSize sizeWithNSSize:layerSize]];
+        // initialize the storage for the spectrum images
+        pathLayerOffset = 0;
+        for (int i = 0; i < kVJXAudioSpectrumImageBufferCount; i++) {
+            NSBitmapImageRep *imageStorage = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil
+                                                                                     pixelsWide:kVJXAudioSpectrumImageWidth
+                                                                                     pixelsHigh:kVJXAudioSpectrumImageHeight
+                                                                                  bitsPerSample:8
+                                                                                samplesPerPixel:4
+                                                                                       hasAlpha:YES
+                                                                                       isPlanar:NO
+                                                                                 colorSpaceName:NSDeviceRGBColorSpace
+                                                                                    bytesPerRow:4*kVJXAudioSpectrumImageWidth
+                                                                                   bitsPerPixel:4*8];
+            imageContext = [NSGraphicsContext graphicsContextWithBitmapImageRep:imageStorage];
+            [imageStorage release];
+            CGSize layerSize = { kVJXAudioSpectrumImageWidth, kVJXAudioSpectrumImageHeight };
+            pathLayers[i] = CGLayerCreateWithContext( [imageContext graphicsPort], layerSize , NULL );
+        }
     }
     return self;
 }
@@ -114,6 +132,9 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
     free(maxAmp);
     if (currentImage)
         [currentImage release];
+    for (int i = 0; i < kVJXAudioSpectrumImageBufferCount; i++) {
+        CGLayerRelease(pathLayers[i]);
+    }
     //CGLayerRelease(pathLayer);
     //[imageContext release];
     [super dealloc];
@@ -126,27 +147,19 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
     
     // initialize the coregraphics context where to draw a graphical representation
     // of the audiospectrum
-    NSBitmapImageRep *imageStorage = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil
-                                                                             pixelsWide:kVJXAudioSpectrumImageWidth
-                                                                             pixelsHigh:kVJXAudioSpectrumImageHeight
-                                                                          bitsPerSample:8
-                                                                        samplesPerPixel:4
-                                                                               hasAlpha:YES
-                                                                               isPlanar:NO
-                                                                         colorSpaceName:NSDeviceRGBColorSpace
-                                                                            bytesPerRow:4*kVJXAudioSpectrumImageWidth
-                                                                           bitsPerPixel:4*8];
-    imageContext = [NSGraphicsContext graphicsContextWithBitmapImageRep:imageStorage];
-    [imageStorage release];
-    CGSize layerSize = { kVJXAudioSpectrumImageWidth, kVJXAudioSpectrumImageHeight };
-    pathLayer = CGLayerCreateWithContext( [imageContext graphicsPort], layerSize , NULL );
     
-    
+    UInt32 pathIndex = pathLayerOffset++%kVJXAudioSpectrumImageBufferCount;
     pathContext = [NSGraphicsContext
-                   graphicsContextWithGraphicsPort:CGLayerGetContext( pathLayer )
+                   graphicsContextWithGraphicsPort:CGLayerGetContext( pathLayers[pathIndex] )
                    flipped:NO];
     
     [NSGraphicsContext setCurrentContext:pathContext];
+    NSRect fullFrame = { { 0, 0 }, { kVJXAudioSpectrumImageWidth, kVJXAudioSpectrumImageHeight } };
+    NSBezierPath *clearPath = [NSBezierPath bezierPathWithRect:fullFrame];
+    [[NSColor blackColor] setFill];
+    [[NSColor blackColor] setStroke];
+    [clearPath fill];
+    [clearPath stroke];
     for (int i = 0; i < kVJXAudioSpectrumNumFrequencies; i++) {
         Float32 value = frequencyValues[i];
         //Draw your bezier paths here
@@ -156,14 +169,13 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
         frequencyRect.origin.y = 20;
         frequencyRect.size.width = barWidth-4;
         UInt32 topPadding = frequencyRect.origin.y + 20; // HC
-        frequencyRect.size.height = MIN(value, kVJXAudioSpectrumImageHeight-topPadding);
-        
+        frequencyRect.size.height = MIN(value*0.75, kVJXAudioSpectrumImageHeight-topPadding);
         NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:frequencyRect xRadius:4.0 yRadius:4.0];
         [[NSColor yellowColor] setFill];
         [[NSColor yellowColor] setStroke];
-        NSAffineTransform *transform = [[[NSAffineTransform alloc] init] autorelease];
+        //NSAffineTransform *transform = [[[NSAffineTransform alloc] init] autorelease];
         //[transform translateXBy:0.5 yBy:0.5];
-        [path transformUsingAffineTransform:transform];
+        //[path transformUsingAffineTransform:transform];
         [path fill];
         [path stroke];
         NSMutableDictionary *attribs = [NSMutableDictionary dictionary];
@@ -182,18 +194,15 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
         point.y = 4;
         [string drawAtPoint:point];
     }
-    if (currentImage)
-        [currentImage release];
-    currentImage = [[CIImage imageWithCGLayer:pathLayer] retain];
-    [imagePin deliverData:currentImage];
-    CGLayerRelease(pathLayer);
+    [imagePin deliverData:[CIImage imageWithCGLayer:pathLayers[pathIndex]]];
 }
 
 - (void)newSample:(VJXAudioBuffer *)sample
 {
     if (!sample)
         return;
-    //@synchronized(analyzer) {
+    // XXX - get rid of this stupid lock
+    @synchronized(analyzer) {
         AudioBufferList *bufferList = sample.bufferList;
         switch(bufferList->mNumberBuffers) {
         case 1:
@@ -246,11 +255,11 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
             [(VJXOutputPin *)[frequencyPins objectAtIndex:i] deliverData:numberValue];
             frequencyValues[i] = value;
         }
-     /*   if (runcycleCount%5 == 0) { // draw the image only once every 5 samples
+        if (runcycleCount%5 == 0 && imagePin.connected) { // draw the image only once every 10 samples
             [self drawSpectrumImage];
-        }*/
+        }
         runcycleCount++;
-    //}
+    }
 }
 
 // override outputPins to return them properly sorted

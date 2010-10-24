@@ -173,7 +173,7 @@
         name = [pinName retain];
         multiple = NO;
         continuous = YES;
-        connected = YES;
+        connected = NO;
         currentSender = nil;
         owner = pinOwner;
         ownerSignal = pinSignal;
@@ -185,7 +185,7 @@
             currentSender = owner;
             dataBuffer[wOffset++] = [value retain];
         }
-
+        writersLock = [[NSRecursiveLock alloc] init];
     }
     return self;
 }
@@ -268,6 +268,7 @@
     [name release];
     if (allowedValues)
         [allowedValues release];
+    [writersLock release];
     [super dealloc];
 }
 
@@ -426,17 +427,23 @@
             // TODO - Error Message (a not allowed value has been signaled
             return;
         }
-        // this lock protects us from multiple senders delivering a signal at the exact same tim
-        // wOffset and rOffset must be incremented in an atomic operation.
-        @synchronized(self) {
-            dataBuffer[wOffset%kVJXPinDataBufferCount] = [data retain];
-            if (wOffset > rOffset) {
-                UInt32 off = rOffset++;
-                [dataBuffer[off%kVJXPinDataBufferCount] release];
-            }
-            wOffset++;
+        // this lock protects us from multiple senders delivering a signal at the exact same time
+        // wOffset and rOffset must both be incremented in an atomic operation.
+        // concurrency here can happen only in 2 scenarios :
+        // - an input pin which allows multiple producers (like mixers)
+        // - when the user connect a new producer a signal is sent, and the signal from
+        //   current producer could still being executed.
+        // TODO - try to get rid of this lock
+        [writersLock lock];
+        dataBuffer[wOffset%kVJXPinDataBufferCount] = [data retain];
+        if (wOffset > rOffset) {
+            UInt32 off = rOffset++;
+            [dataBuffer[off%kVJXPinDataBufferCount] release];
         }
-            
+        wOffset++;
+        [writersLock unlock];
+        
+        // XXX - sender is not protected by a lock
         if (sender)
             currentSender = sender;
         else

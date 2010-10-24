@@ -59,7 +59,6 @@
 
 {
     VJXAudioBuffer *sample = [self currentSample];
-
     if (sample) {
         int i;
         for (i = 0; i < outOutputData->mNumberBuffers; i++) {
@@ -74,7 +73,7 @@
         }
         [currentSamplePin deliverData:sample fromSender:self];
     } else {
-        //NSLog(@"NO FRAME");
+        NSLog(@"NO FRAME");
     }
 }
 

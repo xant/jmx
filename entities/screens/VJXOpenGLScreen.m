@@ -139,9 +139,9 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     CIImage *image = [self.currentFrame retain];
     if (image && ciContext) {
         CGRect screenSizeRect = NSRectToCGRect(bounds);
-        @synchronized([[self window] screen]) {
+       // @synchronized([[self window] screen]) {
             [ciContext drawImage:image inRect:screenSizeRect fromRect:screenSizeRect];
-        }
+       // }
         [image release];
     }
     [[self openGLContext] flushBuffer];
@@ -194,12 +194,12 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 
 - (void)cleanup
 {
-    @synchronized(self) {
+    //@synchronized(self) {
         if (ciContext) {
             [ciContext release];
             ciContext = nil;
         }
-    }
+    //}
     
     self.currentFrame = nil;
 }

@@ -25,15 +25,21 @@
 #import <AudioToolbox/ExtendedAudioFile.h>
 #import "VJXAudioBuffer.h"
 
+#define kVJXAudioFileBufferCount 2048
+
 @interface VJXAudioFile : NSObject {
 @private
     ExtAudioFileRef audioFile;
     AudioStreamBasicDescription fileFormat;
+    VJXAudioBuffer *samples[kVJXAudioFileBufferCount];
+    UInt32 rOffset;
+    UInt32 wOffset;
+    BOOL isFilling;
 }
 
 + (id)audioFileWithURL:(NSURL *)url;
 
-- (VJXAudioBuffer *)readFrame;
+- (VJXAudioBuffer *)readSample;
 - (VJXAudioBuffer *)readFrames:(NSUInteger)numFrames;
 
 - (BOOL)seekToOffset:(NSInteger)offset;

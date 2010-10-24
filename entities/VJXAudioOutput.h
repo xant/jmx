@@ -29,8 +29,8 @@
 @class VJXAudioFormat;
 
 #define kVJXAudioOutputSamplesBufferCount 512
-#define kVJXAudioOutputSamplesBufferPrefillCount 25
-#define kVJXAudioOutputRingbufferSize 128
+#define kVJXAudioOutputSamplesBufferPrefillCount 50
+#define kVJXAudioOutputConvertedBufferSize 128
 #define kVJXAudioOutputMaxFrames 512
 
 @interface VJXAudioOutput : VJXEntity {

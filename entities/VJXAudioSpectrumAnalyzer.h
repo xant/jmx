@@ -11,6 +11,7 @@
 #import <AudioToolbox/AudioConverter.h>
 
 #define kVJXAudioSpectrumNumFrequencies 14
+#define kVJXAudioSpectrumImageBufferCount 2
 
 @class VJXSpectrumAnalyzer;
 
@@ -29,7 +30,8 @@
     UInt32 numBins;
     NSMutableArray *frequencyPins;
     NSGraphicsContext *imageContext;
-    CGLayerRef pathLayer;
+    CGLayerRef pathLayers[kVJXAudioSpectrumImageBufferCount];
+    UInt32 pathLayerOffset;
     CIImage *currentImage;
     AudioBufferList *deinterleavedBuffer;
     UInt32 runcycleCount;

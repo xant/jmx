@@ -30,6 +30,7 @@
 @implementation VJXBoardView
 
 @synthesize selectedLayer;
+@synthesize selectedConnectorLayer;
 
 #pragma mark -
 #pragma mark Initialization
@@ -72,6 +73,11 @@
         [layer removeFromSuperlayer];
         [entities removeObject:layer];
     }
+
+	if (selectedConnectorLayer) {
+		[selectedConnectorLayer.originPinLayer.pin disconnectFromPin:selectedConnectorLayer.destinationPinLayer.pin];
+		self.selectedConnectorLayer = nil;
+	}
 }
 
 #pragma mark -
@@ -96,6 +102,20 @@
         return;
 
     aLayer.zPosition = [self maxZPosition];
+}
+
+- (void)setSelectedConnectorLayer:(VJXConnectorLayer *)aConnectorLayer
+{
+	if (aConnectorLayer == selectedConnectorLayer)
+		return;
+
+	if (aConnectorLayer != nil)
+		[aConnectorLayer select];
+
+	if (selectedConnectorLayer != nil)
+		[selectedConnectorLayer unselect];
+
+	selectedConnectorLayer = aConnectorLayer;
 }
 
 #pragma mark -
@@ -170,15 +190,17 @@
 {
     NSPoint locationInWindow = [theEvent locationInWindow];
 
-    self.selectedLayer = [self entityLayerAtPoint:locationInWindow];
-
-    if (!selectedLayer) {
-        // Should create a selection layer on top of everything.
-    }
-
+	VJXEntityLayer *anEntityLayer = [self entityLayerAtPoint:locationInWindow];
     VJXPinLayer *aPinLayer = [self pinLayerAtPoint:locationInWindow];
+	VJXConnectorLayer *aConnectorLayer = [self connectorLayerAtPoint:locationInWindow];
 
-    if (aPinLayer) {
+	self.selectedLayer = nil;
+	self.selectedConnectorLayer = nil;
+
+    if (anEntityLayer) {
+		self.selectedLayer = anEntityLayer;
+    }
+	else if (aPinLayer) {
         CGPoint pointAtCenter = [self.layer convertPoint:[aPinLayer pointAtCenter] fromLayer:aPinLayer];
         fakeConnectorLayer = [[[VJXConnectorLayer alloc] initWithOriginPinLayer:aPinLayer] autorelease];
         [aPinLayer addConnector:fakeConnectorLayer];
@@ -186,6 +208,9 @@
         fakeConnectorLayer.boardView = self;
         [self.layer addSublayer:fakeConnectorLayer];
     }
+	else if (aConnectorLayer) {
+		self.selectedConnectorLayer = aConnectorLayer;
+	}
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent
@@ -201,8 +226,6 @@
         selectedLayer.position = [self translatePointToBoardLayer:[theEvent locationInWindow]];
         [selectedLayer updateConnectors];
     }
-    [CATransaction commit];
-
     VJXPinLayer *aPinLayer = [self pinLayerAtPoint:[theEvent locationInWindow]];
     if (aPinLayer && [fakeConnectorLayer.originPinLayer.pin canConnectToPin:aPinLayer.pin]) {
         [hoveredPinLayer unfocus];
@@ -212,6 +235,7 @@
         [hoveredPinLayer unfocus];
         hoveredPinLayer = nil;
     }
+    [CATransaction commit];
 }
 
 - (void)mouseUp:(NSEvent *)theEvent
@@ -287,6 +311,17 @@
 
     return nil;
 }
+
+- (VJXConnectorLayer *)connectorLayerAtPoint:(NSPoint)aPoint
+{
+    CALayer *aLayer = [self.layer hitTest:[self translatePointToBoardLayer:aPoint]];
+
+    if ([aLayer isKindOfClass:[VJXConnectorLayer class]])
+        return (VJXConnectorLayer *)aLayer;
+
+    return nil;
+}
+
 
 - (CGFloat)maxZPosition
 {

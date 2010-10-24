@@ -32,6 +32,7 @@
 @synthesize destinationPinLayer;
 @synthesize boardView;
 @synthesize initialPosition;
+@synthesize foregroundColor;
 
 - (id)initWithOriginPinLayer:(VJXPinLayer *)anOriginPinLayer
 {
@@ -39,6 +40,9 @@
     if (self) {
         self.originPinLayer = anOriginPinLayer;
         self.destinationPinLayer = nil;
+		self.foregroundColor = CGColorCreateGenericRGB(0.0f, 0.0f, 0.0f, 0.5f);
+
+		path = NULL;
     }
     return self;
 }
@@ -47,20 +51,35 @@
 {
     self.originPinLayer = nil;
     self.destinationPinLayer = nil;
-    [super dealloc];
+	if (path)
+		CFRelease(path);
+	[super dealloc];
+}
+
+- (BOOL)containsPoint:(CGPoint)p
+{
+	CGContextRef theContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+	BOOL containsPoint = NO;
+
+	CGContextSaveGState(theContext);
+
+	CGContextAddPath(theContext, path);
+	containsPoint = CGContextPathContainsPoint(theContext, p, kCGPathFillStroke);
+	CGContextRestoreGState(theContext);
+
+	return containsPoint;
 }
 
 - (void)drawInContext:(CGContextRef)theContext
 {
     CGContextSaveGState(theContext);
 
-    CGColorRef backgroundColor_ = CGColorCreateGenericRGB(0.0f, 0.0f, 0.0f, 0.1f);
-    CGColorRef foregroundColor_ = CGColorCreateGenericRGB(0.0f, 0.0f, 0.0f, 0.5f);
+	if (path)
+		CFRelease(path);
 
-    CGMutablePathRef thePath = CGPathCreateMutable();
+    path = CGPathCreateMutable();
 
-    CGContextSetFillColorWithColor(theContext, backgroundColor_);
-    CGContextSetStrokeColorWithColor(theContext, foregroundColor_);
+    CGContextSetFillColorWithColor(theContext, self.foregroundColor);
 
     CGPoint initialPoint, endPoint, controlPoint1, controlPoint2;
 
@@ -83,16 +102,30 @@
         controlPoint2 = CGPointMake(frame.size.width - (frame.size.width / scale), frame.size.height - ORIGIN_OFFSET);
     }
 
-    CGPathMoveToPoint(thePath, NULL, initialPoint.x, initialPoint.y);
-    CGPathAddCurveToPoint(thePath, NULL, controlPoint1.x, controlPoint1.y, controlPoint2.x, controlPoint2.y, endPoint.x, endPoint.y);
+    CGPathMoveToPoint(path, NULL, initialPoint.x, initialPoint.y);
+	CGPathAddCurveToPoint(path, NULL, controlPoint1.x, controlPoint1.y, controlPoint2.x, controlPoint2.y, endPoint.x, endPoint.y);
 
-    CGContextAddPath(theContext, thePath);
-    CGContextSetLineWidth(theContext, CONNECTOR_LINE_WIDTH);
-    CGContextStrokePath(theContext);
+	if ((direction == kSouthEastDirection) || (direction == kNorthWestDirection)) {
+		controlPoint2.x -= 3.535533906f / scale;
+		controlPoint2.y -= 3.535533906f / scale;
+		controlPoint1.x -= 3.535533906f / scale;
+		controlPoint1.y -= 3.535533906f / scale;
+		initialPoint.y -= CONNECTOR_LINE_WIDTH;
+	}
+	else {
+		controlPoint2.x += 3.535533906f / scale;
+		controlPoint2.y -= 3.535533906f / scale;
+		controlPoint1.x += 3.535533906f / scale;
+		controlPoint1.y -= 3.535533906f / scale;
+		initialPoint.y -= CONNECTOR_LINE_WIDTH;
+	}
+	CGPathAddLineToPoint(path, NULL, endPoint.x, endPoint.y - CONNECTOR_LINE_WIDTH);
+	CGPathAddCurveToPoint(path, NULL, controlPoint2.x, controlPoint2.y, controlPoint1.x, controlPoint1.y, initialPoint.x, initialPoint.y);
+	CGPathAddLineToPoint(path, NULL, initialPoint.x, initialPoint.y);
 
-    CFRelease(thePath);
-    CFRelease(backgroundColor_);
-    CFRelease(foregroundColor_);
+    CGContextAddPath(theContext, path);
+	CGContextClosePath(theContext);
+    CGContextFillPath(theContext);
 
     CGContextRestoreGState(theContext);
 }
@@ -146,7 +179,25 @@
 - (void)setSelected:(BOOL)isSelected
 {
     selected = isSelected;
+	self.foregroundColor = selected ? CGColorCreateGenericRGB(1.0f, 0.0f, 0.0f, 1.0f) : CGColorCreateGenericRGB(0.0f, 0.0f, 0.0f, 0.5f);
     [self setNeedsDisplay];
+}
+
+- (void)setForegroundColor:(CGColorRef)aColor
+{
+	if (foregroundColor)
+		CFRelease(foregroundColor);
+	foregroundColor = aColor;
+}
+
+- (void)select
+{
+	self.selected = YES;
+}
+
+- (void)unselect
+{
+	self.selected = NO;
 }
 
 @end

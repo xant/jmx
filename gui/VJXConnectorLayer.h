@@ -44,12 +44,15 @@ enum Direction {
     VJXPinLayer *originPinLayer;
     VJXPinLayer *destinationPinLayer;
     NSUInteger direction;
+	CGMutablePathRef path;
+	CGColorRef foregroundColor;
 }
 
 @property (assign) BOOL selected;
 @property (assign) VJXBoardView *boardView;
 @property (assign) CGPoint initialPosition;
 @property (assign) NSUInteger direction;
+@property (assign) CGColorRef foregroundColor;
 
 // make this weak references otherwise pins will be overretained an never released
 // the following two properties must be defined as atomic because can be accessed
@@ -63,4 +66,7 @@ enum Direction {
 - (void)recalculateFrameWithPoint:(CGPoint)aPoint;
 - (void)recalculateFrameWithPoint:(CGPoint)originPoint andPoint:(CGPoint)destinationPoint;
 - (void)disconnect;
+- (void)select;
+- (void)unselect;
+
 @end

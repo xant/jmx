@@ -73,12 +73,12 @@
         connectors = [[[NSMutableArray alloc] init] retain];
         self.frame = CGRectMake(thePoint.x, thePoint.y, PIN_OUTLET_WIDTH, PIN_OUTLET_HEIGHT);
         pin = [thePin retain];
-        [[NSNotificationCenter defaultCenter] addObserver:self 
-                                                 selector:@selector(aPinWasConnected:) 
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(aPinWasConnected:)
                                                      name:@"VJXPinConnected"
                                                    object:thePin];
-        [[NSNotificationCenter defaultCenter] addObserver:self 
-                                                 selector:@selector(aPinWasDisconnected:) 
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(aPinWasDisconnected:)
                                                      name:@"VJXPinDisconnected"
                                                    object:thePin];
         [self setupLayer];
@@ -114,33 +114,6 @@
     if (tempConnector)
         [tempConnector release];
     [super dealloc];
-}
-
-- (void)drawRect:(NSRect)dirtyRect
-{
-    NSRect bounds = [self bounds];
-
-    bounds.origin.x += PIN_OUTLET_PADDING;
-    bounds.origin.y += PIN_OUTLET_PADDING;
-    bounds.size.width -= (2 * bounds.origin.x);
-    bounds.size.height -= (2 * bounds.origin.y);
-
-    NSBezierPath *thePath = nil;
-
-    if (self.selected == YES)
-        [[NSColor yellowColor] setFill];
-    else
-        [[NSColor whiteColor] setFill];
-
-    thePath = [[NSBezierPath alloc] init];
-    [thePath appendBezierPathWithOvalInRect:bounds];
-    [thePath fill];
-
-    [thePath release];
-}
-
-- (void)mouseDown:(NSEvent *)theEvent
-{
 }
 
 - (CGPoint)pointAtCenter
@@ -189,7 +162,7 @@
 - (void)removeAllConnectors
 {
     NSArray *connectorsCopy = nil;
-    // the connectors array could be modified through a 
+    // the connectors array could be modified through a
     // notification so we want a copy here
     @synchronized(connectors) {
         connectorsCopy = [connectors copy];
@@ -213,14 +186,14 @@
 
 - (void)focus
 {
-    CGColorRef *backgroundColor_ = CGColorCreateGenericRGB(0.0f, 1.0f, 0.0f, 1.0f);
+    CGColorRef backgroundColor_ = CGColorCreateGenericRGB(0.0f, 1.0f, 0.0f, 1.0f);
     self.backgroundColor = backgroundColor_;
     CFRelease(backgroundColor_);
 }
 
 - (void)unfocus
 {
-    CGColorRef *backgroundColor_ = CGColorCreateGenericRGB(1.0f, 0.0f, 0.0f, 1.0f);
+    CGColorRef backgroundColor_ = CGColorCreateGenericRGB(1.0f, 0.0f, 0.0f, 1.0f);
     self.backgroundColor = backgroundColor_;
     CFRelease(backgroundColor_);
 }

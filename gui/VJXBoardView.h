@@ -37,6 +37,7 @@
 @interface VJXBoardView : NSView {
     CGPoint lastDragLocation;
     VJXEntityLayer *selectedLayer;
+	VJXConnectorLayer *selectedConnectorLayer;
     VJXPinLayer *hoveredPinLayer;
     VJXConnectorLayer *fakeConnectorLayer;
     NSMutableArray *selected;
@@ -46,6 +47,7 @@
 }
 
 @property (nonatomic,assign) VJXEntityLayer *selectedLayer;
+@property (nonatomic,assign) VJXConnectorLayer *selectedConnectorLayer;
 #pragma mark -
 #pragma mark IBActions
 
@@ -63,6 +65,7 @@
 - (CGPoint)translatePointToBoardLayer:(NSPoint)aPoint;
 - (VJXEntityLayer *)entityLayerAtPoint:(CGPoint)aPoint;
 - (VJXPinLayer *)pinLayerAtPoint:(CGPoint)aPoint;
+- (VJXConnectorLayer *)connectorLayerAtPoint:(NSPoint)aPoint;
 - (CGFloat)maxZPosition;
 
 @end

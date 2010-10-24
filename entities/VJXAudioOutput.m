@@ -56,7 +56,6 @@ static OSStatus _FillComplexBufferProc (
         audioInputPin = [self registerInputPin:@"audio" withType:kVJXAudioPin andSelector:@"newSample:"];
         currentSamplePin = [self registerOutputPin:@"currentSample" withType:kVJXAudioPin];
         converter = NULL;
-        samples = [[NSMutableArray alloc] init];
         outputDescription = format.audioStreamBasicDescription;
         outputBufferList = calloc(sizeof(AudioBufferList), 1);
         outputBufferList->mNumberBuffers = 1;
@@ -64,9 +63,10 @@ static OSStatus _FillComplexBufferProc (
         outputBufferList->mBuffers[0].mDataByteSize = chunkSize;
         outputBufferList->mBuffers[0].mNumberChannels = outputDescription.mChannelsPerFrame;
         // preallocate the buffer used for outputsamples
-        ringbuffer = malloc(outputBufferList->mBuffers[0].mDataByteSize*kVJXAudioOutputRingbufferSize);
-        readOffset = 0;
-        prefill = YES;
+        convertedBuffer = malloc(outputBufferList->mBuffers[0].mDataByteSize*kVJXAudioOutputRingbufferSize);
+        convertedOffset = 0;
+        needsPrefill = YES;
+        rOffset = wOffset = 0;
     }
     return self;
 }
@@ -78,8 +78,8 @@ static OSStatus _FillComplexBufferProc (
 
     if (!buffer)
         return;
-#if 0
-    // sample should need to be converted before being sent to the audio device
+#if 0 // disable conversion for now 
+    // sample needs to be converted before being sent to the audio device
     // the output format depends on the output device and could be different from the 
     // one used internally (44Khz stereo float32 interleaved)
     
@@ -105,7 +105,7 @@ static OSStatus _FillComplexBufferProc (
     UInt32 framesRead = [buffer numFrames];
     // TODO - check if framesRead is > 512
     outputBufferList->mBuffers[0].mDataByteSize = outputDescription.mBytesPerFrame * outputDescription.mChannelsPerFrame * framesRead;
-    outputBufferList->mBuffers[0].mData = ringbuffer+(readOffset++%kVJXAudioOutputRingbufferSize)*chunkSize;
+    outputBufferList->mBuffers[0].mData = convertedBuffer+(convertedOffset++%kVJXAudioOutputRingbufferSize)*chunkSize;
     callbackContext.theConversionBuffer = buffer;
     callbackContext.wait = NO; // XXX (actually unused)
     //UInt32 outputChannels = [buffer numChannels];
@@ -121,41 +121,34 @@ static OSStatus _FillComplexBufferProc (
     } else {
         err = AudioConverterFillComplexBuffer ( converter, _FillComplexBufferProc, &callbackContext, &framesRead, outputBufferList, NULL );
     }
-    if (err == noErr) {
+    if (err != noErr)
+        samples[wOffset++%kVJXAudioOutputSamplesBufferCount] = [[VJXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&inputDescription copy:NO freeOnRelease:NO] retain];
+#else
+        samples[wOffset++%kVJXAudioOutputSamplesBufferCount] = [buffer retain];   
 #endif
-        //[VJXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&inputDescription copy:NO freeOnRelease:NO];
-        @synchronized(samples) {
-            [samples addObject:buffer];
-            if ([samples count] > 25)
-                prefill = NO;
-        }
-//    }
+    if (wOffset > kVJXAudioOutputSamplesBufferPrefillCount)
+        needsPrefill = NO;
 }
 
 - (VJXAudioBuffer *)currentSample
 {
+    //NSLog(@"r: %d - w: %d", rOffset % kVJXAudioOutputSamplesBufferCount , wOffset % kVJXAudioOutputSamplesBufferCount);
     VJXAudioBuffer *sample = nil;
-    @synchronized(samples) {
-        if ([samples count] && !prefill) {
-            sample = [[samples objectAtIndex:0] retain];
-            [samples removeObjectAtIndex:0];
-        }
+    if (rOffset < wOffset && !needsPrefill) {
+        sample = [samples[rOffset++%kVJXAudioOutputSamplesBufferCount] autorelease];
     }
-    if (sample)
-        return [sample autorelease];
-    return nil;
+    return sample;
 }
 
 - (void)dealloc
 {
     if (format)
         [format dealloc];
-    if (samples) {
-        [samples removeAllObjects];
-        [samples release];
-    }
-    if (ringbuffer)
-        free(ringbuffer);
+
+    while (rOffset < wOffset) 
+        [samples[rOffset++%kVJXAudioOutputSamplesBufferCount] release];
+    if (convertedBuffer)
+        free(convertedBuffer);
     [super dealloc];
 }
 

@@ -24,7 +24,7 @@
         [audioInputPin allowMultipleConnections:YES];
         audioOutputPin = [self registerOutputPin:@"audio" withType:kVJXAudioPin];
         [audioOutputPin allowMultipleConnections:YES];
-        self.frequency = [NSNumber numberWithDouble:44100/512];
+        self.frequency = [NSNumber numberWithDouble:(44100/512)+1];
         samples = [[NSMutableArray alloc] init];
         useAggregateDevice = NO;
         prefill = YES;

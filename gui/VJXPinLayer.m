@@ -103,6 +103,8 @@
 
 - (void)dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXPinConnected" object:pin];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXPinDisconnected" object:pin];
     if (connectors) {
         [self removeAllConnectors];
         [connectors release];
@@ -186,15 +188,16 @@
 
 - (void)removeAllConnectors
 {
-//    for (VJXConnectorLayer *connector in connectors) {
-//        if (connector.origin == self) {
-//            [connector.destination removeConnector:connector];
-//        } else {
-//            [connector.origin removeConnector:connector];
-//        }
-//        [connector removeFromSuperview];
-//    }
-//    [connectors removeAllObjects];
+    NSArray *connectorsCopy = nil;
+    // the connectors array could be modified through a 
+    // notification so we want a copy here
+    @synchronized(connectors) {
+        connectorsCopy = [connectors copy];
+    }
+    for (VJXConnectorLayer *connector in connectorsCopy) {
+        [connector disconnect];
+    }
+    [connectorsCopy release];
 }
 
 - (void)setSelected:(BOOL)isSelected

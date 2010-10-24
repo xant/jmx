@@ -28,6 +28,8 @@
 @class VJXAudioBuffer;
 @class VJXAudioFormat;
 
+#define kVJXAudioOutputSamplesBufferCount 512
+#define kVJXAudioOutputSamplesBufferPrefillCount 25
 #define kVJXAudioOutputRingbufferSize 128
 #define kVJXAudioOutputMaxFrames 512
 
@@ -38,13 +40,15 @@
     VJXOutputPin *currentSamplePin;
     VJXInputPin *audioInputPin;
     VJXAudioBuffer *currentSample;
-    NSMutableArray *samples;
     AudioStreamBasicDescription outputDescription;
     AudioBufferList *outputBufferList;
-    void *ringbuffer;
-    UInt32 readOffset;
+    void *convertedBuffer;
+    UInt32 convertedOffset;
     UInt32 chunkSize;
-    BOOL prefill;
+    VJXAudioBuffer *samples[kVJXAudioOutputSamplesBufferCount];
+    UInt32 wOffset;
+    UInt32 rOffset;
+    BOOL needsPrefill;
 }
 
 - (VJXAudioBuffer *)currentSample;

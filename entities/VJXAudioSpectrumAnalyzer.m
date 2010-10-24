@@ -193,7 +193,7 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
 {
     if (!sample)
         return;
-    @synchronized(analyzer) {
+    //@synchronized(analyzer) {
         AudioBufferList *bufferList = sample.bufferList;
         switch(bufferList->mNumberBuffers) {
         case 1:
@@ -246,11 +246,11 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
             [(VJXOutputPin *)[frequencyPins objectAtIndex:i] deliverData:numberValue];
             frequencyValues[i] = value;
         }
-        if (runcycleCount%5 == 0) { // draw the image only once every 5 samples
+     /*   if (runcycleCount%5 == 0) { // draw the image only once every 5 samples
             [self drawSpectrumImage];
-        }
+        }*/
         runcycleCount++;
-    }
+    //}
 }
 
 // override outputPins to return them properly sorted

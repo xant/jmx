@@ -45,6 +45,8 @@ typedef enum {
     kVJXAnyPin
 } VJXPinDirection;
 
+#define kVJXPinDataBufferCount 2
+
 @interface VJXPin : NSObject <NSCopying> {
 @protected
     VJXPinType          type;
@@ -52,10 +54,12 @@ typedef enum {
     NSMutableDictionary *properties;
     BOOL                multiple; // default NO
     BOOL                continuous; // default YES
-    BOOL                retainData; // default YES
-    BOOL                buffered; // default NO
-    id                  currentData;
     id                  currentSender;
+    BOOL                connected;
+    id                  dataBuffer[kVJXPinDataBufferCount]; // double buffer synchronized for writers
+                                                            // but lockless for readers
+    UInt32              rOffset;
+    UInt32              wOffset;
     VJXPinDirection     direction;
     id                  owner; // weak reference (the owner retains us)
     id                  minValue;
@@ -71,11 +75,10 @@ typedef enum {
 @property (readonly)  VJXPinDirection direction;
 @property (readonly)  NSArray *allowedValues;
 @property (readwrite) BOOL continuous;
-@property (readwrite) BOOL retainData;
-@property (readwrite) BOOL buffered;
 @property (readonly) id owner;
 @property (readonly) id minValue;
 @property (readonly) id maxValue;
+@property (readonly) BOOL connected;
 
 + (id)pinWithName:(NSString *)name
           andType:(VJXPinType)pinType

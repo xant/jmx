@@ -72,6 +72,7 @@
                 outOutputData->mBuffers[i].mNumberChannels = sample.bufferList->mBuffers[i].mNumberChannels;
             }
         }
+        [currentSamplePin deliverData:sample fromSender:self];
     } else {
         //NSLog(@"NO FRAME");
     }

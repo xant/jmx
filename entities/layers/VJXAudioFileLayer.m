@@ -62,7 +62,7 @@
         @synchronized(audioFile) {
             audioFile = [[VJXAudioFile audioFileWithURL:[NSURL fileURLWithPath:file]] retain];
             if (audioFile) {
-                self.frequency = [NSNumber numberWithDouble:([audioFile sampleRate]/512.0)];
+                self.frequency = [NSNumber numberWithDouble:([audioFile sampleRate]/512.0)+1];
                 NSArray *path = [file componentsSeparatedByString:@"/"];
                 self.name = [path lastObject];
                 return YES;

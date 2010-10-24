@@ -74,28 +74,6 @@
     [pool drain];
 }
 
-- (void)deliverData:(id)data fromSender:(id)sender
-{
-    // if we are an output pin and not receivers have been hooked, 
-    // it's useless to perform the signal
-    @synchronized(receivers) {
-        if (![receivers count]) {
-            // we don't have any receiver ... so we only need 
-            // to set currentData and then we can return
-            @synchronized(self) {
-                if (currentData && retainData)
-                    [currentData release];
-                currentData = retainData
-                            ? [data retain]
-                            : data;
-                currentSender = sender;
-            }
-            return;
-        }
-    }
-    [super deliverData:data fromSender:sender];
-}
-
 - (BOOL)attachObject:(id)pinReceiver withSelector:(NSString *)pinSignal
 {
     BOOL rv = NO;
@@ -114,32 +92,36 @@
     // deliver the signal to the just connected receiver
     if (rv == YES) {
         VJXPinSignal *signal = nil;
-        @synchronized(self) {
-            signal = [VJXPinSignal signalFromSender:currentSender receiver:pinReceiver data:currentData];
-        }
+        signal = [VJXPinSignal signalFromSender:currentSender receiver:pinReceiver data:dataBuffer[rOffset%kVJXPinDataBufferCount]];
         if (signal) // send the signal on-connect
             [self sendData:signal.data toReceiver:signal.receiver withSelector:pinSignal fromSender:currentSender];
     }
     return rv;
 }
 
+- (BOOL)connectToPin:(VJXInputPin *)destinationPin
+{
+    if ((VJXPin *)destinationPin != (VJXPin *)self && destinationPin.direction == kVJXInputPin) {
+        if ([destinationPin connectToPin:self]) {
+            connected = YES;
+            return YES;
+        }
+    }
+    return NO;
+}
+
 - (void)detachObject:(id)pinReceiver
 {
     @synchronized(receivers) {
         [receivers removeObjectForKey:pinReceiver];
+        if ([receivers count] == 0)
+            connected = NO;
     }
-}
-
-- (BOOL)connectToPin:(VJXInputPin *)destinationPin
-{
-    if ((VJXPin *)destinationPin != (VJXPin *)self && destinationPin.direction == kVJXInputPin) 
-        return [destinationPin connectToPin:self];
-    return NO;
 }
 
 - (void)disconnectFromPin:(VJXInputPin *)destinationPin
 {
-    return [destinationPin disconnectFromPin:self];
+    [destinationPin disconnectFromPin:self];
 }
 
 - (void)disconnectAllPins

@@ -28,7 +28,7 @@
 
 @implementation VJXPin
 
-@synthesize type, name, multiple, continuous, buffered, retainData,
+@synthesize type, name, multiple, continuous, connected,
             direction, allowedValues, owner, minValue, maxValue;
 
 #pragma mark Constructors
@@ -173,19 +173,19 @@
         name = [pinName retain];
         multiple = NO;
         continuous = YES;
-        retainData = YES;
-        buffered = NO;
-        currentData = nil;
+        connected = YES;
         currentSender = nil;
         owner = pinOwner;
         ownerSignal = pinSignal;
         ownerUserData = userData;
         if (pinValues)
             allowedValues = [[NSMutableArray arrayWithArray:pinValues] retain];
+        rOffset = wOffset = 0;
         if (value && [self isCorrectDataType:value]) {
-            currentData = [value retain];
             currentSender = owner;
+            dataBuffer[wOffset++] = [value retain];
         }
+
     }
     return self;
 }
@@ -265,8 +265,6 @@
 
 - (void)dealloc
 {
-    if (currentData)
-        [currentData release];
     [name release];
     if (allowedValues)
         [allowedValues release];
@@ -328,20 +326,6 @@
     return [NSString stringWithFormat:@"%@:%@", ownerName, name];
 }
 
-- (void)setRetainData:(BOOL)doRetain
-{
-    @synchronized(self) {
-        if (retainData && !doRetain) {
-            if (currentData)
-                [currentData release];
-        } else if (!retainData && doRetain) {
-            if (currentData)
-                [currentData retain];
-        }
-        retainData = doRetain;
-    }
-}
-
 - (void)addAllowedValue:(id)value
 {
     if ([self isCorrectDataType:value]) {
@@ -389,10 +373,7 @@
 
 - (id)readData
 {
-    id data;
-    @synchronized(self) {
-        data = [currentData retain];
-    }
+    id data = [dataBuffer[rOffset%kVJXPinDataBufferCount] retain];
     return [data autorelease];
 }
 
@@ -431,35 +412,35 @@
 
 - (void)deliverData:(id)data fromSender:(id)sender
 {
+    
     // check if NULL data has been signaled
     // and if it's the case, clear currentData and return
-    if (!data) {
-        @synchronized(self) {
-            if (currentData && retainData)
-                [currentData release];
-            currentData = nil;
-        }
+    if (!data) { 
         return;
     }
     // if instead new data arrived, check if it's of the correct type
     // and propagate the signal if that's the case
     if ([self isCorrectDataType:data]) {
-        @synchronized(self) {
-            // check if we restrict possible values
-            if (allowedValues && ![allowedValues containsObject:data]) {
-                // TODO - Error Message (a not allowed value has been signaled
-                return;
-            }
-            if (currentData && retainData)
-                [currentData release];
-            currentData = retainData
-                        ? [data retain]
-                        : data;
-            if (sender)
-                currentSender = sender;
-            else
-                currentSender = self;
+        // check if we restrict possible values
+        if (allowedValues && ![allowedValues containsObject:data]) {
+            // TODO - Error Message (a not allowed value has been signaled
+            return;
         }
+        // this lock protects us from multiple senders delivering a signal at the exact same tim
+        // wOffset and rOffset must be incremented in an atomic operation.
+        @synchronized(self) {
+            dataBuffer[wOffset%kVJXPinDataBufferCount] = [data retain];
+            if (wOffset > rOffset) {
+                UInt32 off = rOffset++;
+                [dataBuffer[off%kVJXPinDataBufferCount] release];
+            }
+            wOffset++;
+        }
+            
+        if (sender)
+            currentSender = sender;
+        else
+            currentSender = self;
         VJXPinSignal *signal = [VJXPinSignal signalFromSender:sender receiver:owner data:data];
         
 #if USE_NSOPERATIONS

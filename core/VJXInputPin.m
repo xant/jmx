@@ -94,6 +94,7 @@
             }
             if ([destinationPin attachObject:self withSelector:@"deliverData:fromSender:"]) {
                 [producers addObject:destinationPin];
+                connected = YES;
                 return [super connectToPin:destinationPin];
             }
         }
@@ -107,6 +108,8 @@
     @synchronized(producers) {
         [destinationPin detachObject:self];
         [producers removeObjectIdenticalTo:destinationPin];
+        if ([producers count] == 0)
+            connected = NO;
     }
     [super disconnectFromPin:destinationPin];
     [destinationPin release];

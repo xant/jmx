@@ -1,10 +1,10 @@
 - allow to provide input values (of any supported type) through the GUI
 - parse filter attributes to determine 'mandatory' parameters (and avoid crashes)
-- introduce a scripting language (javasript? lua?)
 - give as much space as possible on the board (reducing entity/font size ?)
-- extend inspector functionalities
-- allow to move multiple slected items all together
-- allow to group 'diagrams' and to access such groups as a sort of 'macro' in other diagrams
-- implement exporters (file save and streaming)
 - improve VJXAudioMixer (and possibly VJXAudioScheduler)
+- extend inspector functionalities
+- allow to group 'diagrams' and to access such groups as a sort of 'macro' in other diagrams
+- introduce a scripting language (javasript? lua?)
+- allow to move multiple slected items all together
+- implement exporters (file save and streaming)
 - make a website

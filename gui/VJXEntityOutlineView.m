@@ -145,10 +145,8 @@
     NSActionCell *cell = [dataCells objectForKey:item];
 
     if (cell != nil) {
-        NSLog(@"%@ -> %s",[cell target], [cell action]);
         return cell;
     }
-
 
     VJXOutputPin *aPin = [virtualOutputPins objectForKey:item];
 
@@ -164,15 +162,16 @@
 		}
 		else {
 			cell = [[NSTextFieldCell alloc] init];
-            [cell setTarget:self];
-            [cell setAction:@selector(commitChange:)];
-            [cell setEditable:YES];
         }
 	}
 	else if (aPin.type == kVJXNumberPin) {
 		cell = [[NSTextFieldCell alloc] init];
-        [cell setTarget:self];
-        [cell setAction:@selector(commitChange:)];
+        NSNumberFormatter *nf = [[NSNumberFormatter alloc] init];
+        [nf setMaximumFractionDigits:2];
+        [nf setMinimumFractionDigits:2];
+        [nf setMinimumIntegerDigits:1];
+        [cell setFormatter:nf];
+        [nf release];
         [cell setEditable:YES];
 	}
 	else {
@@ -200,4 +199,12 @@
     }
 }
 
+- (void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
+{
+    VJXOutputPin *outputPin = [virtualOutputPins objectForKey:item];
+    if (outputPin.type == kVJXNumberPin) {
+        NSNumber *aNumber = [NSNumber numberWithFloat:[object floatValue]];
+        [outputPin deliverData:aNumber];
+    }
+}
 @end

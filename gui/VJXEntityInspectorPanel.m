@@ -197,8 +197,7 @@
 {
     VJXEntityLayer *anEntityLayer = [aNotification object];
     [self setEntity:anEntityLayer];
-	[pinsProperties setDataSource:anEntityLayer];
-	[pinsProperties setDelegate:anEntityLayer];
+    [pinsProperties setEntity:anEntityLayer.entity];
 	[pinsProperties expandItem:nil expandChildren:YES];
     [pinsProperties reloadData];
 }

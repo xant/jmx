@@ -30,7 +30,6 @@
 
 @class VJXBoardView;
 
-// @interface VJXBoardEntity : NSView <NSTextFieldDelegate,NSCopying,NSOutlineViewDataSource,NSOutlineViewDelegate>
 @interface VJXEntityLayer : CALayer <NSTextFieldDelegate,NSCopying,NSOutlineViewDataSource,NSOutlineViewDelegate>
 {
     VJXEntity *entity;

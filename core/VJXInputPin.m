@@ -42,7 +42,7 @@
                     withSignal:pinSignal
                       userData:userData
                  allowedValues:pinValues
-                  initialValue:value];    
+                  initialValue:value];
     if (self) {
         producers = [[NSMutableArray alloc] init];
         direction = kVJXInputPin;

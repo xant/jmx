@@ -22,6 +22,4 @@
 
 - (void)setUpPins;
 
-- (IBAction)commitChange:(id)sender;
-
 @end

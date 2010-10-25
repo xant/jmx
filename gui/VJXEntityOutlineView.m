@@ -36,6 +36,8 @@
 - (void)dealloc
 {
     [virtualOutputPins release];
+    [virtualOutputPinNames release];
+    [dataCells release];
     [super dealloc];
 }
 
@@ -51,22 +53,23 @@
 
 - (void)setUpPins
 {
+    [[virtualOutputPins allValues] makeObjectsPerformSelector:@selector(disconnectAllPins)];
     [virtualOutputPins removeAllObjects];
     [virtualOutputPinNames removeAllObjects];
 
     // Create an output pin for each input pin in the current entity.
     for (NSString *inputPinName in [entity inputPins]) {
         VJXInputPin *inputPin = [entity inputPinWithName:inputPinName];
+
+        // Skip this pin if it's already connected.
+        if (!inputPin.multiple && inputPin.connected)
+            continue;
+
         VJXOutputPin *outputPin = [VJXPin pinWithName:inputPin.name andType:inputPin.type forDirection:kVJXOutputPin ownedBy:nil withSignal:nil];
         [outputPin connectToPin:inputPin];
         [virtualOutputPins setObject:outputPin forKey:outputPin.name];
         [virtualOutputPinNames addObject:outputPin.name];
     }
-}
-
-- (IBAction)commitChange:(id)sender
-{
-    NSLog(@"%s -> %i", _cmd, [sender tag]);
 }
 
 - (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
@@ -123,12 +126,7 @@
         if ([item isEqualToString:@"Input"] || [item isEqualToString:@"Output"])
             return @"";
 
-        VJXPin *aPin = nil;
-
-        if ([virtualOutputPins objectForKey:item] != nil) {
-            NSString *pinName = ((VJXOutputPin *)[virtualOutputPins objectForKey:item]).name;
-            aPin = [self.entity inputPinWithName:pinName];
-        }
+        VJXPin *aPin = [[[[virtualOutputPins objectForKey:item] receivers] allKeys] lastObject];
         return [aPin readData];
     }
     return nil;
@@ -154,18 +152,25 @@
 		return nil;
 
 	if (aPin.type == kVJXStringPin) {
-		if (aPin.direction == kVJXInputPin && [aPin allowedValues] != nil) {
-			cell = [[NSPopUpButtonCell alloc] init];
-            [cell setTarget:self];
-            [cell setAction:@selector(commitChange:)];
-            [(NSPopUpButtonCell *)cell addItemsWithTitles:[aPin allowedValues]];
+
+        // I expect the following code not to be a problem since each pin in
+        // the inspector will be connected to just one receiver.
+        VJXInputPin *anInputPin = [[[aPin receivers] allKeys] lastObject];
+
+		if (anInputPin && [anInputPin allowedValues] != nil) {
+            cell = [[[NSPopUpButtonCell alloc] init] autorelease];
+            [(NSPopUpButtonCell *)cell addItemsWithTitles:[anInputPin allowedValues]];
+
+            NSString *aValue = [anInputPin readData];
+            [(NSPopUpButtonCell *)cell selectItemWithTitle:aValue];
+            [(NSPopUpButtonCell *)cell setPullsDown:NO];
 		}
 		else {
-			cell = [[NSTextFieldCell alloc] init];
+            cell = [[[NSTextFieldCell alloc] init] autorelease];
         }
 	}
 	else if (aPin.type == kVJXNumberPin) {
-		cell = [[NSTextFieldCell alloc] init];
+        cell = [[[NSTextFieldCell alloc] init] autorelease];
         NSNumberFormatter *nf = [[NSNumberFormatter alloc] init];
         [nf setMaximumFractionDigits:2];
         [nf setMinimumFractionDigits:2];
@@ -175,26 +180,22 @@
         [cell setEditable:YES];
 	}
 	else {
-		cell = [[NSButtonCell alloc] init];
+        cell = [[[NSButtonCell alloc] init] autorelease];
 	}
 
     [dataCells setObject:cell forKey:item];
 
-	return [cell autorelease];
+	return cell;
 
 }
 
 - (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item;
 {
     if ([[tableColumn identifier] isEqualToString:@"control"]) {
-        // TODO - check if we are populating the input-pins part of the outlineview
+        NSActionCell *cell = [dataCells objectForKey:item];
         if ([cell isKindOfClass:[NSPopUpButtonCell class]]) {
-            // ensure resetting selected values (since the button is re-constructed
-            // each time that 'outlineView:dataCellForTableColumn:item:' is called
-            NSInteger row = [outlineView selectedRow];
-            NSString *pinName = [outlineView itemAtRow:row];
-            VJXInputPin *aPin = [self.entity inputPinWithName:pinName];
-            [(NSPopUpButtonCell *)cell selectItemWithTitle:[aPin readData]];
+            NSString *aValue = [[[[[virtualOutputPins objectForKey:item] receivers] allKeys] lastObject] readData];
+            [(NSPopUpButtonCell *)cell selectItemWithTitle:aValue];
         }
     }
 }
@@ -206,5 +207,21 @@
         NSNumber *aNumber = [NSNumber numberWithFloat:[object floatValue]];
         [outputPin deliverData:aNumber];
     }
+    else if (outputPin.type == kVJXStringPin) {
+
+        // If it was a multiple choice menu, we might receive a NSNumber here
+        // indicating the tag of the index of the item the user chose.
+        if ([object isKindOfClass:[NSNumber class]]) {
+            VJXInputPin *anInputPin = [[[outputPin receivers] allKeys] lastObject];
+            NSString *aValue = [[anInputPin allowedValues] objectAtIndex:[object intValue]];
+            [outputPin deliverData:aValue];
+            // [(NSPopUpButtonCell *)cell selectItemWithTitle:aValue];
+        }
+        else {
+            NSAssert([object isKindOfClass:[NSString class]], @"Object must be a NSString");
+            [outputPin deliverData:object];
+        }
+    }
+//    [self reloadData];
 }
 @end

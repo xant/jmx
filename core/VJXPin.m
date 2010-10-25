@@ -276,10 +276,10 @@
 {
     NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:destinationPin, @"outputPin", self, @"inputPin", nil];
     // send a connect notification for all involved pins
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXPinConnected" 
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXPinConnected"
                                                         object:self
                                                       userInfo:userInfo];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXPinConnected" 
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXPinConnected"
                                                         object:destinationPin
                                                       userInfo:userInfo];
     return YES;
@@ -289,10 +289,10 @@
 {
     NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:destinationPin, @"outputPin", self, @"inputPin", nil];
     // send a disconnect notification for all the involved pins
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXPinDisconnected" 
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXPinDisconnected"
                                                         object:self
                                                       userInfo:userInfo];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXPinDisconnected" 
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXPinDisconnected"
                                                         object:destinationPin
                                                       userInfo:userInfo];
 }
@@ -413,10 +413,10 @@
 
 - (void)deliverData:(id)data fromSender:(id)sender
 {
-    
+
     // check if NULL data has been signaled
     // and if it's the case, clear currentData and return
-    if (!data) { 
+    if (!data) {
         return;
     }
     // if instead new data arrived, check if it's of the correct type
@@ -442,14 +442,14 @@
         }
         wOffset++;
         [writersLock unlock];
-        
+
         // XXX - sender is not protected by a lock
         if (sender)
             currentSender = sender;
         else
             currentSender = self;
         VJXPinSignal *signal = [VJXPinSignal signalFromSender:sender receiver:owner data:data];
-        
+
 #if USE_NSOPERATIONS
         NSBlockOperation *signalDelivery = [NSBlockOperation blockOperationWithBlock:^{
             [self performSignal:signal];

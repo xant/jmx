@@ -26,10 +26,10 @@
 #ifndef __x86_64
 #import  <QuickTime/QuickTime.h>
 #endif
-#import "VJXLayer.h"
+#import "VJXVideoEntity.h"
 #import "VJXFileRead.h"
 
-@interface VJXQtVideoLayer : VJXLayer <VJXFileRead> {
+@interface VJXQtVideoLayer : VJXVideoEntity <VJXFileRead> {
 @private
     QTMovie *movie;
     NSString *moviePath;

@@ -14,7 +14,7 @@
 		822CF8EF127058F80053A5C7 /* VJXBoardLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 822CF8EE127058F80053A5C7 /* VJXBoardLayer.m */; };
 		822CF94112705C2C0053A5C7 /* NSColorExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 822CF94012705C2C0053A5C7 /* NSColorExtensions.m */; };
 		822CFE361270F76D0053A5C7 /* VJXOutletLabelLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 822CFE351270F76D0053A5C7 /* VJXOutletLabelLayer.m */; };
-		82456BA51223CFA200236FE4 /* VJXLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 82456BA41223CFA200236FE4 /* VJXLayer.m */; };
+		82456BA51223CFA200236FE4 /* VJXVideoEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 82456BA41223CFA200236FE4 /* VJXVideoEntity.m */; };
 		82456BBA1223DBE100236FE4 /* VJXQtVideoLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 82456BB61223DBE100236FE4 /* VJXQtVideoLayer.m */; };
 		82456BC41223DC8300236FE4 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BC31223DC8300236FE4 /* OpenGL.framework */; };
 		82456BC81223DC9900236FE4 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BC71223DC9900236FE4 /* QTKit.framework */; };
@@ -97,8 +97,8 @@
 		822CFAEA127076B10053A5C7 /* VJXGUIConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXGUIConstants.h; sourceTree = "<group>"; };
 		822CFE341270F76D0053A5C7 /* VJXOutletLabelLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXOutletLabelLayer.h; sourceTree = "<group>"; };
 		822CFE351270F76D0053A5C7 /* VJXOutletLabelLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXOutletLabelLayer.m; sourceTree = "<group>"; };
-		82456BA31223CFA200236FE4 /* VJXLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXLayer.h; path = entities/VJXLayer.h; sourceTree = "<group>"; };
-		82456BA41223CFA200236FE4 /* VJXLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXLayer.m; path = entities/VJXLayer.m; sourceTree = "<group>"; };
+		82456BA31223CFA200236FE4 /* VJXVideoEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXVideoEntity.h; path = entities/VJXVideoEntity.h; sourceTree = "<group>"; };
+		82456BA41223CFA200236FE4 /* VJXVideoEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXVideoEntity.m; path = entities/VJXVideoEntity.m; sourceTree = "<group>"; };
 		82456BB61223DBE100236FE4 /* VJXQtVideoLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VJXQtVideoLayer.m; path = entities/layers/VJXQtVideoLayer.m; sourceTree = "<group>"; };
 		82456BB71223DBE100236FE4 /* VJXQtVideoLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VJXQtVideoLayer.h; path = entities/layers/VJXQtVideoLayer.h; sourceTree = "<group>"; };
 		82456BC31223DC8300236FE4 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -450,8 +450,8 @@
 		AAF17A91123E4DFA001319BA /* Entities */ = {
 			isa = PBXGroup;
 			children = (
-				82456BA31223CFA200236FE4 /* VJXLayer.h */,
-				82456BA41223CFA200236FE4 /* VJXLayer.m */,
+				82456BA31223CFA200236FE4 /* VJXVideoEntity.h */,
+				82456BA41223CFA200236FE4 /* VJXVideoEntity.m */,
 				AA0F49CE123052EE005A1C95 /* VJXVideoOutput.h */,
 				AA0F49CF123052EE005A1C95 /* VJXVideoOutput.m */,
 				AA2710691240166500E5B946 /* VJXAudioOutput.h */,
@@ -555,7 +555,7 @@
 			files = (
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				256AC3DA0F4B6AC300CF3369 /* VeeJayAppDelegate.m in Sources */,
-				82456BA51223CFA200236FE4 /* VJXLayer.m in Sources */,
+				82456BA51223CFA200236FE4 /* VJXVideoEntity.m in Sources */,
 				82456BBA1223DBE100236FE4 /* VJXQtVideoLayer.m in Sources */,
 				82456FE912256A4A00236FE4 /* VJXImageLayer.m in Sources */,
 				824576451227DF5800236FE4 /* VJXPinLayer.m in Sources */,

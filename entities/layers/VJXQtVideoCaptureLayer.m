@@ -182,7 +182,7 @@ error:
 @end
 
 
-@implementation VJXQtVideoCaptureLayer : VJXLayer
+@implementation VJXQtVideoCaptureLayer : VJXVideoEntity
 
 - (void)captureOutput:(QTCaptureOutput *)captureOutput 
   didOutputVideoFrame:(CVImageBufferRef)videoFrame 

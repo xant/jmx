@@ -22,10 +22,10 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "VJXLayer.h"
+#import "VJXVideoEntity.h"
 #import "VJXFileRead.h"
 
-@interface VJXImageLayer : VJXLayer < VJXFileRead > {
+@interface VJXImageLayer : VJXVideoEntity < VJXFileRead > {
 @private
     CIImage *image;
     NSString *imagePath;

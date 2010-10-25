@@ -22,14 +22,14 @@
 //
 
 #import <QTKit/QTKit.h>
-#import "VJXLayer.h"
+#import "VJXVideoEntity.h"
 #import <Cocoa/Cocoa.h>
 
 #ifndef __VJXQTVIDEOCAPTURELAYER_H__
 #define __VJXQTVIDEOCAPTURELAYER_H__
 @class VJXQtVideoGrabber;
 
-@interface VJXQtVideoCaptureLayer : VJXLayer
+@interface VJXQtVideoCaptureLayer : VJXVideoEntity
 {
 @private
 	VJXQtVideoGrabber *grabber;

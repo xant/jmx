@@ -22,7 +22,7 @@
 //
 
 #import "VJXVideoMixer.h"
-#import "VJXLayer.h"
+#import "VJXVideoEntity.h"
 #import <QuartzCore/QuartzCore.h>
 
 @implementation VJXVideoMixer

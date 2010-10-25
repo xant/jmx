@@ -1,5 +1,5 @@
 //
-//  VJXLayer.h
+//  VJXVideoEntity.h
 //  VeeJay
 //
 //  Created by Igor Sutton on 8/24/10.
@@ -24,7 +24,7 @@
 #import <Cocoa/Cocoa.h>
 #import "VJXThreadedEntity.h"
 
-@interface VJXLayer : VJXThreadedEntity {
+@interface VJXVideoEntity : VJXThreadedEntity {
 @protected
     NSNumber *saturation;
     NSNumber *brightness;

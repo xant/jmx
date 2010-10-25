@@ -1,5 +1,5 @@
 //
-//  VJXLayer.m
+//  VJXVideoEntity.m
 //  VeeJay
 //
 //  Created by Igor Sutton on 8/24/10.
@@ -21,10 +21,10 @@
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#import "VJXLayer.h"
+#import "VJXVideoEntity.h"
 #import <QuartzCore/QuartzCore.h>
 
-@implementation VJXLayer
+@implementation VJXVideoEntity
 
 @synthesize alpha, saturation, brightness, contrast, rotation,
             origin, size, scaleRatio, fps;
@@ -35,27 +35,76 @@
     if (self) {
         currentFrame = nil;
         name = @"";
+        NSSize defaultLayerSize = { 640, 480 };
+        self.size = [VJXSize sizeWithNSSize:defaultLayerSize];
         self.saturation = [NSNumber numberWithFloat:1.0];
         self.brightness = [NSNumber numberWithFloat:0.0];
         self.contrast = [NSNumber numberWithFloat:1.0];
-        [self registerInputPin:@"name" withType:kVJXStringPin andSelector:@"setName:"];
-        [self registerInputPin:@"alpha" withType:kVJXNumberPin andSelector:@"setAlpha:"];
-        [self registerInputPin:@"saturation" withType:kVJXNumberPin andSelector:@"setSaturation:"];
-        [self registerInputPin:@"brightness" withType:kVJXNumberPin andSelector:@"setBrightness:"];
-        [self registerInputPin:@"contrast" withType:kVJXNumberPin andSelector:@"setContrast:"];
-        [self registerInputPin:@"rotation" withType:kVJXNumberPin andSelector:@"setRotation:"];
-        [self registerInputPin:@"scaleRatio" withType:kVJXNumberPin andSelector:@"setScaleRatio:"];
-        [self registerInputPin:@"origin" withType:kVJXPointPin andSelector:@"setOrigin:"];
-        [self registerInputPin:@"frameSize" withType:kVJXSizePin andSelector:@"setSize:"];
+        self.alpha = [NSNumber numberWithFloat:1.0];
+        self.rotation = [NSNumber numberWithFloat:1.0];
+        self.scaleRatio = [NSNumber numberWithFloat:1.0];
+        NSPoint zeroPoint = { 0, 0 };
+        self.origin = [VJXPoint pointWithNSPoint:zeroPoint];
+        [self registerInputPin:@"name" withType:kVJXStringPin andSelector:@"setName:" ];
+        VJXInputPin *inputPin;
+        inputPin = [self registerInputPin:@"alpha"
+                                 withType:kVJXNumberPin
+                              andSelector:@"setAlpha:"
+                            allowedValues:nil
+                            initialValue:self.alpha];
+        [inputPin addMinLimit:[NSNumber numberWithFloat:0.0]];
+        [inputPin addMaxLimit:[NSNumber numberWithFloat:2.0]];
+        inputPin = [self registerInputPin:@"saturation"
+                                  withType:kVJXNumberPin
+                               andSelector:@"setSaturation:"
+                             allowedValues:nil
+                             initialValue:self.saturation];
+        [inputPin addMinLimit:[NSNumber numberWithFloat:0.0]];
+        [inputPin addMaxLimit:[NSNumber numberWithFloat:2.0]];
+        inputPin = [self registerInputPin:@"brightness"
+                                 withType:kVJXNumberPin
+                              andSelector:@"setBrightness:"
+                            allowedValues:nil
+                            initialValue:self.brightness];
+        [inputPin addMinLimit:[NSNumber numberWithFloat:-1.0]];
+        [inputPin addMaxLimit:[NSNumber numberWithFloat:1.0]];
+        inputPin = [self registerInputPin:@"contrast" 
+                                 withType:kVJXNumberPin
+                              andSelector:@"setContrast:"
+                            allowedValues:nil
+                             initialValue:self.contrast];
+        [inputPin addMinLimit:[NSNumber numberWithFloat:0.25]];
+        [inputPin addMaxLimit:[NSNumber numberWithFloat:4.0]];
+        inputPin = [self registerInputPin:@"rotation"
+                                 withType:kVJXNumberPin
+                              andSelector:@"setRotation:"
+                            allowedValues:nil
+                             initialValue:self.rotation];
+        [inputPin addMinLimit:[NSNumber numberWithFloat:0.0]];
+        [inputPin addMaxLimit:[NSNumber numberWithFloat:360.0]];
+        inputPin = [self registerInputPin:@"scaleRatio"
+                                 withType:kVJXNumberPin
+                              andSelector:@"setScaleRatio:"
+                            allowedValues:nil
+                             initialValue:[NSNumber numberWithFloat:1.0]];
+        [inputPin addMinLimit:[NSNumber numberWithFloat:0.0]];
+        [inputPin addMaxLimit:[NSNumber numberWithFloat:100.0]];
+        [self registerInputPin:@"origin"
+                      withType:kVJXPointPin
+                   andSelector:@"setOrigin:"
+                 allowedValues:nil
+                  initialValue:self.origin];
+        [self registerInputPin:@"frameSize"
+                      withType:kVJXSizePin
+                   andSelector:@"setSize:"
+                 allowedValues:nil
+                  initialValue:self.size];
 
         // we output at least 1 image
         outputFramePin = [self registerOutputPin:@"frame" withType:kVJXImagePin];
         outputFrameSizePin = [self registerOutputPin:@"frameSize" withType:kVJXSizePin];
         [outputFrameSizePin setContinuous:NO];
         [outputFrameSizePin allowMultipleConnections:YES];
-        // XXX - DEFAULTS
-        NSSize defaultLayerSize = { 640, 480 };
-        self.size = [VJXSize sizeWithNSSize:defaultLayerSize];
     }
     return self;
 }

@@ -24,12 +24,12 @@
 #import <Cocoa/Cocoa.h>
 #import "VJXConnectorLayer.h"
 #import "VJXPin.h"
-#import "VJXEntityInspector.h"
 #import "VJXOutletLayer.h"
 #import "VJXGUIConstants.h"
 
 @class VJXConnectorLayer;
 @class VJXOutletLayer;
+@class VJXEntityInspector;
 
 @interface VJXPinLayer : CALayer
 {

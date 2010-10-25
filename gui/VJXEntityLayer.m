@@ -25,7 +25,6 @@
 #import "VJXPinLayer.h"
 #import "VJXOutletLayer.h"
 #import "VJXEntityLabelLayer.h"
-#import "VJXEntityInspector.h"
 
 @implementation VJXEntityLayer
 
@@ -89,7 +88,7 @@
         [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityInputPinRemoved" object:entity];
         [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityOutputPinAdded" object:entity];
         [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VJXEntityOutputPinRemoved" object:entity];
-    
+
         [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXBoardEntityWasRemoved" object:entity];
         [entity release];
     }

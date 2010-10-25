@@ -25,6 +25,7 @@
 #import "VJXGUIConstants.h"
 
 @class VJXPinLayer;
+@class VJXEntityLayer;
 
 @interface VJXOutletLayer : CALayer
 {

@@ -116,6 +116,8 @@
 {
     if (currentFrame)
         [currentFrame release];
+    if (colorFilter)
+        [colorFilter release];
     self.size = nil;
     [super dealloc];
 }

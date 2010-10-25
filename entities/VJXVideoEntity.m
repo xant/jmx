@@ -35,11 +35,14 @@
     if (self) {
         currentFrame = nil;
         name = @"";
+        colorFilter = [[CIFilter filterWithName:@"CIColorControls"] retain];
+        [colorFilter setDefaults];
+        NSDictionary *filterAttributes = [colorFilter attributes];
         NSSize defaultLayerSize = { 640, 480 };
         self.size = [VJXSize sizeWithNSSize:defaultLayerSize];
-        self.saturation = [NSNumber numberWithFloat:1.0];
-        self.brightness = [NSNumber numberWithFloat:0.0];
-        self.contrast = [NSNumber numberWithFloat:1.0];
+        self.saturation = [colorFilter valueForKey:@"inputSaturation"];
+        self.brightness = [colorFilter valueForKey:@"inputBrightness"];
+        self.contrast = [colorFilter valueForKey:@"inputContrast"];
         self.alpha = [NSNumber numberWithFloat:1.0];
         self.rotation = [NSNumber numberWithFloat:1.0];
         self.scaleRatio = [NSNumber numberWithFloat:1.0];
@@ -59,22 +62,22 @@
                                andSelector:@"setSaturation:"
                              allowedValues:nil
                              initialValue:self.saturation];
-        [inputPin addMinLimit:[NSNumber numberWithFloat:0.0]];
-        [inputPin addMaxLimit:[NSNumber numberWithFloat:2.0]];
+        [inputPin addMinLimit:[[filterAttributes objectForKey:@"inputSaturation"] objectForKey:@"CIAttributeSliderMin"]];
+        [inputPin addMaxLimit:[[filterAttributes objectForKey:@"inputSaturation"] objectForKey:@"CIAttributeSliderMax"]];
         inputPin = [self registerInputPin:@"brightness"
                                  withType:kVJXNumberPin
                               andSelector:@"setBrightness:"
                             allowedValues:nil
                             initialValue:self.brightness];
-        [inputPin addMinLimit:[NSNumber numberWithFloat:-1.0]];
-        [inputPin addMaxLimit:[NSNumber numberWithFloat:1.0]];
+        [inputPin addMinLimit:[[filterAttributes objectForKey:@"inputBrightness"] objectForKey:@"CIAttributeSliderMin"]];
+        [inputPin addMaxLimit:[[filterAttributes objectForKey:@"inputBrightness"] objectForKey:@"CIAttributeSliderMax"]];
         inputPin = [self registerInputPin:@"contrast" 
                                  withType:kVJXNumberPin
                               andSelector:@"setContrast:"
                             allowedValues:nil
                              initialValue:self.contrast];
-        [inputPin addMinLimit:[NSNumber numberWithFloat:0.25]];
-        [inputPin addMaxLimit:[NSNumber numberWithFloat:4.0]];
+        [inputPin addMinLimit:[[filterAttributes objectForKey:@"inputContrast"] objectForKey:@"CIAttributeSliderMin"]];
+        [inputPin addMaxLimit:[[filterAttributes objectForKey:@"inputContrast"] objectForKey:@"CIAttributeSliderMax"]];
         inputPin = [self registerInputPin:@"rotation"
                                  withType:kVJXNumberPin
                               andSelector:@"setRotation:"
@@ -122,8 +125,7 @@
     @synchronized(self) {
         if (currentFrame) {
             // Apply image parameters
-            CIFilter *colorFilter = [CIFilter filterWithName:@"CIColorControls"];
-            [colorFilter setDefaults];
+
             // ensure using accessors (by calling self.property) since they will take care of locking
             [colorFilter setValue:self.saturation forKey:@"inputSaturation"];
             [colorFilter setValue:self.brightness forKey:@"inputBrightness"];

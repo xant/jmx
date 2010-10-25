@@ -41,7 +41,7 @@
     VJXOutputPin *outputFrameSizePin;
 
 @private
-
+    CIFilter *colorFilter;
 }
 
 

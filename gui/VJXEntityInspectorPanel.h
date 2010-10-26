@@ -7,6 +7,8 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "VJXEntityOutlineView.h"
+
 
 @class VJXEntityLayer;
 
@@ -16,7 +18,7 @@
     IBOutlet NSTableView *inputPins;
     IBOutlet NSTableView *outputPins;
     IBOutlet NSTableView *producers;
-	IBOutlet NSOutlineView *pinsProperties;
+	IBOutlet VJXEntityOutlineView *pinsProperties;
 @private
     VJXEntityLayer *entityLayer; // weak reference
 }

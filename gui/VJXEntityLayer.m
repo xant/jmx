@@ -50,6 +50,7 @@
         self.board = aBoard;
         self.entity = anEntity;
         self.selected = NO;
+        [self setupLayer];
 
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(inputPinAdded:)
@@ -67,8 +68,6 @@
                                                  selector:@selector(outputPinRemoved:)
                                                      name:@"VJXEntityOutputPinRemoved"
                                                    object:self.entity];
-
-        [self setupLayer];
     }
     return self;
 }
@@ -95,6 +94,16 @@
     [super dealloc];
 }
 
+VJXEntityLabelLayer *VJXEntityLabelLayerCreate(NSString *name) {
+    VJXEntityLabelLayer *labelLayer = [[VJXEntityLabelLayer alloc] init];
+    labelLayer.string = name;
+    labelLayer.borderWidth = 0.0f;
+    labelLayer.backgroundColor = NULL;
+    labelLayer.fontSize = ENTITY_LABEL_FONT_SIZE;
+    labelLayer.frame = VJXEntityLabelFrameCreate();
+    return [labelLayer autorelease];
+}
+
 - (void)setupLayer
 {
     CGColorRef backgroundColor = CGColorCreateGenericRGB(0.0f, 0.0f, 0.0f, 0.5f);
@@ -109,42 +118,30 @@
     CFRelease(backgroundColor);
     CFRelease(shadowColor);
 
-    VJXEntityLabelLayer *labelLayer = [[VJXEntityLabelLayer alloc] init];
-    labelLayer.string = self.entity.name;
-    labelLayer.borderWidth = 0.0f;
-    labelLayer.backgroundColor = NULL;
-    labelLayer.fontSize = ENTITY_LABEL_FONT_SIZE;
-    labelLayer.frame = CGRectMake(ENTITY_FRAME_WIDTH_PADDING, ENTITY_FRAME_HEIGHT_PADDING, ENTITY_LABEL_WIDTH, ENTITY_LABEL_HEIGHT);
-    [self addSublayer:labelLayer];
-    [labelLayer release];
+    [self addSublayer:VJXEntityLabelLayerCreate(self.entity.name)];
 
     for (NSString *thePinName in [self.entity inputPins]) {
-        VJXOutletLayer *outlet = [[VJXOutletLayer alloc] initWithPin:[self inputPinWithName:thePinName] andPoint:NSZeroPoint isOutput:NO entity:self];
+        VJXOutletLayer *outlet = [[[VJXOutletLayer alloc] initWithPin:[self inputPinWithName:thePinName] andPoint:NSZeroPoint isOutput:NO entity:self] autorelease];
         [self addSublayer:outlet];
         [self.inlets addObject:outlet];
-        [outlet release];
     }
 
     for (NSString *thePinName in [self.entity outputPins]) {
-        VJXOutletLayer *outlet = [[VJXOutletLayer alloc] initWithPin:[self outputPinWithName:thePinName] andPoint:NSZeroPoint isOutput:YES entity:self];
+        VJXOutletLayer *outlet = [[[VJXOutletLayer alloc] initWithPin:[self outputPinWithName:thePinName] andPoint:NSZeroPoint isOutput:YES entity:self] autorelease];
         [self addSublayer:outlet];
         [self.outlets addObject:outlet];
-        [outlet release];
     }
 
     [self recalculateFrame];
     [self reorderOutlets];
-    [self setNeedsDisplay];
 }
 
 - (void)recalculateFrame
 {
     NSUInteger maxOutlets = MAX([self.inlets count], [self.outlets count]);
-    CGFloat expectedFrameHeight = ((maxOutlets - 1) * ENTITY_OUTLET_MIN_SPACING) + (maxOutlets * ENTITY_OUTLET_HEIGHT) + ENTITY_LABEL_HEIGHT;
     CGRect f = self.frame;
-    f.size = CGSizeMake(ENTITY_FRAME_WIDTH + (2 * ENTITY_FRAME_WIDTH_PADDING), expectedFrameHeight + (2 * ENTITY_FRAME_HEIGHT_PADDING));
+    f.size = VJXEntityFrameSize(maxOutlets);
     self.frame = f;
-    [self setNeedsDisplay];
 }
 
 - (VJXPin *)outputPinWithName:(NSString *)aPinName
@@ -167,45 +164,30 @@
 {
     int y = aPoint.y;
     for (VJXOutletLayer *outlet in pinLayers) {
-        CGPoint origin = CGPointMake(aPoint.x, y);
-        y += ENTITY_OUTLET_MIN_SPACING + ENTITY_OUTLET_HEIGHT;
         CGRect aRect = outlet.frame;
-        aRect.origin = origin;
+        aRect.origin = CGPointMake(aPoint.x, y);
         outlet.frame = aRect;
+        y += ENTITY_OUTLET_OFFSET;
     }
 }
 
 - (void)inputPinAdded:(NSNotification *)notification
 {
-    NSDictionary *userInfo = [notification userInfo];
-    NSString *pinName = [userInfo objectForKey:@"pinName"];
-    VJXPin *aPin = [self inputPinWithName:pinName];
-    VJXOutletLayer *outlet = [[VJXOutletLayer alloc] initWithPin:aPin andPoint:CGPointZero isOutput:NO entity:self];
+    VJXOutletLayer *outlet = VJXInputOutletLayerCreate([self inputPinWithName:[[notification userInfo] objectForKey:@"pinName"]]);
     [self addSublayer:outlet];
     [self.inlets addObject:outlet];
-    [outlet release];
-
     [self recalculateFrame];
     [self reorderOutlets];
 }
 
 - (void)inputPinRemoved:(NSNotification *)notification
 {
-    NSDictionary *userInfo = [notification userInfo];
-    NSString *pinName = [userInfo objectForKey:@"pinName"];
-    VJXOutletLayer *toRemove = nil;
-
-    for (VJXOutletLayer *outlet in self.inlets) {
-        if (outlet.pin.pin.name == pinName) {
-            toRemove = outlet;
-            break;
-        }
-    }
-
-    if (toRemove) {
-        [self.inlets removeObject:toRemove];
-        [toRemove removeFromSuperlayer];
-    }
+    NSString __block *pinName = [[notification userInfo] objectForKey:@"pinName"];
+    NSUInteger index = [self.inlets indexOfObjectPassingTest:^(id obj, NSUInteger index, BOOL *stop) {
+        return [((VJXOutletLayer *)obj).pin.pin.name isEqualToString:pinName];
+    }];
+    [[self.inlets objectAtIndex:index] removeFromSuperlayer];
+    [self.inlets removeObjectAtIndex:index];
 }
 
 - (void)outputPinAdded:(NSNotification *)notification
@@ -255,17 +237,10 @@
     return [self.entity description];
 }
 
-- (BOOL)control:(NSControl *)control textShouldEndEditing:(NSText *)fieldEditor
-{
-    entity.name = [fieldEditor string];
-    return YES;
-}
-
 - (id)copyWithZone:(NSZone *)aZone
 {
     return [self retain];
 }
-
 
 id controlForVJXPinType(VJXPinType aType)
 {
@@ -282,19 +257,6 @@ id controlForVJXPinType(VJXPinType aType)
 		NSLog(@"name: %@, type: %@", anInputPin.name, controlForVJXPinType(anInputPin.type));
 	}
 
-}
-
-- (void)setStringSelectionPin:(NSOutlineView *)outlineView
-{
-    NSPopUpButtonCell *item = [outlineView selectedCell];
-    NSInteger row = [outlineView selectedRow];
-    NSString *pinName = [outlineView itemAtRow:row];
-    VJXInputPin *aPin = [self.entity inputPinWithName:pinName];
-    if (aPin) {
-        VJXOutputPin *vPin = [VJXPin pinWithName:@"setter" andType:kVJXStringPin forDirection:kVJXOutputPin ownedBy:nil withSignal:nil];
-        [vPin connectToPin:aPin];
-        [vPin deliverData:[item titleOfSelectedItem]];
-    }
 }
 
 - (void)updateConnectors

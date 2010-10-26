@@ -232,6 +232,6 @@
             [outputPin deliverData:object];
         }
     }
-//    [self reloadData];
+    [self reloadItem:item];
 }
 @end

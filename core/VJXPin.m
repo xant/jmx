@@ -232,8 +232,9 @@
                 return NO;
             break;
         case kVJXNumberPin:
-            if (![data isKindOfClass:[NSNumber class]])
-                return NO;
+            if ([[data className] isEqualToString:@"NSCFNumber"] || [data isKindOfClass:[NSNumber class]])
+                return YES;
+            return NO;
             break;
         case kVJXImagePin:
             if (![data isKindOfClass:[CIImage class]])
@@ -361,14 +362,13 @@
 
 - (void)addMinLimit:(id)value
 {
-    if ([self isCorrectDataType:minValue])
+    if ([self isCorrectDataType:value])
         minValue = [value retain];
-
 }
 
 - (void)addMaxLimit:(id)value
 {
-    if ([self isCorrectDataType:maxValue])
+    if ([self isCorrectDataType:value])
         maxValue = [value retain];
 }
 

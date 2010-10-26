@@ -170,14 +170,26 @@
         }
 	}
 	else if (aPin.type == kVJXNumberPin) {
-        cell = [[[NSTextFieldCell alloc] init] autorelease];
-        NSNumberFormatter *nf = [[NSNumberFormatter alloc] init];
-        [nf setMaximumFractionDigits:2];
-        [nf setMinimumFractionDigits:2];
-        [nf setMinimumIntegerDigits:1];
-        [cell setFormatter:nf];
-        [nf release];
-        [cell setEditable:YES];
+        VJXInputPin *anInputPin = [[[aPin receivers] allKeys] lastObject];
+        if ([anInputPin.name isEqualToString:@"brightness"])
+            NSLog(@"anInputPin: %@, min: %@, max: %@", anInputPin, anInputPin.minValue, anInputPin.maxValue);
+        if (anInputPin.minValue && anInputPin.maxValue) {
+            NSSliderCell *sliderCell = [[[NSSliderCell alloc] init] autorelease];
+            [sliderCell setMinValue:[anInputPin.minValue doubleValue]];
+            [sliderCell setMaxValue:[anInputPin.maxValue doubleValue]];
+            [sliderCell setControlSize:NSSmallControlSize];
+            cell = sliderCell;
+        }
+        else {
+            cell = [[[NSTextFieldCell alloc] init] autorelease];
+            NSNumberFormatter *nf = [[NSNumberFormatter alloc] init];
+            [nf setMaximumFractionDigits:2];
+            [nf setMinimumFractionDigits:2];
+            [nf setMinimumIntegerDigits:1];
+            [cell setFormatter:nf];
+            [nf release];
+            [cell setEditable:YES];
+        }
 	}
 	else {
         cell = [[[NSButtonCell alloc] init] autorelease];

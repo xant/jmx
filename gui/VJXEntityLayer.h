@@ -62,8 +62,6 @@
 - (void)unselect;
 - (void)toggleSelected;
 - (void)controlPin;
-- (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item;
-- (NSCell *)outlineView:(NSOutlineView *)outlineView dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item;
 - (void)setupPinsLayers:(NSArray *)pins startAtPoint:(CGPoint)aPoint output:(BOOL)isOutput;
 - (void)setupLayer;
 - (void)updateConnectors;

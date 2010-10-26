@@ -45,6 +45,8 @@
 #define DESTINATION_OFFSET 20.0
 
 #define VJXInputOutletLayerCreate(x) [[[VJXOutletLayer alloc] initWithPin:(x) andPoint:NSZeroPoint isOutput:NO entity:self] autorelease]
-#define VJXEntityLabelFrameCreate() CGRectMake(ENTITY_FRAME_WIDTH_PADDING, ENTITY_FRAME_HEIGHT_PADDING, ENTITY_LABEL_WIDTH, ENTITY_LABEL_HEIGHT)
 #define VJXEntityFrameHeight(x) (((x) - 1) * ENTITY_OUTLET_MIN_SPACING) + ((x) * ENTITY_OUTLET_HEIGHT) + ENTITY_LABEL_HEIGHT
 #define VJXEntityFrameSize(x)   CGSizeMake(ENTITY_FRAME_WIDTH + (2 * ENTITY_FRAME_WIDTH_PADDING), VJXEntityFrameHeight(x) + (2 * ENTITY_FRAME_HEIGHT_PADDING))
+#define VJXOutletLayerFrameCreate(p) CGRectMake((p).x, (p).y, ENTITY_OUTLET_WIDTH, ENTITY_OUTLET_HEIGHT)
+#define VJXEntityLabelFrameCreate() CGRectMake(ENTITY_FRAME_WIDTH_PADDING, ENTITY_FRAME_HEIGHT_PADDING, ENTITY_LABEL_WIDTH, ENTITY_LABEL_HEIGHT)
+

@@ -29,19 +29,17 @@
 
 - (id)initWithPin:(VJXPin *)thePin andPoint:(NSPoint)thePoint isOutput:(BOOL)isOutput entity:(VJXEntityLayer *)anEntity;
 {
-    self = [super init];
-    if (self) {
-
+    if ((self = [super init]) != nil) {
         CGColorRef backgroundColor_ = CGColorCreateGenericRGB(0.0f, 0.0f, 0.0f, 0.0f);
         self.backgroundColor = NULL;
         self.borderWidth = 0.0f;
         self.borderColor = backgroundColor_;
         CFRelease(backgroundColor_);
 
-        self.frame = CGRectMake(thePoint.x, thePoint.y, ENTITY_OUTLET_WIDTH, ENTITY_OUTLET_HEIGHT);
+        self.frame = VJXOutletLayerFrameCreate(thePoint);
         self.entity = anEntity;
 
-        VJXOutletLabelLayer *labelLayer = [[VJXOutletLabelLayer alloc] init];
+        VJXOutletLabelLayer *labelLayer = [[[VJXOutletLabelLayer alloc] init] autorelease];
         labelLayer.string = thePin.name;
         labelLayer.borderWidth = 0.0f;
         labelLayer.backgroundColor = NULL;
@@ -51,7 +49,7 @@
 
         if (isOutput) {
             thePinPoint = CGPointMake(self.frame.size.width - ENTITY_OUTLET_LABEL_PADDING_FOR_OUTPUT, 0.0f);
-            labelLayer.frame = CGRectMake(0.0f, (ENTITY_OUTLET_HEIGHT - ENTITY_OUTLET_FONT_SIZE) / 2, 
+            labelLayer.frame = CGRectMake(0.0f, (ENTITY_OUTLET_HEIGHT - ENTITY_OUTLET_FONT_SIZE) / 2,
                                                  ENTITY_OUTLET_LABEL_WIDTH, self.frame.size.height);
             labelLayer.alignmentMode = kCAAlignmentRight;
         }
@@ -62,14 +60,11 @@
         }
 
         [self addSublayer:labelLayer];
-        [labelLayer release];
 
         self.pin = [[[VJXPinLayer alloc] initWithPin:thePin andPoint:thePinPoint outlet:self] autorelease];
-        self.output = isOutput;
-
         [self addSublayer:pin];
 
-        [self setNeedsDisplay];
+        self.output = isOutput;
     }
     return self;
 }

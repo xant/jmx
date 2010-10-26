@@ -171,8 +171,6 @@
 	}
 	else if (aPin.type == kVJXNumberPin) {
         VJXInputPin *anInputPin = [[[aPin receivers] allKeys] lastObject];
-        if ([anInputPin.name isEqualToString:@"brightness"])
-            NSLog(@"anInputPin: %@, min: %@, max: %@", anInputPin, anInputPin.minValue, anInputPin.maxValue);
         if (anInputPin.minValue && anInputPin.maxValue) {
             NSSliderCell *sliderCell = [[[NSSliderCell alloc] init] autorelease];
             [sliderCell setMinValue:[anInputPin.minValue doubleValue]];

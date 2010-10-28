@@ -9,6 +9,8 @@
 #import <Cocoa/Cocoa.h>
 #import "VJXThreadedEntity.h"
 
+#define kVJXAudioMixerSamplesBufferCount 512
+
 @class VJXPin;
 @class VJXAudioBuffer;
 @class VJXAudioDevice;
@@ -21,10 +23,11 @@
 @private
     //VJXAudioBuffer *currentSample;
     uint64_t lastSampleTime;
-    NSMutableArray *samples;
+    VJXAudioBuffer *samples[kVJXAudioMixerSamplesBufferCount];
+    UInt32 rOffset;
+    UInt32 wOffset;
     VJXAudioDevice *device;
     VJXAudioFormat *format;
-
     BOOL prefill; // defaults to YES
     BOOL useAggregateDevice; // defaults to YES
 }

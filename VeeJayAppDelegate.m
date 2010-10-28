@@ -35,6 +35,7 @@
 #import "VJXAudioScheduler.h"
 #import "VJXAudioSpectrumAnalyzer.h"
 #import "VJXVideoFilter.h"
+#import "VJXTextLayer.h"
 
 @implementation VeeJayAppDelegate
 
@@ -54,7 +55,7 @@
     [sharedContext registerClass:[VJXAudioScheduler class]];
     [sharedContext registerClass:[VJXAudioSpectrumAnalyzer class]];
     [sharedContext registerClass:[VJXVideoFilter class]];
-	
+	[sharedContext registerClass:[VJXTextLayer class]];
 	NSLog(@"Registered %i entities", [[sharedContext registeredClasses] count]);
 }
 

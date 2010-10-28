@@ -70,6 +70,8 @@
 		AA052A6B1261D40E008C9F46 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA052A6A1261D40E008C9F46 /* QuickTime.framework */; };
 		AA2BE3F312353BA6006087E7 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE3F212353BA6006087E7 /* CoreAudio.framework */; };
 		AA2BE40B12353D5C006087E7 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE40A12353D5C006087E7 /* Accelerate.framework */; };
+		AA3557441277468800EAA2E4 /* VJXTextRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3557001277347300EAA2E4 /* VJXTextRenderer.m */; };
+		AA3557451277468800EAA2E4 /* VJXTextLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3556F51277340200EAA2E4 /* VJXTextLayer.m */; };
 		AADEBFC812414F7E00A6A06D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */; };
 /* End PBXBuildFile section */
 
@@ -199,6 +201,10 @@
 		AA052A6A1261D40E008C9F46 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = System/Library/Frameworks/QuickTime.framework; sourceTree = SDKROOT; };
 		AA2BE3F212353BA6006087E7 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		AA2BE40A12353D5C006087E7 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		AA3556F41277340200EAA2E4 /* VJXTextLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXTextLayer.h; sourceTree = "<group>"; };
+		AA3556F51277340200EAA2E4 /* VJXTextLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXTextLayer.m; sourceTree = "<group>"; };
+		AA3556FF1277347300EAA2E4 /* VJXTextRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXTextRenderer.h; sourceTree = "<group>"; };
+		AA3557001277347300EAA2E4 /* VJXTextRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXTextRenderer.m; sourceTree = "<group>"; };
 		AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -379,6 +385,8 @@
 				825C30F31275ADB6006376B8 /* VJXQtVideoCaptureLayer.m */,
 				825C30F41275ADB6006376B8 /* VJXQtVideoLayer.h */,
 				825C30F51275ADB6006376B8 /* VJXQtVideoLayer.m */,
+				AA3556F41277340200EAA2E4 /* VJXTextLayer.h */,
+				AA3556F51277340200EAA2E4 /* VJXTextLayer.m */,
 			);
 			path = layers;
 			sourceTree = "<group>";
@@ -451,6 +459,8 @@
 				825C31431275ADD7006376B8 /* VJXSpectrumAnalyzer.m */,
 				825C31441275ADD7006376B8 /* VJXThreadedEntity.h */,
 				825C31451275ADD7006376B8 /* VJXThreadedEntity.m */,
+				AA3556FF1277347300EAA2E4 /* VJXTextRenderer.h */,
+				AA3557001277347300EAA2E4 /* VJXTextRenderer.m */,
 			);
 			name = Core;
 			path = core;
@@ -516,7 +526,6 @@
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "VeeJay" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -604,6 +613,8 @@
 				825C319D1275AFB6006376B8 /* VJXLibraryTableView.m in Sources */,
 				825C319E1275AFB6006376B8 /* VJXLibraryTableViewDelegate.m in Sources */,
 				825C32131275BEE3006376B8 /* VJXEntityOutlineView.m in Sources */,
+				AA3557441277468800EAA2E4 /* VJXTextRenderer.m in Sources */,
+				AA3557451277468800EAA2E4 /* VJXTextLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -694,6 +705,7 @@
 				GCC_ENABLE_SSE41_EXTENSIONS = YES;
 				GCC_ENABLE_SSE42_EXTENSIONS = YES;
 				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_UNROLL_LOOPS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;

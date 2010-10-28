@@ -92,7 +92,7 @@
     // deliver the signal to the just connected receiver
     if (rv == YES) {
         VJXPinSignal *signal = nil;
-        signal = [VJXPinSignal signalFromSender:currentSender receiver:pinReceiver data:dataBuffer[rOffset%kVJXPinDataBufferCount]];
+        signal = [VJXPinSignal signalFromSender:currentSender receiver:pinReceiver data:dataBuffer[rOffset&0x1]];
         if (signal) // send the signal on-connect
             [self sendData:signal.data toReceiver:signal.receiver withSelector:pinSignal fromSender:currentSender];
     }

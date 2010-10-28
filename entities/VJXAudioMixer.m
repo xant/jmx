@@ -24,19 +24,21 @@
         [audioInputPin allowMultipleConnections:YES];
         audioOutputPin = [self registerOutputPin:@"audio" withType:kVJXAudioPin];
         [audioOutputPin allowMultipleConnections:YES];
-        self.frequency = [NSNumber numberWithDouble:(44100/512)+1];
-        samples = [[NSMutableArray alloc] init];
+        self.frequency = [NSNumber numberWithDouble:(44100/512)];
         useAggregateDevice = NO;
         prefill = YES;
         format = nil;
+        rOffset = wOffset = 0;
     }
     return self;
 }
 
 - (void)dealloc
 {
+    /*
     if (samples)
         [samples release];
+     */
     if (device)
         [device release];
     [super dealloc];
@@ -45,20 +47,17 @@
 - (void)tick:(uint64_t)timeStamp
 {
     
-    if ([samples count] && !prefill) {
-        VJXAudioBuffer *outSample = [samples objectAtIndex:0];
-        [audioOutputPin deliverData:outSample fromSender:self];
-        @synchronized(samples) {
-            [samples removeObjectAtIndex:0];
-        }
+    if (rOffset < wOffset && !prefill) {
+        VJXAudioBuffer *outSample = samples[rOffset++%kVJXAudioMixerSamplesBufferCount];
+        [audioOutputPin deliverData:[outSample autorelease] fromSender:self];
     }
     NSArray *newSamples = [audioInputPin readProducers];
     VJXAudioBuffer *currentSample = nil;
     for (VJXAudioBuffer *sample in newSamples) {
-        if (!currentSample) {
+        if (!currentSample) { // make a copy
             AudioStreamBasicDescription sampleFormat = sample.format.audioStreamBasicDescription;
             currentSample = [VJXAudioBuffer audioBufferWithCoreAudioBufferList:sample.bufferList andFormat:&sampleFormat];
-        } else {
+        } else { // blend samples
             unsigned x, numSamples;
             Float32 * srcBuffer, *dstBuffer;
             
@@ -71,15 +70,11 @@
             }
         }
     }
-    if (currentSample) {
-        @synchronized(samples) {
-            [samples addObject:currentSample];
-        }
-    }
-    if ([samples count] > 10)
+    if (currentSample)
+        samples[wOffset++%kVJXAudioMixerSamplesBufferCount] = [currentSample retain];
+
+    if ((wOffset - rOffset)%kVJXAudioMixerSamplesBufferCount > 10)
         prefill = NO;
-    else if ([samples count] == 0)
-        prefill = YES;
     [super outputDefaultSignals:timeStamp];
 }
 
@@ -92,25 +87,23 @@
                     clientData:(VJXAudioMixer *)clientData
 
 {
-    if ([samples count]) {
+    if ((wOffset - rOffset)%kVJXAudioMixerSamplesBufferCount > 0) {
         VJXAudioBuffer *sample = nil;
-        @synchronized(samples) {
-            sample = [[samples objectAtIndex:0] retain];
-            if (sample) {
-                int i;
-                for (i = 0; i < inInputData->mNumberBuffers; i++) {
-                    SInt32 bytesToCopy = MIN(inInputData->mBuffers[i].mDataByteSize, sample.bufferList->mBuffers[i].mDataByteSize);
-                    if (inInputData->mBuffers[i].mData && sample.bufferList->mNumberBuffers > i) {
-                        memcpy(inInputData->mBuffers[i].mData,
-                               sample.bufferList->mBuffers[i].mData,
-                               bytesToCopy);
-                        inInputData->mBuffers[i].mDataByteSize = bytesToCopy;
-                        inInputData->mBuffers[i].mNumberChannels = sample.bufferList->mBuffers[i].mNumberChannels;
-                    }
+        sample = samples[rOffset++%kVJXAudioMixerSamplesBufferCount];
+        if (sample) {
+            int i;
+            for (i = 0; i < inInputData->mNumberBuffers; i++) {
+                SInt32 bytesToCopy = MIN(inInputData->mBuffers[i].mDataByteSize, sample.bufferList->mBuffers[i].mDataByteSize);
+                if (inInputData->mBuffers[i].mData && sample.bufferList->mNumberBuffers > i) {
+                    memcpy(inInputData->mBuffers[i].mData,
+                           sample.bufferList->mBuffers[i].mData,
+                           bytesToCopy);
+                    inInputData->mBuffers[i].mDataByteSize = bytesToCopy;
+                    inInputData->mBuffers[i].mNumberChannels = sample.bufferList->mBuffers[i].mNumberChannels;
                 }
             }
-        }
-        
+            [sample autorelease];
+        }        
     }
     [clientData tick:CVGetCurrentHostTime()];
 }

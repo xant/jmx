@@ -32,11 +32,13 @@
 typedef enum {
     kVJXVoidPin,
     kVJXStringPin,
+    kVJXTextPin,
     kVJXNumberPin,
     kVJXImagePin,
     kVJXAudioPin,
     kVJXPointPin,
     kVJXSizePin,
+    kVJXColorPin,
 } VJXPinType;
 
 typedef enum {
@@ -45,7 +47,7 @@ typedef enum {
     kVJXAnyPin
 } VJXPinDirection;
 
-#define kVJXPinDataBufferCount 2
+//#define kVJXPinDataBufferCount 2
 
 @interface VJXPin : NSObject <NSCopying> {
 @protected
@@ -56,7 +58,7 @@ typedef enum {
     BOOL                continuous; // default YES
     id                  currentSender;
     BOOL                connected;
-    id                  dataBuffer[kVJXPinDataBufferCount]; // double buffer synchronized for writers
+    id                  dataBuffer[2]; // double buffer synchronized for writers
                                                             // but lockless for readers
     UInt32              rOffset;
     UInt32              wOffset;

@@ -19,17 +19,8 @@
 //
 
 #import "VJXDocument.h"
-#import "VJXQtVideoLayer.h"
-#import "VJXQtVideoCaptureLayer.h"
-#import "VJXVideoMixer.h"
-#import "VJXImageLayer.h"
-#import "VJXOpenGLScreen.h"
-#import "VJXCoreAudioOutput.h"
-#import "VJXQtAudioCaptureLayer.h"
-#import "VJXAudioFileLayer.h"
-#import "VJXAudioMixer.h"
-#import "VJXAudioScheduler.h"
 #import "VJXBoardView.h"
+#import "VJXFileRead.h"
 #import <QTKit/QTMovie.h>
 
 

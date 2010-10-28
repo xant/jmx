@@ -204,22 +204,20 @@
     switch (type) {
         case kVJXStringPin:
             return @"String";
-            break;
+        case kVJXTextPin:
+            return @"Text";
         case kVJXNumberPin:
             return @"Number";
-            break;
         case kVJXImagePin:
             return @"Image";
-            break;
         case kVJXSizePin:
             return @"Size";
-            break;
         case kVJXPointPin:
             return @"Point";
-            break;
         case kVJXAudioPin:
             return @"Audio";
-            break;
+        case kVJXColorPin:
+            return @"Color";
     }
     return nil;
 }
@@ -228,6 +226,7 @@
 {
     switch (type) {
         case kVJXStringPin:
+        case kVJXTextPin:
             if (![data isKindOfClass:[NSString class]])
                 return NO;
             break;
@@ -250,6 +249,10 @@
             break;
         case kVJXAudioPin:
             if (![data isKindOfClass:[VJXAudioBuffer class]])
+                return NO;
+            break;
+        case kVJXColorPin:
+            if (![data isKindOfClass:[NSColor class]])
                 return NO;
             break;
         default:
@@ -374,7 +377,7 @@
 
 - (id)readData
 {
-    id data = [dataBuffer[rOffset%kVJXPinDataBufferCount] retain];
+    id data = [dataBuffer[rOffset&0x1] retain];
     return [data autorelease];
 }
 
@@ -434,11 +437,11 @@
         // - when the user connect a new producer a signal is sent, and the signal from
         //   current producer could still being executed.
         // TODO - try to get rid of this lock
-        [writersLock lock];
-        dataBuffer[wOffset%kVJXPinDataBufferCount] = [data retain];
+        [writersLock lock]; // in single-producer mode, this lock will always be free to lock
+        dataBuffer[wOffset&0x1] = [data retain];
         if (wOffset > rOffset) {
             UInt32 off = rOffset++;
-            [dataBuffer[off%kVJXPinDataBufferCount] release];
+            [dataBuffer[off&0x1] release];
         }
         wOffset++;
         [writersLock unlock];

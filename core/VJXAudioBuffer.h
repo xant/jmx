@@ -52,5 +52,5 @@
 - (NSUInteger)channelsPerFrame;
 - (NSUInteger)sampleRate;
 - (NSUInteger)numChannels;
-- (OSStatus) fillComplexBuffer:(AudioBufferList *)ioData countPointer:(UInt32 *)ioNumberFrames waitForData:(Boolean)wait offset:(UInt32)offset;
+- (OSStatus) fillComplexBuffer:(AudioBufferList *)ioData countPointer:(UInt32 *)ioNumberFrames waitForData:(BOOL)wait offset:(UInt32)offset;
 @end

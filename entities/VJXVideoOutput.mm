@@ -21,8 +21,10 @@
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#define __VJXV8__ 1
 #import "VJXVideoOutput.h"
 
+using namespace v8;
 
 @implementation VJXVideoOutput
 
@@ -64,6 +66,31 @@
         [currentFrame release];
     self.size = nil;
     [super dealloc];
+}
+
+#pragma mark V8
+
+static v8::Handle<Value>GetWidth(Local<String> name, const AccessorInfo& info)
+{
+    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
+    VJXVideoOutput *voutput = (VJXVideoOutput *)field->Value();
+    return Integer::New(voutput.size.width);
+}
+
+static v8::Handle<Value>GetHeight(Local<String> name, const AccessorInfo& info)
+{
+    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
+    VJXVideoOutput *voutput = (VJXVideoOutput *)field->Value();
+    return Integer::New(voutput.size.height);
+}
+
++ (v8::Handle<v8::FunctionTemplate>)makeClassTemplate
+{
+    HandleScope handleScope;
+    v8::Handle<v8::FunctionTemplate> entityTemplate = [super makeClassTemplate];
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("width"), GetWidth);
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("width"), GetHeight);
+    return handleScope.Close(entityTemplate);
 }
 
 @end

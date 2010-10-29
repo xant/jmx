@@ -21,8 +21,11 @@
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#define __VJXV8__ 1
 #import "VJXEntity.h"
 #import <QuartzCore/QuartzCore.h>
+
+using namespace v8;
 
 @implementation VJXEntity
 
@@ -313,5 +316,44 @@
     ? YES
     : NO;
 }
-         
+
+#pragma mark V8
+
+static v8::Handle<Value>name(Local<String> name, const AccessorInfo& info)
+{
+    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
+    VJXEntity *request = (VJXEntity *)field->Value();
+    return String::New([request.name UTF8String], [request.name length]);
+}
+
+static v8::Handle<Value>description(Local<String> name, const AccessorInfo& info)
+{
+    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
+    VJXEntity *request = (VJXEntity *)field->Value();
+    return String::New([request.description UTF8String], [request.name length]);
+}
+
++ (v8::Handle<FunctionTemplate>)makeClassTemplate
+{
+    HandleScope handleScope;
+    v8::Handle<FunctionTemplate> classTemplate = FunctionTemplate::New();
+    classTemplate->SetClassName(String::New("Entity"));
+    /*
+     Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
+     classProto->Set("method_a", FunctionTemplate::New(ClassMethod_A));
+     classProto->Set("method_b", FunctionTemplate::New(ClassMethod_B));
+     */
+    
+    // and set instance methods
+    v8::Handle<ObjectTemplate> instanceTemplate = classTemplate->InstanceTemplate();
+    instanceTemplate->SetInternalFieldCount(1);
+    
+    // Add accessors for each of the fields of the entity.
+    instanceTemplate->SetAccessor(String::NewSymbol("name"), name);
+    instanceTemplate->SetAccessor(String::NewSymbol("description"), description);
+    //instanceTemplate->SetAccessor(String::NewSymbol("frequency"), frequency);
+    return handleScope.Close(classTemplate);
+}
+
 @end
+

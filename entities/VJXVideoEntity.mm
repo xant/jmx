@@ -21,8 +21,11 @@
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#define __VJXV8__ 1
 #import "VJXVideoEntity.h"
 #import <QuartzCore/QuartzCore.h>
+
+using namespace v8;
 
 @implementation VJXVideoEntity
 
@@ -174,6 +177,23 @@
         }
     }
     return nil;
+}
+
+#pragma mark V8
+
+static v8::Handle<Value>frequency(Local<String> name, const AccessorInfo& info)
+{
+    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
+    VJXVideoEntity *request = (VJXVideoEntity *)field->Value();
+    return Number::New([request.frequency doubleValue]);
+}
+
++ (v8::Handle<v8::FunctionTemplate>)makeClassTemplate
+{
+    HandleScope handleScope;
+    v8::Handle<v8::FunctionTemplate> entityTemplate = [super makeClassTemplate];
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("frequency"), frequency);
+    return handleScope.Close(entityTemplate);
 }
 
 @end

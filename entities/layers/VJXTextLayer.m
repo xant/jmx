@@ -58,9 +58,9 @@
     }
 }
 
-- (void)setBackgroundColorWithRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha
+- (void)setBackgroundColorWithRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)transparency
 {
-    NSColor *color = [NSColor colorWithDeviceRed:red green:green blue:blue alpha:alpha];
+    NSColor *color = [NSColor colorWithDeviceRed:red green:green blue:blue alpha:transparency];
     if (color) {
         @synchronized(self) {
             [attributes setObject:color forKey:NSBackgroundColorAttributeName];
@@ -77,9 +77,9 @@
     }
 }
 
-- (void)setFontColorWithRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha
+- (void)setFontColorWithRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)transparency
 {
-    NSColor *color = [NSColor colorWithDeviceRed:red green:green blue:blue alpha:alpha];
+    NSColor *color = [NSColor colorWithDeviceRed:red green:green blue:blue alpha:transparency];
     if (color) {
         @synchronized(self) {
             [attributes setObject:color forKey:NSForegroundColorAttributeName];

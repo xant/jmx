@@ -24,7 +24,9 @@
 #import <Cocoa/Cocoa.h>
 #import "VJXInputPin.h"
 #import "VJXOutputPin.h"
-
+#ifdef __VJXV8__
+#include <v8.h>
+#endif
 
 /* this class sends the following notifications
  *
@@ -141,5 +143,10 @@
 
 - (void)notifyModifications;
 
+#pragma mark V8
+
+#ifdef __VJXV8__
++ (v8::Handle<v8::FunctionTemplate>)makeClassTemplate;
+#endif
 @end
 

@@ -27,6 +27,8 @@
 
 using namespace v8;
 
+static Persistent<ObjectTemplate> entityTemplate;
+
 @implementation VJXEntity
 
 @synthesize name, active;
@@ -333,11 +335,11 @@ static v8::Handle<Value>description(Local<String> name, const AccessorInfo& info
     return String::New([request.description UTF8String], [request.name length]);
 }
 
-+ (v8::Handle<FunctionTemplate>)makeClassTemplate
++ (v8::Handle<ObjectTemplate>)jsClassTemplate
 {
     HandleScope handleScope;
-    v8::Handle<FunctionTemplate> classTemplate = FunctionTemplate::New();
-    classTemplate->SetClassName(String::New("Entity"));
+    //v8::Handle<FunctionTemplate> classTemplate = FunctionTemplate::New();
+    //classTemplate->SetClassName(String::New("Entity"));
     /*
      Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
      classProto->Set("method_a", FunctionTemplate::New(ClassMethod_A));
@@ -345,14 +347,32 @@ static v8::Handle<Value>description(Local<String> name, const AccessorInfo& info
      */
     
     // and set instance methods
-    v8::Handle<ObjectTemplate> instanceTemplate = classTemplate->InstanceTemplate();
+    //v8::Handle<ObjectTemplate> instanceTemplate = classTemplate->InstanceTemplate();
+    v8::Handle<ObjectTemplate> instanceTemplate = ObjectTemplate::New();
     instanceTemplate->SetInternalFieldCount(1);
     
     // Add accessors for each of the fields of the entity.
     instanceTemplate->SetAccessor(String::NewSymbol("name"), name);
     instanceTemplate->SetAccessor(String::NewSymbol("description"), description);
     //instanceTemplate->SetAccessor(String::NewSymbol("frequency"), frequency);
-    return handleScope.Close(classTemplate);
+    return handleScope.Close(instanceTemplate);
+}
+
++ (v8::Handle<Object>)jsClassConstructor:(v8::Handle<ObjectTemplate>)classTemplate
+{
+    // Handle scope for temporary handles.
+    HandleScope handle_scope;
+        
+    if (entityTemplate.IsEmpty()) {
+        entityTemplate = Persistent<ObjectTemplate>::New(classTemplate);
+    }
+    v8::Handle<Object> instance = classTemplate->NewInstance();
+    // Wrap the raw C++ pointer in an External so it can be referenced
+    // from within JavaScript.
+    id newObj = [[self alloc] init];
+    v8::Handle<External> entity_ptr = External::New(newObj);
+    instance->SetInternalField(0, entity_ptr);
+    return handle_scope.Close(instance);
 }
 
 @end

@@ -13,12 +13,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define __VJXV8__ 1
-#import "VJXVideoOutput.h"
+#import "VJXOpenGLScreen.h"
 
 @class VJXEntity;
 
 using namespace v8;
 using namespace std;
+
+static v8::Handle<Value> Echo(const Arguments& args) {
+    if (args.Length() < 1) return v8::Undefined();
+    HandleScope scope;
+    v8::Handle<Value> arg = args[0];
+    v8::String::Utf8Value value(arg);
+    NSLog(@"%s", *value);
+    return v8::Undefined();
+}
 
 static v8::Handle<Value> ListEntities(const Arguments& args)
 {
@@ -38,26 +47,25 @@ static v8::Handle<Value> ListEntities(const Arguments& args)
     for (VJXEntity *entity in entities) {
         output = [output stringByAppendingFormat:@"%@\n", [entity description]];
     }
-    
+    NSLog(@"%@", output);
+
     return String::New([output UTF8String]);
     
 }
 
 @implementation VJXJavaScript
 
-- (void)registerClasses
+- (void)registerClasses:(v8::Handle<ObjectTemplate>)ctxTemplate;
+
 {
     
     /**
      * Utility function that wraps a C++ http request object in a
      * JavaScript object.
      */
-
-    Context::Scope context_scope(ctx);
-          
+    HandleScope handle_scope;
     // register the VJXVideoOutput class
-    v8::Handle<FunctionTemplate> entityClassTemplate = [VJXVideoOutput makeClassTemplate];
-    ctx->Global()->Set(String::New("Entity"), entityClassTemplate->GetFunction());
+    ctxTemplate->Set(String::New("OpenGLScreen"), FunctionTemplate::New(VJXOpenGLScreenJSContructor));
 
 }
 
@@ -67,25 +75,20 @@ static v8::Handle<Value> ListEntities(const Arguments& args)
     if (self) {
         HandleScope handle_scope;
         // Create a template for the global object.
-        v8::Handle<ObjectTemplate> global = ObjectTemplate::New();
-        global->Set(String::New("ListEntities"), FunctionTemplate::New(ListEntities));
+        v8::Handle<ObjectTemplate>ctxTemplate = ObjectTemplate::New();
+        ctxTemplate->Set(String::New("echo"), FunctionTemplate::New(Echo));
         /*
-        // Bind the global 'print' function to the C++ Print callback.
-        global->Set(String::New("print"), FunctionTemplate::New(Print));
-        // Bind the global 'read' function to the C++ Read callback.
-        global->Set(String::New("read"), FunctionTemplate::New(Read));
-        // Bind the global 'load' function to the C++ Load callback.
-        global->Set(String::New("load"), FunctionTemplate::New(Load));
-        // Bind the 'quit' function
-        global->Set(String::New("quit"), FunctionTemplate::New(Quit));
-        // Bind the 'version' function
-        global->Set(String::New("version"), FunctionTemplate::New(Version));
-         */
+        ctxTemplate->Set(String::New("print"), FunctionTemplate::New(Echo));
+        ctxTemplate->Set(String::New("printf"), FunctionTemplate::New(Printf));
+        ctxTemplate->Set(String::New("include"), FunctionTemplate::New(Include));
+        ctxTemplate->Set(String::New("AvailableEntities"), FunctionTemplate::New(AvailableEntities));
+        ctxTemplate->Set(String::New("ListEntities"), FunctionTemplate::New(ListEntities));
+        */
+        [self registerClasses:ctxTemplate];
         // Create a new execution environment containing the built-in
         // functions
-        //Handle<Context> context = Context::New(NULL, global);
-        ctx = Context::New(NULL, global);
-
+        ctx = Context::New(NULL, ctxTemplate);
+        
         // Enter the newly created execution environment.
     }
     return self;
@@ -95,6 +98,22 @@ static v8::Handle<Value> ListEntities(const Arguments& args)
 {
     ctx.Dispose();
     [super dealloc];
+}
+
+- (void)runScript:(NSString *)source
+{
+    v8::HandleScope handle_scope;
+    
+    v8::Context::Scope context_scope(ctx);
+    
+    v8::TryCatch try_catch;
+    v8::Handle<v8::Script> script = v8::Script::Compile(String::New([source UTF8String]), String::New("CIAO"));
+    if (!script.IsEmpty()) {
+        script->Run();
+    } else {
+        String::Utf8Value error(try_catch.Exception());
+        NSLog(@"%s", *error);
+    }
 }
 
 @end

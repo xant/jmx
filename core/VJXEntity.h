@@ -27,7 +27,6 @@
 #ifdef __VJXV8__
 #include <v8.h>
 #endif
-
 /* this class sends the following notifications
  *
  * VJXEntityWasCreated
@@ -146,7 +145,7 @@
 #pragma mark V8
 
 #ifdef __VJXV8__
-+ (v8::Handle<v8::FunctionTemplate>)makeClassTemplate;
++ (v8::Handle<v8::ObjectTemplate>)jsClassTemplate;
 #endif
 @end
 

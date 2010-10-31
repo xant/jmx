@@ -188,11 +188,11 @@ static v8::Handle<Value>frequency(Local<String> name, const AccessorInfo& info)
     return Number::New([request.frequency doubleValue]);
 }
 
-+ (v8::Handle<v8::FunctionTemplate>)makeClassTemplate
++ (v8::Handle<v8::ObjectTemplate>)jsClassTemplate
 {
     HandleScope handleScope;
-    v8::Handle<v8::FunctionTemplate> entityTemplate = [super makeClassTemplate];
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("frequency"), frequency);
+    v8::Handle<v8::ObjectTemplate> entityTemplate = [super jsClassTemplate];
+    entityTemplate->SetAccessor(String::NewSymbol("frequency"), frequency);
     return handleScope.Close(entityTemplate);
 }
 

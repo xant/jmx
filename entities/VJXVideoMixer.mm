@@ -24,6 +24,7 @@
 #import "VJXVideoMixer.h"
 #import "VJXVideoEntity.h"
 #import <QuartzCore/QuartzCore.h>
+#import "VJXJavaScript.h"
 
 @implementation VJXVideoMixer
 
@@ -49,6 +50,8 @@
         NSSize defaultSize = { VJX_MIXER_DEFAULT_VIDEOSIZE_WIDTH, VJX_MIXER_DEFAULT_VIDEOSIZE_HEIGHT };
         self.outputSize = [VJXSize sizeWithNSSize:defaultSize];
         currentFrame = nil;
+        VJXJavaScript *jsContext = [[VJXJavaScript alloc] init];
+        [jsContext runScript:@"echo(\"CIAO\"); a = OpenGLScreen(); b = a.name; echo(b); echo(a.width)"];
     }
     return self;
 }

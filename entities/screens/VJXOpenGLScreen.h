@@ -23,7 +23,10 @@
 
 #import <Cocoa/Cocoa.h>
 #import "VJXVideoOutput.h"
-#include <QuartzCore/CVDisplayLink.h>
+
+#ifdef __VJXV8__
+v8::Handle<v8::Value> VJXOpenGLScreenJSContructor(const v8::Arguments& args);
+#endif
 
 @class VJXOpenGLView;
 

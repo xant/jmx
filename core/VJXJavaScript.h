@@ -15,4 +15,6 @@ using namespace v8;
     Persistent<Context> ctx;
 }
 
+- (void)runScript:(NSString *)source;
+
 @end

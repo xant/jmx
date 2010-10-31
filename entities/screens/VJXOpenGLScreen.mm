@@ -21,10 +21,12 @@
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#import "VJXOpenGLScreen.h"
 #import <QuartzCore/QuartzCore.h>
 #import "VJXContext.h"
-
+#include <QuartzCore/CVDisplayLink.h>
+#define __VJXV8__
+#include <v8.h>
+#import "VJXOpenGLScreen.h"
 
 @interface VJXOpenGLView : NSOpenGLView {
     CIImage *currentFrame;
@@ -88,8 +90,8 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 
         [super prepareOpenGL];
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-        ciContext = [[CIContext contextWithCGLContext:[[self openGLContext] CGLContextObj]
-                                          pixelFormat:[[self pixelFormat] CGLPixelFormatObj]
+        ciContext = [[CIContext contextWithCGLContext:(CGLContextObj)[[self openGLContext] CGLContextObj]
+                                          pixelFormat:(CGLPixelFormatObj)[[self pixelFormat] CGLPixelFormatObj]
                                            colorSpace:colorSpace
                                               options:nil] retain];
         CGColorSpaceRelease(colorSpace);
@@ -278,6 +280,18 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     //@synchronized(view) {
         view.currentFrame = frame;
     //}
+}
+
+using namespace v8;
+v8::Handle<Value> VJXOpenGLScreenJSContructor(const Arguments& args)
+{
+    HandleScope handle_scope;
+    v8::Handle<ObjectTemplate> classTemplate = [VJXOpenGLScreen jsClassTemplate];
+    v8::Handle<Object> voutJS = classTemplate->NewInstance();
+    VJXOpenGLScreen *vout = [[VJXOpenGLScreen alloc] init];
+    v8::Handle<External> screen_ptr = External::New(vout);
+    voutJS->SetInternalField(0, screen_ptr);
+    return handle_scope.Close(voutJS);
 }
 
 @end

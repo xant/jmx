@@ -84,12 +84,13 @@ static v8::Handle<Value>GetHeight(Local<String> name, const AccessorInfo& info)
     return Integer::New(voutput.size.height);
 }
 
-+ (v8::Handle<v8::FunctionTemplate>)makeClassTemplate
++ (v8::Handle<v8::ObjectTemplate>)jsClassTemplate
 {
     HandleScope handleScope;
-    v8::Handle<v8::FunctionTemplate> entityTemplate = [super makeClassTemplate];
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("width"), GetWidth);
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("width"), GetHeight);
+    v8::Handle<v8::ObjectTemplate> entityTemplate = [super jsClassTemplate];
+    //entityTemplate->SetClassName(String::New("VideoOutput"));
+    entityTemplate->SetAccessor(String::NewSymbol("width"), GetWidth);
+    entityTemplate->SetAccessor(String::NewSymbol("height"), GetHeight);
     return handleScope.Close(entityTemplate);
 }
 

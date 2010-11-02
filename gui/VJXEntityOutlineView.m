@@ -218,14 +218,11 @@
         [outputPin deliverData:aNumber];
     }
     else if (outputPin.type == kVJXStringPin) {
-
+        NSActionCell *cell = [dataCells objectForKey:item];
         // If it was a multiple choice menu, we might receive a NSNumber here
         // indicating the tag of the index of the item the user chose.
-        if ([object isKindOfClass:[NSNumber class]]) {
-            VJXInputPin *anInputPin = [[[outputPin receivers] allKeys] lastObject];
-            NSString *aValue = [[anInputPin allowedValues] objectAtIndex:[object intValue]];
-            [outputPin deliverData:aValue];
-            // [(NSPopUpButtonCell *)cell selectItemWithTitle:aValue];
+        if ([cell isKindOfClass:[NSPopUpButtonCell class]] && [object isKindOfClass:[NSNumber class]]) {
+            [outputPin deliverData:[[(NSPopUpButtonCell *)cell itemAtIndex:[object intValue]] title]];
         }
         else {
             NSAssert([object isKindOfClass:[NSString class]], @"Object must be a NSString");

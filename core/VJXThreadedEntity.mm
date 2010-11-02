@@ -21,8 +21,9 @@
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#import "VJXThreadedEntity.h"
 #import <QuartzCore/QuartzCore.h>
+#define __VJXV8__ 1
+#import "VJXThreadedEntity.h"
 
 @interface VJXThreadedEntity (Private)
 - (void)run;
@@ -143,6 +144,40 @@
         else
             [self stop];
     }
+}
+
+#pragma mark V8
+using namespace v8;
+
+static v8::Handle<Value> start(const Arguments& args)
+{
+    HandleScope handleScope;
+    Local<Object> self = args.Holder();
+    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
+    VJXThreadedEntity *entity = (VJXThreadedEntity*)wrap->Value();
+    [entity start];
+    return v8::Undefined();
+}
+
+static v8::Handle<Value> stop(const Arguments& args)
+{
+    HandleScope handleScope;
+    Local<Object> self = args.Holder();
+    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
+    VJXThreadedEntity *entity = (VJXThreadedEntity*)wrap->Value();
+    [entity stop];
+    return v8::Undefined();
+}
+
++ (v8::Handle<v8::FunctionTemplate>)jsClassTemplate
+{
+    HandleScope handleScope;
+    v8::Handle<v8::FunctionTemplate> entityTemplate = [super jsClassTemplate];
+    entityTemplate->SetClassName(String::New("ThreadedEntity"));
+    v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
+    classProto->Set("start", FunctionTemplate::New(start));
+    classProto->Set("stop", FunctionTemplate::New(stop));
+    return handleScope.Close(entityTemplate);
 }
 
 @end

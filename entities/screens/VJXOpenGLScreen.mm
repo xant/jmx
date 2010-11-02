@@ -194,7 +194,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
         //CGLUnlockContext([[self openGLContext] CGLContextObj]);
-        [[self openGLContext] flushBuffer];
+        //[[self openGLContext] flushBuffer];
     }
 }
 

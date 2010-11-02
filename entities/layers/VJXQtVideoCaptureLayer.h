@@ -21,9 +21,7 @@
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#import <QTKit/QTKit.h>
 #import "VJXVideoEntity.h"
-#import <Cocoa/Cocoa.h>
 
 #ifndef __VJXQTVIDEOCAPTURELAYER_H__
 #define __VJXQTVIDEOCAPTURELAYER_H__
@@ -36,4 +34,8 @@
 }
 @end
 
+#endif
+
+#ifdef __VJXV8__
+VJXV8_DECLARE_ENTITY_CONSTRUCTOR(VJXQtVideoCaptureLayer);
 #endif

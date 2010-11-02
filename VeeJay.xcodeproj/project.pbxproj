@@ -27,8 +27,8 @@
 		825C31121275ADB6006376B8 /* VJXAudioFileLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30ED1275ADB6006376B8 /* VJXAudioFileLayer.m */; };
 		825C31131275ADB6006376B8 /* VJXImageLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30EF1275ADB6006376B8 /* VJXImageLayer.m */; };
 		825C31141275ADB6006376B8 /* VJXQtAudioCaptureLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30F11275ADB6006376B8 /* VJXQtAudioCaptureLayer.m */; };
-		825C31151275ADB6006376B8 /* VJXQtVideoCaptureLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30F31275ADB6006376B8 /* VJXQtVideoCaptureLayer.m */; };
-		825C31161275ADB6006376B8 /* VJXQtVideoLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30F51275ADB6006376B8 /* VJXQtVideoLayer.m */; };
+		825C31151275ADB6006376B8 /* VJXQtVideoCaptureLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30F31275ADB6006376B8 /* VJXQtVideoCaptureLayer.mm */; };
+		825C31161275ADB6006376B8 /* VJXQtVideoLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30F51275ADB6006376B8 /* VJXQtVideoLayer.mm */; };
 		825C31171275ADB6006376B8 /* VJXCoreAudioOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30F81275ADB6006376B8 /* VJXCoreAudioOutput.m */; };
 		825C31181275ADB6006376B8 /* VJXQtAudioOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30FA1275ADB6006376B8 /* VJXQtAudioOutput.m */; };
 		825C31191275ADB6006376B8 /* VJXOpenGLScreen.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30FD1275ADB6006376B8 /* VJXOpenGLScreen.mm */; };
@@ -56,7 +56,7 @@
 		825C31521275ADD7006376B8 /* VJXRingBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C313D1275ADD7006376B8 /* VJXRingBuffer.m */; };
 		825C31531275ADD7006376B8 /* VJXSize.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31411275ADD7006376B8 /* VJXSize.m */; };
 		825C31541275ADD7006376B8 /* VJXSpectrumAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31431275ADD7006376B8 /* VJXSpectrumAnalyzer.m */; };
-		825C31551275ADD7006376B8 /* VJXThreadedEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31451275ADD7006376B8 /* VJXThreadedEntity.m */; };
+		825C31551275ADD7006376B8 /* VJXThreadedEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31451275ADD7006376B8 /* VJXThreadedEntity.mm */; };
 		825C31841275AF03006376B8 /* VJXEntityLabelLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31831275AF03006376B8 /* VJXEntityLabelLayer.m */; };
 		825C318A1275AF4B006376B8 /* VJXOutletLabelLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31891275AF4B006376B8 /* VJXOutletLabelLayer.m */; };
 		825C31901275AF5B006376B8 /* VJXBoardLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C318F1275AF5B006376B8 /* VJXBoardLayer.m */; };
@@ -123,9 +123,9 @@
 		825C30F01275ADB6006376B8 /* VJXQtAudioCaptureLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXQtAudioCaptureLayer.h; sourceTree = "<group>"; };
 		825C30F11275ADB6006376B8 /* VJXQtAudioCaptureLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXQtAudioCaptureLayer.m; sourceTree = "<group>"; };
 		825C30F21275ADB6006376B8 /* VJXQtVideoCaptureLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXQtVideoCaptureLayer.h; sourceTree = "<group>"; };
-		825C30F31275ADB6006376B8 /* VJXQtVideoCaptureLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXQtVideoCaptureLayer.m; sourceTree = "<group>"; };
+		825C30F31275ADB6006376B8 /* VJXQtVideoCaptureLayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VJXQtVideoCaptureLayer.mm; sourceTree = "<group>"; };
 		825C30F41275ADB6006376B8 /* VJXQtVideoLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXQtVideoLayer.h; sourceTree = "<group>"; };
-		825C30F51275ADB6006376B8 /* VJXQtVideoLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXQtVideoLayer.m; sourceTree = "<group>"; };
+		825C30F51275ADB6006376B8 /* VJXQtVideoLayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VJXQtVideoLayer.mm; sourceTree = "<group>"; };
 		825C30F71275ADB6006376B8 /* VJXCoreAudioOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXCoreAudioOutput.h; sourceTree = "<group>"; };
 		825C30F81275ADB6006376B8 /* VJXCoreAudioOutput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXCoreAudioOutput.m; sourceTree = "<group>"; };
 		825C30F91275ADB6006376B8 /* VJXQtAudioOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXQtAudioOutput.h; sourceTree = "<group>"; };
@@ -184,7 +184,7 @@
 		825C31421275ADD7006376B8 /* VJXSpectrumAnalyzer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXSpectrumAnalyzer.h; sourceTree = "<group>"; };
 		825C31431275ADD7006376B8 /* VJXSpectrumAnalyzer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXSpectrumAnalyzer.m; sourceTree = "<group>"; };
 		825C31441275ADD7006376B8 /* VJXThreadedEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXThreadedEntity.h; sourceTree = "<group>"; };
-		825C31451275ADD7006376B8 /* VJXThreadedEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXThreadedEntity.m; sourceTree = "<group>"; };
+		825C31451275ADD7006376B8 /* VJXThreadedEntity.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VJXThreadedEntity.mm; sourceTree = "<group>"; };
 		825C31821275AF03006376B8 /* VJXEntityLabelLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXEntityLabelLayer.h; sourceTree = "<group>"; };
 		825C31831275AF03006376B8 /* VJXEntityLabelLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXEntityLabelLayer.m; sourceTree = "<group>"; };
 		825C31881275AF4B006376B8 /* VJXOutletLabelLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXOutletLabelLayer.h; sourceTree = "<group>"; };
@@ -392,9 +392,9 @@
 				825C30F01275ADB6006376B8 /* VJXQtAudioCaptureLayer.h */,
 				825C30F11275ADB6006376B8 /* VJXQtAudioCaptureLayer.m */,
 				825C30F21275ADB6006376B8 /* VJXQtVideoCaptureLayer.h */,
-				825C30F31275ADB6006376B8 /* VJXQtVideoCaptureLayer.m */,
+				825C30F31275ADB6006376B8 /* VJXQtVideoCaptureLayer.mm */,
 				825C30F41275ADB6006376B8 /* VJXQtVideoLayer.h */,
-				825C30F51275ADB6006376B8 /* VJXQtVideoLayer.m */,
+				825C30F51275ADB6006376B8 /* VJXQtVideoLayer.mm */,
 				AA3556F41277340200EAA2E4 /* VJXTextLayer.h */,
 				AA3556F51277340200EAA2E4 /* VJXTextLayer.m */,
 			);
@@ -468,7 +468,7 @@
 				825C31421275ADD7006376B8 /* VJXSpectrumAnalyzer.h */,
 				825C31431275ADD7006376B8 /* VJXSpectrumAnalyzer.m */,
 				825C31441275ADD7006376B8 /* VJXThreadedEntity.h */,
-				825C31451275ADD7006376B8 /* VJXThreadedEntity.m */,
+				825C31451275ADD7006376B8 /* VJXThreadedEntity.mm */,
 				AA3556FF1277347300EAA2E4 /* VJXTextRenderer.h */,
 				AA3557001277347300EAA2E4 /* VJXTextRenderer.m */,
 				AA3557E712795D0A00EAA2E4 /* VJXJavaScript.mm */,
@@ -608,8 +608,8 @@
 				825C31121275ADB6006376B8 /* VJXAudioFileLayer.m in Sources */,
 				825C31131275ADB6006376B8 /* VJXImageLayer.m in Sources */,
 				825C31141275ADB6006376B8 /* VJXQtAudioCaptureLayer.m in Sources */,
-				825C31151275ADB6006376B8 /* VJXQtVideoCaptureLayer.m in Sources */,
-				825C31161275ADB6006376B8 /* VJXQtVideoLayer.m in Sources */,
+				825C31151275ADB6006376B8 /* VJXQtVideoCaptureLayer.mm in Sources */,
+				825C31161275ADB6006376B8 /* VJXQtVideoLayer.mm in Sources */,
 				825C31171275ADB6006376B8 /* VJXCoreAudioOutput.m in Sources */,
 				825C31181275ADB6006376B8 /* VJXQtAudioOutput.m in Sources */,
 				825C31191275ADB6006376B8 /* VJXOpenGLScreen.mm in Sources */,
@@ -637,7 +637,7 @@
 				825C31521275ADD7006376B8 /* VJXRingBuffer.m in Sources */,
 				825C31531275ADD7006376B8 /* VJXSize.m in Sources */,
 				825C31541275ADD7006376B8 /* VJXSpectrumAnalyzer.m in Sources */,
-				825C31551275ADD7006376B8 /* VJXThreadedEntity.m in Sources */,
+				825C31551275ADD7006376B8 /* VJXThreadedEntity.mm in Sources */,
 				825C31841275AF03006376B8 /* VJXEntityLabelLayer.m in Sources */,
 				825C318A1275AF4B006376B8 /* VJXOutletLabelLayer.m in Sources */,
 				825C31901275AF5B006376B8 /* VJXBoardLayer.m in Sources */,

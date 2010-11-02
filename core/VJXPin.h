@@ -170,7 +170,7 @@ typedef enum {
 #pragma mark V8
 
 #ifdef __VJXV8__
-+ (v8::Handle<v8::ObjectTemplate>)jsClassTemplate;
++ (v8::Handle<v8::FunctionTemplate>)jsClassTemplate;
 - (v8::Handle<v8::Object>)jsObj;
 //VJXV8_DECLARE_CONSTRUCTOR(VJXPin);
 #endif

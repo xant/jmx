@@ -14,6 +14,8 @@
 #include <stdlib.h>
 #define __VJXV8__ 1
 #import "VJXOpenGLScreen.h"
+#import "VJXQtVideoCaptureLayer.h"
+#import "VJXQtVideoLayer.h"
 
 @class VJXEntity;
 
@@ -108,6 +110,8 @@ static v8::Handle<Value> Sleep(const Arguments& args)
     HandleScope handle_scope;
     // register the VJXVideoOutput class
     ctxTemplate->Set(String::New("OpenGLScreen"), FunctionTemplate::New(VJXOpenGLScreenJSConstructor));
+    ctxTemplate->Set(String::New("VideoCapture"), FunctionTemplate::New(VJXQtVideoCaptureLayerJSConstructor));
+    ctxTemplate->Set(String::New("VideoLayer"), FunctionTemplate::New(VJXQtVideoLayerJSConstructor));
 
 }
 

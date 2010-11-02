@@ -21,13 +21,10 @@
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
-#ifndef __x86_64
-#import  <QuickTime/QuickTime.h>
-#endif
 #import "VJXVideoEntity.h"
 #import "VJXFileRead.h"
+
+@class QTMovie;
 
 @interface VJXQtVideoLayer : VJXVideoEntity <VJXFileRead> {
 @private
@@ -45,3 +42,7 @@
 @property (assign) BOOL repeat;
 
 @end
+
+#ifdef __VJXV8__
+VJXV8_DECLARE_ENTITY_CONSTRUCTOR(VJXQtVideoLayer);
+#endif

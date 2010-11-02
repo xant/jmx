@@ -21,9 +21,13 @@
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#import "VJXQtVideoCaptureLayer.h"
 #include <OpenGL/OpenGL.h>
 #include <OpenGL/gl.h>
+#import <QTKit/QTKit.h>
+#import <Cocoa/Cocoa.h>
+#define __VJXV8__
+#import "VJXQtVideoCaptureLayer.h"
+#include "VJXJavaScript.h"
 
 #define VJX_GRABBER_WIDTH_MAX 640
 #define VJX_GRABBER_HEIGHT_MAX 480
@@ -33,6 +37,8 @@
 /*
  * QTKit Bridge
  */
+
+VJXV8_EXPORT_ENTITY_CLASS(VJXQtVideoCaptureLayer);
 
 @interface VJXQtVideoGrabber : QTCaptureDecompressedVideoOutput
 {

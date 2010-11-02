@@ -408,9 +408,9 @@ v8::Handle<Value> outputPin(const Arguments& args)
     classTemplate->SetClassName(String::New("Entity"));
     v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
     classProto->Set("inputPin", FunctionTemplate::New(inputPin));
-    classProto->Set("outputPin", FunctionTemplate::New(inputPin));
+    classProto->Set("outputPin", FunctionTemplate::New(outputPin));
     // set instance methods
-    v8::Handle<ObjectTemplate> instanceTemplate = classTemplate->InstanceTemplate();//ObjectTemplate::New();
+    v8::Handle<ObjectTemplate> instanceTemplate = classTemplate->InstanceTemplate();
     instanceTemplate->SetInternalFieldCount(1);
     
     // Add accessors for each of the fields of the entity.

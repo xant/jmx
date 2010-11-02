@@ -21,7 +21,16 @@
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#import <Cocoa/Cocoa.h>
+#import <QTKit/QTKit.h>
+#ifndef __x86_64
+#import  <QuickTime/QuickTime.h>
+#endif
+#define __VJXV8__
 #import "VJXQtVideoLayer.h"
+#include "VJXJavaScript.h"
+
+VJXV8_EXPORT_ENTITY_CLASS(VJXQtVideoLayer);
 
 #ifndef __x86_64
 /* Utility to set a SInt32 value in a CFDictionary
@@ -290,4 +299,39 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
     return [super setSize:newSize];
 }
 
+#pragma mark V8
+using namespace v8;
+
+static v8::Handle<Value> open(const Arguments& args)
+{
+    HandleScope handleScope;
+    Local<Object> self = args.Holder();
+    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
+    VJXQtVideoLayer *entity = (VJXQtVideoLayer *)wrap->Value();
+    v8::Handle<Value> arg = args[0];
+    v8::String::Utf8Value value(arg);
+    BOOL ret = [entity open:[NSString stringWithUTF8String:*value]];
+    return v8::Boolean::New(ret);
+}
+
+static v8::Handle<Value> close(const Arguments& args)
+{
+    HandleScope handleScope;
+    Local<Object> self = args.Holder();
+    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
+    VJXQtVideoLayer *entity = (VJXQtVideoLayer *)wrap->Value();
+    [entity close];
+    return v8::Undefined();
+}
+
++ (v8::Handle<v8::FunctionTemplate>)jsClassTemplate
+{
+    HandleScope handleScope;
+    v8::Handle<v8::FunctionTemplate> entityTemplate = [super jsClassTemplate];
+    entityTemplate->SetClassName(String::New("VideoLayer"));
+    v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
+    classProto->Set("open", FunctionTemplate::New(open));
+    classProto->Set("close", FunctionTemplate::New(close));
+    return handleScope.Close(entityTemplate);
+}
 @end

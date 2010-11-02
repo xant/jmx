@@ -26,7 +26,11 @@
 #include <QuartzCore/CVDisplayLink.h>
 #define __VJXV8__
 #include <v8.h>
+#include <map>
+#import "VJXJavaScript.h"
 #import "VJXOpenGLScreen.h"
+
+VJXV8_EXPORT_ENTITY_CLASS(VJXOpenGLScreen);
 
 @interface VJXOpenGLView : NSOpenGLView {
     CIImage *currentFrame;
@@ -257,13 +261,6 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     
 }
 
-- (void)dealloc
-{
-    [view release];
-    [window release];
-    [super dealloc];
-}
-
 - (void)setSize:(VJXSize *)newSize
 {
     //@synchronized(self) {
@@ -282,16 +279,17 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     //}
 }
 
-using namespace v8;
-v8::Handle<Value> VJXOpenGLScreenJSContructor(const Arguments& args)
+- (void)dealloc
 {
-    HandleScope handle_scope;
-    v8::Handle<ObjectTemplate> classTemplate = [VJXOpenGLScreen jsClassTemplate];
-    v8::Handle<Object> voutJS = classTemplate->NewInstance();
-    VJXOpenGLScreen *vout = [[VJXOpenGLScreen alloc] init];
-    v8::Handle<External> screen_ptr = External::New(vout);
-    voutJS->SetInternalField(0, screen_ptr);
-    return handle_scope.Close(voutJS);
+    [view release];
+    [window release];
+    //get the corresponding js object (if any)
+    Persistent<Object> object = instancesMap[self];
+    if (!object.IsEmpty()) {
+        object.Dispose();
+        object.Clear();
+    }
+    [super dealloc];
 }
 
 @end

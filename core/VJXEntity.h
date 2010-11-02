@@ -26,6 +26,48 @@
 #import "VJXOutputPin.h"
 #ifdef __VJXV8__
 #include <v8.h>
+
+#define VJXV8_EXPORT_ENTITY_CLASS(__class) \
+    using namespace v8;\
+    static std::map<__class *, v8::Persistent<v8::Object> > instancesMap;\
+    void __class##JSDestructor(Persistent<Value> object, void *parameter)\
+    {\
+        NSLog(@"V8 WeakCallback called");\
+        __class *obj = static_cast<__class *>(parameter);\
+        Local<Context> currentContext  = v8::Context::GetCurrent();\
+        VJXJavaScript *ctx = [VJXJavaScript getContext:currentContext];\
+        if (ctx) {\
+            [ctx removePersistentInstance:obj];\
+        } else {\
+            NSLog(@"Can't find context to attach persistent instance (just leaking)");\
+        }\
+        [obj release]; /* this will destroy the javascript object as well */\
+    }\
+\
+    v8::Handle<Value> __class##JSConstructor(const Arguments& args)\
+    {\
+        HandleScope handle_scope;\
+        v8::Handle<FunctionTemplate> classTemplate = [__class jsClassTemplate];\
+        Persistent<Object> jsInstance = Persistent<Object>::New(classTemplate->InstanceTemplate()->NewInstance());\
+        __class *instance = [[__class alloc] init];\
+        /* make the handle weak, with a callback */\
+        jsInstance.MakeWeak(instance, &__class##JSDestructor);\
+        instancesMap[instance] = jsInstance;\
+        v8::Handle<External> external_ptr = External::New(instance);\
+        jsInstance->SetInternalField(0, external_ptr);\
+        Local<Context> currentContext  = v8::Context::GetCurrent();\
+        VJXJavaScript *ctx = [VJXJavaScript getContext:currentContext];\
+        if (ctx) {\
+            [ctx addPersistentInstance:jsInstance obj:instance];\
+        } else {\
+            NSLog(@"Can't find context to attach persistent instance (just leaking)");\
+        }\
+        return handle_scope.Close(jsInstance);\
+    }
+
+#define VJXV8_DECLARE_ENTITY_CONSTRUCTOR(__class)\
+    v8::Handle<v8::Value> __class##JSConstructor(const v8::Arguments& args);
+
 #endif
 /* this class sends the following notifications
  *
@@ -145,7 +187,7 @@
 #pragma mark V8
 
 #ifdef __VJXV8__
-+ (v8::Handle<v8::ObjectTemplate>)jsClassTemplate;
++ (v8::Handle<v8::FunctionTemplate>)jsClassTemplate;
 #endif
 @end
 

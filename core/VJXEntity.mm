@@ -24,7 +24,7 @@
 #define __VJXV8__ 1
 #import "VJXEntity.h"
 #import <QuartzCore/QuartzCore.h>
-
+ 
 using namespace v8;
 
 static Persistent<ObjectTemplate> entityTemplate;
@@ -321,58 +321,106 @@ static Persistent<ObjectTemplate> entityTemplate;
 
 #pragma mark V8
 
+#pragma mark Accessors
+
 static v8::Handle<Value>name(Local<String> name, const AccessorInfo& info)
 {
+    HandleScope handleScope;
     v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
-    VJXEntity *request = (VJXEntity *)field->Value();
-    return String::New([request.name UTF8String], [request.name length]);
+    VJXEntity *entity = (VJXEntity *)field->Value();
+    return handleScope.Close(String::New([entity.name UTF8String], [entity.name length]));
 }
 
 static v8::Handle<Value>description(Local<String> name, const AccessorInfo& info)
 {
+    HandleScope handleScope;
     v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
-    VJXEntity *request = (VJXEntity *)field->Value();
-    return String::New([request.description UTF8String], [request.name length]);
+    VJXEntity *entity = (VJXEntity *)field->Value();
+    return handleScope.Close(String::New([entity.description UTF8String], [entity.name length]));
 }
 
-+ (v8::Handle<ObjectTemplate>)jsClassTemplate
+static v8::Handle<Value>inputPins(Local<String> name, const AccessorInfo& info)
 {
     HandleScope handleScope;
-    //v8::Handle<FunctionTemplate> classTemplate = FunctionTemplate::New();
-    //classTemplate->SetClassName(String::New("Entity"));
-    /*
-     Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
-     classProto->Set("method_a", FunctionTemplate::New(ClassMethod_A));
-     classProto->Set("method_b", FunctionTemplate::New(ClassMethod_B));
-     */
-    
-    // and set instance methods
-    //v8::Handle<ObjectTemplate> instanceTemplate = classTemplate->InstanceTemplate();
-    v8::Handle<ObjectTemplate> instanceTemplate = ObjectTemplate::New();
+    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
+    VJXEntity *entity = (VJXEntity *)field->Value();
+    NSArray *inputPins = [entity inputPins];
+    v8::Handle<Array> list = v8::Array::New([inputPins count]);
+    int cnt = 0;
+    for (NSString *pin in inputPins) {
+        list->Set(v8::Number::New(cnt++), String::New([pin UTF8String]));
+    }
+    return handleScope.Close(list);
+}
+
+static v8::Handle<Value>outputPins(Local<String> name, const AccessorInfo& info)
+{
+    HandleScope handleScope;
+    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
+    VJXEntity *entity = (VJXEntity *)field->Value();
+    NSArray *outputPins = [entity outputPins];
+    v8::Handle<Array> list = v8::Array::New([outputPins count]);
+    int cnt = 0;
+    for (NSString *pin in outputPins) {
+        list->Set(v8::Number::New(cnt++), String::New([pin UTF8String]));
+    }
+    return handleScope.Close(list);
+}
+
+
+v8::Handle<Value> inputPin(const Arguments& args)
+{
+    HandleScope handleScope;
+    Local<Object> self = args.Holder();
+    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
+    VJXEntity *entity = (VJXEntity *)wrap->Value();
+    v8::Handle<Value> arg = args[0];
+    v8::String::Utf8Value value(arg);
+    VJXPin *pin = [entity inputPinWithName:[NSString stringWithUTF8String:*value]];
+    if (pin) {
+        v8::Handle<Object> pinInstance = [pin jsObj];
+        return handleScope.Close(pinInstance);
+    }
+    return v8::Undefined();
+}
+
+v8::Handle<Value> outputPin(const Arguments& args)
+{
+    HandleScope handleScope;
+    Local<Object> self = args.Holder();
+    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
+    VJXEntity *entity = (VJXEntity *)wrap->Value();
+    v8::Handle<Value> arg = args[0];
+    v8::String::Utf8Value value(arg);
+    VJXPin *pin = [entity outputPinWithName:[NSString stringWithUTF8String:*value]];
+    if (pin) {
+        v8::Handle<Object> pinInstance = [pin jsObj];
+        return handleScope.Close(pinInstance);
+    }
+    return v8::Undefined();
+}
+
+#pragma mark Class Template
++ (v8::Handle<FunctionTemplate>)jsClassTemplate
+{
+    HandleScope handleScope;
+    v8::Handle<FunctionTemplate> classTemplate = FunctionTemplate::New();
+    classTemplate->SetClassName(String::New("Entity"));
+    v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
+    classProto->Set("inputPin", FunctionTemplate::New(inputPin));
+    classProto->Set("outputPin", FunctionTemplate::New(inputPin));
+    // set instance methods
+    v8::Handle<ObjectTemplate> instanceTemplate = classTemplate->InstanceTemplate();//ObjectTemplate::New();
     instanceTemplate->SetInternalFieldCount(1);
     
     // Add accessors for each of the fields of the entity.
     instanceTemplate->SetAccessor(String::NewSymbol("name"), name);
     instanceTemplate->SetAccessor(String::NewSymbol("description"), description);
+    //instanceTemplate->SetAccessor(String::NewSymbol("outputPin"), outputPin);
+    instanceTemplate->SetAccessor(String::NewSymbol("inputPins"), inputPins);
+    instanceTemplate->SetAccessor(String::NewSymbol("outputPins"), outputPins);
     //instanceTemplate->SetAccessor(String::NewSymbol("frequency"), frequency);
-    return handleScope.Close(instanceTemplate);
-}
-
-+ (v8::Handle<Object>)jsClassConstructor:(v8::Handle<ObjectTemplate>)classTemplate
-{
-    // Handle scope for temporary handles.
-    HandleScope handle_scope;
-        
-    if (entityTemplate.IsEmpty()) {
-        entityTemplate = Persistent<ObjectTemplate>::New(classTemplate);
-    }
-    v8::Handle<Object> instance = classTemplate->NewInstance();
-    // Wrap the raw C++ pointer in an External so it can be referenced
-    // from within JavaScript.
-    id newObj = [[self alloc] init];
-    v8::Handle<External> entity_ptr = External::New(newObj);
-    instance->SetInternalField(0, entity_ptr);
-    return handle_scope.Close(instance);
+    return handleScope.Close(classTemplate);
 }
 
 @end

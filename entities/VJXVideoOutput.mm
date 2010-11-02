@@ -72,25 +72,27 @@ using namespace v8;
 
 static v8::Handle<Value>GetWidth(Local<String> name, const AccessorInfo& info)
 {
+    HandleScope handleScope;
     v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
     VJXVideoOutput *voutput = (VJXVideoOutput *)field->Value();
-    return Integer::New(voutput.size.width);
+    return handleScope.Close(Integer::New(voutput.size.width));
 }
 
 static v8::Handle<Value>GetHeight(Local<String> name, const AccessorInfo& info)
 {
+    HandleScope handleScope;
     v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
     VJXVideoOutput *voutput = (VJXVideoOutput *)field->Value();
-    return Integer::New(voutput.size.height);
+    return handleScope.Close(Integer::New(voutput.size.height));
 }
 
-+ (v8::Handle<v8::ObjectTemplate>)jsClassTemplate
++ (v8::Handle<v8::FunctionTemplate>)jsClassTemplate
 {
     HandleScope handleScope;
-    v8::Handle<v8::ObjectTemplate> entityTemplate = [super jsClassTemplate];
+    v8::Handle<v8::FunctionTemplate> entityTemplate = [super jsClassTemplate];
     //entityTemplate->SetClassName(String::New("VideoOutput"));
-    entityTemplate->SetAccessor(String::NewSymbol("width"), GetWidth);
-    entityTemplate->SetAccessor(String::NewSymbol("height"), GetHeight);
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("width"), GetWidth);
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("height"), GetHeight);
     return handleScope.Close(entityTemplate);
 }
 

@@ -24,10 +24,6 @@
 #import <Cocoa/Cocoa.h>
 #import "VJXVideoOutput.h"
 
-#ifdef __VJXV8__
-v8::Handle<v8::Value> VJXOpenGLScreenJSContructor(const v8::Arguments& args);
-#endif
-
 @class VJXOpenGLView;
 
 @interface VJXOpenGLScreen : VJXVideoOutput {
@@ -41,3 +37,7 @@ v8::Handle<v8::Value> VJXOpenGLScreenJSContructor(const v8::Arguments& args);
 @property (readonly) VJXOpenGLView *view;
 
 @end
+
+#ifdef __VJXV8__
+VJXV8_DECLARE_ENTITY_CONSTRUCTOR(VJXOpenGLScreen);
+#endif

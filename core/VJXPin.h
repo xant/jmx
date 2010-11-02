@@ -26,6 +26,9 @@
 #import "VJXPoint.h"
 #import "VJXAudioBuffer.h"
 #import "VJXPinSignal.h"
+#ifdef __VJXV8__
+#include <v8.h>
+#endif
 
 @class VJXEntity;
 
@@ -164,4 +167,16 @@ typedef enum {
 - (void)deliverData:(id)data fromSender:(id)sender;
 - (BOOL)canConnectToPin:(VJXPin *)pin;
 
+#pragma mark V8
+
+#ifdef __VJXV8__
++ (v8::Handle<v8::ObjectTemplate>)jsClassTemplate;
+- (v8::Handle<v8::Object>)jsObj;
+//VJXV8_DECLARE_CONSTRUCTOR(VJXPin);
+#endif
+
 @end
+
+#ifdef __VJXV8__
+//v8::Handle<v8::Value> VJXPinJSContructor(const Arguments& args);
+#endif

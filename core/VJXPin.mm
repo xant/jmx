@@ -25,6 +25,9 @@
 #import "VJXContext.h"
 #import "VJXOutputPin.h"
 #import "VJXInputPin.h"
+#import <v8.h>
+
+using namespace v8;
 
 @implementation VJXPin
 
@@ -481,4 +484,75 @@
     return (type == pin.type && direction != pin.direction) ? YES : NO;
 }
 
+#pragma mark V8
+static v8::Handle<Value>name(Local<String> name, const AccessorInfo& info)
+{
+    HandleScope handle_scope;
+    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
+    VJXPin *pin = (VJXPin *)field->Value();
+    return handle_scope.Close(String::New([pin.name UTF8String], [pin.name length]));
+}
+
+static v8::Handle<Value>type(Local<String> name, const AccessorInfo& info)
+{
+    HandleScope handle_scope;
+    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
+    VJXPin *pin = (VJXPin *)field->Value();
+    NSString *typeName = [pin typeName];
+    return handle_scope.Close(String::New([typeName UTF8String], [typeName length]));
+}
+
++ (v8::Handle<ObjectTemplate>)jsClassTemplate
+{
+    HandleScope handleScope;
+
+    v8::Handle<ObjectTemplate> instanceTemplate = ObjectTemplate::New();
+    instanceTemplate->SetInternalFieldCount(1);
+    // Add accessors for each of the fields of the entity.
+    instanceTemplate->SetAccessor(String::NewSymbol("name"), name);
+    instanceTemplate->SetAccessor(String::NewSymbol("type"), type);
+    /*
+    instanceTemplate->SetAccessor(String::NewSymbol("multiple"), multiple);
+    instanceTemplate->SetAccessor(String::NewSymbol("direction"), direction);
+    instanceTemplate->SetAccessor(String::NewSymbol("allowedValues"), allowedValues);
+    instanceTemplate->SetAccessor(String::NewSymbol("continuous"), continuous);
+    instanceTemplate->SetAccessor(String::NewSymbol("owner"), owner);
+    instanceTemplate->SetAccessor(String::NewSymbol("minValue"), minValue);
+    instanceTemplate->SetAccessor(String::NewSymbol("maxValue"), maxValue);
+    instanceTemplate->SetAccessor(String::NewSymbol("connected"), connected);
+     */
+    return handleScope.Close(instanceTemplate);
+}
+
+- (v8::Handle<v8::Object>)jsObj
+{
+    HandleScope handle_scope;
+    v8::Handle<ObjectTemplate> classTemplate = [VJXPin jsClassTemplate];
+    v8::Handle<Object> jsInstance = classTemplate->NewInstance();
+    v8::Handle<External> external_ptr = External::New(self);
+    jsInstance->SetInternalField(0, external_ptr);
+    return handle_scope.Close(jsInstance);
+}
+
 @end
+
+v8::Handle<v8::Value> VJXPinJSContructor(const Arguments& args)
+{
+    /*
+    HandleScope handle_scope;
+    VJXPin *pin = args[0]->IntegerValue();
+    v8::Handle<ObjectTemplate> classTemplate = [__class jsClassTemplate];
+    Handle<Object> jsInstance = classTemplate->NewInstance();
+    v8::Handle<External> external_ptr = External::New(pin);
+    jsInstance->SetInternalField(0, pin);
+    Local<Context> currentContext  = v8::Context::GetCurrent();
+    VJXJavaScript *ctx = [VJXJavaScript getContext:currentContext];
+    if (ctx) {
+        [ctx addPersistentInstance:jsInstance obj:instance];
+    } else {
+        NSLog(@"Can't find context to attach persistent instance (just leaking)");
+    }
+    return handle_scope.Close(jsInstance);
+     */
+}
+

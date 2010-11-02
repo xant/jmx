@@ -50,7 +50,7 @@
 		825C314C1275ADD7006376B8 /* VJXEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31301275ADD6006376B8 /* VJXEntity.mm */; };
 		825C314D1275ADD7006376B8 /* VJXInputPin.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31331275ADD6006376B8 /* VJXInputPin.m */; };
 		825C314E1275ADD7006376B8 /* VJXOutputPin.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31351275ADD6006376B8 /* VJXOutputPin.m */; };
-		825C314F1275ADD7006376B8 /* VJXPin.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31371275ADD6006376B8 /* VJXPin.m */; };
+		825C314F1275ADD7006376B8 /* VJXPin.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31371275ADD6006376B8 /* VJXPin.mm */; };
 		825C31501275ADD7006376B8 /* VJXPinSignal.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31391275ADD7006376B8 /* VJXPinSignal.m */; };
 		825C31511275ADD7006376B8 /* VJXPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C313B1275ADD7006376B8 /* VJXPoint.m */; };
 		825C31521275ADD7006376B8 /* VJXRingBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C313D1275ADD7006376B8 /* VJXRingBuffer.m */; };
@@ -170,7 +170,7 @@
 		825C31341275ADD6006376B8 /* VJXOutputPin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXOutputPin.h; sourceTree = "<group>"; };
 		825C31351275ADD6006376B8 /* VJXOutputPin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXOutputPin.m; sourceTree = "<group>"; };
 		825C31361275ADD6006376B8 /* VJXPin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXPin.h; sourceTree = "<group>"; };
-		825C31371275ADD6006376B8 /* VJXPin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXPin.m; sourceTree = "<group>"; };
+		825C31371275ADD6006376B8 /* VJXPin.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VJXPin.mm; sourceTree = "<group>"; };
 		825C31381275ADD7006376B8 /* VJXPinSignal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXPinSignal.h; sourceTree = "<group>"; };
 		825C31391275ADD7006376B8 /* VJXPinSignal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXPinSignal.m; sourceTree = "<group>"; };
 		825C313A1275ADD7006376B8 /* VJXPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXPoint.h; sourceTree = "<group>"; };
@@ -454,7 +454,7 @@
 				825C31341275ADD6006376B8 /* VJXOutputPin.h */,
 				825C31351275ADD6006376B8 /* VJXOutputPin.m */,
 				825C31361275ADD6006376B8 /* VJXPin.h */,
-				825C31371275ADD6006376B8 /* VJXPin.m */,
+				825C31371275ADD6006376B8 /* VJXPin.mm */,
 				825C31381275ADD7006376B8 /* VJXPinSignal.h */,
 				825C31391275ADD7006376B8 /* VJXPinSignal.m */,
 				825C313A1275ADD7006376B8 /* VJXPoint.h */,
@@ -631,7 +631,7 @@
 				825C314C1275ADD7006376B8 /* VJXEntity.mm in Sources */,
 				825C314D1275ADD7006376B8 /* VJXInputPin.m in Sources */,
 				825C314E1275ADD7006376B8 /* VJXOutputPin.m in Sources */,
-				825C314F1275ADD7006376B8 /* VJXPin.m in Sources */,
+				825C314F1275ADD7006376B8 /* VJXPin.mm in Sources */,
 				825C31501275ADD7006376B8 /* VJXPinSignal.m in Sources */,
 				825C31511275ADD7006376B8 /* VJXPoint.m in Sources */,
 				825C31521275ADD7006376B8 /* VJXRingBuffer.m in Sources */,

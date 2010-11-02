@@ -8,13 +8,20 @@
 
 #import <Cocoa/Cocoa.h>
 #include <v8.h>
+#include <map>
 
 using namespace v8;
 
 @interface VJXJavaScript : NSObject {
+@private
     Persistent<Context> ctx;
+    std::map<id, v8::Persistent<v8::Object> > instancesMap;
 }
 
-- (void)runScript:(NSString *)source;
-
++ (VJXJavaScript *)getContext:(Local<Context>&)currentContext;
++ (void)runScriptInBackground:(NSString *)source;
++ (void)runScript:(NSString *)source;
+- (void)runScript:(NSString *)script;
+- (void)addPersistentInstance:(Persistent<Object>)persistent obj:(id)obj;
+- (void)removePersistentInstance:(id)obj;
 @end

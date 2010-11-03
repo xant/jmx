@@ -21,9 +21,13 @@
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#import "VJXAudioFileLayer.h"
 #import "VJXAudioFile.h"
 #import <QuartzCore/QuartzCore.h>
+#define __VJXV8__
+#import "VJXAudioFileLayer.h"
+#include "VJXJavaScript.h"
+
+VJXV8_EXPORT_ENTITY_CLASS(VJXAudioFileLayer);
 
 @implementation VJXAudioFileLayer
 
@@ -105,6 +109,39 @@
               [value boolValue])
     ? YES
     : NO;
+}
+
+static v8::Handle<Value> open(const Arguments& args)
+{
+    HandleScope handleScope;
+    Local<Object> self = args.Holder();
+    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
+    VJXAudioFileLayer *entity = (VJXAudioFileLayer *)wrap->Value();
+    v8::Handle<Value> arg = args[0];
+    v8::String::Utf8Value value(arg);
+    BOOL ret = [entity open:[NSString stringWithUTF8String:*value]];
+    return v8::Boolean::New(ret);
+}
+
+static v8::Handle<Value> close(const Arguments& args)
+{
+    HandleScope handleScope;
+    Local<Object> self = args.Holder();
+    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
+    VJXAudioFileLayer *entity = (VJXAudioFileLayer *)wrap->Value();
+    [entity close];
+    return v8::Undefined();
+}
+
++ (v8::Handle<v8::FunctionTemplate>)jsClassTemplate
+{
+    HandleScope handleScope;
+    v8::Handle<v8::FunctionTemplate> entityTemplate = [super jsClassTemplate];
+    entityTemplate->SetClassName(String::New("VideoLayer"));
+    v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
+    classProto->Set("open", FunctionTemplate::New(open));
+    classProto->Set("close", FunctionTemplate::New(close));
+    return handleScope.Close(entityTemplate);
 }
 
 @end

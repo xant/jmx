@@ -21,8 +21,12 @@
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#import "VJXAudioDevice.h"
+#define __VJXV8__
 #import "VJXCoreAudioOutput.h"
+#include "VJXJavaScript.h"
 
+VJXV8_EXPORT_ENTITY_CLASS(VJXCoreAudioOutput);
 
 @implementation VJXCoreAudioOutput
 

@@ -6,10 +6,14 @@
 //  Copyright 2010 Dyne.org. All rights reserved.
 //
 
-#import "VJXAudioSpectrumAnalyzer.h"
 #import "VJXSpectrumAnalyzer.h"
 #import "VJXAudioBuffer.h"
 #import "VJXAudioFormat.h"
+#define __VJXV8__
+#import "VJXAudioSpectrumAnalyzer.h"
+#include "VJXJavaScript.h"
+
+VJXV8_EXPORT_ENTITY_CLASS(VJXAudioSpectrumAnalyzer);
 
 /*
 static void decodeSpectralBuffer(DSPSplitComplex* spectra, UInt32 numSpectra, void* inUserData)
@@ -59,7 +63,7 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
         converter = nil;
         
         // setup the buffer where the squared magnitude will be put into
-        spectrumBuffer = calloc(1, sizeof(AudioBufferList) + sizeof(AudioBuffer));
+        spectrumBuffer = (AudioBufferList *)calloc(1, sizeof(AudioBufferList) + sizeof(AudioBuffer));
         spectrumBuffer->mNumberBuffers = 2;
         spectrumBuffer->mBuffers[0].mNumberChannels = 1;
         spectrumBuffer->mBuffers[0].mData = calloc(1, sampleSize * numBins);
@@ -73,7 +77,7 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
         analyzer = [[VJXSpectrumAnalyzer alloc] initWithSize:blockSize hopSize:numBins channels:2 maxFrames:512];
 
         // buffer to store a deinterleaved version of the received sample
-        deinterleavedBuffer = calloc(1, sizeof(AudioBufferList) + sizeof(AudioBuffer));
+        deinterleavedBuffer = (AudioBufferList *)calloc(1, sizeof(AudioBufferList) + sizeof(AudioBuffer));
         deinterleavedBuffer->mNumberBuffers = 2;
         deinterleavedBuffer->mBuffers[0].mNumberChannels = 1;
         deinterleavedBuffer->mBuffers[0].mDataByteSize = sampleSize*512;
@@ -114,7 +118,7 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
             imageContext = [NSGraphicsContext graphicsContextWithBitmapImageRep:imageStorage];
             [imageStorage release];
             CGSize layerSize = { kVJXAudioSpectrumImageWidth, kVJXAudioSpectrumImageHeight };
-            pathLayers[i] = CGLayerCreateWithContext( [imageContext graphicsPort], layerSize , NULL );
+            pathLayers[i] = (CGLayerRef)CGLayerCreateWithContext((CGContext *)[imageContext graphicsPort], layerSize , NULL );
         }
     }
     return self;
@@ -219,8 +223,8 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
                     UInt32 numFrames = [sample numFrames];
                     for (int j = 0; j < numFrames; j++) {
                         uint8_t *frame = ((uint8_t *)bufferList->mBuffers[0].mData) + (j*8);
-                        memcpy(deinterleavedBuffer->mBuffers[0].mData+(j*4), frame, 4);
-                        memcpy(deinterleavedBuffer->mBuffers[1].mData+(j*4), frame + 4, 4);
+                        memcpy((u_char *)deinterleavedBuffer->mBuffers[0].mData+(j*4), frame, 4);
+                        memcpy((u_char *)deinterleavedBuffer->mBuffers[1].mData+(j*4), frame + 4, 4);
                     }
                 }
                 break;

@@ -30,3 +30,7 @@
     VJXAudioDevice *outputDevice;
 }
 @end
+
+#ifdef __VJXV8__
+VJXV8_DECLARE_ENTITY_CONSTRUCTOR(VJXCoreAudioOutput);
+#endif

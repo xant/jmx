@@ -10,18 +10,18 @@
 #include <v8.h>
 #include <map>
 
-using namespace v8;
+//using namespace v8;
 
 @interface VJXJavaScript : NSObject {
 @private
-    Persistent<Context> ctx;
+    v8::Persistent<v8::Context> ctx;
     std::map<id, v8::Persistent<v8::Object> > instancesMap;
 }
 
-+ (VJXJavaScript *)getContext:(Local<Context>&)currentContext;
++ (VJXJavaScript *)getContext:(v8::Local<v8::Context>&)currentContext;
 + (void)runScriptInBackground:(NSString *)source;
 + (void)runScript:(NSString *)source;
 - (void)runScript:(NSString *)script;
-- (void)addPersistentInstance:(Persistent<Object>)persistent obj:(id)obj;
+- (void)addPersistentInstance:(v8::Persistent<v8::Object>)persistent obj:(id)obj;
 - (void)removePersistentInstance:(id)obj;
 @end

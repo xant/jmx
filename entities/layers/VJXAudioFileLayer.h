@@ -40,3 +40,7 @@
 @property (readwrite) BOOL repeat;
 - (void)doRepeat:(id)value; // input pin setter (we will receive NSNumbers from pins)
 @end
+
+#ifdef __VJXV8__
+VJXV8_DECLARE_ENTITY_CONSTRUCTOR(VJXAudioFileLayer);
+#endif

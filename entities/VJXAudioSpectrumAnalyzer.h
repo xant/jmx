@@ -7,8 +7,8 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "VJXEntity.h"
 #import <AudioToolbox/AudioConverter.h>
+#import "VJXEntity.h"
 
 #define kVJXAudioSpectrumNumFrequencies 14
 #define kVJXAudioSpectrumImageBufferCount 2
@@ -39,3 +39,7 @@
 }
 
 @end
+
+#ifdef __VJXV8__
+VJXV8_DECLARE_ENTITY_CONSTRUCTOR(VJXAudioSpectrumAnalyzer);
+#endif

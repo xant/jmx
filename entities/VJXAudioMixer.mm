@@ -64,8 +64,8 @@
             for ( x = 0; x < currentSample.bufferList->mNumberBuffers; x++ )
             {
                 numSamples = ( MIN(currentSample.bufferList->mBuffers[x].mDataByteSize, sample.bufferList->mBuffers[x].mDataByteSize)) / sizeof(Float32);
-                dstBuffer = currentSample.bufferList->mBuffers[x].mData;
-                srcBuffer = sample.bufferList->mBuffers[x].mData;
+                dstBuffer = (Float32 *)currentSample.bufferList->mBuffers[x].mData;
+                srcBuffer = (Float32 *)sample.bufferList->mBuffers[x].mData;
                 vDSP_vadd ( srcBuffer, 1, dstBuffer, 1, dstBuffer, 1, numSamples );
             }
         }

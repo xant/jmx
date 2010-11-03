@@ -21,10 +21,11 @@
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#import <AudioToolbox/AudioConverter.h>
+#import <CoreAudio/CoreAudioTypes.h>
 #import "VJXAudioOutput.h"
 #import "VJXAudioBuffer.h"
 #import "VJXAudioFormat.h"
-#import <CoreAudio/CoreAudioTypes.h>
 
 #define kVJXAudioOutputPreBufferMaxSize 30
 #define kVJXAudioOutputPreBufferMinSize 15

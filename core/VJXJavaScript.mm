@@ -16,6 +16,8 @@
 #import "VJXOpenGLScreen.h"
 #import "VJXQtVideoCaptureLayer.h"
 #import "VJXQtVideoLayer.h"
+#import "VJXAudioFileLayer.h"
+#import "VJXCoreAudioOutput.h"
 
 @class VJXEntity;
 
@@ -91,7 +93,7 @@ static v8::Handle<Value> Sleep(const Arguments& args)
 
 + (void)runScript:(NSString *)script
 {
-    VJXJavaScript *jsContext = [[self alloc] init];
+    VJXJavaScript *jsContext = [[[self alloc] init] autorelease];
     [jsContext runScript:script];
 }
 
@@ -103,15 +105,14 @@ static v8::Handle<Value> Sleep(const Arguments& args)
 
 - (void)registerClasses:(v8::Handle<ObjectTemplate>)ctxTemplate;
 {
-    /**
-     * Utility function that wraps a C++ http request object in a
-     * JavaScript object.
-     */
     HandleScope handle_scope;
     // register the VJXVideoOutput class
     ctxTemplate->Set(String::New("OpenGLScreen"), FunctionTemplate::New(VJXOpenGLScreenJSConstructor));
     ctxTemplate->Set(String::New("VideoCapture"), FunctionTemplate::New(VJXQtVideoCaptureLayerJSConstructor));
     ctxTemplate->Set(String::New("VideoLayer"), FunctionTemplate::New(VJXQtVideoLayerJSConstructor));
+    ctxTemplate->Set(String::New("AudioLayer"), FunctionTemplate::New(VJXAudioFileLayerJSConstructor));
+    ctxTemplate->Set(String::New("AudioOutput"), FunctionTemplate::New(VJXCoreAudioOutputJSConstructor));
+
 
 }
 

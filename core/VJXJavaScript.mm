@@ -91,16 +91,16 @@ static v8::Handle<Value> Sleep(const Arguments& args)
 
 @implementation VJXJavaScript
 
-+ (void)runScript:(NSString *)script
++ (void)runScript:(NSString *)source
 {
-    VJXJavaScript *jsContext = [[[self alloc] init] autorelease];
-    [jsContext runScript:script];
+    VJXJavaScript *jsContext = [[self alloc] init];
+    [jsContext runScript:source];
+    [jsContext release];
 }
 
 // TODO - use a NSOperationQueue
-+ (void)runScriptInBackground:(NSString *)script {
-    NSThread *scriptThread = [[[NSThread alloc] initWithTarget:self selector:@selector(runScript:) object:script] autorelease];
-    [scriptThread start];
++ (void)runScriptInBackground:(NSString *)source {
+    [self performSelector:@selector(runScript:) onThread:[VJXContext scriptThread] withObject:source waitUntilDone:NO];
 }
 
 - (void)registerClasses:(v8::Handle<ObjectTemplate>)ctxTemplate;
@@ -172,7 +172,7 @@ static v8::Handle<Value> Sleep(const Arguments& args)
     v8::Context::Scope context_scope(ctx);
     
     v8::TryCatch try_catch;
-    v8::Handle<v8::Script> compiledScript = v8::Script::Compile(String::New([script UTF8String]), String::New("CIAO"));
+    v8::Handle<v8::Script> compiledScript = v8::Script::Compile(String::New([script UTF8String]), String::New("VJXScript"));
     if (!compiledScript.IsEmpty()) {
         compiledScript->Run();
     } else {
@@ -180,7 +180,6 @@ static v8::Handle<Value> Sleep(const Arguments& args)
         NSLog(@"%s", *error);
     }
     [pool drain];
-    [self release];
 }
 
 + (VJXJavaScript *)getContext:(Local<Context>&)currentContext

@@ -498,8 +498,11 @@ static v8::Handle<Value>type(Local<String> name, const AccessorInfo& info)
     HandleScope handle_scope;
     v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
     VJXPin *pin = (VJXPin *)field->Value();
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSString *typeName = [pin typeName];
-    return handle_scope.Close(String::New([typeName UTF8String], [typeName length]));
+    Local<String> ret = String::New([typeName UTF8String], [typeName length]);
+    [pool drain];
+    return handle_scope.Close(ret);
 }
 
 v8::Handle<Value> connect(const Arguments& args)
@@ -514,7 +517,9 @@ v8::Handle<Value> connect(const Arguments& args)
         v8::Handle<External> field = v8::Handle<External>::Cast(obj->GetInternalField(0));
         VJXPin *dest = (VJXPin *)field->Value();
         if (dest) {
+            NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
             BOOL connected = [pin connectToPin:dest];
+            [pool release];
             return v8::Boolean::New(connected);
         }
     }

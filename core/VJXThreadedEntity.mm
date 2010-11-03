@@ -86,6 +86,7 @@
 
 - (void)signalTick:(NSTimer*)theTimer
 {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     uint64_t timeStamp = CVGetCurrentHostTime();
     [self tick:timeStamp];
     [self outputDefaultSignals:timeStamp];
@@ -103,6 +104,7 @@
             [runLoop addTimer:timer forMode:NSRunLoopCommonModes];
         }
     }*/
+    [pool release];
 }
 
 - (void)run
@@ -155,7 +157,9 @@ static v8::Handle<Value> start(const Arguments& args)
     Local<Object> self = args.Holder();
     Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
     VJXThreadedEntity *entity = (VJXThreadedEntity*)wrap->Value();
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     [entity start];
+    [pool drain];
     return v8::Undefined();
 }
 
@@ -165,7 +169,9 @@ static v8::Handle<Value> stop(const Arguments& args)
     Local<Object> self = args.Holder();
     Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
     VJXThreadedEntity *entity = (VJXThreadedEntity*)wrap->Value();
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     [entity stop];
+    [pool drain];
     return v8::Undefined();
 }
 

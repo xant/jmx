@@ -42,6 +42,7 @@
 #endif
 
 + (VJXContext *)sharedContext;
++ (NSThread *)scriptThread;
 + (void)initialize;
 - (void)registerClass:(Class)aClass;
 - (NSArray *)registeredClasses;

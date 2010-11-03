@@ -75,9 +75,11 @@ static void SetWidth(Local<String> name, Local<Value> value, const AccessorInfo&
     HandleScope handleScope;
     v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
     VJXVideoOutput *voutput = (VJXVideoOutput *)field->Value();
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSSize newSize = voutput.size.nsSize;
     newSize.width = value->NumberValue();
     [voutput setSize:[VJXSize sizeWithNSSize:newSize]];
+    [pool drain];
 }
 
 static void SetHeight(Local<String> name, Local<Value> value, const AccessorInfo& info)
@@ -85,9 +87,11 @@ static void SetHeight(Local<String> name, Local<Value> value, const AccessorInfo
     HandleScope handleScope;
     v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
     VJXVideoOutput *voutput = (VJXVideoOutput *)field->Value();
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSSize newSize = voutput.size.nsSize;
     newSize.height = value->NumberValue();
     [voutput setSize:[VJXSize sizeWithNSSize:newSize]];
+    [pool release];
 }
 
 static v8::Handle<Value>GetWidth(Local<String> name, const AccessorInfo& info)

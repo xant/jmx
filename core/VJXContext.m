@@ -29,6 +29,7 @@
 #if !USE_NSOPERATIONS
 static NSThread *signalThread[kVJXContextSignalNumWorkers];
 #endif
+static NSThread *scriptThread;
 static VJXContext *globalContext = nil;
 static BOOL initialized = NO;
 
@@ -52,6 +53,9 @@ static BOOL initialized = NO;
             }
         }
 #endif
+        scriptThread = [[NSThread alloc] initWithTarget:globalContext selector:@selector(runThread) object:nil];
+        [scriptThread setName:[NSString stringWithFormat:@"scriptThread"]];
+        [scriptThread start];
         initialized = YES;
     }
 }
@@ -75,6 +79,11 @@ static BOOL initialized = NO;
     [operationQueue setMaxConcurrentOperationCount:kVJXContextSignalNumWorkers];
 }
 #endif
+
++ (NSThread *)scriptThread
+{
+    return scriptThread;
+}
 
 + (VJXContext *)sharedContext
 {

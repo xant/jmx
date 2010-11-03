@@ -21,7 +21,7 @@
 + (VJXJavaScript *)getContext:(v8::Local<v8::Context>&)currentContext;
 + (void)runScriptInBackground:(NSString *)source;
 + (void)runScript:(NSString *)source;
-- (void)runScript:(NSString *)script;
+- (void)runScript:(NSString *)source;
 - (void)addPersistentInstance:(v8::Persistent<v8::Object>)persistent obj:(id)obj;
 - (void)removePersistentInstance:(id)obj;
 @end

@@ -344,12 +344,14 @@ static v8::Handle<Value>inputPins(Local<String> name, const AccessorInfo& info)
     HandleScope handleScope;
     v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
     VJXEntity *entity = (VJXEntity *)field->Value();
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSArray *inputPins = [entity inputPins];
     v8::Handle<Array> list = v8::Array::New([inputPins count]);
     int cnt = 0;
     for (NSString *pin in inputPins) {
         list->Set(v8::Number::New(cnt++), String::New([pin UTF8String]));
     }
+    [pool drain];
     return handleScope.Close(list);
 }
 
@@ -358,12 +360,14 @@ static v8::Handle<Value>outputPins(Local<String> name, const AccessorInfo& info)
     HandleScope handleScope;
     v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
     VJXEntity *entity = (VJXEntity *)field->Value();
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSArray *outputPins = [entity outputPins];
     v8::Handle<Array> list = v8::Array::New([outputPins count]);
     int cnt = 0;
     for (NSString *pin in outputPins) {
         list->Set(v8::Number::New(cnt++), String::New([pin UTF8String]));
     }
+    [pool drain];
     return handleScope.Close(list);
 }
 
@@ -376,11 +380,14 @@ v8::Handle<Value> inputPin(const Arguments& args)
     VJXEntity *entity = (VJXEntity *)wrap->Value();
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     VJXPin *pin = [entity inputPinWithName:[NSString stringWithUTF8String:*value]];
     if (pin) {
         v8::Handle<Object> pinInstance = [pin jsObj];
+        [pool drain];
         return handleScope.Close(pinInstance);
     }
+    [pool drain];
     return v8::Undefined();
 }
 
@@ -392,11 +399,15 @@ v8::Handle<Value> outputPin(const Arguments& args)
     VJXEntity *entity = (VJXEntity *)wrap->Value();
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
+    Local<Value> ret;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     VJXPin *pin = [entity outputPinWithName:[NSString stringWithUTF8String:*value]];
     if (pin) {
         v8::Handle<Object> pinInstance = [pin jsObj];
+        [pool drain];
         return handleScope.Close(pinInstance);
     }
+    [pool drain];
     return v8::Undefined();
 }
 

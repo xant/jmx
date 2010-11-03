@@ -50,7 +50,7 @@
         NSSize defaultSize = { VJX_MIXER_DEFAULT_VIDEOSIZE_WIDTH, VJX_MIXER_DEFAULT_VIDEOSIZE_HEIGHT };
         self.outputSize = [VJXSize sizeWithNSSize:defaultSize];
         currentFrame = nil;
-        [VJXJavaScript runScriptInBackground:@"include('/Users/xant/k.js');"];
+        [VJXJavaScript runScriptInBackground:@"include('/Users/xant/k2.js');"];
     }
     return self;
 }

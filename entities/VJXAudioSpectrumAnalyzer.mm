@@ -38,7 +38,7 @@ static void decodeSpectralBuffer(DSPSplitComplex* spectra, UInt32 numSpectra, vo
 #define kVJXAudioSpectrumImageWidth 320
 #define kVJXAudioSpectrumImageHeight 240
 
-static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 350, 500, 750, 1000, 2000, 3000, 4000, 5000, 8000, 16000 }; 
+static int _frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 350, 500, 750, 1000, 2000, 3000, 4000, 5000, 8000, 16000 }; 
 
 @implementation VJXAudioSpectrumAnalyzer
 
@@ -89,7 +89,7 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
         // setup the frequency pins
         frequencyPins = [[NSMutableArray alloc] init];
         for (int i = 0; i < kVJXAudioSpectrumNumFrequencies; i++) {
-            int freq = frequencies[i];
+            int freq = _frequencies[i];
             NSString *pinName = freq < 1000
                               ? [NSString stringWithFormat:@"%dHz", freq]
                               : [NSString stringWithFormat:@"%dKhz", freq/1000]; 
@@ -187,9 +187,9 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
         [attribs setObject:[NSColor lightGrayColor]
                     forKey:NSForegroundColorAttributeName];
         // XXX - how to use bordercolor now? 
-        NSString *label = frequencies[i] < 1000
-        ? [NSString stringWithFormat:@"%d", frequencies[i]]
-        : [NSString stringWithFormat:@"%dK", frequencies[i]/1000]; 
+        NSString *label = _frequencies[i] < 1000
+        ? [NSString stringWithFormat:@"%d", _frequencies[i]]
+        : [NSString stringWithFormat:@"%dK", _frequencies[i]/1000]; 
         NSAttributedString * string = [[[NSAttributedString alloc] initWithString:label 
                                                                        attributes:attribs]
                                        autorelease];
@@ -249,7 +249,7 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
         [analyzer getMagnitude:spectrumBuffer min:minAmp max:maxAmp];
         
         for (UInt32 i = 0; i < kVJXAudioSpectrumNumFrequencies; i++) {	// for each frequency
-            int offset = frequencies[i]*numBins/44100*analyzer.numChannels;
+            int offset = _frequencies[i]*numBins/44100*analyzer.numChannels;
             Float32 value = (((Float32 *)(spectrumBuffer->mBuffers[0].mData))[offset] +
                              ((Float32 *)(spectrumBuffer->mBuffers[1].mData))[offset]) * 0.5;
             if (value < 0.0)
@@ -277,6 +277,60 @@ static int frequencies[kVJXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 35
     [pinNames addObject:@"image"];
     [pinNames addObject:@"imageSize"];
     return [pinNames autorelease];
+}
+
+#pragma mark V8
+using namespace v8;
+
+static v8::Handle<Value>frequencies(const Arguments& args)
+{
+    HandleScope handleScope;
+    /*
+    Local<Object> self = args.Holder();
+    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
+    VJXAudioSpectrumAnalyzer *entity = (VJXAudioSpectrumAnalyzer *)wrap->Value();
+    */
+    v8::Handle<Array> list = v8::Array::New(kVJXAudioSpectrumNumFrequencies);
+    for (int i = 0; i < kVJXAudioSpectrumNumFrequencies; i++) {
+        list->Set(i, v8::Integer::New(_frequencies[i]));
+    }
+    return handleScope.Close(list);
+}
+
+static v8::Handle<Value> frequency(const Arguments& args)
+{
+    HandleScope handleScope;
+    Local<Object> self = args.Holder();
+    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
+    VJXAudioSpectrumAnalyzer *entity = (VJXAudioSpectrumAnalyzer *)wrap->Value();
+    v8::Handle<Value> arg = args[0];
+    int freq = args[0]->IntegerValue();
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSString *label = freq < 1000
+                    ? [NSString stringWithFormat:@"%d", freq]
+                    : [NSString stringWithFormat:@"%dK", freq/1000];
+    VJXPin *pin = [entity outputPinWithName:label];
+    if (pin) {
+        NSNumber *value = [pin readData];
+        if (value) {
+            [pool drain];
+            return Number::New([value doubleValue]);
+        }
+    }
+    [pool drain];
+    return v8::Undefined();
+}
+
+
++ (v8::Handle<v8::FunctionTemplate>)jsClassTemplate
+{
+    HandleScope handleScope;
+    v8::Handle<v8::FunctionTemplate> entityTemplate = [super jsClassTemplate];
+    entityTemplate->SetClassName(String::New("VideoLayer"));
+    v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
+    classProto->Set("frequencies", FunctionTemplate::New(frequencies));
+    classProto->Set("frequency", FunctionTemplate::New(frequency));
+    return handleScope.Close(entityTemplate);
 }
 
 @end

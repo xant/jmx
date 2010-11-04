@@ -62,7 +62,7 @@ typedef enum {
     id                  currentSender;
     BOOL                connected;
     id                  dataBuffer[2]; // double buffer synchronized for writers
-                                                            // but lockless for readers
+                                       // but lockless for readers
     UInt32              rOffset;
     UInt32              wOffset;
     VJXPinDirection     direction;

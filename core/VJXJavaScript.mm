@@ -6,6 +6,7 @@
 //  Copyright 2010 Dyne.org. All rights reserved.
 //
 
+#import <Foundation/NSFileManager.h>
 #import "VJXJavaScript.h"
 #import "VJXContext.h"
 #include <fcntl.h>
@@ -29,6 +30,86 @@ typedef std::pair< VJXJavaScript *, Persistent<Context> >CtxPair;
 typedef std::map< VJXJavaScript *, Persistent<Context> > CtxMap;
 CtxMap contextes;
 
+// Extracts a C string from a V8 Utf8Value.
+static const char* ToCString(const v8::String::Utf8Value& value) {
+    return *value ? *value : "<string conversion failed>";
+}
+
+static void ReportException(v8::TryCatch* try_catch) {
+    v8::HandleScope handle_scope;
+    v8::String::Utf8Value exception(try_catch->Exception());
+    const char* exception_string = ToCString(exception);
+    v8::Handle<v8::Message> message = try_catch->Message();
+    if (message.IsEmpty()) {
+        // V8 didn't provide any extra information about this error; just
+        // print the exception.
+        printf("%s\n", exception_string);
+    } else {
+        // Print (filename):(line number): (message).
+        v8::String::Utf8Value filename(message->GetScriptResourceName());
+        const char* filename_string = ToCString(filename);
+        int linenum = message->GetLineNumber();
+        printf("%s:%i: %s\n", filename_string, linenum, exception_string);
+        // Print line of source code.
+        v8::String::Utf8Value sourceline(message->GetSourceLine());
+        const char* sourceline_string = ToCString(sourceline);
+        printf("%s\n", sourceline_string);
+        // Print wavy underline (GetUnderline is deprecated).
+        int start = message->GetStartColumn();
+        for (int i = 0; i < start; i++) {
+            printf(" ");
+        }   
+        int end = message->GetEndColumn();
+        for (int i = start; i < end; i++) {
+            printf("^");
+        }   
+        printf("\n");
+        v8::String::Utf8Value stack_trace(try_catch->StackTrace());
+        if (stack_trace.length() > 0) {
+            const char* stack_trace_string = ToCString(stack_trace);
+            printf("%s\n", stack_trace_string);
+        }   
+    }
+}
+
+static v8::Handle<Value> IsDir(const Arguments& args) {
+    if (args.Length() < 1) return Undefined();
+    HandleScope scope;
+    v8::Handle<Value> arg = args[0];
+    v8::String::Utf8Value value(arg);
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    NSDictionary *content = [[NSFileManager defaultManager] attributesOfItemAtPath:[NSString stringWithUTF8String:*value] error:nil];
+    if (content) {
+        if ([content objectForKey:NSFileType] == NSFileTypeDirectory) {
+            [pool drain];
+            return v8::Boolean::New(1);
+        }
+    }
+    [pool drain];
+    return v8::Boolean::New(0);
+}
+
+static v8::Handle<Value> ListDir(const Arguments& args) {
+    if (args.Length() < 1) return Undefined();
+    HandleScope scope;
+    v8::Handle<Value> arg = args[0];
+    v8::String::Utf8Value value(arg);
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSArray *content = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[NSString stringWithUTF8String:*value] error:nil];
+    if (content) {
+        v8::Handle<Array> list = Array::New([content count]);
+        int cnt = 0;
+        for (NSString *path in content) {
+            list->Set(cnt++, String::New([path UTF8String]));
+        }
+        [pool drain];
+        return scope.Close(list);
+    }
+    [pool drain];
+    return Undefined();
+}
+
 static v8::Handle<Value> Echo(const Arguments& args) {
     if (args.Length() < 1) return v8::Undefined();
     HandleScope scope;
@@ -43,20 +124,21 @@ static v8::Handle<Value> Include(const Arguments& args) {
     HandleScope scope;
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSString *path = [NSString stringWithUTF8String:*value];
     NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:path];
     if (fh) {
         NSData *data = [fh readDataToEndOfFile];
         v8::TryCatch try_catch;
-        v8::Handle<v8::Script> compiledScript = v8::Script::Compile(String::New((const char *)[data bytes]), String::New([path UTF8String]));
+        v8::Handle<v8::Script> compiledScript = v8::Script::Compile(String::New((const char *)[data bytes], [data length]), String::New([path UTF8String]));
         if (!compiledScript.IsEmpty()) {
             compiledScript->Run();
         } else {
-            String::Utf8Value error(try_catch.Exception());
-            NSLog(@"%s", *error);
+            ReportException(&try_catch);
         }
         
     }
+    [pool release];
     return v8::Undefined();
 }
 
@@ -88,6 +170,7 @@ static v8::Handle<Value> Sleep(const Arguments& args)
     v8::Handle<Primitive> t = Undefined();
     return reinterpret_cast<v8::Handle<String>&>(t);
 }
+
 
 @implementation VJXJavaScript
 
@@ -127,6 +210,9 @@ static v8::Handle<Value> Sleep(const Arguments& args)
         ctxTemplate->Set(String::New("print"), FunctionTemplate::New(Echo));
         ctxTemplate->Set(String::New("include"), FunctionTemplate::New(Include));
         ctxTemplate->Set(String::New("sleep"), FunctionTemplate::New(Sleep));
+        ctxTemplate->Set(String::New("lsdir"), FunctionTemplate::New(ListDir));
+        ctxTemplate->Set(String::New("isdir"), FunctionTemplate::New(IsDir));
+
         /*
         ctxTemplate->Set(String::New("AvailableEntities"), FunctionTemplate::New(AvailableEntities));
         ctxTemplate->Set(String::New("ListEntities"), FunctionTemplate::New(ListEntities));

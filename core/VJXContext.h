@@ -23,7 +23,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-#define USE_NSOPERATIONS 1
+#define USE_NSOPERATIONS 0
 
 @interface VJXContext : NSObject {
 	NSMutableArray *registeredClasses;

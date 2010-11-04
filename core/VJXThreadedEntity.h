@@ -29,6 +29,7 @@
 @protected
     uint64_t previousTimeStamp;
     NSNumber *frequency;
+    BOOL quit;
 @private
     NSThread *worker;
     NSTimer  *timer;

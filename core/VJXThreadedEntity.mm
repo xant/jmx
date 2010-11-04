@@ -45,6 +45,7 @@
         frequencyPin = [self registerOutputPin:@"frequency" withType:kVJXNumberPin];
         stampCount = 0;
         previousTimeStamp = 0;
+        quit = NO;
     }
     return self;
 }
@@ -57,25 +58,28 @@
 
 - (void)start
 {
-    if (!worker) {
-        worker = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
-        [worker setThreadPriority:1.0];
-        [worker start];
-        active = YES;
+    if (worker) {
+        [self stop];
+        [worker release];
     }
+    worker = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
+    [worker setThreadPriority:1.0];
+    [worker start];
+    active = YES;
+    quit = NO;
 }
 
 - (void)stop {
-    if (worker) {
+    if (worker && ![worker isFinished]) {
+        active = NO;
         [worker cancel];
         // wait for the thread to really finish otherwise it could
         // sill retaining something which is supposed to be released
         // immediately after we return from this method
-        while (![worker isFinished])
-            [NSThread sleepForTimeInterval:0.001];
-        [worker release];
+        //while (![worker isFinished])
+        //    [NSThread sleepForTimeInterval:0.001];
+        [worker autorelease];
         worker = nil;
-        active = NO;
     }
 }
 
@@ -89,10 +93,12 @@
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     uint64_t timeStamp = CVGetCurrentHostTime();
     [self tick:timeStamp];
-    [self outputDefaultSignals:timeStamp];
-    if ([[NSThread currentThread] isCancelled]) {
+    if ([[NSThread currentThread] isCancelled] || quit) {
         [timer invalidate];
-    }/* else { 
+        active = NO;
+    } else {
+        [self outputDefaultSignals:timeStamp];
+        /*
         NSTimeInterval currentInterval = [timer timeInterval];
         NSTimeInterval newInterval = 1.0/[frequency doubleValue];
         if (currentInterval != newInterval) {
@@ -103,7 +109,8 @@
             NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
             [runLoop addTimer:timer forMode:NSRunLoopCommonModes];
         }
-    }*/
+         */
+    }
     [pool release];
 }
 
@@ -175,6 +182,14 @@ static v8::Handle<Value> stop(const Arguments& args)
     return v8::Undefined();
 }
 
+static v8::Handle<Value>GetActive(Local<String> name, const AccessorInfo& info)
+{
+    HandleScope handleScope;
+    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
+    VJXThreadedEntity *entity = (VJXThreadedEntity *)field->Value();
+    return handleScope.Close(v8::Boolean::New(entity.active ? 1 : 0));
+}
+
 + (v8::Handle<v8::FunctionTemplate>)jsClassTemplate
 {
     HandleScope handleScope;
@@ -183,6 +198,7 @@ static v8::Handle<Value> stop(const Arguments& args)
     v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
     classProto->Set("start", FunctionTemplate::New(start));
     classProto->Set("stop", FunctionTemplate::New(stop));
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("active"), GetActive);
     return handleScope.Close(entityTemplate);
 }
 

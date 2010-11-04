@@ -69,6 +69,7 @@ static OSStatus _FillComplexBufferProc (
         needsPrefill = YES;
         rOffset = wOffset = 0;
         memset(samples, 0, sizeof(samples));
+        writersLock = [[NSRecursiveLock alloc] init];
     }
     return self;
 }
@@ -124,16 +125,18 @@ static OSStatus _FillComplexBufferProc (
         err = AudioConverterFillComplexBuffer ( converter, _FillComplexBufferProc, &callbackContext, &framesRead, outputBufferList, NULL );
     }
     if (err != noErr) {
-        samples[wOffset++%kVJXAudioOutputSamplesBufferCount] = [[VJXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&inputDescription copy:NO freeOnRelease:NO] retain];
+        samples[wOffset++%kVJXAudioOutputSamplesBufferCount] = [[VJXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&inputDescription copy:YES freeOnRelease:YES] retain];
     }
 #else
     VJXAudioBuffer *previousSample;
+    [writersLock lock];
     previousSample = samples[wOffset%kVJXAudioOutputSamplesBufferCount];
     samples[wOffset++%kVJXAudioOutputSamplesBufferCount] = [buffer retain];
+    [writersLock unlock];
     // let's have the buffer released next time the active pool is drained
     // we want to return as soon as possible
     if (previousSample)
-        [previousSample autorelease];
+        [previousSample release];
 #endif
     if (wOffset > kVJXAudioOutputSamplesBufferPrefillCount)
         needsPrefill = NO;
@@ -154,7 +157,8 @@ static OSStatus _FillComplexBufferProc (
 {
     if (format)
         [format dealloc];
-
+    if (writersLock)
+        [writersLock release];
     while (rOffset < wOffset) 
         [samples[rOffset++%kVJXAudioOutputSamplesBufferCount] release];
     if (convertedBuffer)

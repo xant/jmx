@@ -36,6 +36,7 @@
 #import "VJXAudioSpectrumAnalyzer.h"
 #import "VJXVideoFilter.h"
 #import "VJXTextLayer.h"
+#import "VJXJavascriptFile.h"
 
 @implementation VeeJayAppDelegate
 
@@ -56,6 +57,7 @@
     [sharedContext registerClass:[VJXAudioSpectrumAnalyzer class]];
     [sharedContext registerClass:[VJXVideoFilter class]];
 	[sharedContext registerClass:[VJXTextLayer class]];
+    [sharedContext registerClass:[VJXJavascriptFile class]];
 	NSLog(@"Registered %i entities", [[sharedContext registeredClasses] count]);
 }
 

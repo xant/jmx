@@ -541,13 +541,13 @@ v8::Handle<Value> connect(const Arguments& args)
     // Add accessors for each of the fields of the entity.
     instanceTemplate->SetAccessor(String::NewSymbol("type"), type);
     instanceTemplate->SetAccessor(String::NewSymbol("direction"), direction);
-    instanceTemplate->SetAccessor(String::NewSymbol("name"), accessStringProperty);
-    instanceTemplate->SetAccessor(String::NewSymbol("multiple"), accessBoolProperty);
-    instanceTemplate->SetAccessor(String::NewSymbol("continuous"), accessBoolProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("name"), GetStringProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("multiple"), GetBoolProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("continuous"), GetBoolProperty);
     //instanceTemplate->SetAccessor(String::NewSymbol("owner"), accessObjectProperty);
-    instanceTemplate->SetAccessor(String::NewSymbol("minValue"), accessNumberProperty);
-    instanceTemplate->SetAccessor(String::NewSymbol("maxValue"), accessNumberProperty);
-    instanceTemplate->SetAccessor(String::NewSymbol("connected"), accessBoolProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("minValue"), GetObjectProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("maxValue"), GetObjectProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("connected"), GetBoolProperty);
     //instanceTemplate->SetAccessor(String::NewSymbol("allowedValues"), allowedValues);
     return handleScope.Close(classTemplate);
 }

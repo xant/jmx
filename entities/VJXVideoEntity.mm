@@ -182,18 +182,18 @@ using namespace v8;
 
 #pragma mark V8
 
-static v8::Handle<Value>frequency(Local<String> name, const AccessorInfo& info)
-{
-    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
-    VJXVideoEntity *request = (VJXVideoEntity *)field->Value();
-    return Number::New([request.frequency doubleValue]);
-}
-
 + (v8::Handle<v8::FunctionTemplate>)jsClassTemplate
 {
     HandleScope handleScope;
     v8::Handle<v8::FunctionTemplate> entityTemplate = [super jsClassTemplate];
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("frequency"), accessNumberProperty);
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("saturation"), GetObjectProperty);
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("brightness"), GetObjectProperty);
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("contrast"), GetObjectProperty);
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("alpha"), GetObjectProperty);
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("rotation"), GetObjectProperty);
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("scaleRatio"), GetObjectProperty);
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("fps"), GetObjectProperty);
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("saturation"), GetObjectProperty);
     return handleScope.Close(entityTemplate);
 }
 

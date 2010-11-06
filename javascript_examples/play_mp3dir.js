@@ -23,7 +23,7 @@ for (i = 0; i < list.length; i++) {
     if (list[i].indexOf('.mp3') >= 0 && !isdir(basepath+list[i])) {
         echo(list[i]);
         audiofile.open(basepath+list[i]);
-        audiofile.repeat = 0; // we don't want to play always the same file
+        audiofile.repeat = false; // we don't want to play always the same file
         audiofile.start();
         while (1) {
             // if EOF is reached, the layer will be automatically deactivated

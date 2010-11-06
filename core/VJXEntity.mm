@@ -303,12 +303,12 @@ static Persistent<ObjectTemplate> entityTemplate;
 
 - (void)activate
 {
-    active = YES;
+    self.active = YES;
 }
 
 - (void)deactivate
 {
-    active = NO;
+    self.active = NO;
 }
 
 - (void)setActivePin:(id)value
@@ -333,7 +333,6 @@ static Persistent<ObjectTemplate> entityTemplate;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityOutputPinAdded" 
                                                         object:self
                                                       userInfo:userInfo];
-    NSLog(@"EXPORTED %@", pin.name);
 }
 
 #pragma mark V8
@@ -426,12 +425,11 @@ v8::Handle<Value> outputPin(const Arguments& args)
     instanceTemplate->SetInternalFieldCount(1);
     
     // Add accessors for each of the fields of the entity.
-    instanceTemplate->SetAccessor(String::NewSymbol("name"), accessStringProperty);
-    instanceTemplate->SetAccessor(String::NewSymbol("description"), accessStringProperty);
-    //instanceTemplate->SetAccessor(String::NewSymbol("outputPin"), outputPin);
+    instanceTemplate->SetAccessor(String::NewSymbol("name"), GetStringProperty, SetStringProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("description"), GetStringProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("inputPins"), inputPins);
     instanceTemplate->SetAccessor(String::NewSymbol("outputPins"), outputPins);
-    //instanceTemplate->SetAccessor(String::NewSymbol("frequency"), frequency);
+    instanceTemplate->SetAccessor(String::NewSymbol("active"), GetBoolProperty, SetBoolProperty);
     return handleScope.Close(classTemplate);
 }
 

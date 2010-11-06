@@ -191,7 +191,7 @@ static v8::Handle<Value> stop(const Arguments& args)
     v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
     classProto->Set("start", FunctionTemplate::New(start));
     classProto->Set("stop", FunctionTemplate::New(stop));
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("active"), accessBoolProperty);
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("frequency"), GetNumberProperty, SetNumberProperty);
     return handleScope.Close(entityTemplate);
 }
 

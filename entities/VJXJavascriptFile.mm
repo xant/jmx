@@ -46,7 +46,7 @@
 - (void)tick:(uint64_t)timeStamp
 {
     if (path) {
-        [VJXJavaScript runScript:[NSString stringWithFormat:@"include('%@');", path]];
+        [VJXJavaScript runScript:[NSString stringWithFormat:@"include('%@');", path] withEntity:self];
         quit = YES;
     }
 }

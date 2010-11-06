@@ -35,6 +35,31 @@ static const char* ToCString(const v8::String::Utf8Value& value) {
     return *value ? *value : "<string conversion failed>";
 }
 
+static v8::Handle<Value> ExportPin(const Arguments& args) {
+    if (args.Length() < 1) return Undefined();
+    HandleScope scope;
+    v8::Handle<Object> pinObj = args[0]->ToObject();
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    v8::String::Utf8Value proto(pinObj->ToString());
+    NSString *objectType = [NSString stringWithUTF8String:*proto];
+    if ([objectType isEqualToString:@"[object Pin]"]) {
+        Local<External> wrap = Local<External>::Cast(pinObj->GetInternalField(0));
+        VJXOutputPin *pin = (VJXOutputPin *)wrap->Value();
+        Local<Context> globalContext = v8::Context::GetCurrent();
+        Local<Object> globalObject  = globalContext->Global();
+        if (!globalObject.IsEmpty()) {
+            VJXEntity *scriptEntity = (VJXEntity *)globalObject->GetPointerFromInternalField(0);
+            if (scriptEntity)
+                [scriptEntity proxyOutputPin:pin];
+            return v8::Boolean::New(1);
+        }
+    } else {
+        NSLog(@"(exportPin) Bad argument: %@", objectType);
+    }
+    [pool drain];
+    return v8::Boolean::New(0);
+}
+
 static void ReportException(v8::TryCatch* try_catch) {
     v8::HandleScope handle_scope;
     v8::String::Utf8Value exception(try_catch->Exception());
@@ -176,8 +201,13 @@ static v8::Handle<Value> Sleep(const Arguments& args)
 
 + (void)runScript:(NSString *)source
 {
+    return [self runScript:source withEntity:nil];
+}
+
++ (void)runScript:(NSString *)source withEntity:(VJXEntity *)entity
+{
     VJXJavaScript *jsContext = [[self alloc] init];
-    [jsContext runScript:source];
+    [jsContext runScript:source withEntity:entity];
     [jsContext release];
 }
 
@@ -212,7 +242,7 @@ static v8::Handle<Value> Sleep(const Arguments& args)
         ctxTemplate->Set(String::New("sleep"), FunctionTemplate::New(Sleep));
         ctxTemplate->Set(String::New("lsdir"), FunctionTemplate::New(ListDir));
         ctxTemplate->Set(String::New("isdir"), FunctionTemplate::New(IsDir));
-
+        ctxTemplate->Set(String::New("exportPin"), FunctionTemplate::New(ExportPin));
         /*
         ctxTemplate->Set(String::New("AvailableEntities"), FunctionTemplate::New(AvailableEntities));
         ctxTemplate->Set(String::New("ListEntities"), FunctionTemplate::New(ListEntities));
@@ -222,6 +252,7 @@ static v8::Handle<Value> Sleep(const Arguments& args)
         // functions
         ctx = Context::New(NULL, ctxTemplate);
         contextes[self] = ctx;
+        scriptEntity = nil;
         // Enter the newly created execution environment.
     }
     return self;
@@ -247,16 +278,27 @@ static v8::Handle<Value> Sleep(const Arguments& args)
     while( V8::IdleNotification() )
         ;
     contextes.erase(self);
+    if (scriptEntity)
+        [scriptEntity release];
     [super dealloc];
 }
 
-- (void)runScript:(NSString *)script
+- (void)runScript:(NSString *)source
+{
+    return [self runScript:source withEntity:nil];
+}
+
+- (void)runScript:(NSString *)script withEntity:(VJXEntity *)entity
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     v8::HandleScope handle_scope;
     
     v8::Context::Scope context_scope(ctx);
-    
+    if (entity) {
+        scriptEntity = [entity retain];
+        Local<Object> globalObject = ctx->Global();
+        globalObject->SetPointerInInternalField(0, scriptEntity);
+    }
     v8::TryCatch try_catch;
     v8::Handle<v8::Script> compiledScript = v8::Script::Compile(String::New([script UTF8String]), String::New("VJXScript"));
     if (!compiledScript.IsEmpty()) {

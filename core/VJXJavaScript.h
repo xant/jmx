@@ -16,8 +16,11 @@ v8::Handle<v8::Value>accessBoolProperty(v8::Local<v8::String> name, const v8::Ac
 
 //using namespace v8;
 
+@class VJXEntity;
+
 @interface VJXJavaScript : NSObject {
 @private
+    VJXEntity *scriptEntity;
     v8::Persistent<v8::Context> ctx;
     std::map<id, v8::Persistent<v8::Object> > instancesMap;
 }
@@ -25,7 +28,9 @@ v8::Handle<v8::Value>accessBoolProperty(v8::Local<v8::String> name, const v8::Ac
 + (VJXJavaScript *)getContext:(v8::Local<v8::Context>&)currentContext;
 + (void)runScriptInBackground:(NSString *)source;
 + (void)runScript:(NSString *)source;
++ (void)runScript:(NSString *)source withEntity:(VJXEntity *)entity;
 - (void)runScript:(NSString *)source;
+- (void)runScript:(NSString *)source withEntity:(VJXEntity *)entity;
 - (void)addPersistentInstance:(v8::Persistent<v8::Object>)persistent obj:(id)obj;
 - (void)removePersistentInstance:(id)obj;
 @end

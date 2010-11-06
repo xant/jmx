@@ -160,6 +160,9 @@
                       allowedValues:(NSArray *)pinValues
                        initialValue:(id)value;
 
+- (void)proxyInputPin:(VJXInputPin *)pin;
+- (void)proxyOutputPin:(VJXOutputPin *)pin;
+
 - (void)unregisterInputPin:(NSString *)pinName;
 - (void)unregisterOutputPin:(NSString *)pinName;
 
@@ -183,6 +186,9 @@
 - (void)deactivate;
 
 - (void)notifyModifications;
+
+- (void)proxyInputPin:(VJXInputPin *)pin;
+- (void)proxyOutputPin:(VJXOutputPin *)pin;
 
 #pragma mark V8
 

@@ -192,10 +192,21 @@ VJXEntityLabelLayer *VJXEntityLabelLayerCreate(NSString *name) {
 
 - (void)outputPinAdded:(NSNotification *)notification
 {
+    VJXOutletLayer *outlet = VJXInputOutletLayerCreate([self outputPinWithName:[[notification userInfo] objectForKey:@"pinName"]]);
+    [self addSublayer:outlet];
+    [self.outlets addObject:outlet];
+    [self recalculateFrame];
+    [self reorderOutlets];
 }
 
 - (void)outputPinRemoved:(NSNotification *)notification
 {
+    NSString __block *pinName = [[notification userInfo] objectForKey:@"pinName"];
+    NSUInteger index = [self.outlets indexOfObjectPassingTest:^(id obj, NSUInteger index, BOOL *stop) {
+        return [((VJXOutletLayer *)obj).pin.pin.name isEqualToString:pinName];
+    }];
+    [[self.outlets objectAtIndex:index] removeFromSuperlayer];
+    [self.outlets removeObjectAtIndex:index];
 }
 
 - (void)select

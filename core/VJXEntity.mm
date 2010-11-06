@@ -221,7 +221,7 @@ static Persistent<ObjectTemplate> entityTemplate;
 - (void)unregisterInputPin:(NSString *)pinName
 {
     VJXInputPin *pin = [[inputPins objectForKey:pinName] retain];
-    if (pin) {
+    if (pin && pin.owner == self) {
         [inputPins removeObjectForKey:pinName];
         [pin disconnectAllPins];
     }
@@ -235,7 +235,7 @@ static Persistent<ObjectTemplate> entityTemplate;
 - (void)unregisterOutputPin:(NSString *)pinName
 {
     VJXOutputPin *pin = [[outputPins objectForKey:pinName] retain];
-    if (pin) {
+    if (pin && pin.owner == self) { // don't touch it if the pin is proxed
         [outputPins removeObjectForKey:pinName];
         [pin disconnectAllPins];
     }
@@ -318,6 +318,22 @@ static Persistent<ObjectTemplate> entityTemplate;
               [value boolValue])
     ? YES
     : NO;
+}
+
+- (void)proxyInputPin:(VJXInputPin *)pin
+{
+    
+}
+
+- (void)proxyOutputPin:(VJXOutputPin *)pin
+{
+    [outputPins setObject:pin
+                   forKey:pin.name];
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:pin, @"pin", pin.name, @"pinName", nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXEntityOutputPinAdded" 
+                                                        object:self
+                                                      userInfo:userInfo];
+    NSLog(@"EXPORTED %@", pin.name);
 }
 
 #pragma mark V8

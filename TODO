@@ -1,9 +1,10 @@
+- build a notification framework to be used in the javascript context
+- use an NSOperationQueue for notifications in the javascript context
+- allow to create input pins (registering receiver-callbacks) from javascript
 - allow to provide input values (of any supported type) through the GUI
-- VJXTextLayer
 - parse filter attributes to determine 'mandatory' parameters (and avoid crashes)
 - give as much space as possible on the board (reducing entity/font size ?)
-- improve VJXAudioMixer (and possibly VJXAudioScheduler)
-- extend inspector functionalities
+- improve VJXAudioMixer
 - allow to group 'diagrams' and to access such groups as a sort of 'macro' in other diagrams
 - allow to move multiple slected items all together
 - implement exporters (file save and streaming)

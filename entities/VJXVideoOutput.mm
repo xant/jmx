@@ -72,7 +72,7 @@ using namespace v8;
 
 static void SetWidth(Local<String> name, Local<Value> value, const AccessorInfo& info)
 {
-    v8::Locker lock;
+    //v8::Locker lock;
     HandleScope handleScope;
     v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
     VJXVideoOutput *voutput = (VJXVideoOutput *)field->Value();
@@ -85,7 +85,7 @@ static void SetWidth(Local<String> name, Local<Value> value, const AccessorInfo&
 
 static void SetHeight(Local<String> name, Local<Value> value, const AccessorInfo& info)
 {
-    v8::Locker lock;
+    //v8::Locker lock;
     HandleScope handleScope;
     v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
     VJXVideoOutput *voutput = (VJXVideoOutput *)field->Value();
@@ -98,7 +98,7 @@ static void SetHeight(Local<String> name, Local<Value> value, const AccessorInfo
 
 static v8::Handle<Value>GetWidth(Local<String> name, const AccessorInfo& info)
 {
-    v8::Locker lock;
+    //v8::Locker lock;
     HandleScope handleScope;
     v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
     VJXVideoOutput *voutput = (VJXVideoOutput *)field->Value();
@@ -107,7 +107,7 @@ static v8::Handle<Value>GetWidth(Local<String> name, const AccessorInfo& info)
 
 static v8::Handle<Value>GetHeight(Local<String> name, const AccessorInfo& info)
 {
-    v8::Locker lock;
+    //v8::Locker lock;
     HandleScope handleScope;
     v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
     VJXVideoOutput *voutput = (VJXVideoOutput *)field->Value();
@@ -116,7 +116,7 @@ static v8::Handle<Value>GetHeight(Local<String> name, const AccessorInfo& info)
 
 + (v8::Handle<v8::FunctionTemplate>)jsClassTemplate
 {
-    v8::Locker lock;
+    //v8::Locker lock;
     HandleScope handleScope;
     v8::Handle<v8::FunctionTemplate> entityTemplate = [super jsClassTemplate];
     //entityTemplate->SetClassName(String::New("VideoOutput"));

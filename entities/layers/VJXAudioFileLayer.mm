@@ -113,6 +113,7 @@ VJXV8_EXPORT_ENTITY_CLASS(VJXAudioFileLayer);
 
 static v8::Handle<Value> open(const Arguments& args)
 {
+    //Locker lock;
     HandleScope handleScope;
     Local<Object> self = args.Holder();
     Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
@@ -125,6 +126,7 @@ static v8::Handle<Value> open(const Arguments& args)
 
 static v8::Handle<Value> close(const Arguments& args)
 {
+    //Locker lock;
     HandleScope handleScope;
     Local<Object> self = args.Holder();
     Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
@@ -135,6 +137,7 @@ static v8::Handle<Value> close(const Arguments& args)
 
 + (v8::Handle<v8::FunctionTemplate>)jsClassTemplate
 {
+    //Locker lock;
     HandleScope handleScope;
     v8::Handle<v8::FunctionTemplate> entityTemplate = [super jsClassTemplate];
     entityTemplate->SetClassName(String::New("VideoLayer"));

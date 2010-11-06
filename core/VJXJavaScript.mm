@@ -39,7 +39,7 @@ static const char* ToCString(const v8::String::Utf8Value& value) {
 
 static v8::Handle<Value> ExportPin(const Arguments& args) {
     if (args.Length() < 1) return Undefined();
-    v8::Locker lock;
+    //v8::Locker lock;
     HandleScope scope;
     v8::Handle<Object> pinObj = args[0]->ToObject();
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -64,7 +64,7 @@ static v8::Handle<Value> ExportPin(const Arguments& args) {
 }
 
 static void ReportException(v8::TryCatch* try_catch) {
-    v8::Locker lock;
+    //v8::Locker lock;
     v8::HandleScope handle_scope;
     v8::String::Utf8Value exception(try_catch->Exception());
     const char* exception_string = ToCString(exception);
@@ -103,7 +103,7 @@ static void ReportException(v8::TryCatch* try_catch) {
 
 static v8::Handle<Value> IsDir(const Arguments& args) {
     if (args.Length() < 1) return Undefined();
-    v8::Locker lock;
+    //v8::Locker lock;
     HandleScope scope;
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
@@ -122,7 +122,7 @@ static v8::Handle<Value> IsDir(const Arguments& args) {
 
 static v8::Handle<Value> ListDir(const Arguments& args) {
     if (args.Length() < 1) return Undefined();
-    v8::Locker lock;
+    //v8::Locker lock;
     HandleScope scope;
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
@@ -143,7 +143,7 @@ static v8::Handle<Value> ListDir(const Arguments& args) {
 
 static v8::Handle<Value> Echo(const Arguments& args) {
     if (args.Length() < 1) return v8::Undefined();
-    v8::Locker lock;
+    //v8::Locker lock;
     HandleScope scope;
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
@@ -153,7 +153,7 @@ static v8::Handle<Value> Echo(const Arguments& args) {
 
 static v8::Handle<Value> Include(const Arguments& args) {
     if (args.Length() < 1) return v8::Undefined();
-    v8::Locker lock;
+    //v8::Locker lock;
     HandleScope scope;
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
@@ -177,7 +177,7 @@ static v8::Handle<Value> Include(const Arguments& args) {
 
 static v8::Handle<Value> ListEntities(const Arguments& args)
 {
-    v8::Locker lock;
+    //v8::Locker lock;
 
     NSString *output = [NSString string];
     NSArray *entities;
@@ -200,7 +200,7 @@ static v8::Handle<Value> ListEntities(const Arguments& args)
 
 static v8::Handle<Value> Sleep(const Arguments& args)
 {   
-    v8::Locker lock;
+    //v8::Locker lock;
 
     if (args.Length() >= 1) {// XXX - ignore extra parameters
         v8::Unlocker unlocker;
@@ -211,8 +211,8 @@ static v8::Handle<Value> Sleep(const Arguments& args)
 
 static v8::Handle<Value> Run(const Arguments& args)
 {   
-    v8::Locker locker;
-    v8::Locker::StartPreemption(10);
+    //v8::Locker locker;
+    //v8::Locker::StartPreemption(10);
     HandleScope handleScope;
     Local<Context> context = v8::Context::GetCurrent();
     Local<Object> globalObject  = context->Global();
@@ -238,7 +238,7 @@ static v8::Handle<Value> Run(const Arguments& args)
 
 static v8::Handle<Value> Quit(const Arguments& args)
 {
-    v8::Locker lock;
+    //v8::Locker lock;
     HandleScope handleScope;
     Local<Context> globalContext = v8::Context::GetCurrent();
     Local<Object> globalObject  = globalContext->Global();
@@ -381,7 +381,7 @@ static v8::Handle<Value> Quit(const Arguments& args)
 
     v8::Handle<v8::Script> compiledScript = v8::Script::Compile(String::New([script UTF8String]), String::New("VJXScript"));
     if (!compiledScript.IsEmpty()) {
-        v8::Locker::StartPreemption(100);
+        v8::Locker::StartPreemption(50);
         compiledScript->Run();
     } else {
         String::Utf8Value error(try_catch.Exception());
@@ -434,7 +434,7 @@ v8::Handle<v8::Value>GetStringProperty(v8::Local<v8::String> name, const v8::Acc
 
 v8::Handle<Value>GetObjectProperty(Local<String> name, const AccessorInfo& info)
 {
-    v8::Locker lock;
+    //v8::Locker lock;
     HandleScope handle_scope;
     id obj = (id)info.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -466,7 +466,7 @@ v8::Handle<Value>GetObjectProperty(Local<String> name, const AccessorInfo& info)
 
 v8::Handle<Value>GetBoolProperty(Local<String> name, const AccessorInfo& info)
 {
-    v8::Locker lock;
+    //v8::Locker lock;
     HandleScope handle_scope;
     BOOL ret = NO;
     id obj = (id)info.Holder()->GetPointerFromInternalField(0);
@@ -490,7 +490,7 @@ v8::Handle<Value>GetBoolProperty(Local<String> name, const AccessorInfo& info)
 
 v8::Handle<Value>GetIntProperty(Local<String> name, const AccessorInfo& info)
 {
-    v8::Locker lock;
+    //v8::Locker lock;
     HandleScope handle_scope;
     int32_t ret = 0;
     id obj = (id)info.Holder()->GetPointerFromInternalField(0);
@@ -514,7 +514,7 @@ v8::Handle<Value>GetIntProperty(Local<String> name, const AccessorInfo& info)
 
 void SetStringProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::AccessorInfo& info)
 {
-    v8::Locker lock;
+    //v8::Locker lock;
     HandleScope handleScope;
     String::Utf8Value nameStr(name);
     if (!value->IsString()) {
@@ -539,7 +539,7 @@ void SetStringProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, c
 
 void SetNumberProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::AccessorInfo& info)
 {
-    v8::Locker lock;
+    //v8::Locker lock;
     HandleScope handleScope;
     String::Utf8Value nameStr(name);
     if (!value->IsNumber()) {
@@ -563,7 +563,7 @@ void SetNumberProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, c
 
 void SetBoolProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::AccessorInfo& info)
 {
-    v8::Locker lock;
+    //v8::Locker lock;
     HandleScope handleScope;
     String::Utf8Value nameStr(name);
     if (!(value->IsBoolean() || value->IsNumber())) {
@@ -591,7 +591,7 @@ void SetBoolProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, con
 
 void SetIntProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::AccessorInfo& info)
 {
-    v8::Locker lock;
+    //v8::Locker lock;
     HandleScope handleScope;
     String::Utf8Value nameStr(name);
     if (!value->IsInt32()) {

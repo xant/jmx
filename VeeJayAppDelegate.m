@@ -32,7 +32,6 @@
 #import "VJXCoreAudioOutput.h"
 #import "VJXQtAudioCaptureLayer.h"
 #import "VJXAudioMixer.h"
-#import "VJXAudioScheduler.h"
 #import "VJXAudioSpectrumAnalyzer.h"
 #import "VJXVideoFilter.h"
 #import "VJXTextLayer.h"
@@ -53,7 +52,6 @@
 	[sharedContext registerClass:[VJXQtAudioCaptureLayer class]];
 	[sharedContext registerClass:[VJXAudioFileLayer class]];
 	[sharedContext registerClass:[VJXAudioMixer class]];
-    [sharedContext registerClass:[VJXAudioScheduler class]];
     [sharedContext registerClass:[VJXAudioSpectrumAnalyzer class]];
     [sharedContext registerClass:[VJXVideoFilter class]];
 	[sharedContext registerClass:[VJXTextLayer class]];

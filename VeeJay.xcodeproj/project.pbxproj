@@ -35,7 +35,6 @@
 		825C311A1275ADB6006376B8 /* VJXSoftScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30FF1275ADB6006376B8 /* VJXSoftScreen.m */; };
 		825C311B1275ADB6006376B8 /* VJXAudioMixer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31011275ADB6006376B8 /* VJXAudioMixer.mm */; };
 		825C311C1275ADB6006376B8 /* VJXAudioOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31031275ADB6006376B8 /* VJXAudioOutput.m */; };
-		825C311D1275ADB6006376B8 /* VJXAudioScheduler.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31051275ADB6006376B8 /* VJXAudioScheduler.m */; };
 		825C311E1275ADB6006376B8 /* VJXAudioSpectrumAnalyzer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31071275ADB6006376B8 /* VJXAudioSpectrumAnalyzer.mm */; };
 		825C311F1275ADB6006376B8 /* VJXExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31091275ADB6006376B8 /* VJXExporter.m */; };
 		825C31201275ADB6006376B8 /* VJXVideoEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C310B1275ADB6006376B8 /* VJXVideoEntity.mm */; };
@@ -139,8 +138,6 @@
 		825C31011275ADB6006376B8 /* VJXAudioMixer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VJXAudioMixer.mm; sourceTree = "<group>"; };
 		825C31021275ADB6006376B8 /* VJXAudioOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXAudioOutput.h; sourceTree = "<group>"; };
 		825C31031275ADB6006376B8 /* VJXAudioOutput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXAudioOutput.m; sourceTree = "<group>"; };
-		825C31041275ADB6006376B8 /* VJXAudioScheduler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXAudioScheduler.h; sourceTree = "<group>"; };
-		825C31051275ADB6006376B8 /* VJXAudioScheduler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXAudioScheduler.m; sourceTree = "<group>"; };
 		825C31061275ADB6006376B8 /* VJXAudioSpectrumAnalyzer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXAudioSpectrumAnalyzer.h; sourceTree = "<group>"; };
 		825C31071275ADB6006376B8 /* VJXAudioSpectrumAnalyzer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VJXAudioSpectrumAnalyzer.mm; sourceTree = "<group>"; };
 		825C31081275ADB6006376B8 /* VJXExporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXExporter.h; sourceTree = "<group>"; };
@@ -493,8 +490,6 @@
 				825C31011275ADB6006376B8 /* VJXAudioMixer.mm */,
 				825C31021275ADB6006376B8 /* VJXAudioOutput.h */,
 				825C31031275ADB6006376B8 /* VJXAudioOutput.m */,
-				825C31041275ADB6006376B8 /* VJXAudioScheduler.h */,
-				825C31051275ADB6006376B8 /* VJXAudioScheduler.m */,
 				825C31061275ADB6006376B8 /* VJXAudioSpectrumAnalyzer.h */,
 				825C31071275ADB6006376B8 /* VJXAudioSpectrumAnalyzer.mm */,
 				825C31081275ADB6006376B8 /* VJXExporter.h */,
@@ -621,7 +616,6 @@
 				825C311A1275ADB6006376B8 /* VJXSoftScreen.m in Sources */,
 				825C311B1275ADB6006376B8 /* VJXAudioMixer.mm in Sources */,
 				825C311C1275ADB6006376B8 /* VJXAudioOutput.m in Sources */,
-				825C311D1275ADB6006376B8 /* VJXAudioScheduler.m in Sources */,
 				825C311E1275ADB6006376B8 /* VJXAudioSpectrumAnalyzer.mm in Sources */,
 				825C311F1275ADB6006376B8 /* VJXExporter.m in Sources */,
 				825C31201275ADB6006376B8 /* VJXVideoEntity.mm in Sources */,

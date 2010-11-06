@@ -24,7 +24,8 @@
 #define __VJXV8__ 1
 #import "VJXEntity.h"
 #import <QuartzCore/QuartzCore.h>
- 
+#import "VJXJavaScript.h"
+
 using namespace v8;
 
 static Persistent<ObjectTemplate> entityTemplate;
@@ -323,22 +324,6 @@ static Persistent<ObjectTemplate> entityTemplate;
 
 #pragma mark Accessors
 
-static v8::Handle<Value>name(Local<String> name, const AccessorInfo& info)
-{
-    HandleScope handleScope;
-    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
-    VJXEntity *entity = (VJXEntity *)field->Value();
-    return handleScope.Close(String::New([entity.name UTF8String], [entity.name length]));
-}
-
-static v8::Handle<Value>description(Local<String> name, const AccessorInfo& info)
-{
-    HandleScope handleScope;
-    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
-    VJXEntity *entity = (VJXEntity *)field->Value();
-    return handleScope.Close(String::New([entity.description UTF8String], [entity.name length]));
-}
-
 static v8::Handle<Value>inputPins(Local<String> name, const AccessorInfo& info)
 {
     HandleScope handleScope;
@@ -425,8 +410,8 @@ v8::Handle<Value> outputPin(const Arguments& args)
     instanceTemplate->SetInternalFieldCount(1);
     
     // Add accessors for each of the fields of the entity.
-    instanceTemplate->SetAccessor(String::NewSymbol("name"), name);
-    instanceTemplate->SetAccessor(String::NewSymbol("description"), description);
+    instanceTemplate->SetAccessor(String::NewSymbol("name"), accessStringProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("description"), accessStringProperty);
     //instanceTemplate->SetAccessor(String::NewSymbol("outputPin"), outputPin);
     instanceTemplate->SetAccessor(String::NewSymbol("inputPins"), inputPins);
     instanceTemplate->SetAccessor(String::NewSymbol("outputPins"), outputPins);

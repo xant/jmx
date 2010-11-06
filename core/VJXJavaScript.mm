@@ -297,3 +297,64 @@ static v8::Handle<Value> Sleep(const Arguments& args)
 }
 
 @end
+
+v8::Handle<Value>accessStringProperty(Local<String> name, const AccessorInfo& info)
+{
+    HandleScope handle_scope;
+    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
+    id obj = (id)field->Value();
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    String::Utf8Value value(name);
+    NSString *property = [NSString stringWithUTF8String:*value];
+    NSString *output = nil;
+    SEL selector = NSSelectorFromString(property);
+    if ([obj respondsToSelector:selector])
+        output = [obj performSelector:selector];
+    else 
+        NSLog(@"Unknown property %@", property);
+    [pool drain];
+    if (output)
+        return handle_scope.Close(String::New([output UTF8String], [output length]));
+    else
+        return Undefined();
+    
+}
+
+v8::Handle<Value>accessNumberProperty(Local<String> name, const AccessorInfo& info)
+{
+    HandleScope handle_scope;
+    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
+    id obj = (id)field->Value();
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    String::Utf8Value value(name);
+    NSString *property = [NSString stringWithUTF8String:*value];
+    NSNumber *output = nil;
+    SEL selector = NSSelectorFromString(property);
+    if ([obj respondsToSelector:selector])
+        output = [obj performSelector:selector];
+    else 
+        NSLog(@"Unknown property %@", property);
+    [pool drain];
+    if (output)
+        return handle_scope.Close(Number::New([output doubleValue]));
+    else
+        return Undefined();
+}
+
+v8::Handle<Value>accessBoolProperty(Local<String> name, const AccessorInfo& info)
+{
+    HandleScope handle_scope;
+    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
+    id obj = (id)field->Value();
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    String::Utf8Value value(name);
+    NSString *property = [NSString stringWithUTF8String:*value];
+    SEL selector = NSSelectorFromString(property);
+    if (![obj respondsToSelector:selector]) {
+        NSLog(@"Unknown property %@", property);
+        [pool drain];
+        return Undefined();
+    }
+    [pool drain];
+    return handle_scope.Close(v8::Boolean::New([obj performSelector:selector]));
+}

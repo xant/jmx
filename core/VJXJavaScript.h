@@ -10,6 +10,10 @@
 #include <v8.h>
 #include <map>
 
+v8::Handle<v8::Value>accessStringProperty(v8::Local<v8::String> name, const v8::AccessorInfo& info);
+v8::Handle<v8::Value>accessNumberProperty(v8::Local<v8::String> name, const v8::AccessorInfo& info);
+v8::Handle<v8::Value>accessBoolProperty(v8::Local<v8::String> name, const v8::AccessorInfo& info);
+
 //using namespace v8;
 
 @interface VJXJavaScript : NSObject {

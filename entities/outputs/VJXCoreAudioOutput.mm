@@ -77,7 +77,7 @@ VJXV8_EXPORT_ENTITY_CLASS(VJXCoreAudioOutput);
         }
         [currentSamplePin deliverData:sample fromSender:self];
     } else {
-        NSLog(@"NO FRAME");
+        //NSLog(@"NO FRAME");
     }
 }
 

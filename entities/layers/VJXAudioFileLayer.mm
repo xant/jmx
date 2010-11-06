@@ -144,6 +144,7 @@ static void SetRepeat(Local<String> name, Local<Value> value, const AccessorInfo
     [pool drain];
 }
 
+/*
 static v8::Handle<Value>GetRepeat(Local<String> name, const AccessorInfo& info)
 {
     HandleScope handleScope;
@@ -151,6 +152,7 @@ static v8::Handle<Value>GetRepeat(Local<String> name, const AccessorInfo& info)
     VJXAudioFileLayer *entity = (VJXAudioFileLayer *)field->Value();
     return handleScope.Close(v8::Boolean::New(entity.repeat));
 }
+*/
 
 + (v8::Handle<v8::FunctionTemplate>)jsClassTemplate
 {
@@ -160,7 +162,7 @@ static v8::Handle<Value>GetRepeat(Local<String> name, const AccessorInfo& info)
     v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
     classProto->Set("open", FunctionTemplate::New(open));
     classProto->Set("close", FunctionTemplate::New(close));
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("repeat"), GetRepeat, SetRepeat);
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("repeat"), accessBoolProperty, SetRepeat);
     return handleScope.Close(entityTemplate);
 }
 

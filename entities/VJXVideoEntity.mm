@@ -24,6 +24,7 @@
 #define __VJXV8__ 1
 #import "VJXVideoEntity.h"
 #import <QuartzCore/QuartzCore.h>
+#import "VJXJavaScript.h"
 
 using namespace v8;
 
@@ -192,7 +193,7 @@ static v8::Handle<Value>frequency(Local<String> name, const AccessorInfo& info)
 {
     HandleScope handleScope;
     v8::Handle<v8::FunctionTemplate> entityTemplate = [super jsClassTemplate];
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("frequency"), frequency);
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("frequency"), accessNumberProperty);
     return handleScope.Close(entityTemplate);
 }
 

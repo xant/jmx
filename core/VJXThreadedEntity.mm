@@ -24,6 +24,7 @@
 #import <QuartzCore/QuartzCore.h>
 #define __VJXV8__ 1
 #import "VJXThreadedEntity.h"
+#import "VJXJavaScript.h"
 
 @interface VJXThreadedEntity (Private)
 - (void)run;
@@ -182,14 +183,6 @@ static v8::Handle<Value> stop(const Arguments& args)
     return v8::Undefined();
 }
 
-static v8::Handle<Value>GetActive(Local<String> name, const AccessorInfo& info)
-{
-    HandleScope handleScope;
-    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
-    VJXThreadedEntity *entity = (VJXThreadedEntity *)field->Value();
-    return handleScope.Close(v8::Boolean::New(entity.active ? 1 : 0));
-}
-
 + (v8::Handle<v8::FunctionTemplate>)jsClassTemplate
 {
     HandleScope handleScope;
@@ -198,7 +191,7 @@ static v8::Handle<Value>GetActive(Local<String> name, const AccessorInfo& info)
     v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
     classProto->Set("start", FunctionTemplate::New(start));
     classProto->Set("stop", FunctionTemplate::New(stop));
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("active"), GetActive);
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("active"), accessBoolProperty);
     return handleScope.Close(entityTemplate);
 }
 

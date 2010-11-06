@@ -26,6 +26,7 @@
 #import "VJXOutputPin.h"
 #import "VJXInputPin.h"
 #import <v8.h>
+#import "VJXJavaScript.h"
 
 using namespace v8;
 
@@ -485,12 +486,13 @@ using namespace v8;
 }
 
 #pragma mark V8
-static v8::Handle<Value>name(Local<String> name, const AccessorInfo& info)
+static v8::Handle<Value>direction(Local<String> name, const AccessorInfo& info)
 {
     HandleScope handle_scope;
     v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
     VJXPin *pin = (VJXPin *)field->Value();
-    return handle_scope.Close(String::New([pin.name UTF8String], [pin.name length]));
+    Local<String> ret = String::New((pin.direction == kVJXInputPin) ? "input" : "output");
+    return handle_scope.Close(ret);
 }
 
 static v8::Handle<Value>type(Local<String> name, const AccessorInfo& info)
@@ -537,18 +539,16 @@ v8::Handle<Value> connect(const Arguments& args)
     v8::Handle<ObjectTemplate> instanceTemplate = classTemplate->InstanceTemplate();
     instanceTemplate->SetInternalFieldCount(1);
     // Add accessors for each of the fields of the entity.
-    instanceTemplate->SetAccessor(String::NewSymbol("name"), name);
     instanceTemplate->SetAccessor(String::NewSymbol("type"), type);
-    /*
-    instanceTemplate->SetAccessor(String::NewSymbol("multiple"), multiple);
     instanceTemplate->SetAccessor(String::NewSymbol("direction"), direction);
-    instanceTemplate->SetAccessor(String::NewSymbol("allowedValues"), allowedValues);
-    instanceTemplate->SetAccessor(String::NewSymbol("continuous"), continuous);
-    instanceTemplate->SetAccessor(String::NewSymbol("owner"), owner);
-    instanceTemplate->SetAccessor(String::NewSymbol("minValue"), minValue);
-    instanceTemplate->SetAccessor(String::NewSymbol("maxValue"), maxValue);
-    instanceTemplate->SetAccessor(String::NewSymbol("connected"), connected);
-     */
+    instanceTemplate->SetAccessor(String::NewSymbol("name"), accessStringProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("multiple"), accessBoolProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("continuous"), accessBoolProperty);
+    //instanceTemplate->SetAccessor(String::NewSymbol("owner"), accessObjectProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("minValue"), accessNumberProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("maxValue"), accessNumberProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("connected"), accessBoolProperty);
+    //instanceTemplate->SetAccessor(String::NewSymbol("allowedValues"), allowedValues);
     return handleScope.Close(classTemplate);
 }
 

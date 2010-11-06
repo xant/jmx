@@ -16,10 +16,14 @@ movie.start(); // start the movie
 movie2.start();
 outputs = new Array(output1, output2);
 cnt = 0;
-while (1) {
+
+mainloop = function(pin, list) {
     echo("tick" + cnt++);
-    input.connect(outputs[cnt%2]);
+    pin.connect(list[cnt%2]);
     if (cnt == 1200)
-        break;
-    sleep(0.05);
+        quit();
+    // switch input every 2 frames (assuming 25 frames per second)
+    sleep((1.0/25 * 2));
 }
+
+run(mainloop, input, outputs);

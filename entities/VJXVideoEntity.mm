@@ -186,14 +186,15 @@ using namespace v8;
 {
     HandleScope handleScope;
     v8::Handle<v8::FunctionTemplate> entityTemplate = [super jsClassTemplate];
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("saturation"), GetObjectProperty);
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("brightness"), GetObjectProperty);
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("contrast"), GetObjectProperty);
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("alpha"), GetObjectProperty);
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("rotation"), GetObjectProperty);
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("scaleRatio"), GetObjectProperty);
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("fps"), GetObjectProperty);
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("saturation"), GetObjectProperty);
+    // accessors to image parameters
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("saturation"), GetNumberProperty, SetNumberProperty);
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("brightness"), GetNumberProperty, SetNumberProperty);
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("contrast"), GetNumberProperty, SetNumberProperty);
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("alpha"), GetNumberProperty, SetNumberProperty);
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("rotation"), GetNumberProperty, SetNumberProperty);
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("scaleRatio"), GetNumberProperty, SetNumberProperty);
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("fps"), GetNumberProperty, SetNumberProperty);
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("saturation"), GetNumberProperty, SetNumberProperty);
     return handleScope.Close(entityTemplate);
 }
 

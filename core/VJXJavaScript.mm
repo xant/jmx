@@ -39,6 +39,7 @@ static const char* ToCString(const v8::String::Utf8Value& value) {
 
 static v8::Handle<Value> ExportPin(const Arguments& args) {
     if (args.Length() < 1) return Undefined();
+    v8::Locker lock;
     HandleScope scope;
     v8::Handle<Object> pinObj = args[0]->ToObject();
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -53,16 +54,17 @@ static v8::Handle<Value> ExportPin(const Arguments& args) {
             VJXEntity *scriptEntity = (VJXEntity *)globalObject->GetPointerFromInternalField(0);
             if (scriptEntity)
                 [scriptEntity proxyOutputPin:pin];
-            return v8::Boolean::New(1);
+            return scope.Close(v8::Boolean::New(1));
         }
     } else {
         NSLog(@"(exportPin) Bad argument: %@", objectType);
     }
     [pool drain];
-    return v8::Boolean::New(0);
+    return scope.Close(v8::Boolean::New(0));
 }
 
 static void ReportException(v8::TryCatch* try_catch) {
+    v8::Locker lock;
     v8::HandleScope handle_scope;
     v8::String::Utf8Value exception(try_catch->Exception());
     const char* exception_string = ToCString(exception);
@@ -101,6 +103,7 @@ static void ReportException(v8::TryCatch* try_catch) {
 
 static v8::Handle<Value> IsDir(const Arguments& args) {
     if (args.Length() < 1) return Undefined();
+    v8::Locker lock;
     HandleScope scope;
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
@@ -119,6 +122,7 @@ static v8::Handle<Value> IsDir(const Arguments& args) {
 
 static v8::Handle<Value> ListDir(const Arguments& args) {
     if (args.Length() < 1) return Undefined();
+    v8::Locker lock;
     HandleScope scope;
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
@@ -139,6 +143,7 @@ static v8::Handle<Value> ListDir(const Arguments& args) {
 
 static v8::Handle<Value> Echo(const Arguments& args) {
     if (args.Length() < 1) return v8::Undefined();
+    v8::Locker lock;
     HandleScope scope;
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
@@ -148,6 +153,7 @@ static v8::Handle<Value> Echo(const Arguments& args) {
 
 static v8::Handle<Value> Include(const Arguments& args) {
     if (args.Length() < 1) return v8::Undefined();
+    v8::Locker lock;
     HandleScope scope;
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
@@ -171,6 +177,8 @@ static v8::Handle<Value> Include(const Arguments& args) {
 
 static v8::Handle<Value> ListEntities(const Arguments& args)
 {
+    v8::Locker lock;
+
     NSString *output = [NSString string];
     NSArray *entities;
     {
@@ -192,12 +200,63 @@ static v8::Handle<Value> ListEntities(const Arguments& args)
 
 static v8::Handle<Value> Sleep(const Arguments& args)
 {   
-    if (args.Length() >= 1) // XXX - ignore extra parameters
+    v8::Locker lock;
+
+    if (args.Length() >= 1) {// XXX - ignore extra parameters
+        v8::Unlocker unlocker;
         [NSThread sleepForTimeInterval:args[0]->NumberValue()];
+    }
+    return Undefined();
+}
+
+static v8::Handle<Value> Run(const Arguments& args)
+{   
+    v8::Locker locker;
+    v8::Locker::StartPreemption(10);
+    HandleScope handleScope;
+    Local<Context> context = v8::Context::GetCurrent();
+    Local<Object> globalObject  = context->Global();
+    if (globalObject->SetHiddenValue(String::New("quit"), v8::Boolean::New(0)));
+    if (args.Length() >= 1 && args[0]->IsFunction()) {
+        while (1) {
+            if (globalObject->GetHiddenValue(String::New("quit"))->BooleanValue())
+                break;
+            v8::Local<v8::Function> foo =
+            v8::Local<v8::Function>::Cast(args[0]);
+            v8::Handle<v8::Value> fArgs[args.Length()-1];
+            for (int i = 0; i < args.Length()-1; i++)
+                fArgs[i] = args[i+1];
+            v8::Local<v8::Value> result = foo->Call(foo, args.Length()-1, fArgs);
+            //usleep(10);
+        }
+        // restore quit status for nested loops
+        if (globalObject->SetHiddenValue(String::New("quit"), v8::Boolean::New(0)));
+    }
     v8::Handle<Primitive> t = Undefined();
     return reinterpret_cast<v8::Handle<String>&>(t);
 }
 
+static v8::Handle<Value> Quit(const Arguments& args)
+{
+    v8::Locker lock;
+    HandleScope handleScope;
+    Local<Context> globalContext = v8::Context::GetCurrent();
+    Local<Object> globalObject  = globalContext->Global();
+    globalObject->SetHiddenValue(String::New("quit"), v8::Boolean::New(1));
+    return Undefined();
+}
+
+@interface DispatchArg : NSObject
+{
+    NSString *source;
+    VJXEntity *entity;
+}
+@property (retain) NSString *source;
+@property (retain) VJXEntity *entity;
+@end
+@implementation DispatchArg
+@synthesize source, entity;
+@end
 
 @implementation VJXJavaScript
 
@@ -213,31 +272,44 @@ static v8::Handle<Value> Sleep(const Arguments& args)
     [jsContext release];
 }
 
++ (void)dispatchScript:(DispatchArg *)arg
+{
+    [self runScript:arg.source withEntity:arg.entity];
+}
+
 // TODO - use a NSOperationQueue
++ (void)runScriptInBackground:(NSString *)source withEntity:(VJXEntity *)entity {
+    DispatchArg *arg = [[DispatchArg alloc] init];
+    arg.source = source;
+    arg.entity = entity;
+    //[self performSelector:@selector(dispatchScript:) onThread:[VJXContext scriptThread] withObject:arg waitUntilDone:NO];
+    [self performSelectorInBackground:@selector(dispatchScript:) withObject:arg];
+    [arg release];
+}
+
 + (void)runScriptInBackground:(NSString *)source {
-    [self performSelector:@selector(runScript:) onThread:[VJXContext scriptThread] withObject:source waitUntilDone:NO];
+    //[self performSelector:@selector(runScript:) onThread:[VJXContext scriptThread] withObject:source waitUntilDone:NO];
+    [self performSelectorInBackground:@selector(dispatchScript:) withObject:source];
 }
 
 - (void)registerClasses:(v8::Handle<ObjectTemplate>)ctxTemplate;
 {
-    HandleScope handle_scope;
     // register the VJXVideoOutput class
     ctxTemplate->Set(String::New("OpenGLScreen"), FunctionTemplate::New(VJXOpenGLScreenJSConstructor));
     ctxTemplate->Set(String::New("VideoCapture"), FunctionTemplate::New(VJXQtVideoCaptureLayerJSConstructor));
     ctxTemplate->Set(String::New("VideoLayer"), FunctionTemplate::New(VJXQtVideoLayerJSConstructor));
     ctxTemplate->Set(String::New("AudioLayer"), FunctionTemplate::New(VJXAudioFileLayerJSConstructor));
     ctxTemplate->Set(String::New("AudioOutput"), FunctionTemplate::New(VJXCoreAudioOutputJSConstructor));
-
-
 }
 
 - (id)init
 {
     self = [super init];
     if (self) {
+        v8::Locker locker;
         HandleScope handle_scope;
-        // Create a template for the global object.
-        v8::Handle<ObjectTemplate>ctxTemplate = ObjectTemplate::New();
+        Local<ObjectTemplate>ctxTemplate = ObjectTemplate::New();
+
         ctxTemplate->Set(String::New("echo"), FunctionTemplate::New(Echo));
         ctxTemplate->Set(String::New("print"), FunctionTemplate::New(Echo));
         ctxTemplate->Set(String::New("include"), FunctionTemplate::New(Include));
@@ -245,14 +317,19 @@ static v8::Handle<Value> Sleep(const Arguments& args)
         ctxTemplate->Set(String::New("lsdir"), FunctionTemplate::New(ListDir));
         ctxTemplate->Set(String::New("isdir"), FunctionTemplate::New(IsDir));
         ctxTemplate->Set(String::New("exportPin"), FunctionTemplate::New(ExportPin));
-        /*
+        ctxTemplate->Set(String::New("run"), FunctionTemplate::New(Run));
+        ctxTemplate->Set(String::New("quit"), FunctionTemplate::New(Quit));
+
+
+        /* TODO - think if worth exposing such global functions
         ctxTemplate->Set(String::New("AvailableEntities"), FunctionTemplate::New(AvailableEntities));
         ctxTemplate->Set(String::New("ListEntities"), FunctionTemplate::New(ListEntities));
         */
         [self registerClasses:ctxTemplate];
+        ctx = Context::New(NULL, ctxTemplate);
+
         // Create a new execution environment containing the built-in
         // functions
-        ctx = Context::New(NULL, ctxTemplate);
         contextes[self] = ctx;
         scriptEntity = nil;
         // Enter the newly created execution environment.
@@ -280,8 +357,6 @@ static v8::Handle<Value> Sleep(const Arguments& args)
     while( V8::IdleNotification() )
         ;
     contextes.erase(self);
-    if (scriptEntity)
-        [scriptEntity release];
     [super dealloc];
 }
 
@@ -293,17 +368,20 @@ static v8::Handle<Value> Sleep(const Arguments& args)
 - (void)runScript:(NSString *)script withEntity:(VJXEntity *)entity
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    v8::Locker locker;
     v8::HandleScope handle_scope;
-    
+   
     v8::Context::Scope context_scope(ctx);
     if (entity) {
-        scriptEntity = [entity retain];
-        Local<Object> globalObject = ctx->Global();
-        globalObject->SetPointerInInternalField(0, scriptEntity);
+        scriptEntity = entity;
+        ctx->Global()->SetPointerInInternalField(0, scriptEntity);
     }
+    //ctx->Global()->SetHiddenValue(String::New("quit"), v8::Boolean::New(0));
     v8::TryCatch try_catch;
+
     v8::Handle<v8::Script> compiledScript = v8::Script::Compile(String::New([script UTF8String]), String::New("VJXScript"));
     if (!compiledScript.IsEmpty()) {
+        v8::Locker::StartPreemption(100);
         compiledScript->Run();
     } else {
         String::Utf8Value error(try_catch.Exception());
@@ -352,11 +430,11 @@ v8::Handle<v8::Value>GetNumberProperty(v8::Local<v8::String> name, const v8::Acc
 v8::Handle<v8::Value>GetStringProperty(v8::Local<v8::String> name, const v8::AccessorInfo& info)
 {
     return GetObjectProperty(name, info);
-
 }
 
 v8::Handle<Value>GetObjectProperty(Local<String> name, const AccessorInfo& info)
 {
+    v8::Locker lock;
     HandleScope handle_scope;
     id obj = (id)info.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -388,6 +466,7 @@ v8::Handle<Value>GetObjectProperty(Local<String> name, const AccessorInfo& info)
 
 v8::Handle<Value>GetBoolProperty(Local<String> name, const AccessorInfo& info)
 {
+    v8::Locker lock;
     HandleScope handle_scope;
     BOOL ret = NO;
     id obj = (id)info.Holder()->GetPointerFromInternalField(0);
@@ -411,6 +490,7 @@ v8::Handle<Value>GetBoolProperty(Local<String> name, const AccessorInfo& info)
 
 v8::Handle<Value>GetIntProperty(Local<String> name, const AccessorInfo& info)
 {
+    v8::Locker lock;
     HandleScope handle_scope;
     int32_t ret = 0;
     id obj = (id)info.Holder()->GetPointerFromInternalField(0);
@@ -434,6 +514,7 @@ v8::Handle<Value>GetIntProperty(Local<String> name, const AccessorInfo& info)
 
 void SetStringProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::AccessorInfo& info)
 {
+    v8::Locker lock;
     HandleScope handleScope;
     String::Utf8Value nameStr(name);
     if (!value->IsString()) {
@@ -458,6 +539,7 @@ void SetStringProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, c
 
 void SetNumberProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::AccessorInfo& info)
 {
+    v8::Locker lock;
     HandleScope handleScope;
     String::Utf8Value nameStr(name);
     if (!value->IsNumber()) {
@@ -481,6 +563,7 @@ void SetNumberProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, c
 
 void SetBoolProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::AccessorInfo& info)
 {
+    v8::Locker lock;
     HandleScope handleScope;
     String::Utf8Value nameStr(name);
     if (!(value->IsBoolean() || value->IsNumber())) {
@@ -508,6 +591,7 @@ void SetBoolProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, con
 
 void SetIntProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::AccessorInfo& info)
 {
+    v8::Locker lock;
     HandleScope handleScope;
     String::Utf8Value nameStr(name);
     if (!value->IsInt32()) {

@@ -23,7 +23,7 @@
         self.frequency = [NSNumber numberWithDouble:1.0];
         path = nil;
         active = NO;
-        [self unregisterAllPins]; // no pins for now
+        //[self unregisterAllPins]; // no pins for now
     }
     return self;
 }
@@ -39,16 +39,31 @@
     return YES;
 }
 
+- (void)dealloc
+{
+    [super dealloc];
+}
+
 - (void)close
 {
 }
 
+- (void)stop
+{
+    [super stop];
+}
+
+- (void)start
+{
+    [VJXJavaScript runScriptInBackground:[NSString stringWithFormat:@"include('%@');", path] withEntity:self];
+    [super start];
+}
+
+/*
 - (void)tick:(uint64_t)timeStamp
 {
-    if (path) {
-        [VJXJavaScript runScript:[NSString stringWithFormat:@"include('%@');", path] withEntity:self];
-        quit = YES;
-    }
+    [super tick:timeStamp];
 }
+*/
 
 @end

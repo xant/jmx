@@ -73,8 +73,8 @@
 		AA3557451277468800EAA2E4 /* VJXTextLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3556F51277340200EAA2E4 /* VJXTextLayer.m */; };
 		AA3557DA12795C5500EAA2E4 /* VJXDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3557D912795C5500EAA2E4 /* VJXDrawing.m */; };
 		AA8CB78E1282BB9900A17115 /* VJXJavascriptFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8CB78D1282BB9900A17115 /* VJXJavascriptFile.mm */; };
+		AA8CBF681286015800A17115 /* libv8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA8CBF671286015800A17115 /* libv8.dylib */; };
 		AADEBFC812414F7E00A6A06D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */; };
-		AAF6C9E7127CCE840015AEDE /* libv8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAF6C9E6127CCE840015AEDE /* libv8.dylib */; };
 		AAF6CA8E127CD1210015AEDE /* VJXJavaScript.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA3557E712795D0A00EAA2E4 /* VJXJavaScript.mm */; };
 /* End PBXBuildFile section */
 
@@ -212,8 +212,8 @@
 		AA3557E712795D0A00EAA2E4 /* VJXJavaScript.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VJXJavaScript.mm; sourceTree = "<group>"; };
 		AA8CB78C1282BB9800A17115 /* VJXJavascriptFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXJavascriptFile.h; sourceTree = "<group>"; };
 		AA8CB78D1282BB9900A17115 /* VJXJavascriptFile.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VJXJavascriptFile.mm; sourceTree = "<group>"; };
+		AA8CBF671286015800A17115 /* libv8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libv8.dylib; path = "../v8-read-only/libv8.dylib"; sourceTree = SOURCE_ROOT; };
 		AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		AAF6C9E6127CCE840015AEDE /* libv8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libv8.dylib; path = "../v8-read-only/libv8.dylib"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -229,7 +229,7 @@
 				AA2BE40B12353D5C006087E7 /* Accelerate.framework in Frameworks */,
 				AADEBFC812414F7E00A6A06D /* AudioToolbox.framework in Frameworks */,
 				AA052A6B1261D40E008C9F46 /* QuickTime.framework in Frameworks */,
-				AAF6C9E7127CCE840015AEDE /* libv8.dylib in Frameworks */,
+				AA8CBF681286015800A17115 /* libv8.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -315,7 +315,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				AAF6C9E6127CCE840015AEDE /* libv8.dylib */,
+				AA8CBF671286015800A17115 /* libv8.dylib */,
 				AA052A691261D3FE008C9F46 /* i386 Frameworks */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,

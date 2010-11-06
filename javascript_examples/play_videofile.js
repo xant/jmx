@@ -7,6 +7,7 @@ screen.height = 384;
 // create a new video layer
 movie = new VideoLayer();
 movie.open("/Users/xant/test.avi");
+movie.saturation = 10.0;
 // get pins
 input = screen.inputPin('frame');
 //input2 = screen2.inputPin('frame');
@@ -18,21 +19,16 @@ input.connect(output); // connect them
 
 movie.start(); // start the movie
 
-/*
-outputPins = b.outputPins;
-for (i = 0; i < outputPins.length; i++) {
-    echo(outputPins[i]);
-}
-*/
 cnt = 0;
-while (1) {
+
+mainloop = function() {
     echo("tick" + cnt++);
     sleep(1);
     if (cnt == 10) {
-        movie.stop();
         movie.open("/Users/xant/test.mov");
-        movie.start();
     }
     if (cnt == 20)
-        break;
-}
+        quit();
+};
+
+run(mainloop);

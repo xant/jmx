@@ -341,6 +341,7 @@ static Persistent<ObjectTemplate> entityTemplate;
 
 static v8::Handle<Value>inputPins(Local<String> name, const AccessorInfo& info)
 {
+    v8::Locker lock;
     HandleScope handleScope;
     v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
     VJXEntity *entity = (VJXEntity *)field->Value();
@@ -357,6 +358,7 @@ static v8::Handle<Value>inputPins(Local<String> name, const AccessorInfo& info)
 
 static v8::Handle<Value>outputPins(Local<String> name, const AccessorInfo& info)
 {
+    v8::Locker lock;
     HandleScope handleScope;
     v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
     VJXEntity *entity = (VJXEntity *)field->Value();
@@ -374,6 +376,7 @@ static v8::Handle<Value>outputPins(Local<String> name, const AccessorInfo& info)
 
 v8::Handle<Value> inputPin(const Arguments& args)
 {
+    v8::Locker lock;
     HandleScope handleScope;
     Local<Object> self = args.Holder();
     Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
@@ -392,7 +395,8 @@ v8::Handle<Value> inputPin(const Arguments& args)
 }
 
 v8::Handle<Value> outputPin(const Arguments& args)
-{
+{   
+    v8::Locker lock;
     HandleScope handleScope;
     Local<Object> self = args.Holder();
     Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
@@ -414,6 +418,7 @@ v8::Handle<Value> outputPin(const Arguments& args)
 #pragma mark Class Template
 + (v8::Handle<FunctionTemplate>)jsClassTemplate
 {
+    v8::Locker lock;
     HandleScope handleScope;
     v8::Handle<FunctionTemplate> classTemplate = FunctionTemplate::New();
     classTemplate->SetClassName(String::New("Entity"));

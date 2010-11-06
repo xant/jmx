@@ -35,6 +35,7 @@ void SetIntProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, cons
 
 + (VJXJavaScript *)getContext:(v8::Local<v8::Context>&)currentContext;
 + (void)runScriptInBackground:(NSString *)source;
++ (void)runScriptInBackground:(NSString *)source withEntity:(VJXEntity *)entity;
 + (void)runScript:(NSString *)source;
 + (void)runScript:(NSString *)source withEntity:(VJXEntity *)entity;
 - (void)runScript:(NSString *)source;

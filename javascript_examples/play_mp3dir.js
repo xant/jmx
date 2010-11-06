@@ -25,12 +25,12 @@ for (i = 0; i < list.length; i++) {
         audiofile.open(basepath+list[i]);
         audiofile.repeat = false; // we don't want to play always the same file
         audiofile.start();
-        while (1) {
+        run(function() {
             // if EOF is reached, the layer will be automatically deactivated
             if (!audiofile.active) 
-                break; // so we can go ahead to play next file
+                quit(); // so we can go ahead to play next file
             sleep(1);
-        }
+        });
     }
 }
 echo ("No more files to play!");

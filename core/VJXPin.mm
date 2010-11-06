@@ -488,6 +488,7 @@ using namespace v8;
 #pragma mark V8
 static v8::Handle<Value>direction(Local<String> name, const AccessorInfo& info)
 {
+    v8::Locker lock;
     HandleScope handle_scope;
     v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
     VJXPin *pin = (VJXPin *)field->Value();
@@ -497,6 +498,7 @@ static v8::Handle<Value>direction(Local<String> name, const AccessorInfo& info)
 
 static v8::Handle<Value>type(Local<String> name, const AccessorInfo& info)
 {
+    v8::Locker lock;
     HandleScope handle_scope;
     v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
     VJXPin *pin = (VJXPin *)field->Value();
@@ -509,6 +511,7 @@ static v8::Handle<Value>type(Local<String> name, const AccessorInfo& info)
 
 v8::Handle<Value> connect(const Arguments& args)
 {
+    v8::Locker lock;
     HandleScope handleScope;
     Local<Object> self = args.Holder();
     Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
@@ -530,6 +533,7 @@ v8::Handle<Value> connect(const Arguments& args)
 
 + (v8::Handle<FunctionTemplate>)jsClassTemplate
 {
+    v8::Locker lock;
     HandleScope handleScope;
     v8::Handle<FunctionTemplate> classTemplate = FunctionTemplate::New();
     classTemplate->SetClassName(String::New("Pin"));
@@ -554,6 +558,7 @@ v8::Handle<Value> connect(const Arguments& args)
 
 - (v8::Handle<v8::Object>)jsObj
 {
+    v8::Locker lock;
     HandleScope handle_scope;
     v8::Handle<FunctionTemplate> classTemplate = [VJXPin jsClassTemplate];
     v8::Handle<Object> jsInstance = classTemplate->InstanceTemplate()->NewInstance();

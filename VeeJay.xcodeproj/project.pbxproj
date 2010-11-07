@@ -769,7 +769,7 @@
 					"$PROJECT_DIR/**",
 				);
 				LIBRARY_SEARCH_PATHS = "$PROJECT_DIR/../v8-read-only/include/**";
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PREBINDING = NO;
 				SDKROOT = macosx10.6;
 				VALID_ARCHS = "i386 x86_64";

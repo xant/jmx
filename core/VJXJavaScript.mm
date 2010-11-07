@@ -17,6 +17,7 @@
 #import "VJXOpenGLScreen.h"
 #import "VJXQtVideoCaptureEntity.h"
 #import "VJXQtMovieEntity.h"
+#import "VJXVideoMixer.h"
 #import "VJXAudioFileEntity.h"
 #import "VJXCoreAudioOutput.h"
 #import "VJXCoreImageFilter.h"
@@ -313,6 +314,7 @@ static v8::Handle<Value> Quit(const Arguments& args)
     ctxTemplate->Set(String::New("VideoOutput"), FunctionTemplate::New(VJXOpenGLScreenJSConstructor));
     ctxTemplate->Set(String::New("VideoCapture"), FunctionTemplate::New(VJXQtVideoCaptureEntityJSConstructor));
     ctxTemplate->Set(String::New("Movie"), FunctionTemplate::New(VJXQtMovieEntityJSConstructor));
+    ctxTemplate->Set(String::New("VideoMixer"), FunctionTemplate::New(VJXVideoMixerJSConstructor));
     ctxTemplate->Set(String::New("VideoFilter"), FunctionTemplate::New(VJXCoreImageFilterJSConstructor));
     ctxTemplate->Set(String::New("AudioFile"), FunctionTemplate::New(VJXAudioFileEntityJSConstructor));
     ctxTemplate->Set(String::New("AudioOutput"), FunctionTemplate::New(VJXCoreAudioOutputJSConstructor));

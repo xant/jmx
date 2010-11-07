@@ -21,9 +21,13 @@
 //  along with VeeJay.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#import <QuartzCore/QuartzCore.h>
+#define __VJXV8__
 #import "VJXVideoMixer.h"
 #import "VJXVideoEntity.h"
-#import <QuartzCore/QuartzCore.h>
+#include "VJXJavaScript.h"
+
+VJXV8_EXPORT_ENTITY_CLASS(VJXVideoMixer);
 
 @implementation VJXVideoMixer
 

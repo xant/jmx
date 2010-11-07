@@ -24,7 +24,7 @@
 #import "VJXContext.h"
 #import "VJXEntity.h"
 
-#define kVJXContextSignalNumWorkers 6
+#define kVJXContextSignalNumWorkers 4
 
 #if !USE_NSOPERATIONS
 static NSThread *signalThread[kVJXContextSignalNumWorkers];

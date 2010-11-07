@@ -32,7 +32,7 @@ using namespace v8;
 
 @implementation VJXPin
 
-@synthesize type, name, multiple, continuous, connected,
+@synthesize type, name, multiple, continuous, connected, sendNotifications,
             direction, allowedValues, owner, minValue, maxValue;
 
 #pragma mark Constructors
@@ -182,6 +182,7 @@ using namespace v8;
         owner = pinOwner;
         ownerSignal = pinSignal;
         ownerUserData = userData;
+        sendNotifications = YES;
         if (pinValues)
             allowedValues = [[NSMutableArray arrayWithArray:pinValues] retain];
         rOffset = wOffset = 0;
@@ -284,12 +285,16 @@ using namespace v8;
 {
     NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:destinationPin, @"outputPin", self, @"inputPin", nil];
     // send a connect notification for all involved pins
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXPinConnected"
-                                                        object:self
-                                                      userInfo:userInfo];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXPinConnected"
-                                                        object:destinationPin
-                                                      userInfo:userInfo];
+    if (self.sendNotifications) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXPinConnected"
+                                                            object:self
+                                                          userInfo:userInfo];
+    }
+    if (destinationPin.sendNotifications) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXPinConnected"
+                                                            object:destinationPin
+                                                          userInfo:userInfo];
+    }
     return YES;
 }
 
@@ -297,12 +302,16 @@ using namespace v8;
 {
     NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:destinationPin, @"outputPin", self, @"inputPin", nil];
     // send a disconnect notification for all the involved pins
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXPinDisconnected"
-                                                        object:self
-                                                      userInfo:userInfo];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXPinDisconnected"
-                                                        object:destinationPin
-                                                      userInfo:userInfo];
+    if (self.sendNotifications) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXPinDisconnected"
+                                                            object:self
+                                                          userInfo:userInfo];
+    }
+    if (destinationPin.sendNotifications) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXPinDisconnected"
+                                                            object:destinationPin
+                                                          userInfo:userInfo];
+    }
 }
 
 - (void)disconnectAllPins
@@ -547,11 +556,12 @@ v8::Handle<Value> connect(const Arguments& args)
     instanceTemplate->SetAccessor(String::NewSymbol("direction"), direction);
     instanceTemplate->SetAccessor(String::NewSymbol("name"), GetStringProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("multiple"), GetBoolProperty);
-    instanceTemplate->SetAccessor(String::NewSymbol("continuous"), GetBoolProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("continuous"), GetBoolProperty, SetBoolProperty);
     //instanceTemplate->SetAccessor(String::NewSymbol("owner"), accessObjectProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("minValue"), GetObjectProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("maxValue"), GetObjectProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("connected"), GetBoolProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("sendNotifications"), GetBoolProperty, SetBoolProperty);
     //instanceTemplate->SetAccessor(String::NewSymbol("allowedValues"), allowedValues);
     return handleScope.Close(classTemplate);
 }

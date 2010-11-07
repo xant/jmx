@@ -147,7 +147,10 @@ static v8::Handle<Value> Echo(const Arguments& args) {
     HandleScope scope;
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
-    NSLog(@"%s", *value);
+    {
+        v8::Unlocker unlocker;
+        NSLog(@"%s", *value);
+    }
     return v8::Undefined();
 }
 
@@ -212,12 +215,13 @@ static v8::Handle<Value> Sleep(const Arguments& args)
 static v8::Handle<Value> Run(const Arguments& args)
 {   
     //v8::Locker locker;
-    //v8::Locker::StartPreemption(10);
     HandleScope handleScope;
     Local<Context> context = v8::Context::GetCurrent();
     Local<Object> globalObject  = context->Global();
+    //v8::Locker::StopPreemption();
     if (globalObject->SetHiddenValue(String::New("quit"), v8::Boolean::New(0)));
     if (args.Length() >= 1 && args[0]->IsFunction()) {
+        //v8::Locker::StartPreemption(50);
         while (1) {
             if (globalObject->GetHiddenValue(String::New("quit"))->BooleanValue())
                 break;
@@ -230,8 +234,10 @@ static v8::Handle<Value> Run(const Arguments& args)
             //usleep(10);
         }
         // restore quit status for nested loops
+        //v8::Locker::StopPreemption();
         if (globalObject->SetHiddenValue(String::New("quit"), v8::Boolean::New(0)));
     }
+    //v8::Locker::StartPreemption(50);
     v8::Handle<Primitive> t = Undefined();
     return reinterpret_cast<v8::Handle<String>&>(t);
 }
@@ -274,7 +280,9 @@ static v8::Handle<Value> Quit(const Arguments& args)
 
 + (void)dispatchScript:(DispatchArg *)arg
 {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     [self runScript:arg.source withEntity:arg.entity];
+    [pool drain];
 }
 
 // TODO - use a NSOperationQueue
@@ -343,6 +351,8 @@ static v8::Handle<Value> Quit(const Arguments& args)
     for (InstMap::const_iterator it = instancesMap.begin(); it != end; ++it)
     {
         Persistent<Object> obj = it->second;
+        if ([it->first conformsToProtocol:@protocol(VJXRunLoop)])
+            [it->first performSelector:@selector(stop)];
         [it->first release];
         instancesMap.erase(it->first);
         obj.Dispose();
@@ -357,6 +367,8 @@ static v8::Handle<Value> Quit(const Arguments& args)
     while( V8::IdleNotification() )
         ;
     contextes.erase(self);
+    if (scriptEntity && [scriptEntity conformsToProtocol:@protocol(VJXRunLoop)])
+            [scriptEntity performSelector:@selector(stop)];
     [super dealloc];
 }
 
@@ -381,7 +393,7 @@ static v8::Handle<Value> Quit(const Arguments& args)
 
     v8::Handle<v8::Script> compiledScript = v8::Script::Compile(String::New([script UTF8String]), String::New("VJXScript"));
     if (!compiledScript.IsEmpty()) {
-        v8::Locker::StartPreemption(50);
+        //v8::Locker::StartPreemption(50);
         compiledScript->Run();
     } else {
         String::Utf8Value error(try_catch.Exception());
@@ -416,6 +428,9 @@ static v8::Handle<Value> Quit(const Arguments& args)
         p.Dispose();
         p.Clear();
     }
+    if ([obj conformsToProtocol:@protocol(VJXRunLoop)])
+        [obj performSelector:@selector(stop)];
+    [obj release];
 }
 
 @end
@@ -469,22 +484,26 @@ v8::Handle<Value>GetBoolProperty(Local<String> name, const AccessorInfo& info)
     //v8::Locker lock;
     HandleScope handle_scope;
     BOOL ret = NO;
-    id obj = (id)info.Holder()->GetPointerFromInternalField(0);
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     String::Utf8Value value(name);
-    NSString *property = [NSString stringWithUTF8String:*value];
-    SEL selector = NSSelectorFromString(property);
-    if (!obj || ![obj respondsToSelector:selector]) {
-        NSLog(@"Unknown property %@", property);
+    id obj = (id)info.Holder()->GetPointerFromInternalField(0);
+    {
+        v8::Unlocker unlocker;
+
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        NSString *property = [NSString stringWithUTF8String:*value];
+        SEL selector = NSSelectorFromString(property);
+        if (!obj || ![obj respondsToSelector:selector]) {
+            NSLog(@"Unknown property %@", property);
+            [pool drain];
+            return Undefined();
+        }
+        NSMethodSignature *sig = [obj methodSignatureForSelector:selector];
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:sig];
+        [invocation setSelector:selector];
+        [invocation invokeWithTarget:obj];
+        [invocation getReturnValue:&ret];
         [pool drain];
-        return Undefined();
     }
-    NSMethodSignature *sig = [obj methodSignatureForSelector:selector];
-    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:sig];
-    [invocation setSelector:selector];
-    [invocation invokeWithTarget:obj];
-    [invocation getReturnValue:&ret];
-    [pool drain];
     return handle_scope.Close(v8::Boolean::New(ret));
 }
 
@@ -493,22 +512,27 @@ v8::Handle<Value>GetIntProperty(Local<String> name, const AccessorInfo& info)
     //v8::Locker lock;
     HandleScope handle_scope;
     int32_t ret = 0;
-    id obj = (id)info.Holder()->GetPointerFromInternalField(0);
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     String::Utf8Value value(name);
-    NSString *property = [NSString stringWithUTF8String:*value];
-    SEL selector = NSSelectorFromString(property);
-    if (!obj || ![obj respondsToSelector:selector]) {
-        NSLog(@"Unknown property %@", property);
+
+    id obj = (id)info.Holder()->GetPointerFromInternalField(0);
+    {
+        v8::Unlocker unlocker;
+
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        NSString *property = [NSString stringWithUTF8String:*value];
+        SEL selector = NSSelectorFromString(property);
+        if (!obj || ![obj respondsToSelector:selector]) {
+            NSLog(@"Unknown property %@", property);
+            [pool drain];
+            return Undefined();
+        }
+        NSMethodSignature *sig = [obj methodSignatureForSelector:selector];
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:sig];
+        [invocation setSelector:selector];
+        [invocation invokeWithTarget:obj];
+        [invocation getReturnValue:&ret];
         [pool drain];
-        return Undefined();
     }
-    NSMethodSignature *sig = [obj methodSignatureForSelector:selector];
-    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:sig];
-    [invocation setSelector:selector];
-    [invocation invokeWithTarget:obj];
-    [invocation getReturnValue:&ret];
-    [pool drain];
     return handle_scope.Close(v8::Integer::New(ret));
 }
 
@@ -521,20 +545,26 @@ void SetStringProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, c
         NSLog(@"Bad parameter (not string) passed to %s", *nameStr);
         return;
     }
-    id obj = (id)info.Holder()->GetPointerFromInternalField(0);
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    NSString *property = [NSString stringWithUTF8String:*nameStr];
-    NSString *setter = [NSString stringWithFormat:@"set%@:", [property capitalizedString]];
-    SEL selector = NSSelectorFromString(setter);
-    if (!obj || ![obj respondsToSelector:selector]) {
-        NSLog(@"Unknown setter %@", setter);
-        [pool drain];
-        return;
-    }
     String::Utf8Value str(value->ToString());
-    NSString *newValue = [NSString stringWithUTF8String:*str];
-    [obj performSelector:selector withObject:newValue];
-    [pool release];
+    id obj = (id)info.Holder()->GetPointerFromInternalField(0);
+    {
+        v8::Unlocker unlocker;
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        NSString *property = [NSString stringWithUTF8String:*nameStr];
+        NSString *setter = [NSString stringWithFormat:@"set%@:", 
+                            [NSString stringWithFormat:@"%@%@",[[property substringToIndex:1] capitalizedString],
+                                                               [property substringFromIndex:1]]
+                            ];
+        SEL selector = NSSelectorFromString(setter);
+        if (!obj || ![obj respondsToSelector:selector]) {
+            NSLog(@"Unknown setter %@", setter);
+            [pool drain];
+            return;
+        }
+        NSString *newValue = [NSString stringWithUTF8String:*str];
+        [obj performSelector:selector withObject:newValue];
+        [pool release];
+    }
 }
 
 void SetNumberProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::AccessorInfo& info)
@@ -546,19 +576,27 @@ void SetNumberProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, c
         NSLog(@"Bad parameter (not number) passed to %s", *nameStr);
         return;
     }
+    double number = value->NumberValue();
     id obj = (id)info.Holder()->GetPointerFromInternalField(0);
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    NSString *property = [NSString stringWithUTF8String:*nameStr];
-    NSString *setter = [NSString stringWithFormat:@"set%@:", [property capitalizedString]];
-    SEL selector = NSSelectorFromString(setter);
-    if (!obj || ![obj respondsToSelector:selector]) {
-        NSLog(@"Unknown setter %@", setter);
-        [pool drain];
-        return;
+    {
+        v8::Unlocker unlocker;
+
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        NSString *property = [NSString stringWithUTF8String:*nameStr];
+        NSString *setter = [NSString stringWithFormat:@"set%@:", 
+                             [NSString stringWithFormat:@"%@%@",[[property substringToIndex:1] capitalizedString],
+                              [property substringFromIndex:1]]
+                             ];
+        SEL selector = NSSelectorFromString(setter);
+        if (!obj || ![obj respondsToSelector:selector]) {
+            NSLog(@"Unknown setter %@", setter);
+            [pool drain];
+            return;
+        }
+        NSNumber *newValue = [NSNumber numberWithDouble:number];
+        [obj performSelector:selector withObject:newValue];
+        [pool release];
     }
-    NSNumber *newValue = [NSNumber numberWithDouble:value->NumberValue()];
-    [obj performSelector:selector withObject:newValue];
-    [pool release];
 }
 
 void SetBoolProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::AccessorInfo& info)
@@ -570,23 +608,30 @@ void SetBoolProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, con
         NSLog(@"Bad parameter (not bool) passed to %s", *nameStr);
         return;
     }
-    id obj = (id)info.Holder()->GetPointerFromInternalField(0);
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    NSString *property = [NSString stringWithUTF8String:*nameStr];
-    NSString *setter = [NSString stringWithFormat:@"set%@:", [property capitalizedString]];
-    SEL selector = NSSelectorFromString(setter);
-    if (!obj || ![obj respondsToSelector:selector]) {
-        NSLog(@"Unknown setter %@", setter);
-        [pool drain];
-        return;
-    }
-    NSMethodSignature *sig = [obj methodSignatureForSelector:selector];
-    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:sig];
     BOOL newValue = value->BooleanValue();
-    [invocation setArgument:&newValue atIndex:0];
-    [invocation setSelector:selector];
-    [invocation invokeWithTarget:obj];
-    [pool release];
+    id obj = (id)info.Holder()->GetPointerFromInternalField(0);
+    {
+        v8::Unlocker unlocker;
+
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        NSString *property = [NSString stringWithUTF8String:*nameStr];
+        NSString *setter = [NSString stringWithFormat:@"set%@:", 
+                             [NSString stringWithFormat:@"%@%@",[[property substringToIndex:1] capitalizedString],
+                              [property substringFromIndex:1]]
+                             ];
+        SEL selector = NSSelectorFromString(setter);
+        if (!obj || ![obj respondsToSelector:selector]) {
+            NSLog(@"Unknown setter %@", setter);
+            [pool drain];
+            return;
+        }
+        NSMethodSignature *sig = [obj methodSignatureForSelector:selector];
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:sig];
+        [invocation setArgument:&newValue atIndex:0];
+        [invocation setSelector:selector];
+        [invocation invokeWithTarget:obj];
+        [pool release];
+    }
 }
 
 void SetIntProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::AccessorInfo& info)
@@ -598,21 +643,28 @@ void SetIntProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, cons
         NSLog(@"Bad parameter (not int32) passed to %s", *nameStr);
         return;
     }
-    id obj = (id)info.Holder()->GetPointerFromInternalField(0);
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    NSString *property = [NSString stringWithUTF8String:*nameStr];
-    NSString *setter = [NSString stringWithFormat:@"set%@:", [property capitalizedString]];
-    SEL selector = NSSelectorFromString(setter);
-    if (!obj || ![obj respondsToSelector:selector]) {
-        NSLog(@"Unknown setter %@", setter);
-        [pool drain];
-        return;
-    }
-    NSMethodSignature *sig = [obj methodSignatureForSelector:selector];
-    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:sig];
     int32_t newValue = value->NumberValue();
-    [invocation setArgument:&newValue atIndex:0];
-    [invocation setSelector:selector];
-    [invocation invokeWithTarget:obj];
-    [pool release];
+    id obj = (id)info.Holder()->GetPointerFromInternalField(0);
+    {
+        v8::Unlocker unlocker;
+
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        NSString *property = [NSString stringWithUTF8String:*nameStr];
+        NSString *setter = [NSString stringWithFormat:@"set%@:", 
+                             [NSString stringWithFormat:@"%@%@",[[property substringToIndex:1] capitalizedString],
+                              [property substringFromIndex:1]]
+                             ];
+        SEL selector = NSSelectorFromString(setter);
+        if (!obj || ![obj respondsToSelector:selector]) {
+            NSLog(@"Unknown setter %@", setter);
+            [pool drain];
+            return;
+        }
+        NSMethodSignature *sig = [obj methodSignatureForSelector:selector];
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:sig];
+        [invocation setArgument:&newValue atIndex:0];
+        [invocation setSelector:selector];
+        [invocation invokeWithTarget:obj];
+        [pool release];
+    }
 }

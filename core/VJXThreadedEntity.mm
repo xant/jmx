@@ -71,7 +71,8 @@
 }
 
 - (void)stop {
-    if (worker && ![worker isFinished]) {
+    if (worker) {
+        NSLog(@"STOP");
         active = NO;
         [worker cancel];
         // wait for the thread to really finish otherwise it could

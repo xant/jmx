@@ -9,8 +9,11 @@ movie.open("/Users/xant/test.avi");
 movie2.open("/Users/xant/test.mov");
 // get pins
 input = screen.inputPin('frame');
+input.sendNotifications = false;
 output1 = movie.outputPin('frame');
+output1.sendNotifications = false;
 output2 = movie2.outputPin('frame');
+output2.sendNotifications = false;
 //screen2.inputPin('frame').connect(output2);
 movie.start(); // start the movie
 movie2.start();
@@ -18,7 +21,8 @@ outputs = new Array(output1, output2);
 cnt = 0;
 
 mainloop = function(pin, list) {
-    echo("tick" + cnt++);
+    //echo("tick" + cnt++);
+    cnt++;
     pin.connect(list[cnt%2]);
     if (cnt == 1200)
         quit();

@@ -55,15 +55,18 @@
 
 - (void)start
 {
-    [VJXJavaScript runScriptInBackground:[NSString stringWithFormat:@"include('%@');", path] withEntity:self];
+    //[VJXJavaScript runScriptInBackground:[NSString stringWithFormat:@"include('%@');", path] withEntity:self];
     [super start];
 }
 
-/*
+
 - (void)tick:(uint64_t)timeStamp
 {
-    [super tick:timeStamp];
+    if (!quit) {
+        [VJXJavaScript runScript:[NSString stringWithFormat:@"include('%@');", path] withEntity:self];
+        quit = YES;
+    }
+    //[super tick:timeStamp];
 }
-*/
 
 @end

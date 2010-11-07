@@ -59,6 +59,7 @@ typedef enum {
     NSMutableDictionary *properties;
     BOOL                multiple; // default NO
     BOOL                continuous; // default YES
+    BOOL                sendNotifications; // default YES
     id                  currentSender;
     BOOL                connected;
     id                  dataBuffer[2]; // double buffer synchronized for writers
@@ -85,6 +86,7 @@ typedef enum {
 @property (readonly) id minValue;
 @property (readonly) id maxValue;
 @property (readonly) BOOL connected;
+@property (readwrite) BOOL sendNotifications;
 
 + (id)pinWithName:(NSString *)name
           andType:(VJXPinType)pinType

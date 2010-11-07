@@ -37,11 +37,11 @@
         Local<Context> currentContext  = v8::Context::GetCurrent();\
         VJXJavaScript *ctx = [VJXJavaScript getContext:currentContext];\
         if (ctx) {\
+            /* this will destroy the javascript object as well */\
             [ctx removePersistentInstance:obj];\
         } else {\
             NSLog(@"Can't find context to attach persistent instance (just leaking)");\
         }\
-        [obj release]; /* this will destroy the javascript object as well */\
     }\
 \
     v8::Handle<Value> __class##JSConstructor(const Arguments& args)\

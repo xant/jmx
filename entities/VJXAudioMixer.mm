@@ -14,7 +14,7 @@
 
 @implementation VJXAudioMixer
 
-@synthesize useAggregatedDevice;
+@synthesize useAggregateDevice;
 
 - (id)init
 {

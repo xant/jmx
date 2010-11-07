@@ -23,7 +23,9 @@
 
 #import "VJXVideoEntity.h"
 #import "VJXFileRead.h"
-
+#ifndef __x86_64
+#import <QuickTime/QuickTime.h>
+#endif
 @class QTMovie;
 
 @interface VJXQtMovieEntity : VJXVideoEntity <VJXFileRead> {

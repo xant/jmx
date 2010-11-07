@@ -100,7 +100,7 @@ VJXV8_EXPORT_ENTITY_CLASS(VJXCoreImageFilter);
         [newFilter setDefaults];
         //NSLog(@"Filter Attributes : %@", [newFilter attributes]);
         NSArray *inputKeys = [newFilter inputKeys];
-        NSArray *outputKeys = [newFilter outputKeys];
+        //NSArray *outputKeys = [newFilter outputKeys];
         //NSLog(@"Filter Input params : %@\nFilter Output params%@", inputKeys, outputKeys);
         @synchronized(self) {
             for (NSString *pinName in [[inputPins copy] autorelease]) {

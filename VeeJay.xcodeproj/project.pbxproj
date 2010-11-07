@@ -373,24 +373,20 @@
 			path = exporters;
 			sourceTree = "<group>";
 		};
-		825C30E81275ADB6006376B8 /* filters */ = {
+		825C30E81275ADB6006376B8 /* video_filters */ = {
 			isa = PBXGroup;
 			children = (
 				825C30E91275ADB6006376B8 /* VJXCoreImageFilter.h */,
 				825C30EA1275ADB6006376B8 /* VJXCoreImageFilter.mm */,
 			);
-			path = filters;
+			path = video_filters;
 			sourceTree = "<group>";
 		};
-		825C30EB1275ADB6006376B8 /* layers */ = {
+		825C30EB1275ADB6006376B8 /* video */ = {
 			isa = PBXGroup;
 			children = (
-				825C30EC1275ADB6006376B8 /* VJXAudioFileEntity.h */,
-				825C30ED1275ADB6006376B8 /* VJXAudioFileEntity.mm */,
 				825C30EE1275ADB6006376B8 /* VJXImageEntity.h */,
 				825C30EF1275ADB6006376B8 /* VJXImageEntity.mm */,
-				825C30F01275ADB6006376B8 /* VJXQtAudioCaptureEntity.h */,
-				825C30F11275ADB6006376B8 /* VJXQtAudioCaptureEntity.m */,
 				825C30F21275ADB6006376B8 /* VJXQtVideoCaptureEntity.h */,
 				825C30F31275ADB6006376B8 /* VJXQtVideoCaptureEntity.mm */,
 				825C30F41275ADB6006376B8 /* VJXQtMovieEntity.h */,
@@ -398,10 +394,10 @@
 				AA3556F41277340200EAA2E4 /* VJXTextEntity.h */,
 				AA3556F51277340200EAA2E4 /* VJXTextEntity.m */,
 			);
-			path = layers;
+			path = video;
 			sourceTree = "<group>";
 		};
-		825C30F61275ADB6006376B8 /* outputs */ = {
+		825C30F61275ADB6006376B8 /* audio_outputs */ = {
 			isa = PBXGroup;
 			children = (
 				825C30F71275ADB6006376B8 /* VJXCoreAudioOutput.h */,
@@ -409,10 +405,10 @@
 				825C30F91275ADB6006376B8 /* VJXQtAudioOutput.h */,
 				825C30FA1275ADB6006376B8 /* VJXQtAudioOutput.m */,
 			);
-			path = outputs;
+			path = audio_outputs;
 			sourceTree = "<group>";
 		};
-		825C30FB1275ADB6006376B8 /* screens */ = {
+		825C30FB1275ADB6006376B8 /* video_outputs */ = {
 			isa = PBXGroup;
 			children = (
 				825C30FC1275ADB6006376B8 /* VJXOpenGLScreen.h */,
@@ -420,7 +416,7 @@
 				825C30FE1275ADB6006376B8 /* VJXSoftScreen.h */,
 				825C30FF1275ADB6006376B8 /* VJXSoftScreen.m */,
 			);
-			path = screens;
+			path = video_outputs;
 			sourceTree = "<group>";
 		};
 		AA052A691261D3FE008C9F46 /* i386 Frameworks */ = {
@@ -429,6 +425,17 @@
 				AA052A6A1261D40E008C9F46 /* QuickTime.framework */,
 			);
 			name = "i386 Frameworks";
+			sourceTree = "<group>";
+		};
+		AA8CC473128745B600A17115 /* audio */ = {
+			isa = PBXGroup;
+			children = (
+				825C30EC1275ADB6006376B8 /* VJXAudioFileEntity.h */,
+				825C30ED1275ADB6006376B8 /* VJXAudioFileEntity.mm */,
+				825C30F01275ADB6006376B8 /* VJXQtAudioCaptureEntity.h */,
+				825C30F11275ADB6006376B8 /* VJXQtAudioCaptureEntity.m */,
+			);
+			path = audio;
 			sourceTree = "<group>";
 		};
 		AAF17A90123E4D9D001319BA /* Core */ = {
@@ -482,10 +489,11 @@
 			isa = PBXGroup;
 			children = (
 				825C30E51275ADB6006376B8 /* exporters */,
-				825C30E81275ADB6006376B8 /* filters */,
-				825C30EB1275ADB6006376B8 /* layers */,
-				825C30F61275ADB6006376B8 /* outputs */,
-				825C30FB1275ADB6006376B8 /* screens */,
+				825C30E81275ADB6006376B8 /* video_filters */,
+				825C30EB1275ADB6006376B8 /* video */,
+				AA8CC473128745B600A17115 /* audio */,
+				825C30F61275ADB6006376B8 /* audio_outputs */,
+				825C30FB1275ADB6006376B8 /* video_outputs */,
 				825C31001275ADB6006376B8 /* VJXAudioMixer.h */,
 				825C31011275ADB6006376B8 /* VJXAudioMixer.mm */,
 				825C31021275ADB6006376B8 /* VJXAudioOutput.h */,

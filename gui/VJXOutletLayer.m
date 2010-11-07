@@ -60,8 +60,7 @@
         }
 
         [self addSublayer:labelLayer];
-
-        self.pin = [[[VJXPinLayer alloc] initWithPin:thePin andPoint:thePinPoint outlet:self] autorelease];
+        self.pin = [[[VJXPinLayer alloc] initWithPin:thePin andPoint:NSMakePoint(thePinPoint.x, thePinPoint.y) outlet:self] autorelease];
         [self addSublayer:pin];
 
         self.output = isOutput;

@@ -32,6 +32,6 @@
     BOOL useAggregateDevice; // defaults to YES
 }
 
-@property (readwrite) BOOL useAggregatedDevice;
+@property (readwrite) BOOL useAggregateDevice;
 @end
 

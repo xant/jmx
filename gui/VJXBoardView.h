@@ -63,8 +63,8 @@
 
 - (void)addToBoard:(VJXEntityLayer *)theEntity;
 - (CGPoint)translatePointToBoardLayer:(NSPoint)aPoint;
-- (VJXEntityLayer *)entityLayerAtPoint:(CGPoint)aPoint;
-- (VJXPinLayer *)pinLayerAtPoint:(CGPoint)aPoint;
+- (VJXEntityLayer *)entityLayerAtPoint:(NSPoint)aPoint;
+- (VJXPinLayer *)pinLayerAtPoint:(NSPoint)aPoint;
 - (VJXConnectorLayer *)connectorLayerAtPoint:(NSPoint)aPoint;
 - (CGFloat)maxZPosition;
 

@@ -12,7 +12,6 @@
 #import "VJXCoreImageFilter.h"
 #import "VJXJavascript.h"
 
-
 VJXV8_EXPORT_ENTITY_CLASS(VJXCoreImageFilter);
 
 @implementation VJXCoreImageFilter
@@ -133,6 +132,14 @@ VJXV8_EXPORT_ENTITY_CLASS(VJXCoreImageFilter);
 }
 
 #pragma mark V8
+
+- (void)jsInit:(NSValue *)argsValue
+{
+    v8::Arguments *args = (v8::Arguments *)[argsValue pointerValue];
+    v8::Handle<Value> arg = (*args)[0];
+    v8::String::Utf8Value value(arg);
+    self.filter = [NSString stringWithUTF8String:*value];
+}
 
 static v8::Handle<Value> AvailableFilters(const Arguments& args)
 {

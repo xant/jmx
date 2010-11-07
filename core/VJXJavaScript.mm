@@ -15,9 +15,9 @@
 #include <stdlib.h>
 #define __VJXV8__ 1
 #import "VJXOpenGLScreen.h"
-#import "VJXQtVideoCaptureLayer.h"
-#import "VJXQtVideoLayer.h"
-#import "VJXAudioFileLayer.h"
+#import "VJXQtVideoCaptureEntity.h"
+#import "VJXQtMovieEntity.h"
+#import "VJXAudioFileEntity.h"
 #import "VJXCoreAudioOutput.h"
 #import "VJXCoreImageFilter.h"
 #import "VJXAudioSpectrumAnalyzer.h"
@@ -311,10 +311,10 @@ static v8::Handle<Value> Quit(const Arguments& args)
     // Note that all entity-related constructors (as well as distructors) are defined through the 
     // VJXV8_EXPORT_ENTITY_CLASS() macro (declared in VJXEntity.h)
     ctxTemplate->Set(String::New("VideoOutput"), FunctionTemplate::New(VJXOpenGLScreenJSConstructor));
-    ctxTemplate->Set(String::New("VideoCapture"), FunctionTemplate::New(VJXQtVideoCaptureLayerJSConstructor));
-    ctxTemplate->Set(String::New("VideoLayer"), FunctionTemplate::New(VJXQtVideoLayerJSConstructor));
+    ctxTemplate->Set(String::New("VideoCapture"), FunctionTemplate::New(VJXQtVideoCaptureEntityJSConstructor));
+    ctxTemplate->Set(String::New("Movie"), FunctionTemplate::New(VJXQtMovieEntityJSConstructor));
     ctxTemplate->Set(String::New("VideoFilter"), FunctionTemplate::New(VJXCoreImageFilterJSConstructor));
-    ctxTemplate->Set(String::New("AudioLayer"), FunctionTemplate::New(VJXAudioFileLayerJSConstructor));
+    ctxTemplate->Set(String::New("AudioFile"), FunctionTemplate::New(VJXAudioFileEntityJSConstructor));
     ctxTemplate->Set(String::New("AudioOutput"), FunctionTemplate::New(VJXCoreAudioOutputJSConstructor));
     ctxTemplate->Set(String::New("AudioSpectrum"), FunctionTemplate::New(VJXAudioSpectrumAnalyzerJSConstructor));
 }

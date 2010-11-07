@@ -23,8 +23,8 @@
 
 #import "VJXBoardView.h"
 #import "VJXBoardLayer.h"
-#import "VJXQtVideoLayer.h"
-#import "VJXAudioFileLayer.h"
+#import "VJXQtMovieEntity.h"
+#import "VJXAudioFileEntity.h"
 #import "VJXFileRead.h"
 
 @implementation VJXBoardView
@@ -148,8 +148,8 @@
         NSString *fileName = [fileURL lastPathComponent];
         NSArray *components = [fileName componentsSeparatedByString:@"."];
         // TODO - GENERALIZE
-        if ([[VJXQtVideoLayer supportedFileTypes] containsObject:[components lastObject]]) {
-            VJXQtVideoLayer *entity = [[VJXQtVideoLayer alloc] init];
+        if ([[VJXQtMovieEntity supportedFileTypes] containsObject:[components lastObject]]) {
+            VJXQtMovieEntity *entity = [[VJXQtMovieEntity alloc] init];
             if (fileName && [entity conformsToProtocol:@protocol(VJXFileRead)]) {
                 [entity performSelector:@selector(open:) withObject:[fileURL absoluteString]];
             }
@@ -159,8 +159,8 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"VJXBoardEntityWasCreated" object:entity];
 
             [entity release];
-        } else if ([[VJXAudioFileLayer supportedFileTypes] containsObject:[components lastObject]]) {
-            VJXAudioFileLayer *entity = [[VJXAudioFileLayer alloc] init];
+        } else if ([[VJXAudioFileEntity supportedFileTypes] containsObject:[components lastObject]]) {
+            VJXAudioFileEntity *entity = [[VJXAudioFileEntity alloc] init];
             if (fileName && [entity conformsToProtocol:@protocol(VJXFileRead)]) {
                 [entity performSelector:@selector(open:) withObject:[fileURL absoluteString]];
             }

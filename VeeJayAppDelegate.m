@@ -24,17 +24,17 @@
 #import "VeeJayAppDelegate.h"
 #import "VJXContext.h"
 #import "VJXVideoMixer.h"
-#import "VJXQtVideoLayer.h"
+#import "VJXQtMovieEntity.h"
 #import "VJXOpenGLScreen.h"
-#import "VJXImageLayer.h"
-#import "VJXQtVideoCaptureLayer.h"
-#import "VJXAudioFileLayer.h"
+#import "VJXImageEntity.h"
+#import "VJXQtVideoCaptureEntity.h"
+#import "VJXAudioFileEntity.h"
 #import "VJXCoreAudioOutput.h"
-#import "VJXQtAudioCaptureLayer.h"
+#import "VJXQtAudioCaptureEntity.h"
 #import "VJXAudioMixer.h"
 #import "VJXAudioSpectrumAnalyzer.h"
 #import "VJXCoreImageFilter.h"
-#import "VJXTextLayer.h"
+#import "VJXTextEntity.h"
 #import "VJXJavascriptFile.h"
 
 @implementation VeeJayAppDelegate
@@ -44,17 +44,17 @@
 - (void)applicationWillFinishLaunching:(NSNotification *)notification {
 	VJXContext *sharedContext = [VJXContext sharedContext];
 	[sharedContext registerClass:[VJXVideoMixer class]];
-	[sharedContext registerClass:[VJXImageLayer class]];
+	[sharedContext registerClass:[VJXImageEntity class]];
 	[sharedContext registerClass:[VJXOpenGLScreen class]];
-	[sharedContext registerClass:[VJXQtVideoCaptureLayer class]];
-	[sharedContext registerClass:[VJXQtVideoLayer class]];
+	[sharedContext registerClass:[VJXQtVideoCaptureEntity class]];
+	[sharedContext registerClass:[VJXQtMovieEntity class]];
 	[sharedContext registerClass:[VJXCoreAudioOutput class]];
-	[sharedContext registerClass:[VJXQtAudioCaptureLayer class]];
-	[sharedContext registerClass:[VJXAudioFileLayer class]];
+	[sharedContext registerClass:[VJXQtAudioCaptureEntity class]];
+	[sharedContext registerClass:[VJXAudioFileEntity class]];
 	[sharedContext registerClass:[VJXAudioMixer class]];
     [sharedContext registerClass:[VJXAudioSpectrumAnalyzer class]];
     [sharedContext registerClass:[VJXCoreImageFilter class]];
-	[sharedContext registerClass:[VJXTextLayer class]];
+	[sharedContext registerClass:[VJXTextEntity class]];
     [sharedContext registerClass:[VJXJavascriptFile class]];
 	NSLog(@"Registered %i entities", [[sharedContext registeredClasses] count]);
 }

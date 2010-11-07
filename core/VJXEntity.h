@@ -49,19 +49,25 @@
         HandleScope handle_scope;\
         v8::Handle<FunctionTemplate> classTemplate = [__class jsClassTemplate];\
         Persistent<Object> jsInstance = Persistent<Object>::New(classTemplate->InstanceTemplate()->NewInstance());\
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];\
         __class *instance = [[__class alloc] init];\
+        if ([instance respondsToSelector:@selector(jsInit:)]) {\
+            NSValue *argsValue = [NSValue valueWithPointer:(void *)&args];\
+            [instance performSelector:@selector(jsInit:) withObject:argsValue];\
+        }\
         /* make the handle weak, with a callback */\
         jsInstance.MakeWeak(instance, &__class##JSDestructor);\
         instancesMap[instance] = jsInstance;\
         v8::Handle<External> external_ptr = External::New(instance);\
         jsInstance->SetInternalField(0, external_ptr);\
-        Local<Context> currentContext  = v8::Context::GetCurrent();\
+        Local<Context> currentContext = v8::Context::GetCalling();\
         VJXJavaScript *ctx = [VJXJavaScript getContext:currentContext];\
         if (ctx) {\
             [ctx addPersistentInstance:jsInstance obj:instance];\
         } else {\
             NSLog(@"Can't find context to attach persistent instance (just leaking)");\
         }\
+        [pool release];\
         return handle_scope.Close(jsInstance);\
     }
 

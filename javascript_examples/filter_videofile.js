@@ -2,20 +2,17 @@ screen = new VideoOutput();
 // set screen size
 screen.width = 512;
 screen.height = 384;
-// create a new video layer
-movie = new VideoLayer();
-movie.open("/Users/xant/test.avi"); // and load a movie file
+// create a new movie layer
+movie = new MovieLayer("/Users/xant/test.avi");
 movie.saturation = 10.0;
 
 // create a color-invert filter
-colorInvert = new VideoFilter();
-colorInvert.filter = "CIColorInvert";
+colorInvert = new VideoFilter("CIColorInvert");
 colorInvertInput = colorInvert.inputPin('frame');
 colorInvertOutput = colorInvert.outputPin('frame');
 
 // create a comic-effect filter
-comicEffect = new VideoFilter();
-comicEffect.filter = "CIComicEffect";
+comicEffect = new VideoFilter("CIComicEffect");
 comicEffectInput = comicEffect.inputPin('frame');
 comicEffectOutput = comicEffect.outputPin('frame');
 

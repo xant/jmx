@@ -40,11 +40,13 @@
     VJXOutputPin *imageOutputPin;
     VJXOutputPin *imageSizeOutputPin;
     CIImage *currentFrame;
-    CIFilter *blendFilter;
+    CIFilter *ciBlendFilter;
+    NSString *blendFilter;
     uint64_t lastFrameTime;
 }
 
 @property (retain) VJXSize *outputSize;
+@property (readwrite, copy) NSString *blendFilter;
 
 @end
 

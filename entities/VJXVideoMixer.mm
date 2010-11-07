@@ -31,7 +31,7 @@ VJXV8_EXPORT_ENTITY_CLASS(VJXVideoMixer);
 
 @implementation VJXVideoMixer
 
-@synthesize outputSize;
+@synthesize outputSize, blendFilter;
 
 - (id) init
 {
@@ -43,7 +43,7 @@ VJXV8_EXPORT_ENTITY_CLASS(VJXVideoMixer);
                                   allowedValues:[CIFilter filterNamesInCategory:kCICategoryCompositeOperation]
                                    initialValue:VJX_MIXER_DEFAULT_BLEND_FILTER];
         imageInputPin = [self registerInputPin:@"video" withType:kVJXImagePin];
-        blendFilter = [[CIFilter filterWithName:VJX_MIXER_DEFAULT_BLEND_FILTER] retain];
+        ciBlendFilter = [[CIFilter filterWithName:VJX_MIXER_DEFAULT_BLEND_FILTER] retain];
         [imageInputPin allowMultipleConnections:YES];
         [self registerInputPin:@"videoSize" withType:kVJXSizePin andSelector:@"setOutputSize:"];
         imageSizeOutputPin = [self registerOutputPin:@"videoSize" withType:kVJXSizePin];
@@ -64,15 +64,16 @@ VJXV8_EXPORT_ENTITY_CLASS(VJXVideoMixer);
 
 - (void)setBlendFilter:(NSString *)blendFilterName
 {
-    if (!blendFilter || (blendFilter && ![blendFilterName isEqual:[[blendFilter attributes] 
+    if (!ciBlendFilter || (ciBlendFilter && ![blendFilterName isEqual:[[ciBlendFilter attributes] 
                                                                    objectForKey:@"CIAttributeFilterName"]]))
     {
         @synchronized(self) {
             CIFilter *newBlendFilter = [CIFilter filterWithName:blendFilterName];
             if (newBlendFilter) {
-                if (blendFilter)
-                    [blendFilter release];
-                blendFilter = [newBlendFilter retain];
+                if (ciBlendFilter)
+                    [ciBlendFilter release];
+                ciBlendFilter = [newBlendFilter retain];
+                blendFilter = [newBlendFilter copy];
             }
         }
     }
@@ -109,13 +110,13 @@ VJXV8_EXPORT_ENTITY_CLASS(VJXVideoMixer);
                 currentFrame = frame;
             } else {
                 /*
-                if (!blendFilter)
-                    blendFilter = [[CIFilter filterWithName:VJX_MIXER_DEFAULT_BLEND_FILTER] retain];
+                if (!ciBlendFilter)
+                    ciBlendFilter = [[CIFilter filterWithName:VJX_MIXER_DEFAULT_BLEND_FILTER] retain];
                  */ 
-                [blendFilter setDefaults];
-                [blendFilter setValue:frame forKey:@"inputImage"];
-                [blendFilter setValue:currentFrame forKey:@"inputBackgroundImage"];
-                currentFrame = [blendFilter valueForKey:@"outputImage"];
+                [ciBlendFilter setDefaults];
+                [ciBlendFilter setValue:frame forKey:@"inputImage"];
+                [ciBlendFilter setValue:currentFrame forKey:@"inputBackgroundImage"];
+                currentFrame = [ciBlendFilter valueForKey:@"outputImage"];
             }
         }
         if (currentFrame)
@@ -125,6 +126,22 @@ VJXV8_EXPORT_ENTITY_CLASS(VJXVideoMixer);
         [imageOutputPin deliverData:currentFrame fromSender:self];
         [imageSizeOutputPin deliverData:outputSize];
     }
-}   
+}
+
+
+#pragma mark V8
+
++ (v8::Handle<v8::FunctionTemplate>)jsClassTemplate
+{
+    //Locker lock;
+    HandleScope handleScope;
+    v8::Handle<v8::FunctionTemplate> entityTemplate = [super jsClassTemplate];
+    entityTemplate->SetClassName(String::New("CoreImageFilter"));
+    v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
+    //classProto->Set("avaliableFilters", FunctionTemplate::New(AvailableFilters));
+    //classProto->Set("selectFilter", FunctionTemplate::New(SelectFilter));
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("blendFilter"), GetStringProperty, SetStringProperty);
+    return handleScope.Close(entityTemplate);
+}
 
 @end

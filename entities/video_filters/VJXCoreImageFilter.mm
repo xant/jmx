@@ -173,6 +173,8 @@ static v8::Handle<Value> SelectFilter(const Arguments& args)
     return handleScope.Close(v8::Boolean::New(ret));
 }
 
+#pragma mark V8
+
 + (v8::Handle<v8::FunctionTemplate>)jsClassTemplate
 {
     //Locker lock;

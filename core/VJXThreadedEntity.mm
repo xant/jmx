@@ -72,14 +72,14 @@
 
 - (void)stop {
     if (worker) {
-        NSLog(@"STOP");
         active = NO;
+        quit = YES;
         [worker cancel];
         // wait for the thread to really finish otherwise it could
         // sill retaining something which is supposed to be released
         // immediately after we return from this method
         //while (![worker isFinished])
-        //    [NSThread sleepForTimeInterval:0.001];
+            //[NSThread sleepForTimeInterval:0.001];
         [worker autorelease];
         worker = nil;
     }

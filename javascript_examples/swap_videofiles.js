@@ -1,4 +1,4 @@
-screen = new OpenGLScreen();
+screen = new VideoOutput();
 //screen2 = new OpenGLScreen();
 screen.width = 512;
 screen.height = 384;

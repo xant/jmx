@@ -23,7 +23,7 @@
 		825C30E31275AD32006376B8 /* VJXEntityLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30D71275AD32006376B8 /* VJXEntityLayer.m */; };
 		825C30E41275AD32006376B8 /* VJXOutletLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30D91275AD32006376B8 /* VJXOutletLayer.m */; };
 		825C31101275ADB6006376B8 /* VJXQtExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30E71275ADB6006376B8 /* VJXQtExporter.m */; };
-		825C31111275ADB6006376B8 /* VJXVideoFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30EA1275ADB6006376B8 /* VJXVideoFilter.m */; };
+		825C31111275ADB6006376B8 /* VJXCoreImageFilter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30EA1275ADB6006376B8 /* VJXCoreImageFilter.mm */; };
 		825C31121275ADB6006376B8 /* VJXAudioFileLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30ED1275ADB6006376B8 /* VJXAudioFileLayer.mm */; };
 		825C31131275ADB6006376B8 /* VJXImageLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30EF1275ADB6006376B8 /* VJXImageLayer.mm */; };
 		825C31141275ADB6006376B8 /* VJXQtAudioCaptureLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30F11275ADB6006376B8 /* VJXQtAudioCaptureLayer.m */; };
@@ -114,8 +114,8 @@
 		825C30DA1275AD32006376B8 /* VJXPinLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXPinLayer.h; sourceTree = "<group>"; };
 		825C30E61275ADB6006376B8 /* VJXQtExporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXQtExporter.h; sourceTree = "<group>"; };
 		825C30E71275ADB6006376B8 /* VJXQtExporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXQtExporter.m; sourceTree = "<group>"; };
-		825C30E91275ADB6006376B8 /* VJXVideoFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXVideoFilter.h; sourceTree = "<group>"; };
-		825C30EA1275ADB6006376B8 /* VJXVideoFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VJXVideoFilter.m; sourceTree = "<group>"; };
+		825C30E91275ADB6006376B8 /* VJXCoreImageFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXCoreImageFilter.h; sourceTree = "<group>"; };
+		825C30EA1275ADB6006376B8 /* VJXCoreImageFilter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VJXCoreImageFilter.mm; sourceTree = "<group>"; };
 		825C30EC1275ADB6006376B8 /* VJXAudioFileLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXAudioFileLayer.h; sourceTree = "<group>"; };
 		825C30ED1275ADB6006376B8 /* VJXAudioFileLayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VJXAudioFileLayer.mm; sourceTree = "<group>"; };
 		825C30EE1275ADB6006376B8 /* VJXImageLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VJXImageLayer.h; sourceTree = "<group>"; };
@@ -376,8 +376,8 @@
 		825C30E81275ADB6006376B8 /* filters */ = {
 			isa = PBXGroup;
 			children = (
-				825C30E91275ADB6006376B8 /* VJXVideoFilter.h */,
-				825C30EA1275ADB6006376B8 /* VJXVideoFilter.m */,
+				825C30E91275ADB6006376B8 /* VJXCoreImageFilter.h */,
+				825C30EA1275ADB6006376B8 /* VJXCoreImageFilter.mm */,
 			);
 			path = filters;
 			sourceTree = "<group>";
@@ -471,8 +471,8 @@
 				825C31431275ADD7006376B8 /* VJXSpectrumAnalyzer.m */,
 				AA3556FF1277347300EAA2E4 /* VJXTextRenderer.h */,
 				AA3557001277347300EAA2E4 /* VJXTextRenderer.m */,
-				AA3557E712795D0A00EAA2E4 /* VJXJavaScript.mm */,
 				AA3557E612795D0A00EAA2E4 /* VJXJavaScript.h */,
+				AA3557E712795D0A00EAA2E4 /* VJXJavaScript.mm */,
 			);
 			name = Core;
 			path = core;
@@ -605,7 +605,7 @@
 				825C30E31275AD32006376B8 /* VJXEntityLayer.m in Sources */,
 				825C30E41275AD32006376B8 /* VJXOutletLayer.m in Sources */,
 				825C31101275ADB6006376B8 /* VJXQtExporter.m in Sources */,
-				825C31111275ADB6006376B8 /* VJXVideoFilter.m in Sources */,
+				825C31111275ADB6006376B8 /* VJXCoreImageFilter.mm in Sources */,
 				825C31121275ADB6006376B8 /* VJXAudioFileLayer.mm in Sources */,
 				825C31131275ADB6006376B8 /* VJXImageLayer.mm in Sources */,
 				825C31141275ADB6006376B8 /* VJXQtAudioCaptureLayer.m in Sources */,

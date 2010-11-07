@@ -33,7 +33,7 @@
 #import "VJXQtAudioCaptureLayer.h"
 #import "VJXAudioMixer.h"
 #import "VJXAudioSpectrumAnalyzer.h"
-#import "VJXVideoFilter.h"
+#import "VJXCoreImageFilter.h"
 #import "VJXTextLayer.h"
 #import "VJXJavascriptFile.h"
 
@@ -53,7 +53,7 @@
 	[sharedContext registerClass:[VJXAudioFileLayer class]];
 	[sharedContext registerClass:[VJXAudioMixer class]];
     [sharedContext registerClass:[VJXAudioSpectrumAnalyzer class]];
-    [sharedContext registerClass:[VJXVideoFilter class]];
+    [sharedContext registerClass:[VJXCoreImageFilter class]];
 	[sharedContext registerClass:[VJXTextLayer class]];
     [sharedContext registerClass:[VJXJavascriptFile class]];
 	NSLog(@"Registered %i entities", [[sharedContext registeredClasses] count]);

@@ -19,6 +19,8 @@
 #import "VJXQtVideoLayer.h"
 #import "VJXAudioFileLayer.h"
 #import "VJXCoreAudioOutput.h"
+#import "VJXCoreImageFilter.h"
+#import "VJXAudioSpectrumAnalyzer.h"
 #import "VJXInputPin.h"
 #import "VJXOutputPin.h"
 
@@ -302,12 +304,19 @@ static v8::Handle<Value> Quit(const Arguments& args)
 
 - (void)registerClasses:(v8::Handle<ObjectTemplate>)ctxTemplate;
 {
-    // register the VJXVideoOutput class
-    ctxTemplate->Set(String::New("OpenGLScreen"), FunctionTemplate::New(VJXOpenGLScreenJSConstructor));
+    // register all the core entities exposed to the javascript context.
+    // VJXPins are also exposed but those can't be created directly from
+    // javascript but must be obtained through the methods provided by the VJXEntity class.
+    // So there is no constructor/destructor to be registered for not-entity classes.
+    // Note that all entity-related constructors (as well as distructors) are defined through the 
+    // VJXV8_EXPORT_ENTITY_CLASS() macro (declared in VJXEntity.h)
+    ctxTemplate->Set(String::New("VideoOutput"), FunctionTemplate::New(VJXOpenGLScreenJSConstructor));
     ctxTemplate->Set(String::New("VideoCapture"), FunctionTemplate::New(VJXQtVideoCaptureLayerJSConstructor));
     ctxTemplate->Set(String::New("VideoLayer"), FunctionTemplate::New(VJXQtVideoLayerJSConstructor));
+    ctxTemplate->Set(String::New("VideoFilter"), FunctionTemplate::New(VJXCoreImageFilterJSConstructor));
     ctxTemplate->Set(String::New("AudioLayer"), FunctionTemplate::New(VJXAudioFileLayerJSConstructor));
     ctxTemplate->Set(String::New("AudioOutput"), FunctionTemplate::New(VJXCoreAudioOutputJSConstructor));
+    ctxTemplate->Set(String::New("AudioSpectrum"), FunctionTemplate::New(VJXAudioSpectrumAnalyzerJSConstructor));
 }
 
 - (id)init
@@ -396,8 +405,7 @@ static v8::Handle<Value> Quit(const Arguments& args)
         //v8::Locker::StartPreemption(50);
         compiledScript->Run();
     } else {
-        String::Utf8Value error(try_catch.Exception());
-        NSLog(@"%s", *error);
+        ReportException(&try_catch);
     }
     [pool drain];
 }

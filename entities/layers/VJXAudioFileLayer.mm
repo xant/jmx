@@ -25,7 +25,7 @@
 #import <QuartzCore/QuartzCore.h>
 #define __VJXV8__
 #import "VJXAudioFileLayer.h"
-#include "VJXJavaScript.h"
+#import "VJXJavaScript.h"
 
 VJXV8_EXPORT_ENTITY_CLASS(VJXAudioFileLayer);
 
@@ -110,6 +110,8 @@ VJXV8_EXPORT_ENTITY_CLASS(VJXAudioFileLayer);
     ? YES
     : NO;
 }
+
+#pragma mark V8
 
 static v8::Handle<Value> open(const Arguments& args)
 {

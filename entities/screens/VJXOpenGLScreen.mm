@@ -117,7 +117,8 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         if (ret != noErr) {
             // TODO - Error Messages
         }
-        // Set up display link callbacks 
+        // Set up display link callbacks
+        NSLog(@"Creating CVDisplayLink");
         CVDisplayLinkSetOutputCallback(displayLink, renderCallback, self);
         CVDisplayLinkStart(displayLink);
         [self setNeedsDisplay:YES];
@@ -126,6 +127,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 
 - (void)dealloc
 {
+    NSLog(@"Releasing CVDisplayLink");
     CVDisplayLinkStop(displayLink);
     CVDisplayLinkRelease(displayLink);
     [self cleanup];

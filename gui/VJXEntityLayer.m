@@ -26,6 +26,8 @@
 #import "VJXOutletLayer.h"
 #import "VJXEntityLabelLayer.h"
 
+#define VJXInputOutletLayerCreate(x) [[[VJXOutletLayer alloc] initWithPin:(x) andPoint:NSZeroPoint isOutput:NO entity:self] autorelease]
+
 @implementation VJXEntityLayer
 
 @synthesize entity;

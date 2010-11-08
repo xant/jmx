@@ -2,8 +2,8 @@ screen = new VideoOutput();
 // set screen size
 screen.width = 512;
 screen.height = 384;
-// create a new movie layer
-movie = new MovieLayer("/Users/xant/test.avi");
+// open a new movie file
+movie = new Movie("/Users/xant/test.avi");
 movie.saturation = 10.0;
 
 // create a color-invert filter

@@ -197,6 +197,7 @@
 - (void)proxyOutputPin:(VJXOutputPin *)pin;
 
 #pragma mark V8
+- (void)jsInit:(NSValue *)argsValue;
 
 #ifdef __VJXV8__
 + (v8::Handle<v8::FunctionTemplate>)jsClassTemplate;

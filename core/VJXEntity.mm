@@ -337,6 +337,12 @@ static Persistent<ObjectTemplate> entityTemplate;
 
 #pragma mark V8
 
+- (void)jsInit:(NSValue *)argsValue
+{
+    // do nothing, our subclasses could use this to do something with
+    // arguments passed to the constructor
+}
+
 #pragma mark Accessors
 
 static v8::Handle<Value>inputPins(Local<String> name, const AccessorInfo& info)

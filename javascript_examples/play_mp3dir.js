@@ -1,10 +1,10 @@
-// Create a new audiolayer.
+// Create a new audiofile reader.
 // We will use this object to load and play mp3 files
-audiofile = new AudioLayer();
+audiofile = new AudioFile();
 // Create a new audio output to let the user 'hear' what he plays
 output = new AudioOutput();
 
-// get the output pin from the audiolayer
+// get the output pin from the audio file
 audioout = audiofile.outputPin('audio');
 // and the input pin from the audio output
 audioin = output.inputPin('audio');
@@ -26,7 +26,7 @@ for (i = 0; i < list.length; i++) {
         audiofile.repeat = false; // we don't want to play always the same file
         audiofile.start();
         run(function() {
-            // if EOF is reached, the layer will be automatically deactivated
+            // if EOF is reached, the entity will be automatically deactivated
             if (!audiofile.active) 
                 quit(); // so we can go ahead to play next file
             sleep(1);

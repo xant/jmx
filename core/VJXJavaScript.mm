@@ -49,16 +49,12 @@ static v8::Handle<Value> ExportPin(const Arguments& args) {
     v8::String::Utf8Value proto(pinObj->ToString());
     NSString *objectType = [NSString stringWithUTF8String:*proto];
     if ([objectType isEqualToString:@"[object Pin]"]) {
-        Local<External> wrap = Local<External>::Cast(pinObj->GetInternalField(0));
-        VJXOutputPin *pin = (VJXOutputPin *)wrap->Value();
-        Local<Context> globalContext = v8::Context::GetCurrent();
-        Local<Object> globalObject  = globalContext->Global();
-        if (!globalObject.IsEmpty()) {
-            VJXEntity *scriptEntity = (VJXEntity *)globalObject->GetPointerFromInternalField(0);
-            if (scriptEntity)
-                [scriptEntity proxyOutputPin:pin];
-            return scope.Close(v8::Boolean::New(1));
-        }
+        v8::Handle<v8::Value> fArgs[args.Length()-1];
+        for (int i = 0; i < args.Length()-1; i++)
+            fArgs[i] = args[i+1];
+        v8::Handle<Function> exportFunction = v8::Local<v8::Function>::Cast(pinObj->Get(String::New("export")));
+        // call the 'export()' proptotype method exposed by Pin objects
+        return exportFunction->Call(pinObj, args.Length()-1, fArgs);
     } else {
         NSLog(@"(exportPin) Bad argument: %@", objectType);
     }

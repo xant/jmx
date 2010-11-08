@@ -3,8 +3,8 @@ screen = new VideoOutput();
 screen.width = 512;
 screen.height = 384;
 // create a new video layer
-movie = new VideoLayer();
-movie2 = new VideoLayer();
+movie = new Movie();
+movie2 = new Movie();
 movie.open("/Users/xant/test.avi");
 movie2.open("/Users/xant/test.mov");
 // get pins

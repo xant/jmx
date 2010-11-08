@@ -27,6 +27,7 @@
 #import "VJXInputPin.h"
 #import <v8.h>
 #import "VJXJavaScript.h"
+#import "VJXEntity.h"
 
 using namespace v8;
 
@@ -495,6 +496,7 @@ using namespace v8;
 }
 
 #pragma mark V8
+
 static v8::Handle<Value>direction(Local<String> name, const AccessorInfo& info)
 {
     //v8::Locker lock;
@@ -518,13 +520,12 @@ static v8::Handle<Value>type(Local<String> name, const AccessorInfo& info)
     return handle_scope.Close(ret);
 }
 
-v8::Handle<Value> connect(const Arguments& args)
+static v8::Handle<Value>connect(const Arguments& args)
 {
     //v8::Locker lock;
+    BOOL ret = NO;
     HandleScope handleScope;
-    Local<Object> self = args.Holder();
-    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
-    VJXPin *pin = (VJXPin *)wrap->Value();
+    VJXPin *pin = (VJXPin *)args.Holder()->GetPointerFromInternalField(0);;
     v8::Handle<Value> arg = args[0];
     if (arg->IsObject()) {
         v8::Handle<Object> obj = v8::Handle<Object>::Cast(arg);
@@ -532,12 +533,33 @@ v8::Handle<Value> connect(const Arguments& args)
         VJXPin *dest = (VJXPin *)field->Value();
         if (dest) {
             NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-            BOOL connected = [pin connectToPin:dest];
+            ret = [pin connectToPin:dest];
             [pool release];
-            return v8::Boolean::New(connected);
         }
     }
-    return v8::Undefined();
+    return handleScope.Close(v8::Boolean::New(ret));
+}
+
+static v8::Handle<Value>exportToBoard(const Arguments& args)
+{
+    //v8::Locker lock;
+    HandleScope scope;
+    BOOL ret = NO;
+    VJXPin *pin = (VJXPin *)args.Holder()->GetPointerFromInternalField(0);;
+    Local<Context> globalContext = v8::Context::GetCalling();
+    Local<Object> globalObject  = globalContext->Global();
+    if (!globalObject.IsEmpty()) {
+        VJXEntity *scriptEntity = (VJXEntity *)globalObject->GetPointerFromInternalField(0);
+        if (scriptEntity) {
+            if (pin.direction == kVJXInputPin)
+                [scriptEntity proxyInputPin:(VJXInputPin *)pin];
+            else {
+                [scriptEntity proxyOutputPin:(VJXOutputPin *)pin];
+            }
+        }
+        ret = YES;
+    }
+    return scope.Close(v8::Boolean::New(ret));
 }
 
 + (v8::Handle<FunctionTemplate>)jsClassTemplate
@@ -548,6 +570,7 @@ v8::Handle<Value> connect(const Arguments& args)
     classTemplate->SetClassName(String::New("Pin"));
     v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
     classProto->Set("connect", FunctionTemplate::New(connect));
+    classProto->Set("export", FunctionTemplate::New(exportToBoard));
     // set instance methods
     v8::Handle<ObjectTemplate> instanceTemplate = classTemplate->InstanceTemplate();
     instanceTemplate->SetInternalFieldCount(1);

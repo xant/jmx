@@ -14,8 +14,8 @@ audioin.connect(audioout);
 // we also want to make the samples we play available
 // to the board for further processing
 exportedOut = output.outputPin('currentSample');
-exportPin(exportedOut); // this will register an output pin in the script entity
-//exportedOut.export();
+//exportPin(exportedOut); // this will register an output pin in the script entity
+exportedOut.export();
 
 basepath = '/Users/xant/Documents/Music/Studentessi/'; // XXX - change me
 // ok, now we can iterate over mp3 files and play them in sequence

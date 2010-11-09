@@ -1,0 +1,94 @@
+------------------------------------
+Legend:
+
+* = Class
++ = prototype method
+- = accessor
+< = input pin
+> = output pin
+------------------------------------
+
+
+Point
++ Point(x, y)
+- x
+- y
+
+Size
++ Size(width, height)
+- width
+- heigth
+
+Rect
++ Rect(x, y, widht, height)
+- x
+- y
+- width
+- height
+
+* Pin
+
+* Entity
+    inputPins() : array of strings (available input pins)
+    outputPins() : array of strings (available output pins)
+    intputPin(pinName) : Pin object
+    outputPin(pinName) : Pin object
+    * VideoEntity
+        - brightness : float
+        - saturation : float
+        - contrast   : float
+        - alpha      : float
+        - rotation   : float
+        - origin     : point
+        < brightness : number
+        < saturation : number
+        < contrast   : number
+        < alpha      : number
+        < origin     : number
+        < saturation : number
+        < contrast   : number
+        < alpha      : number
+        > frame      : number
+        > frameSize  : size
+        * Movie
+            + Movie(path)
+            + open(path)
+            + start()
+            + stop()
+            - fps        : float
+            > fps        : number
+
+        * Text
+            + Text(string)
+            - text       : string
+            - fps        : float
+            > fps        : number
+
+        * Image
+            + Image(path)
+            + open(path)
+            - fps        : float
+            > fps        : number
+
+    * VideoFilter
+        + VideoFilter(filtername)
+        - filter  : string
+
+    * AudioFile
+        + AudioFile(path)
+        + open(path)
+        + start()
+        + stop()
+        > sample : audio
+
+    * VideoOutput
+        + VideoOutput(width, height)
+        - width  : int
+        - height : int
+        < frame        : image
+        < frameSize    : size
+        > currentFrame : image
+
+    * AudioOutput
+        < sample        : audio
+        > currentSample : audio

@@ -24,7 +24,7 @@
 #define __JMXV8__ 1
 #import "JMXEntity.h"
 #import <QuartzCore/QuartzCore.h>
-#import "JMXJavaScript.h"
+#import "JMXScript.h"
 
 using namespace v8;
 

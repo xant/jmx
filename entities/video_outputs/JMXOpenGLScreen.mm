@@ -27,7 +27,7 @@
 #define __JMXV8__
 #include <v8.h>
 #include <map>
-#import "JMXJavaScript.h"
+#import "JMXScript.h"
 #import "JMXOpenGLScreen.h"
 
 JMXV8_EXPORT_ENTITY_CLASS(JMXOpenGLScreen);

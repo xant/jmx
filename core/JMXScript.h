@@ -1,5 +1,5 @@
 //
-//  JMXJavaScript.h
+//  JMXScript.h
 //  JMX
 //
 //  Created by xant on 10/28/10.
@@ -26,14 +26,14 @@ void SetIntProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, cons
 
 @class JMXEntity;
 
-@interface JMXJavaScript : NSObject {
+@interface JMXScript : NSObject {
 @private
     JMXEntity *scriptEntity;
     v8::Persistent<v8::Context> ctx;
     std::map<id, v8::Persistent<v8::Object> > instancesMap;
 }
 
-+ (JMXJavaScript *)getContext:(v8::Local<v8::Context>&)currentContext;
++ (JMXScript *)getContext:(v8::Local<v8::Context>&)currentContext;
 + (void)runScriptInBackground:(NSString *)source;
 + (void)runScriptInBackground:(NSString *)source withEntity:(JMXEntity *)entity;
 + (void)runScript:(NSString *)source;

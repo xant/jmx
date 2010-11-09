@@ -1,15 +1,15 @@
 //
-//  JMXJavascriptFile.m
+//  JMXScriptFile.m
 //  JMX
 //
 //  Created by xant on 11/4/10.
 //  Copyright 2010 Dyne.org. All rights reserved.
 //
 
-#import "JMXJavascriptFile.h"
-#import "JMXJavaScript.h"
+#import "JMXScriptFile.h"
+#import "JMXScript.h"
 
-@implementation JMXJavascriptFile
+@implementation JMXScriptFile
 
 + (NSArray *)supportedFileTypes
 {
@@ -64,7 +64,7 @@
 - (void)tick:(uint64_t)timeStamp
 {
     if (!quit) {
-        [JMXJavaScript runScript:[NSString stringWithFormat:@"include('%@');", path] withEntity:self];
+        [JMXScript runScript:[NSString stringWithFormat:@"include('%@');", path] withEntity:self];
         quit = YES;
     }
     //[super tick:timeStamp];

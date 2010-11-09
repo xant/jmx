@@ -26,7 +26,7 @@
 #import "JMXOutputPin.h"
 #import "JMXInputPin.h"
 #import <v8.h>
-#import "JMXJavaScript.h"
+#import "JMXScript.h"
 #import "JMXEntity.h"
 
 using namespace v8;

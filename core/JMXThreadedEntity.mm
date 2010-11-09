@@ -24,7 +24,7 @@
 #import <QuartzCore/QuartzCore.h>
 #define __JMXV8__ 1
 #import "JMXThreadedEntity.h"
-#import "JMXJavaScript.h"
+#import "JMXScript.h"
 
 @interface JMXThreadedEntity (Private)
 - (void)run;

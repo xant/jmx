@@ -24,7 +24,7 @@
 #import "JMXAudioDevice.h"
 #define __JMXV8__
 #import "JMXCoreAudioOutput.h"
-#include "JMXJavaScript.h"
+#include "JMXScript.h"
 
 JMXV8_EXPORT_ENTITY_CLASS(JMXCoreAudioOutput);
 

@@ -27,7 +27,7 @@
 #import <Cocoa/Cocoa.h>
 #define __JMXV8__
 #import "JMXQtVideoCaptureEntity.h"
-#include "JMXJavaScript.h"
+#include "JMXScript.h"
 
 #define JMX_GRABBER_WIDTH_MAX 640
 #define JMX_GRABBER_HEIGHT_MAX 480

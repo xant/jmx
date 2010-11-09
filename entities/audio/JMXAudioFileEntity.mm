@@ -25,7 +25,7 @@
 #import <QuartzCore/QuartzCore.h>
 #define __JMXV8__
 #import "JMXAudioFileEntity.h"
-#import "JMXJavaScript.h"
+#import "JMXScript.h"
 
 JMXV8_EXPORT_ENTITY_CLASS(JMXAudioFileEntity);
 

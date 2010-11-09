@@ -10,7 +10,7 @@
 #import "JMXContext.h"
 #define __JMXV8__
 #import "JMXCoreImageFilter.h"
-#import "JMXJavascript.h"
+#import "JMXScript.h"
 
 JMXV8_EXPORT_ENTITY_CLASS(JMXCoreImageFilter);
 

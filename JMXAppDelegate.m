@@ -35,7 +35,7 @@
 #import "JMXAudioSpectrumAnalyzer.h"
 #import "JMXCoreImageFilter.h"
 #import "JMXTextEntity.h"
-#import "JMXJavascriptFile.h"
+#import "JMXScriptFile.h"
 
 @implementation JMXAppDelegate
 
@@ -55,7 +55,7 @@
     [sharedContext registerClass:[JMXAudioSpectrumAnalyzer class]];
     [sharedContext registerClass:[JMXCoreImageFilter class]];
 	[sharedContext registerClass:[JMXTextEntity class]];
-    [sharedContext registerClass:[JMXJavascriptFile class]];
+    [sharedContext registerClass:[JMXScriptFile class]];
 	NSLog(@"Registered %i entities", [[sharedContext registeredClasses] count]);
 }
 

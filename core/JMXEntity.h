@@ -35,7 +35,7 @@
         NSLog(@"V8 WeakCallback called");\
         __class *obj = static_cast<__class *>(parameter);\
         Local<Context> currentContext  = v8::Context::GetCurrent();\
-        JMXJavaScript *ctx = [JMXJavaScript getContext:currentContext];\
+        JMXScript *ctx = [JMXScript getContext:currentContext];\
         if (ctx) {\
             /* this will destroy the javascript object as well */\
             [ctx removePersistentInstance:obj];\
@@ -61,7 +61,7 @@
         v8::Handle<External> external_ptr = External::New(instance);\
         jsInstance->SetInternalField(0, external_ptr);\
         Local<Context> currentContext = v8::Context::GetCalling();\
-        JMXJavaScript *ctx = [JMXJavaScript getContext:currentContext];\
+        JMXScript *ctx = [JMXScript getContext:currentContext];\
         if (ctx) {\
             [ctx addPersistentInstance:jsInstance obj:instance];\
         } else {\

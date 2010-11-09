@@ -1,5 +1,5 @@
 //
-//  JMXJavascriptFile.h
+//  JMXScriptFile.h
 //  JMX
 //
 //  Created by xant on 11/4/10.
@@ -12,7 +12,7 @@
 #import "JMXThreadedEntity.h"
 
 
-@interface JMXJavascriptFile : JMXThreadedEntity <JMXFileRead> {
+@interface JMXScriptFile : JMXThreadedEntity <JMXFileRead> {
 @private
     NSString *path;
 }

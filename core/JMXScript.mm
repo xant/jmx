@@ -1,5 +1,5 @@
 //
-//  JMXJavaScript.m
+//  JMXScript.m
 //  JMX
 //
 //  Created by xant on 10/28/10.
@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/NSFileManager.h>
-#import "JMXJavaScript.h"
+#import "JMXScript.h"
 #import "JMXContext.h"
 #include <fcntl.h>
 #include <string.h>
@@ -31,8 +31,8 @@ using namespace v8;
 using namespace std;
 
 typedef std::map<id, v8::Persistent<v8::Object> > InstMap;
-typedef std::pair< JMXJavaScript *, Persistent<Context> >CtxPair;
-typedef std::map< JMXJavaScript *, Persistent<Context> > CtxMap;
+typedef std::pair< JMXScript *, Persistent<Context> >CtxPair;
+typedef std::map< JMXScript *, Persistent<Context> > CtxMap;
 CtxMap contextes;
 
 // Extracts a C string from a V8 Utf8Value.
@@ -263,7 +263,7 @@ static v8::Handle<Value> Quit(const Arguments& args)
 @synthesize source, entity;
 @end
 
-@implementation JMXJavaScript
+@implementation JMXScript
 
 + (void)runScript:(NSString *)source
 {
@@ -272,7 +272,7 @@ static v8::Handle<Value> Quit(const Arguments& args)
 
 + (void)runScript:(NSString *)source withEntity:(JMXEntity *)entity
 {
-    JMXJavaScript *jsContext = [[self alloc] init];
+    JMXScript *jsContext = [[self alloc] init];
     [jsContext runScript:source withEntity:entity];
     [jsContext release];
 }
@@ -408,9 +408,9 @@ static v8::Handle<Value> Quit(const Arguments& args)
     [pool drain];
 }
 
-+ (JMXJavaScript *)getContext:(Local<Context>&)currentContext
++ (JMXScript *)getContext:(Local<Context>&)currentContext
 {
-    JMXJavaScript *context;
+    JMXScript *context;
     CtxMap::const_iterator end = contextes.end(); 
     for (CtxMap::const_iterator it = contextes.begin(); it != end; ++it)
     {

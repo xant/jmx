@@ -25,7 +25,7 @@
 #define __JMXV8__
 #import "JMXVideoMixer.h"
 #import "JMXVideoEntity.h"
-#include "JMXJavaScript.h"
+#include "JMXScript.h"
 
 JMXV8_EXPORT_ENTITY_CLASS(JMXVideoMixer);
 

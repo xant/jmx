@@ -1,5 +1,5 @@
 //
-//  NSColorExtensions.h
+//  JMXBoardLayer.h
 //  JMX
 //
 //  Created by Igor Sutton on 10/21/10.
@@ -7,8 +7,12 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import <QuartzCore/QuartzCore.h>
 
+@interface JMXBoardLayer : CALayer {
 
-@interface NSColor (JMX)
+}
+
+- (void)setupBoard;
 
 @end

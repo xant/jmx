@@ -80,11 +80,11 @@ static int _frequencies[kJMXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 3
         deinterleavedBuffer = (AudioBufferList *)calloc(1, sizeof(AudioBufferList) + sizeof(AudioBuffer));
         deinterleavedBuffer->mNumberBuffers = 2;
         deinterleavedBuffer->mBuffers[0].mNumberChannels = 1;
-        deinterleavedBuffer->mBuffers[0].mDataByteSize = sampleSize*512;
-        deinterleavedBuffer->mBuffers[0].mData = calloc(1,sampleSize*512);
+        deinterleavedBuffer->mBuffers[0].mDataByteSize = sampleSize*numBins;
+        deinterleavedBuffer->mBuffers[0].mData = calloc(1,sampleSize*numBins);
         deinterleavedBuffer->mBuffers[1].mNumberChannels = 1;
-        deinterleavedBuffer->mBuffers[1].mDataByteSize = sampleSize*512;
-        deinterleavedBuffer->mBuffers[1].mData = calloc(1,sampleSize*512);
+        deinterleavedBuffer->mBuffers[1].mDataByteSize = sampleSize*numBins;
+        deinterleavedBuffer->mBuffers[1].mData = calloc(1,sampleSize*numBins);
         
         // setup the frequency pins
         frequencyPins = [[NSMutableArray alloc] init];
@@ -198,7 +198,7 @@ static int _frequencies[kJMXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 3
         //[path transformUsingAffineTransform:transform];
         [path fill];
         [path stroke];
-        /*
+        
         NSMutableDictionary *attribs = [NSMutableDictionary dictionary];
         [attribs setObject:[NSFont labelFontOfSize:10] forKey:NSFontAttributeName];
         [attribs setObject:[NSColor lightGrayColor]
@@ -213,7 +213,7 @@ static int _frequencies[kJMXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 3
         NSPoint point;
         point.x = frequencyRect.origin.x+4;
         point.y = 4;
-        [string drawAtPoint:point];*/
+        [string drawAtPoint:point];
     }
     [imagePin deliverData:[CIImage imageWithCGLayer:pathLayers[pathIndex]]];
 }

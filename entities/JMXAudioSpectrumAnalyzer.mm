@@ -100,12 +100,26 @@ static int _frequencies[kJMXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 3
         imagePin = [self registerOutputPin:@"image" withType:kJMXImagePin];
         imageSizePin = [self registerOutputPin:@"imageSize" withType:kJMXSizePin];
         [imageSizePin setContinuous:NO];
-        NSSize layerSize = { kJMXAudioSpectrumImageWidth, kJMXAudioSpectrumImageHeight };
+        CGSize layerSize = { kJMXAudioSpectrumImageWidth, kJMXAudioSpectrumImageHeight };
         [imageSizePin deliverData:[JMXSize sizeWithNSSize:layerSize]];
         // initialize the storage for the spectrum images
         pathLayerOffset = 0;
+        CGLContextObj          glContext;
+        
+        CGLPixelFormatObj pFormat;
+        GLint npix;
+        const int attrs[2] = { kCGLPFADoubleBuffer, NULL};
+        CGLError err = CGLChoosePixelFormat (
+                                             (CGLPixelFormatAttribute *)attrs,
+                                             &pFormat,
+                                             &npix
+                                             );
+        err = CGLCreateContext(pFormat , NULL, &glContext);
+        NSOpenGLContext *context = [[NSOpenGLContext alloc] initWithCGLContextObj:glContext];
+        //CGSize layerSize = { kJMXAudioSpectrumImageWidth, kJMXAudioSpectrumImageHeight };
+        [context makeCurrentContext];
         for (int i = 0; i < kJMXAudioSpectrumImageBufferCount; i++) {
-            NSBitmapImageRep *imageStorage = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil
+            /*NSBitmapImageRep *imageStorage = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil
                                                                                      pixelsWide:kJMXAudioSpectrumImageWidth
                                                                                      pixelsHigh:kJMXAudioSpectrumImageHeight
                                                                                   bitsPerSample:8
@@ -116,10 +130,13 @@ static int _frequencies[kJMXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 3
                                                                                     bytesPerRow:4*kJMXAudioSpectrumImageWidth
                                                                                    bitsPerPixel:4*8];
             imageContext = [NSGraphicsContext graphicsContextWithBitmapImageRep:imageStorage];
-            [imageStorage release];
-            CGSize layerSize = { kJMXAudioSpectrumImageWidth, kJMXAudioSpectrumImageHeight };
-            pathLayers[i] = (CGLayerRef)CGLayerCreateWithContext((CGContext *)[imageContext graphicsPort], layerSize , NULL );
+            [imageStorage release];*/
+
+            pathLayers[i] = (CGLayerRef)CGLayerCreateWithContext( (CGContextRef)[[NSGraphicsContext
+                                                                                  currentContext] graphicsPort], layerSize , NULL );
         }
+        [context release];
+        CGLReleaseContext(glContext);
     }
     return self;
 }
@@ -166,7 +183,6 @@ static int _frequencies[kJMXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 3
     [clearPath stroke];
     for (int i = 0; i < kJMXAudioSpectrumNumFrequencies; i++) {
         Float32 value = frequencyValues[i];
-        //Draw your bezier paths here
         int barWidth = kJMXAudioSpectrumImageWidth/kJMXAudioSpectrumNumFrequencies;
         NSRect frequencyRect;
         frequencyRect.origin.x = i*barWidth+2;
@@ -182,6 +198,7 @@ static int _frequencies[kJMXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 3
         //[path transformUsingAffineTransform:transform];
         [path fill];
         [path stroke];
+        /*
         NSMutableDictionary *attribs = [NSMutableDictionary dictionary];
         [attribs setObject:[NSFont labelFontOfSize:10] forKey:NSFontAttributeName];
         [attribs setObject:[NSColor lightGrayColor]
@@ -196,7 +213,7 @@ static int _frequencies[kJMXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 3
         NSPoint point;
         point.x = frequencyRect.origin.x+4;
         point.y = 4;
-        [string drawAtPoint:point];
+        [string drawAtPoint:point];*/
     }
     [imagePin deliverData:[CIImage imageWithCGLayer:pathLayers[pathIndex]]];
 }

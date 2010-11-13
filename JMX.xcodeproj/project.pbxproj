@@ -62,7 +62,7 @@
 		825C319D1275AFB6006376B8 /* JMXLibraryTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C319A1275AFB6006376B8 /* JMXLibraryTableView.m */; };
 		825C319E1275AFB6006376B8 /* JMXLibraryTableViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C319C1275AFB6006376B8 /* JMXLibraryTableViewDelegate.m */; };
 		825C32131275BEE3006376B8 /* JMXEntityOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C32121275BEE3006376B8 /* JMXEntityOutlineView.m */; };
-		82AD7F701289F3C300C85EB1 /* JMXDraw.mm in Sources */ = {isa = PBXBuildFile; fileRef = 82AD7F6F1289F3C300C85EB1 /* JMXDraw.mm */; };
+		82AD7F701289F3C300C85EB1 /* JMXOpenGLDraw.mm in Sources */ = {isa = PBXBuildFile; fileRef = 82AD7F6F1289F3C300C85EB1 /* JMXOpenGLDraw.mm */; };
 		82EA042F1240BE4A00E28B72 /* JMXDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 82EA042E1240BE4A00E28B72 /* JMXDocument.xib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
@@ -197,8 +197,8 @@
 		825C319C1275AFB6006376B8 /* JMXLibraryTableViewDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXLibraryTableViewDelegate.m; sourceTree = "<group>"; };
 		825C32111275BEE3006376B8 /* JMXEntityOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXEntityOutlineView.h; sourceTree = "<group>"; };
 		825C32121275BEE3006376B8 /* JMXEntityOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXEntityOutlineView.m; sourceTree = "<group>"; };
-		82AD7F6E1289F3C300C85EB1 /* JMXDraw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXDraw.h; sourceTree = "<group>"; };
-		82AD7F6F1289F3C300C85EB1 /* JMXDraw.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXDraw.mm; sourceTree = "<group>"; };
+		82AD7F6E1289F3C300C85EB1 /* JMXOpenGLDraw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXOpenGLDraw.h; sourceTree = "<group>"; };
+		82AD7F6F1289F3C300C85EB1 /* JMXOpenGLDraw.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXOpenGLDraw.mm; sourceTree = "<group>"; };
 		82EA042E1240BE4A00E28B72 /* JMXDocument.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = JMXDocument.xib; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* JMX-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "JMX-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* JMX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JMX.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -448,8 +448,8 @@
 		AAF17A90123E4D9D001319BA /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				82AD7F6E1289F3C300C85EB1 /* JMXDraw.h */,
-				82AD7F6F1289F3C300C85EB1 /* JMXDraw.mm */,
+				82AD7F6E1289F3C300C85EB1 /* JMXOpenGLDraw.h */,
+				82AD7F6F1289F3C300C85EB1 /* JMXOpenGLDraw.mm */,
 				825C31231275ADD6006376B8 /* JMXAudioBuffer.h */,
 				825C31241275ADD6006376B8 /* JMXAudioBuffer.m */,
 				825C31251275ADD6006376B8 /* JMXAudioDevice.h */,
@@ -662,7 +662,7 @@
 				AA3557DA12795C5500EAA2E4 /* JMXDrawing.m in Sources */,
 				AAF6CA8E127CD1210015AEDE /* JMXScript.mm in Sources */,
 				AA8CB78E1282BB9900A17115 /* JMXScriptFile.mm in Sources */,
-				82AD7F701289F3C300C85EB1 /* JMXDraw.mm in Sources */,
+				82AD7F701289F3C300C85EB1 /* JMXOpenGLDraw.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

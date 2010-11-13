@@ -11,7 +11,7 @@
 #import "JMXEntity.h"
 
 #define kJMXAudioSpectrumNumFrequencies 14
-#define kJMXAudioSpectrumImageBufferCount 128
+#define kJMXAudioSpectrumImageBufferCount 32
 
 @class JMXSpectrumAnalyzer;
 

@@ -101,8 +101,8 @@ static int _frequencies[kJMXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 3
         imagePin = [self registerOutputPin:@"image" withType:kJMXImagePin];
         imageSizePin = [self registerOutputPin:@"imageSize" withType:kJMXSizePin];
         [imageSizePin setContinuous:NO];
-        CGSize layerSize = { kJMXAudioSpectrumImageWidth, kJMXAudioSpectrumImageHeight };
-        [imageSizePin deliverData:[JMXSize sizeWithNSSize:layerSize]];
+        NSSize frameSize = { kJMXAudioSpectrumImageWidth, kJMXAudioSpectrumImageHeight };
+        [imageSizePin deliverData:[JMXSize sizeWithNSSize:frameSize]];
         // initialize the storage for the spectrum images
         
         
@@ -139,6 +139,7 @@ static int _frequencies[kJMXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 3
         CGColorSpaceRelease(colorSpace);
         pathLayerOffset = 0;
         for (int i = 0; i < kJMXAudioSpectrumImageBufferCount; i++) {
+            CGSize layerSize = { frameSize.width, frameSize.height };
             pathLayers[i] = [ciContext createCGLayerWithSize:layerSize info: nil];
         }
     }

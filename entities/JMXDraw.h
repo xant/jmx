@@ -7,10 +7,12 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "JMXDrawPath.h"
+#import "JMXVideoEntity.h"
 
-
-@interface JMXDrawing : NSObject {
-
+@interface JMXDraw : JMXVideoEntity {
+@private
+    JMXDrawPath *drawPath;
 }
 
 @end

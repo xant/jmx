@@ -14,19 +14,22 @@
 
 @interface JMXDrawPath : NSObject {
 @protected
-    CIImage *currentFrame;
     CGLayerRef pathLayers[kJMXDrawPathBufferCount];
     UInt32 pathLayerOffset;
+@private
+    NSGraphicsContext *_savedContext;
+    JMXSize *_frameSize;
 }
 
 @property (readonly) CIImage *currentFrame;
 
-+ drawPathWithSize:(JMXSize *)frameSize;
-- drawRect:(JMXPoint *)origin size:(JMXSize *)size;
-- drawCircle:(JMXPoint *)center radius:(NSUInteger)radius;
-- drawTriangle:(NSArray *)points;
-- drawPoligon:(NSArray *)points;
-- lockFocus; // allow to use an NSBezierPath directly
-- unlockFocus; // must be called to wrap out direct NSBezierPath drawing
++ (id)drawPathWithFrameSize:(JMXSize *)frameSize;
+- (id)initWithFrameSize:(JMXSize *)frameSize;
+- (void)drawRect:(JMXPoint *)origin size:(JMXSize *)size strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor;
+- (void)drawCircle:(JMXPoint *)center radius:(NSUInteger)radius strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor;
+- (void)drawTriangle:(NSArray *)points strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor;
+- (void)drawPoligon:(NSArray *)points strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor;
+- (void)lockFocus; // allow to use an NSBezierPath directly
+- (void)unlockFocus; // must be called to wrap out direct NSBezierPath drawing
 
 @end

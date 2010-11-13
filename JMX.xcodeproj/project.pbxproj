@@ -75,6 +75,7 @@
 		AA3557DA12795C5500EAA2E4 /* JMXDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3557D912795C5500EAA2E4 /* JMXDrawing.m */; };
 		AA8CB78E1282BB9900A17115 /* JMXScriptFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8CB78D1282BB9900A17115 /* JMXScriptFile.mm */; };
 		AA8CBF681286015800A17115 /* libv8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA8CBF671286015800A17115 /* libv8.dylib */; };
+		AAD139BB128EA0DF00ECB03A /* JMXDrawPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */; };
 		AADEBFC812414F7E00A6A06D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */; };
 		AAF6CA8E127CD1210015AEDE /* JMXScript.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA3557E712795D0A00EAA2E4 /* JMXScript.mm */; };
 /* End PBXBuildFile section */
@@ -216,6 +217,8 @@
 		AA8CB78C1282BB9800A17115 /* JMXScriptFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXScriptFile.h; sourceTree = "<group>"; };
 		AA8CB78D1282BB9900A17115 /* JMXScriptFile.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScriptFile.mm; sourceTree = "<group>"; };
 		AA8CBF671286015800A17115 /* libv8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libv8.dylib; path = "../v8-read-only/libv8.dylib"; sourceTree = SOURCE_ROOT; };
+		AAD139B9128EA0DF00ECB03A /* JMXDrawPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXDrawPath.h; sourceTree = "<group>"; };
+		AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXDrawPath.mm; sourceTree = "<group>"; };
 		AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -448,8 +451,6 @@
 		AAF17A90123E4D9D001319BA /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				82AD7F6E1289F3C300C85EB1 /* JMXOpenGLDraw.h */,
-				82AD7F6F1289F3C300C85EB1 /* JMXOpenGLDraw.mm */,
 				825C31231275ADD6006376B8 /* JMXAudioBuffer.h */,
 				825C31241275ADD6006376B8 /* JMXAudioBuffer.m */,
 				825C31251275ADD6006376B8 /* JMXAudioDevice.h */,
@@ -489,6 +490,10 @@
 				AA3557001277347300EAA2E4 /* JMXTextRenderer.m */,
 				AA3557E612795D0A00EAA2E4 /* JMXScript.h */,
 				AA3557E712795D0A00EAA2E4 /* JMXScript.mm */,
+				AAD139B9128EA0DF00ECB03A /* JMXDrawPath.h */,
+				AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */,
+				82AD7F6E1289F3C300C85EB1 /* JMXOpenGLDraw.h */,
+				82AD7F6F1289F3C300C85EB1 /* JMXOpenGLDraw.mm */,
 			);
 			name = Core;
 			path = core;
@@ -663,6 +668,7 @@
 				AAF6CA8E127CD1210015AEDE /* JMXScript.mm in Sources */,
 				AA8CB78E1282BB9900A17115 /* JMXScriptFile.mm in Sources */,
 				82AD7F701289F3C300C85EB1 /* JMXOpenGLDraw.mm in Sources */,
+				AAD139BB128EA0DF00ECB03A /* JMXDrawPath.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

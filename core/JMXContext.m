@@ -24,7 +24,7 @@
 #import "JMXContext.h"
 #import "JMXEntity.h"
 
-#define kJMXContextSignalNumWorkers 4
+#define kJMXContextSignalNumWorkers 6
 
 #if !USE_NSOPERATIONS
 static NSThread *signalThread[kJMXContextSignalNumWorkers];

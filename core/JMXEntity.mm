@@ -28,7 +28,7 @@
 
 using namespace v8;
 
-static Persistent<ObjectTemplate> entityTemplate;
+static Persistent<FunctionTemplate> classTemplate;
 
 @implementation JMXEntity
 
@@ -422,11 +422,13 @@ v8::Handle<Value> outputPin(const Arguments& args)
 }
 
 #pragma mark Class Template
-+ (v8::Handle<FunctionTemplate>)jsClassTemplate
++ (v8::Persistent<FunctionTemplate>)jsClassTemplate
 {
     //v8::Locker lock;
-    HandleScope handleScope;
-    v8::Handle<FunctionTemplate> classTemplate = FunctionTemplate::New();
+    if (!classTemplate.IsEmpty())
+        return classTemplate;
+    NSLog(@"JMXEntity ClassTemplate created");
+    classTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
     classTemplate->SetClassName(String::New("Entity"));
     v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
     classProto->Set("inputPin", FunctionTemplate::New(inputPin));
@@ -441,7 +443,7 @@ v8::Handle<Value> outputPin(const Arguments& args)
     instanceTemplate->SetAccessor(String::NewSymbol("inputPins"), inputPins);
     instanceTemplate->SetAccessor(String::NewSymbol("outputPins"), outputPins);
     instanceTemplate->SetAccessor(String::NewSymbol("active"), GetBoolProperty, SetBoolProperty);
-    return handleScope.Close(classTemplate);
+    return classTemplate;
 }
 
 @end

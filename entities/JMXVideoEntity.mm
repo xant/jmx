@@ -182,10 +182,11 @@ using namespace v8;
 
 #pragma mark V8
 
-+ (v8::Handle<v8::FunctionTemplate>)jsClassTemplate
++ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
 {
-    HandleScope handleScope;
-    v8::Handle<v8::FunctionTemplate> entityTemplate = [super jsClassTemplate];
+    NSLog(@"JMXVideoEntity ClassTemplate created");
+    v8::Persistent<v8::FunctionTemplate> entityTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    entityTemplate->Inherit([super jsClassTemplate]);
     // accessors to image parameters
     entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("saturation"), GetNumberProperty, SetNumberProperty);
     entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("brightness"), GetNumberProperty, SetNumberProperty);
@@ -195,7 +196,7 @@ using namespace v8;
     entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("scaleRatio"), GetNumberProperty, SetNumberProperty);
     entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("fps"), GetNumberProperty, SetNumberProperty);
     entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("saturation"), GetNumberProperty, SetNumberProperty);
-    return handleScope.Close(entityTemplate);
+    return entityTemplate;
 }
 
 @end

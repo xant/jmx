@@ -131,17 +131,18 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXVideoMixer);
 
 #pragma mark V8
 
-+ (v8::Handle<v8::FunctionTemplate>)jsClassTemplate
++ (v8::Persistent<FunctionTemplate>)jsClassTemplate
 {
     //Locker lock;
     HandleScope handleScope;
-    v8::Handle<v8::FunctionTemplate> entityTemplate = [super jsClassTemplate];
+    v8::Persistent<v8::FunctionTemplate> entityTemplate = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    entityTemplate->Inherit([super jsClassTemplate]);
     entityTemplate->SetClassName(String::New("CoreImageFilter"));
     v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
     //classProto->Set("avaliableFilters", FunctionTemplate::New(AvailableFilters));
     //classProto->Set("selectFilter", FunctionTemplate::New(SelectFilter));
     entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("blendFilter"), GetStringProperty, SetStringProperty);
-    return handleScope.Close(entityTemplate);
+    return entityTemplate;
 }
 
 @end

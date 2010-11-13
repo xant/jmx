@@ -562,11 +562,16 @@ static v8::Handle<Value>exportToBoard(const Arguments& args)
     return scope.Close(v8::Boolean::New(ret));
 }
 
-+ (v8::Handle<FunctionTemplate>)jsClassTemplate
+static v8::Persistent<FunctionTemplate> classTemplate;
+
++ (v8::Persistent<FunctionTemplate>)jsClassTemplate
 {
     //v8::Locker lock;
-    HandleScope handleScope;
-    v8::Handle<FunctionTemplate> classTemplate = FunctionTemplate::New();
+    //v8::Handle<FunctionTemplate> classTemplate = FunctionTemplate::New();
+    if (!classTemplate.IsEmpty())
+        return classTemplate;
+    NSLog(@"JMXPin ClassTemplate created");
+    classTemplate = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
     classTemplate->SetClassName(String::New("Pin"));
     v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
     classProto->Set("connect", FunctionTemplate::New(connect));
@@ -586,17 +591,16 @@ static v8::Handle<Value>exportToBoard(const Arguments& args)
     instanceTemplate->SetAccessor(String::NewSymbol("connected"), GetBoolProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("sendNotifications"), GetBoolProperty, SetBoolProperty);
     //instanceTemplate->SetAccessor(String::NewSymbol("allowedValues"), allowedValues);
-    return handleScope.Close(classTemplate);
+    return classTemplate;
 }
 
 - (v8::Handle<v8::Object>)jsObj
 {
     //v8::Locker lock;
     HandleScope handle_scope;
-    v8::Handle<FunctionTemplate> classTemplate = [JMXPin jsClassTemplate];
+    v8::Persistent<FunctionTemplate> classTemplate = [JMXPin jsClassTemplate];
     v8::Handle<Object> jsInstance = classTemplate->InstanceTemplate()->NewInstance();
-    v8::Handle<External> external_ptr = External::New(self);
-    jsInstance->SetInternalField(0, external_ptr);
+    jsInstance->SetInternalField(0, External::New(self));
     return handle_scope.Close(jsInstance);
 }
 

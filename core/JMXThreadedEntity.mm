@@ -184,16 +184,17 @@ static v8::Handle<Value> stop(const Arguments& args)
     return v8::Undefined();
 }
 
-+ (v8::Handle<v8::FunctionTemplate>)jsClassTemplate
++ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
 {
-    HandleScope handleScope;
-    v8::Handle<v8::FunctionTemplate> entityTemplate = [super jsClassTemplate];
+    NSLog(@"JMXThreadedEntity ClassTemplate created");
+    v8::Persistent<v8::FunctionTemplate> entityTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    entityTemplate->Inherit([super jsClassTemplate]);
     entityTemplate->SetClassName(String::New("ThreadedEntity"));
     v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
     classProto->Set("start", FunctionTemplate::New(start));
     classProto->Set("stop", FunctionTemplate::New(stop));
     entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("frequency"), GetNumberProperty, SetNumberProperty);
-    return handleScope.Close(entityTemplate);
+    return entityTemplate;
 }
 
 @end

@@ -339,15 +339,16 @@ static v8::Handle<Value> frequency(const Arguments& args)
 }
 
 
-+ (v8::Handle<v8::FunctionTemplate>)jsClassTemplate
++ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
 {
     HandleScope handleScope;
-    v8::Handle<v8::FunctionTemplate> entityTemplate = [super jsClassTemplate];
+    v8::Persistent<v8::FunctionTemplate> entityTemplate = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    entityTemplate->Inherit([super jsClassTemplate]);
     entityTemplate->SetClassName(String::New("VideoLayer"));
     v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
     classProto->Set("frequencies", FunctionTemplate::New(frequencies));
     classProto->Set("frequency", FunctionTemplate::New(frequency));
-    return handleScope.Close(entityTemplate);
+    return entityTemplate;
 }
 
 @end

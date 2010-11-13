@@ -149,6 +149,8 @@
         for (int i = 1; i < [points count]; i++) {
             [path lineToPoint:((JMXPoint *)[points objectAtIndex:i]).nsPoint];
         }
+        // close the polygon (by drawing a line back to point 0)
+        [path lineToPoint:((JMXPoint *)[points objectAtIndex:0]).nsPoint];
         if (fillColor) {
             [fillColor setFill];
             [path fill];

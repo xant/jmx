@@ -333,14 +333,15 @@ static v8::Handle<Value> close(const Arguments& args)
     return v8::Undefined();
 }
 
-+ (v8::Handle<v8::FunctionTemplate>)jsClassTemplate
++ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
 {
     HandleScope handleScope;
-    v8::Handle<v8::FunctionTemplate> entityTemplate = [super jsClassTemplate];
+    v8::Persistent<v8::FunctionTemplate> entityTemplate = [super jsClassTemplate];
     entityTemplate->SetClassName(String::New("VideoLayer"));
+    entityTemplate->InstanceTemplate()->SetInternalFieldCount(1);
     v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
     classProto->Set("open", FunctionTemplate::New(open));
     classProto->Set("close", FunctionTemplate::New(close));
-    return handleScope.Close(entityTemplate);
+    return entityTemplate;
 }
 @end

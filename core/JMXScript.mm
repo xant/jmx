@@ -212,7 +212,7 @@ static v8::Handle<Value> ListEntities(const Arguments& args)
 static v8::Handle<Value> Sleep(const Arguments& args)
 {   
     //v8::Locker lock;
-
+    HandleScope handleScope;
     if (args.Length() >= 1) {// XXX - ignore extra parameters
         v8::Unlocker unlocker;
         [NSThread sleepForTimeInterval:args[0]->NumberValue()];
@@ -231,6 +231,7 @@ static v8::Handle<Value> Run(const Arguments& args)
     if (args.Length() >= 1 && args[0]->IsFunction()) {
         //v8::Locker::StartPreemption(50);
         while (1) {
+            HandleScope iterationScope;
             if (globalObject->GetHiddenValue(String::New("quit"))->BooleanValue())
                 break;
             v8::Local<v8::Function> foo =
@@ -354,7 +355,7 @@ static v8::Handle<Value> Quit(const Arguments& args)
         ctxTemplate->Set(String::New("ListEntities"), FunctionTemplate::New(ListEntities));
         */
         [self registerClasses:ctxTemplate];
-        ctx = Context::New(NULL, ctxTemplate);
+        ctx = Persistent<Context>::New(Context::New(NULL, ctxTemplate));
 
         // Create a new execution environment containing the built-in
         // functions
@@ -443,13 +444,13 @@ static v8::Handle<Value> Quit(const Arguments& args)
 {
     Persistent<Object>p = instancesMap[obj];
     instancesMap.erase(obj);
-    if (!p.IsEmpty()) {
-        p.Dispose();
-        p.Clear();
-    }
     if ([obj conformsToProtocol:@protocol(JMXRunLoop)])
         [obj performSelector:@selector(stop)];
     [obj release];
+    //if (!p.IsEmpty()) {
+        p.Dispose();
+        p.Clear();
+    //}
 }
 
 @end

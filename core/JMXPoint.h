@@ -41,7 +41,7 @@
 #pragma mark V8
 
 #ifdef __JMXV8__
-+ (v8::Handle<v8::FunctionTemplate>)jsClassTemplate;
++ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate;
 - (v8::Handle<v8::Object>)jsObj;
 //JMXV8_DECLARE_CONSTRUCTOR(JMXPin);
 #endif

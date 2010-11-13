@@ -54,6 +54,11 @@ using namespace v8;
     return self;
 }
 
+- (void)dealloc
+{
+    [super dealloc];
+}
+
 - (void)setX:(CGFloat)x
 {
     nsPoint.x = x;
@@ -81,33 +86,28 @@ using namespace v8;
     return NO;
 }
 
-+ (v8::Handle<FunctionTemplate>)jsClassTemplate
+static v8::Persistent<FunctionTemplate> classTemplate;
+
++ (v8::Persistent<FunctionTemplate>)jsClassTemplate
 {
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
-    v8::Handle<FunctionTemplate> classTemplate = FunctionTemplate::New();
+    
+    if (!classTemplate.IsEmpty())
+        return classTemplate;
+    
+    classTemplate = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+      
+    //v8::Handle<FunctionTemplate> classTemplate = FunctionTemplate::New();
     classTemplate->SetClassName(String::New("Point"));
     v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
-    //classProto->Set("connect", FunctionTemplate::New(connect));
-    //classProto->Set("export", FunctionTemplate::New(exportToBoard));
     // set instance methods
     v8::Handle<ObjectTemplate> instanceTemplate = classTemplate->InstanceTemplate();
     instanceTemplate->SetInternalFieldCount(1);
     // Add accessors for each of the fields of the entity.
     instanceTemplate->SetAccessor(String::NewSymbol("x"), GetDoubleProperty, SetDoubleProperty);
-    /*
-    instanceTemplate->SetAccessor(String::NewSymbol("direction"), direction);
-    instanceTemplate->SetAccessor(String::NewSymbol("name"), GetStringProperty);
-    instanceTemplate->SetAccessor(String::NewSymbol("multiple"), GetBoolProperty);
-    instanceTemplate->SetAccessor(String::NewSymbol("continuous"), GetBoolProperty, SetBoolProperty);
-    //instanceTemplate->SetAccessor(String::NewSymbol("owner"), accessObjectProperty);
-    instanceTemplate->SetAccessor(String::NewSymbol("minValue"), GetObjectProperty);
-    instanceTemplate->SetAccessor(String::NewSymbol("maxValue"), GetObjectProperty);
-    instanceTemplate->SetAccessor(String::NewSymbol("connected"), GetBoolProperty);
-    instanceTemplate->SetAccessor(String::NewSymbol("sendNotifications"), GetBoolProperty, SetBoolProperty);
-     */
     //instanceTemplate->SetAccessor(String::NewSymbol("allowedValues"), allowedValues);
-    return handleScope.Close(classTemplate);
+    return classTemplate;
 }
 
 - (v8::Handle<v8::Object>)jsObj
@@ -116,8 +116,7 @@ using namespace v8;
     HandleScope handle_scope;
     v8::Handle<FunctionTemplate> classTemplate = [JMXPoint jsClassTemplate];
     v8::Handle<Object> jsInstance = classTemplate->InstanceTemplate()->NewInstance();
-    v8::Handle<External> external_ptr = External::New(self);
-    jsInstance->SetInternalField(0, external_ptr);
+    jsInstance->SetInternalField(0, External::New(self));
     return handle_scope.Close(jsInstance);
 }
 
@@ -125,22 +124,18 @@ using namespace v8;
 
 void JMXPointJSDestructor(Persistent<Value> object, void *parameter)
 {
-    NSLog(@"V8 WeakCallback called");
+    HandleScope handle_scope;
+    v8::Locker lock;
     JMXPoint *obj = static_cast<JMXPoint *>(parameter);
-    Local<Context> currentContext  = v8::Context::GetCurrent();
-    JMXScript *ctx = [JMXScript getContext:currentContext];
-    if (ctx) {
-        /* this will destroy the javascript object as well */
-        [ctx removePersistentInstance:obj];
-    } else {
-        NSLog(@"Can't find context to attach persistent instance (just leaking)");
-    }
+    //NSLog(@"V8 WeakCallback (Point) called %@", obj);
+    [obj release];
+    object.Dispose();
+    object.Clear();
 }
-
-//static std::map<JMXPoint *, v8::Persistent<v8::Object> > instancesMap;
 
 v8::Handle<v8::Value> JMXPointJSConstructor(const v8::Arguments& args)
 {
+    v8::Locker locker;
     HandleScope handle_scope;
     v8::Handle<FunctionTemplate> classTemplate = [JMXPoint jsClassTemplate];
     int x = 0;
@@ -149,20 +144,13 @@ v8::Handle<v8::Value> JMXPointJSConstructor(const v8::Arguments& args)
         x = args[0]->IntegerValue();
         y = args[1]->IntegerValue();
     }
+    //v8::Handle<Object>jsInstance = classTemplate->InstanceTemplate()->NewInstance();
     Persistent<Object>jsInstance = Persistent<Object>::New(classTemplate->InstanceTemplate()->NewInstance());
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     JMXPoint *point = [[JMXPoint pointWithNSPoint:NSMakePoint(x, y)] retain];
-    jsInstance.MakeWeak(point, &JMXPointJSDestructor);
+    jsInstance.MakeWeak(point, JMXPointJSDestructor);
     //instancesMap[point] = jsInstance;
-    v8::Handle<External> external_ptr = External::New(point);
-    jsInstance->SetInternalField(0, external_ptr);
-    Local<Context> currentContext = v8::Context::GetCalling();
-    JMXScript *ctx = [JMXScript getContext:currentContext];
-    if (ctx) {
-        [ctx addPersistentInstance:jsInstance obj:point];
-    } else {
-        NSLog(@"Can't find context to attach persistent instance (just leaking)");
-    }
+    jsInstance->SetInternalField(0, External::New(point));
     [pool release];
     return handle_scope.Close(jsInstance);
 }

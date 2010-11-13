@@ -50,6 +50,7 @@
 
 #define JMXV8_EXPORT_ENTITY_CLASS(__class) \
     using namespace v8;\
+    static Persistent<FunctionTemplate> classTemplate;\
     /*static std::map<__class *, v8::Persistent<v8::Object> > instancesMap;*/\
     void __class##JSDestructor(Persistent<Value> object, void *parameter)\
     {\
@@ -68,7 +69,8 @@
     v8::Handle<Value> __class##JSConstructor(const Arguments& args)\
     {\
         HandleScope handle_scope;\
-        v8::Handle<FunctionTemplate> classTemplate = [__class jsClassTemplate];\
+        if (classTemplate.IsEmpty())\
+            classTemplate = [__class jsClassTemplate];\
         Persistent<Object> jsInstance = Persistent<Object>::New(classTemplate->InstanceTemplate()->NewInstance());\
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];\
         __class *instance = [[__class alloc] init];\
@@ -79,8 +81,7 @@
         /* make the handle weak, with a callback */\
         jsInstance.MakeWeak(instance, &__class##JSDestructor);\
         /*instancesMap[instance] = jsInstance;*/\
-        v8::Handle<External> external_ptr = External::New(instance);\
-        jsInstance->SetInternalField(0, external_ptr);\
+        jsInstance->SetInternalField(0, External::New(instance));\
         Local<Context> currentContext = v8::Context::GetCalling();\
         JMXScript *ctx = [JMXScript getContext:currentContext];\
         if (ctx) {\
@@ -89,7 +90,7 @@
             NSLog(@"Can't find context to attach persistent instance (just leaking)");\
         }\
         [pool release];\
-        return handle_scope.Close(jsInstance);\
+        return jsInstance;\
     }
 
 #define JMXV8_DECLARE_ENTITY_CONSTRUCTOR(__class)\
@@ -240,7 +241,7 @@
 - (void)jsInit:(NSValue *)argsValue;
 
 #ifdef __JMXV8__
-+ (v8::Handle<v8::FunctionTemplate>)jsClassTemplate;
++ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate;
 #endif
 @end
 

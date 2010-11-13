@@ -10,7 +10,7 @@
 #import "JMXSize.h"
 #import "JMXPoint.h"
 
-#define kJMXDrawPathBufferCount 256
+#define kJMXDrawPathBufferCount 2
 
 @interface JMXDrawPath : NSObject {
 @protected

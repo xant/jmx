@@ -114,15 +114,17 @@ static v8::Handle<Value>GetHeight(Local<String> name, const AccessorInfo& info)
     return handleScope.Close(Integer::New(voutput.size.height));
 }
 
-+ (v8::Handle<v8::FunctionTemplate>)jsClassTemplate
++ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
 {
     //v8::Locker lock;
-    HandleScope handleScope;
-    v8::Handle<v8::FunctionTemplate> entityTemplate = [super jsClassTemplate];
-    //entityTemplate->SetClassName(String::New("VideoOutput"));
+    NSLog(@"JMXVideoOutput ClassTemplate created");
+    v8::Persistent<v8::FunctionTemplate> entityTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    entityTemplate->Inherit([super jsClassTemplate]);  
+    entityTemplate->SetClassName(String::New("VideoOutput"));
+    entityTemplate->InstanceTemplate()->SetInternalFieldCount(1);
     entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("width"), GetWidth, SetWidth);
     entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("height"), GetHeight, SetHeight);
-    return handleScope.Close(entityTemplate);
+    return entityTemplate;
 }
 
 @end

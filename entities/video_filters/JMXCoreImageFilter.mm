@@ -175,17 +175,19 @@ static v8::Handle<Value> SelectFilter(const Arguments& args)
 
 #pragma mark V8
 
-+ (v8::Handle<v8::FunctionTemplate>)jsClassTemplate
++ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
 {
     //Locker lock;
     HandleScope handleScope;
-    v8::Handle<v8::FunctionTemplate> entityTemplate = [super jsClassTemplate];
+    v8::Persistent<v8::FunctionTemplate> entityTemplate = v8::Persistent<v8::FunctionTemplate>::New(v8::FunctionTemplate::New());
+    entityTemplate->Inherit([super jsClassTemplate]);
     entityTemplate->SetClassName(String::New("CoreImageFilter"));
+    entityTemplate->InstanceTemplate()->SetInternalFieldCount(1);
     v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
     classProto->Set("avaliableFilters", FunctionTemplate::New(AvailableFilters));
     classProto->Set("selectFilter", FunctionTemplate::New(SelectFilter));
     entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("filter"), GetStringProperty, SetStringProperty);
-    return handleScope.Close(entityTemplate);
+    return entityTemplate;
 }
 
 @end

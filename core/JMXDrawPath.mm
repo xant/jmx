@@ -81,9 +81,11 @@
     [self lockFocus];
     NSRect frameSize = { { origin.x, origin.y }, { size.width, size.height }};
     NSBezierPath *path = [NSBezierPath bezierPathWithRect:frameSize];
-    [strokeColor setFill];
-    [fillColor setStroke];
-    [path fill];
+    if (fillColor) {
+        [fillColor setFill];
+        [path fill];
+    }
+    [strokeColor setStroke];
     [path stroke];
     [self unlockFocus];
 }
@@ -91,12 +93,14 @@
 - (void)drawCircle:(JMXPoint *)center radius:(NSUInteger)radius strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
     [self lockFocus];
-    [strokeColor setFill];
-    [fillColor setStroke];
     NSRect frameSize = NSMakeRect(10, 10, 10, 10);
     NSBezierPath* circlePath = [NSBezierPath bezierPath];
     [circlePath appendBezierPathWithOvalInRect: frameSize];
-    [circlePath fill];
+    if (fillColor) {
+        [fillColor setFill];
+        [circlePath fill];
+    }
+    [strokeColor setStroke];
     [circlePath stroke];
     [self unlockFocus];
 }
@@ -104,25 +108,27 @@
 - (void)drawTriangle:(NSArray *)points strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
     if ([points count] >= 3) {
-        [self drawPoligon:points strokeColor:strokeColor fillColor:fillColor];
+        [self drawPolygon:points strokeColor:strokeColor fillColor:fillColor];
     } else {
         // TODO - Error messages
     }
 }
 
-- (void)drawPoligon:(NSArray *)points strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
+- (void)drawPolygon:(NSArray *)points strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
     if ([points count]) {
         [self lockFocus];
-        [strokeColor setFill];
-        [fillColor setStroke];
         NSBezierPath *path = [NSBezierPath bezierPath];
         // TODO - check if the array really contains JMXPoints
         [path moveToPoint:((JMXPoint *)[points objectAtIndex:0]).nsPoint];
         for (int i = 1; i < [points count]; i++) {
             [path lineToPoint:((JMXPoint *)[points objectAtIndex:i]).nsPoint];
         }
-        [path fill];
+        if (fillColor) {
+            [fillColor setFill];
+            [path fill];
+        }
+        [strokeColor setStroke];
         [path stroke];
         [self unlockFocus];
     } else {

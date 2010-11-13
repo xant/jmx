@@ -42,7 +42,7 @@
  kJMXAudioPin, JMXAudioBuffer
  kJMXPointPin, JMXPoint
  kJMXSizePin, JMXSize
- kJMXColorPin, JMXColor
+ kJMXColorPin, NSColor
  
  */
 typedef enum {

@@ -93,7 +93,7 @@
 - (void)drawCircle:(JMXPoint *)center radius:(NSUInteger)radius strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
     [self lockFocus];
-    NSRect frameSize = NSMakeRect(10, 10, 10, 10);
+    NSRect frameSize = NSMakeRect(center.x, center.y, radius*2, radius*2);
     NSBezierPath* circlePath = [NSBezierPath bezierPath];
     [circlePath appendBezierPathWithOvalInRect: frameSize];
     if (fillColor) {

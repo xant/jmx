@@ -8,11 +8,17 @@ drawer.start();
 
 drawer.outputPin('frame').connect(screen.inputPin('frame'));
 
-drawer.drawCircle();
-
 cnt = 0;
+x = 0;
+y = 0;
 mainloop = function() {
+    point = new Point(x, y);
     echo("tick" + cnt++);
+    echo (point);
+    echo("point " + point.x);
+    drawer.drawCircle(point);
+    x += 10;
+    y += 10;
     sleep(1);
 };
 

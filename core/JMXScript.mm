@@ -25,6 +25,7 @@
 #import "JMXInputPin.h"
 #import "JMXOutputPin.h"
 #import "JMXDrawEntity.h"
+#import "JMXPoint.h"
 
 @class JMXEntity;
 
@@ -317,6 +318,7 @@ static v8::Handle<Value> Quit(const Arguments& args)
     ctxTemplate->Set(String::New("AudioOutput"), FunctionTemplate::New(JMXCoreAudioOutputJSConstructor));
     ctxTemplate->Set(String::New("AudioSpectrum"), FunctionTemplate::New(JMXAudioSpectrumAnalyzerJSConstructor));
     ctxTemplate->Set(String::New("DrawPath"), FunctionTemplate::New(JMXDrawEntityJSConstructor));
+    ctxTemplate->Set(String::New("Point"), FunctionTemplate::New(JMXPointJSConstructor));
 }
 
 - (id)init
@@ -515,11 +517,40 @@ v8::Handle<Value>GetBoolProperty(Local<String> name, const AccessorInfo& info)
     return handle_scope.Close(v8::Boolean::New(ret));
 }
 
+v8::Handle<Value>GetDoubleProperty(Local<String> name, const AccessorInfo& info)
+{
+    //v8::Locker lock;
+    HandleScope handle_scope;
+    double ret = 0;
+    String::Utf8Value value(name);
+    
+    id obj = (id)info.Holder()->GetPointerFromInternalField(0);
+    {
+        v8::Unlocker unlocker;
+        
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        NSString *property = [NSString stringWithUTF8String:*value];
+        SEL selector = NSSelectorFromString(property);
+        if (!obj || ![obj respondsToSelector:selector]) {
+            NSLog(@"Unknown property %@", property);
+            [pool drain];
+            return Undefined();
+        }
+        NSMethodSignature *sig = [obj methodSignatureForSelector:selector];
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:sig];
+        [invocation setSelector:selector];
+        [invocation invokeWithTarget:obj];
+        [invocation getReturnValue:&ret];
+        [pool drain];
+    }
+    return handle_scope.Close(v8::Number::New(ret));
+}
+
 v8::Handle<Value>GetIntProperty(Local<String> name, const AccessorInfo& info)
 {
     //v8::Locker lock;
     HandleScope handle_scope;
-    int32_t ret = 0;
+    int ret = 0;
     String::Utf8Value value(name);
 
     id obj = (id)info.Holder()->GetPointerFromInternalField(0);
@@ -662,6 +693,41 @@ void SetIntProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, cons
                              [NSString stringWithFormat:@"%@%@",[[property substringToIndex:1] capitalizedString],
                               [property substringFromIndex:1]]
                              ];
+        SEL selector = NSSelectorFromString(setter);
+        if (!obj || ![obj respondsToSelector:selector]) {
+            NSLog(@"Unknown setter %@", setter);
+            [pool drain];
+            return;
+        }
+        NSMethodSignature *sig = [obj methodSignatureForSelector:selector];
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:sig];
+        [invocation setArgument:&newValue atIndex:0];
+        [invocation setSelector:selector];
+        [invocation invokeWithTarget:obj];
+        [pool release];
+    }
+}
+
+void SetDoubleProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::AccessorInfo& info)
+{
+    //v8::Locker lock;
+    HandleScope handleScope;
+    String::Utf8Value nameStr(name);
+    if (!value->IsInt32()) {
+        NSLog(@"Bad parameter (not int32) passed to %s", *nameStr);
+        return;
+    }
+    double newValue = value->NumberValue();
+    id obj = (id)info.Holder()->GetPointerFromInternalField(0);
+    {
+        v8::Unlocker unlocker;
+        
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        NSString *property = [NSString stringWithUTF8String:*nameStr];
+        NSString *setter = [NSString stringWithFormat:@"set%@:", 
+                            [NSString stringWithFormat:@"%@%@",[[property substringToIndex:1] capitalizedString],
+                             [property substringFromIndex:1]]
+                            ];
         SEL selector = NSSelectorFromString(setter);
         if (!obj || ![obj respondsToSelector:selector]) {
             NSLog(@"Unknown setter %@", setter);

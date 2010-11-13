@@ -50,7 +50,7 @@
 
 #define JMXV8_EXPORT_ENTITY_CLASS(__class) \
     using namespace v8;\
-    static std::map<__class *, v8::Persistent<v8::Object> > instancesMap;\
+    /*static std::map<__class *, v8::Persistent<v8::Object> > instancesMap;*/\
     void __class##JSDestructor(Persistent<Value> object, void *parameter)\
     {\
         NSLog(@"V8 WeakCallback called");\
@@ -78,7 +78,7 @@
         }\
         /* make the handle weak, with a callback */\
         jsInstance.MakeWeak(instance, &__class##JSDestructor);\
-        instancesMap[instance] = jsInstance;\
+        /*instancesMap[instance] = jsInstance;*/\
         v8::Handle<External> external_ptr = External::New(instance);\
         jsInstance->SetInternalField(0, external_ptr);\
         Local<Context> currentContext = v8::Context::GetCalling();\

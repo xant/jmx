@@ -29,7 +29,11 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXDrawEntity);
     [super dealloc];
 }
 
-/* TODO - accessors to JMXDrawPath methods */
+- (void)drawRect:(JMXPoint *)rectOrigin size:(JMXSize *)rectSize strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
+{
+    [drawPath drawRect:rectOrigin size:rectSize strokeColor:strokeColor fillColor:fillColor];
+}
+
 - (void)drawPolygon:(NSArray *)points strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
     [drawPath drawPolygon:points strokeColor:strokeColor fillColor:fillColor];
@@ -51,7 +55,6 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXDrawEntity);
     [super tick:timeStamp];
 }
 
-/* TODO - javascript BINDINGS */
 #pragma mark V8
 using namespace v8;
 
@@ -63,9 +66,8 @@ static v8::Handle<Value> drawCircle(const Arguments& args)
     JMXDrawEntity *entity = (JMXDrawEntity *)wrap->Value();
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
-    JMXPoint *point = [[JMXPoint alloc] init];
-    point.nsPoint.x = 20;
-    point.nsPoint.y = 20;
+    v8::Handle<Object> origin = args[0]->ToObject();
+    JMXPoint *point = (JMXPoint *)origin->GetPointerFromInternalField(0);
     [entity drawCircle:point radius:20 strokeColor:[NSColor whiteColor] fillColor:[NSColor whiteColor]];
     return v8::Undefined();
 }

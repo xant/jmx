@@ -286,12 +286,6 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 {
     [view release];
     [window release];
-    //get the corresponding js object (if any)
-    Persistent<Object> object = instancesMap[self];
-    if (!object.IsEmpty()) {
-        object.Dispose();
-        object.Clear();
-    }
     [super dealloc];
 }
 

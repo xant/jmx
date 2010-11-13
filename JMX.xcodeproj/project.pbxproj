@@ -51,7 +51,7 @@
 		825C314E1275ADD7006376B8 /* JMXOutputPin.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31351275ADD6006376B8 /* JMXOutputPin.m */; };
 		825C314F1275ADD7006376B8 /* JMXPin.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31371275ADD6006376B8 /* JMXPin.mm */; };
 		825C31501275ADD7006376B8 /* JMXPinSignal.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31391275ADD7006376B8 /* JMXPinSignal.m */; };
-		825C31511275ADD7006376B8 /* JMXPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C313B1275ADD7006376B8 /* JMXPoint.m */; };
+		825C31511275ADD7006376B8 /* JMXPoint.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C313B1275ADD7006376B8 /* JMXPoint.mm */; };
 		825C31521275ADD7006376B8 /* JMXRingBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C313D1275ADD7006376B8 /* JMXRingBuffer.m */; };
 		825C31531275ADD7006376B8 /* JMXSize.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31411275ADD7006376B8 /* JMXSize.m */; };
 		825C31541275ADD7006376B8 /* JMXSpectrumAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31431275ADD7006376B8 /* JMXSpectrumAnalyzer.m */; };
@@ -174,7 +174,7 @@
 		825C31381275ADD7006376B8 /* JMXPinSignal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXPinSignal.h; sourceTree = "<group>"; };
 		825C31391275ADD7006376B8 /* JMXPinSignal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXPinSignal.m; sourceTree = "<group>"; };
 		825C313A1275ADD7006376B8 /* JMXPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXPoint.h; sourceTree = "<group>"; };
-		825C313B1275ADD7006376B8 /* JMXPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXPoint.m; sourceTree = "<group>"; };
+		825C313B1275ADD7006376B8 /* JMXPoint.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXPoint.mm; sourceTree = "<group>"; };
 		825C313C1275ADD7006376B8 /* JMXRingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXRingBuffer.h; sourceTree = "<group>"; };
 		825C313D1275ADD7006376B8 /* JMXRingBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXRingBuffer.m; sourceTree = "<group>"; };
 		825C313E1275ADD7006376B8 /* JMXRunLoop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXRunLoop.h; sourceTree = "<group>"; };
@@ -477,7 +477,7 @@
 				825C31381275ADD7006376B8 /* JMXPinSignal.h */,
 				825C31391275ADD7006376B8 /* JMXPinSignal.m */,
 				825C313A1275ADD7006376B8 /* JMXPoint.h */,
-				825C313B1275ADD7006376B8 /* JMXPoint.m */,
+				825C313B1275ADD7006376B8 /* JMXPoint.mm */,
 				825C313C1275ADD7006376B8 /* JMXRingBuffer.h */,
 				825C313D1275ADD7006376B8 /* JMXRingBuffer.m */,
 				825C313E1275ADD7006376B8 /* JMXRunLoop.h */,
@@ -651,7 +651,7 @@
 				825C314E1275ADD7006376B8 /* JMXOutputPin.m in Sources */,
 				825C314F1275ADD7006376B8 /* JMXPin.mm in Sources */,
 				825C31501275ADD7006376B8 /* JMXPinSignal.m in Sources */,
-				825C31511275ADD7006376B8 /* JMXPoint.m in Sources */,
+				825C31511275ADD7006376B8 /* JMXPoint.mm in Sources */,
 				825C31521275ADD7006376B8 /* JMXRingBuffer.m in Sources */,
 				825C31531275ADD7006376B8 /* JMXSize.m in Sources */,
 				825C31541275ADD7006376B8 /* JMXSpectrumAnalyzer.m in Sources */,

@@ -61,6 +61,8 @@
             pathLayers[i] = [ciContext createCGLayerWithSize:layerSize info: nil];
         }
         _frameSize = [frameSize copy];
+        _clear = NO;
+        currentFrame = nil;
     }
     return self;
 }
@@ -73,11 +75,31 @@
     if (_savedContext)
         [self unlockFocus];
     [_frameSize release];
+    if (currentFrame)
+        [currentFrame release];
     [super dealloc];
+}
+
+- (void)clearFrame
+{
+    if (_clear) {
+        UInt32 pathIndex = pathLayerOffset+1%kJMXDrawPathBufferCount;
+        NSRect fullFrame = { { 0, 0 }, { _frameSize.width, _frameSize.height } };
+        [self lockFocus];
+        NSBezierPath *clearPath = [NSBezierPath bezierPathWithRect:fullFrame];
+        [[NSColor blackColor] setFill];
+        [[NSColor blackColor] setStroke];
+        [clearPath fill];
+        [clearPath stroke];
+        [self unlockFocus];
+        _clear = NO;
+        pathIndex++;
+    }
 }
 
 - (void)drawRect:(JMXPoint *)origin size:(JMXSize *)size strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
+    [self clearFrame];
     [self lockFocus];
     NSRect frameSize = { { origin.x, origin.y }, { size.width, size.height }};
     NSBezierPath *path = [NSBezierPath bezierPathWithRect:frameSize];
@@ -92,6 +114,7 @@
 
 - (void)drawCircle:(JMXPoint *)center radius:(NSUInteger)radius strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
+    [self clearFrame];
     [self lockFocus];
     NSRect frameSize = NSMakeRect(center.x, center.y, radius*2, radius*2);
     NSBezierPath* circlePath = [NSBezierPath bezierPath];
@@ -107,6 +130,7 @@
 
 - (void)drawTriangle:(NSArray *)points strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
+    [self clearFrame];
     if ([points count] >= 3) {
         [self drawPolygon:points strokeColor:strokeColor fillColor:fillColor];
     } else {
@@ -116,6 +140,7 @@
 
 - (void)drawPolygon:(NSArray *)points strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
+    [self clearFrame];
     if ([points count]) {
         [self lockFocus];
         NSBezierPath *path = [NSBezierPath bezierPath];
@@ -138,14 +163,7 @@
 
 - (void)clear
 {
-    NSRect fullFrame = { { 0, 0 }, { _frameSize.width, _frameSize.height } };
-    [self lockFocus];
-    NSBezierPath *clearPath = [NSBezierPath bezierPathWithRect:fullFrame];
-    [[NSColor blackColor] setFill];
-    [[NSColor blackColor] setStroke];
-    [clearPath fill];
-    [clearPath stroke];
-    [self unlockFocus];
+    _clear = YES;
 }
          
 - (void)lockFocus
@@ -167,11 +185,23 @@
     }
 }
 
+- (void)render
+{
+    @synchronized(self) {
+        UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
+        if (currentFrame)
+            [currentFrame release];
+        currentFrame = [[CIImage imageWithCGLayer:pathLayers[pathIndex]] retain];
+    }
+}
+
 - (CIImage *)currentFrame
 {
-    UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
-    CIImage *image = [CIImage imageWithCGLayer:pathLayers[pathIndex]];
-    return image;
+    CIImage *image = nil;
+    @synchronized(self) {
+        image = [currentFrame retain];
+    }
+    return [currentFrame autorelease];
 }
 
 @end

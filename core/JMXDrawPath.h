@@ -10,15 +10,17 @@
 #import "JMXSize.h"
 #import "JMXPoint.h"
 
-#define kJMXDrawPathBufferCount 32
+#define kJMXDrawPathBufferCount 256
 
 @interface JMXDrawPath : NSObject {
 @protected
     CGLayerRef pathLayers[kJMXDrawPathBufferCount];
     UInt32 pathLayerOffset;
+    CIImage *currentFrame;
 @private
     NSGraphicsContext *_savedContext;
     JMXSize *_frameSize;
+    BOOL _clear;
 }
 
 @property (readonly) CIImage *currentFrame;
@@ -31,5 +33,6 @@
 - (void)drawPolygon:(NSArray *)points strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor;
 - (void)lockFocus; // allow to use an NSBezierPath directly
 - (void)unlockFocus; // must be called to wrap out direct NSBezierPath drawing
-
+- (void)clear;
+- (void)render;
 @end

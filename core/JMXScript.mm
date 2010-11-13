@@ -26,6 +26,7 @@
 #import "JMXOutputPin.h"
 #import "JMXDrawEntity.h"
 #import "JMXPoint.h"
+#import "JMXColor.h"
 
 @class JMXEntity;
 
@@ -140,6 +141,12 @@ static v8::Handle<Value> ListDir(const Arguments& args) {
     }
     [pool drain];
     return Undefined();
+}
+
+static v8::Handle<Value> Rand(const Arguments& args) {
+    //v8::Locker lock;
+    HandleScope scope;
+    return scope.Close(v8::Integer::New(rand()));
 }
 
 static v8::Handle<Value> Echo(const Arguments& args) {
@@ -319,6 +326,7 @@ static v8::Handle<Value> Quit(const Arguments& args)
     ctxTemplate->Set(String::New("AudioSpectrum"), FunctionTemplate::New(JMXAudioSpectrumAnalyzerJSConstructor));
     ctxTemplate->Set(String::New("DrawPath"), FunctionTemplate::New(JMXDrawEntityJSConstructor));
     ctxTemplate->Set(String::New("Point"), FunctionTemplate::New(JMXPointJSConstructor));
+    ctxTemplate->Set(String::New("Color"), FunctionTemplate::New(JMXColorJSConstructor));
 }
 
 - (id)init
@@ -329,6 +337,7 @@ static v8::Handle<Value> Quit(const Arguments& args)
         HandleScope handle_scope;
         Local<ObjectTemplate>ctxTemplate = ObjectTemplate::New();
 
+        ctxTemplate->Set(String::New("rand"), FunctionTemplate::New(Rand));
         ctxTemplate->Set(String::New("echo"), FunctionTemplate::New(Echo));
         ctxTemplate->Set(String::New("print"), FunctionTemplate::New(Echo));
         ctxTemplate->Set(String::New("include"), FunctionTemplate::New(Include));

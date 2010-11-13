@@ -76,6 +76,7 @@
 		AA8CB78E1282BB9900A17115 /* JMXScriptFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8CB78D1282BB9900A17115 /* JMXScriptFile.mm */; };
 		AA8CBF681286015800A17115 /* libv8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA8CBF671286015800A17115 /* libv8.dylib */; };
 		AAD139BB128EA0DF00ECB03A /* JMXDrawPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */; };
+		AAD13C4A128EF2AB00ECB03A /* JMXColor.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD13C49128EF2AB00ECB03A /* JMXColor.mm */; };
 		AADEBFC812414F7E00A6A06D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */; };
 		AAF6CA8E127CD1210015AEDE /* JMXScript.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA3557E712795D0A00EAA2E4 /* JMXScript.mm */; };
 /* End PBXBuildFile section */
@@ -219,6 +220,8 @@
 		AA8CBF671286015800A17115 /* libv8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libv8.dylib; path = "../v8-read-only/libv8.dylib"; sourceTree = SOURCE_ROOT; };
 		AAD139B9128EA0DF00ECB03A /* JMXDrawPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXDrawPath.h; sourceTree = "<group>"; };
 		AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXDrawPath.mm; sourceTree = "<group>"; };
+		AAD13C48128EF2AB00ECB03A /* JMXColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXColor.h; sourceTree = "<group>"; };
+		AAD13C49128EF2AB00ECB03A /* JMXColor.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXColor.mm; sourceTree = "<group>"; };
 		AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -494,6 +497,8 @@
 				82AD7F6F1289F3C300C85EB1 /* JMXOpenGLDraw.mm */,
 				AA3557E612795D0A00EAA2E4 /* JMXScript.h */,
 				AA3557E712795D0A00EAA2E4 /* JMXScript.mm */,
+				AAD13C48128EF2AB00ECB03A /* JMXColor.h */,
+				AAD13C49128EF2AB00ECB03A /* JMXColor.mm */,
 			);
 			name = Core;
 			path = core;
@@ -669,6 +674,7 @@
 				AA8CB78E1282BB9900A17115 /* JMXScriptFile.mm in Sources */,
 				82AD7F701289F3C300C85EB1 /* JMXOpenGLDraw.mm in Sources */,
 				AAD139BB128EA0DF00ECB03A /* JMXDrawPath.mm in Sources */,
+				AAD13C4A128EF2AB00ECB03A /* JMXColor.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

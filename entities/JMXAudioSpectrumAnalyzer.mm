@@ -6,6 +6,7 @@
 //  Copyright 2010 Dyne.org. All rights reserved.
 //
 
+#import <Quartz/Quartz.h>
 #import "JMXSpectrumAnalyzer.h"
 #import "JMXAudioBuffer.h"
 #import "JMXAudioFormat.h"
@@ -103,40 +104,43 @@ static int _frequencies[kJMXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 3
         CGSize layerSize = { kJMXAudioSpectrumImageWidth, kJMXAudioSpectrumImageHeight };
         [imageSizePin deliverData:[JMXSize sizeWithNSSize:layerSize]];
         // initialize the storage for the spectrum images
-        pathLayerOffset = 0;
-        CGLContextObj          glContext;
         
-        CGLPixelFormatObj pFormat;
-        GLint npix;
-        const int attrs[2] = { kCGLPFADoubleBuffer, NULL};
-        CGLError err = CGLChoosePixelFormat (
-                                             (CGLPixelFormatAttribute *)attrs,
-                                             &pFormat,
-                                             &npix
-                                             );
-        err = CGLCreateContext(pFormat , NULL, &glContext);
-        NSOpenGLContext *context = [[NSOpenGLContext alloc] initWithCGLContextObj:glContext];
-        //CGSize layerSize = { kJMXAudioSpectrumImageWidth, kJMXAudioSpectrumImageHeight };
-        [context makeCurrentContext];
-        for (int i = 0; i < kJMXAudioSpectrumImageBufferCount; i++) {
-            /*NSBitmapImageRep *imageStorage = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil
-                                                                                     pixelsWide:kJMXAudioSpectrumImageWidth
-                                                                                     pixelsHigh:kJMXAudioSpectrumImageHeight
-                                                                                  bitsPerSample:8
-                                                                                samplesPerPixel:4
-                                                                                       hasAlpha:YES
-                                                                                       isPlanar:NO
-                                                                                 colorSpaceName:NSDeviceRGBColorSpace
-                                                                                    bytesPerRow:4*kJMXAudioSpectrumImageWidth
-                                                                                   bitsPerPixel:4*8];
-            imageContext = [NSGraphicsContext graphicsContextWithBitmapImageRep:imageStorage];
-            [imageStorage release];*/
-
-            pathLayers[i] = (CGLayerRef)CGLayerCreateWithContext( (CGContextRef)[[NSGraphicsContext
-                                                                                  currentContext] graphicsPort], layerSize , NULL );
+        
+        
+        NSOpenGLPixelFormatAttribute    attributes[] = {
+            NSOpenGLPFAPixelBuffer,
+            NSOpenGLPFANoRecovery,
+            NSOpenGLPFAAccelerated,
+            NSOpenGLPFADepthSize, 24,
+            (NSOpenGLPixelFormatAttribute) 0
+        };
+        NSOpenGLPixelFormat*            format = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attributes] autorelease];
+        /*
+        //Create the OpenGL pixel buffer to render into
+        pixelBuffer = [[NSOpenGLPixelBuffer alloc] initWithTextureTarget:GL_TEXTURE_RECTANGLE_EXT textureInternalFormat:GL_RGBA textureMaxMipMapLevel:0 pixelsWide:layerSize.width pixelsHigh:layerSize.height];
+        if(pixelBuffer == nil) {
+            NSLog(@"Cannot create OpenGL pixel buffer");
+            [self release];
+            return nil;
         }
-        [context release];
-        CGLReleaseContext(glContext);
+        */
+        //Create the OpenGL context to render with (with color and depth buffers)
+        NSOpenGLContext *openGLContext = [[[NSOpenGLContext alloc] initWithFormat:format shareContext:nil] autorelease];
+        if(openGLContext == nil) {
+            NSLog(@"Cannot create OpenGL context");
+            [self release];
+            return nil;
+        }
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+        CIContext * ciContext = [CIContext contextWithCGLContext:(CGLContextObj)[openGLContext CGLContextObj]
+                                          pixelFormat:(CGLPixelFormatObj)[format CGLPixelFormatObj]
+                                           colorSpace:colorSpace
+                                              options:nil];
+        CGColorSpaceRelease(colorSpace);
+        pathLayerOffset = 0;
+        for (int i = 0; i < kJMXAudioSpectrumImageBufferCount; i++) {
+            pathLayers[i] = [ciContext createCGLayerWithSize:layerSize info: nil];
+        }
     }
     return self;
 }
@@ -165,17 +169,13 @@ static int _frequencies[kJMXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 3
 - (void)drawSpectrumImage
 {
     NSGraphicsContext *pathContext = nil;
-    
-    // initialize the coregraphics context where to draw a graphical representation
-    // of the audiospectrum
-    
-    UInt32 pathIndex = pathLayerOffset++%kJMXAudioSpectrumImageBufferCount;
-    pathContext = [NSGraphicsContext
-                   graphicsContextWithGraphicsPort:CGLayerGetContext( pathLayers[pathIndex] )
-                   flipped:NO];
-    
-    [NSGraphicsContext setCurrentContext:pathContext];
     NSRect fullFrame = { { 0, 0 }, { kJMXAudioSpectrumImageWidth, kJMXAudioSpectrumImageHeight } };
+    UInt32 pathIndex = pathLayerOffset++%kJMXAudioSpectrumImageBufferCount;
+
+    pathContext = [NSGraphicsContext
+                   graphicsContextWithGraphicsPort:CGLayerGetContext(pathLayers[pathIndex])
+                   flipped:NO];    
+    [NSGraphicsContext setCurrentContext:pathContext];
     NSBezierPath *clearPath = [NSBezierPath bezierPathWithRect:fullFrame];
     [[NSColor blackColor] setFill];
     [[NSColor blackColor] setStroke];
@@ -198,7 +198,6 @@ static int _frequencies[kJMXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 3
         //[path transformUsingAffineTransform:transform];
         [path fill];
         [path stroke];
-        
         NSMutableDictionary *attribs = [NSMutableDictionary dictionary];
         [attribs setObject:[NSFont labelFontOfSize:10] forKey:NSFontAttributeName];
         [attribs setObject:[NSColor lightGrayColor]

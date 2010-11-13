@@ -24,6 +24,7 @@
 #import "JMXAudioSpectrumAnalyzer.h"
 #import "JMXInputPin.h"
 #import "JMXOutputPin.h"
+#import "JMXDrawEntity.h"
 
 @class JMXEntity;
 
@@ -315,6 +316,7 @@ static v8::Handle<Value> Quit(const Arguments& args)
     ctxTemplate->Set(String::New("AudioFile"), FunctionTemplate::New(JMXAudioFileEntityJSConstructor));
     ctxTemplate->Set(String::New("AudioOutput"), FunctionTemplate::New(JMXCoreAudioOutputJSConstructor));
     ctxTemplate->Set(String::New("AudioSpectrum"), FunctionTemplate::New(JMXAudioSpectrumAnalyzerJSConstructor));
+    ctxTemplate->Set(String::New("DrawPath"), FunctionTemplate::New(JMXDrawEntityJSConstructor));
 }
 
 - (id)init

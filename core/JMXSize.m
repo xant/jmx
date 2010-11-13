@@ -78,4 +78,13 @@
     return NO;
 }
 
+- (id)copyWithZone:(NSZone *)zone
+{
+    // we don't want copies, but we want to use such objects as keys of a dictionary
+    // so we still need to conform to the 'copying' protocol,
+    // but since we are to be considered 'immutable' we can adopt what described at the end of :
+    // http://developer.apple.com/mac/library/documentation/cocoa/conceptual/MemoryMgmt/Articles/mmImplementCopy.html
+    return [[JMXSize alloc] initWithNSSize:nsSize];
+}
+
 @end

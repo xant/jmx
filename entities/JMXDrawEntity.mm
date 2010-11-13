@@ -47,6 +47,7 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXDrawEntity);
 
 - (void)tick:(uint64_t)timeStamp
 {
+    NSLog(@"EKKOMI");
     [outputFramePin deliverData:drawPath.currentFrame];
     [super tick:timeStamp];
 }

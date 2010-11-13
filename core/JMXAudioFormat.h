@@ -20,44 +20,65 @@
 //  You should have received a copy of the GNU General Public License
 //  along with JMX.  If not, see <http://www.gnu.org/licenses/>.
 //
-
+/*!
+ @header JMXAudioFormat.h
+ @discussion encapsulates an AudioStreamBasicDescription structure (CoreAudio)
+             providing an obj-c API
+ */
 #import <Cocoa/Cocoa.h>
 #import <CoreAudio/CoreAudioTypes.h>
 
+/*!
+ @class JMXAudioFormat
+ */
 @interface JMXAudioFormat : NSObject {
 @private
     AudioStreamBasicDescription audioStreamBasicDescription;
 }
 
+/*!
+ @property audioStreamBasicDescription
+ */
 @property (readonly)AudioStreamBasicDescription audioStreamBasicDescription;
+/*!
+ @property sampleRate
+ */
+@property (readwrite) Float64 sampleRate;
+/*!
+ @property formatID
+ */
+@property (readwrite) UInt32  formatID;
+/*!
+ @property formatFlags
+ */
+@property (readwrite) UInt32  formatFlags;
+/*!
+ @property bytesPerPacket
+ */
+@property (readwrite) UInt32  bytesPerPacket;
+/*!
+ @property framesPerPacket
+ */
+@property (readwrite) UInt32  framesPerPacket;
+/*!
+ @property bytesPerFrame
+ */
+@property (readwrite) UInt32  bytesPerFrame;
+/*!
+ @property channelsPerFrame
+ */
+@property (readwrite) UInt32  channelsPerFrame;
+/*!
+ @property bitsPerChannel
+ */
+@property (readwrite) UInt32  bitsPerChannel;
+/*!
+ @property isInterleaved
+ */
+@property (readwrite) BOOL  isInterleaved;
+
 
 + (id)formatWithAudioStreamDescription:(AudioStreamBasicDescription)formatDescription;
 - (id)initWithAudioStreamDescription:(AudioStreamBasicDescription)formatDescription;
 
-- (Float64)sampleRate;
-- (void)setSampleRate:(Float64)theSampleRate;
-
-- (UInt32)formatID;
-- (void)setFormatID:(UInt32)theFormatID;
-
-- (UInt32)formatFlags;
-- (void)setFormatFlags:(UInt32)theFormatFlags;
-
-- (UInt32)bytesPerPacket;
-- (void)setBytesPerPacket:(UInt32)theBytesPerPacket;
-
-- (UInt32)framesPerPacket;
-- (void)setFramesPerPacket:(UInt32)theFramesPerPacket;
-
-- (UInt32)bytesPerFrame;
-- (void)setBytesPerFrame:(UInt32)theBytesPerFrame;
-
-- (UInt32)channelsPerFrame;
-- (void)setChannelsPerFrame:(UInt32)theChannelsPerFrame;
-
-- (UInt32)bitsPerChannel;
-- (void)setBitsPerChannel:(UInt32)theBitsPerChannel;
-
-- (Boolean)isInterleaved;
-- (void)setIsInterleaved:(Boolean)interleave;
 @end

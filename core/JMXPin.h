@@ -32,6 +32,19 @@
 
 @class JMXEntity;
 
+/*!
+ @enum
+ kJMXVoidPin, NSVoid
+ kJMXStringPin, NSString
+ kJMXTextPin, NSString
+ kJMXNumberPin, NSNumber
+ kJMXImagePin, CIImage
+ kJMXAudioPin, JMXAudioBuffer
+ kJMXPointPin, JMXPoint
+ kJMXSizePin, JMXSize
+ kJMXColorPin, JMXColor
+ 
+ */
 typedef enum {
     kJMXVoidPin,
     kJMXStringPin,

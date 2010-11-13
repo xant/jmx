@@ -1,5 +1,5 @@
 //
-//  JMXObject.h
+//  JMXEntity.h
 //  JMX
 //
 //  Created by xant on 9/1/10.
@@ -20,12 +20,33 @@
 //  You should have received a copy of the GNU General Public License
 //  along with JMX.  If not, see <http://www.gnu.org/licenses/>.
 //
+/*!
+ @header JMXEntity.h
+ @abstract Base (abstract) class representing an Entity in the JMX world
+ @discussion You usually won't create instances of this class directly
+             but you want to access subclasses instead.
+             Any entity implementation needs to subclass JMXEntity.
+             Basic (and common) functionalities are already implemented in the base
+             class so that subclasses should only care about the processing logic.
+             In JMX an entity should be considered a processing unit. 
+             Its sole aim is to receive data from its input pins and to implement some 
+             processing which reflects on the data that will be sent to the output pins
+             The only thing that entities know of each other are pins.
+             Pins of opposite direction can be connected one to each other 
+             (check documentation for <code>JMXPin</code>
+ @related JMXPin.h
+ */
 
 #import <Cocoa/Cocoa.h>
 #import "JMXInputPin.h"
 #import "JMXOutputPin.h"
 #ifdef __JMXV8__
 #include <v8.h>
+
+/*!
+ @define JMXV8_EXPORT_ENTITY_CLASS
+ @param __class
+ */
 
 #define JMXV8_EXPORT_ENTITY_CLASS(__class) \
     using namespace v8;\
@@ -75,7 +96,14 @@
     v8::Handle<v8::Value> __class##JSConstructor(const v8::Arguments& args);
 
 #endif
-/* this class sends the following notifications
+
+#define kJMXFpsMaxStamps 25
+
+/*!
+ * @class JMXEntity
+ * @abstract Base class for entities
+ * @discussion
+ * This class sends the following notifications
  *
  * JMXEntityWasCreated
  *    object:entity
@@ -98,9 +126,6 @@
  *
  */
 
-
-#define kJMXFpsMaxStamps 25
-
 @interface JMXEntity : NSObject <NSCopying> {
 @public
     NSString *name;
@@ -112,10 +137,25 @@
 }
 
 #pragma mark Properties
+/*!
+ @property active
+ @abstract determines if the entity is active or not
+ */
 @property (readwrite) BOOL active;
+/*!
+ @property active
+ @abstract get/set the name of the entity
+ */
 @property (readwrite, copy) NSString *name;
 
 #pragma mark Pin API
+/*!
+ @method registerInputPin:withType:andSelector:
+ @abstract create and register a new input pin
+ @param pinName the name of the new pin
+ @param pinType the datatype transported on this pin
+ @param selector the selector to call when new data are signaled on the pin
+ */
 - (JMXInputPin *)registerInputPin:(NSString *)pinName
                     withType:(JMXPinType)pinType;
 

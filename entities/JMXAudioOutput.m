@@ -46,7 +46,7 @@ static OSStatus _FillComplexBufferProc (
 {
 	CallbackContext * ctx = inUserData;
 	
-	return [ctx->theConversionBuffer fillComplexBuffer:ioData countPointer:ioNumberDataPackets waitForData:ctx->wait offset:ctx->offset];
+	return [ctx->theConversionBuffer fillComplexBuffer:ioData countPointer:ioNumberDataPackets offset:ctx->offset];
 }
 
 @implementation JMXAudioOutput

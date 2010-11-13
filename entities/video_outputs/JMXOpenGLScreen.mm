@@ -70,6 +70,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     NSOpenGLPixelFormatAttribute attrs[] =
     {
         NSOpenGLPFADoubleBuffer,
+        NSOpenGLPFAAccelerated,
         NSOpenGLPFADepthSize, 32,
         0
     };

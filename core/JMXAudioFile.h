@@ -20,6 +20,12 @@
 //  You should have received a copy of the GNU General Public License
 //  along with JMX.  If not, see <http://www.gnu.org/licenses/>.
 //
+/*!
+ @header JMXAudioFile.h
+ @discussion Allow to access samples from an audiofile.
+             This class wraps AudioToolBox functionalities
+             providing an obj-c API
+ */
 
 #import <Cocoa/Cocoa.h>
 #import <AudioToolbox/ExtendedAudioFile.h>
@@ -27,6 +33,12 @@
 
 #define kJMXAudioFileBufferCount 2048
 
+/*!
+ @class JMXAudioFile
+ @discussion This class allow to access samples from audio files.
+             Note that all samples will be returned as :
+             44100 float32 stereo interleaved
+ */
 @interface JMXAudioFile : NSObject {
 @private
     ExtAudioFileRef audioFile;
@@ -37,15 +49,51 @@
     BOOL isFilling;
 }
 
+/*!
+ @property sampleRate
+ */
+@property (readonly) NSUInteger sampleRate;
+/*!
+ @property numChannels
+ */
+@property (readonly) NSUInteger numChannels;
+/*!
+ @property currentOffset
+ */
+@property (readonly) NSInteger currentOffset;
+/*!
+ @property bitsPerChannel
+ */
+@property (readonly) NSUInteger bitsPerChannel;
+/*!
+ @property numFrames
+ */
+@property (readonly) NSInteger numFrames;
+
+/*!
+ @method audioFileWithURL
+ @abstract create a new (autoreleased) JMXAudioFile opening the specified url
+ */
 + (id)audioFileWithURL:(NSURL *)url;
 
+/*!
+ @method readSample
+ @abstract read next audio frame
+ */
 - (JMXAudioBuffer *)readSample;
+/*!
+ @method readFrames:
+ @abstract read the specified number of frames from the audio file
+ @param numFrames the number of frames to read
+ */
 - (JMXAudioBuffer *)readFrames:(NSUInteger)numFrames;
-
+/*!
+ @method seekToOffset:
+ @abstract seek to the specified offset
+ @param offset The offset to use at next read operation
+ */
 - (BOOL)seekToOffset:(NSInteger)offset;
-- (NSUInteger)sampleRate;
-- (NSUInteger)numChannels;
-- (NSInteger)currentOffset;
-- (NSUInteger)bitsPerChannel;
-- (NSInteger)numFrames;
+
+/* TODO - these should become properties */
+
 @end

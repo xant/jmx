@@ -20,11 +20,19 @@
 //  You should have received a copy of the GNU General Public License
 //  along with JMX.  If not, see <http://www.gnu.org/licenses/>.
 //
-
+/*!
+ @header JMXContext.h
+ @abstract JMX Global Context
+ */
 #import <Cocoa/Cocoa.h>
 
 #define USE_NSOPERATIONS 0
 
+/*!
+ @class JMXContext
+ @discussion this is intended to be used as a singleton class (no constructor is provided)
+             which holds references to all existing entities and signal threads
+ */
 @interface JMXContext : NSObject {
 	NSMutableArray *registeredClasses;
 #if USE_NSOPERATIONS
@@ -34,17 +42,54 @@
     NSMutableDictionary *entities;
 }
 
+/*!
+ @method initialize
+ @abstract Initialize the current context
+ @discussion The JMXContext class is intended to be used as a singleton.
+             This method should be called , instead of a constructor, 
+             to initialize the singletone instance.
+             The instance can later be accessed using the <code>sharedContext</code>
+             class method
+ */
++ (void)initialize;
+
 #if USE_NSOPERATIONS
 @property (readonly) NSOperationQueue *operationQueue;
 + (NSOperationQueue *)operationQueue;
 #else
+/*!
+ @method signalThread
+ @discussion this will return a pointer to a valid thread to use for signaling
+ */
 + (NSThread *)signalThread;
 #endif
 
+/*!
+ @method sharedContext
+ @abstract get the active context object (there is only one per runtime)
+ @return a valid context object
+ */
 + (JMXContext *)sharedContext;
-+ (NSThread *)scriptThread;
-+ (void)initialize;
+/*!
+ @method registerClass:
+ @param  aClass A class object which will be registered to the global context
+ @abstract Register a new entity class on the active context.
+           Any entity who wants to be enumerated in the library and made
+           avaliable to the user, needs to register itself on the context.
+           At the moment of writing this, all known entities are registered
+           in JMXAppDelegate.m
+ @return the active context
+ */
 - (void)registerClass:(Class)aClass;
+/*!
+ @method registeredClasses:
+ @abstract Allow to query the context for all registered classes
+ */
 - (NSArray *)registeredClasses;
+/*!
+ @method allEntities:
+ @abstract Allow to access all existing entities
+ @return An array containing all existing entity-instances 
+ */
 - (NSArray *)allEntities;
 @end

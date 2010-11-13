@@ -130,17 +130,17 @@
     audioStreamBasicDescription.mBitsPerChannel = theBitsPerChannel;
 }
 
-- (Boolean)                        isInterleaved
+- (BOOL)isInterleaved
 {
 	return ( 0 == ( audioStreamBasicDescription.mFormatFlags & kLinearPCMFormatFlagIsNonInterleaved ));
 }
 
-- (Boolean) isLinearPCMFormat
+- (BOOL)isLinearPCMFormat
 {
 	return ( kAudioFormatLinearPCM == audioStreamBasicDescription.mFormatID );
 }
 
-- (Boolean) isCanonicalFormat
+- (BOOL)isCanonicalFormat
 {
 	return (
             ( [self isLinearPCMFormat] )
@@ -150,7 +150,7 @@
             );
 }
 
-- (Boolean) isNativeFormat
+- (BOOL) isNativeFormat
 {
 	return ( [self isCanonicalFormat] && [self isInterleaved] );
 }
@@ -170,7 +170,7 @@
 	audioStreamBasicDescription.mBytesPerFrame = audioStreamBasicDescription.mBytesPerPacket = bytesPerFrame;
 }
 
-- (void)setIsInterleaved:(Boolean)interleave
+- (void)setIsInterleaved:(BOOL)interleave
 {
 	if ( [self isLinearPCMFormat] )
 	{

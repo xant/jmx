@@ -150,7 +150,7 @@
     return [self channelsPerFrame];
 }
 
-- (OSStatus)fillComplexBuffer:(AudioBufferList *)ioData countPointer:(UInt32 *)ioNumberFrames waitForData:(BOOL)wait offset:(UInt32)offset
+- (OSStatus)fillComplexBuffer:(AudioBufferList *)ioData countPointer:(UInt32 *)ioNumberFrames offset:(UInt32)offset
 {
 	unsigned i;
 	unsigned framesInBuffer = [self numFrames];

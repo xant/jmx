@@ -31,7 +31,6 @@
 
 - (CGFloat)splitView:(NSSplitView *)splitView constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(NSInteger)dividerIndex
 {
-	NSLog(@"max: %i -> %f", dividerIndex, proposedMax);
 	if (dividerIndex == 0)
 		return 200.0f;
 	if (dividerIndex == 1)

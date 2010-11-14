@@ -134,13 +134,13 @@
 	if ([documentSplitView isSubviewCollapsed:inspectorPanel]) {
 		[inspectorPanel setHidden:NO];
 		[documentSplitView setPosition:200.0f ofDividerAtIndex:0];
-		[documentSplitView setPosition:([documentSplitView bounds].size.width - 300.0f) ofDividerAtIndex:1];
+		[documentSplitView setPosition:([documentSplitView bounds].size.width - 200.0f) ofDividerAtIndex:1];
 		[documentSplitView adjustSubviews];
 	}
 	else {
-		[documentSplitView setPosition:200.0f ofDividerAtIndex:0];
 		[inspectorPanel setHidden:YES];
 		[documentSplitView adjustSubviews];
+		[documentSplitView setPosition:200.0f ofDividerAtIndex:0];
 	}
 
 }

@@ -55,4 +55,12 @@
 	return NO;
 }
 
+- (BOOL)splitView:(NSSplitView *)splitView shouldAdjustSizeOfSubview:(NSView *)subview
+{
+	if (subview == inspectorView || subview == libraryView) {
+		return NO;
+	}
+	return YES;
+}
+
 @end

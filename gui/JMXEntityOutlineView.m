@@ -164,6 +164,18 @@
             NSString *aValue = [anInputPin readData];
             [(NSPopUpButtonCell *)cell selectItemWithTitle:aValue];
             [(NSPopUpButtonCell *)cell setPullsDown:NO];
+
+			//
+			// It seems Cocoa has a bug when setting the font size of a NSPopUpButtonCell
+			// when using NSSmallControlSize, so we need to set the control size
+			// to the desired size and adjust the font manually. I found the solution
+			// here:
+			//
+			// http://lists.apple.com/archives/cocoa-dev/2001/Nov/msg01285.html
+			//
+			
+			[cell setControlSize:NSSmallControlSize];
+			[cell setFont:[NSFont labelFontOfSize:[NSFont smallSystemFontSize]]];
 		}
 		else {
             cell = [[[NSTextFieldCell alloc] init] autorelease];
@@ -190,7 +202,7 @@
         }
 	}
 	else {
-        cell = [[[NSButtonCell alloc] init] autorelease];
+        cell = [[[NSTextFieldCell alloc] init] autorelease];
 	}
 
     [dataCells setObject:cell forKey:item];

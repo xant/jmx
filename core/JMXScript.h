@@ -36,6 +36,8 @@ void SetDoubleProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, c
     std::map<id, v8::Persistent<v8::Object> > instancesMap;
 }
 
+@property (readonly, nonatomic) JMXEntity *scriptEntity;
+
 + (JMXScript *)getContext:(v8::Local<v8::Context>&)currentContext;
 + (void)runScriptInBackground:(NSString *)source;
 + (void)runScriptInBackground:(NSString *)source withEntity:(JMXEntity *)entity;

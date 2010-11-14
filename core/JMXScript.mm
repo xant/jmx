@@ -222,9 +222,9 @@ static v8::Handle<Value> Sleep(const Arguments& args)
 
 static v8::Handle<Value> Run(const Arguments& args)
 {   
-    //v8::Locker locker;
     HandleScope handleScope;
-    Local<Context> context = v8::Context::GetCurrent();
+    v8::Locker locker;
+    Local<Context> context = v8::Context::GetCalling();
     Local<Object> globalObject  = context->Global();
     //v8::Locker::StopPreemption();
     if (globalObject->SetHiddenValue(String::New("quit"), v8::Boolean::New(0)));
@@ -239,8 +239,8 @@ static v8::Handle<Value> Run(const Arguments& args)
             v8::Handle<v8::Value> fArgs[args.Length()-1];
             for (int i = 0; i < args.Length()-1; i++)
                 fArgs[i] = args[i+1];
-            v8::Local<v8::Value> result = foo->Call(foo, args.Length()-1, fArgs);
-            //usleep(10);
+            //v8::Local<v8::Value> result = foo->Call(foo, args.Length()-1, fArgs);
+            foo->Call(foo, args.Length()-1, fArgs);
         }
         // restore quit status for nested loops
         //v8::Locker::StopPreemption();
@@ -274,6 +274,8 @@ static v8::Handle<Value> Quit(const Arguments& args)
 @end
 
 @implementation JMXScript
+
+@synthesize scriptEntity;
 
 + (void)runScript:(NSString *)source
 {
@@ -349,7 +351,8 @@ static v8::Handle<Value> Quit(const Arguments& args)
         ctxTemplate->Set(String::New("run"), FunctionTemplate::New(Run));
         ctxTemplate->Set(String::New("quit"), FunctionTemplate::New(Quit));
 
-
+        ctxTemplate->SetInternalFieldCount(1);
+        
         /* TODO - think if worth exposing such global functions
         ctxTemplate->Set(String::New("AvailableEntities"), FunctionTemplate::New(AvailableEntities));
         ctxTemplate->Set(String::New("ListEntities"), FunctionTemplate::New(ListEntities));
@@ -407,14 +410,14 @@ static v8::Handle<Value> Quit(const Arguments& args)
     v8::Context::Scope context_scope(ctx);
     if (entity) {
         scriptEntity = entity;
-        ctx->Global()->SetPointerInInternalField(0, scriptEntity);
+        //ctx->Global()->SetPointerInInternalField(0, scriptEntity);
     }
     //ctx->Global()->SetHiddenValue(String::New("quit"), v8::Boolean::New(0));
     v8::TryCatch try_catch;
-
-    v8::Handle<v8::Script> compiledScript = v8::Script::Compile(String::New([script UTF8String]), String::New("JMXScript"));
+    NSString *name = [NSString stringWithFormat:@"%@", self];
+    v8::Handle<v8::Script> compiledScript = v8::Script::Compile(String::New([script UTF8String]), String::New([name UTF8String]));
     if (!compiledScript.IsEmpty()) {
-        //v8::Locker::StartPreemption(50);
+        v8::Locker::StartPreemption(50);
         compiledScript->Run();
     } else {
         ReportException(&try_catch);
@@ -447,10 +450,11 @@ static v8::Handle<Value> Quit(const Arguments& args)
     if ([obj conformsToProtocol:@protocol(JMXRunLoop)])
         [obj performSelector:@selector(stop)];
     [obj release];
-    //if (!p.IsEmpty()) {
+    if (!p.IsEmpty()) {
+        p.ClearWeak();
         p.Dispose();
         p.Clear();
-    //}
+    }
 }
 
 @end

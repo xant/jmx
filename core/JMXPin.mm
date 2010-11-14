@@ -501,8 +501,7 @@ static v8::Handle<Value>direction(Local<String> name, const AccessorInfo& info)
 {
     //v8::Locker lock;
     HandleScope handle_scope;
-    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
-    JMXPin *pin = (JMXPin *)field->Value();
+    JMXPin *pin = (JMXPin *)info.Holder()->GetPointerFromInternalField(0);
     v8::Handle<String> ret = String::New((pin.direction == kJMXInputPin) ? "input" : "output");
     return handle_scope.Close(ret);
 }
@@ -511,8 +510,7 @@ static v8::Handle<Value>type(Local<String> name, const AccessorInfo& info)
 {
     //v8::Locker lock;
     HandleScope handle_scope;
-    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
-    JMXPin *pin = (JMXPin *)field->Value();
+    JMXPin *pin = (JMXPin *)info.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSString *typeName = [pin typeName];
     v8::Handle<String> ret = String::New([typeName UTF8String], [typeName length]);
@@ -525,12 +523,11 @@ static v8::Handle<Value>connect(const Arguments& args)
     //v8::Locker lock;
     BOOL ret = NO;
     HandleScope handleScope;
-    JMXPin *pin = (JMXPin *)args.Holder()->GetPointerFromInternalField(0);;
-    v8::Handle<Value> arg = args[0];
-    if (arg->IsObject()) {
-        v8::Handle<Object> obj = v8::Handle<Object>::Cast(arg);
-        v8::Handle<External> field = v8::Handle<External>::Cast(obj->GetInternalField(0));
-        JMXPin *dest = (JMXPin *)field->Value();
+    JMXPin *pin = (JMXPin *)args.Holder()->GetPointerFromInternalField(0);
+    if (args[0]->IsObject()) {
+        v8::Handle<Object> object = args[0]->ToObject();
+        // TODO - check if the type of object is correct
+        JMXPin *dest = (JMXPin *)object->GetPointerFromInternalField(0);
         if (dest) {
             NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
             ret = [pin connectToPin:dest];
@@ -545,18 +542,14 @@ static v8::Handle<Value>exportToBoard(const Arguments& args)
     //v8::Locker lock;
     HandleScope scope;
     BOOL ret = NO;
-    JMXPin *pin = (JMXPin *)args.Holder()->GetPointerFromInternalField(0);;
-    v8::Handle<Context> globalContext = v8::Context::GetCalling();
-    v8::Handle<Object> globalObject  = globalContext->Global();
-    if (!globalObject.IsEmpty()) {
-        JMXEntity *scriptEntity = (JMXEntity *)globalObject->GetPointerFromInternalField(0);
-        if (scriptEntity) {
-            if (pin.direction == kJMXInputPin)
-                [scriptEntity proxyInputPin:(JMXInputPin *)pin];
-            else {
-                [scriptEntity proxyOutputPin:(JMXOutputPin *)pin];
-            }
-        }
+    JMXPin *pin = (JMXPin *)args.Holder()->GetPointerFromInternalField(0);
+    v8::Local<Context> globalContext = v8::Context::GetCalling();
+    JMXScript *ctx = [JMXScript getContext:globalContext];
+    if (ctx && ctx.scriptEntity) {        
+        if (pin.direction == kJMXInputPin)
+            [ctx.scriptEntity proxyInputPin:(JMXInputPin *)pin];
+        else 
+            [ctx.scriptEntity proxyOutputPin:(JMXOutputPin *)pin];
         ret = YES;
     }
     return scope.Close(v8::Boolean::New(ret));
@@ -597,11 +590,11 @@ static v8::Persistent<FunctionTemplate> classTemplate;
 - (v8::Handle<v8::Object>)jsObj
 {
     //v8::Locker lock;
-    HandleScope handle_scope;
+    HandleScope handleScope;
     v8::Persistent<FunctionTemplate> classTemplate = [JMXPin jsClassTemplate];
     v8::Handle<Object> jsInstance = classTemplate->InstanceTemplate()->NewInstance();
-    jsInstance->SetInternalField(0, External::New(self));
-    return handle_scope.Close(jsInstance);
+    jsInstance->SetPointerInInternalField(0, self);
+    return handleScope.Close(jsInstance);
 }
 
 @end

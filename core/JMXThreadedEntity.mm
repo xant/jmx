@@ -164,8 +164,7 @@ static v8::Handle<Value> start(const Arguments& args)
 {
     HandleScope handleScope;
     Local<Object> self = args.Holder();
-    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
-    JMXThreadedEntity *entity = (JMXThreadedEntity*)wrap->Value();
+    JMXThreadedEntity *entity = (JMXThreadedEntity *)self->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     [entity start];
     [pool drain];
@@ -176,8 +175,7 @@ static v8::Handle<Value> stop(const Arguments& args)
 {
     HandleScope handleScope;
     Local<Object> self = args.Holder();
-    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
-    JMXThreadedEntity *entity = (JMXThreadedEntity*)wrap->Value();
+    JMXThreadedEntity *entity = (JMXThreadedEntity *)self->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     [entity stop];
     [pool drain];

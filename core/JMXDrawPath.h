@@ -18,7 +18,6 @@
     UInt32 pathLayerOffset;
     CIImage *currentFrame;
 @private
-    NSGraphicsContext *_savedContext;
     JMXSize *_frameSize;
     BOOL _clear;
 }
@@ -31,8 +30,7 @@
 - (void)drawCircle:(JMXPoint *)center radius:(NSUInteger)radius strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor;
 - (void)drawTriangle:(NSArray *)points strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor;
 - (void)drawPolygon:(NSArray *)points strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor;
-- (void)lockFocus; // allow to use an NSBezierPath directly
-- (void)unlockFocus; // must be called to wrap out direct NSBezierPath drawing
+- (void)makeCurrentContext; // allow to use an NSBezierPath directly
 - (void)clear;
 - (void)render;
 @end

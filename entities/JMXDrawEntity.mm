@@ -167,6 +167,7 @@ static v8::Handle<Value> clear(const Arguments& args)
     entityTemplate->InstanceTemplate()->SetInternalFieldCount(1);
     classProto->Set("drawCircle", FunctionTemplate::New(drawCircle));
     classProto->Set("drawPolygon", FunctionTemplate::New(drawPolygon));
+    classProto->Set("drawTriangle", FunctionTemplate::New(drawPolygon));
     classProto->Set("clear", FunctionTemplate::New(clear));
     //classProto->Set("close", FunctionTemplate::New(close));
     return entityTemplate;

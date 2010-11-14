@@ -123,7 +123,7 @@ static v8::Handle<Value> open(const Arguments& args)
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
     BOOL ret = [entity open:[NSString stringWithUTF8String:*value]];
-    return v8::Boolean::New(ret);
+    return handleScope.Close(v8::Boolean::New(ret));
 }
 
 static v8::Handle<Value> close(const Arguments& args)

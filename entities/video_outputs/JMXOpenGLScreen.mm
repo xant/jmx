@@ -137,7 +137,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 
 - (void)renderFrame:(uint64_t)timeStamp
 {
-    if ((timeStamp-lastTime)/1e9 > 1e9/60)
+    if (timeStamp-lastTime < 1e9/30) // HC
         return;
     lastTime = timeStamp;
     

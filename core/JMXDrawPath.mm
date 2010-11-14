@@ -26,13 +26,12 @@
         
         
         NSOpenGLPixelFormatAttribute    attributes[] = {
-            NSOpenGLPFAPixelBuffer,
-            NSOpenGLPFANoRecovery,
             NSOpenGLPFAAccelerated,
-            NSOpenGLPFADepthSize, 24,
+            NSOpenGLPFADoubleBuffer,
+            NSOpenGLPFADepthSize, 32,
             (NSOpenGLPixelFormatAttribute) 0
         };
-        NSOpenGLPixelFormat*            format = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attributes] autorelease];
+        NSOpenGLPixelFormat *format = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attributes] autorelease];
         /*
          //Create the OpenGL pixel buffer to render into
          pixelBuffer = [[NSOpenGLPixelBuffer alloc] initWithTextureTarget:GL_TEXTURE_RECTANGLE_EXT textureInternalFormat:GL_RGBA textureMaxMipMapLevel:0 pixelsWide:layerSize.width pixelsHigh:layerSize.height];
@@ -72,8 +71,6 @@
     for (int i = 0; i < kJMXDrawPathBufferCount; i++) {
         CGLayerRelease(pathLayers[i]);
     }
-    if (_savedContext)
-        [self unlockFocus];
     [_frameSize release];
     if (currentFrame)
         [currentFrame release];
@@ -85,13 +82,12 @@
     if (_clear) {
         UInt32 pathIndex = pathLayerOffset+1%kJMXDrawPathBufferCount;
         NSRect fullFrame = { { 0, 0 }, { _frameSize.width, _frameSize.height } };
-        [self lockFocus];
+        [self makeCurrentContext];
         NSBezierPath *clearPath = [NSBezierPath bezierPathWithRect:fullFrame];
         [[NSColor blackColor] setFill];
         [[NSColor blackColor] setStroke];
         [clearPath fill];
         [clearPath stroke];
-        [self unlockFocus];
         _clear = NO;
         pathIndex++;
     }
@@ -100,7 +96,7 @@
 - (void)drawRect:(JMXPoint *)origin size:(JMXSize *)size strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
     [self clearFrame];
-    [self lockFocus];
+    [self makeCurrentContext];
     NSRect frameSize = { { origin.x, origin.y }, { size.width, size.height }};
     NSBezierPath *path = [NSBezierPath bezierPathWithRect:frameSize];
     if (fillColor) {
@@ -109,13 +105,12 @@
     }
     [strokeColor setStroke];
     [path stroke];
-    [self unlockFocus];
 }
 
 - (void)drawCircle:(JMXPoint *)center radius:(NSUInteger)radius strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
     [self clearFrame];
-    [self lockFocus];
+    [self makeCurrentContext];
     NSRect frameSize = NSMakeRect(center.x, center.y, radius*2, radius*2);
     NSBezierPath* circlePath = [NSBezierPath bezierPath];
     [circlePath appendBezierPathWithOvalInRect: frameSize];
@@ -125,7 +120,6 @@
     }
     [strokeColor setStroke];
     [circlePath stroke];
-    [self unlockFocus];
 }
 
 - (void)drawTriangle:(NSArray *)points strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
@@ -142,7 +136,7 @@
 {
     [self clearFrame];
     if ([points count]) {
-        [self lockFocus];
+        [self makeCurrentContext];
         NSBezierPath *path = [NSBezierPath bezierPath];
         // TODO - check if the array really contains JMXPoints
         [path moveToPoint:((JMXPoint *)[points objectAtIndex:0]).nsPoint];
@@ -157,7 +151,6 @@
         }
         [strokeColor setStroke];
         [path stroke];
-        [self unlockFocus];
     } else {
         // TODO - Error messages
     }
@@ -168,23 +161,14 @@
     _clear = YES;
 }
          
-- (void)lockFocus
+- (void)makeCurrentContext
 {
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     
     NSGraphicsContext *pathContext = [NSGraphicsContext
                                        graphicsContextWithGraphicsPort:CGLayerGetContext(pathLayers[pathIndex])
                                        flipped:NO];
-    _savedContext = [NSGraphicsContext currentContext];
     [NSGraphicsContext setCurrentContext:pathContext];
-}
-
-- (void)unlockFocus
-{
-    if (_savedContext) {
-        [NSGraphicsContext setCurrentContext:_savedContext];
-        _savedContext = nil;
-    }
 }
 
 - (void)render

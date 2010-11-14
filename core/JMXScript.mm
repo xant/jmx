@@ -57,7 +57,7 @@ static v8::Handle<Value> ExportPin(const Arguments& args) {
             fArgs[i] = args[i+1];
         v8::Handle<Function> exportFunction = v8::Local<v8::Function>::Cast(pinObj->Get(String::New("export")));
         // call the 'export()' proptotype method exposed by Pin objects
-        return exportFunction->Call(pinObj, args.Length()-1, fArgs);
+        return scope.Close(exportFunction->Call(pinObj, args.Length()-1, fArgs));
     } else {
         NSLog(@"(exportPin) Bad argument: %@", objectType);
     }
@@ -115,11 +115,11 @@ static v8::Handle<Value> IsDir(const Arguments& args) {
     if (content) {
         if ([content objectForKey:NSFileType] == NSFileTypeDirectory) {
             [pool drain];
-            return v8::Boolean::New(1);
+            return scope.Close(v8::Boolean::New(1));
         }
     }
     [pool drain];
-    return v8::Boolean::New(0);
+    return scope.Close(v8::Boolean::New(0));
 }
 
 static v8::Handle<Value> ListDir(const Arguments& args) {

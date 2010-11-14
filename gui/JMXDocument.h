@@ -23,21 +23,28 @@
 #import "JMXBoardView.h"
 
 @class JMXBoardView;
+@class JMXEntityInspectorPanel;
 
 @interface JMXDocument : NSDocument {
     JMXBoardView *board;
     NSMutableArray *entities;
     NSMutableArray *entitiesFromFile;
     NSMutableDictionary *entitiesPosition;
+	NSSplitView *documentSplitView;
+	JMXEntityInspectorPanel *inspectorPanel;
 }
 
 @property (nonatomic, retain) IBOutlet JMXBoardView *board;
 @property (nonatomic, retain) NSMutableArray *entities;
 @property (nonatomic, retain) NSMutableArray *entitiesFromFile;
 @property (nonatomic, retain) NSMutableDictionary *entitiesPosition;
+@property (nonatomic, assign) IBOutlet NSSplitView *documentSplitView;
+@property (nonatomic, assign) IBOutlet JMXEntityInspectorPanel *inspectorPanel;
 
 #pragma mark -
 #pragma mark Interface Builder actions
+
+- (IBAction)toggleInspector:(id)sender;
 
 #pragma mark -
 #pragma mark Open file

@@ -62,6 +62,7 @@
 		825C319D1275AFB6006376B8 /* JMXLibraryTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C319A1275AFB6006376B8 /* JMXLibraryTableView.m */; };
 		825C319E1275AFB6006376B8 /* JMXLibraryTableViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C319C1275AFB6006376B8 /* JMXLibraryTableViewDelegate.m */; };
 		825C32131275BEE3006376B8 /* JMXEntityOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C32121275BEE3006376B8 /* JMXEntityOutlineView.m */; };
+		82A21F5E12902EE50002738B /* JMXDocumentSplitViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A21F5D12902EE50002738B /* JMXDocumentSplitViewDelegate.m */; };
 		82AD7F701289F3C300C85EB1 /* JMXOpenGLDraw.mm in Sources */ = {isa = PBXBuildFile; fileRef = 82AD7F6F1289F3C300C85EB1 /* JMXOpenGLDraw.mm */; };
 		82EA042F1240BE4A00E28B72 /* JMXDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 82EA042E1240BE4A00E28B72 /* JMXDocument.xib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
@@ -199,6 +200,8 @@
 		825C319C1275AFB6006376B8 /* JMXLibraryTableViewDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXLibraryTableViewDelegate.m; sourceTree = "<group>"; };
 		825C32111275BEE3006376B8 /* JMXEntityOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXEntityOutlineView.h; sourceTree = "<group>"; };
 		825C32121275BEE3006376B8 /* JMXEntityOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXEntityOutlineView.m; sourceTree = "<group>"; };
+		82A21F5C12902EE50002738B /* JMXDocumentSplitViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXDocumentSplitViewDelegate.h; sourceTree = "<group>"; };
+		82A21F5D12902EE50002738B /* JMXDocumentSplitViewDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXDocumentSplitViewDelegate.m; sourceTree = "<group>"; };
 		82AD7F6E1289F3C300C85EB1 /* JMXOpenGLDraw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXOpenGLDraw.h; sourceTree = "<group>"; };
 		82AD7F6F1289F3C300C85EB1 /* JMXOpenGLDraw.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXOpenGLDraw.mm; sourceTree = "<group>"; };
 		82EA042E1240BE4A00E28B72 /* JMXDocument.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = JMXDocument.xib; sourceTree = "<group>"; };
@@ -368,6 +371,8 @@
 				8245763D1227DF5800236FE4 /* JMXPinLayer.m */,
 				825C32111275BEE3006376B8 /* JMXEntityOutlineView.h */,
 				825C32121275BEE3006376B8 /* JMXEntityOutlineView.m */,
+				82A21F5C12902EE50002738B /* JMXDocumentSplitViewDelegate.h */,
+				82A21F5D12902EE50002738B /* JMXDocumentSplitViewDelegate.m */,
 			);
 			name = GUI;
 			path = gui;
@@ -675,6 +680,7 @@
 				82AD7F701289F3C300C85EB1 /* JMXOpenGLDraw.mm in Sources */,
 				AAD139BB128EA0DF00ECB03A /* JMXDrawPath.mm in Sources */,
 				AAD13C4A128EF2AB00ECB03A /* JMXColor.mm in Sources */,
+				82A21F5E12902EE50002738B /* JMXDocumentSplitViewDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

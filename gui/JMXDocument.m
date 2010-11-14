@@ -30,6 +30,8 @@
 @synthesize entities;
 @synthesize entitiesFromFile;
 @synthesize entitiesPosition;
+@synthesize documentSplitView;
+@synthesize inspectorPanel;
 
 - (id)init
 {
@@ -118,10 +120,30 @@
         [userInfo setObject:[entitiesPosition objectForKey:e] forKey:@"origin"];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasCreated" object:e userInfo:userInfo];
     }
+
+	[documentSplitView setPosition:200.0f ofDividerAtIndex:0];
+	[documentSplitView setPosition:([documentSplitView bounds].size.width - 300.0f) ofDividerAtIndex:1];
+	[documentSplitView adjustSubviews];
 }
 
 #pragma mark -
 #pragma mark Interface Builder actions
+
+- (IBAction)toggleInspector:(id)sender
+{
+	if ([documentSplitView isSubviewCollapsed:inspectorPanel]) {
+		[inspectorPanel setHidden:NO];
+		[documentSplitView setPosition:200.0f ofDividerAtIndex:0];
+		[documentSplitView setPosition:([documentSplitView bounds].size.width - 300.0f) ofDividerAtIndex:1];
+		[documentSplitView adjustSubviews];
+	}
+	else {
+		[documentSplitView setPosition:200.0f ofDividerAtIndex:0];
+		[inspectorPanel setHidden:YES];
+		[documentSplitView adjustSubviews];
+	}
+
+}
 
 #pragma mark -
 #pragma mark Open file

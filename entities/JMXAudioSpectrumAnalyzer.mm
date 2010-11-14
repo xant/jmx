@@ -10,6 +10,7 @@
 #import "JMXSpectrumAnalyzer.h"
 #import "JMXAudioBuffer.h"
 #import "JMXAudioFormat.h"
+#import "JMXDrawPath.h"
 #define __JMXV8__
 #import "JMXAudioSpectrumAnalyzer.h"
 #include "JMXScript.h"
@@ -97,51 +98,13 @@ static int _frequencies[kJMXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 3
             [frequencyPins addObject:[self registerOutputPin:pinName withType:kJMXNumberPin]];
         }
         
-        currentImage = nil;
         imagePin = [self registerOutputPin:@"image" withType:kJMXImagePin];
         imageSizePin = [self registerOutputPin:@"imageSize" withType:kJMXSizePin];
         [imageSizePin setContinuous:NO];
         NSSize frameSize = { kJMXAudioSpectrumImageWidth, kJMXAudioSpectrumImageHeight };
         [imageSizePin deliverData:[JMXSize sizeWithNSSize:frameSize]];
-        // initialize the storage for the spectrum images
-        
-        
-        
-        NSOpenGLPixelFormatAttribute    attributes[] = {
-            NSOpenGLPFAPixelBuffer,
-            NSOpenGLPFANoRecovery,
-            NSOpenGLPFAAccelerated,
-            NSOpenGLPFADepthSize, 24,
-            (NSOpenGLPixelFormatAttribute) 0
-        };
-        NSOpenGLPixelFormat*            format = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attributes] autorelease];
-        /*
-        //Create the OpenGL pixel buffer to render into
-        pixelBuffer = [[NSOpenGLPixelBuffer alloc] initWithTextureTarget:GL_TEXTURE_RECTANGLE_EXT textureInternalFormat:GL_RGBA textureMaxMipMapLevel:0 pixelsWide:layerSize.width pixelsHigh:layerSize.height];
-        if(pixelBuffer == nil) {
-            NSLog(@"Cannot create OpenGL pixel buffer");
-            [self release];
-            return nil;
-        }
-        */
-        //Create the OpenGL context to render with (with color and depth buffers)
-        NSOpenGLContext *openGLContext = [[[NSOpenGLContext alloc] initWithFormat:format shareContext:nil] autorelease];
-        if(openGLContext == nil) {
-            NSLog(@"Cannot create OpenGL context");
-            [self release];
-            return nil;
-        }
-        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-        CIContext * ciContext = [CIContext contextWithCGLContext:(CGLContextObj)[openGLContext CGLContextObj]
-                                          pixelFormat:(CGLPixelFormatObj)[format CGLPixelFormatObj]
-                                           colorSpace:colorSpace
-                                              options:nil];
-        CGColorSpaceRelease(colorSpace);
-        pathLayerOffset = 0;
-        for (int i = 0; i < kJMXAudioSpectrumImageBufferCount; i++) {
-            CGSize layerSize = { frameSize.width, frameSize.height };
-            pathLayers[i] = [ciContext createCGLayerWithSize:layerSize info: nil];
-        }
+        drawer = [[JMXDrawPath drawPathWithFrameSize:
+                               [JMXSize sizeWithNSSize:NSMakeSize(kJMXAudioSpectrumImageWidth, kJMXAudioSpectrumImageHeight)]] retain];
     }
     return self;
 }
@@ -156,32 +119,15 @@ static int _frequencies[kJMXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 3
     free(deinterleavedBuffer);
     free(minAmp);
     free(maxAmp);
-    if (currentImage)
-        [currentImage release];
-    for (int i = 0; i < kJMXAudioSpectrumImageBufferCount; i++) {
-        CGLayerRelease(pathLayers[i]);
-    }
-    //CGLayerRelease(pathLayer);
-    //[imageContext release];
+    if (drawer)
+        [drawer release];
     [super dealloc];
 }
 
 // TODO - optimize
 - (void)drawSpectrumImage
-{
-    NSGraphicsContext *pathContext = nil;
-    NSRect fullFrame = { { 0, 0 }, { kJMXAudioSpectrumImageWidth, kJMXAudioSpectrumImageHeight } };
-    UInt32 pathIndex = pathLayerOffset++%kJMXAudioSpectrumImageBufferCount;
-
-    pathContext = [NSGraphicsContext
-                   graphicsContextWithGraphicsPort:CGLayerGetContext(pathLayers[pathIndex])
-                   flipped:NO];    
-    [NSGraphicsContext setCurrentContext:pathContext];
-    NSBezierPath *clearPath = [NSBezierPath bezierPathWithRect:fullFrame];
-    [[NSColor blackColor] setFill];
-    [[NSColor blackColor] setStroke];
-    [clearPath fill];
-    [clearPath stroke];
+{    
+    [drawer clear];
     for (int i = 0; i < kJMXAudioSpectrumNumFrequencies; i++) {
         Float32 value = frequencyValues[i];
         int barWidth = kJMXAudioSpectrumImageWidth/kJMXAudioSpectrumNumFrequencies;
@@ -191,14 +137,12 @@ static int _frequencies[kJMXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 3
         frequencyRect.size.width = barWidth-4;
         UInt32 topPadding = frequencyRect.origin.y + 20; // HC
         frequencyRect.size.height = MIN(value*0.75, kJMXAudioSpectrumImageHeight-topPadding);
-        NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:frequencyRect xRadius:4.0 yRadius:4.0];
-        [[NSColor yellowColor] setFill];
-        [[NSColor yellowColor] setStroke];
-        //NSAffineTransform *transform = [[[NSAffineTransform alloc] init] autorelease];
-        //[transform translateXBy:0.5 yBy:0.5];
-        //[path transformUsingAffineTransform:transform];
-        [path fill];
-        [path stroke];
+        
+        [drawer drawRect:[JMXPoint pointWithNSPoint:frequencyRect.origin]
+                    size:[JMXSize sizeWithNSSize:frequencyRect.size]
+             strokeColor:[NSColor yellowColor] fillColor:[NSColor yellowColor]];
+
+        /*
         NSMutableDictionary *attribs = [NSMutableDictionary dictionary];
         [attribs setObject:[NSFont labelFontOfSize:10] forKey:NSFontAttributeName];
         [attribs setObject:[NSColor lightGrayColor]
@@ -214,8 +158,10 @@ static int _frequencies[kJMXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 3
         point.x = frequencyRect.origin.x+4;
         point.y = 4;
         [string drawAtPoint:point];
+         */
     }
-    [imagePin deliverData:[CIImage imageWithCGLayer:pathLayers[pathIndex]]];
+    [drawer render];
+    [imagePin deliverData:[drawer currentFrame]];
 }
 
 - (void)newSample:(JMXAudioBuffer *)sample

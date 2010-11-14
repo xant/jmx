@@ -14,6 +14,7 @@
 #define kJMXAudioSpectrumImageBufferCount 32
 
 @class JMXSpectrumAnalyzer;
+@class JMXDrawPath;
 
 @interface JMXAudioSpectrumAnalyzer : JMXEntity {
 @private
@@ -29,10 +30,7 @@
     UInt32 blockSize;
     UInt32 numBins;
     NSMutableArray *frequencyPins;
-    NSGraphicsContext *imageContext;
-    CGLayerRef pathLayers[kJMXAudioSpectrumImageBufferCount];
-    UInt32 pathLayerOffset;
-    CIImage *currentImage;
+    JMXDrawPath *drawer;
     AudioBufferList *deinterleavedBuffer;
     UInt32 runcycleCount;
     Float32 frequencyValues[kJMXAudioSpectrumNumFrequencies];

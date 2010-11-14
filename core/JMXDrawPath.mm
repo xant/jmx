@@ -101,15 +101,23 @@
 - (void)drawRect:(JMXPoint *)origin size:(JMXSize *)size strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
     [self clearFrame];
-    [self makeCurrentContext];
-    NSRect frameSize = { { origin.x, origin.y }, { size.width, size.height }};
-    NSBezierPath *path = [NSBezierPath bezierPathWithRect:frameSize];
+    UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
+    CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
+    CGContextSetRGBStrokeColor (context,
+                                [strokeColor redComponent], [strokeColor greenComponent],
+                                [strokeColor blueComponent], [strokeColor alphaComponent]
+                                );
     if (fillColor) {
-        [fillColor setFill];
-        [path fill];
+        CGContextSetRGBFillColor (context,
+                                  [fillColor redComponent], [fillColor greenComponent],
+                                  [fillColor blueComponent], [fillColor alphaComponent]
+                                  );
+        
     }
-    [strokeColor setStroke];
-    [path stroke];
+    CGRect rect = { { origin.x, origin.y }, { size.width, size.height } };
+    CGContextStrokeRect(context, rect);
+    if (fillColor)
+        CGContextFillRect(context, rect);
 }
 
 - (void)drawCircle:(JMXPoint *)center radius:(NSUInteger)radius strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor

@@ -28,7 +28,7 @@ function randFloat() {
 }
 
 mainloop = function() {
-    //drawer.clear();
+    drawer.clear();
     point = new Point(rand()%width/2, rand()%height/2);
     fgColor = new Color(randFloat(), randFloat(), randFloat(), randFloat());
     bgColor = new Color(randFloat(), randFloat(), randFloat(), randFloat());

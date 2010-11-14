@@ -59,7 +59,7 @@
             CGColorSpaceRelease(colorSpace);
             
             CGSize layerSize = { frameSize.width, frameSize.height };
-/*
+            /*  XXX - this is slower
             CGContextRef cgContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
             pathLayers[i] = CGLayerCreateWithContext(cgContext, layerSize, nil);
             */
@@ -87,16 +87,14 @@
 - (void)clearFrame
 {
     if (_clear) {
-        UInt32 pathIndex = pathLayerOffset+1%kJMXDrawPathBufferCount;
-        NSRect fullFrame = { { 0, 0 }, { _frameSize.width, _frameSize.height } };
-        [self makeCurrentContext];
-        NSBezierPath *clearPath = [NSBezierPath bezierPathWithRect:fullFrame];
-        [[NSColor blackColor] setFill];
-        [[NSColor blackColor] setStroke];
-        [clearPath fill];
-        [clearPath stroke];
+        UInt32 pathIndex = (pathLayerOffset+1)%kJMXDrawPathBufferCount;
+        CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
+        CGContextSaveGState(context);
+        CGRect fullFrame = { { 0, 0 }, { _frameSize.width, _frameSize.height } };
+        CGContextSetRGBFillColor (context, 0.0, 0.0, 0.0, 1.0);
+        CGContextFillRect(context, fullFrame);
         _clear = NO;
-        pathIndex++;
+        pathLayerOffset++;
     }
 }
 
@@ -117,7 +115,6 @@
 - (void)drawCircle:(JMXPoint *)center radius:(NSUInteger)radius strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
     [self clearFrame];
-    //[self makeCurrentContext];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
     CGContextSetRGBStrokeColor (context,
@@ -131,13 +128,8 @@
                                   );
         
     }
-    //CGMutablePathRef cgPath = CGPathCreateMutable();
     CGRect frameSize = { { center.x, center.y }, { radius*2, radius*2 } };
     CGContextAddEllipseInRect(context, frameSize);
-    //CGPathAddEllipseInRect(cgPath, nil, frameSize);
-    //CGContextAddPath(context, cgPath);
-    //CGPathRelease(cgPath);
-    
 }
 
 - (void)drawTriangle:(NSArray *)points strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
@@ -157,8 +149,7 @@
         UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
         CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
 
-        CGContextSaveGState(CGLayerGetContext(pathLayers[pathIndex]));
-        //[self makeCurrentContext];
+        CGContextSaveGState(context);
         CGContextSetRGBStrokeColor (context,
                                       [strokeColor redComponent], [strokeColor greenComponent],
                                     [strokeColor blueComponent], [strokeColor alphaComponent]
@@ -170,19 +161,14 @@
                                         );
             
         }
-        //CGMutablePathRef cgPath = CGPathCreateMutable();
         NSPoint origin = ((JMXPoint *)[points objectAtIndex:0]).nsPoint;
         CGContextMoveToPoint(context, origin.x, origin.y);
         for (int i = 1; i < [points count]; i++) {
             origin = ((JMXPoint *)[points objectAtIndex:i]).nsPoint;
-            //[path lineToPoint:((JMXPoint *)[points objectAtIndex:i]).nsPoint];
             CGContextAddLineToPoint(context, origin.x, origin.y);
         }
-        //CGPathAddLineToPoint(cgPath, nil, origin.x, origin.y);
         CGContextClosePath(context);
-        //CGContextAddPath(CGLayerGetContext(pathLayers[pathIndex]), cgPath);
-        //CGPathRelease(cgPath);
-        CGContextRestoreGState(CGLayerGetContext(pathLayers[pathIndex]));
+        CGContextRestoreGState(context);
     } else {
         // TODO - Error messages
     }

@@ -116,7 +116,7 @@ static v8::Persistent<FunctionTemplate> classTemplate;
     HandleScope handle_scope;
     v8::Handle<FunctionTemplate> classTemplate = [JMXPoint jsClassTemplate];
     v8::Handle<Object> jsInstance = classTemplate->InstanceTemplate()->NewInstance();
-    jsInstance->SetInternalField(0, External::New(self));
+    jsInstance->SetPointerInInternalField(0, self);
     return handle_scope.Close(jsInstance);
 }
 

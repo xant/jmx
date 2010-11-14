@@ -316,9 +316,7 @@ using namespace v8;
 static v8::Handle<Value> open(const Arguments& args)
 {
     HandleScope handleScope;
-    Local<Object> self = args.Holder();
-    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
-    JMXQtMovieEntity *entity = (JMXQtMovieEntity *)wrap->Value();
+    JMXQtMovieEntity *entity = (JMXQtMovieEntity *)args.Holder()->GetPointerFromInternalField(0);
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
     BOOL ret = [entity open:[NSString stringWithUTF8String:*value]];
@@ -328,9 +326,7 @@ static v8::Handle<Value> open(const Arguments& args)
 static v8::Handle<Value> close(const Arguments& args)
 {
     HandleScope handleScope;
-    Local<Object> self = args.Holder();
-    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
-    JMXQtMovieEntity *entity = (JMXQtMovieEntity *)wrap->Value();
+    JMXQtMovieEntity *entity = (JMXQtMovieEntity *)args.Holder()->GetPointerFromInternalField(0);
     [entity close];
     return v8::Undefined();
 }

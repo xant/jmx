@@ -248,11 +248,6 @@ using namespace v8;
 static v8::Handle<Value>frequencies(const Arguments& args)
 {
     HandleScope handleScope;
-    /*
-    Local<Object> self = args.Holder();
-    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
-    JMXAudioSpectrumAnalyzer *entity = (JMXAudioSpectrumAnalyzer *)wrap->Value();
-    */
     v8::Handle<Array> list = v8::Array::New(kJMXAudioSpectrumNumFrequencies);
     for (int i = 0; i < kJMXAudioSpectrumNumFrequencies; i++) {
         list->Set(i, v8::Integer::New(_frequencies[i]));
@@ -263,9 +258,7 @@ static v8::Handle<Value>frequencies(const Arguments& args)
 static v8::Handle<Value> frequency(const Arguments& args)
 {
     HandleScope handleScope;
-    Local<Object> self = args.Holder();
-    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
-    JMXAudioSpectrumAnalyzer *entity = (JMXAudioSpectrumAnalyzer *)wrap->Value();
+    JMXAudioSpectrumAnalyzer *entity = (JMXAudioSpectrumAnalyzer *)args.Holder()->GetPointerFromInternalField(0);
     v8::Handle<Value> arg = args[0];
     int freq = args[0]->IntegerValue();
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];

@@ -32,6 +32,7 @@
     NSMutableDictionary *entitiesPosition;
 	NSSplitView *documentSplitView;
 	JMXEntityInspectorPanel *inspectorPanel;
+	NSView *libraryView;
 }
 
 @property (nonatomic, retain) IBOutlet JMXBoardView *board;
@@ -40,6 +41,7 @@
 @property (nonatomic, retain) NSMutableDictionary *entitiesPosition;
 @property (nonatomic, assign) IBOutlet NSSplitView *documentSplitView;
 @property (nonatomic, assign) IBOutlet JMXEntityInspectorPanel *inspectorPanel;
+@property (nonatomic, assign) IBOutlet NSView *libraryView;
 
 #pragma mark -
 #pragma mark Interface Builder actions

@@ -1623,6 +1623,14 @@
 					</object>
 					<int key="connectionID">262</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">libraryView</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="301538374"/>
+					</object>
+					<int key="connectionID">263</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -2437,9 +2445,9 @@
 				</object>
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
-					<string>{{179, 140}, {1270, 734}}</string>
+					<string>{{146, 140}, {1270, 734}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{179, 140}, {1270, 734}}</string>
+					<string>{{146, 140}, {1270, 734}}</string>
 					<boolean value="YES"/>
 					<object class="NSMutableDictionary">
 						<string key="NS.key.0">InitialTabViewItem</string>
@@ -2561,7 +2569,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">262</int>
+			<int key="maxID">263</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2697,12 +2705,14 @@
 							<string>board</string>
 							<string>documentSplitView</string>
 							<string>inspectorPanel</string>
+							<string>libraryView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>JMXBoardView</string>
 							<string>NSSplitView</string>
 							<string>JMXEntityInspectorPanel</string>
+							<string>NSView</string>
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -2712,6 +2722,7 @@
 							<string>board</string>
 							<string>documentSplitView</string>
 							<string>inspectorPanel</string>
+							<string>libraryView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -2726,6 +2737,10 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">inspectorPanel</string>
 								<string key="candidateClassName">JMXEntityInspectorPanel</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">libraryView</string>
+								<string key="candidateClassName">NSView</string>
 							</object>
 						</object>
 					</object>

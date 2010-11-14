@@ -32,6 +32,7 @@
 @synthesize entitiesPosition;
 @synthesize documentSplitView;
 @synthesize inspectorPanel;
+@synthesize libraryView;
 
 - (id)init
 {
@@ -131,22 +132,43 @@
 
 - (IBAction)toggleInspector:(id)sender
 {
-	NSLog(@"sender: %@", sender);
 	NSMenuItem *menuItem = (NSMenuItem *)sender;
 	if ([documentSplitView isSubviewCollapsed:inspectorPanel]) {
 		[inspectorPanel setHidden:NO];
-		[documentSplitView setPosition:200.0f ofDividerAtIndex:0];
-		[documentSplitView setPosition:([documentSplitView bounds].size.width - 200.0f) ofDividerAtIndex:1];
 		[documentSplitView adjustSubviews];
+		if (![documentSplitView isSubviewCollapsed:libraryView])
+			[documentSplitView setPosition:200.0f ofDividerAtIndex:0];
+		[documentSplitView setPosition:([documentSplitView bounds].size.width - 300.0f) ofDividerAtIndex:1];
 		[menuItem setTitle:@"Hide Inspector"];
 	}
 	else {
 		[inspectorPanel setHidden:YES];
 		[documentSplitView adjustSubviews];
-		[documentSplitView setPosition:200.0f ofDividerAtIndex:0];
+		if (![documentSplitView isSubviewCollapsed:libraryView])
+			[documentSplitView setPosition:200.0f ofDividerAtIndex:0];
 		[menuItem setTitle:@"Show Inspector"];
 	}
+}
 
+- (IBAction)toggleLibrary:(id)sender
+{
+	NSMenuItem *menuItem = (NSMenuItem *)sender;
+	if ([documentSplitView isSubviewCollapsed:libraryView]) {
+		[libraryView setHidden:NO];
+		[documentSplitView adjustSubviews];
+		[documentSplitView setPosition:200.0f ofDividerAtIndex:0];
+		if (![documentSplitView isSubviewCollapsed:inspectorPanel])
+			[documentSplitView setPosition:([documentSplitView bounds].size.width - 300.0f) ofDividerAtIndex:1];
+		[menuItem setTitle:@"Hide Library"];
+	}
+	else {
+		[libraryView setHidden:YES];
+		[documentSplitView adjustSubviews];
+		if (![documentSplitView isSubviewCollapsed:inspectorPanel])
+			[documentSplitView setPosition:([documentSplitView bounds].size.width - 300.0f) ofDividerAtIndex:1];
+		[menuItem setTitle:@"Show Library"];
+	}
+	
 }
 
 #pragma mark -

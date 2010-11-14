@@ -33,25 +33,21 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXDrawEntity);
 - (void)drawRect:(JMXPoint *)rectOrigin size:(JMXSize *)rectSize strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
     [drawPath drawRect:rectOrigin size:rectSize strokeColor:strokeColor fillColor:fillColor];
-    [drawPath render];
 }
 
 - (void)drawPolygon:(NSArray *)points strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
     [drawPath drawPolygon:points strokeColor:strokeColor fillColor:fillColor];
-    [drawPath render];
 }
 
 - (void)drawTriangle:(NSArray *)points strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
     [drawPath drawTriangle:points strokeColor:strokeColor fillColor:fillColor];
-    [drawPath render];
 }
 
 - (void)drawCircle:(JMXPoint *)center radius:(NSUInteger)radius strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
     [drawPath drawCircle:center radius:radius strokeColor:strokeColor fillColor:fillColor];
-    [drawPath render];
 }
 
 - (void)clear
@@ -61,6 +57,7 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXDrawEntity);
 
 - (void)tick:(uint64_t)timeStamp
 {
+    [drawPath render];
     [outputFramePin deliverData:drawPath.currentFrame];
     [super tick:timeStamp];
 }

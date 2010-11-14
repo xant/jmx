@@ -41,23 +41,30 @@
          return nil;
          }
          */
-        //Create the OpenGL context to render with (with color and depth buffers)
-        NSOpenGLContext *openGLContext = [[[NSOpenGLContext alloc] initWithFormat:format shareContext:nil] autorelease];
-        if(openGLContext == nil) {
-            NSLog(@"Cannot create OpenGL context");
-            [self release];
-            return nil;
-        }
-        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-        CIContext * ciContext = [CIContext contextWithCGLContext:(CGLContextObj)[openGLContext CGLContextObj]
-                                                     pixelFormat:(CGLPixelFormatObj)[format CGLPixelFormatObj]
-                                                      colorSpace:colorSpace
-                                                         options:nil];
-        CGColorSpaceRelease(colorSpace);
         pathLayerOffset = 0;
         for (int i = 0; i < kJMXDrawPathBufferCount; i++) {
+            
+            //Create the OpenGL context to render with (with color and depth buffers)
+            NSOpenGLContext *openGLContext = [[[NSOpenGLContext alloc] initWithFormat:format shareContext:nil] autorelease];
+            if(openGLContext == nil) {
+                NSLog(@"Cannot create OpenGL context");
+                [self release];
+                return nil;
+            }
+            CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+            CIContext * ciContext = [CIContext contextWithCGLContext:(CGLContextObj)[openGLContext CGLContextObj]
+                                                         pixelFormat:(CGLPixelFormatObj)[format CGLPixelFormatObj]
+                                                          colorSpace:colorSpace
+                                                             options:nil];
+            CGColorSpaceRelease(colorSpace);
+            
             CGSize layerSize = { frameSize.width, frameSize.height };
+/*
+            CGContextRef cgContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+            pathLayers[i] = CGLayerCreateWithContext(cgContext, layerSize, nil);
+            */
             pathLayers[i] = [ciContext createCGLayerWithSize:layerSize info: nil];
+            CGContextBeginPath(CGLayerGetContext(pathLayers[i]));
         }
         _frameSize = [frameSize copy];
         _clear = NO;
@@ -110,16 +117,27 @@
 - (void)drawCircle:(JMXPoint *)center radius:(NSUInteger)radius strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
     [self clearFrame];
-    [self makeCurrentContext];
-    NSRect frameSize = NSMakeRect(center.x, center.y, radius*2, radius*2);
-    NSBezierPath* circlePath = [NSBezierPath bezierPath];
-    [circlePath appendBezierPathWithOvalInRect: frameSize];
+    //[self makeCurrentContext];
+    UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
+    CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
+    CGContextSetRGBStrokeColor (context,
+                                [strokeColor redComponent], [strokeColor greenComponent],
+                                [strokeColor blueComponent], [strokeColor alphaComponent]
+                                );
     if (fillColor) {
-        [fillColor setFill];
-        [circlePath fill];
+        CGContextSetRGBFillColor (context,
+                                  [fillColor redComponent], [fillColor greenComponent],
+                                  [fillColor blueComponent], [fillColor alphaComponent]
+                                  );
+        
     }
-    [strokeColor setStroke];
-    [circlePath stroke];
+    //CGMutablePathRef cgPath = CGPathCreateMutable();
+    CGRect frameSize = { { center.x, center.y }, { radius*2, radius*2 } };
+    CGContextAddEllipseInRect(context, frameSize);
+    //CGPathAddEllipseInRect(cgPath, nil, frameSize);
+    //CGContextAddPath(context, cgPath);
+    //CGPathRelease(cgPath);
+    
 }
 
 - (void)drawTriangle:(NSArray *)points strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
@@ -136,21 +154,35 @@
 {
     [self clearFrame];
     if ([points count]) {
-        [self makeCurrentContext];
-        NSBezierPath *path = [NSBezierPath bezierPath];
-        // TODO - check if the array really contains JMXPoints
-        [path moveToPoint:((JMXPoint *)[points objectAtIndex:0]).nsPoint];
-        for (int i = 1; i < [points count]; i++) {
-            [path lineToPoint:((JMXPoint *)[points objectAtIndex:i]).nsPoint];
-        }
-        // close the polygon (by drawing a line back to point 0)
-        [path lineToPoint:((JMXPoint *)[points objectAtIndex:0]).nsPoint];
+        UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
+        CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
+
+        CGContextSaveGState(CGLayerGetContext(pathLayers[pathIndex]));
+        //[self makeCurrentContext];
+        CGContextSetRGBStrokeColor (context,
+                                      [strokeColor redComponent], [strokeColor greenComponent],
+                                    [strokeColor blueComponent], [strokeColor alphaComponent]
+                                      );
         if (fillColor) {
-            [fillColor setFill];
-            [path fill];
+            CGContextSetRGBFillColor (context,
+                                        [fillColor redComponent], [fillColor greenComponent],
+                                        [fillColor blueComponent], [fillColor alphaComponent]
+                                        );
+            
         }
-        [strokeColor setStroke];
-        [path stroke];
+        //CGMutablePathRef cgPath = CGPathCreateMutable();
+        NSPoint origin = ((JMXPoint *)[points objectAtIndex:0]).nsPoint;
+        CGContextMoveToPoint(context, origin.x, origin.y);
+        for (int i = 1; i < [points count]; i++) {
+            origin = ((JMXPoint *)[points objectAtIndex:i]).nsPoint;
+            //[path lineToPoint:((JMXPoint *)[points objectAtIndex:i]).nsPoint];
+            CGContextAddLineToPoint(context, origin.x, origin.y);
+        }
+        //CGPathAddLineToPoint(cgPath, nil, origin.x, origin.y);
+        CGContextClosePath(context);
+        //CGContextAddPath(CGLayerGetContext(pathLayers[pathIndex]), cgPath);
+        //CGPathRelease(cgPath);
+        CGContextRestoreGState(CGLayerGetContext(pathLayers[pathIndex]));
     } else {
         // TODO - Error messages
     }
@@ -177,7 +209,9 @@
         UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
         if (currentFrame)
             [currentFrame release];
-        currentFrame = [[CIImage imageWithCGLayer:pathLayers[pathIndex]] retain];
+        CGContextDrawPath(CGLayerGetContext(pathLayers[pathIndex]), kCGPathFillStroke);
+        
+        currentFrame = [[CIImage imageWithCGLayer:pathLayers[pathIndex]]retain];
     }
 }
 

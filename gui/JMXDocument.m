@@ -131,16 +131,20 @@
 
 - (IBAction)toggleInspector:(id)sender
 {
+	NSLog(@"sender: %@", sender);
+	NSMenuItem *menuItem = (NSMenuItem *)sender;
 	if ([documentSplitView isSubviewCollapsed:inspectorPanel]) {
 		[inspectorPanel setHidden:NO];
 		[documentSplitView setPosition:200.0f ofDividerAtIndex:0];
 		[documentSplitView setPosition:([documentSplitView bounds].size.width - 200.0f) ofDividerAtIndex:1];
 		[documentSplitView adjustSubviews];
+		[menuItem setTitle:@"Hide Inspector"];
 	}
 	else {
 		[inspectorPanel setHidden:YES];
 		[documentSplitView adjustSubviews];
 		[documentSplitView setPosition:200.0f ofDividerAtIndex:0];
+		[menuItem setTitle:@"Show Inspector"];
 	}
 
 }

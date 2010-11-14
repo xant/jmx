@@ -1,14 +1,19 @@
 width = 512;
 height = 384;
-//screen = new VideoOutput();
-// set screen size
-//screen.width = width;
-//screen.height = height;
 
 drawer = new DrawPath(width, height);
 drawer.widht = width;
 drawer.height = height;
 drawer.start();
+
+// Uncommend the following block if you want a debug video-output
+/*
+screen = new VideoOutput();
+// set screen size
+screen.width = width;
+screen.height = height;
+drawer.outputPin('frame').connect(screen.inputPin('frame'));
+*/
 
 // UNCOMMENT TO ACTIVATE A VIDEO FILTER
 /*
@@ -19,9 +24,9 @@ filter.outputPin('frame').export();
 */
 
 // COMMENT THE FOLLOWING TWO LINES IF FILTER HAS BEEN ACTIVATED
-//drawer.outputPin('frame').connect(screen.inputPin('frame'));
 drawer.outputPin('frame').export();
 drawer.outputPin('frameSize').export();
+drawer.inputPin('saturation').export();
 
 cnt = 0;
 x = 0;

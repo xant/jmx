@@ -96,6 +96,7 @@
     uint64_t timeStamp = CVGetCurrentHostTime();
     [self tick:timeStamp];
     if ([[NSThread currentThread] isCancelled] || quit) {
+        NSLog(@"Thread %@ exiting", self);
         [timer invalidate];
         active = NO;
     } else {

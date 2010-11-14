@@ -68,8 +68,10 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXDrawEntity);
 {
     @synchronized(drawPath) {
         [drawPath render];
+        if (currentFrame)
+            [currentFrame release];
+        currentFrame = [drawPath.currentFrame retain];
     }
-    [outputFramePin deliverData:drawPath.currentFrame];
     [super tick:timeStamp];
 }
 
@@ -91,28 +93,27 @@ using namespace v8;
 static v8::Handle<Value> drawPolygon(const Arguments& args)
 {
     HandleScope handleScope;
-    v8::Handle<Object> self = args.Holder();
-    v8::Handle<External> wrap = v8::Handle<External>::Cast(self->GetInternalField(0));
-    JMXDrawEntity *entity = (JMXDrawEntity *)wrap->Value();
+    //Locker locker;
+    JMXDrawEntity *entity = (JMXDrawEntity *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() >= 1 && args[0]->IsArray()) {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-        v8::Handle<Value> arg = args[0];
         v8::Handle<Array> pointList = v8::Handle<Array>::Cast(args[0]);
         NSMutableArray *points = [[NSMutableArray alloc] init];
         for (int i = 0; i < pointList->Length(); i++) {
-            v8::Handle<Object>pointObj = v8::Handle<Object>::Cast(pointList->Get(i));
-            JMXPoint *point = [(JMXPoint *)pointObj->GetPointerFromInternalField(0) retain];
-            [points addObject:[point autorelease]];
+            v8::Local<Object>pointObj = v8::Local<Object>::Cast(pointList->Get(i));
+            [points addObject:(JMXPoint *)pointObj->GetPointerFromInternalField(0)];
         }
         NSColor *strokeColor = [[NSColor whiteColor] retain];
         NSColor *fillColor = nil;
-        if (args.Length() >= 2) {
-            v8::Handle<Object>colorObj = args[1]->ToObject();
-            strokeColor = [(JMXColor *)colorObj->GetPointerFromInternalField(0) retain]; 
+        if (args.Length() >= 2 && args[1]->IsObject()) {
+            v8::Local<Object>colorObj = args[1]->ToObject();
+            if (!colorObj.IsEmpty())
+                strokeColor = [(JMXColor *)colorObj->GetPointerFromInternalField(0) retain]; 
         }
-        if (args.Length() >= 3) {
-            v8::Handle<Object>colorObj = args[2]->ToObject();
-            fillColor = [(JMXColor *)colorObj->GetPointerFromInternalField(0) retain]; 
+        if (args.Length() >= 3 && args[2]->IsObject()) {
+            v8::Local<Object>colorObj = args[2]->ToObject();
+            if (!colorObj.IsEmpty())
+                fillColor = [(JMXColor *)colorObj->GetPointerFromInternalField(0) retain]; 
         }
         [entity drawPolygon:points strokeColor:strokeColor fillColor:fillColor];
         [points release];
@@ -127,14 +128,12 @@ static v8::Handle<Value> drawPolygon(const Arguments& args)
 static v8::Handle<Value> drawCircle(const Arguments& args)
 {
     HandleScope handleScope;
-    v8::Locker lock;
-    v8::Handle<Object> self = args.Holder();
-    v8::Handle<External> wrap = v8::Handle<External>::Cast(self->GetInternalField(0));
-    JMXDrawEntity *entity = (JMXDrawEntity *)wrap->Value();
+    Locker locker;
+    JMXDrawEntity *entity = (JMXDrawEntity *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() >= 1 && args[0]->IsObject()) {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         double radius = 0;
-        v8::Local<Object> origin = args[0]->ToObject();
+        v8::Handle<Object> origin = args[0]->ToObject();
         if (!origin.IsEmpty()) {
             JMXPoint *point = [(JMXPoint *)origin->GetPointerFromInternalField(0) retain];
             if (args.Length() >= 2) {
@@ -147,12 +146,16 @@ static v8::Handle<Value> drawCircle(const Arguments& args)
             NSColor *strokeColor = [[NSColor whiteColor] retain];
             NSColor *fillColor = nil;
             if (args.Length() >= 3) {
-                v8::Local<Object>colorObj = args[2]->ToObject();
-                strokeColor = [(JMXColor *)colorObj->GetPointerFromInternalField(0) retain];
+                v8::Handle<Object>colorObj = args[2]->ToObject();
+                strokeColor = (JMXColor *)colorObj->GetPointerFromInternalField(0);
+                if (strokeColor)
+                    [strokeColor retain];
             }
             if (args.Length() >= 4) {
-                v8::Local<Object>colorObj = args[3]->ToObject();
-                fillColor = [(JMXColor *)colorObj->GetPointerFromInternalField(0) retain]; 
+                v8::Handle<Object>colorObj = args[3]->ToObject();
+                fillColor = (JMXColor *)colorObj->GetPointerFromInternalField(0);
+                if (fillColor)
+                    [fillColor retain];
             }
             [entity drawCircle:point radius:radius strokeColor:strokeColor fillColor:fillColor];
             [point release];
@@ -168,6 +171,7 @@ static v8::Handle<Value> drawCircle(const Arguments& args)
 static v8::Handle<Value> clear(const Arguments& args)
 {
     HandleScope handleScope;
+    Locker locker;
     v8::Handle<Object> self = args.Holder();
     JMXDrawEntity *entity = (JMXDrawEntity *)self->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];

@@ -74,8 +74,8 @@
 		AA3557441277468800EAA2E4 /* JMXTextRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3557001277347300EAA2E4 /* JMXTextRenderer.m */; };
 		AA3557451277468800EAA2E4 /* JMXTextEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3556F51277340200EAA2E4 /* JMXTextEntity.m */; };
 		AA3557DA12795C5500EAA2E4 /* JMXDrawEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA3557D912795C5500EAA2E4 /* JMXDrawEntity.mm */; };
+		AA7F247212907AA500BE432F /* libv8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA7F247112907AA500BE432F /* libv8.dylib */; };
 		AA8CB78E1282BB9900A17115 /* JMXScriptFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8CB78D1282BB9900A17115 /* JMXScriptFile.mm */; };
-		AA8CBF681286015800A17115 /* libv8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA8CBF671286015800A17115 /* libv8.dylib */; };
 		AAD139BB128EA0DF00ECB03A /* JMXDrawPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */; };
 		AAD13C4A128EF2AB00ECB03A /* JMXColor.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD13C49128EF2AB00ECB03A /* JMXColor.mm */; };
 		AADEBFC812414F7E00A6A06D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */; };
@@ -218,9 +218,9 @@
 		AA3557D912795C5500EAA2E4 /* JMXDrawEntity.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXDrawEntity.mm; sourceTree = "<group>"; };
 		AA3557E612795D0A00EAA2E4 /* JMXScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXScript.h; sourceTree = "<group>"; };
 		AA3557E712795D0A00EAA2E4 /* JMXScript.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScript.mm; sourceTree = "<group>"; };
+		AA7F247112907AA500BE432F /* libv8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libv8.dylib; path = "../v8-read-only/libv8.dylib"; sourceTree = SOURCE_ROOT; };
 		AA8CB78C1282BB9800A17115 /* JMXScriptFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXScriptFile.h; sourceTree = "<group>"; };
 		AA8CB78D1282BB9900A17115 /* JMXScriptFile.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScriptFile.mm; sourceTree = "<group>"; };
-		AA8CBF671286015800A17115 /* libv8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libv8.dylib; path = "../v8-read-only/libv8.dylib"; sourceTree = SOURCE_ROOT; };
 		AAD139B9128EA0DF00ECB03A /* JMXDrawPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXDrawPath.h; sourceTree = "<group>"; };
 		AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXDrawPath.mm; sourceTree = "<group>"; };
 		AAD13C48128EF2AB00ECB03A /* JMXColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXColor.h; sourceTree = "<group>"; };
@@ -241,7 +241,7 @@
 				AA2BE40B12353D5C006087E7 /* Accelerate.framework in Frameworks */,
 				AADEBFC812414F7E00A6A06D /* AudioToolbox.framework in Frameworks */,
 				AA052A6B1261D40E008C9F46 /* QuickTime.framework in Frameworks */,
-				AA8CBF681286015800A17115 /* libv8.dylib in Frameworks */,
+				AA7F247212907AA500BE432F /* libv8.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -261,6 +261,7 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AA7F247112907AA500BE432F /* libv8.dylib */,
 				82456BC31223DC8300236FE4 /* OpenGL.framework */,
 				82456BC71223DC9900236FE4 /* QTKit.framework */,
 				82456BCB1223DCA700236FE4 /* QuartzCore.framework */,
@@ -327,7 +328,6 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				AA8CBF671286015800A17115 /* libv8.dylib */,
 				AA052A691261D3FE008C9F46 /* i386 Frameworks */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
@@ -611,7 +611,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ ! -d  $TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Frameworks ]; then\n\tmkdir $TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Frameworks\nfi\ncp $PROJECT_DIR/../v8-read-only/libv8.dylib $TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Frameworks/\ninstall_name_tool -id @executable_path/../Frameworks/libv8.dylib \\\n\t\"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Frameworks/libv8.dylib\"\ninstall_name_tool \\\n\t-change libv8.dylib \\\n\t@executable_path/../Frameworks/libv8.dylib \\\n\t$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/MacOS/$PRODUCT_NAME";
+			shellScript = "V8_LIBNAME=\"\"\nif [ \"$CONFIGURATION\" = \"Debug\" ]; then\n\tV8_LIBNAME=libv8.dylib\nelse\n\tV8_LIBNAME=libv8.dylib\nfi\n\nif [ ! -d  $TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Frameworks ]; then\n\tmkdir $TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Frameworks\nfi\ncp $PROJECT_DIR/../v8-read-only/$V8_LIBNAME $TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Frameworks/\ninstall_name_tool -id @executable_path/../Frameworks/$V8_LIBNAME \\\n\t\"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Frameworks/$V8_LIBNAME\"\ninstall_name_tool \\\n\t-change $V8_LIBNAME \\\n\t@executable_path/../Frameworks/$V8_LIBNAME \\\n\t$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/MacOS/$PRODUCT_NAME";
 		};
 /* End PBXShellScriptBuildPhase section */
 

@@ -68,7 +68,7 @@
 \
     v8::Handle<Value> __class##JSConstructor(const Arguments& args)\
     {\
-        HandleScope handle_scope;\
+        /*HandleScope handleScope;*/\
         if (classTemplate.IsEmpty())\
             classTemplate = [__class jsClassTemplate];\
         Persistent<Object> jsInstance = Persistent<Object>::New(classTemplate->InstanceTemplate()->NewInstance());\
@@ -81,8 +81,8 @@
         /* make the handle weak, with a callback */\
         jsInstance.MakeWeak(instance, &__class##JSDestructor);\
         /*instancesMap[instance] = jsInstance;*/\
-        jsInstance->SetInternalField(0, External::New(instance));\
-        Local<Context> currentContext = v8::Context::GetCalling();\
+        jsInstance->SetPointerInInternalField(0, instance);\
+        v8::Local<Context> currentContext = v8::Context::GetCalling();\
         JMXScript *ctx = [JMXScript getContext:currentContext];\
         if (ctx) {\
             [ctx addPersistentInstance:jsInstance obj:instance];\

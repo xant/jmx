@@ -322,7 +322,12 @@ static Persistent<FunctionTemplate> classTemplate;
 
 - (void)proxyInputPin:(JMXInputPin *)pin
 {
-    
+    [inputPins setObject:pin
+                   forKey:pin.name];
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:pin, @"pin", pin.name, @"pinName", nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXEntityInputPinAdded" 
+                                                        object:self
+                                                      userInfo:userInfo];  
 }
 
 - (void)proxyOutputPin:(JMXOutputPin *)pin
@@ -349,8 +354,7 @@ static v8::Handle<Value>inputPins(Local<String> name, const AccessorInfo& info)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
-    JMXEntity *entity = (JMXEntity *)field->Value();
+    JMXEntity *entity = (JMXEntity *)info.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSArray *inputPins = [entity inputPins];
     v8::Handle<Array> list = v8::Array::New([inputPins count]);
@@ -366,8 +370,7 @@ static v8::Handle<Value>outputPins(Local<String> name, const AccessorInfo& info)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
-    JMXEntity *entity = (JMXEntity *)field->Value();
+    JMXEntity *entity = (JMXEntity *)info.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSArray *outputPins = [entity outputPins];
     v8::Handle<Array> list = v8::Array::New([outputPins count]);
@@ -384,9 +387,7 @@ v8::Handle<Value> inputPin(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    Local<Object> self = args.Holder();
-    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
-    JMXEntity *entity = (JMXEntity *)wrap->Value();
+    JMXEntity *entity = (JMXEntity *)args.Holder()->GetPointerFromInternalField(0);
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -404,9 +405,7 @@ v8::Handle<Value> outputPin(const Arguments& args)
 {   
     //v8::Locker lock;
     HandleScope handleScope;
-    Local<Object> self = args.Holder();
-    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
-    JMXEntity *entity = (JMXEntity *)wrap->Value();
+    JMXEntity *entity = (JMXEntity *)args.Holder()->GetPointerFromInternalField(0);
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
     Local<Value> ret;

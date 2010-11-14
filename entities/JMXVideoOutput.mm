@@ -74,8 +74,7 @@ static void SetWidth(Local<String> name, Local<Value> value, const AccessorInfo&
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
-    JMXVideoOutput *voutput = (JMXVideoOutput *)field->Value();
+    JMXVideoOutput *voutput = (JMXVideoOutput *)info.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSSize newSize = voutput.size.nsSize;
     newSize.width = value->NumberValue();
@@ -87,8 +86,7 @@ static void SetHeight(Local<String> name, Local<Value> value, const AccessorInfo
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
-    JMXVideoOutput *voutput = (JMXVideoOutput *)field->Value();
+    JMXVideoOutput *voutput = (JMXVideoOutput *)info.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSSize newSize = voutput.size.nsSize;
     newSize.height = value->NumberValue();
@@ -100,8 +98,7 @@ static v8::Handle<Value>GetWidth(Local<String> name, const AccessorInfo& info)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
-    JMXVideoOutput *voutput = (JMXVideoOutput *)field->Value();
+    JMXVideoOutput *voutput = (JMXVideoOutput *)info.Holder()->GetPointerFromInternalField(0);
     return handleScope.Close(Integer::New(voutput.size.width));
 }
 
@@ -109,8 +106,7 @@ static v8::Handle<Value>GetHeight(Local<String> name, const AccessorInfo& info)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
-    JMXVideoOutput *voutput = (JMXVideoOutput *)field->Value();
+    JMXVideoOutput *voutput = (JMXVideoOutput *)info.Holder()->GetPointerFromInternalField(0);
     return handleScope.Close(Integer::New(voutput.size.height));
 }
 

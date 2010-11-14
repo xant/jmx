@@ -129,20 +129,26 @@ void JMXPointJSDestructor(Persistent<Value> object, void *parameter)
     JMXPoint *obj = static_cast<JMXPoint *>(parameter);
     //NSLog(@"V8 WeakCallback (Point) called %@", obj);
     [obj release];
-    object.Dispose();
-    object.Clear();
+    if (!object.IsEmpty()) {
+        object.ClearWeak();
+        object.Dispose();
+        object.Clear();
+    }
 }
 
 v8::Handle<v8::Value> JMXPointJSConstructor(const v8::Arguments& args)
 {
-    v8::Locker locker;
-    HandleScope handle_scope;
-    v8::Handle<FunctionTemplate> classTemplate = [JMXPoint jsClassTemplate];
+    HandleScope handleScope;
+    //v8::Locker locker;
+    v8::Persistent<FunctionTemplate> classTemplate = [JMXPoint jsClassTemplate];
     int x = 0;
     int y = 0;
     if (args.Length() >= 2) {
-        x = args[0]->IntegerValue();
-        y = args[1]->IntegerValue();
+        v8::Handle<Value> xValue = args[0];
+        v8::Handle<Value> yValue = args[1];
+
+        x = xValue->IntegerValue();
+        y = yValue->IntegerValue();
     }
     //v8::Handle<Object>jsInstance = classTemplate->InstanceTemplate()->NewInstance();
     Persistent<Object>jsInstance = Persistent<Object>::New(classTemplate->InstanceTemplate()->NewInstance());
@@ -150,7 +156,7 @@ v8::Handle<v8::Value> JMXPointJSConstructor(const v8::Arguments& args)
     JMXPoint *point = [[JMXPoint pointWithNSPoint:NSMakePoint(x, y)] retain];
     jsInstance.MakeWeak(point, JMXPointJSDestructor);
     //instancesMap[point] = jsInstance;
-    jsInstance->SetInternalField(0, External::New(point));
-    [pool release];
-    return handle_scope.Close(jsInstance);
+    jsInstance->SetPointerInInternalField(0, point);
+    [pool drain];
+    return handleScope.Close(jsInstance);
 }

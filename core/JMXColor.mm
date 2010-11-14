@@ -28,7 +28,7 @@ static v8::Persistent<FunctionTemplate> classTemplate;
     classTemplate = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
     
     classTemplate->SetClassName(String::New("Color"));
-    v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
+    //v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
 
     // set instance methods
     v8::Handle<ObjectTemplate> instanceTemplate = classTemplate->InstanceTemplate();
@@ -65,20 +65,27 @@ void JMXColorJSDestructor(Persistent<Value> object, void *parameter)
     HandleScope handle_scope;
     v8::Locker lock;
     JMXColor *obj = static_cast<JMXColor *>(parameter);
-    //NSLog(@"V8 WeakCallback (Color) called");
+    //NSLog(@"V8 WeakCallback (Color) called ");
     [obj release];
-    object.Dispose();
-    object.Clear();
+    //Persistent<Object> instance = v8::Persistent<Object>::Cast(object);
+    //instance.ClearWeak();
+    if (!object.IsEmpty()) {
+        object.ClearWeak();
+        object.Dispose();
+        object.Clear();
+    }
+    //object.Clear();
 }
 
 v8::Handle<v8::Value> JMXColorJSConstructor(const v8::Arguments& args)
 {
-    HandleScope handle_scope;
-    v8::Handle<FunctionTemplate> classTemplate = [JMXColor jsClassTemplate];
-    double r = 0.0;
-    double g = 0.0;
-    double b = 0.0;
-    double a = 1.0;
+    HandleScope handleScope;
+    //v8::Locker locker;
+    v8::Persistent<FunctionTemplate> classTemplate = [JMXColor jsClassTemplate];
+    CGFloat r = 0.0;
+    CGFloat g = 0.0;
+    CGFloat b = 0.0;
+    CGFloat a = 1.0;
     if (args.Length() >= 3) {
         r = args[0]->NumberValue();
         g = args[1]->NumberValue();
@@ -94,7 +101,7 @@ v8::Handle<v8::Value> JMXColorJSConstructor(const v8::Arguments& args)
     JMXColor *color = [[JMXColor colorWithDeviceRed:r green:g blue:b alpha:a] retain];
     jsInstance.MakeWeak(color, JMXColorJSDestructor);
     //instancesMap[point] = jsInstance;
-    jsInstance->SetInternalField(0, External::New(color));
-    [pool release];
-    return handle_scope.Close(jsInstance);
+    jsInstance->SetPointerInInternalField(0, color);
+    [pool drain];
+    return handleScope.Close(jsInstance);
 }

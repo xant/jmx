@@ -305,10 +305,12 @@ using namespace v8;
 - (void)jsInit:(NSValue *)argsValue
 {
     v8::Arguments *args = (v8::Arguments *)[argsValue pointerValue];
-    v8::Handle<Value> arg = (*args)[0];
-    v8::String::Utf8Value value(arg);
-    if (*value)
-        [self open:[NSString stringWithUTF8String:*value]];
+    if (args->Length()) {
+        v8::Handle<Value> arg = (*args)[0];
+        v8::String::Utf8Value value(arg);
+        if (*value)
+            [self open:[NSString stringWithUTF8String:*value]];
+    }
 }
 
 static v8::Handle<Value> open(const Arguments& args)

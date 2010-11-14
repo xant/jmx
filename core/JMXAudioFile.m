@@ -91,7 +91,7 @@
     JMXAudioBuffer *sample = [samples[rOffset++%kJMXAudioFileBufferCount] autorelease];
     if (wOffset - rOffset < kJMXAudioFileBufferCount / 4 && !isFilling) {
         isFilling = YES;
-        [self performSelectorInBackground:@selector(fillBuffer) withObject:nil];
+        [self performSelectorOnMainThread:@selector(fillBuffer) withObject:nil waitUntilDone:NO];
     }
     return sample;
 }

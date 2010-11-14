@@ -31,7 +31,7 @@
 #import <AudioToolbox/ExtendedAudioFile.h>
 #import "JMXAudioBuffer.h"
 
-#define kJMXAudioFileBufferCount 2048
+#define kJMXAudioFileBufferCount 4096
 
 /*!
  @class JMXAudioFile

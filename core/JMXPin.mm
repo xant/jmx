@@ -503,7 +503,7 @@ static v8::Handle<Value>direction(Local<String> name, const AccessorInfo& info)
     HandleScope handle_scope;
     v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
     JMXPin *pin = (JMXPin *)field->Value();
-    Local<String> ret = String::New((pin.direction == kJMXInputPin) ? "input" : "output");
+    v8::Handle<String> ret = String::New((pin.direction == kJMXInputPin) ? "input" : "output");
     return handle_scope.Close(ret);
 }
 
@@ -515,7 +515,7 @@ static v8::Handle<Value>type(Local<String> name, const AccessorInfo& info)
     JMXPin *pin = (JMXPin *)field->Value();
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSString *typeName = [pin typeName];
-    Local<String> ret = String::New([typeName UTF8String], [typeName length]);
+    v8::Handle<String> ret = String::New([typeName UTF8String], [typeName length]);
     [pool drain];
     return handle_scope.Close(ret);
 }
@@ -546,8 +546,8 @@ static v8::Handle<Value>exportToBoard(const Arguments& args)
     HandleScope scope;
     BOOL ret = NO;
     JMXPin *pin = (JMXPin *)args.Holder()->GetPointerFromInternalField(0);;
-    Local<Context> globalContext = v8::Context::GetCalling();
-    Local<Object> globalObject  = globalContext->Global();
+    v8::Handle<Context> globalContext = v8::Context::GetCalling();
+    v8::Handle<Object> globalObject  = globalContext->Global();
     if (!globalObject.IsEmpty()) {
         JMXEntity *scriptEntity = (JMXEntity *)globalObject->GetPointerFromInternalField(0);
         if (scriptEntity) {

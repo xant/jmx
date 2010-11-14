@@ -32,38 +32,61 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXDrawEntity);
 
 - (void)drawRect:(JMXPoint *)rectOrigin size:(JMXSize *)rectSize strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
-    [drawPath drawRect:rectOrigin size:rectSize strokeColor:strokeColor fillColor:fillColor];
+    @synchronized(drawPath) {
+        [drawPath drawRect:rectOrigin size:rectSize strokeColor:strokeColor fillColor:fillColor];
+    }
 }
 
 - (void)drawPolygon:(NSArray *)points strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
-    [drawPath drawPolygon:points strokeColor:strokeColor fillColor:fillColor];
+    @synchronized(drawPath) {
+        [drawPath drawPolygon:points strokeColor:strokeColor fillColor:fillColor];
+    }
 }
 
 - (void)drawTriangle:(NSArray *)points strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
-    [drawPath drawTriangle:points strokeColor:strokeColor fillColor:fillColor];
+    @synchronized(drawPath) {
+        [drawPath drawTriangle:points strokeColor:strokeColor fillColor:fillColor];
+    }
 }
 
 - (void)drawCircle:(JMXPoint *)center radius:(NSUInteger)radius strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
-    [drawPath drawCircle:center radius:radius strokeColor:strokeColor fillColor:fillColor];
+    @synchronized(drawPath) {
+        [drawPath drawCircle:center radius:radius strokeColor:strokeColor fillColor:fillColor];
+    }
 }
 
 - (void)clear
 {
+    // XXX - should lock here ?
     [drawPath clear];
 }
 
 - (void)tick:(uint64_t)timeStamp
 {
-    [drawPath render];
+    @synchronized(drawPath) {
+        [drawPath render];
+    }
     [outputFramePin deliverData:drawPath.currentFrame];
     [super tick:timeStamp];
 }
 
 #pragma mark V8
 using namespace v8;
+
+- (void)jsInit:(NSValue *)argsValue
+{
+    v8::Arguments *args = (v8::Arguments *)[argsValue pointerValue];
+    if (args->Length() >= 2) {
+        NSSize newSize;
+        newSize.width = (*args)[0]->ToNumber()->NumberValue();
+        newSize.height = (*args)[1]->ToNumber()->NumberValue();
+        [self setSize:[JMXSize sizeWithNSSize:newSize]];
+    }
+}
+
 
 static v8::Handle<Value> drawPolygon(const Arguments& args)
 {
@@ -146,8 +169,7 @@ static v8::Handle<Value> clear(const Arguments& args)
 {
     HandleScope handleScope;
     v8::Handle<Object> self = args.Holder();
-    v8::Handle<External> wrap = v8::Handle<External>::Cast(self->GetInternalField(0));
-    JMXDrawEntity *entity = (JMXDrawEntity *)wrap->Value();
+    JMXDrawEntity *entity = (JMXDrawEntity *)self->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     [entity clear];
     [pool release];

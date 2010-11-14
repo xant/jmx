@@ -199,22 +199,17 @@
 
 - (void)render
 {
-    @synchronized(self) {
-        UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
-        if (currentFrame)
-            [currentFrame release];
-        CGContextDrawPath(CGLayerGetContext(pathLayers[pathIndex]), kCGPathFillStroke);
-        
-        currentFrame = [[CIImage imageWithCGLayer:pathLayers[pathIndex]]retain];
-    }
+    UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
+    CGContextDrawPath(CGLayerGetContext(pathLayers[pathIndex]), kCGPathFillStroke);
+    if (currentFrame)
+        [currentFrame release];
+            currentFrame = [[CIImage imageWithCGLayer:pathLayers[pathIndex]]retain];
 }
 
 - (CIImage *)currentFrame
 {
     CIImage *image = nil;
-    @synchronized(self) {
-        image = [currentFrame retain];
-    }
+    image = [currentFrame retain];
     return [currentFrame autorelease];
 }
 

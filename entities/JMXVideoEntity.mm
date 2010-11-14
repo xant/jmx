@@ -180,7 +180,54 @@ using namespace v8;
     return nil;
 }
 
+
 #pragma mark V8
+
+/*
+static void SetWidth(Local<String> name, Local<Value> value, const AccessorInfo& info)
+{
+    //v8::Locker lock;
+    HandleScope handleScope;
+    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
+    JMXVideoEntity *ventity = (JMXVideoEntity *)field->Value();
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSSize newSize = ventity.size.nsSize;
+    newSize.width = value->NumberValue();
+    [ventity setSize:[JMXSize sizeWithNSSize:newSize]];
+    [pool drain];
+}
+
+static void SetHeight(Local<String> name, Local<Value> value, const AccessorInfo& info)
+{
+    //v8::Locker lock;
+    HandleScope handleScope;
+    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
+    JMXVideoEntity *ventity = (JMXVideoEntity *)field->Value();
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSSize newSize = ventity.size.nsSize;
+    newSize.height = value->NumberValue();
+    [ventity setSize:[JMXSize sizeWithNSSize:newSize]];
+    [pool release];
+}
+
+static v8::Handle<Value>GetWidth(Local<String> name, const AccessorInfo& info)
+{
+    //v8::Locker lock;
+    HandleScope handleScope;
+    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
+    JMXVideoEntity *ventity = (JMXVideoEntity *)field->Value();
+    return handleScope.Close(Integer::New(ventity.size.width));
+}
+
+static v8::Handle<Value>GetHeight(Local<String> name, const AccessorInfo& info)
+{
+    //v8::Locker lock;
+    HandleScope handleScope;
+    v8::Handle<External> field = v8::Handle<External>::Cast(info.Holder()->GetInternalField(0));
+    JMXVideoEntity *ventity = (JMXVideoEntity *)field->Value();
+    return handleScope.Close(Integer::New(ventity.size.height));
+}
+*/
 
 + (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
 {
@@ -196,6 +243,8 @@ using namespace v8;
     entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("scaleRatio"), GetNumberProperty, SetNumberProperty);
     entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("fps"), GetNumberProperty, SetNumberProperty);
     entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("saturation"), GetNumberProperty, SetNumberProperty);
+    /*entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("width"), GetWidth, SetWidth);
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("height"), GetHeight, SetHeight);*/
     return entityTemplate;
 }
 

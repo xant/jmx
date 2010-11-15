@@ -26,13 +26,12 @@
 
 @implementation JMXDocument
 
-@synthesize board;
+@synthesize boardView;
 @synthesize entities;
 @synthesize entitiesFromFile;
 @synthesize entitiesPosition;
-@synthesize documentSplitView;
-@synthesize inspectorPanel;
-@synthesize libraryView;
+@synthesize boardViewController;
+@synthesize boardScrollView;
 
 - (id)init
 {
@@ -40,6 +39,7 @@
         entities = [[NSMutableArray alloc] init];
         entitiesFromFile = [[NSMutableArray alloc] init];
         entitiesPosition = [[NSMutableDictionary alloc] init];
+		
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasRemoved:) name:@"JMXBoardEntityWasRemoved" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasMoved:) name:@"JMXBoardEntityWasMoved" object:nil];
     }
@@ -49,7 +49,7 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [board release];
+    [boardView release];
     [entities release];
     [entitiesPosition release];
     [super dealloc];
@@ -58,117 +58,10 @@
 #pragma mark -
 #pragma mark NSDocument
 
-- (NSString *)windowNibName
+- (void)makeWindowControllers
 {
-    return @"JMXDocument";
-}
-
-- (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError
-{
-    NSXMLElement *root = (NSXMLElement *)[NSXMLNode elementWithName:@"entities"];
-
-    for (JMXEntity *entity in entities) {
-        NSXMLElement *e = [NSXMLElement elementWithName:[entity className]];
-        NSString *originString = [entitiesPosition objectForKey:entity];
-        NSXMLElement *origin = [NSXMLElement elementWithName:@"origin"];
-        [origin setStringValue:originString];
-        [e addChild:origin];
-        [root addChild:e];
-    }
-
-    NSXMLDocument *xmlDoc = [[NSXMLDocument alloc] initWithRootElement:root];
-    [xmlDoc setVersion:@"1.0"];
-    [xmlDoc setCharacterEncoding:@"UTF-8"];
-
-    NSData *data = [xmlDoc XMLDataWithOptions:NSXMLDocumentXMLKind];
-
-    [xmlDoc release];
-
-    return data;
-}
-
-- (BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError
-{
-    NSError *error = nil;
-    NSXMLDocument *xmlDoc = [[NSXMLDocument alloc] initWithData:data options:NSXMLDocumentTidyXML error:&error];
-
-    NSXMLNode *aNode = [[xmlDoc rootElement] nextNode];
-
-    if (aNode) {
-        while (1) {
-            NSString *className = [aNode name];
-            Class aClass = NSClassFromString(className);
-            JMXEntity *entity = [[aClass alloc] init];
-            NSXMLNode *origin = [aNode childAtIndex:0];
-            [entitiesPosition setObject:[origin stringValue] forKey:entity];
-            [entities addObject:entity];
-            [entity release];
-            if ((aNode = [aNode nextSibling]) == nil)
-                break;
-        }
-    }
-
-    [xmlDoc release];
-
-    return YES;
-}
-
-- (void)windowControllerDidLoadNib:(NSWindowController *)windowController
-{
-    NSMutableDictionary *userInfo = nil;
-    for (id e in entities) {
-        userInfo = [NSMutableDictionary dictionary];
-        [userInfo setObject:[entitiesPosition objectForKey:e] forKey:@"origin"];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasCreated" object:e userInfo:userInfo];
-    }
-
-	[documentSplitView setPosition:200.0f ofDividerAtIndex:0];
-	[documentSplitView setPosition:([documentSplitView bounds].size.width - 300.0f) ofDividerAtIndex:1];
-	[documentSplitView adjustSubviews];
-}
-
-#pragma mark -
-#pragma mark Interface Builder actions
-
-- (IBAction)toggleInspector:(id)sender
-{
-	NSMenuItem *menuItem = (NSMenuItem *)sender;
-	if ([documentSplitView isSubviewCollapsed:inspectorPanel]) {
-		[inspectorPanel setHidden:NO];
-		[documentSplitView adjustSubviews];
-		if (![documentSplitView isSubviewCollapsed:libraryView])
-			[documentSplitView setPosition:200.0f ofDividerAtIndex:0];
-		[documentSplitView setPosition:([documentSplitView bounds].size.width - 300.0f) ofDividerAtIndex:1];
-		[menuItem setTitle:@"Hide Inspector"];
-	}
-	else {
-		[inspectorPanel setHidden:YES];
-		[documentSplitView adjustSubviews];
-		if (![documentSplitView isSubviewCollapsed:libraryView])
-			[documentSplitView setPosition:200.0f ofDividerAtIndex:0];
-		[menuItem setTitle:@"Show Inspector"];
-	}
-}
-
-- (IBAction)toggleLibrary:(id)sender
-{
-	NSMenuItem *menuItem = (NSMenuItem *)sender;
-	if ([documentSplitView isSubviewCollapsed:libraryView]) {
-		[libraryView setHidden:NO];
-		[documentSplitView adjustSubviews];
-		[documentSplitView setPosition:200.0f ofDividerAtIndex:0];
-		if (![documentSplitView isSubviewCollapsed:inspectorPanel])
-			[documentSplitView setPosition:([documentSplitView bounds].size.width - 300.0f) ofDividerAtIndex:1];
-		[menuItem setTitle:@"Hide Library"];
-	}
-	else {
-		[libraryView setHidden:YES];
-		[documentSplitView adjustSubviews];
-		if (![documentSplitView isSubviewCollapsed:inspectorPanel])
-			[documentSplitView setPosition:([documentSplitView bounds].size.width - 300.0f) ofDividerAtIndex:1];
-		[menuItem setTitle:@"Show Library"];
-	}
-	
+	JMXWindowController *windowController = [[JMXWindowController alloc] initWithWindowNibName:@"JMXWindow"];
+	[self addWindowController:windowController];
 }
 
 #pragma mark -

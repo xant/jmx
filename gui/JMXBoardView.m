@@ -29,8 +29,8 @@
 
 @implementation JMXBoardView
 
-@synthesize selectedLayer;
-@synthesize selectedConnectorLayer;
+@synthesize boardViewController;
+@synthesize document;
 
 #pragma mark -
 #pragma mark Initialization
@@ -38,8 +38,6 @@
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        selected = [[NSMutableArray alloc] init];
-        entities = [[NSMutableArray alloc] init];
 		[self registerForDraggedTypes:[NSArray arrayWithObjects:NSURLPboardType,NSFilenamesPboardType,@"JMXLibraryTableViewDataType",nil]];
     }
     return self;
@@ -47,75 +45,9 @@
 
 - (void)awakeFromNib
 {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasCreated:) name:@"JMXBoardEntityWasCreated" object:nil];
-
     JMXBoardLayer *boardLayer = [[[JMXBoardLayer alloc] init] autorelease];
     self.layer = boardLayer;
     [self setWantsLayer:YES];
-}
-
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [selected release];
-    [entities release];
-    [super dealloc];
-}
-
-#pragma mark -
-#pragma mark IBActions
-
-- (IBAction)removeSelected:(id)sender
-{
-    JMXEntityLayer *layer = selectedLayer;
-    if (layer) {
-        [self setSelectedLayer:nil];
-        [layer removeFromSuperlayer];
-        [entities removeObject:layer];
-    }
-
-	if (selectedConnectorLayer) {
-		[selectedConnectorLayer.originPinLayer.pin disconnectFromPin:selectedConnectorLayer.destinationPinLayer.pin];
-		self.selectedConnectorLayer = nil;
-	}
-}
-
-#pragma mark -
-#pragma mark Getters and setters
-
-- (void)setSelectedLayer:(JMXEntityLayer *)aLayer
-{
-    if (aLayer == selectedLayer)
-        return;
-
-    if (aLayer != nil)
-        [aLayer select];
-
-    if (selectedLayer != nil)
-        [selectedLayer unselect];
-
-    selectedLayer = aLayer;
-
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasSelected" object:self.selectedLayer];
-
-    if (!selectedLayer)
-        return;
-
-    aLayer.zPosition = [self maxZPosition];
-}
-
-- (void)setSelectedConnectorLayer:(JMXConnectorLayer *)aConnectorLayer
-{
-	if (aConnectorLayer == selectedConnectorLayer)
-		return;
-
-	if (aConnectorLayer != nil)
-		[aConnectorLayer select];
-
-	if (selectedConnectorLayer != nil)
-		[selectedConnectorLayer unselect];
-
-	selectedConnectorLayer = aConnectorLayer;
 }
 
 #pragma mark -
@@ -184,105 +116,7 @@
 }
 
 #pragma mark -
-#pragma mark Mouse events
-
-- (void)mouseDown:(NSEvent *)theEvent
-{
-    NSPoint locationInWindow = [theEvent locationInWindow];
-
-	JMXEntityLayer *anEntityLayer = [self entityLayerAtPoint:locationInWindow];
-    JMXPinLayer *aPinLayer = [self pinLayerAtPoint:locationInWindow];
-	JMXConnectorLayer *aConnectorLayer = [self connectorLayerAtPoint:locationInWindow];
-
-	self.selectedLayer = nil;
-	self.selectedConnectorLayer = nil;
-
-    if (anEntityLayer) {
-		self.selectedLayer = anEntityLayer;
-    }
-	else if (aPinLayer) {
-        CGPoint pointAtCenter = [self.layer convertPoint:[aPinLayer pointAtCenter] fromLayer:aPinLayer];
-        fakeConnectorLayer = [[[JMXConnectorLayer alloc] initWithOriginPinLayer:aPinLayer] autorelease];
-        [aPinLayer addConnector:fakeConnectorLayer];
-        fakeConnectorLayer.initialPosition = pointAtCenter;
-        fakeConnectorLayer.boardView = self;
-        [self.layer addSublayer:fakeConnectorLayer];
-    }
-	else if (aConnectorLayer) {
-		self.selectedConnectorLayer = aConnectorLayer;
-	}
-}
-
-- (void)mouseDragged:(NSEvent *)theEvent
-{
-    [CATransaction begin];
-    [CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
-    if (fakeConnectorLayer) {
-        NSPoint currentLocation = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-        [fakeConnectorLayer recalculateFrameWithPoint:*(CGPoint*)&currentLocation];
-        [fakeConnectorLayer setNeedsDisplay];
-    }
-    else if (selectedLayer) {
-        selectedLayer.position = [self translatePointToBoardLayer:[theEvent locationInWindow]];
-        [selectedLayer updateConnectors];
-    }
-    JMXPinLayer *aPinLayer = [self pinLayerAtPoint:[theEvent locationInWindow]];
-    if (aPinLayer && [fakeConnectorLayer.originPinLayer.pin canConnectToPin:aPinLayer.pin]) {
-        [hoveredPinLayer unfocus];
-        hoveredPinLayer = aPinLayer;
-        [hoveredPinLayer focus];
-    } else {
-        [hoveredPinLayer unfocus];
-        hoveredPinLayer = nil;
-    }
-    [CATransaction commit];
-}
-
-- (void)mouseUp:(NSEvent *)theEvent
-{
-    if (fakeConnectorLayer) {
-        if (hoveredPinLayer && [fakeConnectorLayer.originPinLayer.pin canConnectToPin:hoveredPinLayer.pin]) {
-            [fakeConnectorLayer.originPinLayer.pin connectToPin:hoveredPinLayer.pin];
-            fakeConnectorLayer.destinationPinLayer = hoveredPinLayer;
-            [hoveredPinLayer addConnector:fakeConnectorLayer];
-        }
-        else
-            [fakeConnectorLayer removeFromSuperlayer];
-        fakeConnectorLayer = nil;
-    }
-
-    [hoveredPinLayer unfocus];
-    hoveredPinLayer = nil;
-}
-
-#pragma mark -
-#pragma mark Notifications
-
-- (void)anEntityWasCreated:(NSNotification *)aNotification
-{
-    JMXEntity *anEntity = [aNotification object];
-    JMXEntityLayer *entityLayer = [[[JMXEntityLayer alloc] initWithEntity:anEntity board:self] autorelease];
-
-    NSValue *pointValue = [[aNotification userInfo] valueForKey:@"origin"];
-
-    if (pointValue)
-        entityLayer.position = [self translatePointToBoardLayer:[pointValue pointValue]];
-
-    [self addToBoard:entityLayer];
-
-    if ([anEntity conformsToProtocol:@protocol(JMXRunLoop)])
-        [anEntity performSelector:@selector(start)];
-}
-
-#pragma mark -
 #pragma mark Helpers
-
-- (void)addToBoard:(JMXEntityLayer *)theEntity
-{
-    [self.layer addSublayer:theEntity];
-    [entities addObject:theEntity];
-    self.selectedLayer = theEntity;
-}
 
 - (CGPoint)translatePointToBoardLayer:(NSPoint)aPoint
 {
@@ -322,12 +156,11 @@
     return nil;
 }
 
-
 - (CGFloat)maxZPosition
 {
     CGFloat zPosition = ((CALayer *)[[self.layer sublayers] objectAtIndex:0]).zPosition;
 
-    for (CALayer *l in entities) {
+    for (CALayer *l in [self.layer sublayers]) {
         if (l.zPosition >= zPosition)
             zPosition = l.zPosition + 0.1f;
     }

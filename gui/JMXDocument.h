@@ -21,32 +21,30 @@
 #import <Cocoa/Cocoa.h>
 #import "JMXEntity.h"
 #import "JMXBoardView.h"
+#import "JMXBoardViewController.h"
+#import "JMXWindowController.h"
+#import "JMXBoardViewController.h"
+
 
 @class JMXBoardView;
+@class JMXBoardViewController;
 @class JMXEntityInspectorPanel;
 
 @interface JMXDocument : NSDocument {
-    JMXBoardView *board;
+    JMXBoardView *boardView;
     NSMutableArray *entities;
     NSMutableArray *entitiesFromFile;
     NSMutableDictionary *entitiesPosition;
-	NSSplitView *documentSplitView;
-	JMXEntityInspectorPanel *inspectorPanel;
-	NSView *libraryView;
+	JMXBoardViewController *boardViewController;
+	NSScrollView *boardScrollView;
 }
 
-@property (nonatomic, retain) IBOutlet JMXBoardView *board;
+@property (nonatomic, retain) IBOutlet JMXBoardView *boardView;
 @property (nonatomic, retain) NSMutableArray *entities;
 @property (nonatomic, retain) NSMutableArray *entitiesFromFile;
 @property (nonatomic, retain) NSMutableDictionary *entitiesPosition;
-@property (nonatomic, assign) IBOutlet NSSplitView *documentSplitView;
-@property (nonatomic, assign) IBOutlet JMXEntityInspectorPanel *inspectorPanel;
-@property (nonatomic, assign) IBOutlet NSView *libraryView;
-
-#pragma mark -
-#pragma mark Interface Builder actions
-
-- (IBAction)toggleInspector:(id)sender;
+@property (nonatomic, retain) IBOutlet JMXBoardViewController *boardViewController;
+@property (nonatomic, assign) IBOutlet NSScrollView *boardScrollView;
 
 #pragma mark -
 #pragma mark Open file

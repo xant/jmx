@@ -27,41 +27,27 @@
 #import "JMXPinLayer.h"
 #import "JMXEntityInspectorPanel.h"
 #import "JMXBoardSelection.h"
-
+#import "JMXBoardViewController.h"
 #import "JMXDocument.h"
 
 @class JMXDocument;
 @class JMXPinLayer;
 @class JMXConnectorLayer;
+@class JMXBoardViewController;
 
 @interface JMXBoardView : NSView {
     CGPoint lastDragLocation;
-    JMXEntityLayer *selectedLayer;
-	JMXConnectorLayer *selectedConnectorLayer;
-    JMXPinLayer *hoveredPinLayer;
-    JMXConnectorLayer *fakeConnectorLayer;
-    NSMutableArray *selected;
-    NSMutableArray *entities;
-    IBOutlet JMXDocument *document;
+    JMXDocument *document;
     IBOutlet JMXEntityInspectorPanel *inspectorPanel;
+	JMXBoardViewController *boardViewController;
 }
 
-@property (nonatomic,assign) JMXEntityLayer *selectedLayer;
-@property (nonatomic,assign) JMXConnectorLayer *selectedConnectorLayer;
-#pragma mark -
-#pragma mark IBActions
-
-- (IBAction)removeSelected:(id)sender;
-
-#pragma mark -
-#pragma mark Notifications
-
-- (void)anEntityWasCreated:(NSNotification *)aNotification;
+@property (nonatomic,retain) IBOutlet JMXBoardViewController *boardViewController;
+@property (nonatomic,assign) JMXDocument *document;
 
 #pragma mark -
 #pragma mark Helpers
 
-- (void)addToBoard:(JMXEntityLayer *)theEntity;
 - (CGPoint)translatePointToBoardLayer:(NSPoint)aPoint;
 - (JMXEntityLayer *)entityLayerAtPoint:(NSPoint)aPoint;
 - (JMXPinLayer *)pinLayerAtPoint:(NSPoint)aPoint;

@@ -27,6 +27,7 @@
 #import "JMXEntityLabelLayer.h"
 
 #define JMXInputOutletLayerCreate(x) [[[JMXOutletLayer alloc] initWithPin:(x) andPoint:NSZeroPoint isOutput:NO entity:self] autorelease]
+#define JMXOutputOutletLayerCreate(x) [[[JMXOutletLayer alloc] initWithPin:(x) andPoint:NSZeroPoint isOutput:YES entity:self] autorelease]
 
 @implementation JMXEntityLayer
 
@@ -123,20 +124,19 @@ JMXEntityLabelLayer *JMXEntityLabelLayerCreate(NSString *name) {
     [self addSublayer:JMXEntityLabelLayerCreate(self.entity.name)];
 
     for (NSString *thePinName in [self.entity inputPins]) {
-        JMXOutletLayer *outlet = [[[JMXOutletLayer alloc] initWithPin:[self inputPinWithName:thePinName] andPoint:NSZeroPoint isOutput:NO entity:self] autorelease];
+        JMXOutletLayer *outlet = JMXInputOutletLayerCreate([self inputPinWithName:thePinName]);
         [self addSublayer:outlet];
         [self.inlets addObject:outlet];
     }
 
     for (NSString *thePinName in [self.entity outputPins]) {
-        JMXOutletLayer *outlet = [[[JMXOutletLayer alloc] initWithPin:[self outputPinWithName:thePinName] andPoint:NSZeroPoint isOutput:YES entity:self] autorelease];
+        JMXOutletLayer *outlet = JMXOutputOutletLayerCreate([self inputPinWithName:thePinName]);
         [self addSublayer:outlet];
         [self.outlets addObject:outlet];
     }
 
     [self recalculateFrame];
     [self reorderOutlets];
-	[self setNeedsDisplay];
 }
 
 - (void)recalculateFrame
@@ -197,7 +197,7 @@ JMXEntityLabelLayer *JMXEntityLabelLayerCreate(NSString *name) {
 
 - (void)outputPinAdded:(NSNotification *)notification
 {
-    JMXOutletLayer *outlet = JMXInputOutletLayerCreate([self outputPinWithName:[[notification userInfo] objectForKey:@"pinName"]]);
+    JMXOutletLayer *outlet = JMXOutputOutletLayerCreate([self outputPinWithName:[[notification userInfo] objectForKey:@"pinName"]]);
     [self addSublayer:outlet];
     [self.outlets addObject:outlet];
     [self recalculateFrame];
@@ -263,17 +263,17 @@ JMXEntityLabelLayer *JMXEntityLabelLayerCreate(NSString *name) {
 id controlForJMXPinType(JMXPinType aType)
 {
     NSString *name = [JMXPin nameforType:aType];
-	if (name)
+    if (name)
         return name;
     return @"None";
 }
 
 - (void)controlPin
 {
-	for (NSString *anInputPinName in self.entity.inputPins) {
-		JMXInputPin *anInputPin = [self.entity inputPinWithName:anInputPinName];
-		NSLog(@"name: %@, type: %@", anInputPin.name, controlForJMXPinType(anInputPin.type));
-	}
+    for (NSString *anInputPinName in self.entity.inputPins) {
+        JMXInputPin *anInputPin = [self.entity inputPinWithName:anInputPinName];
+        NSLog(@"name: %@, type: %@", anInputPin.name, controlForJMXPinType(anInputPin.type));
+    }
 
 }
 

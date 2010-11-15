@@ -14,6 +14,7 @@
 
 - (JMXBoardView *)boardView;
 - (void)anEntityWasCreated:(NSNotification *)aNotification;
+- (void)boardWasModified:(NSNotification *)aNotification;
 
 @end
 
@@ -29,24 +30,45 @@
 
 - (JMXBoardView *)boardView
 {
-	return (JMXBoardView *)[self view];
+    return (JMXBoardView *)[self view];
 }
 
 #pragma mark -
 
 - (void)awakeFromNib
 {
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasCreated:) name:@"JMXBoardEntityWasCreated" object:nil];
-	selected = [[NSMutableArray alloc] init];
-	entities = [[NSMutableArray alloc] init];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(anEntityWasCreated:)
+                                                 name:@"JMXBoardEntityWasCreated"
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(boardWasModified:)
+                                                 name:@"JMXEntityInputPinAdded"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(boardWasModified:)
+                                                 name:@"JMXEntityInputPinRemoved"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(boardWasModified:)
+                                                 name:@"JMXEntityOutputPinAdded"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(boardWasModified:)
+                                                 name:@"JMXEntityOutputPinRemoved"
+                                               object:nil];
+
+    selected = [[NSMutableArray alloc] init];
+    entities = [[NSMutableArray alloc] init];
 }
 
 - (void)dealloc
 {
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	[selected release];
-	[entities release];
-	[super dealloc];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [selected release];
+    [entities release];
+    [super dealloc];
 }
 
 
@@ -55,12 +77,12 @@
 
 - (void)setView:(NSView *)aView
 {
-	[super setView:aView];	
-	if (aView) {
-		[(JMXBoardView *)aView setDocument:[self document]];
-		[aView setNextResponder:self];
-	}
-		
+    [super setView:aView];
+    if (aView) {
+        [(JMXBoardView *)aView setDocument:[self document]];
+        [aView setNextResponder:self];
+    }
+
 }
 
 #pragma mark -
@@ -70,17 +92,17 @@
 {
     NSPoint locationInWindow = [theEvent locationInWindow];
 
-	JMXEntityLayer *anEntityLayer = [self.boardView entityLayerAtPoint:locationInWindow];
+    JMXEntityLayer *anEntityLayer = [self.boardView entityLayerAtPoint:locationInWindow];
     JMXPinLayer *aPinLayer = [self.boardView pinLayerAtPoint:locationInWindow];
-	JMXConnectorLayer *aConnectorLayer = [self.boardView connectorLayerAtPoint:locationInWindow];
+    JMXConnectorLayer *aConnectorLayer = [self.boardView connectorLayerAtPoint:locationInWindow];
 
-	self.selectedLayer = nil;
-	self.selectedConnectorLayer = nil;
+    self.selectedLayer = nil;
+    self.selectedConnectorLayer = nil;
 
     if (anEntityLayer) {
-		self.selectedLayer = anEntityLayer;
+        self.selectedLayer = anEntityLayer;
     }
-	else if (aPinLayer) {
+    else if (aPinLayer) {
         CGPoint pointAtCenter = [self.boardView.layer convertPoint:[aPinLayer pointAtCenter] fromLayer:aPinLayer];
         fakeConnectorLayer = [[[JMXConnectorLayer alloc] initWithOriginPinLayer:aPinLayer] autorelease];
         [aPinLayer addConnector:fakeConnectorLayer];
@@ -88,9 +110,9 @@
         fakeConnectorLayer.boardView = self.boardView;
         [self.boardView.layer addSublayer:fakeConnectorLayer];
     }
-	else if (aConnectorLayer) {
-		self.selectedConnectorLayer = aConnectorLayer;
-	}
+    else if (aConnectorLayer) {
+        self.selectedConnectorLayer = aConnectorLayer;
+    }
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent
@@ -142,35 +164,35 @@
 {
     if (aLayer == selectedLayer)
         return;
-	
+
     if (aLayer != nil)
         [aLayer select];
-	
+
     if (selectedLayer != nil)
         [selectedLayer unselect];
-	
+
     selectedLayer = aLayer;
-	
+
     [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasSelected" object:self.selectedLayer];
-	
+
     if (!selectedLayer)
         return;
-	
+
     aLayer.zPosition = [self.boardView maxZPosition];
 }
 
 - (void)setSelectedConnectorLayer:(JMXConnectorLayer *)aConnectorLayer
 {
-	if (aConnectorLayer == selectedConnectorLayer)
-		return;
-	
-	if (aConnectorLayer != nil)
-		[aConnectorLayer select];
-	
-	if (selectedConnectorLayer != nil)
-		[selectedConnectorLayer unselect];
-	
-	selectedConnectorLayer = aConnectorLayer;
+    if (aConnectorLayer == selectedConnectorLayer)
+        return;
+
+    if (aConnectorLayer != nil)
+        [aConnectorLayer select];
+
+    if (selectedConnectorLayer != nil)
+        [selectedConnectorLayer unselect];
+
+    selectedConnectorLayer = aConnectorLayer;
 }
 
 
@@ -185,11 +207,11 @@
         [layer removeFromSuperlayer];
         [entities removeObject:layer];
     }
-	
-	if (selectedConnectorLayer) {
-		[selectedConnectorLayer.originPinLayer.pin disconnectFromPin:selectedConnectorLayer.destinationPinLayer.pin];
-		self.selectedConnectorLayer = nil;
-	}
+
+    if (selectedConnectorLayer) {
+        [selectedConnectorLayer.originPinLayer.pin disconnectFromPin:selectedConnectorLayer.destinationPinLayer.pin];
+        self.selectedConnectorLayer = nil;
+    }
 }
 
 - (void)addToBoard:(JMXEntityLayer *)theEntity
@@ -206,16 +228,20 @@
 {
     JMXEntity *anEntity = [aNotification object];
     JMXEntityLayer *entityLayer = [[[JMXEntityLayer alloc] initWithEntity:anEntity board:self.boardView] autorelease];
-	
+
     NSValue *pointValue = [[aNotification userInfo] valueForKey:@"origin"];
-	
+
     if (pointValue)
         entityLayer.position = [self.boardView translatePointToBoardLayer:[pointValue pointValue]];
-	
+
     [self addToBoard:entityLayer];
-	
+
     if ([anEntity conformsToProtocol:@protocol(JMXRunLoop)])
         [anEntity performSelector:@selector(start)];
 }
 
+- (void)boardWasModified:(NSNotification *)aNotification
+{
+    [self.boardView.layer setNeedsLayout];
+}
 @end

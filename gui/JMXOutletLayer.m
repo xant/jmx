@@ -58,11 +58,9 @@
             labelLayer.frame = CGRectMake(self.frame.size.width - ENTITY_OUTLET_LABEL_WIDTH, 0.0f,
                                           ENTITY_OUTLET_LABEL_WIDTH, self.frame.size.height);
         }
-
-        [self addSublayer:labelLayer];
-        self.pin = [[[JMXPinLayer alloc] initWithPin:thePin andPoint:NSMakePoint(thePinPoint.x, thePinPoint.y) outlet:self] autorelease];
+        self.pin = [[[JMXPinLayer alloc] initWithPin:thePin andPoint:NSPointFromCGPoint(thePinPoint) outlet:self] autorelease];
         [self addSublayer:pin];
-
+		[self addSublayer:labelLayer];
         self.output = isOutput;
     }
     return self;

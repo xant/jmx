@@ -537,6 +537,8 @@ static v8::Handle<Value>connect(const Arguments& args)
         } else {
             NSLog(@"Pin::connect(): Bad param %s (should have been a Pin object)", *str);
         }
+    } else {
+        NSLog(@"Pin::connect(): argument is not an object");
     }
     return handleScope.Close(v8::Boolean::New(ret));
 }

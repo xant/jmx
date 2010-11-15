@@ -96,7 +96,6 @@ using namespace v8;
     }
 }
 
-
 static v8::Handle<Value> drawPolygon(const Arguments& args)
 {
     HandleScope handleScope;

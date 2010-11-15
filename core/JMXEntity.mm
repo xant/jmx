@@ -28,8 +28,6 @@
 
 using namespace v8;
 
-static Persistent<FunctionTemplate> classTemplate;
-
 @implementation JMXEntity
 
 @synthesize name, active;
@@ -396,6 +394,8 @@ v8::Handle<Value> inputPin(const Arguments& args)
         v8::Handle<Object> pinInstance = [pin jsObj];
         [pool drain];
         return handleScope.Close(pinInstance);
+    } else {
+        NSLog(@"Entity::inputPin(): %s not found in %@", *value, entity);
     }
     [pool drain];
     return v8::Undefined();
@@ -415,12 +415,16 @@ v8::Handle<Value> outputPin(const Arguments& args)
         v8::Handle<Object> pinInstance = [pin jsObj];
         [pool drain];
         return handleScope.Close(pinInstance);
+    } else {
+        NSLog(@"Entity::outputPin(): %s not found in %@", *value, entity);
     }
     [pool drain];
     return v8::Undefined();
 }
 
 #pragma mark Class Template
+static Persistent<FunctionTemplate> classTemplate;
+
 + (v8::Persistent<FunctionTemplate>)jsClassTemplate
 {
     //v8::Locker lock;

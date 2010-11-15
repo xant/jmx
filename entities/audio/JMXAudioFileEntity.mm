@@ -136,15 +136,15 @@ static v8::Handle<Value> close(const Arguments& args)
 + (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
 {
     //Locker lock;
-    v8::Persistent<v8::FunctionTemplate> entityTemplate = v8::Persistent<FunctionTemplate>::New(v8::FunctionTemplate::New());
-    entityTemplate->Inherit([super jsClassTemplate]);
-    entityTemplate->SetClassName(String::New("VideoLayer"));
-    entityTemplate->InstanceTemplate()->SetInternalFieldCount(1);
-    v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
+    v8::Persistent<v8::FunctionTemplate> classTemplate = v8::Persistent<FunctionTemplate>::New(v8::FunctionTemplate::New());
+    classTemplate->Inherit([super jsClassTemplate]);
+    classTemplate->SetClassName(String::New("VideoLayer"));
+    classTemplate->InstanceTemplate()->SetInternalFieldCount(1);
+    v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
     classProto->Set("open", FunctionTemplate::New(open));
     classProto->Set("close", FunctionTemplate::New(close));
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("repeat"), GetBoolProperty, SetBoolProperty);
-    return entityTemplate;
+    classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("repeat"), GetBoolProperty, SetBoolProperty);
+    return classTemplate;
 }
 
 @end

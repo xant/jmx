@@ -208,24 +208,25 @@ using namespace v8;
 
 + (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
 {
+    /*
+    if (!classTemplate.IsEmpty())
+        return classTemplate;*/
     NSLog(@"JMXVideoEntity ClassTemplate created");
-    v8::Persistent<v8::FunctionTemplate> entityTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
-    entityTemplate->Inherit([super jsClassTemplate]);
+    v8::Persistent<v8::FunctionTemplate> classTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    classTemplate->Inherit([super jsClassTemplate]);
     // accessors to image parameters
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("saturation"), GetNumberProperty, SetNumberProperty);
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("brightness"), GetNumberProperty, SetNumberProperty);
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("contrast"), GetNumberProperty, SetNumberProperty);
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("alpha"), GetNumberProperty, SetNumberProperty);
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("rotation"), GetNumberProperty, SetNumberProperty);
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("scaleRatio"), GetNumberProperty, SetNumberProperty);
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("fps"), GetNumberProperty, SetNumberProperty);
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("saturation"), GetNumberProperty, SetNumberProperty);
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("size"), GetSizeProperty, SetSizeProperty);
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("origin"), GetPointProperty, SetPointProperty);
-
-    /*entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("width"), GetWidth, SetWidth);
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("height"), GetHeight, SetHeight);*/
-    return entityTemplate;
+    classTemplate->InstanceTemplate()->SetInternalFieldCount(1);
+    classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("saturation"), GetNumberProperty, SetNumberProperty);
+    classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("brightness"), GetNumberProperty, SetNumberProperty);
+    classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("contrast"), GetNumberProperty, SetNumberProperty);
+    classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("alpha"), GetNumberProperty, SetNumberProperty);
+    classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("rotation"), GetNumberProperty, SetNumberProperty);
+    classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("scaleRatio"), GetNumberProperty, SetNumberProperty);
+    classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("fps"), GetNumberProperty, SetNumberProperty);
+    classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("saturation"), GetNumberProperty, SetNumberProperty);
+    classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("size"), GetSizeProperty, SetSizeProperty);
+    classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("origin"), GetPointProperty, SetPointProperty);
+    return classTemplate;
 }
 
 @end

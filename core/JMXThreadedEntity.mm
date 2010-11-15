@@ -183,17 +183,21 @@ static v8::Handle<Value> stop(const Arguments& args)
     return v8::Undefined();
 }
 
+static Persistent<FunctionTemplate> classTemplate;
+
 + (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
 {
+    if (!classTemplate.IsEmpty())
+        return classTemplate;
     NSLog(@"JMXThreadedEntity ClassTemplate created");
-    v8::Persistent<v8::FunctionTemplate> entityTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
-    entityTemplate->Inherit([super jsClassTemplate]);
-    entityTemplate->SetClassName(String::New("ThreadedEntity"));
-    v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
+    classTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    classTemplate->Inherit([super jsClassTemplate]);
+    classTemplate->SetClassName(String::New("ThreadedEntity"));
+    v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
     classProto->Set("start", FunctionTemplate::New(start));
     classProto->Set("stop", FunctionTemplate::New(stop));
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("frequency"), GetNumberProperty, SetNumberProperty);
-    return entityTemplate;
+    classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("frequency"), GetNumberProperty, SetNumberProperty);
+    return classTemplate;
 }
 
 @end

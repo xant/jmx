@@ -70,6 +70,24 @@ using namespace v8;
 
 #pragma mark V8
 
+- (void)jsInit:(NSValue *)argsValue
+{
+    v8::Arguments *args = (v8::Arguments *)[argsValue pointerValue];
+    if (args->Length() >= 2 && (*args)[0]->IsNumber() && (*args)[1]->IsNumber()) {
+        NSSize newSize;
+        newSize.width = (*args)[0]->ToNumber()->NumberValue();
+        newSize.height = (*args)[1]->ToNumber()->NumberValue();
+        [self setSize:[JMXSize sizeWithNSSize:newSize]];
+    } else if (args->Length() >= 1 && (*args)[0]->IsObject()) {
+        v8::Handle<Object>sizeObj = (*args)[0]->ToObject();
+        if (!sizeObj.IsEmpty()) {
+            JMXSize *jmxSize = (JMXSize *)sizeObj->GetPointerFromInternalField(0);
+            if (jmxSize)
+                [self setSize:jmxSize];
+        }
+    }
+}
+
 static void SetWidth(Local<String> name, Local<Value> value, const AccessorInfo& info)
 {
     //v8::Locker lock;
@@ -113,14 +131,17 @@ static v8::Handle<Value>GetHeight(Local<String> name, const AccessorInfo& info)
 + (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
 {
     //v8::Locker lock;
+    /*
+    if (!classTemplate.IsEmpty())
+        return classTemplate;*/
+    v8::Persistent<FunctionTemplate> classTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    classTemplate->Inherit([super jsClassTemplate]);  
+    classTemplate->SetClassName(String::New("VideoOutput"));
+    classTemplate->InstanceTemplate()->SetInternalFieldCount(1);
+    classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("width"), GetWidth, SetWidth);
+    classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("height"), GetHeight, SetHeight);
     NSLog(@"JMXVideoOutput ClassTemplate created");
-    v8::Persistent<v8::FunctionTemplate> entityTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
-    entityTemplate->Inherit([super jsClassTemplate]);  
-    entityTemplate->SetClassName(String::New("VideoOutput"));
-    entityTemplate->InstanceTemplate()->SetInternalFieldCount(1);
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("width"), GetWidth, SetWidth);
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("height"), GetHeight, SetHeight);
-    return entityTemplate;
+    return classTemplate;
 }
 
 @end

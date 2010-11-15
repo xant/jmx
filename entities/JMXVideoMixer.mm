@@ -135,14 +135,13 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXVideoMixer);
 {
     //Locker lock;
     HandleScope handleScope;
-    v8::Persistent<v8::FunctionTemplate> entityTemplate = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
-    entityTemplate->Inherit([super jsClassTemplate]);
-    entityTemplate->SetClassName(String::New("CoreImageFilter"));
-    v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
-    //classProto->Set("avaliableFilters", FunctionTemplate::New(AvailableFilters));
-    //classProto->Set("selectFilter", FunctionTemplate::New(SelectFilter));
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("blendFilter"), GetStringProperty, SetStringProperty);
-    return entityTemplate;
+    v8::Persistent<v8::FunctionTemplate> classTemplate = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    classTemplate->Inherit([super jsClassTemplate]);
+    classTemplate->SetClassName(String::New("VideoMixer"));
+    classTemplate->InstanceTemplate()->SetInternalFieldCount(1);
+    classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("blendFilter"), GetStringProperty, SetStringProperty);
+    NSLog(@"JMXVideoOutput ClassTemplate created");
+    return classTemplate;
 }
 
 @end

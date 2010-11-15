@@ -40,14 +40,13 @@
 #import <Cocoa/Cocoa.h>
 #import "JMXInputPin.h"
 #import "JMXOutputPin.h"
-#ifdef __JMXV8__
-#include <v8.h>
+#import "JMXV8.h"
 
 /*!
  @define JMXV8_EXPORT_ENTITY_CLASS
  @param __class
  */
-
+#ifdef __JMXV8__
 #define JMXV8_EXPORT_ENTITY_CLASS(__class) \
     using namespace v8;\
     static Persistent<FunctionTemplate> classTemplate;\
@@ -127,7 +126,7 @@
  *
  */
 
-@interface JMXEntity : NSObject <NSCopying> {
+@interface JMXEntity : NSObject <NSCopying, JMXV8> {
 @public
     NSString *name;
     BOOL active;
@@ -237,11 +236,5 @@
 - (void)proxyInputPin:(JMXInputPin *)pin;
 - (void)proxyOutputPin:(JMXOutputPin *)pin;
 
-#pragma mark V8
-- (void)jsInit:(NSValue *)argsValue;
-
-#ifdef __JMXV8__
-+ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate;
-#endif
 @end
 

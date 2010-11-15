@@ -26,9 +26,7 @@
 #import "JMXPoint.h"
 #import "JMXAudioBuffer.h"
 #import "JMXPinSignal.h"
-#ifdef __JMXV8__
-#include <v8.h>
-#endif
+#import "JMXV8.h"
 
 @class JMXEntity;
 
@@ -65,7 +63,7 @@ typedef enum {
 
 //#define kJMXPinDataBufferCount 2
 
-@interface JMXPin : NSObject <NSCopying> {
+@interface JMXPin : NSObject <NSCopying, JMXV8> {
 @protected
     JMXPinType          type;
     NSString            *name;
@@ -182,16 +180,10 @@ typedef enum {
 - (void)deliverData:(id)data fromSender:(id)sender;
 - (BOOL)canConnectToPin:(JMXPin *)pin;
 
-#pragma mark V8
-
-#ifdef __JMXV8__
-+ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate;
-- (v8::Handle<v8::Object>)jsObj;
-//JMXV8_DECLARE_CONSTRUCTOR(JMXPin);
-#endif
-
 @end
 
+/*
 #ifdef __JMXV8__
-//v8::Handle<v8::Value> JMXPinJSContructor(const Arguments& args);
+v8::Handle<v8::Value> JMXPinJSContructor(const Arguments& args);
 #endif
+*/

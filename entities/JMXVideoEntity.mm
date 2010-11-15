@@ -48,7 +48,7 @@ using namespace v8;
         self.brightness = [colorFilter valueForKey:@"inputBrightness"];
         self.contrast = [colorFilter valueForKey:@"inputContrast"];
         self.alpha = [NSNumber numberWithFloat:1.0];
-        self.rotation = [NSNumber numberWithFloat:1.0];
+        self.rotation = [NSNumber numberWithFloat:0.0];
         self.scaleRatio = [NSNumber numberWithFloat:1.0];
         NSPoint zeroPoint = { 0, 0 };
         self.origin = [JMXPoint pointWithNSPoint:zeroPoint];
@@ -144,19 +144,36 @@ using namespace v8;
             // but if the user requested a size impossible to be produced by the source, 
             // we scale it here to honor user request for a specific size
             CGRect imageRect = [frame extent];
-            // and scale the frame if necessary
+            // and apply affine transforms if necessary (scale, rotation and displace
+            CIFilter *transformFilter = [CIFilter filterWithName:@"CIAffineTransform"];
+            NSAffineTransform *transform = [NSAffineTransform transform];
             if (size.width != imageRect.size.width || size.height != imageRect.size.height) {
-                CIFilter *scaleFilter = [CIFilter filterWithName:@"CIAffineTransform"];
+
                 float xScale = size.width / imageRect.size.width;
                 float yScale = size.height / imageRect.size.height;
                 // TODO - take scaleRatio into account for further scaling requested by the user
-                NSAffineTransform *transform = [NSAffineTransform transform];
                 [transform scaleXBy:xScale yBy:yScale];
-                [scaleFilter setDefaults];
-                [scaleFilter setValue:transform forKey:@"inputTransform"];
-                [scaleFilter setValue:frame forKey:@"inputImage"];
-                frame = [scaleFilter valueForKey:@"outputImage"];
             }
+            NSAffineTransform *rotoTransform = [NSAffineTransform transform];
+            [rotoTransform rotateByDegrees:[rotation floatValue]];
+            CGFloat deg = ([rotation floatValue]*M_PI)/180.0;
+            //[transform appendTransform:rotoTransform];
+            CGFloat x, y;
+            x = ((size.width)-((size.width)*cos(deg)-(size.height)*sin(deg)))/2;
+            y = ((size.height)-((size.width)*sin(deg)+(size.height)*cos(deg)))/2;
+            NSAffineTransform *rotoTranslate = [NSAffineTransform transform];
+            [rotoTranslate translateXBy:x yBy:y];
+            if (rotoTransform) {
+                if (rotoTranslate) {
+                    [rotoTransform appendTransform:rotoTranslate];
+                }
+                [transform appendTransform:rotoTransform];
+            }
+            
+            [transformFilter setDefaults];
+            [transformFilter setValue:transform forKey:@"inputTransform"];
+            [transformFilter setValue:frame forKey:@"inputImage"];
+            frame = [transformFilter valueForKey:@"outputImage"];
             if (frame) {
                 [currentFrame release];
                 currentFrame = [frame retain];

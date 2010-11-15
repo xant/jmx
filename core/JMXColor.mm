@@ -85,22 +85,19 @@ v8::Handle<v8::Value> JMXColorJSConstructor(const v8::Arguments& args)
     CGFloat r = 0.0;
     CGFloat g = 0.0;
     CGFloat b = 0.0;
-    CGFloat a = 1.0;
+    CGFloat a = 1.0; // make it visible by default
     if (args.Length() >= 3) {
         r = args[0]->NumberValue();
         g = args[1]->NumberValue();
         b = args[2]->NumberValue();
+        // if alpha has been provided, override the default value
         if (args.Length() >= 4)
             a = args[3]->NumberValue();
-        else
-            a = 1.0;
     }
-    //v8::Handle<Object>jsInstance = classTemplate->InstanceTemplate()->NewInstance();
     Persistent<Object>jsInstance = Persistent<Object>::New(classTemplate->InstanceTemplate()->NewInstance());
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     JMXColor *color = [[JMXColor colorWithDeviceRed:r green:g blue:b alpha:a] retain];
     jsInstance.MakeWeak(color, JMXColorJSDestructor);
-    //instancesMap[point] = jsInstance;
     jsInstance->SetPointerInInternalField(0, color);
     [pool drain];
     return handleScope.Close(jsInstance);

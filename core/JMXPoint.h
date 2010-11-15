@@ -22,11 +22,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#ifdef __JMXV8__
-#include <v8.h>
-#endif
+#import "JMXV8.h"
 
-@interface JMXPoint : NSObject {
+@interface JMXPoint : NSObject <JMXV8> {
 @private
     NSPoint nsPoint;
 }
@@ -38,17 +36,8 @@
 - (CGFloat)x;
 - (CGFloat)y;
 
-#pragma mark V8
-
 #ifdef __JMXV8__
-+ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate;
-- (v8::Handle<v8::Object>)jsObj;
-//JMXV8_DECLARE_CONSTRUCTOR(JMXPin);
+v8::Handle<v8::Value> JMXPointJSConstructor(const v8::Arguments& args);
 #endif
 
 @end
-
-#ifdef __JMXV8__
-// declare the JS constructor
-v8::Handle<v8::Value> JMXPointJSConstructor(const v8::Arguments& args);
-#endif

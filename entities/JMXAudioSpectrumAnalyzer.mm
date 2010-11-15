@@ -6,32 +6,16 @@
 //  Copyright 2010 Dyne.org. All rights reserved.
 //
 
+#define __JMXV8__
 #import <Quartz/Quartz.h>
 #import "JMXSpectrumAnalyzer.h"
 #import "JMXAudioBuffer.h"
 #import "JMXAudioFormat.h"
 #import "JMXDrawPath.h"
-#define __JMXV8__
-#import "JMXAudioSpectrumAnalyzer.h"
+#include "JMXAudioSpectrumAnalyzer.h"
 #include "JMXScript.h"
 
 JMXV8_EXPORT_ENTITY_CLASS(JMXAudioSpectrumAnalyzer);
-
-/*
-static void decodeSpectralBuffer(DSPSplitComplex* spectra, UInt32 numSpectra, void* inUserData)
-{
-    JMXAudioSpectrumAnalyzer *self = (JMXAudioSpectrumAnalyzer *)inUserData;
-    for (UInt32 i=0; i<numSpectra; i++) {
-        UInt32 half = 512;//channel.fftSize >> 1;
-		DSPSplitComplex	*freqData = &spectra[i];
-        
-		for (UInt32 j=0; j<half; j++){
-			//NSLog(@" bin[%d]: %lf + %lfi\n", (int) j, freqData->realp[j], freqData->imagp[j]);
-		}
-	}
-    //NSLog(@"%d", numSpectra);
-}
-*/
 
 // XXX - just a test
 #undef memcpy

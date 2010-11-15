@@ -86,6 +86,17 @@ using namespace v8;
     return NO;
 }
 
+- (id)copyWithZone:(NSZone *)zone
+{
+    // we don't want copies, but we want to use such objects as keys of a dictionary
+    // so we still need to conform to the 'copying' protocol,
+    // but since we are to be considered 'immutable' we can adopt what described at the end of :
+    // http://developer.apple.com/mac/library/documentation/cocoa/conceptual/MemoryMgmt/Articles/mmImplementCopy.html
+    return [[JMXPoint alloc] initWithNSPoint:nsPoint];
+}
+
+#pragma mark V8
+
 static v8::Persistent<FunctionTemplate> classTemplate;
 
 + (v8::Persistent<FunctionTemplate>)jsClassTemplate
@@ -98,7 +109,6 @@ static v8::Persistent<FunctionTemplate> classTemplate;
     
     classTemplate = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
       
-    //v8::Handle<FunctionTemplate> classTemplate = FunctionTemplate::New();
     classTemplate->SetClassName(String::New("Point"));
     v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
     // set instance methods
@@ -106,7 +116,7 @@ static v8::Persistent<FunctionTemplate> classTemplate;
     instanceTemplate->SetInternalFieldCount(1);
     // Add accessors for each of the fields of the entity.
     instanceTemplate->SetAccessor(String::NewSymbol("x"), GetDoubleProperty, SetDoubleProperty);
-    //instanceTemplate->SetAccessor(String::NewSymbol("allowedValues"), allowedValues);
+    instanceTemplate->SetAccessor(String::NewSymbol("y"), GetDoubleProperty, SetDoubleProperty);
     return classTemplate;
 }
 
@@ -144,18 +154,13 @@ v8::Handle<v8::Value> JMXPointJSConstructor(const v8::Arguments& args)
     int x = 0;
     int y = 0;
     if (args.Length() >= 2) {
-        v8::Handle<Value> xValue = args[0];
-        v8::Handle<Value> yValue = args[1];
-
-        x = xValue->IntegerValue();
-        y = yValue->IntegerValue();
+        x = args[0]->IntegerValue();
+        y = args[1]->IntegerValue();
     }
-    //v8::Handle<Object>jsInstance = classTemplate->InstanceTemplate()->NewInstance();
     Persistent<Object>jsInstance = Persistent<Object>::New(classTemplate->InstanceTemplate()->NewInstance());
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     JMXPoint *point = [[JMXPoint pointWithNSPoint:NSMakePoint(x, y)] retain];
     jsInstance.MakeWeak(point, JMXPointJSDestructor);
-    //instancesMap[point] = jsInstance;
     jsInstance->SetPointerInInternalField(0, point);
     [pool drain];
     return handleScope.Close(jsInstance);

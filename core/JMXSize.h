@@ -22,9 +22,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "JMXV8.h"
 
-
-@interface JMXSize : NSObject {
+@interface JMXSize : NSObject <JMXV8> {
 @private
     NSSize nsSize;
 }
@@ -37,5 +37,11 @@
 - (CGFloat)height;
 - (void)setWidth:(CGFloat)width;
 - (void)setHeight:(CGFloat)height;
+
+#pragma mark V8
+
+#ifdef __JMXV8__
+v8::Handle<v8::Value> JMXSizeJSConstructor(const v8::Arguments& args);
+#endif
 
 @end

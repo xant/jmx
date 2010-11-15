@@ -140,7 +140,7 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXVideoMixer);
     classTemplate->SetClassName(String::New("VideoMixer"));
     classTemplate->InstanceTemplate()->SetInternalFieldCount(1);
     classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("blendFilter"), GetStringProperty, SetStringProperty);
-    NSLog(@"JMXVideoOutput ClassTemplate created");
+    NSLog(@"JMXVideoMixer ClassTemplate created");
     return classTemplate;
 }
 

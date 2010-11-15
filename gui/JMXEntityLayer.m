@@ -136,6 +136,7 @@ JMXEntityLabelLayer *JMXEntityLabelLayerCreate(NSString *name) {
 
     [self recalculateFrame];
     [self reorderOutlets];
+	[self setNeedsDisplay];
 }
 
 - (void)recalculateFrame
@@ -190,6 +191,8 @@ JMXEntityLabelLayer *JMXEntityLabelLayerCreate(NSString *name) {
     }];
     [[self.inlets objectAtIndex:index] removeFromSuperlayer];
     [self.inlets removeObjectAtIndex:index];
+    [self recalculateFrame];
+    [self reorderOutlets];
 }
 
 - (void)outputPinAdded:(NSNotification *)notification
@@ -209,6 +212,8 @@ JMXEntityLabelLayer *JMXEntityLabelLayerCreate(NSString *name) {
     }];
     [[self.outlets objectAtIndex:index] removeFromSuperlayer];
     [self.outlets removeObjectAtIndex:index];
+    [self recalculateFrame];
+    [self reorderOutlets];
 }
 
 - (void)select

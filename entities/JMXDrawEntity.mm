@@ -81,11 +81,18 @@ using namespace v8;
 - (void)jsInit:(NSValue *)argsValue
 {
     v8::Arguments *args = (v8::Arguments *)[argsValue pointerValue];
-    if (args->Length() >= 2) {
+    if (args->Length() >= 2 && (*args)[0]->IsNumber() && (*args)[1]->IsNumber()) {
         NSSize newSize;
         newSize.width = (*args)[0]->ToNumber()->NumberValue();
         newSize.height = (*args)[1]->ToNumber()->NumberValue();
         [self setSize:[JMXSize sizeWithNSSize:newSize]];
+    } else if (args->Length() >= 1 && (*args)[0]->IsObject()) {
+        v8::Handle<Object>sizeObj = (*args)[0]->ToObject();
+        if (!sizeObj.IsEmpty()) {
+            JMXSize *jmxSize = (JMXSize *)sizeObj->GetPointerFromInternalField(0);
+            if (jmxSize)
+                [self setSize:jmxSize];
+        }
     }
 }
 

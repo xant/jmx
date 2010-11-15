@@ -154,7 +154,7 @@ v8::Handle<v8::Value> JMXSizeJSConstructor(const v8::Arguments& args)
     }
     Persistent<Object>jsInstance = Persistent<Object>::New(classTemplate->InstanceTemplate()->NewInstance());
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    JMXSize *size = [JMXSize sizeWithNSSize:NSMakeSize(width, height)];
+    JMXSize *size = [[JMXSize sizeWithNSSize:NSMakeSize(width, height)] retain];
     jsInstance.MakeWeak(size, JMXSizeJSDestructor);
     jsInstance->SetPointerInInternalField(0, size);
     [pool drain];

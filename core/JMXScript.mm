@@ -27,6 +27,7 @@
 #import "JMXDrawEntity.h"
 #import "JMXPoint.h"
 #import "JMXColor.h"
+#import "JMXSize.h"
 
 @class JMXEntity;
 
@@ -330,6 +331,7 @@ static v8::Handle<Value> Quit(const Arguments& args)
     ctxTemplate->Set(String::New("DrawPath"), FunctionTemplate::New(JMXDrawEntityJSConstructor));
     ctxTemplate->Set(String::New("Point"), FunctionTemplate::New(JMXPointJSConstructor));
     ctxTemplate->Set(String::New("Color"), FunctionTemplate::New(JMXColorJSConstructor));
+    ctxTemplate->Set(String::New("Size"), FunctionTemplate::New(JMXSizeJSConstructor));
 }
 
 - (id)init
@@ -467,6 +469,11 @@ v8::Handle<v8::Value>GetNumberProperty(v8::Local<v8::String> name, const v8::Acc
 }
 
 v8::Handle<v8::Value>GetStringProperty(v8::Local<v8::String> name, const v8::AccessorInfo& info)
+{
+    return GetObjectProperty(name, info);
+}
+
+v8::Handle<v8::Value>GetSizeProperty(v8::Local<v8::String> name, const v8::AccessorInfo& info)
 {
     return GetObjectProperty(name, info);
 }
@@ -753,6 +760,37 @@ void SetDoubleProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, c
         [invocation setArgument:&newValue atIndex:0];
         [invocation setSelector:selector];
         [invocation invokeWithTarget:obj];
+        [pool release];
+    }
+}
+
+void SetSizeProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::AccessorInfo& info)
+{
+    //v8::Locker lock;
+    HandleScope handleScope;
+    String::Utf8Value nameStr(name);
+    String::Utf8Value str(value->ToString());
+    if (!value->IsObject() || strcmp(*str, "[object Size]") != 0) {
+        NSLog(@"%s: Bad parameter (%s is not a Size object)", *nameStr, *str);
+        return;
+    }
+    id obj = (id)info.Holder()->GetPointerFromInternalField(0);
+    {
+        v8::Unlocker unlocker;
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        NSString *property = [NSString stringWithUTF8String:*nameStr];
+        NSString *setter = [NSString stringWithFormat:@"set%@:", 
+                            [NSString stringWithFormat:@"%@%@",[[property substringToIndex:1] capitalizedString],
+                             [property substringFromIndex:1]]
+                            ];
+        SEL selector = NSSelectorFromString(setter);
+        if (!obj || ![obj respondsToSelector:selector]) {
+            NSLog(@"Unknown setter %@", setter);
+            [pool drain];
+            return;
+        }
+        JMXSize *newSize = (JMXSize *)value->ToObject()->GetPointerFromInternalField(0);
+        [obj performSelector:selector withObject:newSize];
         [pool release];
     }
 }

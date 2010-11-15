@@ -1,7 +1,7 @@
 width = 512;
 height = 384;
 
-drawer = new DrawPath(width, height);
+drawer = new DrawPath(new Size(width, height));
 drawer.widht = width;
 drawer.height = height;
 drawer.start();
@@ -50,6 +50,8 @@ mainloop = function() {
     point5 = new Point(rand()%width, rand()%height);
     drawer.drawCircle(point, radius, fgColor, bgColor);
     drawer.drawPolygon(new Array(point1, point2, point3, point4), bgColor, fgColor);
+    drawer.rotation = rand()%360;
+    drawer.size = new Size(rand()%width, rand()%height);
     sleep(1/drawer.frequency);
 };
 

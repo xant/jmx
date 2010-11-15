@@ -525,13 +525,17 @@ static v8::Handle<Value>connect(const Arguments& args)
     HandleScope handleScope;
     JMXPin *pin = (JMXPin *)args.Holder()->GetPointerFromInternalField(0);
     if (args[0]->IsObject()) {
-        v8::Handle<Object> object = args[0]->ToObject();
-        // TODO - check if the type of object is correct
-        JMXPin *dest = (JMXPin *)object->GetPointerFromInternalField(0);
-        if (dest) {
-            NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-            ret = [pin connectToPin:dest];
-            [pool release];
+        String::Utf8Value str(args[0]->ToString());
+        if (strcmp(*str, "[object Pin]") == 0) {
+            v8::Handle<Object> object = args[0]->ToObject();
+            JMXPin *dest = (JMXPin *)object->GetPointerFromInternalField(0);
+            if (dest) {
+                NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+                ret = [pin connectToPin:dest];
+                [pool release];
+            }
+        } else {
+            NSLog(@"Pin::connect(): Bad param %s (should have been a Pin object)", *str);
         }
     }
     return handleScope.Close(v8::Boolean::New(ret));

@@ -143,21 +143,21 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     
     //if (CGLLockContext([[self openGLContext] CGLContextObj]) != kCGLNoError)
     //    NSLog(@"Could not lock CGLContext");
-    [[self openGLContext] makeCurrentContext];
-    NSRect bounds = [self bounds];
-    CIImage *image = [self.currentFrame retain];
-    if (image && ciContext) {
-        CGRect screenSizeRect = NSRectToCGRect(bounds);
-       // @synchronized([[self window] screen]) {
-        // clean the OpenGL context 
+    @synchronized(self) {
+        [[self openGLContext] makeCurrentContext];
+        NSRect bounds = [self bounds];
+        CIImage *image = [self.currentFrame retain];
+        if (image && ciContext) {
+            CGRect screenSizeRect = NSRectToCGRect(bounds);
+            // clean the OpenGL context 
             glClearColor(0.0, 0.0, 0.0, 0.0);         
             glClear(GL_COLOR_BUFFER_BIT);
             [ciContext drawImage:image inRect:screenSizeRect fromRect:screenSizeRect];
-       // }
-        [image release];
+            [image release];
+        }
+        [[self openGLContext] flushBuffer];
+        [self setNeedsDisplay:NO];
     }
-    [[self openGLContext] flushBuffer];
-    [self setNeedsDisplay:NO];
     //CGLUnlockContext([[self openGLContext] CGLContextObj]);
 }
 
@@ -218,7 +218,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 
 - (void)setSize:(NSSize)size
 {
-    //@synchronized(self) {
+    @synchronized(self) {
         NSRect actualRect = [[self window ] frame];
         // XXX - we actually don't allow setting a 0-size (for neither width nor height)
         if (size.width && size.height &&
@@ -239,7 +239,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
             [[self window] setMovable:YES]; // XXX - this shouldn't be necessary
             [self setNeedsDisplay:YES]; // triggers reshape
         }
-    //}
+    }
 }
 
 @end
@@ -270,10 +270,10 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 - (void)setSize:(JMXSize *)newSize
 {
     //@synchronized(self) {
-        if (![newSize isEqual:size]) {
-            [super setSize:newSize];
-            [view setSize:[newSize nsSize]];
-        }
+    if (![newSize isEqual:size]) {
+        [super setSize:newSize];
+        [view setSize:[newSize nsSize]];
+    }
     //}
 }
 

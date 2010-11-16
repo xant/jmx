@@ -11,6 +11,8 @@
 
 @implementation JMXScriptFile
 
+@synthesize path;
+
 + (NSArray *)supportedFileTypes
 {
     return [NSArray arrayWithObjects:@"js", @"javascript", nil];
@@ -20,54 +22,41 @@
 {
     self = [super init];
     if (self) {
-        self.frequency = [NSNumber numberWithDouble:1.0];
         path = nil;
-        active = NO;
-        //[self unregisterAllPins]; // no pins for now
     }
     return self;
+}
+
+- (void)setPath:(NSString *)newPath
+{
+    if (path)
+        [self close];
+    if ([self open:newPath])
+        path = [newPath copy];
+    else
+        NSLog(@"JMXScriptFile::setPath(): Can't open file %@", newPath);
 }
 
 - (BOOL)open:(NSString *)newPath
 {
     @synchronized(self) {
-        if (path)
-            [path release];
-        path = [newPath retain];
+        self.code = [NSString stringWithFormat:@"include('%@');", newPath];
+
         self.name = [[path componentsSeparatedByString:@"/"] lastObject];
     }
     return YES;
 }
 
-- (void)dealloc
-{
-    [self stop];
-    [super dealloc];
-}
-
 - (void)close
 {
+    if (path)
+        [path release];
+    path = nil;
+    if (self.code)
+        self.code = nil;
 }
 
-- (void)stop
+- (void)runScript
 {
-    [super stop];
 }
-
-- (void)start
-{
-    //[JMXJavaScript runScriptInBackground:[NSString stringWithFormat:@"include('%@');", path] withEntity:self];
-    [super start];
-}
-
-
-- (void)tick:(uint64_t)timeStamp
-{
-    if (!quit) {
-        [JMXScript runScript:[NSString stringWithFormat:@"include('%@');", path] withEntity:self];
-        quit = YES;
-    }
-    //[super tick:timeStamp];
-}
-
 @end

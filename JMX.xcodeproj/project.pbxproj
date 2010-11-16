@@ -78,6 +78,8 @@
 		AA3557DA12795C5500EAA2E4 /* JMXDrawEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA3557D912795C5500EAA2E4 /* JMXDrawEntity.mm */; };
 		AA7F247212907AA500BE432F /* libv8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA7F247112907AA500BE432F /* libv8.dylib */; };
 		AA8CB78E1282BB9900A17115 /* JMXScriptFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8CB78D1282BB9900A17115 /* JMXScriptFile.mm */; };
+		AACE7D04129315DE00FBDC0D /* JMXScriptEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */; };
+		AACE7D331293195600FBDC0D /* JMXV8PropertyAccessors.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACE7D321293195600FBDC0D /* JMXV8PropertyAccessors.mm */; };
 		AAD139BB128EA0DF00ECB03A /* JMXDrawPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */; };
 		AAD13C4A128EF2AB00ECB03A /* JMXColor.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD13C49128EF2AB00ECB03A /* JMXColor.mm */; };
 		AADEBFC812414F7E00A6A06D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */; };
@@ -226,6 +228,10 @@
 		AA7F247112907AA500BE432F /* libv8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libv8.dylib; path = "../v8-read-only/libv8.dylib"; sourceTree = SOURCE_ROOT; };
 		AA8CB78C1282BB9800A17115 /* JMXScriptFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXScriptFile.h; sourceTree = "<group>"; };
 		AA8CB78D1282BB9900A17115 /* JMXScriptFile.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScriptFile.mm; sourceTree = "<group>"; };
+		AACE7D02129315DE00FBDC0D /* JMXScriptEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXScriptEntity.h; sourceTree = "<group>"; };
+		AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScriptEntity.mm; sourceTree = "<group>"; };
+		AACE7D311293195600FBDC0D /* JMXV8PropertyAccessors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXV8PropertyAccessors.h; sourceTree = "<group>"; };
+		AACE7D321293195600FBDC0D /* JMXV8PropertyAccessors.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXV8PropertyAccessors.mm; sourceTree = "<group>"; };
 		AAD139B9128EA0DF00ECB03A /* JMXDrawPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXDrawPath.h; sourceTree = "<group>"; };
 		AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXDrawPath.mm; sourceTree = "<group>"; };
 		AAD13C48128EF2AB00ECB03A /* JMXColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXColor.h; sourceTree = "<group>"; };
@@ -486,6 +492,11 @@
 				825C31301275ADD6006376B8 /* JMXEntity.mm */,
 				825C31441275ADD7006376B8 /* JMXThreadedEntity.h */,
 				825C31451275ADD7006376B8 /* JMXThreadedEntity.mm */,
+				AAFAADA1129097A200949028 /* JMXV8.h */,
+				AACE7D311293195600FBDC0D /* JMXV8PropertyAccessors.h */,
+				AACE7D321293195600FBDC0D /* JMXV8PropertyAccessors.mm */,
+				AA3557E612795D0A00EAA2E4 /* JMXScript.h */,
+				AAFAAD87129095EB00949028 /* JMXScript.mm */,
 				825C31311275ADD6006376B8 /* JMXFileRead.h */,
 				825C31321275ADD6006376B8 /* JMXInputPin.h */,
 				825C31331275ADD6006376B8 /* JMXInputPin.m */,
@@ -513,9 +524,6 @@
 				AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */,
 				82AD7F6E1289F3C300C85EB1 /* JMXOpenGLDraw.h */,
 				82AD7F6F1289F3C300C85EB1 /* JMXOpenGLDraw.mm */,
-				AAFAADA1129097A200949028 /* JMXV8.h */,
-				AA3557E612795D0A00EAA2E4 /* JMXScript.h */,
-				AAFAAD87129095EB00949028 /* JMXScript.mm */,
 			);
 			name = Core;
 			path = core;
@@ -544,6 +552,8 @@
 				AA3557D912795C5500EAA2E4 /* JMXDrawEntity.mm */,
 				AA8CB78C1282BB9800A17115 /* JMXScriptFile.h */,
 				AA8CB78D1282BB9900A17115 /* JMXScriptFile.mm */,
+				AACE7D02129315DE00FBDC0D /* JMXScriptEntity.h */,
+				AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */,
 			);
 			name = Entities;
 			path = entities;
@@ -695,6 +705,8 @@
 				AAFAAD88129095EB00949028 /* JMXScript.mm in Sources */,
 				82A2206D129091910002738B /* JMXBoardViewController.m in Sources */,
 				82A220CA129098A60002738B /* JMXWindowController.m in Sources */,
+				AACE7D04129315DE00FBDC0D /* JMXScriptEntity.mm in Sources */,
+				AACE7D331293195600FBDC0D /* JMXV8PropertyAccessors.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

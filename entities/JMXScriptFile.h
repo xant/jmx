@@ -8,13 +8,13 @@
 
 #import <Cocoa/Cocoa.h>
 #import "JMXFileRead.h"
-#define __JMXV8__ 1
-#import "JMXThreadedEntity.h"
+#import "JMXScriptEntity.h"
 
 
-@interface JMXScriptFile : JMXThreadedEntity <JMXFileRead> {
+@interface JMXScriptFile : JMXScriptEntity <JMXFileRead> {
 @private
     NSString *path;
 }
 
+@property (copy) NSString *path;
 @end

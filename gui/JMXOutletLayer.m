@@ -31,7 +31,7 @@
 {
     if ((self = [super init]) != nil) {
         CGColorRef backgroundColor_ = CGColorCreateGenericRGB(0.0f, 0.0f, 0.0f, 0.0f);
-        self.backgroundColor = NULL;
+        self.backgroundColor = nil;
         self.borderWidth = 0.0f;
         self.borderColor = backgroundColor_;
         CFRelease(backgroundColor_);
@@ -42,9 +42,9 @@
         JMXOutletLabelLayer *labelLayer = [[[JMXOutletLabelLayer alloc] init] autorelease];
         labelLayer.string = thePin.name;
         labelLayer.borderWidth = 0.0f;
-        labelLayer.backgroundColor = NULL;
+        labelLayer.backgroundColor = nil;
         labelLayer.fontSize = ENTITY_OUTLET_FONT_SIZE;
-
+        
         CGPoint thePinPoint;
 
         if (isOutput) {
@@ -59,8 +59,8 @@
                                           ENTITY_OUTLET_LABEL_WIDTH, self.frame.size.height);
         }
         self.pin = [[[JMXPinLayer alloc] initWithPin:thePin andPoint:NSPointFromCGPoint(thePinPoint) outlet:self] autorelease];
-        [self addSublayer:pin];
 		[self addSublayer:labelLayer];
+        [self addSublayer:pin];
         self.output = isOutput;
     }
     return self;

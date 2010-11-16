@@ -122,7 +122,7 @@ JMXEntityLabelLayer *JMXEntityLabelLayerCreate(NSString *name) {
     CFRelease(shadowColor);
 
     [self addSublayer:JMXEntityLabelLayerCreate(self.entity.name)];
-
+/*
     for (NSString *thePinName in [self.entity inputPins]) {
         JMXOutletLayer *outlet = JMXInputOutletLayerCreate([self inputPinWithName:thePinName]);
         [self addSublayer:outlet];
@@ -134,9 +134,8 @@ JMXEntityLabelLayer *JMXEntityLabelLayerCreate(NSString *name) {
         [self addSublayer:outlet];
         [self.outlets addObject:outlet];
     }
-
     [self recalculateFrame];
-    [self reorderOutlets];
+ */
 }
 
 - (void)recalculateFrame
@@ -176,7 +175,7 @@ JMXEntityLabelLayer *JMXEntityLabelLayerCreate(NSString *name) {
 
 - (void)inputPinAdded:(NSNotification *)notification
 {
-    JMXOutletLayer *outlet = JMXInputOutletLayerCreate([self inputPinWithName:[[notification userInfo] objectForKey:@"pinName"]]);
+    JMXOutletLayer *outlet = JMXInputOutletLayerCreate([[notification userInfo] objectForKey:@"pin"]);
     [self addSublayer:outlet];
     [self.inlets addObject:outlet];
     [self recalculateFrame];
@@ -197,7 +196,7 @@ JMXEntityLabelLayer *JMXEntityLabelLayerCreate(NSString *name) {
 
 - (void)outputPinAdded:(NSNotification *)notification
 {
-    JMXOutletLayer *outlet = JMXOutputOutletLayerCreate([self outputPinWithName:[[notification userInfo] objectForKey:@"pinName"]]);
+    JMXOutletLayer *outlet = JMXOutputOutletLayerCreate([[notification userInfo] objectForKey:@"pin"]);
     [self addSublayer:outlet];
     [self.outlets addObject:outlet];
     [self recalculateFrame];

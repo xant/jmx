@@ -47,6 +47,28 @@ using namespace v8;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXEntityWasDestroyed" object:self];
 }
 
+- (void)notifyPinAdded:(JMXPin *)pin
+{
+    NSString *notificationName = (pin.direction == kJMXInputPin)
+                               ? @"JMXEntityInputPinAdded"
+                               : @"JMXEntityOutputPinAdded";
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:pin, @"pin", pin.name, @"pinName", nil];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:notificationName
+                                                        object:self
+                                                      userInfo:userInfo];
+}
+
+- (void)notifyPinRemoved:(JMXPin *)pin
+{
+    NSString *notificationName = (pin.direction == kJMXInputPin)
+                               ? @"JMXEntityInputPinRemoved"
+                               : @"JMXEntityOutputPinRemoved";
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:pin, @"pin", pin.name, @"pinName", nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:notificationName 
+                                                        object:self
+                                                      userInfo:userInfo];
+}
 
 - (id)init
 {
@@ -96,13 +118,6 @@ using namespace v8;
     return [self registerInputPin:pinName withType:pinType andSelector:selector userData:userData allowedValues:nil initialValue:nil];
 }
 
-- (void)inputPinAdded:(NSDictionary *)userInfo
-{
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXEntityInputPinAdded"
-                                                        object:self
-                                                      userInfo:userInfo];
-}
-
 - (JMXInputPin *)registerInputPin:(NSString *)pinName 
                          withType:(JMXPinType)pinType
                       andSelector:(NSString *)selector
@@ -120,9 +135,8 @@ using namespace v8;
                                 initialValue:(id)value]
                   forKey:pinName];
     JMXInputPin *newPin = [inputPins objectForKey:pinName];
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:newPin, @"pin", pinName, @"pinName", nil];
     // We need notifications to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
-    [self performSelectorOnMainThread:@selector(inputPinAdded:) withObject:userInfo waitUntilDone:NO];
+    [self performSelectorOnMainThread:@selector(notifyPinAdded:) withObject:newPin waitUntilDone:NO];
     return newPin;
 }
 
@@ -161,13 +175,6 @@ using namespace v8;
     return [self registerOutputPin:pinName withType:pinType andSelector:selector userData:userData allowedValues:nil initialValue:nil];
 }
 
-- (void)outputPinAdded:(NSDictionary *)userInfo
-{
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXEntityOutputPinAdded" 
-                                                        object:self
-                                                      userInfo:userInfo];
-}
-
 - (JMXOutputPin *)registerOutputPin:(NSString *)pinName
                            withType:(JMXPinType)pinType
                         andSelector:(NSString *)selector
@@ -185,9 +192,8 @@ using namespace v8;
                                  initialValue:(id)value]
                    forKey:pinName];
     JMXOutputPin *newPin = [outputPins objectForKey:pinName];
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:newPin, @"pin", pinName, @"pinName", nil];
     // We need notifications to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
-    [self performSelectorOnMainThread:@selector(outputPinAdded:) withObject:userInfo waitUntilDone:NO];
+    [self performSelectorOnMainThread:@selector(notifyPinAdded:) withObject:newPin waitUntilDone:NO];
     return newPin;
 }
 
@@ -204,6 +210,22 @@ using namespace v8;
                           userData:nil
                      allowedValues:pinValues
                       initialValue:value];
+}
+
+- (void)proxyInputPin:(JMXInputPin *)pin
+{
+    [inputPins setObject:pin
+                  forKey:pin.name];
+    // We need notifications to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
+    [self performSelectorOnMainThread:@selector(notifyPinAdded:) withObject:pin waitUntilDone:NO];
+}
+
+- (void)proxyOutputPin:(JMXOutputPin *)pin
+{
+    [outputPins setObject:pin
+                   forKey:pin.name];
+    // We need notifications to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
+    [self performSelectorOnMainThread:@selector(notifyPinAdded:) withObject:pin waitUntilDone:NO];
 }
 
 - (NSArray *)inputPins
@@ -234,13 +256,6 @@ using namespace v8;
     return [outputPins objectForKey:pinName];
 }
 
-- (void)inputPinRemoved:(NSDictionary *)userInfo
-{
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXEntityInputPinRemoved"
-                                                        object:self
-                                                      userInfo:userInfo];
-}
-
 - (void)unregisterInputPin:(NSString *)pinName
 {
     JMXInputPin *pin = [[inputPins objectForKey:pinName] retain];
@@ -248,9 +263,8 @@ using namespace v8;
         [inputPins removeObjectForKey:pinName];
         [pin disconnectAllPins];
     }
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:pin, @"pin", pinName, @"pinName", nil];
     // We need notifications to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
-    [self performSelectorOnMainThread:@selector(inputPinRemoved:) withObject:userInfo waitUntilDone:NO];
+    [self performSelectorOnMainThread:@selector(notifyPinRemoved:) withObject:pin waitUntilDone:NO];
     [pin release];
 }
 
@@ -268,9 +282,8 @@ using namespace v8;
         [outputPins removeObjectForKey:pinName];
         [pin disconnectAllPins];
     }
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:pin, @"pin", pinName, @"pinName", nil];
     // We need notifications to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
-    [self performSelectorOnMainThread:@selector(outputPinRemoved:) withObject:userInfo waitUntilDone:NO];
+    [self performSelectorOnMainThread:@selector(notifyPinRemoved:) withObject:pin waitUntilDone:NO];
     // we can now release the pin
     [pin release];
 }
@@ -346,24 +359,6 @@ using namespace v8;
               [value boolValue])
     ? YES
     : NO;
-}
-
-- (void)proxyInputPin:(JMXInputPin *)pin
-{
-    [inputPins setObject:pin
-                   forKey:pin.name];
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:pin, @"pin", pin.name, @"pinName", nil];
-    // We need notifications to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
-    [self performSelectorOnMainThread:@selector(inputPinAdded:) withObject:userInfo waitUntilDone:NO];
-}
-
-- (void)proxyOutputPin:(JMXOutputPin *)pin
-{
-    [outputPins setObject:pin
-                   forKey:pin.name];
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:pin, @"pin", pin.name, @"pinName", nil];
-    // We need notifications to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
-    [self performSelectorOnMainThread:@selector(outputPinAdded:) withObject:userInfo waitUntilDone:NO];
 }
 
 #pragma mark V8

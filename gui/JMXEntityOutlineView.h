@@ -18,7 +18,7 @@
     NSMutableDictionary *dataCells;
 }
 
-@property (assign) JMXEntity *entity;
+@property (assign) IBOutlet JMXEntity *entity;
 
 - (void)setUpPins;
 

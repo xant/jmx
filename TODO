@@ -1,11 +1,12 @@
-- build a notification framework to be used in the javascript context
-- use an NSOperationQueue for notifications in the javascript context
+- make a website
+- parse filter attributes to determine 'mandatory' parameters (and avoid crashes)
+- implement an HTTP (evented i/o) framework exposed to V8
+- allow to move multiple slected items all together
+- improve JMXTextRenderer (it now uses CVPixelBuffers ... should use a CGLayer instead)
 - allow to create input pins (registering receiver-callbacks) from javascript
 - allow to provide input values (of any supported type) through the GUI
-- parse filter attributes to determine 'mandatory' parameters (and avoid crashes)
-- give as much space as possible on the board (reducing entity/font size ?)
-- improve VJXAudioMixer
-- allow to group 'diagrams' and to access such groups as a sort of 'macro' in other diagrams
-- allow to move multiple slected items all together
 - implement exporters (file save and streaming)
-- make a website
+- improve (and finish implementing) VJXAudioMixer
+- allow to group 'diagrams' from the GUI and to access such groups as a sort of 'macro' in other diagrams
+- build a notification framework to be used in the javascript context
+- use an NSOperationQueue for notifications in the javascript context

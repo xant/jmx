@@ -10,3 +10,8 @@
 - allow to group 'diagrams' from the GUI and to access such groups as a sort of 'macro' in other diagrams
 - build a notification framework to be used in the javascript context
 - use an NSOperationQueue for notifications in the javascript context
+- write a kernel extension to export video mixers as video-input-devices
+- write a kernel extension to export audio mixers as audio-input/output-devices
+- import openCV to implement core entities for image-analysis
+- try getting rid of NSTimers and check if there is any other framework/approach 
+  to use as clock source (probably something coreaudio/corevideo related)

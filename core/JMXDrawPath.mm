@@ -157,7 +157,7 @@
         UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
         CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
 
-        CGContextSaveGState(context);
+        //CGContextSaveGState(context);
         CGContextSetRGBStrokeColor (context,
                                       [strokeColor redComponent], [strokeColor greenComponent],
                                     [strokeColor blueComponent], [strokeColor alphaComponent]
@@ -176,7 +176,7 @@
             CGContextAddLineToPoint(context, origin.x, origin.y);
         }
         CGContextClosePath(context);
-        CGContextRestoreGState(context);
+        //CGContextRestoreGState(context);
     } else {
         // TODO - Error messages
     }

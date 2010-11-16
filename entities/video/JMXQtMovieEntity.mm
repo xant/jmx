@@ -253,7 +253,7 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
                                        [NSNumber numberWithBool:YES],
                                        QTMovieFrameImageSessionMode,
 #endif
-                                       nil];
+                                       nil]; 
                 pixelBuffer = (CVPixelBufferRef)[movie frameImageAtTime:now 
                                                          withAttributes:attrs error:&error];
 #else

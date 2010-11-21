@@ -64,7 +64,10 @@
         // Skip this pin if it's already connected.
         if (!inputPin.multiple && inputPin.connected)
             continue;
-
+        // Skip image and audio pins
+        if (inputPin.type == kJMXImagePin || inputPin.type == kJMXAudioPin)
+            continue;
+        
         JMXOutputPin *outputPin = [JMXPin pinWithName:inputPin.name andType:inputPin.type forDirection:kJMXOutputPin ownedBy:nil withSignal:nil];
         [outputPin connectToPin:inputPin];
         [virtualOutputPins setObject:outputPin forKey:outputPin.name];

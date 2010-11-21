@@ -1,11 +1,17 @@
 - make a website
+- improve gui performances
+- merge input and properties tabs in the inspector panel
+  (input values should be provided from the input panel , having 2 panels enumerating the same pins is redundant)
+- allow to change entity names from the GUI (it used to work ... but not anymore)
+- allow to provide input values (of any supported type) through the GUI
+  * string, size and point are missing and REALLY important *
+- sliders must send values continuously
 - parse filter attributes to determine 'mandatory' parameters (and avoid crashes)
 - input controllers (at least keyboard and mouse ... but we need to support also midi/osc controllers)
 - implement an HTTP (evented i/o) framework exposed to V8
 - allow to move multiple slected items all together
 - improve JMXTextRenderer (it now uses CVPixelBuffers ... should use a CGLayer instead)
 - allow to create input pins (registering receiver-callbacks) from javascript
-- allow to provide input values (of any supported type) through the GUI
 - implement exporters (file save and streaming)
 - improve (and finish implementing) VJXAudioMixer
 - allow to group 'diagrams' from the GUI and to access such groups as a sort of 'macro' in other diagrams

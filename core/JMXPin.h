@@ -61,7 +61,7 @@ typedef enum {
     kJMXAnyPin
 } JMXPinDirection;
 
-//#define kJMXPinDataBufferCount 2
+#define kJMXPinDataBufferMask 0x03
 
 @interface JMXPin : NSObject <NSCopying, JMXV8> {
 @protected
@@ -73,7 +73,7 @@ typedef enum {
     BOOL                sendNotifications; // default YES
     id                  currentSender;
     BOOL                connected;
-    id                  dataBuffer[2]; // double buffer synchronized for writers
+    id                  dataBuffer[kJMXPinDataBufferMask+1]; // double buffer synchronized for writers
                                        // but lockless for readers
     UInt32              rOffset;
     UInt32              wOffset;

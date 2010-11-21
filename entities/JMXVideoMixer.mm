@@ -73,6 +73,7 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXVideoMixer);
                 if (ciBlendFilter)
                     [ciBlendFilter release];
                 ciBlendFilter = [newBlendFilter retain];
+                [ciBlendFilter setDefaults];
                 blendFilter = [newBlendFilter copy];
             }
         }
@@ -81,42 +82,26 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXVideoMixer);
 
 - (void)tick:(uint64_t)timeStamp
 {
-    NSArray *frames = [imageInputPin readProducers];
     @synchronized(self) {
+        NSArray *frames = [imageInputPin readProducers];
         if (currentFrame) {
             [currentFrame release];
             currentFrame = nil;
         }
-        for (CIImage *frame in frames) {
-#if 0
-            if ([producer isKindOfClass:[JMXLayer class]]) {
-                JMXLayer *layer = (JMXLayer *)producer;
-                if (layer.size.width != outputSize.width || layer.size.height != outputSize.height)
-                {
-                    CIFilter *filter = [CIFilter filterWithName:@"CIAffineTransform"];
-                    CGRect imageRect = [frame extent];
-                    float xScale = outputSize.width / imageRect.size.width;
-                    float yScale = outputSize.height / imageRect.size.height;
-                    NSAffineTransform *transform = [NSAffineTransform transform];
-                    [transform scaleXBy:xScale yBy:yScale];
-                    [filter setDefaults];
-                    [filter setValue:transform forKey:@"inputTransform"];
-                    [filter setValue:frame forKey:@"inputImage"];
-                    frame = [filter valueForKey:@"outputImage"];
+        for (id data in frames) {
+            if ([data isKindOfClass:[CIImage class]]) {
+                CIImage *frame = (CIImage *)data;
+                if (!currentFrame) {
+                    currentFrame = frame;
+                } else {
+                    /*
+                    if (!ciBlendFilter)
+                        ciBlendFilter = [[CIFilter filterWithName:JMX_MIXER_DEFAULT_BLEND_FILTER] retain];
+                     */ 
+                    [ciBlendFilter setValue:frame forKey:@"inputImage"];
+                    [ciBlendFilter setValue:currentFrame forKey:@"inputBackgroundImage"];
+                    currentFrame = [ciBlendFilter valueForKey:@"outputImage"];
                 }
-            }
-#endif
-            if (!currentFrame) {
-                currentFrame = frame;
-            } else {
-                /*
-                if (!ciBlendFilter)
-                    ciBlendFilter = [[CIFilter filterWithName:JMX_MIXER_DEFAULT_BLEND_FILTER] retain];
-                 */ 
-                [ciBlendFilter setDefaults];
-                [ciBlendFilter setValue:frame forKey:@"inputImage"];
-                [ciBlendFilter setValue:currentFrame forKey:@"inputBackgroundImage"];
-                currentFrame = [ciBlendFilter valueForKey:@"outputImage"];
             }
         }
         if (currentFrame)
@@ -124,10 +109,9 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXVideoMixer);
         else // send a black frame
             currentFrame = [[CIImage imageWithColor:[CIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:1.0]] retain];
         [imageOutputPin deliverData:currentFrame fromSender:self];
-        [imageSizeOutputPin deliverData:outputSize];
     }
+    [imageSizeOutputPin deliverData:outputSize]; // XXX - do this only when size changes
 }
-
 
 #pragma mark V8
 

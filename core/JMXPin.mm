@@ -391,7 +391,7 @@ using namespace v8;
 
 - (id)readData
 {
-    id data = [dataBuffer[rOffset&0x1] retain];
+    id data = [dataBuffer[rOffset&kJMXPinDataBufferMask] retain];
     return [data autorelease];
 }
 
@@ -452,10 +452,10 @@ using namespace v8;
         //   current producer could still being executed.
         // TODO - try to get rid of this lock
         [writersLock lock]; // in single-producer mode, this lock will always be free to lock
-        dataBuffer[wOffset&0x1] = [data retain];
+        dataBuffer[wOffset&kJMXPinDataBufferMask] = [data retain];
         if (wOffset > rOffset) {
             UInt32 off = rOffset++;
-            [dataBuffer[off&0x1] release];
+            [dataBuffer[off&kJMXPinDataBufferMask] release];
         }
         wOffset++;
         [writersLock unlock];

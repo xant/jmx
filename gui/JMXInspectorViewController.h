@@ -10,7 +10,15 @@
 
 
 @interface JMXInspectorViewController : NSViewController {
-
+    NSObjectController *entityController;
+    NSViewController *inspectorPropertiesViewController;
+    NSViewController *inspectorInputViewController;
+    NSViewController *inspectorOutputViewController;
 }
+
+@property (nonatomic, retain) IBOutlet NSObjectController *entityController;
+@property (nonatomic, assign) IBOutlet NSViewController *inspectorPropertiesViewController;
+@property (nonatomic, assign) IBOutlet NSViewController *inspectorInputViewController;
+@property (nonatomic, assign) IBOutlet NSViewController *inspectorOutputViewController;
 
 @end

@@ -66,5 +66,6 @@
 - (void)setupLayer;
 - (void)updateConnectors;
 - (void)moveToPointWithOffset:(NSValue *)pointValue;
+- (void)removeFromBoard;
 
 @end

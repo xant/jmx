@@ -8,16 +8,21 @@
 
 #import "JMXBoardViewController.h"
 #import "JMXRunLoop.h"
-
+#import "JMXEntitiesController.h"
 
 @interface JMXBoardViewController ()
 
 - (JMXBoardView *)boardView;
-- (void)anEntityWasCreated:(NSNotification *)aNotification;
 - (void)boardWasModified:(NSNotification *)aNotification;
+- (void)anEntityWasCreated:(NSNotification *)aNotification;
+
+- (BOOL)mouseDownWithPinLayer:(JMXPinLayer *)aPinLayer andEvent:(NSEvent *)theEvent;
+- (BOOL)mouseDownWithConnectorLayer:(JMXConnectorLayer *)aConnectorLayer andEvent:(NSEvent *)theEvent;
+- (BOOL)mouseDownWithEntityLayer:(JMXEntityLayer *)anEntityLayer andEvent:(NSEvent *)theEvent;
+
+- (void)setHoveredPinLayer:(JMXPinLayer *)aPinLayer;
 
 @end
-
 
 @implementation JMXBoardViewController
 
@@ -26,6 +31,7 @@
 @synthesize selectedConnectorLayer;
 @synthesize entities;
 @synthesize entitiesController;
+@synthesize inspectorViewController;
 
 #pragma mark -
 #pragma mark Private
@@ -90,51 +96,74 @@
 #pragma mark -
 #pragma mark Mouse events
 
+- (BOOL)mouseDownWithEntityLayer:(JMXEntityLayer *)anEntityLayer andEvent:(NSEvent *)theEvent
+{
+    if (anEntityLayer != nil) {
+        NSMutableArray *selectedObjects = [[entitiesController selectedObjects] mutableCopy];
+        if ([theEvent modifierFlags] & NSCommandKeyMask) {
+            if ([selectedObjects containsObject:anEntityLayer]) {
+                [selectedObjects removeObject:anEntityLayer];
+                [entitiesController setSelectedObjects:selectedObjects];
+            }
+            else {
+                [selectedObjects addObject:anEntityLayer];
+                [entitiesController setSelectedObjects:selectedObjects];
+            }
+        }
+        else if (([selectedObjects count] == 1 && [selectedObjects objectAtIndex:0] != anEntityLayer) || [selectedObjects count] == 0) {
+            [entitiesController setSelectedObjects:[NSArray arrayWithObject:anEntityLayer]];
+        }
+    }
+    else {
+        [entitiesController setSelectedObjects:[NSArray array]];
+        [self setSelectedConnectorLayer:nil];
+    }
+    
+    return YES;
+}
+
+- (BOOL)mouseDownWithPinLayer:(JMXPinLayer *)aPinLayer andEvent:(NSEvent *)theEvent
+{
+    if (aPinLayer != nil) {
+        CGPoint pointAtCenter = [self.boardView.layer convertPoint:[aPinLayer pointAtCenter] fromLayer:aPinLayer];
+        fakeConnectorLayer = [[[JMXConnectorLayer alloc] initWithOriginPinLayer:aPinLayer] autorelease];
+        [aPinLayer addConnector:fakeConnectorLayer];
+        fakeConnectorLayer.initialPosition = pointAtCenter;
+        fakeConnectorLayer.boardView = self.boardView;
+        [self.boardView.layer addSublayer:fakeConnectorLayer];
+        [entitiesController unselectAll];
+        return YES;
+    }
+    return NO;
+}
+
+- (BOOL)mouseDownWithConnectorLayer:(JMXConnectorLayer *)aConnectorLayer andEvent:(NSEvent *)theEvent
+{
+    if (aConnectorLayer != nil) {
+        [self setSelectedConnectorLayer:aConnectorLayer];
+        return YES;
+    }
+    return NO;
+}
+
 - (void)mouseDown:(NSEvent *)theEvent
 {
     lastDragLocation = [theEvent locationInWindow];
 
+    JMXPinLayer *aPinLayer = [self.boardView pinLayerAtPoint:lastDragLocation];
+    
+    if ([self mouseDownWithPinLayer:aPinLayer andEvent:theEvent])
+        return;
+    
+    JMXConnectorLayer *aConnectorLayer = [self.boardView connectorLayerAtPoint:lastDragLocation];
+    
+    if ([self mouseDownWithConnectorLayer:aConnectorLayer andEvent:theEvent])
+        return;
+    
     JMXEntityLayer *anEntityLayer = [self.boardView entityLayerAtPoint:lastDragLocation];
-
-    if (anEntityLayer) {
-        NSMutableArray *selectedEntities = [[entitiesController selectedObjects] mutableCopy];
-        [selectedEntities addObject:anEntityLayer];
-        [selectedEntities makeObjectsPerformSelector:@selector(select)];
-        [entitiesController setSelectedObjects:selectedEntities];
-
-        if ([selectedEntities count] == 1)
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasSelected" object:anEntityLayer];
-    }
-    else {
-        [[entitiesController selectedObjects] makeObjectsPerformSelector:@selector(unselect)];
-        [entitiesController setSelectedObjects:[NSArray array]];
-    }
-
-
-//    JMXPinLayer *aPinLayer = [self.boardView pinLayerAtPoint:locationInWindow];
-//    JMXConnectorLayer *aConnectorLayer = [self.boardView connectorLayerAtPoint:locationInWindow];
-
-//    self.selectedLayer = nil;
-//    self.selectedConnectorLayer = nil;
-//
-//    if (anEntityLayer) {
-//        [entitiesController setSelectedObjects:[NSArray arrayWithObject:anEntityLayer]];
-//        [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasSelected" object:anEntityLayer];
-//    }
-//    else if (aPinLayer) {
-//        CGPoint pointAtCenter = [self.boardView.layer convertPoint:[aPinLayer pointAtCenter] fromLayer:aPinLayer];
-//        fakeConnectorLayer = [[[JMXConnectorLayer alloc] initWithOriginPinLayer:aPinLayer] autorelease];
-//        [aPinLayer addConnector:fakeConnectorLayer];
-//        fakeConnectorLayer.initialPosition = pointAtCenter;
-//        fakeConnectorLayer.boardView = self.boardView;
-//        [self.boardView.layer addSublayer:fakeConnectorLayer];
-//    }
-//    else if (aConnectorLayer) {
-//        self.selectedConnectorLayer = aConnectorLayer;
-//    }
-//    else {
-//        [entitiesController setSelectedObjects:[NSArray array]];
-//    }
+    
+    if ([self mouseDownWithEntityLayer:anEntityLayer andEvent:theEvent])
+        return;
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent
@@ -145,37 +174,35 @@
     NSPoint offset = NSMakePoint(locationInWindow.x - lastDragLocation.x, locationInWindow.y - lastDragLocation.y);
     lastDragLocation = locationInWindow;
 
+    [CATransaction begin];
+    [CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
+
+    // If we have several layers selected, we want to drag them in the board.
     if ([selectedLayers count] > 0) {
-        [CATransaction begin];
-        [CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
         [selectedLayers makeObjectsPerformSelector:@selector(moveToPointWithOffset:) withObject:[NSValue valueWithPoint:offset]];
-        [CATransaction commit];
     }
 
-//    if (fakeConnectorLayer) {
-//        NSPoint currentLocation = [self.boardView convertPoint:[theEvent locationInWindow] fromView:nil];
-//        [fakeConnectorLayer recalculateFrameWithPoint:*(CGPoint*)&currentLocation];
-//        [fakeConnectorLayer setNeedsDisplay];
-//    }
-//
-//    else if (selectedLayer) {
-//        selectedLayer.position = [self.boardView translatePointToBoardLayer:[theEvent locationInWindow]];
-//        [selectedLayer updateConnectors];
-//    }
-//    JMXPinLayer *aPinLayer = [self.boardView pinLayerAtPoint:[theEvent locationInWindow]];
-//    if (aPinLayer && [fakeConnectorLayer.originPinLayer.pin canConnectToPin:aPinLayer.pin]) {
-//        [hoveredPinLayer unfocus];
-//        hoveredPinLayer = aPinLayer;
-//        [hoveredPinLayer focus];
-//    } else {
-//        [hoveredPinLayer unfocus];
-//        hoveredPinLayer = nil;
-//    }
+    // If we have a fake connector layer, then we want to update its coordinates.
+    if (fakeConnectorLayer) {
+        NSPoint currentLocation = [self.boardView convertPoint:[theEvent locationInWindow] fromView:nil];
+        [fakeConnectorLayer recalculateFrameWithPoint:*(CGPoint*)&currentLocation];
+    }
+    
+    JMXPinLayer *aPinLayer = [self.boardView pinLayerAtPoint:lastDragLocation];
+
+    if ([fakeConnectorLayer originCanConnectTo:aPinLayer]) {
+        [self setHoveredPinLayer:aPinLayer];
+        [fakeConnectorLayer recalculateFrameWithPoint:[self.boardView.layer convertPoint:[aPinLayer pointAtCenter] fromLayer:aPinLayer]];
+    }
+    else 
+        [self setHoveredPinLayer:nil];
+        
+
+    [CATransaction commit];
 }
 
 - (void)mouseUp:(NSEvent *)theEvent
 {
-
     lastDragLocation = NSZeroPoint;
 
     if (fakeConnectorLayer) {
@@ -189,12 +216,18 @@
         fakeConnectorLayer = nil;
     }
 
-    [hoveredPinLayer unfocus];
-    hoveredPinLayer = nil;
+    [self setHoveredPinLayer:nil];
 }
 
 #pragma mark -
 #pragma mark Getters and setters
+
+- (void)setHoveredPinLayer:(JMXPinLayer *)aPinLayer
+{
+    [hoveredPinLayer unfocus];
+    hoveredPinLayer = aPinLayer;
+    [hoveredPinLayer focus];
+}
 
 - (void)setSelectedLayer:(JMXEntityLayer *)aLayer
 {
@@ -237,15 +270,15 @@
 
 - (IBAction)removeSelectedEntity:(id)sender
 {
-    JMXEntityLayer *layer = selectedLayer;
-    if (layer) {
-        [self setSelectedLayer:nil];
-        [layer removeFromSuperlayer];
-        [entities removeObject:layer];
+    NSArray *selectedObjects = [entitiesController selectedObjects];
+    
+    if ([selectedObjects count]) {
+        [selectedObjects makeObjectsPerformSelector:@selector(removeFromBoard)];
+        [entitiesController removeObjects:selectedObjects];
     }
 
     if (selectedConnectorLayer) {
-        [selectedConnectorLayer.originPinLayer.pin disconnectFromPin:selectedConnectorLayer.destinationPinLayer.pin];
+        [selectedConnectorLayer disconnect];
         self.selectedConnectorLayer = nil;
     }
 }
@@ -256,7 +289,7 @@
 - (void)anEntityWasCreated:(NSNotification *)aNotification
 {
     JMXEntity *anEntity = [aNotification object];
-    JMXEntityLayer *entityLayer = [[[JMXEntityLayer alloc] initWithEntity:anEntity board:self.boardView] autorelease];
+    JMXEntityLayer *entityLayer = [[[JMXEntityLayer alloc] initWithEntity:anEntity board:[self boardView]] autorelease];
 
     NSValue *pointValue = [[aNotification userInfo] valueForKey:@"origin"];
 
@@ -264,10 +297,7 @@
         entityLayer.position = [self.boardView translatePointToBoardLayer:[pointValue pointValue]];
 
     [entitiesController addObject:entityLayer];
-    [entitiesController setSelectedObjects:[NSArray arrayWithObject:entityLayer]];
     [self.boardView.layer addSublayer:entityLayer];
-
-    // self.selectedLayer = theEntity;
 
     if ([anEntity conformsToProtocol:@protocol(JMXRunLoop)])
         [anEntity performSelector:@selector(start)];
@@ -275,6 +305,7 @@
 
 - (void)boardWasModified:(NSNotification *)aNotification
 {
-    [self.boardView.layer setNeedsLayout];
+    
 }
+
 @end

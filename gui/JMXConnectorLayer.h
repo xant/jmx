@@ -69,4 +69,6 @@ enum Direction {
 - (void)select;
 - (void)unselect;
 
+- (BOOL)originCanConnectTo:(JMXPinLayer *)aPinLayer;
+
 @end

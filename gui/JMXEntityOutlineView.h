@@ -11,6 +11,9 @@
 
 
 @interface JMXEntityOutlineView : NSOutlineView <NSOutlineViewDelegate, NSOutlineViewDataSource> {
+
+    NSViewController *viewController;
+
     JMXEntity *entity;
 
     NSMutableDictionary *virtualOutputPins;
@@ -19,6 +22,7 @@
 }
 
 @property (assign) IBOutlet JMXEntity *entity;
+@property (nonatomic, assign) IBOutlet NSViewController *viewController;
 
 - (void)setUpPins;
 

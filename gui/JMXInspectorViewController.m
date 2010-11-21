@@ -11,4 +11,20 @@
 
 @implementation JMXInspectorViewController
 
+@synthesize entityController;
+@synthesize inspectorPropertiesViewController;
+@synthesize inspectorInputViewController;
+@synthesize inspectorOutputViewController;
+
+#pragma mark -
+#pragma mark NSViewController
+
+- (void)setView:(NSView *)aView
+{
+    [super setView:aView];
+    if (aView) {
+        [aView setNextResponder:self];
+    }
+}
+
 @end

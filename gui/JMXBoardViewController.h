@@ -10,10 +10,12 @@
 #import "JMXDocument.h"
 #import "JMXConnectorLayer.h"
 #import "JMXPinLayer.h"
+#import "JMXInspectorViewController.h"
 
 @class JMXConnectorLayer;
 @class JMXPinLayer;
 @class JMXDocument;
+@class JMXEntitiesController;
 
 @interface JMXBoardViewController : NSViewController {
 	JMXDocument *document;
@@ -24,7 +26,8 @@
     NSMutableArray *selected;
     NSMutableArray *entities;
 
-    NSArrayController *entitiesController;
+    JMXInspectorViewController *inspectorViewController;
+    JMXEntitiesController *entitiesController;
     NSPoint lastDragLocation;
 }
 
@@ -33,7 +36,7 @@
 @property (nonatomic, assign) JMXConnectorLayer *selectedConnectorLayer;
 @property (nonatomic, retain) IBOutlet NSMutableArray *entities;
 @property (nonatomic, retain) IBOutlet NSArrayController *entitiesController;
-
+@property (nonatomic, retain) IBOutlet JMXInspectorViewController *inspectorViewController;
 
 #pragma mark -
 #pragma mark IBActions

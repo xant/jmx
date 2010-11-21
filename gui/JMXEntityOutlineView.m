@@ -13,6 +13,7 @@
 @implementation JMXEntityOutlineView
 
 @synthesize entity;
+@synthesize viewController;
 
 - (id)initWithFrame:(NSRect)frameRect
 {
@@ -176,7 +177,7 @@
 			//
 			// http://lists.apple.com/archives/cocoa-dev/2001/Nov/msg01285.html
 			//
-			
+
 			[cell setControlSize:NSSmallControlSize];
 			[cell setFont:[NSFont labelFontOfSize:[NSFont smallSystemFontSize]]];
 		}

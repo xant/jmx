@@ -116,6 +116,7 @@
 
 - (void)anEntityWasRemoved:(NSNotification *)aNotification
 {
+    NSLog(@"%s", _cmd);
     JMXEntity *entity = [aNotification object];
     [entitiesPosition removeObjectForKey:entity];
     [entities removeObject:entity];

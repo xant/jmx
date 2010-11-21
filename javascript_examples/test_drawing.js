@@ -2,8 +2,6 @@ width = 512;
 height = 384;
 
 drawer = new DrawPath(width, height);
-drawer.widht = width;
-drawer.height = height;
 drawer.start();
 
 // Uncommend the following block if you want a debug video-output
@@ -16,12 +14,10 @@ drawer.outputPin('frame').connect(screen.inputPin('frame'));
 */
 
 // UNCOMMENT TO ACTIVATE A VIDEO FILTER
-/*
-filter = new VideoFilter("CIZoomBlur");
-drawer.outputPin('frame').connect(filter.inputPin('frame'));
-filter.outputPin('frame').connect(screen.inputPin('frame'));
-filter.outputPin('frame').export();
-*/
+//filter = new VideoFilter("CIZoomBlur");
+//drawer.outputPin('frame').connect(filter.inputPin('frame'));
+//filter.outputPin('frame').connect(screen.inputPin('frame'));
+//filter.outputPin('frame').export();
 
 // COMMENT THE FOLLOWING TWO LINES IF FILTER HAS BEEN ACTIVATED
 drawer.outputPin('frame').export();

@@ -339,7 +339,7 @@ using namespace v8;
 
 - (NSString *)description
 {
-    NSString *ownerName;
+    NSString *ownerName = @"";
     if ([owner respondsToSelector:@selector(name)])
         ownerName = [owner performSelector:@selector(name)];
     return [NSString stringWithFormat:@"%@:%@", ownerName, name];

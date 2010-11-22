@@ -15,6 +15,7 @@
 @synthesize inspectorPanel;
 @synthesize libraryView;
 @synthesize boardViewController;
+@synthesize entityController;
 
 #pragma mark -
 #pragma mark NSWindowController

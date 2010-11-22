@@ -7,19 +7,21 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "JMXEntityInspectorPanel.h"
 
 @interface JMXWindowController : NSWindowController {
 	NSView *inspectorPanel;
 	NSView *libraryView;	
 	NSSplitView *documentSplitView;
 	NSViewController *boardViewController;
+    
+    NSObjectController *entityController;
 }
 
 @property (nonatomic, assign) IBOutlet NSView *inspectorPanel;
 @property (nonatomic, assign) IBOutlet NSView *libraryView;
 @property (nonatomic, assign) IBOutlet NSSplitView *documentSplitView;
 @property (nonatomic, retain) IBOutlet NSViewController *boardViewController;
+@property (nonatomic, retain) IBOutlet NSObjectController *entityController;
 
 #pragma mark -
 #pragma mark Interface Builder actions

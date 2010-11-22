@@ -25,7 +25,6 @@
 #import "JMXEntityLayer.h"
 #import "JMXConnectorLayer.h"
 #import "JMXPinLayer.h"
-#import "JMXEntityInspectorPanel.h"
 #import "JMXBoardSelection.h"
 #import "JMXBoardViewController.h"
 #import "JMXDocument.h"
@@ -34,11 +33,11 @@
 @class JMXPinLayer;
 @class JMXConnectorLayer;
 @class JMXBoardViewController;
+@class JMXEntityLayer;
 
 @interface JMXBoardView : NSView {
     CGPoint lastDragLocation;
     JMXDocument *document;
-    IBOutlet JMXEntityInspectorPanel *inspectorPanel;
 	JMXBoardViewController *boardViewController;
 }
 

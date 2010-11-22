@@ -68,4 +68,8 @@
 - (void)moveToPointWithOffset:(NSValue *)pointValue;
 - (void)removeFromBoard;
 
+- (NSMutableDictionary *)properties;
+
+- (NSArray *)inputPinNames;
+
 @end

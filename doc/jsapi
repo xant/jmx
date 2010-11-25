@@ -9,17 +9,17 @@ Legend:
 ------------------------------------
 
 
-Point
+* Point
 + Point(x, y)
 - x
 - y
 
-Size
+* Size
 + Size(width, height)
 - width
 - heigth
 
-Rect
+* Rect
 + Rect(x, y, widht, height)
 - x
 - y
@@ -50,6 +50,7 @@ Rect
         < alpha      : number
         > frame      : number
         > frameSize  : size
+
         * Movie
             + Movie(path)
             + open(path)

@@ -1,4 +1,7 @@
 - make a website
+- fix the hit-test 
+  * apart working a bit badly, when there are multiple connections for the same "input" pin,
+    it always takes the first connector instead of selecting the clicked one 
 - improve gui performances
 - merge input and properties tabs in the inspector panel
   (input values should be provided from the input panel , having 2 panels enumerating the same pins is redundant)

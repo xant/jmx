@@ -89,20 +89,17 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXVideoMixer);
             currentFrame = nil;
         }
         for (id data in frames) {
-            if ([data isKindOfClass:[CIImage class]]) {
+            //if ([data isKindOfClass:[CIImage class]]) {
                 CIImage *frame = (CIImage *)data;
                 if (!currentFrame) {
                     currentFrame = frame;
                 } else {
-                    /*
-                    if (!ciBlendFilter)
-                        ciBlendFilter = [[CIFilter filterWithName:JMX_MIXER_DEFAULT_BLEND_FILTER] retain];
-                     */ 
+
                     [ciBlendFilter setValue:frame forKey:@"inputImage"];
                     [ciBlendFilter setValue:currentFrame forKey:@"inputBackgroundImage"];
                     currentFrame = [ciBlendFilter valueForKey:@"outputImage"];
                 }
-            }
+            //}
         }
         if (currentFrame)
             [currentFrame retain];

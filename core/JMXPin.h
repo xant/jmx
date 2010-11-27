@@ -61,7 +61,11 @@ typedef enum {
     kJMXAnyPin
 } JMXPinDirection;
 
-#define kJMXPinDataBufferMask 0x03
+#define kJMXPinDataBufferMask 0x01 // double buffered
+                                   // XXX - if chosing a different mask, note that it must
+                                   //       allow only low order bits and withouth 'holes'
+                                   //       so for instance 00000111 is a good mask
+                                   //       while 00010111 is a wrong mask 
 
 @interface JMXPin : NSObject <NSCopying, JMXV8> {
 @protected
@@ -84,7 +88,7 @@ typedef enum {
     id                  ownerUserData; // weak reference (depends on the owner)
     NSString            *ownerSignal; // weak reference (depends on the owner)
     NSMutableArray      *allowedValues;
-    NSRecursiveLock     *writersLock;
+    NSRecursiveLock     *dataLock;
 }
 
 @property (readonly)  JMXPinType type;

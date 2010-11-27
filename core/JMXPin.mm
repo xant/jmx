@@ -184,6 +184,7 @@ using namespace v8;
         ownerSignal = pinSignal;
         ownerUserData = userData;
         sendNotifications = YES;
+        memset(dataBuffer, 0, sizeof(dataBuffer));
         if (pinValues)
             allowedValues = [[NSMutableArray arrayWithArray:pinValues] retain];
         rOffset = wOffset = 0;
@@ -191,7 +192,7 @@ using namespace v8;
             currentSender = owner;
             dataBuffer[wOffset++] = [value retain];
         }
-        writersLock = [[NSRecursiveLock alloc] init];
+        dataLock = [[NSRecursiveLock alloc] init];
     }
     return self;
 }
@@ -278,7 +279,7 @@ using namespace v8;
     [name release];
     if (allowedValues)
         [allowedValues release];
-    [writersLock release];
+    [dataLock release];
     [super dealloc];
 }
 
@@ -391,7 +392,9 @@ using namespace v8;
 
 - (id)readData
 {
+    [dataLock lock];
     id data = [dataBuffer[rOffset&kJMXPinDataBufferMask] retain];
+    [dataLock unlock];
     return [data autorelease];
 }
 
@@ -450,15 +453,15 @@ using namespace v8;
         // - an input pin which allows multiple producers (like mixers)
         // - when the user connect a new producer a signal is sent, and the signal from
         //   current producer could still being executed.
-        // TODO - try to get rid of this lock
-        [writersLock lock]; // in single-producer mode, this lock will always be free to lock
-        dataBuffer[wOffset&kJMXPinDataBufferMask] = [data retain];
-        if (wOffset > rOffset) {
-            UInt32 off = rOffset++;
-            [dataBuffer[off&kJMXPinDataBufferMask] release];
+        [dataLock lock]; // in single-producer mode, this lock will always be free to lock
+        UInt32 wOff = wOffset&kJMXPinDataBufferMask;
+        if (rOffset != wOffset) {
+            UInt32 rOff = rOffset++&kJMXPinDataBufferMask;
+            [dataBuffer[rOff] release];
         }
+        dataBuffer[wOff] = [data retain];
         wOffset++;
-        [writersLock unlock];
+        [dataLock unlock];
 
         // XXX - sender is not protected by a lock
         if (sender)

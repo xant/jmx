@@ -37,8 +37,30 @@ using namespace std;
 typedef std::map<id, v8::Persistent<v8::Object> > InstMap;
 typedef std::pair< JMXScript *, Persistent<Context> >CtxPair;
 typedef std::map< JMXScript *, Persistent<Context> > CtxMap;
+
 CtxMap contextes;
 
+typedef struct __JMXV8ClassDescriptor {
+    const char *className;
+    const char *jsClassName;
+    v8::Handle<Value> (*jsConstructor)(const Arguments& args);
+} JMXV8ClassDescriptor;
+
+static JMXV8ClassDescriptor mappedClasses[] = {
+    { "JMXOpenGLScreen",          "VideoOutput",   JMXOpenGLScreenJSConstructor },
+    { "JMXQtVideoCaptureEntity",  "VideoCapture",  JMXQtVideoCaptureEntityJSConstructor },
+    { "JMXQtMovieEntity",         "Movie",         JMXQtMovieEntityJSConstructor },
+    { "JMXVideoMixer",            "VideoMixer",    JMXVideoMixerJSConstructor },
+    { "JMXAudioFileEntity",       "AudioFile",     JMXAudioFileEntityJSConstructor },
+    { "JMXCoreAudioOutput",       "AudioOutput",   JMXCoreAudioOutputJSConstructor },
+    { "JMXCoreImageFilter",       "VideoFilter",   JMXCoreImageFilterJSConstructor },
+    { "JMXAudioSpectrumAnalyzer", "AudioSpectrum", JMXAudioSpectrumAnalyzerJSConstructor },
+    { "JMXDrawEntity",            "DrawPath",      JMXDrawEntityJSConstructor },
+    { "JMXPoint",                 "Point",         JMXPointJSConstructor },
+    { "JMXColor",                 "Color",         JMXColorJSConstructor },
+    { "JMXSize",                  "Size",          JMXSizeJSConstructor },
+    { NULL,                       NULL,            NULL }
+};
 // Extracts a C string from a V8 Utf8Value.
 static const char* ToCString(const v8::String::Utf8Value& value) {
     return *value ? *value : "<string conversion failed>";
@@ -320,18 +342,9 @@ static v8::Handle<Value> Quit(const Arguments& args)
     // So there is no constructor/destructor to be registered for not-entity classes.
     // Note that all entity-related constructors (as well as distructors) are defined through the 
     // JMXV8_EXPORT_ENTITY_CLASS() macro (declared in JMXEntity.h)
-    ctxTemplate->Set(String::New("VideoOutput"), FunctionTemplate::New(JMXOpenGLScreenJSConstructor));
-    ctxTemplate->Set(String::New("VideoCapture"), FunctionTemplate::New(JMXQtVideoCaptureEntityJSConstructor));
-    ctxTemplate->Set(String::New("Movie"), FunctionTemplate::New(JMXQtMovieEntityJSConstructor));
-    ctxTemplate->Set(String::New("VideoMixer"), FunctionTemplate::New(JMXVideoMixerJSConstructor));
-    ctxTemplate->Set(String::New("VideoFilter"), FunctionTemplate::New(JMXCoreImageFilterJSConstructor));
-    ctxTemplate->Set(String::New("AudioFile"), FunctionTemplate::New(JMXAudioFileEntityJSConstructor));
-    ctxTemplate->Set(String::New("AudioOutput"), FunctionTemplate::New(JMXCoreAudioOutputJSConstructor));
-    ctxTemplate->Set(String::New("AudioSpectrum"), FunctionTemplate::New(JMXAudioSpectrumAnalyzerJSConstructor));
-    ctxTemplate->Set(String::New("DrawPath"), FunctionTemplate::New(JMXDrawEntityJSConstructor));
-    ctxTemplate->Set(String::New("Point"), FunctionTemplate::New(JMXPointJSConstructor));
-    ctxTemplate->Set(String::New("Color"), FunctionTemplate::New(JMXColorJSConstructor));
-    ctxTemplate->Set(String::New("Size"), FunctionTemplate::New(JMXSizeJSConstructor));
+    for (int i = 0; mappedClasses[i].className != NULL; i++) {
+        ctxTemplate->Set(String::New(mappedClasses[i].jsClassName), FunctionTemplate::New(mappedClasses[i].jsConstructor));
+    }
 }
 
 - (id)init
@@ -415,6 +428,7 @@ static v8::Handle<Value> Quit(const Arguments& args)
         scriptEntity = entity;
         //ctx->Global()->SetPointerInInternalField(0, scriptEntity);
     }
+    NSLog(@"%@", [self exportGraph:[[JMXContext sharedContext] allEntities] andPins:nil]);
     //ctx->Global()->SetHiddenValue(String::New("quit"), v8::Boolean::New(0));
     v8::TryCatch try_catch;
     NSString *name = [NSString stringWithFormat:@"%@", self];
@@ -458,6 +472,63 @@ static v8::Handle<Value> Quit(const Arguments& args)
         p.Dispose();
         p.Clear();
     }
+}
+
+- (NSString *)exportGraph:(NSArray *)entities andPins:(NSArray *)pins
+{
+    NSString *output = [[[NSString alloc] init] autorelease];
+    NSMutableDictionary *entityNames = [[NSMutableDictionary alloc] init];
+    for (JMXEntity *entity in entities) {
+        NSString *entityName = [NSString stringWithFormat:@"%@", entity.name];
+        int cnt = 1;
+        while ([entityNames objectForKey:entityName]) {
+            NSString *numberedName = [entityName stringByAppendingFormat:@"%d", cnt++];
+        }
+        for (int n = 0; mappedClasses[n].className; n++) {
+            if (strcmp(mappedClasses[n].className, [[entity className] UTF8String]) == 0) {
+                output = [output stringByAppendingFormat:@"%@ = new %s();\n", entityName, mappedClasses[n].jsClassName];
+                [entityNames setObject:entityName forKey:entity];
+                break;
+            }
+        }
+    }
+    
+    for (JMXEntity *entity in [entityNames allKeys]) {
+        for (NSString *pinName in [entity outputPins]) {
+            JMXOutputPin *pin = [entity outputPinWithName:pinName];
+            if (pin.connected) {
+                for (id receiver in [pin receivers]) {
+                    if ([receiver isKindOfClass:[JMXPin class]]) {
+                        id receiverObj = ((JMXPin *)receiver).owner;
+                        if ([receiverObj isKindOfClass:[JMXEntity class]]) {
+                            JMXEntity *receiverEntity = (JMXEntity *)receiverObj;
+                            output = [output stringByAppendingFormat:@"%@.outputPin('%@').connect(%@.inputPin('%@'));\n",
+                                      [entityNames objectForKey:entity], pin.name, [entityNames objectForKey:receiverEntity], 
+                                      ((JMXPin *)receiver).name];
+                        }
+                    } else {
+                        // TODO - Error Messages
+                    }
+                }
+            }
+        }
+    }
+    if (pins) {
+        for (id value in pins) {
+            if ([value isKindOfClass:[JMXPin class]]) {
+                JMXPin *pin = (JMXPin *)value;
+                JMXEntity *owner = pin.owner;
+                if (pin.direction == kJMXOutputPin) {
+                    output = [output stringByAppendingFormat:@"%@.outputPin('%@').export();",
+                              [entityNames objectForKey:owner], pin.name];
+                } else {
+                    output = [output stringByAppendingFormat:@"%@.inputPin('%@').export();",
+                              [entityNames objectForKey:owner], pin.name];
+                }
+            }
+        }
+    }
+    return output;
 }
 
 @end

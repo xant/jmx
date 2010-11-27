@@ -1,11 +1,11 @@
-/*
- *  JMXThreadedEntity.h
- *  JMX
- *
- *  Created by xant on 9/7/10.
- *  Copyright 2010 Dyne.org. All rights reserved.
- *
- */
+//
+// JMXThreadedEntity.h
+// JMX
+//
+// Created by xant on 9/7/10.
+// Copyright 2010 Dyne.org. All rights reserved.
+//
+//
 //  This file is part of JMX
 //
 //  JMX is free software: you can redistribute it and/or modify
@@ -21,10 +21,23 @@
 //  You should have received a copy of the GNU General Public License
 //  along with JMX.  If not, see <http://www.gnu.org/licenses/>.
 //
-
+/*!
+ @header JMXThreadedEntity.h
+ @abstract Base (abstract) class representing a threaded entity in the JMX world
+ @discussion Threaded entities are those which require an active runloop to let them produce
+             a signal at a given frequency. Not all entities need to be threaded, consider
+             subclassing JMXEntity instead of this class if you don't really need an active thread
+             to drive production of output signals
+ @related JMXPin.h
+ */
 #import "JMXEntity.h"
 #import "JMXRunLoop.h"
 
+/*!
+ * @class JMXThreadedEntity
+ * @abstract Base class for threaded entitites
+ * @discussion 
+ */
 @interface JMXThreadedEntity : JMXEntity < JMXRunLoop > {
 @protected
     uint64_t previousTimeStamp;
@@ -38,6 +51,11 @@
     int stampCount;
 }
 
+/*!
+ @property frequency
+ @abstract get/set the frequency at which output signals are delivered
+ @discussion the frequency affects also how intensively is the runloop 
+ */
 @property (retain) NSNumber *frequency;
 
 // entities should implement this message to trigger 

@@ -20,6 +20,11 @@
 //  You should have received a copy of the GNU General Public License
 //  along with JMX.  If not, see <http://www.gnu.org/licenses/>.
 //
+/*!
+ @header JMXSize.h
+ @abstract Encapsultaes an NSSzie structures
+ @discussion Wrapper class for sizes inside the JMX engine
+ */
 
 #import <Cocoa/Cocoa.h>
 #import "JMXV8.h"

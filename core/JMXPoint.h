@@ -20,10 +20,20 @@
 //  You should have received a copy of the GNU General Public License
 //  along with JMX.  If not, see <http://www.gnu.org/licenses/>.
 //
+/*!
+ @header JMXPoint.h
+ @abstract Encapsultaes an NSPoint object
+ @discussion Wrapper class for points inside the JMX engine
+ */
 
 #import <Cocoa/Cocoa.h>
 #import "JMXV8.h"
 
+/*!
+ * @class JMXPoint
+ * @abstract Encapsulates an NSPoint object
+ * @discussion
+ */
 @interface JMXPoint : NSObject <JMXV8> {
 @private
     NSPoint nsPoint;
@@ -31,9 +41,31 @@
 
 @property (assign) NSPoint nsPoint;
 
+/*!
+ @method pointWithNSPoint:
+ @abstract create a new JMXPoint by wrapping an existing NSPoint
+ @param point the pre-existing NSPoint instance
+ @return the newly created point
+ */
 + (id)pointWithNSPoint:(NSPoint)point;
+/*!
+ @method initWithNSPoint:
+ @abstract initialize a  JMXPoint by wrapping an existing NSPoint
+ @param point the pre-existing NSPoint instance
+ @return the initialized point
+ */
 - (id)initWithNSPoint:(NSPoint)point;
+/*!
+ @method x
+ @abstract get the x coordinate
+ @return the x coordinate
+ */
 - (CGFloat)x;
+/*!
+ @method y
+ @abstract get the y coordinate
+ @return the y coordinate
+ */
 - (CGFloat)y;
 
 #ifdef __JMXV8__

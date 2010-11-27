@@ -5,6 +5,11 @@
 //  Created by xant on 11/13/10.
 //  Copyright 2010 Dyne.org. All rights reserved.
 //
+/*!
+ @header JMXColor.h
+ @abstract Encapsultaes an NSColor object
+ @discussion Wrapper class for points inside the JMX engine
+ */
 
 #import <Cocoa/Cocoa.h>
 #import "JMXV8.h"

@@ -10,7 +10,6 @@
 #import "JMXDocument.h"
 #import "JMXConnectorLayer.h"
 #import "JMXPinLayer.h"
-#import "JMXInspectorViewController.h"
 
 @class JMXConnectorLayer;
 @class JMXPinLayer;
@@ -30,6 +29,7 @@
 @property (nonatomic, assign) JMXDocument *document;
 @property (nonatomic, assign) JMXEntityLayer *selectedLayer;
 @property (nonatomic, assign) JMXConnectorLayer *selectedConnectorLayer;
+
 
 #pragma mark -
 #pragma mark IBActions

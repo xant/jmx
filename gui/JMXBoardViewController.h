@@ -25,18 +25,11 @@
 	JMXPinLayer *hoveredPinLayer;
     NSMutableArray *selected;
     NSMutableArray *entities;
-
-    JMXInspectorViewController *inspectorViewController;
-    JMXEntitiesController *entitiesController;
-    NSPoint lastDragLocation;
 }
 
 @property (nonatomic, assign) JMXDocument *document;
 @property (nonatomic, assign) JMXEntityLayer *selectedLayer;
 @property (nonatomic, assign) JMXConnectorLayer *selectedConnectorLayer;
-@property (nonatomic, retain) IBOutlet NSMutableArray *entities;
-@property (nonatomic, retain) IBOutlet NSArrayController *entitiesController;
-@property (nonatomic, retain) IBOutlet JMXInspectorViewController *inspectorViewController;
 
 #pragma mark -
 #pragma mark IBActions

@@ -65,7 +65,5 @@
 - (void)setupPinsLayers:(NSArray *)pins startAtPoint:(CGPoint)aPoint output:(BOOL)isOutput;
 - (void)setupLayer;
 - (void)updateConnectors;
-- (void)moveToPointWithOffset:(NSValue *)pointValue;
-- (void)removeFromBoard;
 
 @end

@@ -23,6 +23,7 @@
     self = [super init];
     if (self) {
         path = nil;
+        self.name = @"JMXScript";
     }
     return self;
 }
@@ -31,18 +32,19 @@
 {
     if (path)
         [self close];
-    if ([self open:newPath])
+    if ([self open:newPath]) {
         path = [newPath copy];
-    else
+        self.name = path;
+    } else {
         NSLog(@"JMXScriptFile::setPath(): Can't open file %@", newPath);
+    }
 }
 
 - (BOOL)open:(NSString *)newPath
 {
     @synchronized(self) {
         self.code = [NSString stringWithFormat:@"include('%@');", newPath];
-
-        self.name = [[path componentsSeparatedByString:@"/"] lastObject];
+        self.name = [[newPath componentsSeparatedByString:@"/"] lastObject];
     }
     return YES;
 }

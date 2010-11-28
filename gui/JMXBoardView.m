@@ -87,7 +87,6 @@
             }
             [entity start];
             [document.entities addObject:entity];
-
             [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasCreated" object:entity];
 
             [entity release];
@@ -97,13 +96,10 @@
                 [entity performSelector:@selector(open:) withObject:[fileURL absoluteString]];
             }
             [entity start];
-
             [document.entities addObject:entity];
-
             [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasCreated" object:entity];
-
             [entity release];
-        }
+        } // TODO - add support for script files (and generalize)
     }
 	else {
 		NSPasteboard *pboard = [sender draggingPasteboard];

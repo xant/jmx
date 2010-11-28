@@ -1,5 +1,3 @@
-- !!! FIX BUGS INTRODUCED WITH LAST GUI-RELATED CODE !!!
-  ( notably ... connections not working properly anymore , and fake producers in video/audio mixers )
 - make a website
 - fix the hit-test 
   * apart working a bit badly, when there are multiple connections for the same "input" pin,

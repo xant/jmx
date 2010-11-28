@@ -185,7 +185,7 @@ static v8::Handle<Value> Echo(const Arguments& args) {
     return v8::Undefined();
 }
 
-static v8::Handle<Value> ExecCode(const char *code, uint32_t length, const char *name)
+static v8::Handle<Value> ExecJSCode(const char *code, uint32_t length, const char *name)
 {
     HandleScope scope;
     v8::Handle<v8::Value> result;
@@ -217,7 +217,7 @@ static v8::Handle<Value> Include(const Arguments& args) {
     NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:path];
     if (fh) {
         NSData *data = [fh readDataToEndOfFile];
-        ExecCode((const char *)[data bytes], [data length], [path UTF8String]);
+        ExecJSCode((const char *)[data bytes], [data length], [path UTF8String]);
     }
     [pool release];
     return v8::Undefined();
@@ -264,7 +264,7 @@ static v8::Handle<Value> Run(const Arguments& args)
     Local<Context> context = v8::Context::GetCalling();
     Local<Object> globalObject  = context->Global();
     //v8::Locker::StopPreemption();
-    if (globalObject->SetHiddenValue(String::New("quit"), v8::Boolean::New(0)));
+    //globalObject->SetHiddenValue(String::New("quit"), v8::Boolean::New(0));
     if (args.Length() >= 1 && args[0]->IsFunction()) {
         //v8::Locker::StartPreemption(50);
         while (1) {
@@ -443,8 +443,8 @@ static v8::Handle<Value> Quit(const Arguments& args)
         //ctx->Global()->SetPointerInInternalField(0, scriptEntity);
     }
     //NSLog(@"%@", [self exportGraph:[[JMXContext sharedContext] allEntities] andPins:nil]);
-    //ctx->Global()->SetHiddenValue(String::New("quit"), v8::Boolean::New(0));
-    ExecCode([script UTF8String], [script length],
+    ctx->Global()->SetHiddenValue(String::New("quit"), v8::Boolean::New(0));
+    ExecJSCode([script UTF8String], [script length],
              entity ? [entity.name UTF8String] : [[NSString stringWithFormat:@"%@", self] UTF8String]);
     [pool drain];
 }

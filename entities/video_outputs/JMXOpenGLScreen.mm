@@ -206,14 +206,13 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 
 - (void)cleanup
 {
-    //@synchronized(self) {
+    @synchronized(self) {
         if (ciContext) {
             [ciContext release];
             ciContext = nil;
         }
-    //}
-    
-    self.currentFrame = nil;
+        //self.currentFrame = nil;
+    }    
 }
 
 - (void)setSize:(NSSize)size
@@ -280,14 +279,17 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 - (void)drawFrame:(CIImage *)frame
 {
     [super drawFrame:frame];
-    //@synchronized(view) {
+    if (view) {
         view.currentFrame = frame;
-    //}
+    }
 }
 
 - (void)dealloc
 {
-    [view release];
+    if (view) {
+        [view release];
+        view = nil;
+    }
     [window release];
     [super dealloc];
 }

@@ -16,12 +16,12 @@
     self = [super init];
     if (self) {
         self.frequency = [NSNumber numberWithDouble:25.0];
-        [self registerInputPin:@"inputText"
+        [self registerInputPin:@"fontName"
                       withType:kJMXStringPin
-                   andSelector:@"setText:"
+                   andSelector:@"setFontWithName:"
                  allowedValues:[[NSFontManager sharedFontManager] availableFonts]
                   initialValue:[[NSFont systemFontOfSize:[NSFont systemFontSize]] fontName]];
-        [self registerInputPin:@"fontName" withType:kJMXStringPin andSelector:@"setFontWithName:"];
+        [self registerInputPin:@"inputText" withType:kJMXTextPin andSelector:@"setText:"];
         [self registerInputPin:@"fontSize" withType:kJMXNumberPin andSelector:@"setFontSize:"];
         [self registerInputPin:@"fontColor" withType:kJMXColorPin andSelector:@"setFontColor:"];
         [self registerInputPin:@"backgroundColor" withType:kJMXColorPin andSelector:@"setBackgroundColor:"];

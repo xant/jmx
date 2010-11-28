@@ -53,6 +53,12 @@
     [super dealloc];
 }
 
+- (void)setSize:(JMXSize *)size
+{
+    [super setSize:size];
+    [self renderText];
+}
+
 - (void)renderText
 {
     //if (needsNewFrame) {

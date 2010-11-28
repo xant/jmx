@@ -14,10 +14,10 @@ drawer.outputPin('frame').connect(screen.inputPin('frame'));
 */
 
 // UNCOMMENT TO ACTIVATE A VIDEO FILTER
-//filter = new VideoFilter("CIZoomBlur");
-//drawer.outputPin('frame').connect(filter.inputPin('frame'));
+filter = new VideoFilter("CIZoomBlur");
+drawer.outputPin('frame').connect(filter.inputPin('frame'));
 //filter.outputPin('frame').connect(screen.inputPin('frame'));
-//filter.outputPin('frame').export();
+filter.outputPin('frame').export();
 
 // COMMENT THE FOLLOWING TWO LINES IF FILTER HAS BEEN ACTIVATED
 drawer.outputPin('frame').export();

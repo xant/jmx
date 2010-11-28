@@ -43,8 +43,13 @@
 - (BOOL)open:(NSString *)newPath
 {
     @synchronized(self) {
-        self.code = [NSString stringWithFormat:@"include('%@');", newPath];
-        self.name = [[newPath componentsSeparatedByString:@"/"] lastObject];
+        NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:newPath];
+        if (fh) {
+            NSData *data = [fh readDataToEndOfFile];
+            self.code = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            [NSString stringWithCharacters:(const unichar *)[data bytes] length:[data length]];
+            self.name = [[newPath componentsSeparatedByString:@"/"] lastObject];
+        }
     }
     return YES;
 }

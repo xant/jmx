@@ -122,7 +122,7 @@ static void ReportException(v8::TryCatch* try_catch) {
         if (stack_trace.length() > 0) {
             const char* stack_trace_string = ToCString(stack_trace);
             printf("%s\n", stack_trace_string);
-        }   
+        }  
     }
 }
 
@@ -185,6 +185,27 @@ static v8::Handle<Value> Echo(const Arguments& args) {
     return v8::Undefined();
 }
 
+static v8::Handle<Value> ExecCode(const char *code, uint32_t length, const char *name)
+{
+    HandleScope scope;
+    v8::Handle<v8::Value> result;
+    v8::TryCatch try_catch;
+    v8::Handle<v8::Script> compiledScript = v8::Script::Compile(String::New(code, length), String::New(name));
+    if (!compiledScript.IsEmpty()) {
+        result = compiledScript->Run();
+        if (result.IsEmpty()) {
+            ReportException(&try_catch);
+        } else if (!result->IsUndefined()) {
+            // Convert the result to an ASCII string and print it.
+            String::AsciiValue ascii(result);
+            NSLog(@"%s\n", *ascii);
+        }
+    } else {
+        ReportException(&try_catch);
+    }
+    return scope.Close(result);
+}
+
 static v8::Handle<Value> Include(const Arguments& args) {
     if (args.Length() < 1) return v8::Undefined();
     //v8::Locker lock;
@@ -196,14 +217,7 @@ static v8::Handle<Value> Include(const Arguments& args) {
     NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:path];
     if (fh) {
         NSData *data = [fh readDataToEndOfFile];
-        v8::TryCatch try_catch;
-        v8::Handle<v8::Script> compiledScript = v8::Script::Compile(String::New((const char *)[data bytes], [data length]), String::New([path UTF8String]));
-        if (!compiledScript.IsEmpty()) {
-            compiledScript->Run();
-        } else {
-            ReportException(&try_catch);
-        }
-        
+        ExecCode((const char *)[data bytes], [data length], [path UTF8String]);
     }
     [pool release];
     return v8::Undefined();
@@ -428,17 +442,10 @@ static v8::Handle<Value> Quit(const Arguments& args)
         scriptEntity = entity;
         //ctx->Global()->SetPointerInInternalField(0, scriptEntity);
     }
-    NSLog(@"%@", [self exportGraph:[[JMXContext sharedContext] allEntities] andPins:nil]);
+    //NSLog(@"%@", [self exportGraph:[[JMXContext sharedContext] allEntities] andPins:nil]);
     //ctx->Global()->SetHiddenValue(String::New("quit"), v8::Boolean::New(0));
-    v8::TryCatch try_catch;
-    NSString *name = [NSString stringWithFormat:@"%@", self];
-    v8::Handle<v8::Script> compiledScript = v8::Script::Compile(String::New([script UTF8String]), String::New([name UTF8String]));
-    if (!compiledScript.IsEmpty()) {
-        v8::Locker::StartPreemption(50);
-        compiledScript->Run();
-    } else {
-        ReportException(&try_catch);
-    }
+    ExecCode([script UTF8String], [script length],
+             entity ? [entity.name UTF8String] : [[NSString stringWithFormat:@"%@", self] UTF8String]);
     [pool drain];
 }
 

@@ -6,25 +6,32 @@
 //  Copyright 2010 Dyne.org. All rights reserved.
 //
 
-#import "JMXEntityOutlineViewDelegate.h"
-#import "JMXEntity.h"
-#import "JMXEntityLayer.h"
-#import "JMXEntityProducerTableViewDelegate.h"
+#import "JMXEntityOutlineView.h"
 #import "JMXInputPin.h"
 
 
-@implementation JMXEntityOutlineViewDelegate
+@implementation JMXEntityOutlineView
 
 @synthesize entity;
-@synthesize entityOutlineView;
-@synthesize entityProducerTableView;
-@synthesize entityProducerTableViewDelegate;
+@synthesize viewController;
+
+- (id)initWithFrame:(NSRect)frameRect
+{
+    if ((self = [super initWithFrame:frameRect]) != nil) {
+        virtualOutputPins = [[NSMutableDictionary alloc] init];
+        virtualOutputPinNames = [[NSMutableArray alloc] init];
+        dataCells = [[NSMutableDictionary alloc] init];
+    }
+    return self;
+}
 
 - (void)awakeFromNib
 {
     virtualOutputPins = [[NSMutableDictionary alloc] init];
     virtualOutputPinNames = [[NSMutableArray alloc] init];
     dataCells = [[NSMutableDictionary alloc] init];
+    [self setDelegate:self];
+    [self setDataSource:self];
 }
 
 - (void)dealloc
@@ -39,9 +46,9 @@
 {
     if (entity == anEntity)
         return;
-    
+
     entity = anEntity;
-    entityProducerTableViewDelegate.entity = anEntity;
+
     [self setUpPins];
 }
 
@@ -238,18 +245,6 @@
             [outputPin deliverData:object];
         }
     }
+    [self reloadItem:item];
 }
-
-- (void)outlineViewSelectionDidChange:(NSNotification *)notification
-{
-    NSUInteger rowIndex = [entityOutlineView selectedRow];
-
-    // This should be enough to skip no selection and first element.
-    if (rowIndex == -1 || rowIndex == 0)
-        return;
-
-    entityProducerTableViewDelegate.pinName = (NSString *)[entityOutlineView itemAtRow:rowIndex];
-    [entityProducerTableView reloadData];
-}
-
 @end

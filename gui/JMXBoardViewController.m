@@ -31,7 +31,6 @@
 @synthesize selectedConnectorLayer;
 @synthesize entities;
 @synthesize entitiesController;
-@synthesize entityController;
 @synthesize inspectorViewController;
 
 #pragma mark -
@@ -298,7 +297,6 @@
         entityLayer.position = [self.boardView translatePointToBoardLayer:[pointValue pointValue]];
 
     [entitiesController addObject:entityLayer];
-    [entitiesController setSelectedObjects:[NSArray arrayWithObject:entityLayer]];
     [self.boardView.layer addSublayer:entityLayer];
 
     if ([anEntity conformsToProtocol:@protocol(JMXRunLoop)])

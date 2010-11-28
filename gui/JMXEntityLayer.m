@@ -299,14 +299,4 @@ id controlForJMXPinType(JMXPinType aType)
     [self removeFromSuperlayer];
 }
 
-- (NSMutableDictionary *)properties
-{
-    return [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Some name", @"propertyName", @"Some value", @"propertyValue", nil];
-}
-
-- (NSArray *)inputPinNames
-{
-    return [NSArray arrayWithObject:@"bleh"];
-}
-
 @end

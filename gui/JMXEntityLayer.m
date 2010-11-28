@@ -298,6 +298,7 @@ id controlForJMXPinType(JMXPinType aType)
 - (void)removeFromBoard
 {
     [self removeFromSuperlayer];
+    [self.entity disconnectAllPins];
 }
 
 @end

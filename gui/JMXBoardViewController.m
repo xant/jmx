@@ -115,6 +115,7 @@
         }
         else {
             [entitiesController setSelectedObjects:[NSArray arrayWithObject:anEntityLayer]];
+            [self setSelectedConnectorLayer:nil];
         }
     }
     else {
@@ -142,11 +143,18 @@
 
 - (BOOL)mouseDownWithConnectorLayer:(JMXConnectorLayer *)aConnectorLayer andEvent:(NSEvent *)theEvent
 {
-    if (aConnectorLayer != nil) {
-        [self setSelectedConnectorLayer:aConnectorLayer];
-        return YES;
+    if ([theEvent modifierFlags] & NSCommandKeyMask) {
+        if (selectedConnectorLayer == aConnectorLayer)
+            [self setSelectedConnectorLayer:nil];
+        else
+            [self setSelectedConnectorLayer:aConnectorLayer];
     }
-    return NO;
+    else {
+        [self mouseDownWithEntityLayer:nil andEvent:theEvent];
+        [self setSelectedConnectorLayer:aConnectorLayer];
+    }
+
+    return selectedConnectorLayer == nil ? NO : YES;
 }
 
 - (void)mouseDown:(NSEvent *)theEvent

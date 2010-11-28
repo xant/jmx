@@ -17,10 +17,10 @@
     if (self) {
         self.frequency = [NSNumber numberWithDouble:25.0];
         [self registerInputPin:@"inputText" withType:kJMXStringPin andSelector:@"setText:"];
-        [self registerInputPin:@"fontName" withType:kJMXStringPin andSelector:@"setFontWithName"];
-        [self registerInputPin:@"fontSize" withType:kJMXNumberPin andSelector:@"setFontSize"];
-        [self registerInputPin:@"fontColor" withType:kJMXNumberPin andSelector:@"setFontColor"];
-        [self registerInputPin:@"backgroundColor" withType:kJMXNumberPin andSelector:@"setBackgroundColor"];
+        [self registerInputPin:@"fontName" withType:kJMXStringPin andSelector:@"setFontWithName:"];
+        [self registerInputPin:@"fontSize" withType:kJMXNumberPin andSelector:@"setFontSize:"];
+        [self registerInputPin:@"fontColor" withType:kJMXColorPin andSelector:@"setFontColor:"];
+        [self registerInputPin:@"backgroundColor" withType:kJMXColorPin andSelector:@"setBackgroundColor:"];
         attributes = [[NSMutableDictionary dictionary] retain];
         self.font = [NSFont systemFontOfSize:[NSFont systemFontSize]];
         self.fgColor = [NSColor whiteColor];
@@ -49,12 +49,52 @@
     [super dealloc];
 }
 
+- (void)renderText
+{
+    //if (needsNewFrame) {
+    stanStringAttrib = attributes;
+    CVPixelBufferRef textFrame;
+    NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys:
+                       [NSNumber numberWithInt:size.width], kCVPixelBufferWidthKey,
+                       [NSNumber numberWithInt:size.height], kCVPixelBufferHeightKey,
+                       [NSNumber numberWithInt:size.width*4],kCVPixelBufferBytesPerRowAlignmentKey,
+                       [NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey, 
+                       [NSNumber numberWithBool:YES], kCVPixelBufferCGBitmapContextCompatibilityKey, 
+                       [NSNumber numberWithBool:YES], kCVPixelBufferOpenGLCompatibilityKey,
+                       nil];
+    
+    // create pixel buffer
+    CVReturn ret = CVPixelBufferCreate(kCFAllocatorDefault,
+                                       size.width,
+                                       size.height,
+                                       k32ARGBPixelFormat,
+                                       (CFDictionaryRef)d,
+                                       &textFrame);
+    if (ret == noErr) {
+        // TODO - Implement properly
+        //NSFont * font =[NSFont fontWithName:@"Helvetica" size:32.0];
+        [renderer initWithString:text withAttributes:stanStringAttrib];
+        [renderer drawOnBuffer:textFrame];
+        @synchronized(self) {
+            if (currentFrame)
+                [currentFrame release];
+            currentFrame = [[CIImage imageWithCVImageBuffer:textFrame] retain];
+        }
+        CVPixelBufferRelease(textFrame);
+        needsNewFrame = NO;
+    } else {
+        // TODO - Error Messages
+    }
+    //}
+}
+
 - (void)setBackgroundColor:(NSColor *)color
 {
     if (color) {
         @synchronized(self) {
             [attributes setObject:color forKey:NSBackgroundColorAttributeName];
         }
+        [self renderText];
     }
 }
 
@@ -65,6 +105,7 @@
         @synchronized(self) {
             [attributes setObject:color forKey:NSBackgroundColorAttributeName];
         }
+        [self renderText];
     }
 }
 
@@ -74,6 +115,7 @@
         @synchronized(self) {
             [attributes setObject:color forKey:NSForegroundColorAttributeName];
         }
+        [self renderText];
     }
 }
 
@@ -84,6 +126,7 @@
         @synchronized(self) {
             [attributes setObject:color forKey:NSForegroundColorAttributeName];
         }
+        [self renderText];
     }
 }
 
@@ -95,6 +138,7 @@
         @synchronized(self) {
             [attributes setObject:newFont forKey:NSFontAttributeName];
         }
+        [self renderText];
     }
 }
 
@@ -106,6 +150,7 @@
         @synchronized(self) {
             [attributes setObject:newFont forKey:NSFontAttributeName];
         }
+        [self renderText];
     }
 }
 
@@ -114,41 +159,7 @@
     if (text)
         [text release];
     text = [newText retain];
-    stanStringAttrib = attributes;
-    //if (needsNewFrame) {
-        CVPixelBufferRef textFrame;
-        NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys:
-                           [NSNumber numberWithInt:size.width], kCVPixelBufferWidthKey,
-                           [NSNumber numberWithInt:size.height], kCVPixelBufferHeightKey,
-                           [NSNumber numberWithInt:size.width*4],kCVPixelBufferBytesPerRowAlignmentKey,
-                           [NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey, 
-                           [NSNumber numberWithBool:YES], kCVPixelBufferCGBitmapContextCompatibilityKey, 
-                           [NSNumber numberWithBool:YES], kCVPixelBufferOpenGLCompatibilityKey,
-                           nil];
-        
-        // create pixel buffer
-        CVReturn ret = CVPixelBufferCreate(kCFAllocatorDefault,
-                                           size.width,
-                                           size.height,
-                                           k32ARGBPixelFormat,
-                                           (CFDictionaryRef)d,
-                                           &textFrame);
-        if (ret == noErr) {
-            // TODO - Implement properly
-            //NSFont * font =[NSFont fontWithName:@"Helvetica" size:32.0];
-            [renderer initWithString:text withAttributes:stanStringAttrib];
-            [renderer drawOnBuffer:textFrame];
-            @synchronized(self) {
-                if (currentFrame)
-                    [currentFrame release];
-                currentFrame = [[CIImage imageWithCVImageBuffer:textFrame] retain];
-            }
-            CVPixelBufferRelease(textFrame);
-            needsNewFrame = NO;
-        } else {
-            // TODO - Error Messages
-        }
-    //}    
+    [self renderText];
 }
 
 - (void)tick:(uint64_t)timeStamp

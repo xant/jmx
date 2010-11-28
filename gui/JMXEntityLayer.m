@@ -26,6 +26,8 @@
 #import "JMXOutletLayer.h"
 #import "JMXEntityLabelLayer.h"
 
+#include <math.h>
+
 #define JMXInputOutletLayerCreate(x) [[[JMXOutletLayer alloc] initWithPin:(x) andPoint:NSZeroPoint isOutput:NO entity:self] autorelease]
 #define JMXOutputOutletLayerCreate(x) [[[JMXOutletLayer alloc] initWithPin:(x) andPoint:NSZeroPoint isOutput:YES entity:self] autorelease]
 
@@ -286,11 +288,10 @@ id controlForJMXPinType(JMXPinType aType)
 {
     NSPoint point = [pointValue pointValue];
     CGPoint currentPosition = self.position;
-    currentPosition.x += point.x;
-    currentPosition.y += point.y;
+    currentPosition.x += ceilf(point.x);
+    currentPosition.y += ceilf(point.y);
     self.position = currentPosition;
 
-    
     [self updateConnectors];
 }
 

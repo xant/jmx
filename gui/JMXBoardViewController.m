@@ -10,6 +10,9 @@
 #import "JMXRunLoop.h"
 #import "JMXEntitiesController.h"
 
+#include <math.h>
+
+
 @interface JMXBoardViewController ()
 
 - (JMXBoardView *)boardView;
@@ -293,8 +296,10 @@
 
     NSValue *pointValue = [[aNotification userInfo] valueForKey:@"origin"];
 
-    if (pointValue)
-        entityLayer.position = [self.boardView translatePointToBoardLayer:[pointValue pointValue]];
+    if (pointValue) {
+        CGPoint p = [self.boardView translatePointToBoardLayer:[pointValue pointValue]];
+        entityLayer.position = CGPointMake(ceilf(p.x), ceilf(p.y));
+    }
 
     [entitiesController addObject:entityLayer];
     [entitiesController setSelectedObjects:[NSArray arrayWithObject:entityLayer]];

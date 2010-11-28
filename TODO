@@ -7,7 +7,7 @@
   (input values should be provided from the input panel , having 2 panels enumerating the same pins is redundant)
 - allow to change entity names from the GUI (it used to work ... but not anymore)
 - allow to provide input values (of any supported type) through the GUI
-  * string, size and point are missing and REALLY important *
+  * multiline-text, size and point are missing and REALLY important *
 - sliders must send values continuously
 - parse filter attributes to determine 'mandatory' parameters (and avoid crashes)
 - input controllers (at least keyboard and mouse ... but we need to support also midi/osc controllers)

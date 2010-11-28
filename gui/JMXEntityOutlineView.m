@@ -154,7 +154,7 @@
 	if (aPin == nil)
 		return nil;
 
-	if (aPin.type == kJMXStringPin) {
+	if (aPin.type == kJMXStringPin || aPin.type == kJMXTextPin) {
 
         // I expect the following code not to be a problem since each pin in
         // the inspector will be connected to just one receiver.
@@ -179,12 +179,11 @@
 			
 			[cell setControlSize:NSSmallControlSize];
 			[cell setFont:[NSFont labelFontOfSize:[NSFont smallSystemFontSize]]];
-		}
-		else {
+		} else {
             cell = [[[NSTextFieldCell alloc] init] autorelease];
+            [cell setEditable:YES];
         }
-	}
-	else if (aPin.type == kJMXNumberPin) {
+	} else if (aPin.type == kJMXNumberPin) {
         JMXInputPin *anInputPin = [[[aPin receivers] allKeys] lastObject];
         if (anInputPin.minValue && anInputPin.maxValue) {
             NSSliderCell *sliderCell = [[[NSSliderCell alloc] init] autorelease];
@@ -192,8 +191,7 @@
             [sliderCell setMaxValue:[anInputPin.maxValue doubleValue]];
             [sliderCell setControlSize:NSSmallControlSize];
             cell = sliderCell;
-        }
-        else {
+        } else {
             cell = [[[NSTextFieldCell alloc] init] autorelease];
             NSNumberFormatter *nf = [[NSNumberFormatter alloc] init];
             [nf setMaximumFractionDigits:2];
@@ -203,8 +201,7 @@
             [nf release];
             [cell setEditable:YES];
         }
-	}
-	else {
+	} else {
         cell = [[[NSTextFieldCell alloc] init] autorelease];
 	}
 

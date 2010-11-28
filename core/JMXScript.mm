@@ -480,14 +480,15 @@ static v8::Handle<Value> Quit(const Arguments& args)
     NSMutableDictionary *entityNames = [[NSMutableDictionary alloc] init];
     for (JMXEntity *entity in entities) {
         NSString *entityName = [NSString stringWithFormat:@"%@", entity.name];
+        NSString *numberedName = entityName;
         int cnt = 1;
-        while ([entityNames objectForKey:entityName]) {
-            NSString *numberedName = [entityName stringByAppendingFormat:@"%d", cnt++];
+        while ([entityNames objectForKey:numberedName]) {
+            numberedName = [entityName stringByAppendingFormat:@"%d", cnt++];
         }
         for (int n = 0; mappedClasses[n].className; n++) {
             if (strcmp(mappedClasses[n].className, [[entity className] UTF8String]) == 0) {
-                output = [output stringByAppendingFormat:@"%@ = new %s();\n", entityName, mappedClasses[n].jsClassName];
-                [entityNames setObject:entityName forKey:entity];
+                output = [output stringByAppendingFormat:@"%@ = new %s();\n", numberedName, mappedClasses[n].jsClassName];
+                [entityNames setObject:numberedName forKey:entity];
                 break;
             }
         }

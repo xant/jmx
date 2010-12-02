@@ -1,1 +1,36 @@
 JMX - Javascript Multimedia Crossover
+
+JMX as an opensource realtime engine with a dataflow gui editor that enables creation and manipulation of digital media, such as audio and video.
+
+It embeds Google’s v8 Javascript engine to its core, which gives a world of possibilities.
+
+It means you can use the Javascript language to manipulate the elements that exist in your patch. Elements can be created and connected on to each other by using only a few lines of Javascript code.
+
+JMX is a fresh start to code, free and open source and takes advantage of the power offered by media frameworks on the OSX platform. Born our of the experience of FreeJ the software is rapidly reaching the alpha stage of development after just a few months of activity.
+
+JMX is actually built on top of Apple(r)’s operating system, and makes use of all the capabilities it gives: CoreAudio, CoreVideo, CoreGraphics, CoreImage.
+
+The aim is also to create a JMXKit, which will allow other developers to use the engine in their own multimedia applications.
+
+The project is still young, but we’ve envisioned some applications for it already:
+
+ * Real time audio/video compositing 
+    JMX can allow creating real-time compositions 
+    either using the GUI or programming entities through javascript
+ * Art academies 
+    being JMX open source, it can be easily adopted
+    by educational entities that teach digital art;
+ * Online media streaming 
+    JMX can be used to stream both simple video or audio files,
+    but also live performance compositions;
+ * Live performances 
+    JMX is all about signaling events, and those can be used 
+    to drive a live performance, such as changing image properties
+    depending on data provided by a spectrum analyzer.
+ * Visual data representation 
+    JMX can be programmed (through javascript) to gather data
+    from some source and visually represent that;
+ * Scientific analysis 
+    because of the dynamic nature of JMX and it’s integration 
+    with the v8 JavaScript engine, it can be extended to perform
+    several kinds of scientific tasks;

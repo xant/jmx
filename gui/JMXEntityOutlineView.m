@@ -135,6 +135,13 @@
     return nil;
 }
 
+- (void)setSliderValue:(id)sender
+{
+    //JMXInputPin *pin = [entity inputPinWithName:[sender title]];
+   // if (pin)
+     //   [pin deliverData:[NSNumber numberWithFloat:[sender floatValue]]];
+}
+
 - (NSCell *)outlineView:(NSOutlineView *)outlineView dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
 	if (tableColumn == nil)
@@ -190,6 +197,10 @@
             [sliderCell setMinValue:[anInputPin.minValue doubleValue]];
             [sliderCell setMaxValue:[anInputPin.maxValue doubleValue]];
             [sliderCell setControlSize:NSSmallControlSize];
+            [sliderCell setContinuous:YES];
+            [sliderCell setTarget:self];
+            [sliderCell setAction:@selector(setSliderValue:)];
+            [sliderCell setTitle:[anInputPin name]];
             cell = sliderCell;
         } else {
             cell = [[[NSTextFieldCell alloc] init] autorelease];

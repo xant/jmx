@@ -25,12 +25,14 @@
 #import "JMXVideoOutput.h"
 
 @class JMXOpenGLView;
+@class JMXScreenController;
 
 @interface JMXOpenGLScreen : JMXVideoOutput {
 
 @private
     NSWindow *window;
     JMXOpenGLView *view;
+    JMXScreenController *controller;
 }
 
 @property (readonly) NSWindow *window;

@@ -53,12 +53,6 @@
     [super dealloc];
 }
 
-- (void)setSize:(JMXSize *)size
-{
-    [super setSize:size];
-    [self renderText];
-}
-
 - (void)renderText
 {
     //if (needsNewFrame) {
@@ -96,6 +90,12 @@
         // TODO - Error Messages
     }
     //}
+}
+
+- (void)setSize:(JMXSize *)theSize
+{
+    [super setSize:theSize];
+    [self renderText];
 }
 
 - (void)setBackgroundColor:(NSColor *)color

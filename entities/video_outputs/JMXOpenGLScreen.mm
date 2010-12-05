@@ -29,6 +29,9 @@
 #include <map>
 #import "JMXScript.h"
 #import "JMXOpenGLScreen.h"
+#import "JMXSize.h"
+#import <AppKit/AppKit.h>
+//#import <Carbon/Carbon.h>
 
 JMXV8_EXPORT_ENTITY_CLASS(JMXOpenGLScreen);
 
@@ -38,6 +41,17 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXOpenGLScreen);
     CVDisplayLinkRef    displayLink; // the displayLink that runs the show
     CGDirectDisplayID   viewDisplayID;
     uint64_t lastTime;
+    BOOL fullScreen;
+    NSWindow *myWindow;
+    BOOL needsResize;
+    NSRecursiveLock *lock;
+
+#if MAC_OS_X_VERSION_10_6
+    CGDisplayModeRef     savedMode;
+#else
+    CFDictionaryRef      savedMode;
+#endif
+    JMXSize *frameSize;
 }
 
 @property (retain) CIImage *currentFrame;
@@ -85,6 +99,10 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         currentFrame = nil;
         ciContext = nil;
         lastTime = 0;
+        fullScreen = NO;
+        myWindow = nil;
+        frameSize = [[JMXSize sizeWithNSSize:frameRect.size] retain];
+        lock = [[NSRecursiveLock alloc] init];
     }
     return self;
 }
@@ -132,6 +150,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     CVDisplayLinkStop(displayLink);
     CVDisplayLinkRelease(displayLink);
     [self cleanup];
+    [lock release];
     [super dealloc];
 }
 
@@ -140,25 +159,59 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     if (timeStamp-lastTime < 1e9/30) // HC
         return;
     lastTime = timeStamp;
-    
-    //if (CGLLockContext([[self openGLContext] CGLContextObj]) != kCGLNoError)
-    //    NSLog(@"Could not lock CGLContext");
-    @synchronized(self) {
-        [[self openGLContext] makeCurrentContext];
-        NSRect bounds = [self bounds];
-        CIImage *image = [self.currentFrame retain];
-        if (image && ciContext) {
-            CGRect screenSizeRect = NSRectToCGRect(bounds);
-            // clean the OpenGL context 
-            glClearColor(0.0, 0.0, 0.0, 0.0);         
-            glClear(GL_COLOR_BUFFER_BIT);
-            [ciContext drawImage:image inRect:screenSizeRect fromRect:screenSizeRect];
-            [image release];
-        }
-        [[self openGLContext] flushBuffer];
-        [self setNeedsDisplay:NO];
+    [lock lock];
+    if (needsResize) {
+        NSRect actualRect = [[self window] contentRectForFrameRect:[self frame]];
+        NSRect newRect = NSMakeRect(0, 0, frameSize.width, frameSize.height);
+        //[self setBounds:newRect];
+        newRect.origin.x = actualRect.origin.x;
+        newRect.origin.y = actualRect.origin.y;
+        NSRect frameRect;
+        frameRect = [[self window] frameRectForContentRect:newRect];
+        
+        
+        [[self window] setFrame:frameRect display:NO];
+        [self setFrame:frameRect];
+        [[self window] setMovable:YES]; // XXX - this shouldn't be necessary
+        needsResize = NO;
     }
-    //CGLUnlockContext([[self openGLContext] CGLContextObj]);
+    if (CGLLockContext((CGLContextObj)[[self openGLContext] CGLContextObj]) != kCGLNoError)
+        NSLog(@"Could not lock CGLContext");
+    [[self openGLContext] makeCurrentContext];
+    CIImage *image = [self.currentFrame retain];
+    if (image && ciContext) {
+        CGRect sourceRect = { { 0, 0, }, { frameSize.width, frameSize.height } };
+        CGRect screenFrame = NSRectToCGRect([[self window] contentRectForFrameRect:[self frame]]);
+        CGFloat scaledWidth, scaledHeight;
+        CGFloat width = screenFrame.size.width;
+        CGFloat height = screenFrame.size.height;
+        if (width > height) {
+            scaledHeight = height;
+            scaledWidth = (scaledHeight*frameSize.width)/frameSize.height;
+        } else {
+            scaledWidth = width;
+            scaledHeight = (scaledWidth*frameSize.height)/frameSize.width;
+        }
+        CGRect  destinationRect = CGRectMake(screenFrame.origin.x, screenFrame.origin.y,
+                                             scaledWidth, scaledHeight);
+        
+        
+        if (fullScreen)
+        {   
+            destinationRect.origin.x = (width-scaledWidth)/2;
+            destinationRect.origin.y = (height-scaledHeight)/2;
+        }
+
+        // clean the OpenGL context 
+        glClearColor(0.0, 0.0, 0.0, 0.0);         
+        glClear(GL_COLOR_BUFFER_BIT);
+        [ciContext drawImage:image inRect:destinationRect fromRect:sourceRect];
+        [image release];
+    }
+    [[self openGLContext] flushBuffer];
+    [self setNeedsDisplay:NO];
+    [lock unlock];
+    CGLUnlockContext((CGLContextObj)[[self openGLContext] CGLContextObj]);
 }
 
 - (void)drawRect:(NSRect)rect
@@ -168,76 +221,200 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     [self setNeedsDisplay:NO];
 }
 
+
 // Called by Cocoa when the view's visible rectangle or bounds change.
 - (void)reshape
 {
-    @synchronized(self) {
-        NSRect bounds = [self frame];
-        
-        GLfloat minX, minY, maxX, maxY;
-        minX = NSMinX(bounds);
-        minY = NSMinY(bounds);
-        maxX = NSMaxX(bounds);
-        maxY = NSMaxY(bounds);
-        [[self openGLContext] makeCurrentContext];
-        /*
-        if (CGLLockContext([[self openGLContext] CGLContextObj]) != kCGLNoError)
-            NSLog(@"Could not lock CGLContext");
-        */
-        glViewport(0, 0, bounds.size.width, bounds.size.height);
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        glOrtho(minX, maxX, minY, maxY, -1.0, 1.0);
-        glDisable(GL_DITHER);
-        glDisable(GL_ALPHA_TEST);
-        glDisable(GL_BLEND);
-        glDisable(GL_STENCIL_TEST);
-        glDisable(GL_FOG);
-        glDisable(GL_DEPTH_TEST);
-        glPixelZoom(1.0, 1.0);
-        glClearColor(0.0, 0.0, 0.0, 1.0);
-        glClear(GL_COLOR_BUFFER_BIT);
-        //CGLUnlockContext([[self openGLContext] CGLContextObj]);
-        //[[self openGLContext] flushBuffer];
-    }
+    if (CGLLockContext((CGLContextObj)[[self openGLContext] CGLContextObj]) != kCGLNoError)
+         NSLog(@"Could not lock CGLContext");
+    [lock lock];
+    NSRect bounds = [self frame];
+    GLfloat minX, minY, maxX, maxY;
+    minX = NSMinX(bounds);
+    minY = NSMinY(bounds);
+    maxX = NSMaxX(bounds);
+    maxY = NSMaxY(bounds);
+    [[self openGLContext] makeCurrentContext];
+    glViewport(0, 0, bounds.size.width, bounds.size.height);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(minX, maxX, minY, maxY, -1.0, 1.0);
+    glDisable(GL_DITHER);
+    glDisable(GL_ALPHA_TEST);
+    glDisable(GL_BLEND);
+    glDisable(GL_STENCIL_TEST);
+    glDisable(GL_FOG);
+    glDisable(GL_DEPTH_TEST);
+    glPixelZoom(1.0, 1.0);
+    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT);
+    [[self openGLContext] flushBuffer];
+    [lock unlock];
+    CGLUnlockContext((CGLContextObj)[[self openGLContext] CGLContextObj]);
 }
+
 
 - (void)cleanup
 {
-    @synchronized(self) {
-        if (ciContext) {
-            [ciContext release];
-            ciContext = nil;
-        }
-        //self.currentFrame = nil;
-    }    
+    [lock lock];
+    if (ciContext) {
+        [ciContext release];
+        ciContext = nil;
+    }
+    if (frameSize)
+        [frameSize release];
+    frameSize = nil;
+    //self.currentFrame = nil;
+    [lock unlock];  
 }
 
 - (void)setSize:(NSSize)size
 {
-    @synchronized(self) {
-        NSRect actualRect = [[self window ] frame];
-        // XXX - we actually don't allow setting a 0-size (for neither width nor height)
-        if (size.width && size.height &&
-            (size.width != actualRect.size.width ||
-             size.height != actualRect.size.height))
-        {
-            NSRect newRect = NSMakeRect(0, 0, size.width, size.height);
-            [self setBounds:newRect];
-            newRect.origin.x = actualRect.origin.x;
-            newRect.origin.y = actualRect.origin.y;
-            NSRect frame = NSMakeRect (0, 0, 100, 100);
-            NSRect contentRect;
-            contentRect = [NSWindow contentRectForFrameRect: frame
-                                                  styleMask: NSTitledWindowMask];
+    [lock lock];
+    NSRect actualRect = [[self window] contentRectForFrameRect:[self frame]];
+    // XXX - we actually don't allow setting a 0-size (for neither width nor height)
+    if (size.width && size.height &&
+        (size.width != actualRect.size.width ||
+         size.height != actualRect.size.height))
+    {
+        if (frameSize)
+            [frameSize release];
+        frameSize = [[JMXSize sizeWithNSSize:size] retain];
+        needsResize = YES;
+    }
+    [lock unlock];
+}
+
+- (IBAction)toggleFullScreen:(id)sender
+{
+    if ([self isInFullScreenMode] || fullScreen) {
+        [self exitFullScreenModeWithOptions:nil];
+        fullScreen = NO;
+    } else {
+        CGDisplayModeRef newMode;
+        bool exactMatch;
+        CGDirectDisplayID currentDisplayID = (CGDirectDisplayID)[[[[[self window] screen] deviceDescription] objectForKey:@"NSScreenNumber"] intValue];  
+
+        // Loop through all display modes to determine the closest match.
+        // CGDisplayBestModeForParameters is deprecated on 10.6 so we will emulate it's behavior
+        // Try to find a mode with the requested depth and equal or greater dimensions first.
+        // If no match is found, try to find a mode with greater depth and same or greater dimensions.
+        // If still no match is found, just use the current mode.
+        CFArrayRef allModes = CGDisplayCopyAllDisplayModes(currentDisplayID, NULL);
+        for(int i = 0; i < CFArrayGetCount(allModes); i++)    {
+            CGDisplayModeRef mode = (CGDisplayModeRef)CFArrayGetValueAtIndex(allModes, i);
+            CFStringRef pixEnc = CGDisplayModeCopyPixelEncoding(mode);
+            if(CFStringCompare(pixEnc, CFSTR(IO32BitDirectPixels), kCFCompareCaseInsensitive) != kCFCompareEqualTo)
+                continue;
             
-            newRect.size.height += (frame.size.height - contentRect.size.height);
-            [[self window] setFrame:newRect display:NO];
-            [[self window] setMovable:YES]; // XXX - this shouldn't be necessary
-            [self setNeedsDisplay:YES]; // triggers reshape
+            if((CGDisplayModeGetWidth(mode) >= frameSize.width) && (CGDisplayModeGetHeight(mode) >= frameSize.height))
+            {
+                newMode = mode;
+                exactMatch = true;
+                break;
+            }
         }
+        
+        // No depth match was found
+        if(!exactMatch)
+        {
+            for(int i = 0; i < CFArrayGetCount(allModes); i++)
+            {
+                CGDisplayModeRef mode = (CGDisplayModeRef)CFArrayGetValueAtIndex(allModes, i);
+                CFStringRef pixEnc = CGDisplayModeCopyPixelEncoding(mode);
+                if(CFStringCompare(pixEnc, CFSTR(IO32BitDirectPixels), kCFCompareCaseInsensitive) != kCFCompareEqualTo)
+                    continue;
+                
+                if((CGDisplayModeGetWidth(mode) >= frameSize.width) && (CGDisplayModeGetHeight(mode) >= frameSize.height))
+                {
+                    newMode = mode;
+                    break;
+                }
+            }
+        }
+        
+        [self enterFullScreenMode:[[self window] screen] 
+                      withOptions:[NSDictionary dictionaryWithObjectsAndKeys:
+                                   [NSNumber numberWithBool:NO],
+                                   NSFullScreenModeAllScreens,
+                                   [NSNumber numberWithUnsignedInteger:
+                                    NSApplicationPresentationDefault |
+                                    NSApplicationPresentationAutoHideMenuBar |
+                                    NSApplicationPresentationDisableHideApplication |
+                                    NSApplicationPresentationAutoHideDock],
+                                   NSFullScreenModeApplicationPresentationOptions,
+                                   nil]];
+        fullScreen = YES;
+    }
+    [self reshape];
+}
+@end
+
+
+@interface JMXScreenController : NSWindowController {
+    NSMutableArray *_keyEvents;
+    JMXOpenGLView *_view;
+}
+- (NSDictionary *)getEvent;
+@end
+
+@implementation JMXScreenController
+
+- (id)initWithView:(JMXOpenGLView *)view
+{
+    _keyEvents = [[NSMutableArray arrayWithCapacity:100] retain];
+    _view = view;
+    return [super initWithWindow:[_view window]];
+}
+
+- (NSDictionary *)getEvent
+{
+    NSDictionary *event = NULL;
+    @synchronized(self) {
+        if ([_keyEvents count]) {
+            event = [_keyEvents objectAtIndex:0];
+            [_keyEvents removeObjectAtIndex:0];
+        }
+    }
+    return event;
+}
+
+
+- (void)insertEvent:(NSEvent *)event OfType:(NSString *)type WithState:(NSString *)state
+{
+    NSDictionary *entry;
+    // create the entry
+    entry = [[NSDictionary 
+              dictionaryWithObjects:
+              [NSArray arrayWithObjects:
+               event, state, type, nil
+               ]
+              forKeys:
+              [NSArray arrayWithObjects:
+               @"event", @"state", @"type", nil
+               ]
+              ] retain];
+    @synchronized(self) {
+        [_keyEvents addObject:entry];
+    }
+}
+
+- (void)keyUp:(NSEvent *)event
+{
+    //NSLog(@"Keyrelease (%hu, modifier flags: 0x%x) %@\n", [event keyCode], [event modifierFlags], [event charactersIgnoringModifiers]);
+    [self insertEvent:[event retain] OfType:@"kbd" WithState:@"released"];
+}
+
+// handle keystrokes
+- (void)keyDown:(NSEvent *)event
+{
+    ///NSLog(@"Keypress (%hu, modifier flags: 0x%x) %@\n", [event keyCode], [event modifierFlags], [event charactersIgnoringModifiers]);
+    [self insertEvent:event OfType:@"kbd" WithState:@"pressed"]; 
+    if ([event keyCode] == 3 && [event modifierFlags]&NSCommandKeyMask) { // %-f to switch fullscreen
+        [_view toggleFullScreen:self];
+        [self setWindow:[_view window]];
     }
 }
 
@@ -260,6 +437,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         [[window contentView] addSubview:view];
         [window setReleasedWhenClosed:NO];
         [window setIsVisible:YES];
+        controller = [[JMXScreenController alloc] initWithView:view];
         //[window orderBack:self];
     }
     return self;
@@ -290,6 +468,9 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         [view release];
         view = nil;
     }
+    if (controller)
+        [controller release];
+    controller = nil;
     [window release];
     [super dealloc];
 }

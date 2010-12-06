@@ -12,8 +12,8 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
+			<integer value="45"/>
 			<integer value="6"/>
-			<integer value="35"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -609,14 +609,14 @@
 																						<reference key="NSTableView" ref="701752634"/>
 																					</object>
 																					<object class="NSTableColumn" id="965242279">
-																						<string key="NSIdentifier">pinType</string>
+																						<string key="NSIdentifier">pinValue</string>
 																						<double key="NSWidth">124</double>
 																						<double key="NSMinWidth">40</double>
 																						<double key="NSMaxWidth">1000</double>
 																						<object class="NSTableHeaderCell" key="NSHeaderCell">
 																							<int key="NSCellFlags">75628096</int>
 																							<int key="NSCellFlags2">2048</int>
-																							<string key="NSContents">Type</string>
+																							<string key="NSContents">Value</string>
 																							<reference key="NSSupport" ref="26"/>
 																							<reference key="NSBackgroundColor" ref="161382090"/>
 																							<reference key="NSTextColor" ref="271991721"/>
@@ -2593,7 +2593,6 @@
 							<string>inputPins</string>
 							<string>outputPins</string>
 							<string>pinInspector</string>
-							<string>pinsProperties</string>
 							<string>producers</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -2602,7 +2601,6 @@
 							<string>NSTableView</string>
 							<string>NSTableView</string>
 							<string>NSTabView</string>
-							<string>JMXEntityOutlineView</string>
 							<string>NSTableView</string>
 						</object>
 					</object>
@@ -2614,7 +2612,6 @@
 							<string>inputPins</string>
 							<string>outputPins</string>
 							<string>pinInspector</string>
-							<string>pinsProperties</string>
 							<string>producers</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -2634,10 +2631,6 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">pinInspector</string>
 								<string key="candidateClassName">NSTabView</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">pinsProperties</string>
-								<string key="candidateClassName">JMXEntityOutlineView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">producers</string>

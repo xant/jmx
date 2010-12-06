@@ -95,6 +95,19 @@
     return count;
 }
 
+- (void)setPopupButtonValue:(id)sender
+{
+    if (sender == inputPins) {
+        NSArray *pins;
+        @synchronized(entityLayer.entity) {
+            pins = [entityLayer.entity inputPins];
+        }
+        JMXInputPin *pin = [entityLayer.entity inputPinWithName:[pins objectAtIndex:[sender selectedRow]]];
+        NSCell *cell = [sender preparedCellAtColumn:1 row:[sender selectedRow]];
+        [pin deliverData:[(NSPopUpButtonCell *)cell titleOfSelectedItem]];
+    }
+}
+
 - (void)setSliderValue:(id)sender
 {
     if (sender == inputPins) {
@@ -127,8 +140,6 @@
                     if ([pin allowedValues]) {
                         cell = [[NSPopUpButtonCell alloc] init];
                         [(NSPopUpButtonCell *)cell addItemsWithTitles:[pin allowedValues]];
-                        NSString *aValue = [pin readData];
-                        [(NSPopUpButtonCell *)cell selectItemWithTitle:aValue];
                         [(NSPopUpButtonCell *)cell setPullsDown:NO];
                     } else {
                         cell = [[[NSTextFieldCell alloc] init] autorelease];
@@ -136,17 +147,18 @@
                     }
                     [cell setControlSize:NSSmallControlSize];
                     [cell setFont:[NSFont labelFontOfSize:[NSFont smallSystemFontSize]]];
+                    [cell setTarget:self];
+                    [cell setAction:@selector(setPopupButtonValue:)];
                 } else if (pin.type == kJMXNumberPin) {
                     if (pin.minValue && pin.maxValue) {
-                        NSSliderCell *sliderCell = [[[NSSliderCell alloc] init] autorelease];
-                        [sliderCell setMinValue:[pin.minValue doubleValue]];
-                        [sliderCell setMaxValue:[pin.maxValue doubleValue]];
-                        [sliderCell setControlSize:NSSmallControlSize];
-                        [sliderCell setContinuous:YES];
-                        [sliderCell setTarget:self];
-                        [sliderCell setAction:@selector(setSliderValue:)];
-                        [sliderCell setTitle:[pin name]];
-                        cell = sliderCell;
+                        cell = [[[NSSliderCell alloc] init] autorelease];
+                        [(NSSliderCell *)cell setMinValue:[pin.minValue doubleValue]];
+                        [(NSSliderCell *)cell setMaxValue:[pin.maxValue doubleValue]];
+                        [cell setControlSize:NSSmallControlSize];
+                        [cell setContinuous:YES];
+                        [cell setTarget:self];
+                        [cell setAction:@selector(setSliderValue:)];
+                        [cell setTitle:[pin name]];
                     } else {
                         cell = [[[NSTextFieldCell alloc] init] autorelease];
                         NSNumberFormatter *nf = [[NSNumberFormatter alloc] init];
@@ -165,6 +177,24 @@
         }
     }
     return cell;
+}
+
+- (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
+{
+    NSArray *pins = nil;
+    if (entityLayer.entity && aTableView == inputPins) {
+        @synchronized(entityLayer.entity) {
+            pins = [entityLayer.entity inputPins];
+        }
+        if ([[aTableColumn identifier] isEqualTo:@"pinValue"]) {
+            @synchronized(entityLayer.entity) {
+                pins = [entityLayer.entity inputPins];
+            }
+            JMXPin *pin = [entityLayer.entity inputPinWithName:[pins objectAtIndex:rowIndex]];
+            if ([aCell isKindOfClass:[NSPopUpButtonCell class]])
+                 [(NSPopUpButtonCell *)aCell selectItemWithTitle:[pin readData]];
+        }
+    }
 }
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex

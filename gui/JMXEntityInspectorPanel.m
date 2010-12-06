@@ -104,7 +104,7 @@
         }
         JMXInputPin *pin = [entityLayer.entity inputPinWithName:[pins objectAtIndex:[sender selectedRow]]];
         NSCell *cell = [sender preparedCellAtColumn:1 row:[sender selectedRow]];
-        [pin deliverData:[NSNumber numberWithDouble:[cell doubleValue]]];
+        [pin deliverData:[NSNumber numberWithFloat:[cell floatValue]]];
     }
 }
 
@@ -146,7 +146,6 @@
                         [sliderCell setTarget:self];
                         [sliderCell setAction:@selector(setSliderValue:)];
                         [sliderCell setTitle:[pin name]];
-                        //[sliderCell setDoubleValue:[[pin readData] doubleValue]];
                         cell = sliderCell;
                     } else {
                         cell = [[[NSTextFieldCell alloc] init] autorelease];
@@ -179,7 +178,11 @@
             if ([[aTableColumn identifier] isEqualTo:@"pinName"]) {
                 return [pins objectAtIndex:rowIndex];
             } else {
-                return [[entityLayer.entity inputPinWithName:[pins objectAtIndex:rowIndex]] typeName];
+                @synchronized(entityLayer.entity) {
+                    pins = [entityLayer.entity inputPins];
+                }
+                JMXPin *pin = [entityLayer.entity inputPinWithName:[pins objectAtIndex:rowIndex]];
+                return [pin readData];
             }
         } else if (aTableView == outputPins) {
             @synchronized(entityLayer.entity) {

@@ -5,7 +5,7 @@
 //  Created by xant on 9/17/10.
 //  Copyright 2010 Dyne.org. All rights reserved.
 //
-//  based on MTCoreAudio
+//  initially based on MTCoreAudio
 //
 //  This file is part of JMX
 //

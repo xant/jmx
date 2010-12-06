@@ -7,12 +7,19 @@
 //
 
 #import <Cocoa/Cocoa.h>
+
 @protocol JMXV8
+
 #ifdef __JMXV8__
 #include <v8.h>
+
 + (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate;
+
 @optional
+
 - (v8::Handle<v8::Object>)jsObj;
 - (void)jsInit:(NSValue *)argsValue;
+
 #endif
+
 @end

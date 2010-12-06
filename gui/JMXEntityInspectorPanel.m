@@ -94,6 +94,47 @@
     return count;
 }
 
+- (void)tableView:(NSTableView *)aTableView
+   setObjectValue:(id)anObject
+   forTableColumn:(NSTableColumn *)aTableColumn
+              row:(NSInteger)rowIndex
+{
+    if (aTableView == inputPins && [[aTableColumn identifier] isEqualTo:@"pinValue"]) {
+        NSArray *pins;
+        @synchronized(entityLayer.entity) {
+            pins = [entityLayer.entity inputPins];
+        }
+        JMXInputPin *pin = [entityLayer.entity inputPinWithName:[pins objectAtIndex:rowIndex]];
+        if (pin) {
+            if (pin.type == kJMXNumberPin) {
+                if ([anObject isKindOfClass:[NSString class]])
+                    [pin deliverData:[NSNumber numberWithInt:[anObject intValue]]];
+                else if ([anObject isKindOfClass:[NSNumber class]])
+                    [pin deliverData:anObject];
+            } else if (pin.type == kJMXStringPin) {
+                if ([anObject isKindOfClass:[NSString class]])
+                    [pin deliverData:anObject];
+                else if ([anObject isKindOfClass:[NSNumber class]])
+                    [pin deliverData:[NSString stringWithFormat:@"%.2f", [anObject floatValue]]]; // XXX
+            }
+        }
+    }
+}
+
+- (void)setNumberValue:(id)sender
+{
+    if (sender == inputPins) {
+        NSArray *pins;
+        @synchronized(entityLayer.entity) {
+            pins = [entityLayer.entity inputPins];
+        }
+        JMXInputPin *pin = [entityLayer.entity inputPinWithName:[pins objectAtIndex:[sender selectedRow]]];
+        if (pin) {
+            NSCell *cell = [sender preparedCellAtColumn:1 row:[sender selectedRow]];
+        }
+    }
+}
+
 - (void)setPopupButtonValue:(id)sender
 {
     if (sender == inputPins) {
@@ -175,6 +216,8 @@
                         [cell setFormatter:nf];     
                         [nf release];
                         [cell setEditable:YES];
+                        [cell setTarget:self];
+                        [cell setAction:@selector(setNumberValue:)];
                     }
                 } else {
                     cell = [[[NSTextFieldCell alloc] init] autorelease];
@@ -200,6 +243,12 @@
             JMXPin *pin = [entityLayer.entity inputPinWithName:[pins objectAtIndex:rowIndex]];
             if ([aCell isKindOfClass:[NSPopUpButtonCell class]])
                  [(NSPopUpButtonCell *)aCell selectItemWithTitle:[pin readData]];
+            else if ([aCell isKindOfClass:[NSTextFieldCell class]]) {
+                id value = [pin readData];
+                if ([value isKindOfClass:[NSNumber class]]) {
+                    [(NSTextFieldCell *)aCell setStringValue:[NSString stringWithFormat:@"%.2f", [value floatValue]]];
+                }
+            }
         }
     }
 }
@@ -255,7 +304,10 @@
 
 - (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
-    return false; // we don't allow editing items for now
+    if (aTableView == inputPins && [[aTableColumn identifier] isEqualTo:@"pinValue"])
+        return YES;
+    else
+        return NO; // we don't allow editing items for now
 }
 
 - (NSArray *)tableView:(NSTableView *)aTableView namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination forDraggedRowsWithIndexes:(NSIndexSet *)indexSet

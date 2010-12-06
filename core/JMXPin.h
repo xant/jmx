@@ -102,6 +102,7 @@ typedef enum {
 @property (readonly) id maxValue;
 @property (readonly) BOOL connected;
 @property (readwrite) BOOL sendNotifications;
+@property (assign, readwrite) id data; // allow to access data as a property (using the . syntax)
 
 + (id)pinWithName:(NSString *)name
           andType:(JMXPinType)pinType

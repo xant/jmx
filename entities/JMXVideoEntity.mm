@@ -52,7 +52,6 @@ using namespace v8;
         self.scaleRatio = [NSNumber numberWithFloat:1.0];
         NSPoint zeroPoint = { 0, 0 };
         self.origin = [JMXPoint pointWithNSPoint:zeroPoint];
-        [self registerInputPin:@"name" withType:kJMXStringPin andSelector:@"setName:" ];
         JMXInputPin *inputPin;
         inputPin = [self registerInputPin:@"alpha"
                                  withType:kJMXNumberPin

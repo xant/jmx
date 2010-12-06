@@ -498,6 +498,16 @@ using namespace v8;
     return (type == pin.type && direction != pin.direction) ? YES : NO;
 }
 
+- (id)data
+{
+    return [self readData];
+}
+
+- (void)setData:(id)data
+{
+    [self deliverData:data fromSender:self];
+}
+
 #pragma mark V8
 
 static v8::Handle<Value>direction(Local<String> name, const AccessorInfo& info)
@@ -605,6 +615,7 @@ static v8::Persistent<FunctionTemplate> classTemplate;
     jsInstance->SetPointerInInternalField(0, self);
     return handleScope.Close(jsInstance);
 }
+
 
 @end
 

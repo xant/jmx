@@ -81,6 +81,7 @@ using namespace v8;
         outputPins = [[NSMutableDictionary alloc] init];
         [self registerInputPin:@"active" withType:kJMXNumberPin andSelector:@"setActivePin:"];
         [self registerOutputPin:@"active" withType:kJMXNumberPin];
+        [self registerInputPin:@"name" withType:kJMXStringPin andSelector:@"setName:" ];
         // delay notification so that the superclass constructor can finish its job
         // since this selector is going to be called in this same thread, we know for sure
         // that it's going to be called after the init-chain has been fully executede

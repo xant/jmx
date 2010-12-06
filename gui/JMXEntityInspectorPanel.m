@@ -39,7 +39,6 @@
     [tableView setDataSource:nil];
     [tableView setDelegate:nil];
     [tableView reloadData];
-    [dataCells removeAllObjects];
 }
 
 - (void)unsetEntity:(JMXEntityLayer *)anEntityLayer
@@ -103,8 +102,14 @@
             pins = [entityLayer.entity inputPins];
         }
         JMXInputPin *pin = [entityLayer.entity inputPinWithName:[pins objectAtIndex:[sender selectedRow]]];
-        NSCell *cell = [sender preparedCellAtColumn:1 row:[sender selectedRow]];
-        [pin deliverData:[(NSPopUpButtonCell *)cell titleOfSelectedItem]];
+        if (pin) {
+            NSCell *cell = [sender preparedCellAtColumn:1 row:[sender selectedRow]];
+            [pin deliverData:[(NSPopUpButtonCell *)cell titleOfSelectedItem]];
+            // XXX - the following line is necessary to have the table updated if the new selections 
+            //       involves creation/removal of pins (so new pins must be enumerated in the table)
+            //       for instance JMXCoreImageFilters, when selecting a new filter
+            [inputPins performSelector:@selector(reloadData) withObject:nil afterDelay:0.1];
+        }
     }
 }
 
@@ -116,8 +121,10 @@
             pins = [entityLayer.entity inputPins];
         }
         JMXInputPin *pin = [entityLayer.entity inputPinWithName:[pins objectAtIndex:[sender selectedRow]]];
-        NSCell *cell = [sender preparedCellAtColumn:1 row:[sender selectedRow]];
-        [pin deliverData:[NSNumber numberWithFloat:[cell floatValue]]];
+        if (pin) {
+            NSCell *cell = [sender preparedCellAtColumn:1 row:[sender selectedRow]];
+            [pin deliverData:[NSNumber numberWithFloat:[cell floatValue]]];
+        }
     }
 }
 
@@ -317,6 +324,7 @@
         [self clearTableView:inputPins];
         [self clearTableView:outputPins];
         [self clearTableView:producers];
+        [dataCells removeAllObjects];
     }
 }
 

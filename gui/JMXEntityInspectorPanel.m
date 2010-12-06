@@ -22,6 +22,7 @@
         entityName = nil;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasSelected:) name:@"JMXBoardEntityWasSelected" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasRemoved:) name:@"JMXBoardEntityWasRemoved" object:nil];
+        dataCells =[[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -29,6 +30,7 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [dataCells release];
     [super dealloc];
 }
 
@@ -37,7 +39,7 @@
     [tableView setDataSource:nil];
     [tableView setDelegate:nil];
     [tableView reloadData];
-
+    [dataCells removeAllObjects];
 }
 
 - (void)unsetEntity:(JMXEntityLayer *)anEntityLayer
@@ -67,6 +69,7 @@
         [producers setDelegate:self];
         [producers registerForDraggedTypes:[NSArray arrayWithObject:@"PinRowIndex"]];
     }
+    [dataCells removeAllObjects];
     [producers reloadData];
 }
 
@@ -92,9 +95,23 @@
     return count;
 }
 
+- (void)setSliderValue:(id)sender
+{
+    if (sender == inputPins) {
+        NSArray *pins;
+        @synchronized(entityLayer.entity) {
+            pins = [entityLayer.entity inputPins];
+        }
+        JMXInputPin *pin = [entityLayer.entity inputPinWithName:[pins objectAtIndex:[sender selectedRow]]];
+        NSCell *cell = [sender preparedCellAtColumn:1 row:[sender selectedRow]];
+        [pin deliverData:[NSNumber numberWithDouble:[cell doubleValue]]];
+    }
+}
+
 - (NSCell *)tableView:(NSTableView *)tableView dataCellForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 {
     NSActionCell *cell = nil;
+    
     if (entityLayer.entity && tableColumn != nil) {
         NSArray *pins = nil;
         if (tableView == inputPins) {
@@ -103,6 +120,9 @@
                     pins = [entityLayer.entity inputPins];
                 }
                 JMXPin *pin = [entityLayer.entity inputPinWithName:[pins objectAtIndex:row]];
+                cell = [dataCells objectForKey:pin];
+                if (cell != nil)
+                    return cell;
                 if (pin.type == kJMXStringPin || pin.type == kJMXTextPin) {
                     if ([pin allowedValues]) {
                         cell = [[NSPopUpButtonCell alloc] init];
@@ -126,6 +146,7 @@
                         [sliderCell setTarget:self];
                         [sliderCell setAction:@selector(setSliderValue:)];
                         [sliderCell setTitle:[pin name]];
+                        //[sliderCell setDoubleValue:[[pin readData] doubleValue]];
                         cell = sliderCell;
                     } else {
                         cell = [[[NSTextFieldCell alloc] init] autorelease];
@@ -133,13 +154,14 @@
                         [nf setMaximumFractionDigits:2];
                         [nf setMinimumFractionDigits:2];
                         [nf setMinimumIntegerDigits:1];
-                        [cell setFormatter:nf];
+                        [cell setFormatter:nf];     
                         [nf release];
                         [cell setEditable:YES];
                     }
                 } else {
                     cell = [[[NSTextFieldCell alloc] init] autorelease];
                 }
+                [dataCells setObject:cell forKey:pin];
             }
         }
     }
@@ -252,9 +274,6 @@
 {
     JMXEntityLayer *anEntityLayer = [aNotification object];
     [self setEntity:anEntityLayer];
-    [pinsProperties setEntity:anEntityLayer.entity];
-	[pinsProperties expandItem:nil expandChildren:YES];
-    [pinsProperties reloadData];
 }
 
 - (void)anEntityWasRemoved:(NSNotification *)aNotification
@@ -262,7 +281,6 @@
     JMXEntity *entity = [aNotification object];
     if (entityLayer && entityLayer.entity == entity) {
         entityLayer = nil;
-        [self clearTableView:pinsProperties];
         [self clearTableView:inputPins];
         [self clearTableView:outputPins];
         [self clearTableView:producers];

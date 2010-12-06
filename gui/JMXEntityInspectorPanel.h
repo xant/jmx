@@ -7,7 +7,6 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "JMXEntityOutlineView.h"
 
 
 @class JMXEntityLayer;
@@ -18,7 +17,7 @@
     IBOutlet NSTableView *inputPins;
     IBOutlet NSTableView *outputPins;
     IBOutlet NSTableView *producers;
-	IBOutlet JMXEntityOutlineView *pinsProperties;
+    NSMutableDictionary *dataCells;
 @private
     JMXEntityLayer *entityLayer; // weak reference
 }

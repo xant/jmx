@@ -12,7 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="45"/>
+			<integer value="1"/>
 			<integer value="6"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
@@ -40,10 +40,10 @@
 				<string key="NSClassName">NSApplication</string>
 			</object>
 			<object class="NSWindowTemplate" id="855098847">
-				<int key="NSWindowStyleMask">15</int>
+				<int key="NSWindowStyleMask">13</int>
 				<int key="NSWindowBacking">2</int>
 				<string key="NSWindowRect">{{235, -175}, {1270, 734}}</string>
-				<int key="NSWTFlags">611844096</int>
+				<int key="NSWTFlags">-461897728</int>
 				<string key="NSWindowTitle">Board</string>
 				<string key="NSWindowClass">NSWindow</string>
 				<object class="NSToolbar" key="NSViewClass" id="701867608">
@@ -1532,6 +1532,14 @@
 					</object>
 					<int key="connectionID">276</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">boardWindow</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="855098847"/>
+					</object>
+					<int key="connectionID">284</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -2275,9 +2283,9 @@
 				</object>
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
-					<string>{{170, 66}, {1270, 734}}</string>
+					<string>{{170, 53}, {1270, 734}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{170, 66}, {1270, 734}}</string>
+					<string>{{170, 53}, {1270, 734}}</string>
 					<boolean value="YES"/>
 					<object class="NSMutableDictionary">
 						<string key="NS.key.0">InitialTabViewItem</string>
@@ -2360,9 +2368,9 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{630, 524}, {275, 112}}</string>
+					<string>{{507, 524}, {275, 112}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{630, 524}, {275, 112}}</string>
+					<string>{{507, 524}, {275, 112}}</string>
 					<boolean value="NO"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2372,7 +2380,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{441, 795}, {616, 0}}</string>
+					<string>{{524, 787}, {616, 0}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2400,7 +2408,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">279</int>
+			<int key="maxID">284</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2666,11 +2674,13 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>showBoard:</string>
 							<string>toggleInspector:</string>
 							<string>toggleLibrary:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 						</object>
@@ -2679,11 +2689,16 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>showBoard:</string>
 							<string>toggleInspector:</string>
 							<string>toggleLibrary:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<object class="IBActionInfo">
+								<string key="name">showBoard:</string>
+								<string key="candidateClassName">id</string>
+							</object>
 							<object class="IBActionInfo">
 								<string key="name">toggleInspector:</string>
 								<string key="candidateClassName">id</string>
@@ -2699,6 +2714,7 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>boardViewController</string>
+							<string>boardWindow</string>
 							<string>documentSplitView</string>
 							<string>inspectorPanel</string>
 							<string>libraryView</string>
@@ -2706,6 +2722,7 @@
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>NSViewController</string>
+							<string>NSWindow</string>
 							<string>NSSplitView</string>
 							<string>NSView</string>
 							<string>NSView</string>
@@ -2716,6 +2733,7 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>boardViewController</string>
+							<string>boardWindow</string>
 							<string>documentSplitView</string>
 							<string>inspectorPanel</string>
 							<string>libraryView</string>
@@ -2725,6 +2743,10 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">boardViewController</string>
 								<string key="candidateClassName">NSViewController</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">boardWindow</string>
+								<string key="candidateClassName">NSWindow</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">documentSplitView</string>

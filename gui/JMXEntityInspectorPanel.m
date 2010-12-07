@@ -198,11 +198,26 @@
                         NSNumberFormatter *nf = [[NSNumberFormatter alloc] init];
                         [nf setMaximumFractionDigits:2];
                         [nf setMinimumFractionDigits:2];
-                        [nf setMinimumIntegerDigits:1];
+                        [nf setMinimumIntegerDigits:4];
                         [cell setFormatter:nf];     
                         [nf release];
                         [cell setEditable:YES];
                     }
+                } else if (pin.type == kJMXBooleanPin) {
+                } else if (pin.type == kJMXSizePin || pin.type == kJMXPointPin) {
+                    cell = [[[NSTextFieldCell alloc] init] autorelease];
+                    NSNumberFormatter *nf = [[NSNumberFormatter alloc] init];
+                    [nf setFormatterBehavior:NSNumberFormatterBehavior10_4];
+                    [nf setMaximumFractionDigits:2];
+                    [nf setMinimumFractionDigits:2];
+                    [nf setMinimumIntegerDigits:4];
+                    [nf setFormat:@"0.00;0.00"];
+                    [cell setFormatter:nf];     
+                    [nf release];
+                    [cell setEditable:YES];
+                    [cell setControlSize:NSSmallControlSize];
+                    [cell setFont:[NSFont labelFontOfSize:[NSFont smallSystemFontSize]]];
+                } else if (pin.type == kJMXColorPin) {
                 } else {
                     cell = [[[NSTextFieldCell alloc] init] autorelease];
                 }

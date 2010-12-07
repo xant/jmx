@@ -42,7 +42,9 @@
         timer = nil;
         // and 'effective' frequency , only for debugging purposes
         self.frequency = [NSNumber numberWithDouble:25.0];
-        [self registerInputPin:@"frequency" withType:kJMXNumberPin andSelector:@"setFrequency:"];
+        JMXInputPin *inputFrequency =[self registerInputPin:@"frequency" withType:kJMXNumberPin andSelector:@"setFrequency:"];
+        [inputFrequency addMinLimit:[NSNumber numberWithFloat:1.0]];
+        [inputFrequency addMaxLimit:[NSNumber numberWithFloat:60.0]];
         frequencyPin = [self registerOutputPin:@"frequency" withType:kJMXNumberPin];
         stampCount = 0;
         previousTimeStamp = 0;
@@ -101,18 +103,15 @@
         active = NO;
     } else {
         [self outputDefaultSignals:timeStamp];
-        /*
         NSTimeInterval currentInterval = [timer timeInterval];
         NSTimeInterval newInterval = 1.0/[frequency doubleValue];
         if (currentInterval != newInterval) {
             [timer invalidate];
-            [timer release];
             timer = [NSTimer timerWithTimeInterval:newInterval target:self selector:@selector(signalTick:) userInfo:nil repeats:YES];
             active = YES;
             NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
             [runLoop addTimer:timer forMode:NSRunLoopCommonModes];
         }
-         */
     }
     [pool release];
 }

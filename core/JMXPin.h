@@ -41,6 +41,7 @@
  kJMXPointPin, JMXPoint
  kJMXSizePin, JMXSize
  kJMXColorPin, NSColor
+ kJMXBooleanPin, NSNumber
  
  */
 typedef enum {
@@ -53,6 +54,7 @@ typedef enum {
     kJMXPointPin,
     kJMXSizePin,
     kJMXColorPin,
+    kJMXBooleanPin
 } JMXPinType;
 
 typedef enum {

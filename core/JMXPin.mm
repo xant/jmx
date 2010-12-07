@@ -89,8 +89,8 @@ using namespace v8;
        withSignal:(NSString *)pinSignal
 {
     id pinClass = pinDirection == kJMXInputPin
-    ? [JMXInputPin class]
-    : [JMXOutputPin class];
+                ? [JMXInputPin class]
+                : [JMXOutputPin class];
     return [pinClass pinWithName:name
                          andType:pinType
                     forDirection:pinDirection
@@ -225,6 +225,8 @@ using namespace v8;
             return @"Audio";
         case kJMXColorPin:
             return @"Color";
+        case kJMXBooleanPin:
+            return @"Boolean";
     }
     return nil;
 }
@@ -236,6 +238,11 @@ using namespace v8;
         case kJMXTextPin:
             if (![data isKindOfClass:[NSString class]])
                 return NO;
+            break;
+        case kJMXBooleanPin:
+            if ([[data className] isEqualToString:@"NSCFBoolean"] || [data isKindOfClass:[NSNumber class]])
+                return YES;
+            return NO;
             break;
         case kJMXNumberPin:
             if ([[data className] isEqualToString:@"NSCFNumber"] || [data isKindOfClass:[NSNumber class]])
@@ -579,7 +586,6 @@ static v8::Persistent<FunctionTemplate> classTemplate;
 + (v8::Persistent<FunctionTemplate>)jsClassTemplate
 {
     //v8::Locker lock;
-    //v8::Handle<FunctionTemplate> classTemplate = FunctionTemplate::New();
     if (!classTemplate.IsEmpty())
         return classTemplate;
     NSLog(@"JMXPin ClassTemplate created");
@@ -597,11 +603,11 @@ static v8::Persistent<FunctionTemplate> classTemplate;
     instanceTemplate->SetAccessor(String::NewSymbol("name"), GetStringProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("multiple"), GetBoolProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("continuous"), GetBoolProperty, SetBoolProperty);
-    //instanceTemplate->SetAccessor(String::NewSymbol("owner"), accessObjectProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("minValue"), GetObjectProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("maxValue"), GetObjectProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("connected"), GetBoolProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("sendNotifications"), GetBoolProperty, SetBoolProperty);
+    //instanceTemplate->SetAccessor(String::NewSymbol("owner"), accessObjectProperty);
     //instanceTemplate->SetAccessor(String::NewSymbol("allowedValues"), allowedValues);
     return classTemplate;
 }

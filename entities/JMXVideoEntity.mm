@@ -21,6 +21,7 @@
 //  along with JMX.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#import "CIAlphaFade.h"
 #define __JMXV8__ 1
 #import "JMXVideoEntity.h"
 #import <QuartzCore/QuartzCore.h>
@@ -41,6 +42,8 @@ using namespace v8;
         name = @"";
         colorFilter = [[CIFilter filterWithName:@"CIColorControls"] retain];
         [colorFilter setDefaults];
+        alphaFilter = [[CIFilter filterWithName:@"CIAlphaFade"] retain];
+        [alphaFilter setDefaults]; // XXX - setDefaults doesn't work properly
         NSDictionary *filterAttributes = [colorFilter attributes];
         NSSize defaultLayerSize = { 640, 480 };
         self.size = [JMXSize sizeWithNSSize:defaultLayerSize];
@@ -121,6 +124,8 @@ using namespace v8;
         [currentFrame release];
     if (colorFilter)
         [colorFilter release];
+    if (alphaFilter)
+        [alphaFilter release];
     self.size = nil;
     [super dealloc];
 }
@@ -180,6 +185,10 @@ using namespace v8;
                 frame = [transformFilter valueForKey:@"outputImage"];
             }
             if (frame) {
+                // apply alpha
+                [alphaFilter setValue:alpha forKey:@"outputOpacity"];
+                [alphaFilter setValue:frame forKey:@"inputImage"];
+                frame = [alphaFilter valueForKey:@"outputImage"];
                 [currentFrame release];
                 currentFrame = [frame retain];
             }

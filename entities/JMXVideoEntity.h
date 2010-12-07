@@ -42,6 +42,7 @@
 
 @private
     CIFilter *colorFilter;
+    CIFilter *alphaFilter;
 }
 
 

@@ -15,16 +15,12 @@
 
 @implementation JMXEntityInspectorPanel
 
-- (id)initWithFrame:(NSRect)frameRect
+- (void)awakeFromNib
 {
-    self = [super initWithFrame:frameRect];
-    if (self) {
-        entityName = nil;
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasSelected:) name:@"JMXBoardEntityWasSelected" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasRemoved:) name:@"JMXBoardEntityWasRemoved" object:nil];
-        dataCells =[[NSMutableDictionary alloc] init];
-    }
-    return self;
+    entityName = nil;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasSelected:) name:@"JMXBoardEntityWasSelected" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasRemoved:) name:@"JMXBoardEntityWasRemoved" object:nil];
+    dataCells =[[NSMutableDictionary alloc] init];
 }
 
 - (void)dealloc

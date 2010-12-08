@@ -10,11 +10,9 @@
 
 
 @interface JMXDocumentSplitViewDelegate : NSObject <NSSplitViewDelegate> {
-	NSView *inspectorView;
 	NSView *libraryView;
 }
 
-@property (nonatomic,assign) IBOutlet NSView *inspectorView;
 @property (nonatomic,assign) IBOutlet NSView *libraryView;
 
 

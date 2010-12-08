@@ -11,12 +11,11 @@
 
 @implementation JMXDocumentSplitViewDelegate
 
-@synthesize inspectorView;
 @synthesize libraryView;
 
 - (BOOL)splitView:(NSSplitView *)splitView canCollapseSubview:(NSView *)subview
 {
-	if (subview == inspectorView || subview == libraryView) {
+	if (subview == libraryView) {
 		return YES;
 	}
 	return NO;
@@ -24,7 +23,7 @@
 
 - (BOOL)splitView:(NSSplitView *)splitView shouldCollapseSubview:(NSView *)subview forDoubleClickOnDividerAtIndex:(NSInteger)dividerIndex
 {
-	if ((dividerIndex == 0 && subview == libraryView) || (dividerIndex == 1 && subview == inspectorView))
+	if ((dividerIndex == 0 && subview == libraryView) || (dividerIndex == 1))
 		return YES;
 	return NO;
 }
@@ -57,7 +56,7 @@
 
 - (BOOL)splitView:(NSSplitView *)splitView shouldAdjustSizeOfSubview:(NSView *)subview
 {
-	if (subview == inspectorView || subview == libraryView) {
+	if (subview == libraryView) {
 		return NO;
 	}
 	return YES;

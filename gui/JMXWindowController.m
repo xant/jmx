@@ -12,8 +12,6 @@
 @implementation JMXWindowController
 
 @synthesize documentSplitView;
-@synthesize inspectorPanel;
-@synthesize libraryView;
 @synthesize boardViewController;
 
 #pragma mark -
@@ -32,20 +30,14 @@
 - (IBAction)toggleInspector:(id)sender
 {
 	NSMenuItem *menuItem = (NSMenuItem *)sender;
-	if ([documentSplitView isSubviewCollapsed:inspectorPanel]) {
-		[inspectorPanel setHidden:NO];
-		[documentSplitView adjustSubviews];
-		if (![documentSplitView isSubviewCollapsed:libraryView])
-			[documentSplitView setPosition:200.0f ofDividerAtIndex:0];
-		[documentSplitView setPosition:([documentSplitView bounds].size.width - 300.0f) ofDividerAtIndex:1];
-		[menuItem setTitle:@"Hide Inspector"];
+	if ([inspectorPanel isVisible]) {
+        [inspectorPanel setIsVisible:NO];
+		[menuItem setTitle:@"Show Inspector"];
 	}
 	else {
-		[inspectorPanel setHidden:YES];
-		[documentSplitView adjustSubviews];
-		if (![documentSplitView isSubviewCollapsed:libraryView])
-			[documentSplitView setPosition:200.0f ofDividerAtIndex:0];
-		[menuItem setTitle:@"Show Inspector"];
+        [inspectorPanel setIsVisible:YES];
+        [inspectorPanel makeKeyAndOrderFront:sender];
+		[menuItem setTitle:@"Hide Inspector"];
 	}
 }
 
@@ -56,15 +48,11 @@
 		[libraryView setHidden:NO];
 		[documentSplitView adjustSubviews];
 		[documentSplitView setPosition:200.0f ofDividerAtIndex:0];
-		if (![documentSplitView isSubviewCollapsed:inspectorPanel])
-			[documentSplitView setPosition:([documentSplitView bounds].size.width - 300.0f) ofDividerAtIndex:1];
 		[menuItem setTitle:@"Hide Library"];
 	}
 	else {
 		[libraryView setHidden:YES];
 		[documentSplitView adjustSubviews];
-		if (![documentSplitView isSubviewCollapsed:inspectorPanel])
-			[documentSplitView setPosition:([documentSplitView bounds].size.width - 300.0f) ofDividerAtIndex:1];
 		[menuItem setTitle:@"Show Library"];
 	}
 	

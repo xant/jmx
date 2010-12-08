@@ -10,14 +10,12 @@
 #import "JMXEntityInspectorPanel.h"
 
 @interface JMXWindowController : NSWindowController {
-	NSView *inspectorPanel;
 	NSView *libraryView;	
 	NSSplitView *documentSplitView;
 	NSViewController *boardViewController;
+    IBOutlet NSPanel *inspectorPanel;
 }
 
-@property (nonatomic, assign) IBOutlet NSView *inspectorPanel;
-@property (nonatomic, assign) IBOutlet NSView *libraryView;
 @property (nonatomic, assign) IBOutlet NSSplitView *documentSplitView;
 @property (nonatomic, retain) IBOutlet NSViewController *boardViewController;
 

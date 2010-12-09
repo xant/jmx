@@ -23,7 +23,7 @@
 
 - (BOOL)splitView:(NSSplitView *)splitView shouldCollapseSubview:(NSView *)subview forDoubleClickOnDividerAtIndex:(NSInteger)dividerIndex
 {
-	if ((dividerIndex == 0 && subview == libraryView) || (dividerIndex == 1))
+	if (dividerIndex == 0 && subview == libraryView)
 		return YES;
 	return NO;
 }
@@ -32,8 +32,6 @@
 {
 	if (dividerIndex == 0)
 		return 200.0f;
-	if (dividerIndex == 1)
-		return [splitView bounds].size.width - 300.0f;	
 	return proposedMax;
 }
 
@@ -41,16 +39,11 @@
 {
 	if (dividerIndex == 0)
 		return 200.0f;
-	if (dividerIndex == 1) {
-		return [splitView bounds].size.width - 300.0f;
-	}
 	return proposedMinimumPosition;
 }
 
 - (BOOL)splitView:(NSSplitView *)splitView shouldHideDividerAtIndex:(NSInteger)dividerIndex
 {
-	if (dividerIndex == 1)
-		return YES;
 	return NO;
 }
 

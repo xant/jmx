@@ -384,6 +384,12 @@
     return NO;
 }
 
+- (void)close
+{
+    [[NSColorPanel sharedColorPanel] close];
+    [super close];
+}
+
 #pragma mark -
 #pragma mark Notifications
 

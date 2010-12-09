@@ -30,7 +30,7 @@
 {
 	NSMenuItem *menuItem = (NSMenuItem *)sender;
 	if ([inspectorPanel isVisible]) {
-        [inspectorPanel setIsVisible:NO];
+        [inspectorPanel close];
 		[menuItem setTitle:@"Show Inspector"];
 	}
 	else {

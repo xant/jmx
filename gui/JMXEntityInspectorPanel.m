@@ -8,6 +8,7 @@
 
 #import "JMXEntityInspectorPanel.h"
 #import "JMXEntityLayer.h"
+#import "JMXColor.h"
 
 @interface JMXEntityInspectorPanel (Private)
 - (void)setEntity:(JMXEntityLayer *)entity;
@@ -107,7 +108,7 @@
                     pin.data = [NSNumber numberWithInt:[anObject intValue]];
                 else if ([anObject isKindOfClass:[NSNumber class]])
                     pin.data = anObject;
-            } else if (pin.type == kJMXStringPin) {
+            } else if (pin.type == kJMXStringPin || pin.type == kJMXTextPin) {
                 if ([anObject isKindOfClass:[NSString class]])
                     pin.data = anObject;
                 else if ([anObject isKindOfClass:[NSNumber class]])
@@ -151,6 +152,29 @@
     }
 }
 
+- (void)changeColor:(id)sender
+{
+    NSArray *pins;
+    NSColorPanel *panel = sender;
+    JMXColor *color = (JMXColor *)[panel color];
+    @synchronized(entityLayer.entity) {
+        pins = [entityLayer.entity inputPins];
+    }
+    JMXInputPin *pin = [entityLayer.entity inputPinWithName:[pins objectAtIndex:[inputPins selectedRow]]];
+    if (pin.type == kJMXColorPin)
+        pin.data = color;
+}
+
+- (void)selectColor:(id)sender
+{
+    NSColorPanel *colorPanel = [NSColorPanel sharedColorPanel];
+    if (sender == inputPins) {
+        [colorPanel setDelegate:self];
+        [colorPanel setIsVisible:YES];
+        [colorPanel makeKeyAndOrderFront:sender];
+    }
+}
+
 - (NSCell *)tableView:(NSTableView *)tableView dataCellForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 {
     NSActionCell *cell = nil;
@@ -175,7 +199,7 @@
                         cell = [[[NSTextFieldCell alloc] init] autorelease];
                         [cell setEditable:YES];
                     }
-                    [cell setControlSize:NSSmallControlSize];
+                    [cell setControlSize:NSMiniControlSize];
                     [cell setFont:[NSFont labelFontOfSize:[NSFont smallSystemFontSize]]];
                     [cell setTarget:self];
                     [cell setAction:@selector(setPopupButtonValue:)];
@@ -184,7 +208,7 @@
                         cell = [[[NSSliderCell alloc] init] autorelease];
                         [(NSSliderCell *)cell setMinValue:[pin.minValue doubleValue]];
                         [(NSSliderCell *)cell setMaxValue:[pin.maxValue doubleValue]];
-                        [cell setControlSize:NSSmallControlSize];
+                        [cell setControlSize:NSMiniControlSize];
                         [cell setContinuous:YES];
                         [cell setTarget:self];
                         [cell setAction:@selector(setSliderValue:)];
@@ -211,9 +235,15 @@
                     [cell setFormatter:nf];     
                     [nf release];
                     [cell setEditable:YES];
-                    [cell setControlSize:NSSmallControlSize];
+                    [cell setControlSize:NSMiniControlSize];
                     [cell setFont:[NSFont labelFontOfSize:[NSFont smallSystemFontSize]]];
                 } else if (pin.type == kJMXColorPin) {
+                    cell = [[[NSButtonCell alloc] init] autorelease];
+                    [cell setTitle:@"Select Color"];
+                    [cell setControlSize:NSMiniControlSize];
+                    [cell setFont:[NSFont labelFontOfSize:[NSFont smallSystemFontSize]]];
+                    [cell setTarget:self];
+                    [cell setAction:@selector(selectColor:)];
                 } else {
                     cell = [[[NSTextFieldCell alloc] init] autorelease];
                 }

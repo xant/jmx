@@ -11,7 +11,7 @@
 
 @class JMXEntityLayer;
 
-@interface JMXEntityInspectorPanel : NSPanel <NSTableViewDataSource,NSTableViewDelegate> {
+@interface JMXEntityInspectorPanel : NSPanel <NSTableViewDataSource,NSTableViewDelegate,NSWindowDelegate> {
     IBOutlet NSTextField *entityName;
     IBOutlet NSTabView *pinInspector;
     IBOutlet NSTableView *inputPins;

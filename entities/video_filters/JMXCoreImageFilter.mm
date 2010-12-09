@@ -11,6 +11,7 @@
 #define __JMXV8__
 #import "JMXCoreImageFilter.h"
 #import "JMXScript.h"
+#import "JMXColor.h"
 
 JMXV8_EXPORT_ENTITY_CLASS(JMXCoreImageFilter);
 
@@ -84,7 +85,16 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXCoreImageFilter);
     @synchronized(self) {
         if (ciFilter) {
             @try {
-                [ciFilter setValue:value forKey:pinName];
+                if ([value isKindOfClass:[JMXPoint class]]) { // XXX
+                    [ciFilter setValue:[CIVector vectorWithX:[value x] Y:[value y]] forKey:pinName];
+                } else if ([value isKindOfClass:[JMXColor class]]) {
+                    CIColor *color = [CIColor colorWithRed:[value redComponent]
+                                                     green:[value greenComponent]
+                                                      blue:[value blueComponent]];
+                    [ciFilter setValue:color forKey:pinName];
+                } else {
+                    [ciFilter setValue:value forKey:pinName];
+                }
             }
             @catch (NSException * e) {
                 // key doesn't exist
@@ -98,10 +108,9 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXCoreImageFilter);
     CIFilter *newFilter = [CIFilter filterWithName:filterName];
     if (newFilter) {
         [newFilter setDefaults];
-        //NSLog(@"Filter Attributes : %@", [newFilter attributes]);
+        NSLog(@"Filter Attributes : %@", [newFilter attributes]);
         NSArray *inputKeys = [newFilter inputKeys];
-        //NSArray *outputKeys = [newFilter outputKeys];
-        //NSLog(@"Filter Input params : %@\nFilter Output params%@", inputKeys, outputKeys);
+        NSDictionary *attributes = [newFilter attributes];
         @synchronized(self) {
             for (NSString *pinName in [[inputPins copy] autorelease]) {
                 // TODO - extendable [JMXEntity defaultInputPins]
@@ -114,10 +123,21 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXCoreImageFilter);
                     [self unregisterOutputPin:pinName];
             }
             for (NSString *key in inputKeys) {
-                // TODO - use 'attributes' to determine datatype,
-                //        max/min values and display name
+                // TODO - max/min values and display name
                 if (![key isEqualTo:@"inputImage"]) {
-                    [self registerInputPin:key withType:kJMXNumberPin andSelector:@"setFilterValue:userData:" userData:key];
+                    NSDictionary *inputParam = [attributes objectForKey:key];
+                    NSString *type = [inputParam objectForKey:@"CIAttributeClass"];
+                    if ([type isEqualTo:@"NSNumber"]) {
+                        [self registerInputPin:key withType:kJMXNumberPin andSelector:@"setFilterValue:userData:" userData:key];
+                    } else if ([type isEqualTo:@"CIVector"]) {
+                        [self registerInputPin:key withType:kJMXPointPin andSelector:@"setFilterValue:userData:" userData:key];
+                    } else if ([type isEqualTo:@"CIColor"]) {
+                        [self registerInputPin:key withType:kJMXColorPin andSelector:@"setFilterValue:userData:" userData:key];
+                    } else if ([type isEqualTo:@"CIImage"]) {
+                        [self registerInputPin:key withType:kJMXImagePin andSelector:@"setFilterValue:userData:" userData:key];
+                    } else {
+                        NSLog(@"Unhandled datatype %@", type);
+                    }
                 }
             }
             if (ciFilter)

@@ -20,7 +20,6 @@
 - (void)windowDidLoad
 {
 	[documentSplitView setPosition:200.0f ofDividerAtIndex:0];
-	[documentSplitView setPosition:([documentSplitView bounds].size.width - 300.0f) ofDividerAtIndex:1];
 	[documentSplitView adjustSubviews];	
 }
 

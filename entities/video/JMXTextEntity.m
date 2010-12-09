@@ -29,6 +29,7 @@
         self.font = [NSFont systemFontOfSize:[NSFont systemFontSize]];
         self.fgColor = [NSColor whiteColor];
         self.bgColor = [NSColor blackColor];
+        self.text = @"";
         [attributes
          setObject:font
          forKey:NSFontAttributeName
@@ -42,6 +43,7 @@
          forKey:NSBackgroundColorAttributeName
          ];
         renderer = [[JMXTextRenderer alloc] init];
+        renderedText = nil;
     }
     return self;
 }
@@ -50,6 +52,8 @@
 {
     [renderer release];
     [attributes release];
+    if (renderedText)
+        [renderedText release];
     [super dealloc];
 }
 
@@ -80,9 +84,9 @@
         [renderer initWithString:text withAttributes:stanStringAttrib];
         [renderer drawOnBuffer:textFrame];
         @synchronized(self) {
-            if (currentFrame)
-                [currentFrame release];
-            currentFrame = [[CIImage imageWithCVImageBuffer:textFrame] retain];
+            if (renderedText)
+                [renderedText release];
+            renderedText = [[CIImage imageWithCVImageBuffer:textFrame] retain];
         }
         CVPixelBufferRelease(textFrame);
         needsNewFrame = NO;
@@ -174,11 +178,12 @@
 
 - (void)tick:(uint64_t)timeStamp
 {
-    @synchronized(self) {
-        [outputFramePin deliverData:currentFrame];
+    if (renderedText) {
+        if (currentFrame)
+            [currentFrame release];
+        currentFrame = [renderedText retain];
     }
-    [self outputDefaultSignals:timeStamp];
+    [super tick:timeStamp];
 }
-
 
 @end

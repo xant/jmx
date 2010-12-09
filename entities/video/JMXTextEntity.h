@@ -20,6 +20,7 @@
     NSColor *fgColor;
     bool needsNewFrame;
     NSDictionary *stanStringAttrib;
+    CIImage *renderedText;
 }
 
 @property (retain) NSFont *font;

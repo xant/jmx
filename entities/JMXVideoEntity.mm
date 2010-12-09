@@ -195,9 +195,9 @@ using namespace v8;
             // TODO - compute the effective fps and send it to an output pin 
             //        for debugging purposes
         }
+        [outputFramePin deliverData:currentFrame fromSender:self];
+        [outputFrameSizePin deliverData:size];
     }
-    [outputFramePin deliverData:currentFrame fromSender:self];
-    [outputFrameSizePin deliverData:size];
 }
 
 - (CIImage *)currentFrame

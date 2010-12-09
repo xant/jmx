@@ -282,4 +282,13 @@ id controlForJMXPinType(JMXPinType aType)
     [inlets makeObjectsPerformSelector:@selector(updateAllConnectorsFrames)];
 }
 
+- (void)moveToPointWithOffset:(NSValue *)pointValue
+{
+    NSPoint point = [pointValue pointValue];
+    CGPoint currentPosition = self.position;
+    currentPosition.x += point.x;
+    currentPosition.y += point.y;
+    self.position = currentPosition;
+}
+
 @end

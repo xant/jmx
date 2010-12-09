@@ -56,7 +56,7 @@
         }
     }
     if (toDisconnect)
-        [toDisconnect disconnect];
+        [toDisconnect removeConnectors];
 }
 
 - (void)aPinWasConnected:(NSNotification *)notification

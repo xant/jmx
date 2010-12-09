@@ -58,6 +58,11 @@
 
 - (BOOL)containsPoint:(CGPoint)p
 {
+    // This connector is still temporary and we don't want it to return to the
+    // hit test. Once the connection is complete, we can respond to it.
+    if (self.originPinLayer == nil || self.destinationPinLayer == nil)
+        return NO;
+    
 	CGContextRef theContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 	BOOL containsPoint = NO;
 
@@ -162,13 +167,18 @@
     [self recalculateFrameWithPoint:originPoint andPoint:destinationPoint];
 }
 
-- (void)disconnect
+- (void)removeConnectors
 {
     [self removeFromSuperlayer];
     [originPinLayer removeConnector:self];
     [destinationPinLayer removeConnector:self];
     self.originPinLayer = nil;
     self.destinationPinLayer = nil;
+}
+
+- (void)disconnect
+{
+    [originPinLayer.pin disconnectFromPin:destinationPinLayer.pin];
 }
 
 - (void)toggleSelected
@@ -198,6 +208,13 @@
 - (void)unselect
 {
 	self.selected = NO;
+}
+
+- (BOOL)originCanConnectTo:(JMXPinLayer *)aPinLayer
+{
+    if (aPinLayer == nil)
+        return NO;
+    return [self.originPinLayer.pin canConnectToPin:aPinLayer.pin];
 }
 
 @end

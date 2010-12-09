@@ -289,6 +289,14 @@ id controlForJMXPinType(JMXPinType aType)
     currentPosition.x += point.x;
     currentPosition.y += point.y;
     self.position = currentPosition;
+
+    
+    [self updateConnectors];
+}
+
+- (void)removeFromBoard
+{
+    [self removeFromSuperlayer];
 }
 
 @end

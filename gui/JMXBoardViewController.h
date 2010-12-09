@@ -25,7 +25,7 @@
     NSMutableArray *selected;
     NSMutableArray *entities;
 
-    NSArrayController *entitiesController;
+    JMXEntitiesController *entitiesController;
     NSPoint lastDragLocation;
 }
 
@@ -33,8 +33,7 @@
 @property (nonatomic, assign) JMXEntityLayer *selectedLayer;
 @property (nonatomic, assign) JMXConnectorLayer *selectedConnectorLayer;
 @property (nonatomic, retain) NSMutableArray *entities;
-@property (nonatomic, retain) IBOutlet NSArrayController *entitiesController;
-
+@property (nonatomic, retain) IBOutlet JMXEntitiesController *entitiesController;
 
 #pragma mark -
 #pragma mark IBActions

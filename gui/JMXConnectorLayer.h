@@ -65,8 +65,11 @@ enum Direction {
 - (void)toggleSelected;
 - (void)recalculateFrameWithPoint:(CGPoint)aPoint;
 - (void)recalculateFrameWithPoint:(CGPoint)originPoint andPoint:(CGPoint)destinationPoint;
+- (void)removeConnectors;
 - (void)disconnect;
 - (void)select;
 - (void)unselect;
+
+- (BOOL)originCanConnectTo:(JMXPinLayer *)aPinLayer;
 
 @end

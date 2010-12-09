@@ -13,7 +13,6 @@
 		82456BC81223DC9900236FE4 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BC71223DC9900236FE4 /* QTKit.framework */; };
 		82456BCC1223DCA700236FE4 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BCB1223DCA700236FE4 /* QuartzCore.framework */; };
 		824576451227DF5800236FE4 /* JMXPinLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8245763D1227DF5800236FE4 /* JMXPinLayer.m */; };
-		825C30DB1275AD32006376B8 /* JMXBoardInputPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30C71275AD32006376B8 /* JMXBoardInputPanel.m */; };
 		825C30DC1275AD32006376B8 /* JMXBoardInputString.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30C91275AD32006376B8 /* JMXBoardInputString.m */; };
 		825C30DD1275AD32006376B8 /* JMXBoardSelection.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30CB1275AD32006376B8 /* JMXBoardSelection.m */; };
 		825C30DE1275AD32006376B8 /* JMXBoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30CD1275AD32006376B8 /* JMXBoardView.m */; };
@@ -103,8 +102,6 @@
 		82456BC71223DC9900236FE4 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
 		82456BCB1223DCA700236FE4 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		8245763D1227DF5800236FE4 /* JMXPinLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXPinLayer.m; sourceTree = "<group>"; };
-		825C30C61275AD32006376B8 /* JMXBoardInputPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXBoardInputPanel.h; sourceTree = "<group>"; };
-		825C30C71275AD32006376B8 /* JMXBoardInputPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXBoardInputPanel.m; sourceTree = "<group>"; };
 		825C30C81275AD32006376B8 /* JMXBoardInputString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXBoardInputString.h; sourceTree = "<group>"; };
 		825C30C91275AD32006376B8 /* JMXBoardInputString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXBoardInputString.m; sourceTree = "<group>"; };
 		825C30CA1275AD32006376B8 /* JMXBoardSelection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXBoardSelection.h; sourceTree = "<group>"; };
@@ -368,8 +365,6 @@
 				825C31891275AF4B006376B8 /* JMXOutletLabelLayer.m */,
 				825C31821275AF03006376B8 /* JMXEntityLabelLayer.h */,
 				825C31831275AF03006376B8 /* JMXEntityLabelLayer.m */,
-				825C30C61275AD32006376B8 /* JMXBoardInputPanel.h */,
-				825C30C71275AD32006376B8 /* JMXBoardInputPanel.m */,
 				825C30C81275AD32006376B8 /* JMXBoardInputString.h */,
 				825C30C91275AD32006376B8 /* JMXBoardInputString.m */,
 				825C30CA1275AD32006376B8 /* JMXBoardSelection.h */,
@@ -653,7 +648,6 @@
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				256AC3DA0F4B6AC300CF3369 /* JMXAppDelegate.m in Sources */,
 				824576451227DF5800236FE4 /* JMXPinLayer.m in Sources */,
-				825C30DB1275AD32006376B8 /* JMXBoardInputPanel.m in Sources */,
 				825C30DC1275AD32006376B8 /* JMXBoardInputString.m in Sources */,
 				825C30DD1275AD32006376B8 /* JMXBoardSelection.m in Sources */,
 				825C30DE1275AD32006376B8 /* JMXBoardView.m in Sources */,

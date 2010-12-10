@@ -217,20 +217,15 @@ JMXEntityLabelLayer *JMXEntityLabelLayerCreate(NSString *name) {
     [self reorderOutlets];
 }
 
+// just two extra accessors to the 'selected' ivar 
 - (void)select
 {
-    CGColorRef borderColor_ = CGColorCreateGenericRGB(1.0f, 1.0f, 0.0f, 1.0f);
-    self.borderColor = borderColor_;
-    self.shadowColor = borderColor_;
-    CFRelease(borderColor_);
+    self.selected = YES;
 }
 
 - (void)unselect
 {
-    CGColorRef borderColor_ = CGColorCreateGenericRGB(0.0f, 0.0f, 0.0f, 1.0f);
-    self.borderColor = borderColor_;
-    self.shadowColor = borderColor_;
-    CFRelease(borderColor_);
+    self.selected = NO;
 }
 
 - (void)setSelected:(BOOL)isSelected
@@ -240,10 +235,19 @@ JMXEntityLabelLayer *JMXEntityLabelLayerCreate(NSString *name) {
 
     selected = isSelected;
 
-    if (selected)
-        [self select];
-    else
-        [self unselect];
+    if (selected) {
+        CGColorRef borderColor_ = CGColorCreateGenericRGB(1.0f, 1.0f, 0.0f, 1.0f);
+        self.borderColor = borderColor_;
+        self.shadowColor = borderColor_;
+        CFRelease(borderColor_);
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasSelected" object:self];
+    } else {
+        CGColorRef borderColor_ = CGColorCreateGenericRGB(0.0f, 0.0f, 0.0f, 1.0f);
+        self.borderColor = borderColor_;
+        self.shadowColor = borderColor_;
+        CFRelease(borderColor_);
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasUnselected" object:self];
+    }
 }
 
 - (void)toggleSelected

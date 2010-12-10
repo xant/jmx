@@ -25,6 +25,4 @@
 - (void)setEntity:(JMXEntityLayer *)entity;
 - (void)unsetEntity:(JMXEntityLayer *)entity;
 
-- (void)anEntityWasSelected:(NSNotification *)aNotification;
-
 @end

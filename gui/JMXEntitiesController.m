@@ -20,15 +20,15 @@
 {
     [[self selectedObjects] makeObjectsPerformSelector:@selector(unselect)];
     [super addObject:object];
-    ((JMXEntityLayer *)object).selected = YES;
+    [(JMXEntityLayer *)object select];
 }
 
 - (BOOL)setSelectedObjects:(NSArray *)objects
 {
     [[self selectedObjects] makeObjectsPerformSelector:@selector(unselect)];
     BOOL rv = [super setSelectedObjects:objects];
-    for (JMXEntityLayer *entity in objects)
-        entity.selected = YES;
+    if (rv)
+        [objects makeObjectsPerformSelector:@selector(select)];
     return rv;
 }
 

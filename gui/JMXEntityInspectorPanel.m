@@ -20,6 +20,7 @@
 {
     entityName = nil;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasSelected:) name:@"JMXBoardEntityWasSelected" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasUnselected:) name:@"JMXBoardEntityWasUnselected" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasRemoved:) name:@"JMXBoardEntityWasRemoved" object:nil];
     dataCells =[[NSMutableDictionary alloc] init];
 }
@@ -390,6 +391,15 @@
     [super close];
 }
 
+- (void)clear
+{
+    entityLayer = nil;
+    [self clearTableView:inputPins];
+    [self clearTableView:outputPins];
+    [self clearTableView:producers];
+    [dataCells removeAllObjects];
+}
+
 #pragma mark -
 #pragma mark Notifications
 
@@ -399,16 +409,18 @@
     [self setEntity:anEntityLayer];
 }
 
+- (void)anEntityWasUnselected:(NSNotification *)aNotification
+{
+    JMXEntityLayer *anEntityLayer = [aNotification object];
+    if (entityLayer == anEntityLayer)
+        [self clear];
+}
+
 - (void)anEntityWasRemoved:(NSNotification *)aNotification
 {
     JMXEntity *entity = [aNotification object];
-    if (entityLayer && entityLayer.entity == entity) {
-        entityLayer = nil;
-        [self clearTableView:inputPins];
-        [self clearTableView:outputPins];
-        [self clearTableView:producers];
-        [dataCells removeAllObjects];
-    }
+    if (entityLayer && entityLayer.entity == entity)     
+        [self clear];
 }
 
 @end

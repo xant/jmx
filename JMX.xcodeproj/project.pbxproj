@@ -76,8 +76,8 @@
 		AA3557451277468800EAA2E4 /* JMXTextEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3556F51277340200EAA2E4 /* JMXTextEntity.m */; };
 		AA3557DA12795C5500EAA2E4 /* JMXDrawEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA3557D912795C5500EAA2E4 /* JMXDrawEntity.mm */; };
 		AA54B28B12A1215000EC60B2 /* jmx-icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = AA54B28A12A1215000EC60B2 /* jmx-icon.icns */; };
-		AA555FCA12AEF39600C882FF /* CIAlphaFade.m in Sources */ = {isa = PBXBuildFile; fileRef = AA555FC712AEF39600C882FF /* CIAlphaFade.m */; };
 		AA55601412AEF7CC00C882FF /* CIAlphaFade.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AA555FC912AEF39600C882FF /* CIAlphaFade.cikernel */; };
+		AA5563C412B188EB00C882FF /* CIAlphaFade.m in Sources */ = {isa = PBXBuildFile; fileRef = AA555FC712AEF39600C882FF /* CIAlphaFade.m */; };
 		AA7F247212907AA500BE432F /* libv8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA7F247112907AA500BE432F /* libv8.dylib */; };
 		AA8CB78E1282BB9900A17115 /* JMXScriptFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8CB78D1282BB9900A17115 /* JMXScriptFile.mm */; };
 		AACE7D04129315DE00FBDC0D /* JMXScriptEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */; };
@@ -392,8 +392,6 @@
 				82A2206C129091910002738B /* JMXBoardViewController.m */,
 				82A220C8129098A60002738B /* JMXWindowController.h */,
 				82A220C9129098A60002738B /* JMXWindowController.m */,
-				82A223271293312F0002738B /* JMXInspectorViewController.h */,
-				82A223281293312F0002738B /* JMXInspectorViewController.m */,
 				820C94A81295D77600CF1CF5 /* JMXEntitiesController.h */,
 				820C94A91295D77600CF1CF5 /* JMXEntitiesController.m */,
 			);
@@ -599,7 +597,6 @@
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "JMX" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -716,8 +713,8 @@
 				82A220CA129098A60002738B /* JMXWindowController.m in Sources */,
 				AACE7D04129315DE00FBDC0D /* JMXScriptEntity.mm in Sources */,
 				AACE7D331293195600FBDC0D /* JMXV8PropertyAccessors.mm in Sources */,
-				82A223291293312F0002738B /* JMXInspectorViewController.m in Sources */,
 				820C94AA1295D77600CF1CF5 /* JMXEntitiesController.m in Sources */,
+				AA5563C412B188EB00C882FF /* CIAlphaFade.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

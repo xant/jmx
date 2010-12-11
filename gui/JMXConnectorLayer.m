@@ -40,9 +40,9 @@
     if (self) {
         self.originPinLayer = anOriginPinLayer;
         self.destinationPinLayer = nil;
-		self.foregroundColor = CGColorCreateGenericRGB(0.0f, 0.0f, 0.0f, 0.5f);
+        self.foregroundColor = CGColorCreateGenericRGB(0.0f, 0.0f, 0.0f, 0.5f);
 
-		path = NULL;
+        path = NULL;
     }
     return self;
 }
@@ -51,9 +51,9 @@
 {
     self.originPinLayer = nil;
     self.destinationPinLayer = nil;
-	if (path)
-		CFRelease(path);
-	[super dealloc];
+    if (path)
+        CFRelease(path);
+    [super dealloc];
 }
 
 - (BOOL)containsPoint:(CGPoint)p
@@ -63,24 +63,24 @@
     if (self.originPinLayer == nil || self.destinationPinLayer == nil)
         return NO;
     
-	CGContextRef theContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
-	BOOL containsPoint = NO;
+    CGContextRef theContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+    BOOL containsPoint = NO;
 
-	CGContextSaveGState(theContext);
+    CGContextSaveGState(theContext);
 
-	CGContextAddPath(theContext, path);
-	containsPoint = CGContextPathContainsPoint(theContext, p, kCGPathFillStroke);
-	CGContextRestoreGState(theContext);
+    CGContextAddPath(theContext, path);
+    containsPoint = CGContextPathContainsPoint(theContext, p, kCGPathFillStroke);
+    CGContextRestoreGState(theContext);
 
-	return containsPoint;
+    return containsPoint;
 }
 
 - (void)drawInContext:(CGContextRef)theContext
 {
     CGContextSaveGState(theContext);
 
-	if (path)
-		CFRelease(path);
+    if (path)
+        CFRelease(path);
 
     path = CGPathCreateMutable();
 
@@ -91,8 +91,8 @@
     CGRect frame = self.bounds;
 
     CGFloat scale = frame.size.width > frame.size.height
-    ? frame.size.width / frame.size.height
-    : frame.size.height / frame.size.width;
+                  ? frame.size.width / frame.size.height
+                  : frame.size.height / frame.size.width;
 
     if ((direction == kSouthEastDirection) || (direction == kNorthWestDirection)) {
         initialPoint = CGPointMake(ORIGIN_OFFSET, frame.size.height - ORIGIN_OFFSET);
@@ -108,28 +108,30 @@
     }
 
     CGPathMoveToPoint(path, NULL, initialPoint.x, initialPoint.y);
-	CGPathAddCurveToPoint(path, NULL, controlPoint1.x, controlPoint1.y, controlPoint2.x, controlPoint2.y, endPoint.x, endPoint.y);
+    CGPathAddCurveToPoint(path, NULL, controlPoint1.x, controlPoint1.y, controlPoint2.x, controlPoint2.y, endPoint.x, endPoint.y);
 
-	if ((direction == kSouthEastDirection) || (direction == kNorthWestDirection)) {
-		controlPoint2.x -= 3.535533906f / scale;
-		controlPoint2.y -= 3.535533906f / scale;
-		controlPoint1.x -= 3.535533906f / scale;
-		controlPoint1.y -= 3.535533906f / scale;
-		initialPoint.y -= CONNECTOR_LINE_WIDTH;
-	}
-	else {
-		controlPoint2.x += 3.535533906f / scale;
-		controlPoint2.y -= 3.535533906f / scale;
-		controlPoint1.x += 3.535533906f / scale;
-		controlPoint1.y -= 3.535533906f / scale;
-		initialPoint.y -= CONNECTOR_LINE_WIDTH;
-	}
-	CGPathAddLineToPoint(path, NULL, endPoint.x, endPoint.y - CONNECTOR_LINE_WIDTH);
-	CGPathAddCurveToPoint(path, NULL, controlPoint2.x, controlPoint2.y, controlPoint1.x, controlPoint1.y, initialPoint.x, initialPoint.y);
-	CGPathAddLineToPoint(path, NULL, initialPoint.x, initialPoint.y);
+    if ((direction == kSouthEastDirection) || (direction == kNorthWestDirection)) {
+        controlPoint2.x -= 3.535533906f / scale;
+        controlPoint2.y -= 3.535533906f / scale;
+        controlPoint1.x -= 3.535533906f / scale;
+        controlPoint1.y -= 3.535533906f / scale;
+        CGPathAddLineToPoint(path, NULL, endPoint.x - CONNECTOR_LINE_WIDTH, endPoint.y - CONNECTOR_LINE_WIDTH);
+        CGPathAddCurveToPoint(path, NULL, controlPoint2.x, controlPoint2.y, controlPoint1.x, controlPoint1.y, initialPoint.x - CONNECTOR_LINE_WIDTH, initialPoint.y - CONNECTOR_LINE_WIDTH);
+        CGPathAddLineToPoint(path, NULL, initialPoint.x - CONNECTOR_LINE_WIDTH, initialPoint.y - CONNECTOR_LINE_WIDTH);
+    }
+    else {
+        controlPoint2.x += 3.535533906f / scale;
+        controlPoint2.y -= 3.535533906f / scale;
+        controlPoint1.x += 3.535533906f / scale;
+        controlPoint1.y -= 3.535533906f / scale;
+        CGPathAddLineToPoint(path, NULL, endPoint.x + CONNECTOR_LINE_WIDTH, endPoint.y - CONNECTOR_LINE_WIDTH);
+        CGPathAddCurveToPoint(path, NULL, controlPoint2.x, controlPoint2.y, controlPoint1.x, controlPoint1.y, initialPoint.x + CONNECTOR_LINE_WIDTH, initialPoint.y - CONNECTOR_LINE_WIDTH);
+        CGPathAddLineToPoint(path, NULL, initialPoint.x + CONNECTOR_LINE_WIDTH, initialPoint.y - CONNECTOR_LINE_WIDTH);
+    }
+
 
     CGContextAddPath(theContext, path);
-	CGContextClosePath(theContext);
+    CGContextClosePath(theContext);
     CGContextFillPath(theContext);
 
     CGContextRestoreGState(theContext);
@@ -189,25 +191,25 @@
 - (void)setSelected:(BOOL)isSelected
 {
     selected = isSelected;
-	self.foregroundColor = selected ? CGColorCreateGenericRGB(1.0f, 0.0f, 0.0f, 1.0f) : CGColorCreateGenericRGB(0.0f, 0.0f, 0.0f, 0.5f);
+    self.foregroundColor = selected ? CGColorCreateGenericRGB(1.0f, 0.0f, 0.0f, 1.0f) : CGColorCreateGenericRGB(0.0f, 0.0f, 0.0f, 0.5f);
     [self setNeedsDisplay];
 }
 
 - (void)setForegroundColor:(CGColorRef)aColor
 {
-	if (foregroundColor)
-		CFRelease(foregroundColor);
-	foregroundColor = aColor;
+    if (foregroundColor)
+        CFRelease(foregroundColor);
+    foregroundColor = aColor;
 }
 
 - (void)select
 {
-	self.selected = YES;
+    self.selected = YES;
 }
 
 - (void)unselect
 {
-	self.selected = NO;
+    self.selected = NO;
 }
 
 - (BOOL)originCanConnectTo:(JMXPinLayer *)aPinLayer

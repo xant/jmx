@@ -108,7 +108,7 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXCoreImageFilter);
     CIFilter *newFilter = [CIFilter filterWithName:filterName];
     if (newFilter) {
         [newFilter setDefaults];
-        NSLog(@"Filter Attributes : %@", [newFilter attributes]);
+        //NSLog(@"Filter Attributes : %@", [newFilter attributes]);
         NSArray *inputKeys = [newFilter inputKeys];
         NSDictionary *attributes = [newFilter attributes];
         @synchronized(self) {
@@ -127,16 +127,21 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXCoreImageFilter);
                 if (![key isEqualTo:@"inputImage"]) {
                     NSDictionary *inputParam = [attributes objectForKey:key];
                     NSString *type = [inputParam objectForKey:@"CIAttributeClass"];
+                    JMXInputPin *inputPin;
                     if ([type isEqualTo:@"NSNumber"]) {
-                        [self registerInputPin:key withType:kJMXNumberPin andSelector:@"setFilterValue:userData:" userData:key];
+                        inputPin = [self registerInputPin:key withType:kJMXNumberPin andSelector:@"setFilterValue:userData:" userData:key];
                     } else if ([type isEqualTo:@"CIVector"]) {
-                        [self registerInputPin:key withType:kJMXPointPin andSelector:@"setFilterValue:userData:" userData:key];
+                        inputPin = [self registerInputPin:key withType:kJMXPointPin andSelector:@"setFilterValue:userData:" userData:key];
                     } else if ([type isEqualTo:@"CIColor"]) {
-                        [self registerInputPin:key withType:kJMXColorPin andSelector:@"setFilterValue:userData:" userData:key];
+                        inputPin = [self registerInputPin:key withType:kJMXColorPin andSelector:@"setFilterValue:userData:" userData:key];
                     } else if ([type isEqualTo:@"CIImage"]) {
-                        [self registerInputPin:key withType:kJMXImagePin andSelector:@"setFilterValue:userData:" userData:key];
+                        inputPin = [self registerInputPin:key withType:kJMXImagePin andSelector:@"setFilterValue:userData:" userData:key];
                     } else {
                         NSLog(@"Unhandled datatype %@", type);
+                    }
+                    if (inputPin) {
+                        [inputPin setMinLimit:[inputParam objectForKey:@"CIAttributeSliderMin"]];
+                        [inputPin setMaxLimit:[inputParam objectForKey:@"CIAttributeSliderMax"]];
                     }
                 }
             }

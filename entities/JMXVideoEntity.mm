@@ -61,43 +61,43 @@ using namespace v8;
                               andSelector:@"setAlpha:"
                             allowedValues:nil
                             initialValue:self.alpha];
-        [inputPin addMinLimit:[NSNumber numberWithFloat:0.0]];
-        [inputPin addMaxLimit:[NSNumber numberWithFloat:2.0]];
+        [inputPin setMinLimit:[NSNumber numberWithFloat:0.0]];
+        [inputPin setMaxLimit:[NSNumber numberWithFloat:2.0]];
         inputPin = [self registerInputPin:@"saturation"
                                   withType:kJMXNumberPin
                                andSelector:@"setSaturation:"
                              allowedValues:nil
                              initialValue:self.saturation];
-        [inputPin addMinLimit:[[filterAttributes objectForKey:@"inputSaturation"] objectForKey:@"CIAttributeSliderMin"]];
-        [inputPin addMaxLimit:[[filterAttributes objectForKey:@"inputSaturation"] objectForKey:@"CIAttributeSliderMax"]];
+        [inputPin setMinLimit:[[filterAttributes objectForKey:@"inputSaturation"] objectForKey:@"CIAttributeSliderMin"]];
+        [inputPin setMaxLimit:[[filterAttributes objectForKey:@"inputSaturation"] objectForKey:@"CIAttributeSliderMax"]];
         inputPin = [self registerInputPin:@"brightness"
                                  withType:kJMXNumberPin
                               andSelector:@"setBrightness:"
                             allowedValues:nil
                             initialValue:self.brightness];
-        [inputPin addMinLimit:[[filterAttributes objectForKey:@"inputBrightness"] objectForKey:@"CIAttributeSliderMin"]];
-        [inputPin addMaxLimit:[[filterAttributes objectForKey:@"inputBrightness"] objectForKey:@"CIAttributeSliderMax"]];
+        [inputPin setMinLimit:[[filterAttributes objectForKey:@"inputBrightness"] objectForKey:@"CIAttributeSliderMin"]];
+        [inputPin setMaxLimit:[[filterAttributes objectForKey:@"inputBrightness"] objectForKey:@"CIAttributeSliderMax"]];
         inputPin = [self registerInputPin:@"contrast" 
                                  withType:kJMXNumberPin
                               andSelector:@"setContrast:"
                             allowedValues:nil
                              initialValue:self.contrast];
-        [inputPin addMinLimit:[[filterAttributes objectForKey:@"inputContrast"] objectForKey:@"CIAttributeSliderMin"]];
-        [inputPin addMaxLimit:[[filterAttributes objectForKey:@"inputContrast"] objectForKey:@"CIAttributeSliderMax"]];
+        [inputPin setMinLimit:[[filterAttributes objectForKey:@"inputContrast"] objectForKey:@"CIAttributeSliderMin"]];
+        [inputPin setMaxLimit:[[filterAttributes objectForKey:@"inputContrast"] objectForKey:@"CIAttributeSliderMax"]];
         inputPin = [self registerInputPin:@"rotation"
                                  withType:kJMXNumberPin
                               andSelector:@"setRotation:"
                             allowedValues:nil
                              initialValue:self.rotation];
-        [inputPin addMinLimit:[NSNumber numberWithFloat:0.0]];
-        [inputPin addMaxLimit:[NSNumber numberWithFloat:360.0]];
+        [inputPin setMinLimit:[NSNumber numberWithFloat:0.0]];
+        [inputPin setMaxLimit:[NSNumber numberWithFloat:360.0]];
         inputPin = [self registerInputPin:@"scaleRatio"
                                  withType:kJMXNumberPin
                               andSelector:@"setScaleRatio:"
                             allowedValues:nil
                              initialValue:[NSNumber numberWithFloat:1.0]];
-        [inputPin addMinLimit:[NSNumber numberWithFloat:0.0]];
-        [inputPin addMaxLimit:[NSNumber numberWithFloat:100.0]];
+        [inputPin setMinLimit:[NSNumber numberWithFloat:0.0]];
+        [inputPin setMaxLimit:[NSNumber numberWithFloat:100.0]];
         [self registerInputPin:@"origin"
                       withType:kJMXPointPin
                    andSelector:@"setOrigin:"

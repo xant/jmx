@@ -294,6 +294,8 @@
                     pins = [entityLayer.entity inputPins];
                 }
                 JMXPin *pin = [entityLayer.entity inputPinWithName:[pins objectAtIndex:rowIndex]];
+                if (pin.type == kJMXAudioPin || pin.type == kJMXImagePin) // XXX
+                    return [JMXPin nameforType:pin.type];
                 return pin.data;
             }
         } else if (aTableView == outputPins) {

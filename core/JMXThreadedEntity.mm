@@ -43,8 +43,8 @@
         // and 'effective' frequency , only for debugging purposes
         self.frequency = [NSNumber numberWithDouble:25.0];
         JMXInputPin *inputFrequency =[self registerInputPin:@"frequency" withType:kJMXNumberPin andSelector:@"setFrequency:"];
-        [inputFrequency addMinLimit:[NSNumber numberWithFloat:1.0]];
-        [inputFrequency addMaxLimit:[NSNumber numberWithFloat:60.0]];
+        [inputFrequency setMinLimit:[NSNumber numberWithFloat:1.0]];
+        [inputFrequency setMaxLimit:[NSNumber numberWithFloat:60.0]];
         frequencyPin = [self registerOutputPin:@"frequency" withType:kJMXNumberPin];
         stampCount = 0;
         previousTimeStamp = 0;

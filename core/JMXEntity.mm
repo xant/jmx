@@ -229,6 +229,7 @@ using namespace v8;
     [self performSelectorOnMainThread:@selector(notifyPinAdded:) withObject:pin waitUntilDone:NO];
 }
 
+// XXX - possible race conditions here (in both inputPins and outputPins)
 - (NSArray *)inputPins
 {
     return [[inputPins allKeys]

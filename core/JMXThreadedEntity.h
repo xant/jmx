@@ -36,7 +36,7 @@
 /*!
  * @class JMXThreadedEntity
  * @abstract Base class for threaded entitites
- * @discussion 
+ * @discussion conforms to protocols: JMXRunLoop
  */
 @interface JMXThreadedEntity : JMXEntity < JMXRunLoop > {
 @protected

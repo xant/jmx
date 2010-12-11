@@ -385,13 +385,13 @@ using namespace v8;
         [self removeAllowedValue:value];
 }
 
-- (void)addMinLimit:(id)value
+- (void)setMinLimit:(id)value
 {
     if ([self isCorrectDataType:value])
         minValue = [value retain];
 }
 
-- (void)addMaxLimit:(id)value
+- (void)setMaxLimit:(id)value
 {
     if ([self isCorrectDataType:value])
         maxValue = [value retain];
@@ -438,6 +438,29 @@ using namespace v8;
     }
 }
 
+- (BOOL)isValidData:(id)data
+{
+    if(![self isCorrectDataType:data])
+        return NO;
+    // check if we restrict possible values
+    if (allowedValues && ![allowedValues containsObject:data]) {
+        // TODO - Error Message (a not allowed value has been signaled
+        return NO;
+    }
+    switch (self.type) {
+        case kJMXNumberPin:
+            break;
+        case kJMXStringPin:
+            break;
+        case kJMXSizePin:
+            break;
+        case kJMXPointPin:
+            break;
+            
+    }
+    return YES;
+}
+
 - (void)deliverData:(id)data fromSender:(id)sender
 {
 
@@ -448,12 +471,9 @@ using namespace v8;
     }
     // if instead new data arrived, check if it's of the correct type
     // and propagate the signal if that's the case
-    if ([self isCorrectDataType:data]) {
-        // check if we restrict possible values
-        if (allowedValues && ![allowedValues containsObject:data]) {
-            // TODO - Error Message (a not allowed value has been signaled
-            return;
-        }
+    if ([self isValidData:data]) {
+
+        
         // this lock protects us from multiple senders delivering a signal at the exact same time
         // wOffset and rOffset must both be incremented in an atomic operation.
         // concurrency here can happen only in 2 scenarios :

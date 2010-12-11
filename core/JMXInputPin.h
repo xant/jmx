@@ -21,18 +21,51 @@
 //  along with JMX.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+/*!
+ @header JMXInputPin.h
+ @abstract Input Pin
+ */ 
 #import <Cocoa/Cocoa.h>
 #import "JMXPin.h"
 
 @class JMXOutputPin;
 
+/*!
+ @class JMXInputPin
+ @abstract concrete class for input pins
+ */
 @interface JMXInputPin : JMXPin {
     NSMutableArray      *producers;
 }
+/*!
+ @property producers
+ @abstract array containing all output pins currently connected to this input pin
+ */
 @property (readonly)  NSArray *producers;
 
+/*!
+ @method readProducers
+ @return NSArray containing data from all connected producers
+ */
 - (NSArray *)readProducers;
+/*!
+ @method moveProducerFromIndex:toIndex:
+ @param src source index in the <code>producers</code> array
+ @param dst destination index
+ @return YES on success, NO otherwise
+ */
 - (BOOL)moveProducerFromIndex:(NSUInteger)src toIndex:(NSUInteger)dst;
+/*!
+ @method connectToPin:
+ @param destinationPin the output pin which wants to connect
+ @return YES on success, NO otherwise
+ */
 - (BOOL)connectToPin:(JMXOutputPin *)destinationPin;
+/*!
+ @method disconnectFromPin:
+ @param destinationPin
+ @abstract remove a connected pin
+ @discussion this method does nothing if the passed pin is not connected to us (so not in @link producers @/link
+ */
 - (void)disconnectFromPin:(JMXOutputPin *)destinationPin;
 @end

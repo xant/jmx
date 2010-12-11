@@ -14,10 +14,34 @@
 #import <Cocoa/Cocoa.h>
 #import "JMXV8.h"
 
-
+/*!
+ @class JMXColor
+ @discussion conforms to protocols: JMXV8
+ */
 @interface JMXColor : NSColor <JMXV8> {
     
 }
+
+/*!
+ @property r
+ @abstract red component
+ */
+@property (readonly) CGFloat r;
+/*!
+ @property g
+ @abstract green component
+ */
+@property (readonly) CGFloat g;
+/*!
+ @property b
+ @abstract blue component
+ */
+@property (readonly) CGFloat b;
+/*!
+ @property a
+ @abstract alpha component
+ */
+@property (readonly) CGFloat a;
 
 #ifdef __JMXV8__
 v8::Handle<v8::Value> JMXColorJSConstructor(const v8::Arguments& args);

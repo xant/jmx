@@ -21,20 +21,55 @@
 //  along with JMX.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+/*!
+ @header JMXInputPin.h
+ @abstract Input Pin
+ */ 
 #import <Cocoa/Cocoa.h>
 #import "JMXPin.h"
 
 @class JMXInputPin;
 
+/*!
+ @class JMXOutputPin
+ @abstract concrete class for output pins
+ */
 @interface JMXOutputPin : JMXPin {
     NSMutableDictionary *receivers;
 
 }
 
+/*!
+ @property receivers
+ @abstract array containing all input pins currently connected to this output pin
+ */
 @property (readonly)  NSDictionary *receivers;
 
+/*!
+ @method attachObject:withSelector:
+ @abstract connect any kind of object as receiver of the signal
+ @param pinReceiver an object which will receive the signal each time it's delivered
+ @param pinSignal the signature of the selector to perform when the signal arrives
+ */
 - (BOOL)attachObject:(id)pinReceiver withSelector:(NSString *)pinSignal;
+/*!
+ @method detachObject:
+ @abstract detach an object so that it won't receive signals anymore
+ @pinReceiver the object we want to detach
+ @discussion this method does nothing if the passed pin is not connected to us (so not in <code>producers</code>
+ */
 - (void)detachObject:(id)pinReceiver;
+/*!
+ @method connectToPin:
+ @param destinationPin the input pin which wants to connect
+ @return YES on success, NO otherwise
+ */
 - (BOOL)connectToPin:(JMXInputPin *)destinationPin;
+/*!
+ @method disconnectFromPin:
+ @param destinationPin
+ @abstract remove a connected pin
+ @discussion this method does nothing if the passed pin is not connected to us (so not in <code>producers</code>
+ */
 - (void)disconnectFromPin:(JMXInputPin *)destinationPin;
 @end

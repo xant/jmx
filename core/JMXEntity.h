@@ -42,11 +42,23 @@
 #import "JMXOutputPin.h"
 #import "JMXV8.h"
 
+#ifndef __JMXV8__
+
 /*!
  @define JMXV8_EXPORT_ENTITY_CLASS
+ @abstract define both the constructor and the descructor for the mapped class
  @param __class
  */
-#ifdef __JMXV8__
+#define JMXV8_EXPORT_ENTITY_CLASS(__class)
+/*!
+ @define JMXV8_DECLARE_ENTITY_CONSTRUCTOR
+ @abstract define the constructor for the mapped class
+ @param __class
+ */
+#define JMXV8_DECLARE_ENTITY_CONSTRUCTOR(__class)
+
+#else
+
 #define JMXV8_EXPORT_ENTITY_CLASS(__class) \
     using namespace v8;\
     static Persistent<FunctionTemplate> classTemplate;\

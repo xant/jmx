@@ -24,6 +24,7 @@
 //
 /*!
  @header JMXAudioDevice.h
+ @abstract Obj-C wrapper to CoreAudio devices
  */
 #import <Cocoa/Cocoa.h>
 #import <CoreAudio/CoreAudio.h>

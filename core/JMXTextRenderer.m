@@ -75,19 +75,8 @@
 
 #pragma mark -
 #pragma mark Deallocs
-
-- (void) deleteTexture
-{
-	if (texName && cgl_ctx) {
-		(*cgl_ctx->disp.delete_textures)(cgl_ctx->rend, 1, &texName);
-		texName = 0; // ensure it is zeroed for failure cases
-		cgl_ctx = 0;
-	}
-}
-
 - (void) dealloc
 {
-	[self deleteTexture];
 	[textColor release];
 	[boxColor release];
 	[borderColor release];
@@ -102,15 +91,10 @@
 - (id) initWithAttributedString:(NSAttributedString *)attributedString
 {
 	[super init];
-	cgl_ctx = NULL;
-	texName = 0;
-	texSize.width = 0.0f;
-	texSize.height = 0.0f;
     if (string)
         [string release];
 	string = [attributedString retain];
-    
-	staticFrame = NO;
+    //staticFrame = NO;
 	antialias = YES;
 	marginSize.width = 4.0f; // standard margins
 	marginSize.height = 2.0f;
@@ -151,11 +135,12 @@
     if (bitmap)
         [bitmap release];
 	
+    /*
 	if ((NO == staticFrame)) { // find frame size if we have not already found it
 		frameSize = [string size]; // current string size
 		frameSize.width += marginSize.width * 2.0f; // add padding
 		frameSize.height += marginSize.height * 2.0f;
-	}
+	}*/
 	image = [[NSImage alloc] initWithSize:frameSize];
 	
 	[image lockFocus];
@@ -179,19 +164,6 @@
 	[string drawAtPoint:NSMakePoint (marginSize.width, marginSize.height)]; // draw at offset position
 	bitmap = [[NSBitmapImageRep alloc] initWithFocusedViewRect:NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height)];
 	[image unlockFocus];
-}
-
-#pragma mark -
-#pragma mark Accessors
-
-- (GLuint) texName
-{
-	return texName;
-}
-
-- (NSSize) texSize
-{
-	return texSize;
 }
 
 #pragma mark Text Color
@@ -245,10 +217,11 @@
 - (void) setMargins:(NSSize)size // set offset size and size to fit with offset
 {
 	marginSize = size;
+    /*
 	if (NO == staticFrame) { // ensure dynamic frame sizes will be recalculated
 		frameSize.width = 0.0f;
 		frameSize.height = 0.0f;
-	}
+	}*/
 	requiresUpdate = YES;
 }
 
@@ -274,34 +247,13 @@
 
 - (NSSize) frameSize
 {
+    /*
 	if ((NO == staticFrame) && (0.0f == frameSize.width) && (0.0f == frameSize.height)) { // find frame size if we have not already found it
 		frameSize = [string size]; // current string size
 		frameSize.width += marginSize.width * 2.0f; // add padding
 		frameSize.height += marginSize.height * 2.0f;
-	}
+	}*/
 	return frameSize;
-}
-
-- (BOOL) staticFrame
-{
-	return staticFrame;
-}
-
-- (void) useStaticFrame:(NSSize)size // set static frame size and size to frame
-{
-	frameSize = size;
-	staticFrame = YES;
-	requiresUpdate = YES;
-}
-
-- (void) useDynamicFrame
-{
-	if (staticFrame) { // set to dynamic frame and set to regen texture
-		staticFrame = NO;
-		frameSize.width = 0.0f; // ensure frame sizes will be recalculated
-		frameSize.height = 0.0f;
-		requiresUpdate = YES;
-	}
 }
 
 #pragma mark String
@@ -311,10 +263,11 @@
 	[attributedString retain];
 	[string release];
 	string = attributedString;
+    /*
 	if (NO == staticFrame) { // ensure dynamic frame sizes will be recalculated
 		frameSize.width = 0.0f;
 		frameSize.height = 0.0f;
-	}
+	}*/
 	requiresUpdate = YES;
 }
 

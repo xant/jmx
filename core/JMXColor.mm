@@ -48,6 +48,26 @@ static v8::Persistent<FunctionTemplate> classTemplate;
     [super dealloc];
 }
 
+- (CGFloat)r
+{
+    return [self redComponent];
+}
+
+- (CGFloat)g
+{
+    return [self greenComponent];
+}
+
+- (CGFloat)b
+{
+    return [self blueComponent];
+}
+
+- (CGFloat)a
+{
+    return [self alphaComponent];
+}
+
 - (v8::Handle<v8::Object>)jsObj
 {
     //v8::Locker lock;

@@ -29,18 +29,59 @@
 #import <Cocoa/Cocoa.h>
 #import "JMXV8.h"
 
+/*!
+ @class JMXSize
+ @abstract encapsulates an NSSize and represents a size inside the JMX engine
+ @discussion conforms to protocols: JMXV8
+ */
 @interface JMXSize : NSObject <JMXV8> {
 @private
     NSSize nsSize;
 }
 
+/*!
+ @property nsSize
+ @abstract the encapsulated NSSize
+ */
 @property (assign) NSSize nsSize;
 
+/*!
+ @method sizeWithNSSize:
+ @abstract create a new JMXSize on top of an existing NSSize
+ @param size the NSSize to encapsulate
+ @return a new JMXSize instance already initialized and pushed into an autorelease pool
+ */
 + (id)sizeWithNSSize:(NSSize)size;
+/*!
+ @method initWithSize:
+ @abstract initialize a JMXSize instance with an existing NSSize
+ @param size the NSSize to encapsulate
+ @return the initialized instance
+ */
 - (id)initWithNSSize:(NSSize)size;
+/*!
+ @method width
+ @abstract get the width component
+ @return the width component
+ */
 - (CGFloat)width;
+/*!
+ @method height
+ @abstract get the height component
+ @return the height component
+ */
 - (CGFloat)height;
+/*!
+ @method setWidth:
+ @param width the new width
+ @abstract set the width component
+ */
 - (void)setWidth:(CGFloat)width;
+/*!
+ @method setHeight:
+ @param height the new height
+ @abstract set the height component
+ */
 - (void)setHeight:(CGFloat)height;
 
 #pragma mark V8

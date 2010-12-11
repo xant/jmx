@@ -22,17 +22,36 @@
 //
 // NOTE : You don't need to use this class directly,
 //        it's meant to be used internally by Pin implementations
+
+/*! @header JMXPinSignal.h
+    @abstract Signal flowing across pins
+ */
 #import <Cocoa/Cocoa.h>
 
-
+/*!
+    @class JMXPinSignal
+    @abstract Accessory class used to encapsulate signals flowing across pins
+ */
 @interface JMXPinSignal : NSObject {
     id data;
     id sender;
     id receiver;
 }
 
+/*!
+ @property data
+ @abstract The data
+ */
 @property (retain) id data;
+/*!
+ @property sender
+ @abstract The sender
+ */
 @property (retain) id sender;
+/*!
+ @property receiver
+ @abstract The receiver
+ */
 @property (retain) id receiver;
 
 + signalFromSender:(id)sender receiver:(id)receiver data:(id)data;

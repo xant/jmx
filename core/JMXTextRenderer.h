@@ -26,7 +26,7 @@
     NSColor * textColor; // default is opaque white
     NSColor * boxColor; // default transparent or none
     NSColor * borderColor; // default transparent or none
-    //BOOL staticFrame; // default in NO
+    BOOL staticFrame; // default in NO
     BOOL antialias;	// default to YES
     NSSize marginSize; // offset or frame size, default is 4 width 2 height
     NSSize frameSize; // offset or frame size, default is 4 width 2 height
@@ -41,24 +41,24 @@
 
 // designated initializer
 /*!
- @class initWithAttributedString:
+ @method initWithAttributedString:
  @param attributedString
  @return the initialized instance
  */
 - (id) initWithAttributedString:(NSAttributedString *)attributedString;
 /*!
- @class initWithAttributedString:
+ @method initWithString:font:textColor:boxColor:borderColor
  @param aString the string
  @param font the font to use
- @param text the text color
- @param box the box color
- @param border the border color
+ @param textColor the text color
+ @param boxColor the box color
+ @param borderColor the border color
  @return the initialized instance
  */
-- (id) initWithString:(NSString *)aString withFont:font withTextColor:(NSColor *)textColor BoxColor:(NSColor *)boxColor BorderColor:(NSColor *)borderColor;
+- (id) initWithString:(NSString *)aString font:(NSFont *)font textColor:(NSColor *)textColor boxColor:(NSColor *)boxColor borderColor:(NSColor *)borderColor;
 
 /*!
- @class initWithAttributedString:
+ @method initWithAttributedString:
  @param aString the string
  @param attribs NSDictionary containing attributes to use for the internally used NSAttributedString
  @return the initialized instance
@@ -142,7 +142,7 @@
 
 /*!
  @method drawOnBuffer:
- @param the CVPixelBuffer where to render the text
+ @param pixelBuffer the CVPixelBuffer where to render the text
  @return the CVPixelBuffer where text has been rendered
  */
 - (CVPixelBufferRef) drawOnBuffer:(CVPixelBufferRef)pixelBuffer;

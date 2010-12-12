@@ -94,7 +94,7 @@
     if (string)
         [string release];
 	string = [attributedString retain];
-    //staticFrame = NO;
+    staticFrame = NO;
 	antialias = YES;
 	marginSize.width = 4.0f; // standard margins
 	marginSize.height = 2.0f;
@@ -104,7 +104,7 @@
 	return self;
 }
 
-- (id) initWithString:(NSString *)aString withFont:font withTextColor:(NSColor *)text BoxColor:(NSColor *)box BorderColor:(NSColor *)border
+- (id) initWithString:(NSString *)aString font:(NSFont *)font textColor:(NSColor *)theTextColor boxColor:(NSColor *)theBoxColor borderColor:(NSColor *)theBorderColor;
 {
     NSMutableDictionary *attribs = [NSMutableDictionary dictionary];
     [attribs
@@ -112,11 +112,11 @@
      forKey:NSFontAttributeName
      ];
     [attribs
-     setObject:text
+     setObject:theTextColor
      forKey:NSForegroundColorAttributeName
      ];
     [attribs
-     setObject:box
+     setObject:theBoxColor
      forKey:NSBackgroundColorAttributeName
      ];
     // XXX - how to use bordercolor now? 
@@ -135,12 +135,12 @@
     if (bitmap)
         [bitmap release];
 	
-    /*
+    
 	if ((NO == staticFrame)) { // find frame size if we have not already found it
 		frameSize = [string size]; // current string size
 		frameSize.width += marginSize.width * 2.0f; // add padding
 		frameSize.height += marginSize.height * 2.0f;
-	}*/
+	}
 	image = [[NSImage alloc] initWithSize:frameSize];
 	
 	[image lockFocus];
@@ -217,11 +217,11 @@
 - (void) setMargins:(NSSize)size // set offset size and size to fit with offset
 {
 	marginSize = size;
-    /*
+    
 	if (NO == staticFrame) { // ensure dynamic frame sizes will be recalculated
 		frameSize.width = 0.0f;
 		frameSize.height = 0.0f;
-	}*/
+	}
 	requiresUpdate = YES;
 }
 
@@ -247,12 +247,12 @@
 
 - (NSSize) frameSize
 {
-    /*
+    
 	if ((NO == staticFrame) && (0.0f == frameSize.width) && (0.0f == frameSize.height)) { // find frame size if we have not already found it
 		frameSize = [string size]; // current string size
 		frameSize.width += marginSize.width * 2.0f; // add padding
 		frameSize.height += marginSize.height * 2.0f;
-	}*/
+	}
 	return frameSize;
 }
 
@@ -263,11 +263,11 @@
 	[attributedString retain];
 	[string release];
 	string = attributedString;
-    /*
+    
 	if (NO == staticFrame) { // ensure dynamic frame sizes will be recalculated
 		frameSize.width = 0.0f;
 		frameSize.height = 0.0f;
-	}*/
+	}
 	requiresUpdate = YES;
 }
 

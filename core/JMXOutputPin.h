@@ -55,7 +55,7 @@
 /*!
  @method detachObject:
  @abstract detach an object so that it won't receive signals anymore
- @pinReceiver the object we want to detach
+ @param pinReceiver the object we want to detach
  @discussion this method does nothing if the passed pin is not connected to us (so not in <code>producers</code>
  */
 - (void)detachObject:(id)pinReceiver;

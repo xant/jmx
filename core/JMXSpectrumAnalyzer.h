@@ -37,7 +37,7 @@
 
 /*!
  @typedef JMXSpectralFunction
- @abstract callback which will be called while processing the spectral buffer (can be set using @link setSpectralFunction: @/link)
+ @abstract callback which will be called while processing the spectral buffer (can be set using @link setSpectralFunction:clientData: @/link)
  */
 typedef void (*JMXSpectralFunction)(DSPSplitComplex* spectra, UInt32 numSpectra, void* inUserData);
 
@@ -77,13 +77,13 @@ typedef void (*JMXSpectralFunction)(DSPSplitComplex* spectra, UInt32 numSpectra,
  @method initWithSize:hopSize:channels:maxFrames:
  @param fftSize size of the fft
  @param hopSize size of the hops usually fft/2
- @param channels the number of channels in the buffer (use deinterleaved buffers to obtain decent results)
+ @param numChannels the number of channels in the buffer (use deinterleaved buffers to obtain decent results)
  @param maxFrames the max number of frames which can be store in the in internal buffer
  @return the initilized instance
  */
 - (id)initWithSize:(UInt32)fftSize hopSize:(UInt32)hopSize channels:(UInt32)numChannels maxFrames:(UInt32)maxFrames;
 /*!
- @method setSpectralFunction:clientData
+ @method setSpectralFunction:clientData:
  @abstract set a function to be called while processing the spectral buffer
  @param inFunction the @link JMXSpectralFunction @/link to call while processing the spectral buffer
  @param inUserData the data to pass to the registered function each time it's called
@@ -114,14 +114,14 @@ typedef void (*JMXSpectralFunction)(DSPSplitComplex* spectra, UInt32 numSpectra,
 /*!
  @method getFrequencies:rate
  @param freqs the output buffer where to store the extracted frequencies
- @param rate the sample rate
+ @param sampleRate the sample rate
  */
 - (void)getFrequencies:(Float32*)freqs rate:(Float32)sampleRate; // only for processed forward
 /*!
  @method getMagnitude:min:max
  @param inCopy
  @param min
- @parm max
+ @param max
  */
 - (void)getMagnitude:(AudioBufferList*)inCopy min:(Float32*)min max:(Float32*)max; // only for processed forward
 /*!

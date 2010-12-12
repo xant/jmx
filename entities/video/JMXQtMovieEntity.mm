@@ -313,7 +313,7 @@ using namespace v8;
     }
 }
 
-static v8::Handle<Value> open(const Arguments& args)
+static v8::Handle<Value>open(const Arguments& args)
 {
     HandleScope handleScope;
     JMXQtMovieEntity *entity = (JMXQtMovieEntity *)args.Holder()->GetPointerFromInternalField(0);
@@ -323,7 +323,7 @@ static v8::Handle<Value> open(const Arguments& args)
     return v8::Boolean::New(ret);
 }
 
-static v8::Handle<Value> close(const Arguments& args)
+static v8::Handle<Value>close(const Arguments& args)
 {
     HandleScope handleScope;
     JMXQtMovieEntity *entity = (JMXQtMovieEntity *)args.Holder()->GetPointerFromInternalField(0);

@@ -22,14 +22,15 @@
 //
 /*!
  @header JMXAudioFormat.h
- @discussion encapsulates an AudioStreamBasicDescription structure (CoreAudio)
-             providing an obj-c API
+ @abstract encapsulates an AudioStreamBasicDescription structure (CoreAudio)
+           providing an obj-c API
  */
 #import <Cocoa/Cocoa.h>
 #import <CoreAudio/CoreAudioTypes.h>
 
 /*!
  @class JMXAudioFormat
+ @abstract class to encapsulate an AudioStreamBasicDescription structure (CoreAudio) providing an obj-c API
  */
 @interface JMXAudioFormat : NSObject {
 @private

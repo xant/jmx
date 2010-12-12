@@ -16,18 +16,23 @@
  * Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  */
+/*!
+ @header CIAlphaFade.h
+ @abstract CoreImageFilter to control the alpha component of an image
+ */
 
 #import <Cocoa/Cocoa.h>
 #include <QuartzCore/QuartzCore.h>
 
+/*!
+ @class CIAlphaFade
+ @abstract custom CIFilter to control the alpha componenent of a CIImage
+ @discussion it exposes a single custom input attribute : "outputOpacity"
+ */
 @interface CIAlphaFade: CIFilter
 {
     CIImage   *inputImage;
     NSNumber  *outputOpacity;
 }
-- (id)init;
-- (NSDictionary *)customAttributes;
-- (CIImage *)outputImage;
-+ (void)initialize;
-+ (CIFilter *)filterWithName: (NSString *)name;
+
 @end

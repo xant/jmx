@@ -64,6 +64,7 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
         moviePath = nil;
         repeat = YES;
         paused = NO;
+        [self registerInputPin:@"path" withType:kJMXStringPin andSelector:@"setMoviePath:"];
         [self registerInputPin:@"repeat" withType:kJMXNumberPin andSelector:@"setRepeat:"];
         [self registerInputPin:@"paused" withType:kJMXNumberPin andSelector:@"setPaused:"];
     }
@@ -119,17 +120,23 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
 }
 #endif
 
+- (void)setMoviePath:(NSString *)path
+{
+    if (moviePath)
+        [self close];
+    [self open:path];
+}
+
 - (BOOL)open:(NSString *)file
 {
     if (file != nil) {
         NSError *error;
-        self.moviePath = file;
-        NSLog(@"moviePath: %@", moviePath);
+        NSLog(@"moviePath: %@", file);
         @synchronized(self) {
             if (movie)
                 [movie release];
             // Setter already releases and retains where appropriate.
-            movie = [[QTMovie movieWithFile:moviePath error:&error] retain];
+            movie = [[QTMovie movieWithFile:file error:&error] retain];
             
             if (!movie) {
                 NSLog(@"Got error: %@", error);
@@ -179,7 +186,7 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
             NSSize movieSize = [firstVideoTrack apertureModeDimensionsForMode:@"QTMovieApertureModeClean"];
             size = [[JMXSize sizeWithNSSize:movieSize] retain];
             self.fps = self.frequency;
-            NSArray *path = [moviePath componentsSeparatedByString:@"/"];
+            NSArray *path = [file componentsSeparatedByString:@"/"];
             self.name = [path lastObject];
 #ifndef __x86_64
             if (qtVisualContext) {
@@ -193,6 +200,9 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
             }
 #endif
         }
+        if (moviePath)
+            [moviePath release];
+        moviePath = [file copy];
         return YES;
     }
     return NO;
@@ -335,7 +345,7 @@ static v8::Handle<Value>close(const Arguments& args)
 {
     HandleScope handleScope;
     v8::Persistent<v8::FunctionTemplate> entityTemplate = [super jsClassTemplate];
-    entityTemplate->SetClassName(String::New("VideoLayer"));
+    entityTemplate->SetClassName(String::New("VideoFile"));
     entityTemplate->InstanceTemplate()->SetInternalFieldCount(1);
     v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
     classProto->Set("open", FunctionTemplate::New(open));

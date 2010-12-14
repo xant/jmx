@@ -14,3 +14,11 @@ latex/
 
 # shared objects
 *.dylib
+
+# vim temporary files
+*~
+*.swp
+*.swo
+
+# headerdoc output directories
+*_h/

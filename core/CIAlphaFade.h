@@ -22,7 +22,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#include <QuartzCore/QuartzCore.h>
+#import <QuartzCore/QuartzCore.h>
 
 /*!
  @class CIAlphaFade

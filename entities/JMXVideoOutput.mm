@@ -35,9 +35,9 @@ using namespace v8;
     self = [super init];
     if (self) {
         currentFrame = nil;
-        self.size = [JMXSize sizeWithNSSize:screenSize];    
+        self.size = [JMXSize sizeWithNSSize:screenSize];
+        [self registerInputPin:@"frameSizeSize" withType:kJMXSizePin andSelector:@"setSize:"];
         [self registerInputPin:@"frame" withType:kJMXImagePin andSelector:@"drawFrame:"];
-        [self registerInputPin:@"screenSize" withType:kJMXSizePin andSelector:@"setSize:"];
 
         // effective fps for debugging purposes
         [self registerOutputPin:@"fps" withType:kJMXNumberPin];

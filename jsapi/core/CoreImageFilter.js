@@ -24,7 +24,7 @@ function CoreImageFilter(filterName)
  * Returns a list of available filters (strings).
  * @addon
  */
-CorImageFilter.availableFilters = function() {
+CoreImageFilter.availableFilters = function() {
     // ...
 }
 
@@ -34,7 +34,7 @@ CorImageFilter.availableFilters = function() {
  *                            A list can be obtained by calling CoreImageFilter.availableFilter() 
  * @addon
  */
-CorImageFilter.prototype.selectFilter = function(filterName) {
+CoreImageFilter.prototype.selectFilter = function(filterName) {
     // ...
 }
 

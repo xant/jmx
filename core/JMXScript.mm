@@ -49,7 +49,7 @@ typedef struct __JMXV8ClassDescriptor {
 static JMXV8ClassDescriptor mappedClasses[] = {
     { "JMXOpenGLScreen",          "VideoOutput",   JMXOpenGLScreenJSConstructor },
     { "JMXQtVideoCaptureEntity",  "VideoCapture",  JMXQtVideoCaptureEntityJSConstructor },
-    { "JMXQtMovieEntity",         "Movie",         JMXQtMovieEntityJSConstructor },
+    { "JMXQtMovieEntity",         "MovieFile",     JMXQtMovieEntityJSConstructor },
     { "JMXVideoMixer",            "VideoMixer",    JMXVideoMixerJSConstructor },
     { "JMXAudioFileEntity",       "AudioFile",     JMXAudioFileEntityJSConstructor },
     { "JMXCoreAudioOutput",       "AudioOutput",   JMXCoreAudioOutputJSConstructor },

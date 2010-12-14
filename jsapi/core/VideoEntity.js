@@ -6,17 +6,17 @@
  * @class
  * <h3>InputPins:</h3>
  *  <ul>
- *  <li>brightness</li>
- *  <li>saturation</li>
- *  <li>contrast</li>
- *  <li>alpha</li>
- *  <li>rotation</li>
- *  <li>origin</li>
+ *  <li>brightness {Number}</li>
+ *  <li>saturation {Number}</li>
+ *  <li>contrast {Number}</li>
+ *  <li>alpha {Number}</li>
+ *  <li>rotation {Number}</li>
+ *  <li>origin {Point}</li>
  *  </ul>
  * <h3>OutputPins:</h3>
  *  <ul>
- *  <li>frame</li>
- *  <li>frameSize</li>
+ *  <li>frame {Image}</li>
+ *  <li>frameSize {Size}</li>
  *  </ul>
  *
  */

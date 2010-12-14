@@ -89,7 +89,7 @@
  */
 - (void)addPersistentInstance:(v8::Persistent<v8::Object>)persistent obj:(id)obj;
 /*!
- @method remotePersistentInstance:
+ @method removePersistentInstance:
  @abstract remove a persistent instance from the internal map
  @param obj the native obj-c instance bound to the persistent instance we want to remove
  @discussion * TODO *

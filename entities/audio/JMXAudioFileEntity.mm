@@ -138,7 +138,7 @@ static v8::Handle<Value> close(const Arguments& args)
     //Locker lock;
     v8::Persistent<v8::FunctionTemplate> classTemplate = v8::Persistent<FunctionTemplate>::New(v8::FunctionTemplate::New());
     classTemplate->Inherit([super jsClassTemplate]);
-    classTemplate->SetClassName(String::New("VideoLayer"));
+    classTemplate->SetClassName(String::New("AudioFile"));
     classTemplate->InstanceTemplate()->SetInternalFieldCount(1);
     v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
     classProto->Set("open", FunctionTemplate::New(open));

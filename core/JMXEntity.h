@@ -135,9 +135,16 @@
  * JMXEntityOutputPinRemoved
  *     object:entity userInfo:outputPins
  *
+ * This class exposes the follwing input pins:
+ * 
+ * * active kJMXBooleanPin
+ * 
+ * * name kJMXStringPin
  *
+ * This class exposes the follwing output pins:
+ *
+ * * active kJMXBooleanPin
  */
-
 @interface JMXEntity : NSObject <NSCopying, JMXV8> {
 @public
     NSString *name;

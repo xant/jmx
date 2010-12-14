@@ -8,7 +8,7 @@
  * @class
  * Wrapper class for JMXDrawEntity instances.
  */
-function CoreImageFilter(width, height)
+function DrawPath(width, height)
 {
 
 }
@@ -21,7 +21,7 @@ function CoreImageFilter(width, height)
  * @param {Color} fillColor
  * @addon
  */
-CorImageFilter.prototype.drawCirle = function(center, radius, strokeColor, fillColor) {
+DrawPath.prototype.drawCirle = function(center, radius, strokeColor, fillColor) {
     // ...
 }
 
@@ -32,7 +32,7 @@ CorImageFilter.prototype.drawCirle = function(center, radius, strokeColor, fillC
  * @param {Color} fillColor
  * @addon
  */
-CorImageFilter.prototype.drawPolygon = function(points, strokeColor, fillColor) {
+DrawPath.prototype.drawPolygon = function(points, strokeColor, fillColor) {
     // ...
 }
 
@@ -40,7 +40,7 @@ CorImageFilter.prototype.drawPolygon = function(points, strokeColor, fillColor) 
  * Clear the frame.
  * @addon
  */
-CorImageFilter.prototype.clear = function() {
+DrawPath.prototype.clear = function() {
     // ...
 }
 

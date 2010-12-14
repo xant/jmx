@@ -267,7 +267,7 @@ static v8::Handle<Value> frequency(const Arguments& args)
     HandleScope handleScope;
     v8::Persistent<v8::FunctionTemplate> classTemplate = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
     classTemplate->Inherit([super jsClassTemplate]);
-    classTemplate->SetClassName(String::New("VideoLayer"));
+    classTemplate->SetClassName(String::New("AudioSpectrum"));
     classTemplate->InstanceTemplate()->SetInternalFieldCount(1);
     classTemplate->PrototypeTemplate()->Set("frequencies", FunctionTemplate::New(frequencies));
     classTemplate->PrototypeTemplate()->Set("frequency", FunctionTemplate::New(frequency));

@@ -13,11 +13,6 @@ function Pin()
      */
     this.type = 0;
     /**
-     * The direction of the pin.
-     * @type int
-     */
-    this.name = 0;
-    /**
      * The name of the pin.
      * @type string
      */

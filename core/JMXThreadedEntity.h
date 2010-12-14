@@ -37,6 +37,21 @@
  * @class JMXThreadedEntity
  * @abstract Base class for threaded entitites
  * @discussion conforms to protocols: JMXRunLoop
+ *
+ *
+ * This class exposes the follwing input pins:
+ * 
+ * * active kJMXBooleanPin
+ * 
+ * * frequency kJMXNumberPin MinValue:1.0 MaxValue:120.0
+ *             The frequency at which signals must be delivered (AKA: how many times the tick: message is sent to the instance) 
+ * 
+ *
+ * This class exposes the follwing output pins:
+ *
+ * * frequency kJMXNumberPin
+ *             The effective frequency at which the entity is running (could be slowed down by a too heavy tick implementation)
+ * 
  */
 @interface JMXThreadedEntity : JMXEntity < JMXRunLoop > {
 @protected

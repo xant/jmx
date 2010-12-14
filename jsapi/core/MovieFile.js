@@ -1,21 +1,21 @@
 /**
- * MovieEntity
+ * MovieFile
  * @addon
  * @constructor
  * @base VideoEntity
  * @class
  * <h3>InputPins:</h3>
  *  <ul>
- *  <li>path</li>
- *  <li>repeat</li>
- *  <li>pause</li>
+ *  <li>path {String}</li>
+ *  <li>repeat {Bool}</li>
+ *  <li>pause {Bool}</li>
  *  </ul>
  * <h3>OutputPins:</h3>
  *  <ul>
  *  </ul>
  *
  */
-function MovieEntity()
+function MovieFile()
 {
     this.path = "";
     this.repeat = false;
@@ -26,7 +26,7 @@ function MovieEntity()
  * Open movie file at specified path
  * @addon
  */
-ThreadedEntity.prototype.open = function(path) {
+MovieFile.prototype.open = function(path) {
     // ...
 }
 
@@ -34,7 +34,7 @@ ThreadedEntity.prototype.open = function(path) {
  * Close the current movie file (if any)
  * @addon
  */
-ThreadedEntity.prototype.close = function() {
+MovieFile.prototype.close = function() {
     // ...
 }
 

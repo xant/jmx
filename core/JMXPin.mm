@@ -589,15 +589,23 @@ static v8::Handle<Value>exportToBoard(const Arguments& args)
     HandleScope scope;
     BOOL ret = NO;
     JMXPin *pin = (JMXPin *)args.Holder()->GetPointerFromInternalField(0);
+    v8::Handle<Value> arg = args[0];
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSString *name = nil;
+    if (!arg.IsEmpty()) {
+        v8::String::Utf8Value value(args[0]);
+        name = [NSString stringWithUTF8String:*value];
+    }
     v8::Local<Context> globalContext = v8::Context::GetCalling();
     JMXScript *ctx = [JMXScript getContext:globalContext];
     if (ctx && ctx.scriptEntity) {        
         if (pin.direction == kJMXInputPin)
-            [ctx.scriptEntity proxyInputPin:(JMXInputPin *)pin];
+            [ctx.scriptEntity proxyInputPin:(JMXInputPin *)pin withName:name];
         else 
-            [ctx.scriptEntity proxyOutputPin:(JMXOutputPin *)pin];
+            [ctx.scriptEntity proxyOutputPin:(JMXOutputPin *)pin withName:name];
         ret = YES;
     }
+    [pool release];
     return scope.Close(v8::Boolean::New(ret));
 }
 

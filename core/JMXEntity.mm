@@ -25,6 +25,7 @@
 #import "JMXEntity.h"
 #import <QuartzCore/QuartzCore.h>
 #import "JMXScript.h"
+#import "JMXProxyPin.h"
 
 using namespace v8;
 
@@ -213,20 +214,32 @@ using namespace v8;
                       initialValue:value];
 }
 
+- (void)proxyInputPin:(JMXInputPin *)pin withName:(NSString *)pinName
+{
+    JMXProxyPin *pPin = [JMXProxyPin proxyPin:pin withName:pinName ? pinName : pin.name];
+    [inputPins setObject:pPin
+                  forKey:[(JMXInputPin *)pPin name]];
+    // We need notifications to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
+    [self performSelectorOnMainThread:@selector(notifyPinAdded:) withObject:pPin waitUntilDone:NO];
+}
+
 - (void)proxyInputPin:(JMXInputPin *)pin
 {
-    [inputPins setObject:pin
-                  forKey:pin.name];
+    return [self proxyInputPin:pin withName:nil];
+}
+
+- (void)proxyOutputPin:(JMXOutputPin *)pin withName:(NSString *)pinName
+{
+    JMXProxyPin *pPin = [JMXProxyPin proxyPin:pin withName:pinName ? pinName : pin.name];
+    [outputPins setObject:pPin
+                   forKey:[(JMXOutputPin *)pPin name]];
     // We need notifications to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
-    [self performSelectorOnMainThread:@selector(notifyPinAdded:) withObject:pin waitUntilDone:NO];
+    [self performSelectorOnMainThread:@selector(notifyPinAdded:) withObject:pPin waitUntilDone:NO];
 }
 
 - (void)proxyOutputPin:(JMXOutputPin *)pin
 {
-    [outputPins setObject:pin
-                   forKey:pin.name];
-    // We need notifications to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
-    [self performSelectorOnMainThread:@selector(notifyPinAdded:) withObject:pin waitUntilDone:NO];
+    return [self proxyOutputPin:pin withName:nil];
 }
 
 // XXX - possible race conditions here (in both inputPins and outputPins)

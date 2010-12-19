@@ -309,11 +309,28 @@
                        initialValue:(id)value;
 
 /*!
+ @method proxyInputPin:withName:
+ @abstract manage/register an existing input pin as if it is ours
+ @param pin the existing pin
+ @param pinName the new name to assign to the proxied pin
+ */
+- (void)proxyInputPin:(JMXInputPin *)pin withName:(NSString *)pinName;
+
+/*!
  @method proxyInputPin:
  @abstract manage/register an existing input pin as if it is ours
  @param pin the existing pin
  */
 - (void)proxyInputPin:(JMXInputPin *)pin;
+
+/*!
+ @method proxyOutputPin:withName:
+ @abstract manage/register an existing input pin as if it is ours
+ @param pin the existing pin
+ @param pinName the new name to assign to the proxied pin
+ */
+- (void)proxyOutputPin:(JMXOutputPin *)pin withName:(NSString *)pinName;
+
 /*!
  @method proxyOutputPin:
  @abstract manage/register an existing input pin as if it is ours

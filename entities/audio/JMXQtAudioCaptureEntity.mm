@@ -20,18 +20,21 @@
 //  You should have received a copy of the GNU General Public License
 //  along with JMX.  If not, see <http://www.gnu.org/licenses/>.
 //
-#import "JMXQtAudioCaptureEntity.h"
 
 #include <CoreAudio/CoreAudioTypes.h>
 #import <QTKit/QTKit.h>
+#define __JMXV8__
+#import "JMXQtAudioCaptureEntity.h"
+#include "JMXScript.h"
 
+JMXV8_EXPORT_ENTITY_CLASS(JMXQtAudioCaptureEntity);
 
 #pragma mark -
 #pragma mark Converter Callback
 
 typedef struct CallbackContext_t {
 	AudioBufferList * theConversionBuffer;
-	Boolean wait;
+	bool wait;
     UInt32 offset;
 } CallbackContext;
 
@@ -43,7 +46,7 @@ static OSStatus _FillComplexBufferProc (
                                         void * inUserData
                                         )
 {
-	CallbackContext * ctx = inUserData;
+	CallbackContext * ctx = (CallbackContext *)inUserData;
     AudioBufferList *bufferList = ctx->theConversionBuffer;
 	int i;
     for (i = 0; i < bufferList->mNumberBuffers; i++) {
@@ -283,13 +286,13 @@ static OSStatus _FillComplexBufferProc (
         OSStatus err = noErr;
         CallbackContext callbackContext;
         UInt32 framesRead = buffer->mBuffers[0].mDataByteSize / format.mBytesPerFrame / buffer->mBuffers[0].mNumberChannels;
-        AudioBufferList *outputBufferList = malloc(sizeof(AudioBufferList));
+        AudioBufferList *outputBufferList = (AudioBufferList *)malloc(sizeof(AudioBufferList));
         outputBufferList->mNumberBuffers = 1;
         outputBufferList->mBuffers[0].mDataByteSize = outputDescription.mBytesPerFrame * outputDescription.mChannelsPerFrame * framesRead;
         outputBufferList->mBuffers[0].mNumberChannels = outputDescription.mChannelsPerFrame;
         outputBufferList->mBuffers[0].mData = malloc(outputBufferList->mBuffers[0].mDataByteSize);
         callbackContext.theConversionBuffer = buffer;
-        callbackContext.wait = NO; // XXX (actually unused)
+        //callbackContext.wait = NO; // XXX (actually unused)
         if (inputDescription.mSampleRate == outputDescription.mSampleRate &&
             inputDescription.mBytesPerFrame == outputDescription.mBytesPerFrame) {
             err = AudioConverterConvertBuffer (
@@ -341,6 +344,64 @@ static OSStatus _FillComplexBufferProc (
 - (void)tick:(uint64_t)timeStamp
 {
     [self outputDefaultSignals:timeStamp];
+}
+
+#pragma mark V8
+using namespace v8;
+
+- (void)jsInit:(NSValue *)argsValue
+{
+    v8::Arguments *args = (v8::Arguments *)[argsValue pointerValue];
+    if (args->Length()) {
+        v8::Handle<Value> arg = (*args)[0];
+        v8::String::Utf8Value value(arg);
+        if (*value)
+            [self setDevice:[NSString stringWithUTF8String:*value]];
+    }
+}
+
+static v8::Handle<Value>start(const Arguments& args)
+{
+    HandleScope handleScope;
+    JMXQtAudioCaptureEntity *entity = (JMXQtAudioCaptureEntity *)args.Holder()->GetPointerFromInternalField(0);
+    [entity start];
+    return v8::Undefined();
+}
+
+static v8::Handle<Value>stop(const Arguments& args)
+{
+    HandleScope handleScope;
+    JMXQtAudioCaptureEntity *entity = (JMXQtAudioCaptureEntity *)args.Holder()->GetPointerFromInternalField(0);
+    [entity stop];
+    return v8::Undefined();
+}
+
+// class method to get a list with all available devices
+static v8::Handle<Value>availableFilters(const Arguments& args)
+{
+    HandleScope handleScope;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSArray *availableDevices = [JMXQtAudioCaptureEntity availableDevices];
+    v8::Handle<Array> list = Array::New([availableDevices count]);
+    for (int i = 0; i < [availableDevices count]; i++) {
+        list->Set(i, String::New([[availableDevices objectAtIndex:i] UTF8String]));
+    }
+    [pool drain];
+    return handleScope.Close(list);
+}
+
++ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
+{
+    HandleScope handleScope;
+    v8::Persistent<v8::FunctionTemplate> classTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    classTemplate->Inherit([super jsClassTemplate]);
+    classTemplate->SetClassName(String::New("QtAudioCapture"));
+    classTemplate->InstanceTemplate()->SetInternalFieldCount(1);
+    v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
+    classProto->Set("start", FunctionTemplate::New(start));
+    classProto->Set("stop", FunctionTemplate::New(stop));
+    classProto->Set("avaliableFilters", FunctionTemplate::New(availableFilters));
+    return classTemplate;
 }
 
 @end

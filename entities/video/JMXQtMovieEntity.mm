@@ -352,4 +352,5 @@ static v8::Handle<Value>close(const Arguments& args)
     classProto->Set("close", FunctionTemplate::New(close));
     return entityTemplate;
 }
+
 @end

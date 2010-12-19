@@ -47,3 +47,7 @@
 - (void)start;
 - (void)stop;
 @end
+
+#ifdef __JMXV8__
+JMXV8_DECLARE_ENTITY_CONSTRUCTOR(JMXQtAudioCaptureEntity);
+#endif

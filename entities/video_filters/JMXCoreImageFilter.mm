@@ -36,7 +36,6 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXCoreImageFilter);
             NSArray *filtersInCategory = [CIFilter filterNamesInCategory:category];
             [knownFilters addObjectsFromArray:filtersInCategory];
         }
-        filterSelector.data = [knownFilters objectAtIndex:0];
         [filterSelector addAllowedValues:knownFilters];
     }
     return self;
@@ -88,8 +87,30 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXCoreImageFilter);
     }
 }
 
+- (void)removeFilterAttributesPins
+{
+    for (NSString *pinName in [[inputPins copy] autorelease]) {
+        // TODO - extendable [JMXEntity defaultInputPins]
+        if (pinName != @"frame" && pinName != @"filter" && pinName != @"active")
+            [self unregisterInputPin:pinName];
+    }
+    for (NSString *pinName in [[outputPins copy] autorelease]) {
+        // TODO - extendable [JMXEntity defaultOutputPins]
+        if (pinName != @"frame" && pinName != @"active")
+            [self unregisterOutputPin:pinName];
+    }
+}
+
 - (void)setFilter:(NSString *)filterName
 {
+    if ([filterName length] == 0) {
+        if (filter)
+            [filter release];
+        filter = nil;
+        [self removeFilterAttributesPins];
+        [self notifyModifications];
+    }
+        
     CIFilter *newFilter = [CIFilter filterWithName:filterName];
     if (newFilter) {
         [newFilter setDefaults];
@@ -97,16 +118,7 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXCoreImageFilter);
         NSArray *inputKeys = [newFilter inputKeys];
         NSDictionary *attributes = [newFilter attributes];
         @synchronized(self) {
-            for (NSString *pinName in [[inputPins copy] autorelease]) {
-                // TODO - extendable [JMXEntity defaultInputPins]
-                if (pinName != @"frame" && pinName != @"filter" && pinName != @"active")
-                    [self unregisterInputPin:pinName];
-            }
-            for (NSString *pinName in [[outputPins copy] autorelease]) {
-                // TODO - extendable [JMXEntity defaultOutputPins]
-                if (pinName != @"frame" && pinName != @"active")
-                    [self unregisterOutputPin:pinName];
-            }
+            [self removeFilterAttributesPins];
             for (NSString *key in inputKeys) {
                 // TODO - max/min values and display name
                 if (![key isEqualTo:@"inputImage"]) {
@@ -144,59 +156,14 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXCoreImageFilter);
 #pragma mark V8
 using namespace v8;
 
-- (void)jsInit:(NSValue *)argsValue
-{
-    v8::Arguments *args = (v8::Arguments *)[argsValue pointerValue];
-    v8::Handle<Value> arg = (*args)[0];
-    v8::String::Utf8Value value(arg);
-    self.filter = [NSString stringWithUTF8String:*value];
-}
-
-static v8::Handle<Value> AvailableFilters(const Arguments& args)
-{
-    HandleScope handleScope;
-    JMXCoreImageFilter *filter = (JMXCoreImageFilter *)args.Holder()->GetPointerFromInternalField(0);
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    v8::Handle<Array> list = v8::Array::New([filter.knownFilters count]);
-    for (int i = 0; i < [filter.knownFilters count]; i++) {
-        list->Set(Number::New(i), String::New([[filter.knownFilters objectAtIndex:i] UTF8String]));
-    }
-    [pool release];
-    return handleScope.Close(list);
-}
-
-static v8::Handle<Value> SelectFilter(const Arguments& args)
-{
-    HandleScope handleScope;
-    BOOL ret = NO;
-    JMXCoreImageFilter *filterInstance = (JMXCoreImageFilter *)args.Holder()->GetPointerFromInternalField(0);
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    v8::Handle<Value> arg = args[0];
-    v8::String::Utf8Value value(arg);
-    NSString *filterName = [NSString stringWithUTF8String:*value];
-    {
-        v8::Unlocker unlocker;
-        filterInstance.filter = filterName;
-        if ([filterInstance.filter isEqualTo:filterName])
-            ret = YES;
-    }
-    [pool release];
-    return handleScope.Close(v8::Boolean::New(ret));
-}
-
 + (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
 {
     //Locker lock;
     HandleScope handleScope;
-    v8::Persistent<v8::FunctionTemplate> entityTemplate = v8::Persistent<v8::FunctionTemplate>::New(v8::FunctionTemplate::New());
-    entityTemplate->Inherit([super jsClassTemplate]);
-    entityTemplate->SetClassName(String::New("VideoFilter"));
-    entityTemplate->InstanceTemplate()->SetInternalFieldCount(1);
-    v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
-    classProto->Set("avaliableFilters", FunctionTemplate::New(AvailableFilters));
-    classProto->Set("selectFilter", FunctionTemplate::New(SelectFilter));
-    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("filter"), GetStringProperty, SetStringProperty);
-    return entityTemplate;
+    classTemplate = v8::Persistent<v8::FunctionTemplate>::New(v8::FunctionTemplate::New());
+    classTemplate->Inherit([super jsClassTemplate]);
+    classTemplate->SetClassName(String::New("CoreImageFilter"));
+    classTemplate->InstanceTemplate()->SetInternalFieldCount(1);
+    return classTemplate;
 }
-
 @end

@@ -123,4 +123,33 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXCoreAudioOutput);
     NSLog(@"Overload!");
 }
 
+#pragma mark V8
+using namespace v8;
+
+// class method to get a list with all available devices
+static v8::Handle<Value>availableFilters(const Arguments& args)
+{
+    HandleScope handleScope;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSArray *availableDevices = [JMXCoreAudioOutput availableDevices];
+    v8::Handle<Array> list = Array::New([availableDevices count]);
+    for (int i = 0; i < [availableDevices count]; i++) {
+        list->Set(i, String::New([[availableDevices objectAtIndex:i] UTF8String]));
+    }
+    [pool drain];
+    return handleScope.Close(list);
+}
+
++ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
+{
+    v8::Persistent<FunctionTemplate> classTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    classTemplate->Inherit([super jsClassTemplate]);  
+    classTemplate->SetClassName(String::New("CoreAudioOutput"));
+    classTemplate->InstanceTemplate()->SetInternalFieldCount(1);
+    v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
+    classProto->Set("availableFilters", FunctionTemplate::New(availableFilters));
+    NSLog(@"JMXCoreAudioOutput ClassTemplate created");
+    return classTemplate;
+}
+
 @end

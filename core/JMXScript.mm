@@ -53,7 +53,7 @@ static JMXV8ClassDescriptor mappedClasses[] = {
     { "JMXVideoMixer",            "VideoMixer",    JMXVideoMixerJSConstructor },
     { "JMXAudioFileEntity",       "AudioFile",     JMXAudioFileEntityJSConstructor },
     { "JMXCoreAudioOutput",       "AudioOutput",   JMXCoreAudioOutputJSConstructor },
-    { "JMXCoreImageFilter",       "VideoFilter",   JMXCoreImageFilterJSConstructor },
+    { "JMXCoreImageFilter",       "CoreImageFilter", JMXCoreImageFilterJSConstructor },
     { "JMXAudioSpectrumAnalyzer", "AudioSpectrum", JMXAudioSpectrumAnalyzerJSConstructor },
     { "JMXDrawEntity",            "DrawPath",      JMXDrawEntityJSConstructor },
     { "JMXPoint",                 "Point",         JMXPointJSConstructor },

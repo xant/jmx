@@ -95,4 +95,5 @@
  @discussion * TODO *
  */
 - (void)removePersistentInstance:(id)obj;
+
 @end

@@ -20,6 +20,7 @@
 #import "JMXVideoMixer.h"
 #import "JMXAudioFileEntity.h"
 #import "JMXCoreAudioOutput.h"
+#import "JMXQtAudioCaptureEntity.h"
 #import "JMXCoreImageFilter.h"
 #import "JMXAudioSpectrumAnalyzer.h"
 #import "JMXInputPin.h"
@@ -47,20 +48,22 @@ typedef struct __JMXV8ClassDescriptor {
 } JMXV8ClassDescriptor;
 
 static JMXV8ClassDescriptor mappedClasses[] = {
-    { "JMXOpenGLScreen",          "VideoOutput",   JMXOpenGLScreenJSConstructor },
-    { "JMXQtVideoCaptureEntity",  "VideoCapture",  JMXQtVideoCaptureEntityJSConstructor },
-    { "JMXQtMovieEntity",         "MovieFile",     JMXQtMovieEntityJSConstructor },
-    { "JMXVideoMixer",            "VideoMixer",    JMXVideoMixerJSConstructor },
-    { "JMXAudioFileEntity",       "AudioFile",     JMXAudioFileEntityJSConstructor },
-    { "JMXCoreAudioOutput",       "AudioOutput",   JMXCoreAudioOutputJSConstructor },
+    { "JMXOpenGLScreen",          "OpenGLScreen",    JMXOpenGLScreenJSConstructor },
+    { "JMXQtVideoCaptureEntity",  "QtVideoCapture",  JMXQtVideoCaptureEntityJSConstructor },
+    { "JMXQtMovieEntity",         "QtMovieFile",     JMXQtMovieEntityJSConstructor },
     { "JMXCoreImageFilter",       "CoreImageFilter", JMXCoreImageFilterJSConstructor },
-    { "JMXAudioSpectrumAnalyzer", "AudioSpectrum", JMXAudioSpectrumAnalyzerJSConstructor },
-    { "JMXDrawEntity",            "DrawPath",      JMXDrawEntityJSConstructor },
-    { "JMXPoint",                 "Point",         JMXPointJSConstructor },
-    { "JMXColor",                 "Color",         JMXColorJSConstructor },
-    { "JMXSize",                  "Size",          JMXSizeJSConstructor },
-    { NULL,                       NULL,            NULL }
+    { "JMXVideoMixer",            "VideoMixer",      JMXVideoMixerJSConstructor },
+    { "JMXAudioFileEntity",       "CoreAudioFile",   JMXAudioFileEntityJSConstructor },
+    { "JMXCoreAudioOutput",       "CoreAudioOutput", JMXCoreAudioOutputJSConstructor },
+    { "JMXQtAudioCaptureEntity",  "QtAudioCapture",  JMXCoreAudioOutputJSConstructor },
+    { "JMXAudioSpectrumAnalyzer", "AudioSpectrum",   JMXAudioSpectrumAnalyzerJSConstructor },
+    { "JMXDrawEntity",            "DrawPath",        JMXDrawEntityJSConstructor },
+    { "JMXPoint",                 "Point",           JMXPointJSConstructor },
+    { "JMXColor",                 "Color",           JMXColorJSConstructor },
+    { "JMXSize",                  "Size",            JMXSizeJSConstructor },
+    { NULL,                       NULL,              NULL }
 };
+
 // Extracts a C string from a V8 Utf8Value.
 static const char* ToCString(const v8::String::Utf8Value& value) {
     return *value ? *value : "<string conversion failed>";
@@ -197,8 +200,8 @@ static v8::Handle<Value> ExecJSCode(const char *code, uint32_t length, const cha
             ReportException(&try_catch);
         } else if (!result->IsUndefined()) {
             // Convert the result to an ASCII string and print it.
-            String::AsciiValue ascii(result);
-            NSLog(@"%s\n", *ascii);
+            //String::AsciiValue ascii(result);
+            //NSLog(@"%s\n", *ascii);
         }
     } else {
         ReportException(&try_catch);
@@ -215,6 +218,16 @@ static v8::Handle<Value> Include(const Arguments& args) {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSString *path = [NSString stringWithUTF8String:*value];
     NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:path];
+    if (!fh) {
+        // try searching in the main core directory
+        NSBundle *mainBundle = [NSBundle mainBundle];
+        path = [NSString stringWithFormat:@"%@/js/%s", [mainBundle builtInPlugInsPath], *value];
+        fh = [NSFileHandle fileHandleForReadingAtPath:path];
+        if (!fh) {
+            // if still not found, let's try in the user include directory
+            path = [NSString stringWithFormat:@"~/Library/JMX/js/%s", [mainBundle builtInPlugInsPath], *value];
+        }
+    }
     if (fh) {
         NSData *data = [fh readDataToEndOfFile];
         ExecJSCode((const char *)[data bytes], [data length], [path UTF8String]);
@@ -377,7 +390,6 @@ static v8::Handle<Value> Quit(const Arguments& args)
         ctxTemplate->Set(String::New("lsdir"), FunctionTemplate::New(ListDir));
         ctxTemplate->Set(String::New("isdir"), FunctionTemplate::New(IsDir));
         ctxTemplate->Set(String::New("exportPin"), FunctionTemplate::New(ExportPin));
-        
         ctxTemplate->Set(String::New("run"), FunctionTemplate::New(Run));
         ctxTemplate->Set(String::New("quit"), FunctionTemplate::New(Quit));
 
@@ -442,9 +454,10 @@ static v8::Handle<Value> Quit(const Arguments& args)
         scriptEntity = entity;
         //ctx->Global()->SetPointerInInternalField(0, scriptEntity);
     }
+    NSString *scriptSource = [NSString stringWithFormat:@"include('JMX.js');%@", script];
     //NSLog(@"%@", [self exportGraph:[[JMXContext sharedContext] allEntities] andPins:nil]);
     ctx->Global()->SetHiddenValue(String::New("quit"), v8::Boolean::New(0));
-    ExecJSCode([script UTF8String], [script length],
+    ExecJSCode([scriptSource UTF8String], [scriptSource length],
              entity ? [entity.name UTF8String] : [[NSString stringWithFormat:@"%@", self] UTF8String]);
     [pool drain];
 }

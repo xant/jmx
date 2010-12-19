@@ -43,6 +43,20 @@
     overriddenName = [pinName copy];
 }
 
+- (void)pinDisconnected:(NSNotification *)notification
+{
+    NSDictionary *userInfo = [notification userInfo];
+    /* TODO - update userInfo to reference the proxied instance
+    JMXPin *inputPin = [userInfo objectForKey:@"inputPin"];
+    JMXPin *outputPin = [userInfo objectForKey:@"outputPin"];
+     */
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXPinDisconnected"
+                                                        object:self
+                                                      userInfo:userInfo];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"JMXPinDisconnected" object:realObject];
+
+}
+
 - (void)forwardInvocation:(NSInvocation *)anInvocation
 {
     if ([anInvocation selector] == @selector(name) ||
@@ -50,6 +64,20 @@
     {
         [anInvocation setTarget:self];
     } else {
+        if ([anInvocation selector] == @selector(connectToPin:)) {
+            JMXPin *destinationPin;
+            [anInvocation getArgument:&destinationPin atIndex:2];
+            NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:destinationPin, @"outputPin", self, @"inputPin", nil];
+            if (realObject.sendNotifications) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXPinConnected"
+                                                                    object:self
+                                                                    userInfo:userInfo];
+                [[NSNotificationCenter defaultCenter] addObserver:self
+                                                         selector:@selector(pinDisconnected:)
+                                                             name:@"JMXPinDisconnected"
+                                                           object:realObject];
+            }
+        }
         [anInvocation setTarget:realObject];
     }
     [anInvocation invoke];

@@ -6,6 +6,9 @@
 /**
  * AudioOutput
  * @constructor
+ * @param {String} type The specific implementation type, 
+ *                      pass a null value to use the default
+ *                      CoreAudio-based implementation
  * @base Entity
  * @class Send audio samples to an output device
  * <h3>InputPins:</h3>
@@ -18,7 +21,7 @@
  *  </ul>
  *
  */
-function AudioOutput()
+function AudioOutput(type)
 {
     if (!type)
         return CoreAudioOutput(device);

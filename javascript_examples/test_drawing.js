@@ -5,9 +5,9 @@ drawer = new DrawPath(width, height);
 drawer.start();
 
 // UNCOMMENT TO ACTIVATE A VIDEO FILTER
-//filter = new VideoFilter("CIZoomBlur");
-//drawer.outputPin('frame').connect(filter.inputPin('frame'));
-//filter.outputPin('frame').export();
+filter = new VideoFilter("CIZoomBlur");
+drawer.outputPin('frame').connect(filter.inputPin('frame'));
+filter.outputPin('frame').export('filteredFrame');
 
 // COMMENT THE FOLLOWING TWO LINES IF FILTER HAS BEEN ACTIVATED
 drawer.outputPin('frame').export();

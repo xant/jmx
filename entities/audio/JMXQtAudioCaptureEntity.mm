@@ -377,7 +377,7 @@ static v8::Handle<Value>stop(const Arguments& args)
 }
 
 // class method to get a list with all available devices
-static v8::Handle<Value>availableFilters(const Arguments& args)
+static v8::Handle<Value>availableDevices(const Arguments& args)
 {
     HandleScope handleScope;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -400,7 +400,7 @@ static v8::Handle<Value>availableFilters(const Arguments& args)
     v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
     classProto->Set("start", FunctionTemplate::New(start));
     classProto->Set("stop", FunctionTemplate::New(stop));
-    classProto->Set("avaliableFilters", FunctionTemplate::New(availableFilters));
+    classProto->Set("avaliableDevices", FunctionTemplate::New(availableDevices));
     return classTemplate;
 }
 

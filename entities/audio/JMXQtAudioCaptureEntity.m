@@ -97,89 +97,90 @@ static OSStatus _FillComplexBufferProc (
     bool ret = false;
     
     NSError *o_returnedError;
-
-    // XXX - supports only the default audio input for now
-    device = [QTCaptureDevice defaultInputDeviceWithMediaType: QTMediaTypeSound];
-    if( !device )
-    {
-        NSLog(@"Can't find any Video device");
-        goto error;
+    @synchronized(self) {
+        // XXX - supports only the default audio input for now
+        device = controller.captureDevice;
+        if( !device )
+        {
+            NSLog(@"Can't find any Video device");
+            goto error;
+        }
+        [device retain];
+        
+        if( ![device open: &o_returnedError] )
+        {
+            NSLog(@"Unable to open the capture device (%i)", [o_returnedError code]);
+            goto error;
+        }
+        
+        if( [device isInUseByAnotherApplication] == YES )
+        {
+            NSLog(@"default capture device is exclusively in use by another application");
+            goto error;
+        }
+        
+        input = [[QTCaptureDeviceInput alloc] initWithDevice: device];
+        if( !input )
+        {
+            NSLog(@"can't create a valid capture input facility");
+            goto error;
+        }
+        
+        
+        session = [[QTCaptureSession alloc] init];
+        
+        ret = [session addInput:input error: &o_returnedError];
+        if( !ret )
+        {
+            NSLog(@"default video capture device could not be added to capture session (%i)", [o_returnedError code]);
+            goto error;
+        }
+        
+        ret = [session addOutput:self error: &o_returnedError];
+        if( !ret )
+        {
+            NSLog(@"output could not be added to capture session (%i)", [o_returnedError code]);
+            goto error;
+        }
+        
+        [session startRunning]; // start the capture session
+        NSLog(@"Video device ready!");
+        
+        [self setDelegate:controller];
+        return;
+    error:
+        //[= exitQTKitOnThread];
+        [input release];
     }
-    [device retain];
-    
-    if( ![device open: &o_returnedError] )
-    {
-        NSLog(@"Unable to open the capture device (%i)", [o_returnedError code]);
-        goto error;
-    }
-    
-    if( [device isInUseByAnotherApplication] == YES )
-    {
-        NSLog(@"default capture device is exclusively in use by another application");
-        goto error;
-    }
-    
-    input = [[QTCaptureDeviceInput alloc] initWithDevice: device];
-    if( !input )
-    {
-        NSLog(@"can't create a valid capture input facility");
-        goto error;
-    }
-    
-    
-    session = [[QTCaptureSession alloc] init];
-    
-    ret = [session addInput:input error: &o_returnedError];
-    if( !ret )
-    {
-        NSLog(@"default video capture device could not be added to capture session (%i)", [o_returnedError code]);
-        goto error;
-    }
-    
-    ret = [session addOutput:self error: &o_returnedError];
-    if( !ret )
-    {
-        NSLog(@"output could not be added to capture session (%i)", [o_returnedError code]);
-        goto error;
-    }
-    
-    [session startRunning]; // start the capture session
-    NSLog(@"Video device ready!");
-    
-    [self setDelegate:controller];
-    return;
-error:
-    //[= exitQTKitOnThread];
-    [input release];
-    
 }
 
 - (void)stopCapture
 {
-    if (session) {
-        [session stopRunning];
-        if (input) {
-            [session removeInput:input];
-            [input release];
-            input = NULL;
+    @synchronized(self) {
+        if (session) {
+            [session stopRunning];
+            if (input) {
+                [session removeInput:input];
+                [input release];
+                input = NULL;
+            }
+            [session removeOutput:self];
+            [session release];
+            session = nil;
         }
-        [session removeOutput:self];
-        [session release];
-        session = nil;
+        /*
+         if (output) {
+         [output release];
+         output = NULL;
+         }
+         */
+        if (device) {
+            if ([device isOpen])
+                [device close];
+            [device release];
+            device = NULL;
+        }
     }
-    /*
-     if (output) {
-     [output release];
-     output = NULL;
-     }
-     */
-    if (device) {
-        if ([device isOpen])
-            [device close];
-        [device release];
-        device = NULL;
-    }
-    
 }
 
 @end
@@ -188,6 +189,8 @@ error:
 #pragma mark JMXQtAudioCaptureLayer
 
 @implementation JMXQtAudioCaptureEntity : JMXEntity
+
+@synthesize captureDevice;
 
 - (id)init
 {
@@ -205,6 +208,11 @@ error:
         outputFormat.mFramesPerPacket = 1;
         outputFormat.mBytesPerFrame = 4 * outputFormat.mChannelsPerFrame;
         outputFormat.mBitsPerChannel = 32;
+        deviceSelect = [self registerInputPin:@"device" withType:kJMXStringPin andSelector:@"setDevice:"];
+        NSArray *devicesList = [QTCaptureDevice inputDevicesWithMediaType:QTMediaTypeSound];
+        for (QTCaptureDevice *dev in devicesList) 
+            [deviceSelect addAllowedValue:[dev uniqueID]];
+        deviceSelect.data = [[QTCaptureDevice defaultInputDeviceWithMediaType:QTMediaTypeSound] uniqueID];
     } else {
         [self dealloc];
         return nil;
@@ -219,6 +227,18 @@ error:
         grabber = nil;
     }
 	[super dealloc];
+}
+
+- (void)setDevice:(NSString *)uniqueID
+{
+    QTCaptureDevice *dev = [QTCaptureDevice deviceWithUniqueID:uniqueID];
+    if (dev)
+        captureDevice = dev;
+    if (active) {
+        [grabber stopCapture];
+        [grabber startCapture:self];
+    }
+        
 }
 
 - (void)captureOutput:(QTCaptureOutput *)captureOutput didOutputAudioSampleBuffer:(QTSampleBuffer *)sampleBuffer
@@ -284,7 +304,7 @@ error:
 
 - (void)start
 {
-    // we don't want the a thread, 
+    // we don't want the extra thread (QTKit spawns already its own), 
     // so it's useless to call our super here
 	//[super start];
 	[grabber startCapture:self];

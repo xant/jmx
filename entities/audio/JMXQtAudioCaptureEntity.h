@@ -28,6 +28,7 @@
 #import "JMXRunLoop.h"
 
 @class JMXQtAudioGrabber;
+@class QTCaptureDevice;
 
 @interface JMXQtAudioCaptureEntity : JMXEntity < NSCoding, JMXRunLoop >
 {
@@ -35,9 +36,12 @@
 	JMXQtAudioGrabber *grabber;
     JMXAudioBuffer *currentBuffer;
     JMXOutputPin *outputPin;
+    JMXInputPin *deviceSelect;
     AudioConverterRef converter;
     AudioStreamBasicDescription outputFormat;
+    QTCaptureDevice *captureDevice;
 }
+@property (readonly) QTCaptureDevice *captureDevice;
 - (void)start;
 - (void)stop;
 @end

@@ -1,9 +1,13 @@
 /**
+ * @fileoverview
+ * Send received samples to an audio output device
+ */
+
+/**
  * AudioOutput
- * @addon
  * @constructor
  * @base Entity
- * @class
+ * @class Send audio samples to an output device
  * <h3>InputPins:</h3>
  *  <ul>
  *  <li>audio {Audio}</li>

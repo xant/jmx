@@ -1,10 +1,14 @@
 /**
+ * @fileoverview
+ * Analyze received samples and provide frequency values
+ */
+
+/**
  * AudioSpectrum
- * @addon
  * @constructor
  * @param {Array} frequencies An array containing the frequencies we want to be exposed through output pins
  * @base Entity
- * @class
+ * @class Analyze audio samples and provide frequencies
  * <h3>InputPins:</h3>
  *  <ul>
  *  <li>audio {Audio}</li>
@@ -19,10 +23,12 @@
  */
 function AudioSpectrum(frequencies)
 {
+    /**
+     * Set the frquencies we want to be provided as output pins
+     * @param {Array} frequencies  An array containing the frequencies we want to be exposed through output pins
+     */
+    this.setFrequencies = function(frequencies) { }
+
     // ...
 }
 
-
-AudioSpectrum.prototype.setFrequencies = function(frequencies) {
-    // ...
-}

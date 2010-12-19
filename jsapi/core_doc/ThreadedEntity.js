@@ -21,20 +21,16 @@ function ThreadedEntity()
      * @type float
      */
     this.frequency = 0;
-}
 
-/**
- * Start the entity
- * @addon
- */
-ThreadedEntity.prototype.start = function() {
-}
+    /**
+     * Start the entity
+     * @addon
+     */
+    this.start = function() { }
 
-/**
- * Stop the entity
- * @addon
- */
-ThreadedEntity.prototype.stop = function() {
+    /**
+     * Stop the entity
+     */
+    this.stop = function() { }
 }
-
 

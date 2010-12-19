@@ -1,7 +1,7 @@
 /**
  * Color is a wrapper class to JMXColor objects (used within the JMX engine)
- * @addon
  * @constructor
+ * @class Wraps a JMXColor object and makes it available to javascript
  */
 function Color(r, g, b, a)
 { 

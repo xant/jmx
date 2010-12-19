@@ -1,9 +1,13 @@
 /**
- * Movie
- * @addon
+ * @fileoverview
+ * Read frames from video files
+ */
+
+/**
+ * VideoEntity
  * @constructor
  * @base ThreadedEntity
- * @class
+ * @class Wrapper class for JMXVideoEntity, which provides base functionalities for entities producing video frames
  * <h3>InputPins:</h3>
  *  <ul>
  *  <li>brightness {Number}</li>

@@ -1,9 +1,10 @@
 /**
  * Pin
- * @addon
  * @constructor
- * @class
- * Wrapper class for JMXPin instances.
+ * @class Wrapper class for JMXPin instances.
+ * Connections between {@link Entity} instances happen through pins.
+ * Only pins of the same type and opposite 
+ * @see Entity
  */
 function Pin()
 {
@@ -43,22 +44,21 @@ function Pin()
      */
     this.connected = false;
 
+    /**
+     * Connect this pin the destination pin
+     * @param {Pin} pin The pin we want to connect to
+     */
+    this.connect = function(pin) {
+        // ...
+    }
+
+    /**
+     * Export this pin making it available on the board
+     */
+    this.export = function() {
+        // ...
+    }
+
     // ...
 }
 
-/**
- * Connect this pin the destination pin
- * @param {Pin} pin The pin we want to connect to
- * @addon
- */
-Pin.prototype.connect = function(pin) {
-    // ...
-}
-
-/**
- * Export this pin making it available on the board
- * @addon
- */
-Pin.prototype.export = function() {
-    // ...
-}

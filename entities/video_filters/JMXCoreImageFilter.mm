@@ -9,25 +9,20 @@
 #import <QuartzCore/CIFilter.h>
 #import "JMXContext.h"
 #define __JMXV8__
-#import "JMXCoreImageFilter.h"
-#import "JMXScript.h"
 #import "JMXColor.h"
+#import "JMXCoreImageFilter.h"
+#import "JMXV8PropertyAccessors.h"
+#import "JMXScript.h"
 
 JMXV8_EXPORT_ENTITY_CLASS(JMXCoreImageFilter);
 
 @implementation JMXCoreImageFilter
 
-@synthesize knownFilters, filter;
-
 - (id)init
 {
     self = [super init];
     if (self) {
-        currentFrame = nil;
-        self.filter = nil;
         ciFilter = nil;
-        inFrame = [self registerInputPin:@"frame" withType:kJMXImagePin andSelector:@"newFrame:"];
-        outFrame = [self registerOutputPin:@"frame" withType:kJMXImagePin];
         NSArray *categories = [NSArray arrayWithObjects:kCICategoryDistortionEffect,
                                kCICategoryGeometryAdjustment,
                                kCICategoryColorEffect,
@@ -37,30 +32,20 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXCoreImageFilter);
                                kCICategoryBlur,
                                kCICategoryHalftoneEffect,
                                nil];
-        knownFilters = [[NSMutableArray alloc] init];
         for (NSString *category in categories) {
             NSArray *filtersInCategory = [CIFilter filterNamesInCategory:category];
             [knownFilters addObjectsFromArray:filtersInCategory];
         }
-        filterSelector = [self registerInputPin:@"filter"
-                                       withType:kJMXStringPin
-                                    andSelector:@"setFilter:"
-                                  allowedValues:knownFilters
-                                   initialValue:[knownFilters objectAtIndex:0]];
+        filterSelector.data = [knownFilters objectAtIndex:0];
+        [filterSelector addAllowedValues:knownFilters];
     }
     return self;
 }
 
 - (void)dealloc
 {
-    if (currentFrame)
-        [currentFrame release];
     if (ciFilter)
         [ciFilter release];
-    if (filter)
-        [filter release];
-    if (knownFilters)
-        [knownFilters release];
     [super dealloc];
 }
 
@@ -157,6 +142,7 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXCoreImageFilter);
 }
 
 #pragma mark V8
+using namespace v8;
 
 - (void)jsInit:(NSValue *)argsValue
 {
@@ -198,15 +184,13 @@ static v8::Handle<Value> SelectFilter(const Arguments& args)
     return handleScope.Close(v8::Boolean::New(ret));
 }
 
-#pragma mark V8
-
 + (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
 {
     //Locker lock;
     HandleScope handleScope;
     v8::Persistent<v8::FunctionTemplate> entityTemplate = v8::Persistent<v8::FunctionTemplate>::New(v8::FunctionTemplate::New());
     entityTemplate->Inherit([super jsClassTemplate]);
-    entityTemplate->SetClassName(String::New("CoreImageFilter"));
+    entityTemplate->SetClassName(String::New("VideoFilter"));
     entityTemplate->InstanceTemplate()->SetInternalFieldCount(1);
     v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
     classProto->Set("avaliableFilters", FunctionTemplate::New(AvailableFilters));

@@ -7,21 +7,12 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "JMXEntity.h"
+#import "JMXVideoFilter.h"
 
-@interface JMXCoreImageFilter : JMXEntity {
+@interface JMXCoreImageFilter : JMXVideoFilter {
 @protected
-    JMXInputPin *inFrame;
-    JMXInputPin *filterSelector;
-    JMXOutputPin *outFrame;
-    NSString *filter;
     CIFilter *ciFilter;
-    CIImage *currentFrame;
-    NSMutableArray *knownFilters;
 }
-@property (readonly, nonatomic) NSArray *knownFilters;
-@property (readwrite, copy) NSString *filter;
-- (void)setFilterValue:(id)value userData:(id)userData;
 @end
 
 #ifdef __JMXV8__

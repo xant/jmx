@@ -375,11 +375,16 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, JMXAudioDev
 + (JMXAudioDevice *)aggregateDevice:(NSString *)name
 {
     OSStatus osErr = noErr;
-    UInt32 outSize;
+    UInt32 outSize = 0;
     Boolean outWritable;
-    
-    // Start to create a new aggregate by getting the base audio hardware plugin    
-    osErr = AudioHardwareGetPropertyInfo(kAudioHardwarePropertyPlugInForBundleID, &outSize, &outWritable);
+    	
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioHardwarePropertyPlugInForBundleID;
+    propertyAddress.mScope = kAudioObjectPropertyScopeGlobal;
+    propertyAddress.mElement = kAudioObjectPropertyElementMaster;
+    osErr = AudioObjectGetPropertyDataSize(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &outSize);
+    // Start to create a new aggregate by getting the base audio hardware plugin
+    //osErr = AudioHardwareGetPropertyInfo(kAudioHardwarePropertyPlugInForBundleID, &outSize, &outWritable);
     if (osErr != noErr)
         return nil;
     
@@ -392,8 +397,8 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, JMXAudioDev
     pluginAVT.mInputDataSize = sizeof(inBundleRef);
     pluginAVT.mOutputData = &pluginID;
     pluginAVT.mOutputDataSize = sizeof(pluginID);
-    
-    osErr = AudioHardwareGetProperty(kAudioHardwarePropertyPlugInForBundleID, &outSize, &pluginAVT);
+    osErr = AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, sizeof(AudioValueTranslation), &pluginAVT, &outSize, &outWritable);
+    //osErr = AudioHardwareGetProperty(kAudioHardwarePropertyPlugInForBundleID, &outSize, &pluginAVT);
     if (osErr != noErr)
         return nil;
     
@@ -506,7 +511,13 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, JMXAudioDev
         // Start by getting the base audio hardware plugin        
         UInt32 outSize;
         Boolean outWritable;
-        osErr = AudioHardwareGetPropertyInfo(kAudioHardwarePropertyPlugInForBundleID, &outSize, &outWritable);
+        
+        AudioObjectPropertyAddress propertyAddress;
+        propertyAddress.mSelector = kAudioHardwarePropertyPlugInForBundleID;
+        propertyAddress.mScope = kAudioObjectPropertyScopeGlobal;
+        propertyAddress.mElement = kAudioObjectPropertyElementMaster;
+        osErr = AudioObjectGetPropertyDataSize(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &outSize);        
+        //osErr = AudioHardwareGetPropertyInfo(kAudioHardwarePropertyPlugInForBundleID, &outSize, &outWritable);
         if (osErr != noErr) {
             // TODO - Error Messages
         }
@@ -520,7 +531,8 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, JMXAudioDev
         pluginAVT.mOutputData = &pluginID;
         pluginAVT.mOutputDataSize = sizeof(pluginID);
         
-        osErr = AudioHardwareGetProperty(kAudioHardwarePropertyPlugInForBundleID, &outSize, &pluginAVT);
+        osErr = AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, sizeof(AudioValueTranslation), &pluginAVT, &outSize, &outWritable);
+        //osErr = AudioHardwareGetProperty(kAudioHardwarePropertyPlugInForBundleID, &outSize, &pluginAVT);
         if (osErr != noErr) {
             // TODO - Error Messages
         }

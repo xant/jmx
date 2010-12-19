@@ -20,8 +20,8 @@
  */
 function AudioOutput()
 {
-    // ...
+    if (!type)
+        return CoreAudioOutput(device);
+    else
+        echo("Unsupported device type " + type);
 }
-
-
-

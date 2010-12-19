@@ -18,19 +18,19 @@
  *  </ul>
  *
  */
-function VideoOutput(width, height)
+function VideoOutput(width, height, type)
 {
+    if (!type || type == "OpenGLScreen")
+        return new OpenGLScreen(width, height);
+    
     /**
      * The width of the video output
      * @type int
      */
-    this.width = 0;
+    this.width;
     /**
      * The height of the video output
      * @type int
      */
-    this.height = 0;
-    // ...
+    this.height;
 }
-
-

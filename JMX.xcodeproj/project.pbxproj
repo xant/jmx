@@ -75,6 +75,7 @@
 		AA3557441277468800EAA2E4 /* JMXTextRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3557001277347300EAA2E4 /* JMXTextRenderer.m */; };
 		AA3557451277468800EAA2E4 /* JMXTextEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3556F51277340200EAA2E4 /* JMXTextEntity.m */; };
 		AA3557DA12795C5500EAA2E4 /* JMXDrawEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA3557D912795C5500EAA2E4 /* JMXDrawEntity.mm */; };
+		AA4BFC8412BD324A00775B88 /* JMXVideoFilter.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4BFC8312BD324A00775B88 /* JMXVideoFilter.mm */; };
 		AA54B28B12A1215000EC60B2 /* jmx-icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = AA54B28A12A1215000EC60B2 /* jmx-icon.icns */; };
 		AA55601412AEF7CC00C882FF /* CIAlphaFade.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AA555FC912AEF39600C882FF /* CIAlphaFade.cikernel */; };
 		AA5563C412B188EB00C882FF /* CIAlphaFade.m in Sources */ = {isa = PBXBuildFile; fileRef = AA555FC712AEF39600C882FF /* CIAlphaFade.m */; };
@@ -225,6 +226,8 @@
 		AA3557D812795C5500EAA2E4 /* JMXDrawEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXDrawEntity.h; sourceTree = "<group>"; };
 		AA3557D912795C5500EAA2E4 /* JMXDrawEntity.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXDrawEntity.mm; sourceTree = "<group>"; };
 		AA3557E612795D0A00EAA2E4 /* JMXScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXScript.h; sourceTree = "<group>"; };
+		AA4BFC8212BD324A00775B88 /* JMXVideoFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXVideoFilter.h; sourceTree = "<group>"; };
+		AA4BFC8312BD324A00775B88 /* JMXVideoFilter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXVideoFilter.mm; sourceTree = "<group>"; };
 		AA54B28A12A1215000EC60B2 /* jmx-icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "jmx-icon.icns"; sourceTree = "<group>"; };
 		AA555FC712AEF39600C882FF /* CIAlphaFade.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CIAlphaFade.m; sourceTree = "<group>"; };
 		AA555FC812AEF39600C882FF /* CIAlphaFade.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CIAlphaFade.h; sourceTree = "<group>"; };
@@ -560,6 +563,8 @@
 				AA8CB78D1282BB9900A17115 /* JMXScriptFile.mm */,
 				AACE7D02129315DE00FBDC0D /* JMXScriptEntity.h */,
 				AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */,
+				AA4BFC8212BD324A00775B88 /* JMXVideoFilter.h */,
+				AA4BFC8312BD324A00775B88 /* JMXVideoFilter.mm */,
 			);
 			name = Entities;
 			path = entities;
@@ -597,6 +602,7 @@
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "JMX" */;
 			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -715,6 +721,7 @@
 				AACE7D331293195600FBDC0D /* JMXV8PropertyAccessors.mm in Sources */,
 				820C94AA1295D77600CF1CF5 /* JMXEntitiesController.m in Sources */,
 				AA5563C412B188EB00C882FF /* CIAlphaFade.m in Sources */,
+				AA4BFC8412BD324A00775B88 /* JMXVideoFilter.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

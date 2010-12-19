@@ -132,7 +132,7 @@ static OSStatus _FillComplexBufferProc (
         ret = [session addInput:input error: &o_returnedError];
         if( !ret )
         {
-            NSLog(@"default video capture device could not be added to capture session (%i)", [o_returnedError code]);
+            NSLog(@"default audio capture device could not be added to capture session (%i)", [o_returnedError code]);
             goto error;
         }
         
@@ -144,7 +144,7 @@ static OSStatus _FillComplexBufferProc (
         }
         
         [session startRunning]; // start the capture session
-        NSLog(@"Video device ready!");
+        NSLog(@"audio device ready!");
         
         [self setDelegate:controller];
         return;
@@ -192,6 +192,15 @@ static OSStatus _FillComplexBufferProc (
 
 @synthesize captureDevice;
 
++ (NSArray *)availableDevices
+{
+    NSMutableArray *devicesList = [[NSMutableArray alloc] init];
+    NSArray *availableDevices = [QTCaptureDevice inputDevicesWithMediaType:QTMediaTypeSound];
+    for (QTCaptureDevice *dev in availableDevices) 
+        [devicesList addObject:[dev uniqueID]];
+    return [availableDevices autorelease];
+}
+
 - (id)init
 {
     self = [super init];
@@ -208,11 +217,11 @@ static OSStatus _FillComplexBufferProc (
         outputFormat.mFramesPerPacket = 1;
         outputFormat.mBytesPerFrame = 4 * outputFormat.mChannelsPerFrame;
         outputFormat.mBitsPerChannel = 32;
-        deviceSelect = [self registerInputPin:@"device" withType:kJMXStringPin andSelector:@"setDevice:"];
-        NSArray *devicesList = [QTCaptureDevice inputDevicesWithMediaType:QTMediaTypeSound];
-        for (QTCaptureDevice *dev in devicesList) 
-            [deviceSelect addAllowedValue:[dev uniqueID]];
-        deviceSelect.data = [[QTCaptureDevice defaultInputDeviceWithMediaType:QTMediaTypeSound] uniqueID];
+        deviceSelect = [self registerInputPin:@"device" 
+                                     withType:kJMXStringPin 
+                                  andSelector:@"setDevice:"
+                                allowedValues:[JMXQtAudioCaptureEntity availableDevices]
+                                 initialValue:[[QTCaptureDevice defaultInputDeviceWithMediaType:QTMediaTypeSound] uniqueID]];
     } else {
         [self dealloc];
         return nil;

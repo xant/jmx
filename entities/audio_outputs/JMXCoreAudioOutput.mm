@@ -30,18 +30,32 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXCoreAudioOutput);
 
 @implementation JMXCoreAudioOutput
 
++ (NSArray *)availableDevices
+{
+    NSMutableArray *devicesList = [[NSMutableArray alloc] init];
+    NSArray *availableDevices = [JMXAudioDevice outputDevices];
+    for (JMXAudioDevice *dev in availableDevices)
+        [devicesList addObject:[dev deviceUID]];
+    return [availableDevices autorelease];
+}
+
 - (id)init
 {
     outputDevice = [[JMXAudioDevice defaultOutputDevice] retain];
     [outputDevice setIOTarget:self 
                  withSelector:@selector(provideSamplesToDevice:timeStamp:inputData:inputTime:outputData:outputTime:clientData:)
                withClientData:self];
-    // start the device
-    [outputDevice deviceStart];
     format = [[outputDevice streamDescriptionForChannel:0 forDirection:kJMXAudioOutput] retain];
     [outputDevice setDelegate:(JMXCoreAudioOutput *)self];
+    deviceSelect = [self registerInputPin:@"device"
+                                              withType:kJMXStringPin
+                                           andSelector:@"setDevice"
+                                         allowedValues:[JMXCoreAudioOutput availableDevices]
+                                          initialValue:[outputDevice deviceUID]];
     [super init]; // we know that our parent won't never return nil and we need
                   // its initializer to be run after we have set the format
+    // start the device
+    [outputDevice deviceStart];
     return self;
 }
 
@@ -51,6 +65,21 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXCoreAudioOutput);
         [outputDevice release];
     }
     [super dealloc];
+}
+
+- (void)setDevice:(NSString *)deviceUID
+{
+    if (outputDevice && ![deviceUID isEqualTo:[outputDevice deviceUID]]) {
+        JMXAudioDevice *newDevice = [JMXAudioDevice deviceWithUID:deviceUID];
+        if (newDevice) {
+            @synchronized(self) {
+                [outputDevice deviceStop];
+                [outputDevice release];
+                outputDevice = [newDevice retain];
+                [outputDevice deviceStart];
+            }
+        }
+    }
 }
 
 - (void)provideSamplesToDevice:(JMXAudioDevice *)device

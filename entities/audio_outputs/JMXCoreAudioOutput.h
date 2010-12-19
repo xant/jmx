@@ -28,7 +28,12 @@
 @interface JMXCoreAudioOutput : JMXAudioOutput < JMXAudioDelegate > {
 @private
     JMXAudioDevice *outputDevice;
+    JMXInputPin *deviceSelect;
 }
+
++ (NSArray *)availableDevices;
+- (void)setDevice:(NSString *)deviceUID;
+
 @end
 
 #ifdef __JMXV8__

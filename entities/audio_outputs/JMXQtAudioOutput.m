@@ -97,7 +97,6 @@
         
         audioInput = [[JMXAudioReceiver alloc] init];
         if (![session addInput:audioInput error:&error]) {
-            
             // TODO - Error Messages
         }
         // Start the session

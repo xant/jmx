@@ -42,6 +42,8 @@
     QTCaptureDevice *captureDevice;
 }
 @property (readonly) QTCaptureDevice *captureDevice;
++ (NSArray *)availableDevices;
+- (void)setDevice:(NSString *)uniqueID;
 - (void)start;
 - (void)stop;
 @end

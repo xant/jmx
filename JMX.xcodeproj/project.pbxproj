@@ -80,7 +80,6 @@
 		AA4BFECF12BE25E900775B88 /* JMX.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA4BFE1312BE0E2000775B88 /* JMX.js */; };
 		AA4BFED012BE25E900775B88 /* AudioOutput.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA4BFE1112BE0D7400775B88 /* AudioOutput.js */; };
 		AA4BFED112BE25E900775B88 /* VideoOutput.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA4BFE1512BE135000775B88 /* VideoOutput.js */; };
-		AA4BFEFE12BE2B4500775B88 /* VideoFilter.js in Sources */ = {isa = PBXBuildFile; fileRef = AA4BFEFD12BE2B4500775B88 /* VideoFilter.js */; };
 		AA4BFF2F12BE2F9500775B88 /* VideoFilter.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA4BFEFD12BE2B4500775B88 /* VideoFilter.js */; };
 		AA54B28B12A1215000EC60B2 /* jmx-icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = AA54B28A12A1215000EC60B2 /* jmx-icon.icns */; };
 		AA55601412AEF7CC00C882FF /* CIAlphaFade.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AA555FC912AEF39600C882FF /* CIAlphaFade.cikernel */; };
@@ -803,7 +802,6 @@
 				820C94AA1295D77600CF1CF5 /* JMXEntitiesController.m in Sources */,
 				AA5563C412B188EB00C882FF /* CIAlphaFade.m in Sources */,
 				AA4BFC8412BD324A00775B88 /* JMXVideoFilter.mm in Sources */,
-				AA4BFEFE12BE2B4500775B88 /* VideoFilter.js in Sources */,
 				AA4B00C912BE560100775B88 /* JMXProxyPin.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -3,7 +3,7 @@ screen = new VideoOutput();
 screen.width = 512;
 screen.height = 384;
 // open a new movie file
-movie = new Movie("/Users/xant/test.avi");
+movie = new MovieFile("/Users/xant/test.avi");
 movie.saturation = 10.0;
 
 // create a color-invert filter

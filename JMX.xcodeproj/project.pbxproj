@@ -77,6 +77,7 @@
 		AA3557DA12795C5500EAA2E4 /* JMXDrawEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA3557D912795C5500EAA2E4 /* JMXDrawEntity.mm */; };
 		AA4B00C912BE560100775B88 /* JMXProxyPin.m in Sources */ = {isa = PBXBuildFile; fileRef = AA4B00C812BE560100775B88 /* JMXProxyPin.m */; };
 		AA4B01F412BEC85F00775B88 /* AudioCapture.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA4B01F312BEC85500775B88 /* AudioCapture.js */; };
+		AA4B020912BED1BB00775B88 /* JMXAudioCapture.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4B020812BED1BB00775B88 /* JMXAudioCapture.mm */; };
 		AA4BFC8412BD324A00775B88 /* JMXVideoFilter.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4BFC8312BD324A00775B88 /* JMXVideoFilter.mm */; };
 		AA4BFECF12BE25E900775B88 /* JMX.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA4BFE1312BE0E2000775B88 /* JMX.js */; };
 		AA4BFED012BE25E900775B88 /* AudioOutput.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA4BFE1112BE0D7400775B88 /* AudioOutput.js */; };
@@ -254,6 +255,8 @@
 		AA4B00C812BE560100775B88 /* JMXProxyPin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXProxyPin.m; sourceTree = "<group>"; };
 		AA4B01F312BEC85500775B88 /* AudioCapture.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = AudioCapture.js; sourceTree = "<group>"; };
 		AA4B01FA12BECCCA00775B88 /* QtAudioCapture.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = QtAudioCapture.js; sourceTree = "<group>"; };
+		AA4B020712BED1BB00775B88 /* JMXAudioCapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXAudioCapture.h; sourceTree = "<group>"; };
+		AA4B020812BED1BB00775B88 /* JMXAudioCapture.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXAudioCapture.mm; sourceTree = "<group>"; };
 		AA4BFC8212BD324A00775B88 /* JMXVideoFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXVideoFilter.h; sourceTree = "<group>"; };
 		AA4BFC8312BD324A00775B88 /* JMXVideoFilter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXVideoFilter.mm; sourceTree = "<group>"; };
 		AA4BFDF512BE0CF800775B88 /* VideoEntity.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = VideoEntity.js; sourceTree = "<group>"; };
@@ -632,6 +635,8 @@
 				AA8CC473128745B600A17115 /* audio */,
 				825C30F61275ADB6006376B8 /* audio_outputs */,
 				825C30FB1275ADB6006376B8 /* video_outputs */,
+				AA4B020712BED1BB00775B88 /* JMXAudioCapture.h */,
+				AA4B020812BED1BB00775B88 /* JMXAudioCapture.mm */,
 				825C31021275ADB6006376B8 /* JMXAudioOutput.h */,
 				825C31031275ADB6006376B8 /* JMXAudioOutput.mm */,
 				825C31061275ADB6006376B8 /* JMXAudioSpectrumAnalyzer.h */,
@@ -809,6 +814,7 @@
 				AA5563C412B188EB00C882FF /* CIAlphaFade.m in Sources */,
 				AA4BFC8412BD324A00775B88 /* JMXVideoFilter.mm in Sources */,
 				AA4B00C912BE560100775B88 /* JMXProxyPin.m in Sources */,
+				AA4B020912BED1BB00775B88 /* JMXAudioCapture.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

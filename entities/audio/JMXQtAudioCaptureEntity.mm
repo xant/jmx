@@ -101,11 +101,10 @@ static OSStatus _FillComplexBufferProc (
     
     NSError *o_returnedError;
     @synchronized(self) {
-        // XXX - supports only the default audio input for now
         device = controller.captureDevice;
         if( !device )
         {
-            NSLog(@"Can't find any Video device");
+            NSLog(@"Can't find any audio device");
             goto error;
         }
         [device retain];
@@ -152,7 +151,6 @@ static OSStatus _FillComplexBufferProc (
         [self setDelegate:controller];
         return;
     error:
-        //[= exitQTKitOnThread];
         [input release];
     }
 }
@@ -191,7 +189,7 @@ static OSStatus _FillComplexBufferProc (
 #pragma mark -
 #pragma mark JMXQtAudioCaptureLayer
 
-@implementation JMXQtAudioCaptureEntity : JMXEntity
+@implementation JMXQtAudioCaptureEntity : JMXAudioCapture
 
 @synthesize captureDevice;
 
@@ -201,7 +199,12 @@ static OSStatus _FillComplexBufferProc (
     NSArray *availableDevices = [QTCaptureDevice inputDevicesWithMediaType:QTMediaTypeSound];
     for (QTCaptureDevice *dev in availableDevices) 
         [devicesList addObject:[dev uniqueID]];
-    return [availableDevices autorelease];
+    return [devicesList autorelease];
+}
+
++ (NSString *)defaultDevice
+{
+    return [[QTCaptureDevice defaultInputDeviceWithMediaType:QTMediaTypeSound] uniqueID];
 }
 
 - (id)init
@@ -209,22 +212,8 @@ static OSStatus _FillComplexBufferProc (
     self = [super init];
     if (self) {
         grabber = [[JMXQtAudioGrabber alloc] init];
-        outputPin = [self registerOutputPin:@"audio" withType:kJMXAudioPin];
-        // Set the client format to 32bit float data
-        // Maintain the channel count and sample rate of the original source format
-        outputFormat.mSampleRate = 44100;
-        outputFormat.mChannelsPerFrame = 2  ;
-        outputFormat.mFormatFlags = kAudioFormatFlagIsFloat | kAudioFormatFlagIsPacked;
-        outputFormat.mFormatID = kAudioFormatLinearPCM;
-        outputFormat.mBytesPerPacket = 4 * outputFormat.mChannelsPerFrame;
-        outputFormat.mFramesPerPacket = 1;
-        outputFormat.mBytesPerFrame = 4 * outputFormat.mChannelsPerFrame;
-        outputFormat.mBitsPerChannel = 32;
-        deviceSelect = [self registerInputPin:@"device" 
-                                     withType:kJMXStringPin 
-                                  andSelector:@"setDevice:"
-                                allowedValues:[JMXQtAudioCaptureEntity availableDevices]
-                                 initialValue:[[QTCaptureDevice defaultInputDeviceWithMediaType:QTMediaTypeSound] uniqueID]];
+        device = [JMXQtAudioCaptureEntity defaultDevice];
+        captureDevice = [[QTCaptureDevice deviceWithUniqueID:device] retain];
     } else {
         [self dealloc];
         return nil;
@@ -244,8 +233,12 @@ static OSStatus _FillComplexBufferProc (
 - (void)setDevice:(NSString *)uniqueID
 {
     QTCaptureDevice *dev = [QTCaptureDevice deviceWithUniqueID:uniqueID];
-    if (dev)
-        captureDevice = dev;
+    if (dev) {
+        if (captureDevice)
+            [captureDevice release];
+        captureDevice = [dev retain];
+        device = [uniqueID copy];
+    }
     if (active) {
         [grabber stopCapture];
         [grabber startCapture:self];
@@ -328,6 +321,7 @@ static OSStatus _FillComplexBufferProc (
 	[grabber stopCapture];
 }
 
+/*
 #pragma mark -
 #pragma mark NSCoding
 
@@ -337,72 +331,9 @@ static OSStatus _FillComplexBufferProc (
 
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
-    self = [self init];
-    return self;
+self = [self init];
+return self;
 }
-
-- (void)tick:(uint64_t)timeStamp
-{
-    [self outputDefaultSignals:timeStamp];
-}
-
-#pragma mark V8
-using namespace v8;
-
-- (void)jsInit:(NSValue *)argsValue
-{
-    v8::Arguments *args = (v8::Arguments *)[argsValue pointerValue];
-    if (args->Length()) {
-        v8::Handle<Value> arg = (*args)[0];
-        v8::String::Utf8Value value(arg);
-        if (*value)
-            [self setDevice:[NSString stringWithUTF8String:*value]];
-    }
-}
-
-static v8::Handle<Value>start(const Arguments& args)
-{
-    HandleScope handleScope;
-    JMXQtAudioCaptureEntity *entity = (JMXQtAudioCaptureEntity *)args.Holder()->GetPointerFromInternalField(0);
-    [entity start];
-    return v8::Undefined();
-}
-
-static v8::Handle<Value>stop(const Arguments& args)
-{
-    HandleScope handleScope;
-    JMXQtAudioCaptureEntity *entity = (JMXQtAudioCaptureEntity *)args.Holder()->GetPointerFromInternalField(0);
-    [entity stop];
-    return v8::Undefined();
-}
-
-// class method to get a list with all available devices
-static v8::Handle<Value>availableDevices(const Arguments& args)
-{
-    HandleScope handleScope;
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    NSArray *availableDevices = [JMXQtAudioCaptureEntity availableDevices];
-    v8::Handle<Array> list = Array::New([availableDevices count]);
-    for (int i = 0; i < [availableDevices count]; i++) {
-        list->Set(i, String::New([[availableDevices objectAtIndex:i] UTF8String]));
-    }
-    [pool drain];
-    return handleScope.Close(list);
-}
-
-+ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
-{
-    HandleScope handleScope;
-    v8::Persistent<v8::FunctionTemplate> classTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
-    classTemplate->Inherit([super jsClassTemplate]);
-    classTemplate->SetClassName(String::New("QtAudioCapture"));
-    classTemplate->InstanceTemplate()->SetInternalFieldCount(1);
-    v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
-    classProto->Set("start", FunctionTemplate::New(start));
-    classProto->Set("stop", FunctionTemplate::New(stop));
-    classProto->Set("avaliableDevices", FunctionTemplate::New(availableDevices));
-    return classTemplate;
-}
-
+ */
 @end
 

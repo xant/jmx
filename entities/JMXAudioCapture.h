@@ -1,8 +1,8 @@
 //
-//  JMXQtAudioCaptureLayer.h
+//  JMXAudioCapture.h
 //  JMX
 //
-//  Created by xant on 9/15/10.
+//  Created by xant on 12/20/10.
 //  Copyright 2010 Dyne.org. All rights reserved.
 //
 //  This file is part of JMX
@@ -23,20 +23,23 @@
 
 #import <Cocoa/Cocoa.h>
 #import "JMXEntity.h"
-#import "JMXAudioCapture.h"
+#import "JMXRunLoop.h"
+#import "JMXAudioBuffer.h"
+#import <AudioToolbox/AudioToolbox.h>
 
-@class JMXQtAudioGrabber;
-@class QTCaptureDevice;
-
-@interface JMXQtAudioCaptureEntity : JMXAudioCapture
-{
-@private
-	JMXQtAudioGrabber *grabber;
-    QTCaptureDevice *captureDevice;
+@interface JMXAudioCapture : JMXEntity < JMXRunLoop > {
+@protected
+    JMXAudioBuffer *currentBuffer;
+    JMXOutputPin *outputPin;
+    JMXInputPin *deviceSelect;
+    AudioConverterRef converter;
+    AudioStreamBasicDescription outputFormat;
+    NSString *device;
 }
-@property (readonly) QTCaptureDevice *captureDevice;
-@end
+@property (copy, readwrite) NSString *device; // must trigger device selection
+@property (readonly) JMXAudioBuffer *currentBuffer;
 
-#ifdef __JMXV8__
-JMXV8_DECLARE_ENTITY_CONSTRUCTOR(JMXQtAudioCaptureEntity);
-#endif
++ (NSArray *)availableDevices;
++ (NSString *)defaultDevice;
+
+@end

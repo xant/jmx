@@ -185,8 +185,7 @@ using namespace v8;
         ownerUserData = userData;
         sendNotifications = YES;
         memset(dataBuffer, 0, sizeof(dataBuffer));
-        if (pinValues)
-            allowedValues = [[NSMutableArray arrayWithArray:pinValues] retain];
+        allowedValues = pinValues ? [[NSMutableArray arrayWithArray:pinValues] retain] : nil;
         rOffset = wOffset = 0;
         if (value && [self isCorrectDataType:value]) {
             currentSender = owner;

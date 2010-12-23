@@ -87,7 +87,7 @@ using namespace v8;
         // since this selector is going to be called in this same thread, we know for sure
         // that it's going to be called after the init-chain has been fully executede
         [self performSelectorOnMainThread:@selector(notifyCreation) withObject:nil waitUntilDone:NO];
-        privateData = [[NSMutableDictionary alloc] init];
+        privateData = [[[NSMutableDictionary alloc] init] retain];
     }
     return self;
 }
@@ -486,7 +486,7 @@ v8::Handle<Value> outputPin(const Arguments& args)
 #pragma mark Class Template
 static Persistent<FunctionTemplate> classTemplate;
 
-+ (v8::Persistent<FunctionTemplate>)jsClassTemplate
+v8::Persistent<v8::FunctionTemplate>JMXEntityJSClassTemplate()
 {
     //v8::Locker lock;
     if (!classTemplate.IsEmpty())
@@ -508,6 +508,11 @@ static Persistent<FunctionTemplate> classTemplate;
     instanceTemplate->SetAccessor(String::NewSymbol("outputPins"), outputPins);
     instanceTemplate->SetAccessor(String::NewSymbol("active"), GetBoolProperty, SetBoolProperty);
     return classTemplate;
+}
+
++ (v8::Persistent<FunctionTemplate>)jsClassTemplate
+{
+    return JMXEntityJSClassTemplate();
 }
 
 @end

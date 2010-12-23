@@ -22,7 +22,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "JMXThreadedEntity.h"
+#import "JMXEntity.h"
 #import "JMXFileRead.h"
 
 @class JMXAudioFile;

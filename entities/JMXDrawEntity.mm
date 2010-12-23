@@ -10,6 +10,7 @@
 #import "JMXDrawEntity.h"
 #include "JMXScript.h"
 #import "JMXColor.h"
+#import "JMXThreadedEntity.h"
 
 JMXV8_EXPORT_ENTITY_CLASS(JMXDrawEntity);
 
@@ -20,8 +21,11 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXDrawEntity);
     self = [super init];
     if (self) {
         drawPath = [[JMXDrawPath alloc] initWithFrameSize:self.size];
+        JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
+        if (threadedEntity)
+            return threadedEntity;
     }
-    return self;
+    return nil;
 }
 
 - (void)dealloc

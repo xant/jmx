@@ -8,6 +8,7 @@
 
 #import "JMXScriptEntity.h"
 #import "JMXScript.h"
+#import "JMXThreadedEntity.h"
 
 using namespace v8;
 
@@ -30,8 +31,11 @@ using namespace v8;
     if (self) {
         self.frequency = [NSNumber numberWithDouble:1.0];
         active = NO;
+        JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
+        if (threadedEntity)
+            return threadedEntity;
     }
-    return self;
+    return nil;
 }
 
 - (void)dealloc

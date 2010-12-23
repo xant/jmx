@@ -11,6 +11,7 @@
 #import "JMXAudioFormat.h"
 #import "JMXAudioDevice.h"
 #import <QuartzCore/QuartzCore.h>
+#import "JMXThreadedEntity.h"
 
 @implementation JMXAudioMixer
 
@@ -29,8 +30,13 @@
         prefill = YES;
         format = nil;
         rOffset = wOffset = 0;
+        // TODO - if using aggregate device we don't need to be threaded
+        JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
+        if (threadedEntity)
+            return threadedEntity;
+        [self dealloc];
     }
-    return self;
+    return nil;
 }
 
 - (void)dealloc

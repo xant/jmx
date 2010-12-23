@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #define __JMXV8__ 1
-#import "JMXThreadedEntity.h"
+#import "JMXEntity.h"
 
 @interface JMXScriptEntity : JMXEntity {
     NSString *code; 

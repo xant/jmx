@@ -156,6 +156,11 @@
     NSMutableDictionary *privateData;
 }
 
+#ifdef __JMXV8__
+v8::Persistent<v8::FunctionTemplate>JMXEntityJSClassTemplate();
++ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate;
+#endif
+
 #pragma mark Properties
 /*!
  @property active

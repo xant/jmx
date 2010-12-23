@@ -107,10 +107,27 @@
     return self;
 }
 
+
+- (id)retain
+{
+    [realEntity retain];
+    [super retain];
+    return self;
+}
+
+- (void)release
+{
+    [realEntity release];
+    [super release];
+}
+
+
 - (void)dealloc
 {
     [self stop];
-    [realEntity removePrivateDataForKey:@"threadedEntity"];
+    // TODO - ensure executing the following statement on the main thread
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    //[realEntity removePrivateDataForKey:@"threadedEntity"];
     [realEntity release];
     [super dealloc];
 }
@@ -308,7 +325,7 @@
 {
     JMXThreadedEntity *th = [self privateDataForKey:@"threadedEntity"];
     if (th)
-        th.quit;
+        return th.quit;
     return YES;
 }
 
@@ -385,7 +402,7 @@ static Persistent<FunctionTemplate> classTemplate;
         return classTemplate;
     NSLog(@"JMXThreadedEntity ClassTemplate created");
     classTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
-    classTemplate->Inherit([(JMXEntity *)super jsClassTemplate]);
+    classTemplate->Inherit(JMXEntityJSClassTemplate()); // 'super' is not available in a category
     classTemplate->SetClassName(String::New("ThreadedEntity"));
     v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
     classProto->Set("start", FunctionTemplate::New(start));

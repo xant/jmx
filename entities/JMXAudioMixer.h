@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "JMXThreadedEntity.h"
+#import "JMXEntity.h"
 
 #define kJMXAudioMixerSamplesBufferCount 512
 

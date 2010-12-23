@@ -26,6 +26,7 @@
 #define __JMXV8__
 #import "JMXAudioFileEntity.h"
 #import "JMXScript.h"
+#import "JMXThreadedEntity.h"
 
 JMXV8_EXPORT_ENTITY_CLASS(JMXAudioFileEntity);
 
@@ -47,8 +48,11 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXAudioFileEntity);
         repeat = YES;
         [self registerInputPin:@"repeat" withType:kJMXNumberPin andSelector:@"doRepeat:"];
         currentSample = nil;
+        JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
+        if (threadedEntity)
+            return threadedEntity;
     }
-    return self;
+    return nil;
 }
 
 - (void)dealloc

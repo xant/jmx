@@ -6,8 +6,13 @@
 //  Copyright 2010 Dyne.org. All rights reserved.
 //
 
+#define __JMXV8__
 #import "JMXTextEntity.h"
 #import "JMXThreadedEntity.h"
+#import "JMXColor.h"
+#import "JMXScript.h"
+
+JMXV8_EXPORT_ENTITY_CLASS(JMXTextEntity);
 
 @implementation JMXTextEntity
 
@@ -31,6 +36,7 @@
         self.fgColor = [NSColor whiteColor];
         self.bgColor = [NSColor blackColor];
         self.text = @"";
+        self.name = @"TextEntity";
         [attributes
          setObject:font
          forKey:NSFontAttributeName
@@ -191,4 +197,80 @@
     [super tick:timeStamp];
 }
 
+#pragma mark V8
+using namespace v8;
+
+- (void)jsInit:(NSValue *)argsValue
+{
+    v8::Arguments *args = (v8::Arguments *)[argsValue pointerValue];
+    if (args->Length()) {
+        v8::Handle<Value> arg = (*args)[0];
+        v8::String::Utf8Value value(arg);
+        if (*value)
+            [self setText:[NSString stringWithUTF8String:*value]];
+    }
+}
+
+static v8::Handle<Value>SetText(const Arguments& args)
+{
+    HandleScope handleScope;
+    JMXTextEntity *entity = (JMXTextEntity *)args.Holder()->GetPointerFromInternalField(0);
+    v8::Handle<Value> arg = args[0];
+    v8::String::Utf8Value value(arg);
+    [entity setText:[NSString stringWithUTF8String:*value]];
+    return handleScope.Close(Undefined());
+}
+
+static v8::Handle<Value>SetFont(const Arguments& args)
+{
+    HandleScope handleScope;
+    JMXTextEntity *entity = (JMXTextEntity *)args.Holder()->GetPointerFromInternalField(0);
+    v8::Handle<Value> arg = args[0];
+    v8::String::Utf8Value value(arg);
+    [entity setFontWithName:[NSString stringWithUTF8String:*value]];
+    return handleScope.Close(Undefined());    
+}
+
+static v8::Handle<Value>SetBackgroundColor(const Arguments& args)
+{
+    BOOL ret = NO;
+    HandleScope handleScope;
+    JMXTextEntity *entity = (JMXTextEntity *)args.Holder()->GetPointerFromInternalField(0);
+    String::Utf8Value str(args[0]->ToString());
+    if (strcmp(*str, "[object Color]") == 0) {
+        v8::Handle<Object> object = args[0]->ToObject();
+        JMXColor *color = (JMXColor *)object->GetPointerFromInternalField(0);
+        [entity setBackgroundColor:color];
+        ret = YES;
+    }
+    return v8::Boolean::New(ret);
+
+}
+
+static v8::Handle<Value>SetFontColor(const Arguments& args)
+{
+    HandleScope handleScope;
+    JMXTextEntity *entity = (JMXTextEntity *)args.Holder()->GetPointerFromInternalField(0);
+    String::Utf8Value str(args[0]->ToString());
+    if (strcmp(*str, "[object Color]") == 0) {
+        v8::Handle<Object> object = args[0]->ToObject();
+        JMXColor *color = (JMXColor *)object->GetPointerFromInternalField(0);
+        [entity setFontColor:color];
+    }
+    return handleScope.Close(Undefined());
+}
+
++ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
+{
+    HandleScope handleScope;
+    v8::Persistent<v8::FunctionTemplate> entityTemplate = [super jsClassTemplate];
+    entityTemplate->SetClassName(String::New("TextRenderer"));
+    entityTemplate->InstanceTemplate()->SetInternalFieldCount(1);
+    v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
+    classProto->Set("setText", FunctionTemplate::New(SetText));
+    classProto->Set("setFont", FunctionTemplate::New(SetFont));
+    classProto->Set("setFontColor", FunctionTemplate::New(SetFontColor));
+    classProto->Set("setBackgroundColor", FunctionTemplate::New(SetBackgroundColor));
+    return entityTemplate;
+}
 @end

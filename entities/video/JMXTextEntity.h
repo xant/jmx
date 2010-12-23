@@ -35,3 +35,7 @@
 - (void)setFontColor:(NSColor *)color;
 - (void)setFontColorWithRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha;
 @end
+
+#ifdef __JMXV8__
+JMXV8_DECLARE_ENTITY_CONSTRUCTOR(JMXTextEntity);
+#endif

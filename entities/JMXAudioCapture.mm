@@ -105,7 +105,7 @@ static Persistent<FunctionTemplate> classTemplate;
     }
 }
 
-static v8::Handle<Value>start(const Arguments& args)
+static v8::Handle<Value>Start(const Arguments& args)
 {
     HandleScope handleScope;
     JMXAudioCapture *entity = (JMXAudioCapture *)args.Holder()->GetPointerFromInternalField(0);
@@ -114,7 +114,7 @@ static v8::Handle<Value>start(const Arguments& args)
     return v8::Undefined();
 }
 
-static v8::Handle<Value>stop(const Arguments& args)
+static v8::Handle<Value>Stop(const Arguments& args)
 {
     HandleScope handleScope;
     JMXAudioCapture *entity = (JMXAudioCapture *)args.Holder()->GetPointerFromInternalField(0);
@@ -123,8 +123,23 @@ static v8::Handle<Value>stop(const Arguments& args)
     return v8::Undefined();
 }
 
+static v8::Handle<Value> DefaultDevice(const Arguments& args)
+{
+    HandleScope handleScope;
+    JMXAudioCapture *vc = (JMXAudioCapture *)args.Holder()->GetPointerFromInternalField(0);
+    if (vc) {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        NSString *defaultDevice = [[vc class] defaultDevice];
+        v8::Handle<String> deviceName = String::New([defaultDevice UTF8String]);
+        [pool release];
+        handleScope.Close(deviceName);
+    }
+    return handleScope.Close(Undefined());
+}
+
+
 // class method to get a list with all available devices
-static v8::Handle<Value>availableDevices(const Arguments& args)
+static v8::Handle<Value>AvailableDevices(const Arguments& args)
 {
     HandleScope handleScope;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -142,6 +157,25 @@ static v8::Handle<Value>availableDevices(const Arguments& args)
     return handleScope.Close(list);
 }
 
+
+static v8::Handle<Value> SelectDevice(const Arguments& args)
+{
+    HandleScope handleScope;
+    BOOL ret = NO;
+    JMXAudioCapture *vc = (JMXAudioCapture *)args.Holder()->GetPointerFromInternalField(0);
+    if (vc) {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        v8::Handle<Value> arg = args[0];
+        v8::String::Utf8Value value(arg);
+        NSString *device = [NSString stringWithUTF8String:*value];
+        vc.device = device;
+        if ([vc.device isEqualTo:device])
+            ret = YES;
+        [pool release];
+    }
+    return handleScope.Close(v8::Boolean::New(ret));
+}
+
 + (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
 {
     HandleScope handleScope;
@@ -149,12 +183,15 @@ static v8::Handle<Value>availableDevices(const Arguments& args)
         return classTemplate;
     classTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
     classTemplate->Inherit([super jsClassTemplate]);
-    classTemplate->SetClassName(String::New("QtAudioCapture"));
+    classTemplate->SetClassName(String::New("AudioCapture"));
     classTemplate->InstanceTemplate()->SetInternalFieldCount(1);
     v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
-    classProto->Set("start", FunctionTemplate::New(start));
-    classProto->Set("stop", FunctionTemplate::New(stop));
-    classProto->Set("avaliableDevices", FunctionTemplate::New(availableDevices));
+    classProto->Set("start", FunctionTemplate::New(Start));
+    classProto->Set("stop", FunctionTemplate::New(Stop));
+    classProto->Set("avaliableDevices", FunctionTemplate::New(AvailableDevices));
+    classProto->Set("selectDevice", FunctionTemplate::New(SelectDevice));
+    classProto->Set("defaultDevice", FunctionTemplate::New(DefaultDevice));
+
     return classTemplate;
 }
 

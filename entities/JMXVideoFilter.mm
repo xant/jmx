@@ -86,13 +86,16 @@ static v8::Handle<Value> AvailableFilters(const Arguments& args)
 {
     HandleScope handleScope;
     JMXVideoFilter *filter = (JMXVideoFilter *)args.Holder()->GetPointerFromInternalField(0);
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    v8::Handle<Array> list = v8::Array::New([filter.knownFilters count]);
-    for (int i = 0; i < [filter.knownFilters count]; i++) {
-        list->Set(Number::New(i), String::New([[filter.knownFilters objectAtIndex:i] UTF8String]));
+    if (filter) {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        v8::Handle<Array> list = v8::Array::New([filter.knownFilters count]);
+        for (int i = 0; i < [filter.knownFilters count]; i++) {
+            list->Set(Number::New(i), String::New([[filter.knownFilters objectAtIndex:i] UTF8String]));
+        }
+        [pool release];
+        handleScope.Close(list);
     }
-    [pool release];
-    return handleScope.Close(list);
+    return handleScope.Close(Undefined());
 }
 
 static v8::Handle<Value> SelectFilter(const Arguments& args)
@@ -100,17 +103,16 @@ static v8::Handle<Value> SelectFilter(const Arguments& args)
     HandleScope handleScope;
     BOOL ret = NO;
     JMXVideoFilter *filterInstance = (JMXVideoFilter *)args.Holder()->GetPointerFromInternalField(0);
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    v8::Handle<Value> arg = args[0];
-    v8::String::Utf8Value value(arg);
-    NSString *filterName = [NSString stringWithUTF8String:*value];
-    {
-        v8::Unlocker unlocker;
+    if (filterInstance) {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        v8::Handle<Value> arg = args[0];
+        v8::String::Utf8Value value(arg);
+        NSString *filterName = [NSString stringWithUTF8String:*value];
         filterInstance.filter = filterName;
         if ([filterInstance.filter isEqualTo:filterName])
             ret = YES;
+        [pool release];
     }
-    [pool release];
     return handleScope.Close(v8::Boolean::New(ret));
 }
 

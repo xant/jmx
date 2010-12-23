@@ -27,8 +27,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import "JMXScript.h"
 
-using namespace v8;
-
 @implementation JMXVideoEntity
 
 @synthesize alpha, saturation, brightness, contrast, rotation,
@@ -216,12 +214,13 @@ using namespace v8;
 
 
 #pragma mark V8
+using namespace v8;
+static v8::Persistent<v8::FunctionTemplate> classTemplate;
 
 + (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
 {
-    /*
     if (!classTemplate.IsEmpty())
-        return classTemplate;*/
+        return classTemplate;
     NSLog(@"JMXVideoEntity ClassTemplate created");
     v8::Persistent<v8::FunctionTemplate> classTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
     classTemplate->Inherit([super jsClassTemplate]);

@@ -77,7 +77,7 @@ using namespace v8;
     //NSLog(@"Initializing %@", [self class]);
     self = [super init];
     if (self) {
-        self.name = [self description];
+        self.name = @"Entity";
         inputPins = [[NSMutableDictionary alloc] init];
         outputPins = [[NSMutableDictionary alloc] init];
         [self registerInputPin:@"active" withType:kJMXNumberPin andSelector:@"setActivePin:"];

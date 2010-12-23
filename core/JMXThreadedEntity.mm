@@ -372,22 +372,22 @@
 #pragma mark V8
 using namespace v8;
 
-static v8::Handle<Value> start(const Arguments& args)
+static v8::Handle<Value>Start(const Arguments& args)
 {
     HandleScope handleScope;
-    Local<Object> self = args.Holder();
-    JMXThreadedEntity *entity = (JMXThreadedEntity *)self->GetPointerFromInternalField(0);
+    Local<Object> obj = args.Holder();
+    JMXThreadedEntity *entity = (JMXThreadedEntity *)obj->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     [entity start];
     [pool drain];
     return v8::Undefined();
 }
 
-static v8::Handle<Value> stop(const Arguments& args)
+static v8::Handle<Value>Stop(const Arguments& args)
 {
     HandleScope handleScope;
-    Local<Object> self = args.Holder();
-    JMXThreadedEntity *entity = (JMXThreadedEntity *)self->GetPointerFromInternalField(0);
+    Local<Object> obj = args.Holder();
+    JMXThreadedEntity *entity = (JMXThreadedEntity *)obj->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     [entity stop];
     [pool drain];
@@ -405,8 +405,8 @@ static Persistent<FunctionTemplate> classTemplate;
     classTemplate->Inherit(JMXEntityJSClassTemplate()); // 'super' is not available in a category
     classTemplate->SetClassName(String::New("ThreadedEntity"));
     v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
-    classProto->Set("start", FunctionTemplate::New(start));
-    classProto->Set("stop", FunctionTemplate::New(stop));
+    classProto->Set("start", FunctionTemplate::New(Start));
+    classProto->Set("stop", FunctionTemplate::New(Stop));
     classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("frequency"), GetNumberProperty, SetNumberProperty);
     return classTemplate;
 }

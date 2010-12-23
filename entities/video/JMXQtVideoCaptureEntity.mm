@@ -188,7 +188,7 @@ error:
 @end
 
 
-@implementation JMXQtVideoCaptureEntity : JMXVideoEntity
+@implementation JMXQtVideoCaptureEntity : JMXVideoCapture
 
 - (void)captureOutput:(QTCaptureOutput *)captureOutput 
   didOutputVideoFrame:(CVImageBufferRef)videoFrame 
@@ -227,19 +227,14 @@ error:
 
 - (void)start
 {
-    // we don't want a dedicated thread
-    // (QTKit already has its own and it will 
-    //  be calling our delegate method when new
-    //  frames are available) 
-    // so it's useless to call our super here
-	//[super start];
 	[grabber startCapture:self];
+    [super start];
 }
 
 - (void)stop
 {
-	//[super stop];
 	[grabber stopCapture];
+    [super stop];
 }
 
 - (void)setSize:(JMXSize *)newSize

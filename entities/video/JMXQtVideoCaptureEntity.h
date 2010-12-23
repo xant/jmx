@@ -21,14 +21,13 @@
 //  along with JMX.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#import "JMXVideoEntity.h"
-#import "JMXRunLoop.h"
+#import "JMXVideoCapture.h"
 
 #ifndef __JMXQTVIDEOCAPTURELAYER_H__
 #define __JMXQTVIDEOCAPTURELAYER_H__
 @class JMXQtVideoGrabber;
 
-@interface JMXQtVideoCaptureEntity : JMXVideoEntity < JMXRunLoop >
+@interface JMXQtVideoCaptureEntity : JMXVideoCapture
 {
 @private
 	JMXQtVideoGrabber *grabber;

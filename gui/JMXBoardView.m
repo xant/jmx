@@ -26,6 +26,7 @@
 #import "JMXQtMovieEntity.h"
 #import "JMXAudioFileEntity.h"
 #import "JMXFileRead.h"
+#import "JMXRunLoop.h"
 
 @implementation JMXBoardView
 
@@ -85,7 +86,8 @@
             if (fileName && [entity conformsToProtocol:@protocol(JMXFileRead)]) {
                 [entity performSelector:@selector(open:) withObject:[fileURL absoluteString]];
             }
-            [entity start];
+            if ([entity conformsToProtocol:@protocol(JMXRunLoop)])
+                [entity performSelector:@selector(start)];
             [document.entities addObject:entity];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasCreated" object:entity];
 
@@ -95,8 +97,8 @@
             if (fileName && [entity conformsToProtocol:@protocol(JMXFileRead)]) {
                 [entity performSelector:@selector(open:) withObject:[fileURL absoluteString]];
             }
-            [entity start];
-            [document.entities addObject:entity];
+            if ([entity conformsToProtocol:@protocol(JMXRunLoop)])
+                [entity performSelector:@selector(start)];            [document.entities addObject:entity];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasCreated" object:entity];
             [entity release];
         } // TODO - add support for script files (and generalize)

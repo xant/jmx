@@ -1,4 +1,9 @@
 /**
+ * @fileoverview
+ * RGBA color
+ */
+
+/**
  * Color is a wrapper class to JMXColor objects (used within the JMX engine)
  * @constructor
  * @class Wraps a JMXColor object and makes it available to javascript

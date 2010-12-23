@@ -1,4 +1,9 @@
 /**
+ * @fileoverview
+ * OpenGL-based VideoOutput implementation
+ */
+
+/**
  * OpenGLScren
  * @constructor
  * @param {int} width The width of the new video output

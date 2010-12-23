@@ -1,30 +1,29 @@
 /**
  * @fileoverview
- * QTKit-based AudioCapture implementation
+ * QTKit-based VideoCapture implementation
  */
 
 /**
- * QtAudioCapture
+ * QtVideoCapture
  * @constructor
  * @param {String} device The device UID.
  *                        Available UIDs can be obtained by calling 
- *                        the {@link AudioCapture#availableDevices} method.
- * @base AudioCapture
- * @class grab audio samples from an input device
+ *                        the {@link VideoCapture#availableDevices} method.
+ * @base VideoCapture
+ * @class grab video samples from an input device
  * <h3>InputPins:</h3>
  *  <ul>
  *  <li>device {String}</li>
  *  </ul>
  * <h3>OutputPins:</h3>
  *  <ul>
- *  <li>audio {Audio}</li>
+ *  <li>video {Image}</li>
  *  </ul>
  *
  */
-function QtAudioCapture(device)
+function QtVideoCapture(device)
 {
     // ...
 }
-
 
 

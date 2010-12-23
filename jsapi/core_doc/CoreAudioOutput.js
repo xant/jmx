@@ -1,6 +1,6 @@
 /**
  * @fileoverview
- * Send received samples to an audio output device
+ * CoreAudio-based AudioOutput implementation
  */
 
 /**

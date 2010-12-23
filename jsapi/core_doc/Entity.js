@@ -46,7 +46,7 @@ function Entity()
      * @type boolean
      */
     this.active = false;
-
+    
     /**
      * Get the input Pin object registered with the provided name
      * @param {String} pinName the name of the input pin

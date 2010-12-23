@@ -38,6 +38,23 @@ function MovieFile()
     this.close = function() {
         // ...
     }
+    
+    /**
+     * The frequency of the entity.
+     * @type float
+     */
+    this.frequency = 0;
+    
+    /**
+     * Start the entity
+     * @addon
+     */
+    this.start = function() { }
+    
+    /**
+     * Stop the entity
+     */
+    this.stop = function() { }
 }
 
 /**

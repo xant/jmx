@@ -1,4 +1,9 @@
 /**
+ * @fileoverview
+ * 2D drawing through bezier paths
+ */
+
+/**
  * DrawPath
  * @base VideoEntity
  * @constructor
@@ -36,6 +41,23 @@ function DrawPath(width, height)
     this.clear = function() {
         // ...
     }
+    
+    /**
+     * The frequency of the entity.
+     * @type float
+     */
+    this.frequency = 0;
+    
+    /**
+     * Start the entity
+     * @addon
+     */
+    this.start = function() { }
+    
+    /**
+     * Stop the entity
+     */
+    this.stop = function() { }
 }
 
 

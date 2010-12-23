@@ -1,4 +1,9 @@
 /**
+ * @fileoverview
+ * 2D Size
+ */
+
+ /**
  * Size is a wrapper class to JMXSize objects (used within the JMX engine)
  * @addon
  * @constructor

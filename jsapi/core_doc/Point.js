@@ -1,4 +1,9 @@
 /**
+ * @fileoverview
+ * 2D Point 
+ */
+
+/**
  * Point is a wrapper class to JMXPoint objects (used within the JMX engine)
  * @addon
  * @constructor

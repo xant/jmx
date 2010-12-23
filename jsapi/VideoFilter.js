@@ -1,4 +1,9 @@
 /**
+ * @fileoverview
+ * Apply a filter to video frames
+ */
+
+/**
  * VideoFilter
  * @addon
  * @constructor

@@ -1,4 +1,9 @@
 /**
+ * @fileoverview
+ * CoreImage-based VideoFilter implementation
+ */
+
+/**
  * CoreImageFilter
  * @base VideoFilter
  * @constructor

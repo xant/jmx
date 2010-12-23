@@ -6,7 +6,7 @@
 /**
  * VideoEntity
  * @constructor
- * @base ThreadedEntity
+ * @base Entity
  * @class Wrapper class for JMXVideoEntity, which provides base functionalities for entities producing video frames
  * <h3>InputPins:</h3>
  *  <ul>
@@ -16,6 +16,7 @@
  *  <li>alpha {Number}</li>
  *  <li>rotation {Number}</li>
  *  <li>origin {Point}</li>
+ *  <li>fps {Number}</li>
  *  </ul>
  * <h3>OutputPins:</h3>
  *  <ul>
@@ -56,4 +57,9 @@ function VideoEntity()
      * @type Point
      */
     this.origin = 0;
+    /**
+     * The fps to honor
+     * @type float
+     */
+    this.fps = 0;
 }

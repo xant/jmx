@@ -1,4 +1,9 @@
 /**
+ * @fileoverview
+ * Display video frames
+ */
+
+/**
  * VideoOutput
  * @addon
  * @constructor

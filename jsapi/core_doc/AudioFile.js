@@ -6,7 +6,7 @@
 /**
  * AudioFile
  * @constructor
- * @base ThreadedEntity
+ * @base Entity
  * @class Read samples from audio files
  * Supported file types can be obtained calling the {@link AudioFile#supportedFileTypes} method
  * <h3>InputPins:</h3>
@@ -37,6 +37,23 @@ function AudioFile()
      */
     this.close = function() { }
 
+    /**
+     * The frequency of the entity.
+     * @type float
+     */
+    this.frequency = 0;
+    
+    /**
+     * Start the entity
+     * @addon
+     */
+    this.start = function() { }
+    
+    /**
+     * Stop the entity
+     */
+    this.stop = function() { }
+    
     // ... 
 }
 

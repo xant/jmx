@@ -31,8 +31,35 @@ function AudioCapture(device, type)
         return QtAudioCapture(device);
     else
         echo("Unsupported device type " + type);
+    
+    /**
+     * The frequency of the entity.
+     * @type float
+     */
+    this.frequency = 0;
+    
+    /**
+     * Start the entity
+     * @addon
+     */
+    this.start = function() { }
+    
+    /**
+     * Stop the entity
+     */
+    this.stop = function() { }
+    
+    /**
+     * Select a specific device
+     * @param {String} device the UID of the device to select
+     */
+    this.selectDevice = function(device) { };
 }
 
+/**
+ * Return an array containing UIDs for all available devices
+ * @return and Array of strings
+ */
 AudioCapture.availableDevices = function()
 {
     ret = new Array();
@@ -42,4 +69,13 @@ AudioCapture.availableDevices = function()
     return ret;
 }
 
+/**
+ * Return the UID of the default device
+ * @return a String
+ */
+AudioCapture.defaultDevice = function()
+{
+    ret = new Array();
+    return QtAudioCapture.defaultDevice();
+}
 

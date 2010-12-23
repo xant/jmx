@@ -1,4 +1,9 @@
 /**
+ * @fileoverview
+ * Allow connections between entities and sending/receiving signals
+ */
+
+/**
  * Pin
  * @constructor
  * @class Wrapper class for JMXPin instances.

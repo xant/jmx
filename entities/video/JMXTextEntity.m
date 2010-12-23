@@ -7,6 +7,7 @@
 //
 
 #import "JMXTextEntity.h"
+#import "JMXThreadedEntity.h"
 
 @implementation JMXTextEntity
 
@@ -44,8 +45,12 @@
          ];
         renderer = [[JMXTextRenderer alloc] init];
         renderedText = nil;
+        JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
+        if (threadedEntity)
+            return threadedEntity;
+        [self dealloc];
     }
-    return self;
+    return nil;
 }
 
 - (void)dealloc

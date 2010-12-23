@@ -26,26 +26,80 @@
 #import "JMXThreadedEntity.h"
 #import "JMXScript.h"
 
+@interface JMXEntity (Private)
+- (void)run;
+@end
+
 @interface JMXThreadedEntity (Private)
 - (void)run;
 @end
 
 @implementation JMXThreadedEntity
 
-@synthesize frequency;
+@synthesize frequency, previousTimeStamp, quit, realEntity;
 
-- (id)init
++ (id)threadedEntity:(JMXEntity *)entity
 {
-    self = [super init];
-    if (self) {
+    return [[[self alloc] initWithEntity:entity] autorelease];
+}
+
+// we need to propagate notifications sent by the object we encapsulate
+- (void)hookNotification:(NSNotification *)notification
+{
+    if (realEntity == [notification object]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:[notification name] 
+                                                            object:self 
+                                                          userInfo:[notification userInfo]];
+    }
+}
+
+- (id)initWithEntity:(JMXEntity *)entity
+{
+    if (entity) {
         worker = nil;
         timer = nil;
+        realEntity = [entity retain];
+        [realEntity addPrivateData:self forKey:@"threadedEntity"];
+        NSBlockOperation *registerObservers = [NSBlockOperation blockOperationWithBlock:^{
+            [[NSNotificationCenter defaultCenter] addObserver:self
+                                                     selector:@selector(hookNotification:)
+                                                         name:@"JMXEntityWasCreated"
+                                                       object:realEntity];
+            [[NSNotificationCenter defaultCenter] addObserver:self
+                                                     selector:@selector(hookNotification:)
+                                                         name:@"JMXEntityWasDestroyed"
+                                                       object:realEntity];
+            [[NSNotificationCenter defaultCenter] addObserver:self
+                                                     selector:@selector(hookNotification:)
+                                                         name:@"JMXEntityInputPinAdded"
+                                                       object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:realEntity
+                                                     selector:@selector(hookNotification:)
+                                                         name:@"JMXEntityInputPinRemoved"
+                                                       object:realEntity];
+            [[NSNotificationCenter defaultCenter] addObserver:self
+                                                     selector:@selector(hookNotification:)
+                                                         name:@"JMXEntityOutputPinAdded"
+                                                       object:realEntity];
+            [[NSNotificationCenter defaultCenter] addObserver:self
+                                                     selector:@selector(hookNotification:)
+                                                         name:@"JMXEntityOutputPinRemoved"
+                                                       object:realEntity];
+        }];
+        [registerObservers setQueuePriority:NSOperationQueuePriorityVeryHigh];
+        if (![[NSThread currentThread] isMainThread]) {
+            [[NSOperationQueue mainQueue] addOperation:registerObservers];
+        } else {
+            [registerObservers start];
+            [registerObservers waitUntilFinished];
+        }
         // and 'effective' frequency , only for debugging purposes
         self.frequency = [NSNumber numberWithDouble:25.0];
-        JMXInputPin *inputFrequency =[self registerInputPin:@"frequency" withType:kJMXNumberPin andSelector:@"setFrequency:"];
+        JMXInputPin *inputFrequency = [entity registerInputPin:@"frequency" withType:kJMXNumberPin andSelector:@"setFrequency:"];
         [inputFrequency setMinLimit:[NSNumber numberWithFloat:1.0]];
-        [inputFrequency setMaxLimit:[NSNumber numberWithFloat:120.0]];
-        frequencyPin = [self registerOutputPin:@"frequency" withType:kJMXNumberPin];
+        [inputFrequency setMaxLimit:[NSNumber numberWithFloat:100.0]];
+        inputFrequency.data = self.frequency; // set initial value
+        frequencyPin = [entity registerOutputPin:@"frequency" withType:kJMXNumberPin];
         stampCount = 0;
         previousTimeStamp = 0;
         quit = NO;
@@ -56,7 +110,22 @@
 - (void)dealloc
 {
     [self stop];
+    [realEntity removePrivateDataForKey:@"threadedEntity"];
+    [realEntity release];
     [super dealloc];
+}
+
+- (BOOL)conformsToProtocol:(Protocol *)aProtocol
+{
+    if ([NSStringFromProtocol(aProtocol) isEqualTo:@"JMXRunLoop"])
+        return YES;
+    return NO;
+}
+
+- (void)forwardInvocation:(NSInvocation *)anInvocation
+{
+    [anInvocation setTarget:realEntity];
+    [anInvocation invoke];
 }
 
 - (void)start
@@ -68,13 +137,13 @@
     worker = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
     [worker setThreadPriority:1.0];
     [worker start];
-    active = YES;
+    realEntity.active = YES;
     quit = NO;
 }
 
 - (void)stop {
     if (worker) {
-        active = NO;
+        realEntity.active = NO;
         quit = YES;
         [worker cancel];
         // wait for the thread to really finish otherwise it could
@@ -89,7 +158,26 @@
 
 - (void)tick:(uint64_t)timeStamp
 {
-    // do nothing (for now)
+    // propagate the tick to the underlying entity
+    [realEntity tick:timeStamp];
+}
+
+- (void)outputDefaultSignals:(uint64_t)timeStamp
+{
+    int i = 0;
+    if (stampCount > kJMXFpsMaxStamps) {
+        for (i = 0; i < stampCount; i++) {
+            stamps[i] = stamps[i+1];
+        }
+        stampCount = kJMXFpsMaxStamps;  
+    }
+    stamps[stampCount++] = timeStamp;
+    
+    double rate = 1e9/((stamps[stampCount - 1] - stamps[0])/stampCount);
+    [frequencyPin deliverData:[NSNumber numberWithDouble:rate]
+                   fromSender:self];
+    //NSLog(@"%@\n", [NSNumber numberWithDouble:rate]);
+    [realEntity outputDefaultSignals:timeStamp];
 }
 
 - (void)signalTick:(NSTimer*)theTimer
@@ -97,10 +185,11 @@
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     uint64_t timeStamp = CVGetCurrentHostTime();
     [self tick:timeStamp];
+    previousTimeStamp = timeStamp;
     if ([[NSThread currentThread] isCancelled] || quit) {
         NSLog(@"Thread %@ exiting", self);
         [timer invalidate];
-        active = NO;
+        realEntity.active = NO;
     } else {
         [self outputDefaultSignals:timeStamp];
         NSTimeInterval currentInterval = [timer timeInterval];
@@ -108,7 +197,7 @@
         if (currentInterval != newInterval) {
             [timer invalidate];
             timer = [NSTimer timerWithTimeInterval:newInterval target:self selector:@selector(signalTick:) userInfo:nil repeats:YES];
-            active = YES;
+            realEntity.active = YES;
             NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
             [runLoop addTimer:timer forMode:NSRunLoopCommonModes];
         }
@@ -122,12 +211,12 @@
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     double maxDelta = 1.0/[self.frequency doubleValue];
     timer = [NSTimer timerWithTimeInterval:maxDelta target:self selector:@selector(signalTick:) userInfo:nil repeats:YES];
-    active = YES;
+    realEntity.active = YES;
     NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
     [runLoop addTimer:timer forMode:NSRunLoopCommonModes];
     [runLoop run];
     [pool drain];
-    active = NO;
+    realEntity.active = NO;
 #else
     uint64_t maxDelta = 1e9 / [frequency doubleValue];
     
@@ -180,33 +269,88 @@
 #endif
 }
 
-- (void)outputDefaultSignals:(uint64_t)timeStamp
-{
-    int i = 0;
-    if (stampCount > kJMXFpsMaxStamps) {
-        for (i = 0; i < stampCount; i++) {
-            stamps[i] = stamps[i+1];
-        }
-        stampCount = kJMXFpsMaxStamps;  
-    }
-    stamps[stampCount++] = timeStamp;
-    
-    double rate = 1e9/((stamps[stampCount - 1] - stamps[0])/stampCount);
-    [frequencyPin deliverData:[NSNumber numberWithDouble:rate]
-                     fromSender:self];
-    //NSLog(@"%@\n", [NSNumber numberWithDouble:rate]);
-    [super outputDefaultSignals:timeStamp];
-}
-
 - (void)setActive:(BOOL)value
 {
-    if (active != value) {
+    if (realEntity.active != value) {
         if (value)
             [self start];
         else
             [self stop];
     }
 }
+
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector
+{
+    return [realEntity methodSignatureForSelector:aSelector];
+}
+
+@end
+
+#pragma mark JMXEntity (Threaded)
+
+@implementation JMXEntity (Threaded)
+- (NSNumber *)frequency
+{
+    JMXThreadedEntity *th = [self privateDataForKey:@"threadedEntity"];
+    if (th)
+        return th.frequency;
+    return nil;
+}
+
+- (void)setFrequency:(NSNumber *)frequency
+{
+    JMXThreadedEntity *th = [self privateDataForKey:@"threadedEntity"];
+    if (th)
+        th.frequency = frequency;
+}
+
+- (BOOL)quit
+{
+    JMXThreadedEntity *th = [self privateDataForKey:@"threadedEntity"];
+    if (th)
+        th.quit;
+    return YES;
+}
+
+- (void)setQuit:(BOOL)quit
+{
+    JMXThreadedEntity *th = [self privateDataForKey:@"threadedEntity"];
+    if (th)
+        th.quit = quit;
+}
+
+- (uint64_t)previousTimeStamp
+{
+    JMXThreadedEntity *th = [self privateDataForKey:@"threadedEntity"];
+    if (th)
+        return th.previousTimeStamp;
+    return 0;
+}
+
+- (void)tick:(uint64_t)timeStamp
+{
+    // do nothing
+}
+
+- (void)run
+{
+    // XXX do nothing
+}
+
+- (void)start
+{
+    JMXThreadedEntity *th = [self privateDataForKey:@"threadedEntity"];
+    if (th)
+        [th start];
+}
+
+- (void)stop
+{
+    JMXThreadedEntity *th = [self privateDataForKey:@"threadedEntity"];
+    if (th)
+        [th stop];
+}
+
 
 #pragma mark V8
 using namespace v8;
@@ -241,7 +385,7 @@ static Persistent<FunctionTemplate> classTemplate;
         return classTemplate;
     NSLog(@"JMXThreadedEntity ClassTemplate created");
     classTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
-    classTemplate->Inherit([super jsClassTemplate]);
+    classTemplate->Inherit([(JMXEntity *)super jsClassTemplate]);
     classTemplate->SetClassName(String::New("ThreadedEntity"));
     v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
     classProto->Set("start", FunctionTemplate::New(start));

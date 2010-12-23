@@ -153,6 +153,7 @@
     NSMutableDictionary *inputPins;
     NSMutableDictionary *outputPins;
 @private
+    NSMutableDictionary *privateData;
 }
 
 #pragma mark Properties
@@ -423,6 +424,10 @@
  @abstract trigger a notification to let observers know that something has changed
  */
 - (void)notifyModifications;
+
+- (void)addPrivateData:(id)data forKey:(NSString *)key;
+- (id)privateDataForKey:(NSString *)key;
+- (void)removePrivateDataForKey:(NSString *)key;
 
 @end
 

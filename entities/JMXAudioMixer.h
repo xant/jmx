@@ -15,7 +15,7 @@
 @class JMXAudioBuffer;
 @class JMXAudioDevice;
 
-@interface JMXAudioMixer : JMXThreadedEntity {    
+@interface JMXAudioMixer : JMXEntity {    
 @protected
     NSArray *audioInputs;
     JMXInputPin *audioInputPin;

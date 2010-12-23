@@ -32,6 +32,7 @@
 @private
     QTMovie *movie;
     NSString *moviePath;
+    uint64_t movieFrequency;
     BOOL paused;
     BOOL repeat;
 #ifndef __x86_64

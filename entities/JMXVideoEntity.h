@@ -22,9 +22,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "JMXThreadedEntity.h"
+#import "JMXEntity.h"
 
-@interface JMXVideoEntity : JMXThreadedEntity {
+@interface JMXVideoEntity : JMXEntity {
 @protected
     NSNumber *saturation;
     NSNumber *brightness;
@@ -37,6 +37,7 @@
     JMXSize  *size;
     
     CIImage *currentFrame;
+    JMXInputPin *fpsPin; // allows to override fps (setting the pin value)
     JMXOutputPin *outputFramePin;
     JMXOutputPin *outputFrameSizePin;
 
@@ -46,15 +47,17 @@
 }
 
 
-@property (retain) NSNumber *alpha;
-@property (retain) NSNumber *saturation;
-@property (retain) NSNumber *brightness;
-@property (retain) NSNumber *contrast;
-@property (retain) NSNumber *rotation;
-@property (retain) NSNumber *scaleRatio;
-@property (retain) NSNumber *fps;
-@property (retain) JMXPoint *origin;
-@property (retain) JMXSize  *size;
+@property (copy) NSNumber *alpha;
+@property (copy) NSNumber *saturation;
+@property (copy) NSNumber *brightness;
+@property (copy) NSNumber *contrast;
+@property (copy) NSNumber *rotation;
+@property (copy) NSNumber *scaleRatio;
+@property (copy) NSNumber *fps;
+@property (copy) JMXPoint *origin;
+@property (copy) JMXSize  *size;
 @property (readonly) CIImage *currentFrame;
+
+- (void)tick:(uint64_t)timeStamp; // conform to 'tick' required by JMXRunLoop
 
 @end

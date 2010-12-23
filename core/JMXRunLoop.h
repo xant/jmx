@@ -17,16 +17,19 @@
  @abstract formal protocol for entities implementing a runloop (like JMXThreadEntity and subclasses)
  */
 @protocol JMXRunLoop
+@required
 /*!
  @method start
  @abstract start the runloop
  */
 - (void)start;
+
 /*!
  @method stop
  @abstract stop the runloop
  */
 - (void)stop;
+
 /*!
  @method tick:
  @param timeStamp the timeStamp to which this tick call refers to
@@ -35,6 +38,5 @@
            determine what must be delivered on output pins
            TODO - write examples
  */
-
 - (void)tick:(uint64_t)timeStamp;
 @end

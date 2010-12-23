@@ -65,7 +65,7 @@
     }
     return self;
 }
-/*
+
 - (JMXAudioBuffer *)currentBuffer
 {
     JMXAudioBuffer *buf = nil;
@@ -73,7 +73,7 @@
         buf = [[currentBuffer retain] autorelease];
     }
     return buf;
-}*/
+}
 
 - (void)tick:(uint64_t)timeStamp
 {

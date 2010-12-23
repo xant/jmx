@@ -22,30 +22,23 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "JMXThreadedEntity.h"
+#import "JMXVideoEntity.h"
 
 #define JMX_MIXER_DEFAULT_VIDEOSIZE_WIDTH 640
 #define JMX_MIXER_DEFAULT_VIDEOSIZE_HEIGHT 480
 #define JMX_MIXER_DEFAULT_BLEND_FILTER @"CIScreenBlendMode"
 
-@interface JMXVideoMixer : JMXThreadedEntity {
-@public
-    JMXSize *outputSize;
-
+@interface JMXVideoMixer : JMXVideoEntity {
 @protected
     NSArray *videoInputs;
 @private
     JMXInputPin *blendFilterPin;
     JMXInputPin *imageInputPin;
-    JMXOutputPin *imageOutputPin;
-    JMXOutputPin *imageSizeOutputPin;
-    CIImage *currentFrame;
     CIFilter *ciBlendFilter;
     NSString *blendFilter;
     uint64_t lastFrameTime;
 }
 
-@property (retain) JMXSize *outputSize;
 @property (readwrite, copy) NSString *blendFilter;
 
 @end

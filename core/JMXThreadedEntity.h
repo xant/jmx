@@ -33,9 +33,28 @@
 #import "JMXEntity.h"
 #import "JMXRunLoop.h"
 
+@interface JMXEntity (Threaded)
+/*!
+ @property frequency
+ @abstract get/set the frequency at which output signals are delivered
+ @discussion the frequency affects also how intensively is the runloop 
+ */
+@property (readwrite, copy) NSNumber *frequency;
+@property (readwrite, assign) BOOL quit;
+@property (readonly) uint64_t previousTimeStamp;
+// entities should implement this message to trigger 
+// delivering of signals to all their custom output pins
+- (void)tick:(uint64_t)timeStamp;
+- (void)start;
+- (void)stop;
+#ifdef __JMXV8__
++ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate;
+#endif
+@end
+
 /*!
  * @class JMXThreadedEntity
- * @abstract Base class for threaded entitites
+ * @abstract Encapsulates an entity in a new thread. the 'tick' message will be periodically sent to the encapsulated entity
  * @discussion conforms to protocols: JMXRunLoop
  *
  *
@@ -53,27 +72,29 @@
  *             The effective frequency at which the entity is running (could be slowed down by a too heavy tick implementation)
  * 
  */
-@interface JMXThreadedEntity : JMXEntity < JMXRunLoop > {
+@interface JMXThreadedEntity : NSProxy < JMXRunLoop > {
 @protected
     uint64_t previousTimeStamp;
-    NSNumber *frequency;
-    BOOL quit;
 @private
     NSThread *worker;
     NSTimer  *timer;
-    JMXOutputPin   *frequencyPin;
     int64_t stamps[kJMXFpsMaxStamps + 1]; // XXX - 25 should be a constant
     int stampCount;
+    JMXEntity *realEntity;
+    NSNumber *frequency;
+    BOOL quit;
+    JMXOutputPin  *frequencyPin;
 }
+@property (readwrite, retain) NSNumber *frequency;
+@property (readonly) JMXEntity *realEntity;
+@property (readwrite, assign) uint64_t previousTimeStamp;
+@property (readwrite, assign) BOOL quit;
 
-/*!
- @property frequency
- @abstract get/set the frequency at which output signals are delivered
- @discussion the frequency affects also how intensively is the runloop 
- */
-@property (retain) NSNumber *frequency;
-
++ threadedEntity:(JMXEntity *)entity;
+- initWithEntity:(JMXEntity *)entity;
 // entities should implement this message to trigger 
 // delivering of signals to all their custom output pins
-
+- (void)tick:(uint64_t)timeStamp;
+- (void)start;
+- (void)stop;
 @end

@@ -87,6 +87,7 @@ using namespace v8;
         // since this selector is going to be called in this same thread, we know for sure
         // that it's going to be called after the init-chain has been fully executede
         [self performSelectorOnMainThread:@selector(notifyCreation) withObject:nil waitUntilDone:NO];
+        privateData = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -97,6 +98,7 @@ using namespace v8;
     [self unregisterAllPins];
     [inputPins release];
     [outputPins release];
+    [privateData release];
     [super dealloc];
 }
 
@@ -374,6 +376,27 @@ using namespace v8;
               [value boolValue])
     ? YES
     : NO;
+}
+
+- (id)privateDataForKey:(NSString *)key
+{
+    @synchronized(privateData) {
+        return [[[privateData objectForKey:key] retain] autorelease];
+    }
+}
+
+- (void)addPrivateData:(id)data forKey:(NSString *)key
+{
+    @synchronized(privateData) {
+        [privateData setObject:data forKey:key];
+    }
+}
+
+- (void)removePrivateDataForKey:(NSString *)key
+{
+    @synchronized(privateData) {
+        [privateData removeObjectForKey:key];
+    }
 }
 
 #pragma mark V8

@@ -22,12 +22,13 @@
 //
 
 #import "JMXVideoEntity.h"
+#import "JMXRunLoop.h"
 
 #ifndef __JMXQTVIDEOCAPTURELAYER_H__
 #define __JMXQTVIDEOCAPTURELAYER_H__
 @class JMXQtVideoGrabber;
 
-@interface JMXQtVideoCaptureEntity : JMXVideoEntity
+@interface JMXQtVideoCaptureEntity : JMXVideoEntity < JMXRunLoop >
 {
 @private
 	JMXQtVideoGrabber *grabber;

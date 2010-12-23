@@ -46,6 +46,7 @@ using namespace v8;
         [alphaFilter setDefaults]; // XXX - setDefaults doesn't work properly
         NSDictionary *filterAttributes = [colorFilter attributes];
         NSSize defaultLayerSize = { 640, 480 };
+        self.fps = [NSNumber numberWithDouble:25.0];
         self.size = [JMXSize sizeWithNSSize:defaultLayerSize];
         self.saturation = [colorFilter valueForKey:@"inputSaturation"];
         self.brightness = [colorFilter valueForKey:@"inputBrightness"];
@@ -109,6 +110,10 @@ using namespace v8;
                  allowedValues:nil
                   initialValue:self.size];
 
+        fpsPin = [self registerInputPin:@"fps" withType:kJMXNumberPin andSelector:@"setFps:"];
+        [fpsPin setMinLimit:[NSNumber numberWithDouble:1.0]];
+        [fpsPin setMaxLimit:[NSNumber numberWithDouble:90.0]];
+        fpsPin.data = self.fps;
         // we output at least 1 image
         outputFramePin = [self registerOutputPin:@"frame" withType:kJMXImagePin];
         outputFrameSizePin = [self registerOutputPin:@"frameSize" withType:kJMXSizePin];
@@ -132,72 +137,70 @@ using namespace v8;
 
 - (void)tick:(uint64_t)timeStamp
 {
-    @synchronized(self) {
-        if (currentFrame) {
-            // Apply image parameters
-
-            // ensure using accessors (by calling self.property) since they will take care of locking
-            [colorFilter setValue:self.saturation forKey:@"inputSaturation"];
-            [colorFilter setValue:self.brightness forKey:@"inputBrightness"];
-            [colorFilter setValue:self.contrast forKey:@"inputContrast"];
-            [colorFilter setValue:self.currentFrame forKey:@"inputImage"];
-            // scale the image to fit the configured layer size
-            CIImage *frame = [colorFilter valueForKey:@"outputImage"];
-            
-            // frame should be produced with the correct size already by the layer implementation
-            // but if the user requested a size impossible to be produced by the source, 
-            // we scale it here to honor user request for a specific size
-            CGRect imageRect = [frame extent];
-            BOOL applyTransforms = NO;
-            // and apply affine transforms if necessary (scale, rotation and displace
-            CIFilter *transformFilter = [CIFilter filterWithName:@"CIAffineTransform"];
-            NSAffineTransform *transform = [NSAffineTransform transform];
-            if (size.width != imageRect.size.width || size.height != imageRect.size.height) {
-                applyTransforms = YES;
-                float xScale = size.width / imageRect.size.width;
-                float yScale = size.height / imageRect.size.height;
-                // TODO - take scaleRatio into account for further scaling requested by the user
+    CIImage *outputFrame = self.currentFrame;
+    if (outputFrame) {
+        // Apply image parameters
+        // ensure using accessors (by calling self.property) since they will take care of locking
+        [colorFilter setValue:self.saturation forKey:@"inputSaturation"];
+        [colorFilter setValue:self.brightness forKey:@"inputBrightness"];
+        [colorFilter setValue:self.contrast forKey:@"inputContrast"];
+        [colorFilter setValue:outputFrame forKey:@"inputImage"];
+        // scale the image to fit the configured layer size
+        CIImage *frame = [colorFilter valueForKey:@"outputImage"];
+       
+        // frame should be produced with the correct size already by the layer implementation
+        // but if the user requested a size impossible to be produced by the source, 
+        // we scale it here to honor user request for a specific size
+        BOOL applyTransforms = NO;
+        // and apply affine transforms if necessary (scale, rotation and displace
+        CIFilter *transformFilter = [CIFilter filterWithName:@"CIAffineTransform"];
+        NSAffineTransform *transform = [NSAffineTransform transform];
+        CGRect imageRect = [frame extent];
+        if (size.width != imageRect.size.width || size.height != imageRect.size.height) {
+            applyTransforms = YES;
+            float xScale = size.width / imageRect.size.width;
+            float yScale = size.height / imageRect.size.height;
+            // TODO - take scaleRatio into account for further scaling requested by the user
+            if (xScale && yScale)
                 [transform scaleXBy:xScale yBy:yScale];
-            }
-            if ([rotation floatValue]) {
-                applyTransforms = YES;
-                NSAffineTransform *rotoTransform = [NSAffineTransform transform];
-                [rotoTransform rotateByDegrees:[rotation floatValue]];
-                CGFloat deg = ([rotation floatValue]*M_PI)/180.0;
-                CGFloat x, y;
-                x = ((size.width)-((size.width)*cos(deg)-(size.height)*sin(deg)))/2;
-                y = ((size.height)-((size.width)*sin(deg)+(size.height)*cos(deg)))/2;
-                NSAffineTransform *rotoTranslate = [NSAffineTransform transform];
-                [rotoTranslate translateXBy:x yBy:y];
-                [rotoTransform appendTransform:rotoTranslate];
-                [transform appendTransform:rotoTransform];
-            }
-            if (origin.x || origin.y) {
-                applyTransforms = YES;
-                NSAffineTransform *originTransform = [NSAffineTransform transform];
-                [originTransform translateXBy:origin.x yBy:origin.y];
-                [transform appendTransform:originTransform];
-            }
-            if (applyTransforms) {
-                [transformFilter setDefaults];
-                [transformFilter setValue:transform forKey:@"inputTransform"];
-                [transformFilter setValue:frame forKey:@"inputImage"];
-                frame = [transformFilter valueForKey:@"outputImage"];
-            }
-            if (frame) {
-                // apply alpha
-                [alphaFilter setValue:alpha forKey:@"outputOpacity"];
-                [alphaFilter setValue:frame forKey:@"inputImage"];
-                frame = [alphaFilter valueForKey:@"outputImage"];
-                [currentFrame release];
-                currentFrame = [frame retain];
-            }
-            // TODO - compute the effective fps and send it to an output pin 
-            //        for debugging purposes
         }
-        [outputFramePin deliverData:currentFrame fromSender:self];
-        [outputFrameSizePin deliverData:size];
+        if ([rotation floatValue]) {
+            applyTransforms = YES;
+            NSAffineTransform *rotoTransform = [NSAffineTransform transform];
+            [rotoTransform rotateByDegrees:[rotation floatValue]];
+            CGFloat deg = ([rotation floatValue]*M_PI)/180.0;
+            CGFloat x, y;
+            x = ((size.width)-((size.width)*cos(deg)-(size.height)*sin(deg)))/2;
+            y = ((size.height)-((size.width)*sin(deg)+(size.height)*cos(deg)))/2;
+            NSAffineTransform *rotoTranslate = [NSAffineTransform transform];
+            [rotoTranslate translateXBy:x yBy:y];
+            [rotoTransform appendTransform:rotoTranslate];
+            [transform appendTransform:rotoTransform];
+        }
+        if (origin.x || origin.y) {
+            applyTransforms = YES;
+            NSAffineTransform *originTransform = [NSAffineTransform transform];
+            [originTransform translateXBy:origin.x yBy:origin.y];
+            [transform appendTransform:originTransform];
+        }
+        if (applyTransforms) {
+            [transformFilter setDefaults];
+            [transformFilter setValue:transform forKey:@"inputTransform"];
+            [transformFilter setValue:frame forKey:@"inputImage"];
+            frame = [transformFilter valueForKey:@"outputImage"];
+        }
+        if (frame) {
+            // apply alpha
+            [alphaFilter setValue:alpha forKey:@"outputOpacity"];
+            [alphaFilter setValue:frame forKey:@"inputImage"];
+            frame = [alphaFilter valueForKey:@"outputImage"];
+            outputFrame = frame;
+        }
+        // TODO - compute the effective fps and send it to an output pin 
+        //        for debugging purposes
     }
+    [outputFramePin deliverData:outputFrame fromSender:self];
+    [outputFrameSizePin deliverData:size];
 }
 
 - (CIImage *)currentFrame

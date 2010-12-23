@@ -24,14 +24,15 @@
 #import <QuartzCore/QuartzCore.h>
 #define __JMXV8__
 #import "JMXVideoMixer.h"
-#import "JMXVideoEntity.h"
 #include "JMXScript.h"
+#import "JMXThreadedEntity.h"
+
 
 JMXV8_EXPORT_ENTITY_CLASS(JMXVideoMixer);
 
 @implementation JMXVideoMixer
 
-@synthesize outputSize, blendFilter;
+@synthesize blendFilter;
 
 - (id) init
 {
@@ -42,19 +43,20 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXVideoMixer);
                                     andSelector:@"setBlendFilter:"
                                   allowedValues:[CIFilter filterNamesInCategory:kCICategoryCompositeOperation]
                                    initialValue:JMX_MIXER_DEFAULT_BLEND_FILTER];
-        imageInputPin = [self registerInputPin:@"video" withType:kJMXImagePin];
         ciBlendFilter = [[CIFilter filterWithName:JMX_MIXER_DEFAULT_BLEND_FILTER] retain];
+        self.blendFilter = JMX_MIXER_DEFAULT_BLEND_FILTER;
+        imageInputPin = [self registerInputPin:@"video" withType:kJMXImagePin];
         [imageInputPin allowMultipleConnections:YES];
-        [self registerInputPin:@"videoSize" withType:kJMXSizePin andSelector:@"setOutputSize:"];
-        imageSizeOutputPin = [self registerOutputPin:@"videoSize" withType:kJMXSizePin];
-        [imageSizeOutputPin allowMultipleConnections:YES];
-        imageOutputPin = [self registerOutputPin:@"video" withType:kJMXImagePin];
-        [imageOutputPin allowMultipleConnections:YES];
         NSSize defaultSize = { JMX_MIXER_DEFAULT_VIDEOSIZE_WIDTH, JMX_MIXER_DEFAULT_VIDEOSIZE_HEIGHT };
-        self.outputSize = [JMXSize sizeWithNSSize:defaultSize];
+        self.size = [JMXSize sizeWithNSSize:defaultSize];
+        self.name = @"VideoMixer";
         currentFrame = nil;
+        JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
+        if (threadedEntity)
+            return threadedEntity;
+        [self dealloc];
     }
-    return self;
+    return nil;
 }
 
 - (void)dealloc
@@ -91,13 +93,14 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXVideoMixer);
         for (id data in frames) {
             //if ([data isKindOfClass:[CIImage class]]) {
                 CIImage *frame = (CIImage *)data;
+                CGRect rect = CGRectMake(0, 0, size.width, size.height);
                 if (!currentFrame) {
-                    currentFrame = frame;
+                    currentFrame = [frame imageByCroppingToRect:rect];
                 } else {
 
                     [ciBlendFilter setValue:frame forKey:@"inputImage"];
                     [ciBlendFilter setValue:currentFrame forKey:@"inputBackgroundImage"];
-                    currentFrame = [ciBlendFilter valueForKey:@"outputImage"];
+                    currentFrame = [[ciBlendFilter valueForKey:@"outputImage"] imageByCroppingToRect:rect];
                 }
             //}
         }
@@ -105,9 +108,8 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXVideoMixer);
             [currentFrame retain];
         else // send a black frame
             currentFrame = [[CIImage imageWithColor:[CIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:1.0]] retain];
-        [imageOutputPin deliverData:currentFrame fromSender:self];
     }
-    [imageSizeOutputPin deliverData:outputSize]; // XXX - do this only when size changes
+    [super tick:timeStamp];
 }
 
 #pragma mark V8

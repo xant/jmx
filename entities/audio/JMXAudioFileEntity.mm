@@ -91,7 +91,8 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXAudioFileEntity);
             if (repeat) { // loop on the file if we have to
                 sample = [audioFile readSample];
             } else {
-                return [self stop];
+                self.active = NO;
+                return;
             }
         }
     } 

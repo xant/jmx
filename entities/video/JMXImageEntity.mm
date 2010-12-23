@@ -23,7 +23,7 @@
 
 #import "JMXImageEntity.h"
 #import <QTKit/QTKit.h>
-
+#import "JMXThreadedEntity.h"
 
 @implementation JMXImageEntity
 
@@ -40,9 +40,14 @@
     self = [super init];
     if (self) {
         self.image = nil;
-        self.frequency = [NSNumber numberWithDouble:0.5]; // override frequency
+        JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
+        if (threadedEntity) {
+            self.frequency = [NSNumber numberWithDouble:0.5]; // override frequency
+            return threadedEntity;
+        }
+        [self dealloc];
     }
-    return self;
+    return nil;
 }
 
 - (BOOL)open:(NSString *)file

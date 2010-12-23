@@ -28,7 +28,7 @@
 @class JMXAudioFile;
 @class JMXAudioDevice;
 
-@interface JMXAudioFileEntity : JMXThreadedEntity < JMXFileRead > {
+@interface JMXAudioFileEntity : JMXEntity < JMXFileRead > {
 @private
     JMXAudioFile *audioFile;
     JMXAudioBuffer *currentSample;

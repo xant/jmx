@@ -78,6 +78,8 @@
 		AA4B00C912BE560100775B88 /* JMXProxyPin.m in Sources */ = {isa = PBXBuildFile; fileRef = AA4B00C812BE560100775B88 /* JMXProxyPin.m */; };
 		AA4B01F412BEC85F00775B88 /* AudioCapture.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA4B01F312BEC85500775B88 /* AudioCapture.js */; };
 		AA4B020912BED1BB00775B88 /* JMXAudioCapture.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4B020812BED1BB00775B88 /* JMXAudioCapture.mm */; };
+		AA4B039C12C06C7600775B88 /* JMXVideoCapture.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4B039B12C06C7600775B88 /* JMXVideoCapture.mm */; };
+		AA4B039F12C06D2100775B88 /* JMXThreadedVideoEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4B039E12C06D2100775B88 /* JMXThreadedVideoEntity.mm */; };
 		AA4BFC8412BD324A00775B88 /* JMXVideoFilter.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4BFC8312BD324A00775B88 /* JMXVideoFilter.mm */; };
 		AA4BFECF12BE25E900775B88 /* JMX.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA4BFE1312BE0E2000775B88 /* JMX.js */; };
 		AA4BFED012BE25E900775B88 /* AudioOutput.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA4BFE1112BE0D7400775B88 /* AudioOutput.js */; };
@@ -257,6 +259,11 @@
 		AA4B01FA12BECCCA00775B88 /* QtAudioCapture.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = QtAudioCapture.js; sourceTree = "<group>"; };
 		AA4B020712BED1BB00775B88 /* JMXAudioCapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXAudioCapture.h; sourceTree = "<group>"; };
 		AA4B020812BED1BB00775B88 /* JMXAudioCapture.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXAudioCapture.mm; sourceTree = "<group>"; };
+		AA4B039812C06C3000775B88 /* VideoCapture.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = VideoCapture.js; sourceTree = "<group>"; };
+		AA4B039A12C06C7600775B88 /* JMXVideoCapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXVideoCapture.h; sourceTree = "<group>"; };
+		AA4B039B12C06C7600775B88 /* JMXVideoCapture.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXVideoCapture.mm; sourceTree = "<group>"; };
+		AA4B039D12C06D2100775B88 /* JMXThreadedVideoEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXThreadedVideoEntity.h; sourceTree = "<group>"; };
+		AA4B039E12C06D2100775B88 /* JMXThreadedVideoEntity.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXThreadedVideoEntity.mm; sourceTree = "<group>"; };
 		AA4BFC8212BD324A00775B88 /* JMXVideoFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXVideoFilter.h; sourceTree = "<group>"; };
 		AA4BFC8312BD324A00775B88 /* JMXVideoFilter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXVideoFilter.mm; sourceTree = "<group>"; };
 		AA4BFDF512BE0CF800775B88 /* VideoEntity.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = VideoEntity.js; sourceTree = "<group>"; };
@@ -526,6 +533,7 @@
 				AA4BFE1512BE135000775B88 /* VideoOutput.js */,
 				AA4BFEFD12BE2B4500775B88 /* VideoFilter.js */,
 				AA4B01F312BEC85500775B88 /* AudioCapture.js */,
+				AA4B039812C06C3000775B88 /* VideoCapture.js */,
 			);
 			path = jsapi;
 			sourceTree = SOURCE_ROOT;
@@ -643,6 +651,8 @@
 				825C31071275ADB6006376B8 /* JMXAudioSpectrumAnalyzer.mm */,
 				825C31081275ADB6006376B8 /* JMXExporter.h */,
 				825C31091275ADB6006376B8 /* JMXExporter.m */,
+				AA4B039A12C06C7600775B88 /* JMXVideoCapture.h */,
+				AA4B039B12C06C7600775B88 /* JMXVideoCapture.mm */,
 				825C310A1275ADB6006376B8 /* JMXVideoEntity.h */,
 				825C310B1275ADB6006376B8 /* JMXVideoEntity.mm */,
 				825C310E1275ADB6006376B8 /* JMXVideoOutput.h */,
@@ -655,6 +665,8 @@
 				AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */,
 				AA4BFC8212BD324A00775B88 /* JMXVideoFilter.h */,
 				AA4BFC8312BD324A00775B88 /* JMXVideoFilter.mm */,
+				AA4B039D12C06D2100775B88 /* JMXThreadedVideoEntity.h */,
+				AA4B039E12C06D2100775B88 /* JMXThreadedVideoEntity.mm */,
 			);
 			name = Entities;
 			path = entities;
@@ -815,6 +827,8 @@
 				AA4BFC8412BD324A00775B88 /* JMXVideoFilter.mm in Sources */,
 				AA4B00C912BE560100775B88 /* JMXProxyPin.m in Sources */,
 				AA4B020912BED1BB00775B88 /* JMXAudioCapture.mm in Sources */,
+				AA4B039C12C06C7600775B88 /* JMXVideoCapture.mm in Sources */,
+				AA4B039F12C06D2100775B88 /* JMXThreadedVideoEntity.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

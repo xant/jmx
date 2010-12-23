@@ -28,7 +28,8 @@
 #endif
 #define __JMXV8__
 #import "JMXQtMovieEntity.h"
-#include "JMXScript.h"
+#import "JMXScript.h"
+#import "JMXThreadedEntity.h"
 
 JMXV8_EXPORT_ENTITY_CLASS(JMXQtMovieEntity);
 
@@ -64,12 +65,17 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
         moviePath = nil;
         repeat = YES;
         paused = NO;
+        movieFrequency = 0;
         [self registerInputPin:@"path" withType:kJMXStringPin andSelector:@"setMoviePath:"];
         [self registerInputPin:@"repeat" withType:kJMXNumberPin andSelector:@"setRepeat:"];
         [self registerInputPin:@"paused" withType:kJMXNumberPin andSelector:@"setPaused:"];
+        JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
+        if (threadedEntity)
+            return threadedEntity;
+        // TODO - Error Messages
+        [self dealloc];
     }
-
-    return self;
+    return nil;
 }
 
 #ifndef __x86_64
@@ -174,10 +180,13 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
             // to have an higher signaling frequency in the case of an existing movie. 
             // In any case we won't have more 'unique' frames than the native movie fps ... so if signaling 
             // the frames more often we will just send the same image multiple times (wasting precious cpu time)
-            if (sampleCount > 1) // check if we indeed have a sequence of frames
+            if (sampleCount > 1) { // check if we indeed have a sequence of frames
                 self.frequency = [NSNumber numberWithDouble:(sampleCount+1)/(qtTimeDuration.timeValue/qtTimeDuration.timeScale)];
-            else // or if it's just a still image, set the frequency to 1 sec
+                movieFrequency = (sampleCount+1)/(qtTimeDuration.timeValue/qtTimeDuration.timeScale);
+            } else {// or if it's just a still image, set the frequency to 1 sec
                 self.frequency = [NSNumber numberWithDouble:1]; // XXX
+                movieFrequency = 0;
+            }
                 
             // set the layer size to the native movie size
             // scaling is a quite expensive operation and the user 
@@ -185,7 +194,7 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
             // to set a different layer size by using the proper input pin)
             NSSize movieSize = [firstVideoTrack apertureModeDimensionsForMode:@"QTMovieApertureModeClean"];
             size = [[JMXSize sizeWithNSSize:movieSize] retain];
-            self.fps = self.frequency;
+            fpsPin.data = self.frequency;
             NSArray *path = [file componentsSeparatedByString:@"/"];
             self.name = [path lastObject];
 #ifndef __x86_64
@@ -236,11 +245,16 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
                     [currentFrame release];
                     currentFrame = nil;
                 }
-                uint64_t delta = previousTimeStamp
-                               ? (timeStamp - previousTimeStamp) / 1e9 * now.timeScale
+                uint64_t delta = self.previousTimeStamp
+                               ? (timeStamp - self.previousTimeStamp) / 1e9 * now.timeScale
                                : now.timeScale / [fps doubleValue];
+
+                uint64_t step = movieFrequency
+                              ? [fps doubleValue] * delta / movieFrequency
+                              : 0;
+                
                 // Calculate the next frame we need to provide.
-                now.timeValue += delta;
+                now.timeValue += step;
 
                 if (QTTimeCompare(now, [movie duration]) == NSOrderedAscending) {
                     [movie setCurrentTime:now];

@@ -10,7 +10,7 @@
 #define __JMXV8__ 1
 #import "JMXThreadedEntity.h"
 
-@interface JMXScriptEntity : JMXThreadedEntity {
+@interface JMXScriptEntity : JMXEntity {
     NSString *code; 
 }
 

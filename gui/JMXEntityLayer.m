@@ -92,7 +92,6 @@
         [[NSNotificationCenter defaultCenter] removeObserver:self name:@"JMXEntityInputPinRemoved" object:entity];
         [[NSNotificationCenter defaultCenter] removeObserver:self name:@"JMXEntityOutputPinAdded" object:entity];
         [[NSNotificationCenter defaultCenter] removeObserver:self name:@"JMXEntityOutputPinRemoved" object:entity];
-
         [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasRemoved" object:entity];
         [entity release];
     }
@@ -136,8 +135,8 @@ JMXEntityLabelLayer *JMXEntityLabelLayerCreate(NSString *name) {
         [self addSublayer:outlet];
         [self.outlets addObject:outlet];
     }
-    [self recalculateFrame];
  */
+    [self recalculateFrame];
 }
 
 - (void)recalculateFrame

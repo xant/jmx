@@ -42,8 +42,8 @@ using namespace v8;
 
 - (void)tick:(uint64_t)timeStamp
 {
-    if (!quit) {
-        quit = YES; // we want to stop the thread as soon as the script exits
+    if (!self.quit) {
+        self.quit = YES; // we want to stop the thread as soon as the script exits
         if (self.code)
             [JMXScript runScript:self.code withEntity:self];
         else

@@ -321,19 +321,5 @@ static OSStatus _FillComplexBufferProc (
 	[grabber stopCapture];
 }
 
-/*
-#pragma mark -
-#pragma mark NSCoding
-
-- (void)encodeWithCoder:(NSCoder *)aCoder
-{
-}
-
-- (id)initWithCoder:(NSCoder *)aDecoder
-{
-self = [self init];
-return self;
-}
- */
 @end
 

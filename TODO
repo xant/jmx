@@ -1,3 +1,4 @@
+- Javascript console
 - fix the hit-test 
   * apart working a bit badly, when there are multiple connections for the same "input" pin,
     it always takes the first connector instead of selecting the clicked one 
@@ -5,8 +6,6 @@
 - allow to change entity names from the GUI (it used to work ... but not anymore)
 - allow to provide input values (of any supported type) through the GUI
   * multiline-text, size and point are missing and REALLY important *
-- sliders must send values continuously
-- parse filter attributes to determine 'mandatory' parameters (and avoid crashes)
 - input controllers (at least keyboard and mouse ... but we need to support also midi/osc controllers)
 - implement an HTTP (evented i/o) framework exposed to V8
 - allow to move multiple slected items all together

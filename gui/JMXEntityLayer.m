@@ -274,11 +274,8 @@ id controlForJMXPinType(JMXPinType aType)
 
 - (void)controlPin
 {
-    for (NSString *anInputPinName in self.entity.inputPins) {
-        JMXInputPin *anInputPin = [self.entity inputPinWithName:anInputPinName];
+    for (JMXInputPin *anInputPin in self.entity.inputPins)
         NSLog(@"name: %@, type: %@", anInputPin.name, controlForJMXPinType(anInputPin.type));
-    }
-
 }
 
 - (void)updateConnectors

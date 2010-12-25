@@ -26,6 +26,7 @@
            (shared among any kind of pin)
  */
 #import <Cocoa/Cocoa.h>
+#import <Foundation/NSXMLElement.h>
 #import "JMXSize.h"
 #import "JMXPoint.h"
 #import "JMXAudioBuffer.h"
@@ -91,7 +92,7 @@ typedef enum {
  You should never use instances of this class directly, but you will use instead
  a concrete subclass (most likely a <code>JMXInputPin</code> or a <code>JMXOutputPin</code>)
  */
-@interface JMXPin : NSObject <NSCopying, JMXV8> {
+@interface JMXPin : NSXMLElement <NSCopying, JMXV8> {
 @protected
     JMXPinType          type;
     NSString            *name;

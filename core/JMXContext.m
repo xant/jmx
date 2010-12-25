@@ -21,6 +21,7 @@
 //  along with JMX.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#import <Foundation/NSXMLDocument.h>
 #import "JMXContext.h"
 #import "JMXEntity.h"
 
@@ -89,6 +90,7 @@ static BOOL initialized = NO;
 		registeredClasses = [[NSMutableArray alloc] init];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasCreated:) name:@"JMXEntityWasCreated" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasDestroyed:) name:@"JMXEntityWasDestroyed" object:nil];
+        dom = [[NSXMLDocument documentWithRootElement:[NSXMLElement elementWithName:@"JMX"]] retain];
 #if USE_NSOPERATIONS
         [self initQueue];
 #endif
@@ -99,6 +101,7 @@ static BOOL initialized = NO;
 - (void)dealloc
 {
 	[registeredClasses release];
+    [dom release];
 #if USE_NSOPERATIONS
     [operationQueue release];
 #endif
@@ -110,7 +113,11 @@ static BOOL initialized = NO;
     JMXEntity *entity = [notification object];
     @synchronized(self) {
         NSValue *value = [NSValue valueWithNonretainedObject:entity];
-        [entities setObject:value forKey:[NSString stringWithFormat:@"%d", entity]];
+        if (![entity isProxy]) {
+            [entities setObject:value forKey:[NSString stringWithFormat:@"%d", entity]];
+            NSLog(@"OOIRRII %@", entity);
+            [[dom rootElement] addChild:entity];
+        }
     }
 }
 
@@ -118,7 +125,10 @@ static BOOL initialized = NO;
 {
     JMXEntity *entity = [notification object];
     @synchronized(self) {
-        [entities removeObjectForKey:[NSString stringWithFormat:@"%d", entity]];
+        if (![entity isProxy]) {
+            [entities removeObjectForKey:[NSString stringWithFormat:@"%d", entity]];
+            [entity detach];
+        }
     }
 }
 
@@ -155,6 +165,12 @@ static BOOL initialized = NO;
 - (NSArray *)registeredClasses
 {
 	return (NSArray *)registeredClasses;
+}
+
+- (void)dumpDOM
+{
+    NSData *xmlData = [dom XMLData];
+    NSLog(@"DIOKANE: %s", [xmlData bytes]);
 }
 
 #if USE_NSOPERATIONS

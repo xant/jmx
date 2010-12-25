@@ -30,7 +30,8 @@
         if (threadedEntity)
             return threadedEntity;
     }
-    return self;
+    [self dealloc];
+    return nil;
 }
 
 - (void)dealloc

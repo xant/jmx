@@ -26,6 +26,8 @@
  */
 #import <Cocoa/Cocoa.h>
 
+@class NSXMLDocument;
+
 #define USE_NSOPERATIONS 0
 
 /*!
@@ -40,6 +42,7 @@
 #endif
 @private
     NSMutableDictionary *entities;
+    NSXMLDocument *dom;
 }
 
 /*!
@@ -92,4 +95,6 @@
  @return An array containing all existing entity-instances 
  */
 - (NSArray *)allEntities;
+
+- (void)dumpDOM;
 @end

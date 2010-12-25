@@ -188,6 +188,13 @@ static v8::Handle<Value> Echo(const Arguments& args) {
     return v8::Undefined();
 }
 
+static v8::Handle<Value> DumpDOM(const Arguments& args) {
+    //v8::Locker lock;
+    HandleScope scope;
+    [[JMXContext sharedContext]dumpDOM];
+    return v8::Undefined();
+}
+
 static v8::Handle<Value> ExecJSCode(const char *code, uint32_t length, const char *name)
 {
     HandleScope scope;
@@ -390,6 +397,7 @@ static v8::Handle<Value> Quit(const Arguments& args)
         ctxTemplate->Set(String::New("lsdir"), FunctionTemplate::New(ListDir));
         ctxTemplate->Set(String::New("isdir"), FunctionTemplate::New(IsDir));
         ctxTemplate->Set(String::New("exportPin"), FunctionTemplate::New(ExportPin));
+        ctxTemplate->Set(String::New("dumpDOM"), FunctionTemplate::New(DumpDOM));
         ctxTemplate->Set(String::New("run"), FunctionTemplate::New(Run));
         ctxTemplate->Set(String::New("quit"), FunctionTemplate::New(Quit));
 

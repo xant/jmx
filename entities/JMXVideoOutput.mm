@@ -41,6 +41,7 @@ using namespace v8;
 
         // effective fps for debugging purposes
         [self registerOutputPin:@"fps" withType:kJMXNumberPin];
+        self.name = @"VideoOutput";
     }
     return self;
 }

@@ -38,6 +38,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import <Foundation/NSXMLElement.h>
 #import "JMXInputPin.h"
 #import "JMXOutputPin.h"
 #import "JMXV8.h"
@@ -145,13 +146,16 @@
  *
  * * active kJMXBooleanPin
  */
-@interface JMXEntity : NSObject <NSCopying, JMXV8> {
+@interface JMXEntity : NSXMLElement <NSCopying, JMXV8> {
 @public
     NSString *name;
     BOOL active;
 @protected
+    /*
     NSMutableDictionary *inputPins;
-    NSMutableDictionary *outputPins;
+    NSMutableDictionary *outputPins;*/
+    NSXMLElement *inputPins;
+    NSXMLElement *outputPins;
 @private
     NSMutableDictionary *privateData;
 }
@@ -162,6 +166,11 @@ v8::Persistent<v8::FunctionTemplate>JMXEntityJSClassTemplate();
 #endif
 
 #pragma mark Properties
+
+@property (readonly) NSArray *inputPins;
+
+@property (readonly) NSArray *outputPins;
+
 /*!
  @property active
  @abstract determines if the entity is active or not

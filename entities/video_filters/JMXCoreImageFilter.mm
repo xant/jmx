@@ -104,15 +104,15 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXCoreImageFilter);
 
 - (void)removeFilterAttributesPins
 {
-    for (NSString *pinName in [[inputPins copy] autorelease]) {
+    for (JMXInputPin *pin in [inputPins children]) {
         // TODO - extendable [JMXEntity defaultInputPins]
-        if (pinName != @"frame" && pinName != @"filter" && pinName != @"active")
-            [self unregisterInputPin:pinName];
+        if (pin.name != @"frame" && pin.name != @"filter" && pin.name != @"active")
+            [self unregisterInputPin:pin.name];
     }
-    for (NSString *pinName in [[outputPins copy] autorelease]) {
+    for (JMXOutputPin *pin in [outputPins children]) {
         // TODO - extendable [JMXEntity defaultOutputPins]
-        if (pinName != @"frame" && pinName != @"active")
-            [self unregisterOutputPin:pinName];
+        if (pin.name != @"frame" && pin.name != @"active")
+            [self unregisterOutputPin:pin.name];
     }
 }
 

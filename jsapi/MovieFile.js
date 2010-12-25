@@ -1,12 +1,13 @@
 /**
  * @fileoverview
- * Read frames from video files
+ * Read frames from video files (Abstract Class)
  */
 
 /**
  * MovieFile
  * @constructor
  * @param {String} path The path of the movie file.
+ * @param {String} type The specific backend implementation (for instance: QtMovieFile).
  * @base VideoEntity
  * @class Abstract class implementing basic functionalities for entities grabbing video frames from movie files.
  * Such objects will extract video frames from supported video file types and will provide images on their 'frame' output pin
@@ -21,6 +22,15 @@
  */
 function MovieFile(path, type)
 {
+    if (!type) {
+        // TODO implement type selection
+        return QtMovieFile();
+    } else {
+        // TODO
+    }
+    
+    /* Documenation Only */
+    
     this.path = "";
     this.repeat = false;
     this.paused = false;

@@ -1,6 +1,6 @@
 /**
  * @fileoverview
- * Grab samples from an video input device
+ * Grab samples from an video input device (Abstract Class)
  */
 
 /**

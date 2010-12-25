@@ -1,6 +1,6 @@
 /**
  * @fileoverview
- * Display video frames
+ * Display video frames (Abstract Class)
  */
 
 /**
@@ -9,6 +9,8 @@
  * @constructor
  * @param {int} width The width of the new video output
  * @param {int} height The height of the new video output
+ * @param {String} type The specific backend implementation (for instance: OpenGLScreen).
+ *                      Pass a null value to use the default backend.
  * @base Entity
  * @class
  * <h3>InputPins:</h3>

@@ -1,15 +1,14 @@
 /**
  * @fileoverview
- * Send received samples to an audio output device
+ * Send received samples to an audio output device (Abstract Class)
  */
 
 /**
  * AudioOutput
  * @constructor
  * @param {String} device The device to open.
- * @param {String} type The specific implementation type, 
- *                      pass a null value to use the default
- *                      CoreAudio-based implementation.
+ * @param {String} type The specific backend implementation (for instance: CoreAudioOutput).
+ *                      Pass a null value to use the default backend.
  * @base Entity
  * @class Send audio samples to an output device
  * <h3>InputPins:</h3>

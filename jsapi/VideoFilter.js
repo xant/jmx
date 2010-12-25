@@ -1,6 +1,6 @@
 /**
  * @fileoverview
- * Apply a filter to video frames
+ * Apply a filter to video frames (Abstract Class)
  */
 
 /**

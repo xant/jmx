@@ -1,6 +1,6 @@
 /**
  * @fileoverview
- * Grab samples from an audio input device
+ * Grab samples from an audio input device (Abstract Class)
  */
 
 /**

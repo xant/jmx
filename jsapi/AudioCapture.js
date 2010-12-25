@@ -63,7 +63,7 @@ function AudioCapture(device, type)
 AudioCapture.availableDevices = function()
 {
     ret = new Array();
-    QtKitDevices = QtAudioCapture.availableDevices();
+    QtKitDevices = QtAudioCapture().availableDevices();
     /* TODO - extra implementations */
     ret = ret.concat(QtKitDevices);
     return ret;
@@ -76,6 +76,8 @@ AudioCapture.availableDevices = function()
 AudioCapture.defaultDevice = function()
 {
     ret = new Array();
-    return QtAudioCapture.defaultDevice();
+    ret.concat(QtAudioCapture().availableDevices());
+    // add further backends here
+    return ret;
 }
 

@@ -66,10 +66,10 @@ static v8::Handle<Value> DefaultDevice(const Arguments& args)
 static v8::Handle<Value> AvailableDevices(const Arguments& args)
 {
     HandleScope handleScope;
-    JMXVideoCapture *vc = (JMXVideoCapture *)args.Holder()->GetPointerFromInternalField(0);
+    Class vc = (Class)args.Holder()->GetPointerFromInternalField(1);
     if (vc) {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-        NSArray *availableDevices = [[vc class] availableDevices];
+        NSArray *availableDevices = [vc availableDevices];
         v8::Handle<Array> list = v8::Array::New([availableDevices count]);
         for (int i = 0; i < [availableDevices count]; i++)
             list->Set(Number::New(i), String::New([[availableDevices objectAtIndex:i] UTF8String]));

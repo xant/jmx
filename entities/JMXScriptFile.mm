@@ -8,6 +8,7 @@
 
 #import "JMXScriptFile.h"
 #import "JMXScript.h"
+#import "JMXThreadedEntity.h"
 
 @implementation JMXScriptFile
 
@@ -24,8 +25,18 @@
     if (self) {
         path = nil;
         self.name = @"JMXScript";
+        self.frequency = [NSNumber numberWithDouble:1.0];
+        JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
+        if (threadedEntity)
+            return threadedEntity;
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [self stop];
+    [super dealloc];
 }
 
 - (void)setPath:(NSString *)newPath
@@ -66,4 +77,17 @@
 - (void)runScript
 {
 }
+
+- (void)tick:(uint64_t)timeStamp
+{
+    if (!self.quit) {
+        self.quit = YES; // we want to stop the thread as soon as the script exits
+        if (self.code)
+            [JMXScript runScript:self.code withEntity:self];
+        else
+            NSLog(@"JMXScriptEntity::tick(): No script to run");
+        
+    }
+}
+
 @end

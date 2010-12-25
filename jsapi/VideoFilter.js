@@ -56,10 +56,8 @@ VideoFilter.availableFilters = function() {
     // list filters from all implemented backends
     // Core Image
     ret = new Array();
-    ciFilter = new CoreImageFilter();
-    coreImageFilters = ciFilter.availableFilters();
     /* TODO - extra backends */
-    ret = ret.concat(coreImageFilters);
+    ret = ret.concat(CoreImageFilter().availableFilters());
     return ret;
 }
 

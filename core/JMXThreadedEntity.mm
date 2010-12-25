@@ -407,6 +407,7 @@ static Persistent<FunctionTemplate> classTemplate;
     v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
     classProto->Set("start", FunctionTemplate::New(Start));
     classProto->Set("stop", FunctionTemplate::New(Stop));
+    classTemplate->InstanceTemplate()->SetInternalFieldCount(1);
     classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("frequency"), GetNumberProperty, SetNumberProperty);
     return classTemplate;
 }

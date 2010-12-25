@@ -132,9 +132,9 @@ static v8::Handle<Value> DefaultDevice(const Arguments& args)
         NSString *defaultDevice = [[vc class] defaultDevice];
         v8::Handle<String> deviceName = String::New([defaultDevice UTF8String]);
         [pool release];
-        handleScope.Close(deviceName);
+        return handleScope.Close(deviceName);
     }
-    return handleScope.Close(Undefined());
+    return v8::Undefined();
 }
 
 
@@ -142,19 +142,20 @@ static v8::Handle<Value> DefaultDevice(const Arguments& args)
 static v8::Handle<Value>AvailableDevices(const Arguments& args)
 {
     HandleScope handleScope;
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    v8::Handle<Object> holder = args.Holder();
+    v8::String::Utf8Value value(holder->ObjectProtoToString());
     JMXAudioCapture *entity = (JMXAudioCapture *)args.Holder()->GetPointerFromInternalField(0);
-    NSArray *availableDevices;
-    if (entity)
-        availableDevices = [[entity class] availableDevices];
-    else
-        availableDevices = [JMXAudioCapture availableDevices]; // XXX
-    v8::Handle<Array> list = Array::New([availableDevices count]);
-    for (int i = 0; i < [availableDevices count]; i++) {
-        list->Set(i, String::New([[availableDevices objectAtIndex:i] UTF8String]));
+    if (entity) {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        NSArray *availableDevices = [[entity class] availableDevices];
+        v8::Handle<Array> list = Array::New([availableDevices count]);
+        for (int i = 0; i < [availableDevices count]; i++) {
+            list->Set(i, String::New([[availableDevices objectAtIndex:i] UTF8String]));
+        }
+        [pool drain];
+        return handleScope.Close(list);
     }
-    [pool drain];
-    return handleScope.Close(list);
+    return v8::Undefined();
 }
 
 
@@ -181,14 +182,15 @@ static v8::Handle<Value> SelectDevice(const Arguments& args)
     HandleScope handleScope;
     if (!classTemplate.IsEmpty())
         return classTemplate;
+    NSLog(@"JMXAudioCapture ClassTemplate created");
     classTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
     classTemplate->Inherit([super jsClassTemplate]);
-    classTemplate->SetClassName(String::New("AudioCapture"));
+    classTemplate->SetClassName(String::New("QtAudioCapture"));
     classTemplate->InstanceTemplate()->SetInternalFieldCount(1);
     v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
     classProto->Set("start", FunctionTemplate::New(Start));
     classProto->Set("stop", FunctionTemplate::New(Stop));
-    classProto->Set("avaliableDevices", FunctionTemplate::New(AvailableDevices));
+    classProto->Set("availableDevices", FunctionTemplate::New(AvailableDevices));
     classProto->Set("selectDevice", FunctionTemplate::New(SelectDevice));
     classProto->Set("defaultDevice", FunctionTemplate::New(DefaultDevice));
 

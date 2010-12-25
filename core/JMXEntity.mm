@@ -500,7 +500,6 @@ v8::Persistent<v8::FunctionTemplate>JMXEntityJSClassTemplate()
     // set instance methods
     v8::Handle<ObjectTemplate> instanceTemplate = classTemplate->InstanceTemplate();
     instanceTemplate->SetInternalFieldCount(1);
-    
     // Add accessors for each of the fields of the entity.
     instanceTemplate->SetAccessor(String::NewSymbol("name"), GetStringProperty, SetStringProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("description"), GetStringProperty);

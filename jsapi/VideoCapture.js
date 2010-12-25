@@ -63,9 +63,8 @@ function VideoCapture(device, type)
 VideoCapture.availableDevices = function()
 {
     ret = new Array();
-    QtKitDevices = QtVideoCapture.availableDevices();
-    /* TODO - extra implementations */
-    ret = ret.concat(QtKitDevices);
+    ret = ret.concat(QtVideoCapture().availableDevices());
+    /* TODO - add further backends */
     return ret;
 }
 
@@ -75,7 +74,6 @@ VideoCapture.availableDevices = function()
  */
 VideoCapture.defaultDevice = function()
 {
-    ret = new Array();
-    return QtVideoCapture.defaultDevice();
+    return QtVideoCapture().defaultDevice();
 }
 

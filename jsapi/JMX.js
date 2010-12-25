@@ -15,10 +15,8 @@ include("AudioOutput.js");
 //echo("Registered class: AudioOutput");
 include("AudioCapture.js");
 //echo("Registered class: AudioCapture");
+include("VideoCapture.js");
+include("MovieFile.js");
+include("AudioFile.js");
 
-/*
-include("QtMovieFile.js");
-include("QtVideoCapture.js");
-include("CoreAudioFile.js");
-*/
 //echo("Done initializing JMX Core API");

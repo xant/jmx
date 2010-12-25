@@ -8,7 +8,6 @@
 
 #import "JMXScriptEntity.h"
 #import "JMXScript.h"
-#import "JMXThreadedEntity.h"
 
 using namespace v8;
 
@@ -29,31 +28,14 @@ using namespace v8;
 {
     self = [super init];
     if (self) {
-        self.frequency = [NSNumber numberWithDouble:1.0];
         active = NO;
-        JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
-        if (threadedEntity)
-            return threadedEntity;
     }
-    return nil;
+    return self;
 }
 
 - (void)dealloc
 {
-    [self stop];
     [super dealloc];
-}
-
-- (void)tick:(uint64_t)timeStamp
-{
-    if (!self.quit) {
-        self.quit = YES; // we want to stop the thread as soon as the script exits
-        if (self.code)
-            [JMXScript runScript:self.code withEntity:self];
-        else
-            NSLog(@"JMXScriptEntity::tick(): No script to run");
-
-    }
 }
 
 static Persistent<FunctionTemplate> classTemplate;

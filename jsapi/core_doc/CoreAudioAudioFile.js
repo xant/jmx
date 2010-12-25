@@ -4,9 +4,9 @@
  */
 
 /**
- * AudioFile
+ * CoreAudioFile
  * @constructor
- * @base Entity
+ * @base AudioFile
  * @class Read samples from audio files
  * Supported file types can be obtained calling the {@link AudioFile#supportedFileTypes} method
  * <h3>InputPins:</h3>
@@ -21,7 +21,7 @@
  *  </ul>
  *
  */
-function AudioFile()
+function CoreAudioFile()
 {
     this.path = "";
     this.repeat = false;
@@ -60,7 +60,7 @@ function AudioFile()
 /**
  * Returns a list of supported audio file types
  */
-AudioFile.supportedFileTypes = function() {
+CoreAudioFile.supportedFileTypes = function() {
     // ...
 }
 

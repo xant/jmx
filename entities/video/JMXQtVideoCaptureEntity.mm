@@ -32,8 +32,6 @@
 #define JMX_GRABBER_WIDTH_MAX 640
 #define JMX_GRABBER_HEIGHT_MAX 480
 
-/* Coming from Apple sample code */
-
 /*
  * QTKit Bridge
  */
@@ -62,8 +60,8 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXQtVideoCaptureEntity);
 {
     self = [super init];
     if(self) {
-        width = 352;
-        height = 288;
+        width = 640;
+        height = 480;
         session = nil;
         input = nil;
     }
@@ -77,6 +75,7 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXQtVideoCaptureEntity);
     [super dealloc];
 }
 
+/* Coming from Apple sample code */
 - (void)startCapture:(JMXQtVideoCaptureEntity *)controller
 {
     NSLog(@"QTCapture opened");
@@ -222,8 +221,6 @@ error:
     }
 	[super dealloc];
 }
-
-
 
 - (void)start
 {

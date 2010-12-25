@@ -337,7 +337,7 @@ using namespace v8;
     }
 }
 
-static v8::Handle<Value>open(const Arguments& args)
+static v8::Handle<Value>Open(const Arguments& args)
 {
     HandleScope handleScope;
     JMXQtMovieEntity *entity = (JMXQtMovieEntity *)args.Holder()->GetPointerFromInternalField(0);
@@ -347,7 +347,7 @@ static v8::Handle<Value>open(const Arguments& args)
     return v8::Boolean::New(ret);
 }
 
-static v8::Handle<Value>close(const Arguments& args)
+static v8::Handle<Value>Close(const Arguments& args)
 {
     HandleScope handleScope;
     JMXQtMovieEntity *entity = (JMXQtMovieEntity *)args.Holder()->GetPointerFromInternalField(0);
@@ -355,15 +355,32 @@ static v8::Handle<Value>close(const Arguments& args)
     return v8::Undefined();
 }
 
+static v8::Handle<Value>SupportedFileTypes(const Arguments& args)
+{
+    HandleScope handleScope;
+    Class<JMXFileRead> movieFileClass = (Class)args.Holder()->GetPointerFromInternalField(1);
+    if (movieFileClass) {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        NSArray *availableDevices = [movieFileClass supportedFileTypes];
+        v8::Handle<Array> list = v8::Array::New([availableDevices count]);
+        for (int i = 0; i < [availableDevices count]; i++)
+            list->Set(Number::New(i), String::New([[availableDevices objectAtIndex:i] UTF8String]));
+        [pool release];
+        handleScope.Close(list);
+    }
+    return handleScope.Close(Undefined());
+}
+
 + (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
 {
     HandleScope handleScope;
     v8::Persistent<v8::FunctionTemplate> entityTemplate = [super jsClassTemplate];
-    entityTemplate->SetClassName(String::New("VideoFile"));
+    entityTemplate->SetClassName(String::New("QtVideoFile"));
     entityTemplate->InstanceTemplate()->SetInternalFieldCount(1);
     v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
-    classProto->Set("open", FunctionTemplate::New(open));
-    classProto->Set("close", FunctionTemplate::New(close));
+    classProto->Set("supportedFileTypes", FunctionTemplate::New(SupportedFileTypes));
+    classProto->Set("open", FunctionTemplate::New(Open));
+    classProto->Set("close", FunctionTemplate::New(Close));
     return entityTemplate;
 }
 

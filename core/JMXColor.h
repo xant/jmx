@@ -44,6 +44,7 @@
 @property (readonly) CGFloat a;
 
 #ifdef __JMXV8__
++ (void)jsRegisterClassMethods:(v8::Handle<v8::FunctionTemplate>)constructor;
 v8::Handle<v8::Value> JMXColorJSConstructor(const v8::Arguments& args);
 #endif
 @end

@@ -48,7 +48,7 @@
 - (void)start;
 - (void)stop;
 #ifdef __JMXV8__
-+ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate;
++ (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate;
 #endif
 @end
 

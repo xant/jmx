@@ -190,9 +190,12 @@ static v8::Handle<Value> Echo(const Arguments& args) {
 
 static v8::Handle<Value> DumpDOM(const Arguments& args) {
     //v8::Locker lock;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     HandleScope scope;
-    [[JMXContext sharedContext]dumpDOM];
-    return v8::Undefined();
+    NSString *xmlString = [[JMXContext sharedContext] dumpDOM];
+    v8::Handle<String> output = String::New([xmlString UTF8String]);
+    [pool release];
+    return scope.Close(output);
 }
 
 static v8::Handle<Value> ExecJSCode(const char *code, uint32_t length, const char *name)
@@ -376,9 +379,14 @@ static v8::Handle<Value> Quit(const Arguments& args)
     // So there is no constructor/destructor to be registered for not-entity classes.
     // Note that all entity-related constructors (as well as distructors) are defined through the 
     // JMXV8_EXPORT_ENTITY_CLASS() macro (declared in JMXEntity.h)
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     for (int i = 0; mappedClasses[i].className != NULL; i++) {
-        ctxTemplate->Set(String::New(mappedClasses[i].jsClassName), FunctionTemplate::New(mappedClasses[i].jsConstructor));
+        v8::Handle<FunctionTemplate> constructor = FunctionTemplate::New(mappedClasses[i].jsConstructor);
+        Class entityClass = NSClassFromString([NSString stringWithUTF8String:mappedClasses[i].className]);
+        [entityClass jsRegisterClassMethods:constructor];
+        ctxTemplate->Set(String::New(mappedClasses[i].jsClassName), constructor);
     }
+    [pool drain];
 }
 
 - (id)init

@@ -31,7 +31,7 @@ using namespace v8;
 
 @implementation JMXEntity
 
-@synthesize name, active;
+@synthesize label, active;
 
 - (void)notifyModifications
 {
@@ -78,11 +78,18 @@ using namespace v8;
     self = [super init];
     if (self) {
         self.name = @"Entity";
+        self.label = @"";
+        active = NO;
         inputPins = [[NSXMLElement elementWithName:@"inputPins"] retain];
+        [self addChild:inputPins];
         outputPins = [[NSXMLElement elementWithName:@"outputPins"] retain];
+        [self addChild:outputPins];
+        [self addAttribute:[NSXMLNode attributeWithName:@"class" stringValue:NSStringFromClass([self class])]];
+        [self addAttribute:[NSXMLNode attributeWithName:@"label" stringValue:label]];
+        [self addAttribute:[NSXMLNode attributeWithName:@"active" stringValue:@"NO"]];
         [self registerInputPin:@"active" withType:kJMXNumberPin andSelector:@"setActivePin:"];
         [self registerOutputPin:@"active" withType:kJMXNumberPin];
-        [self registerInputPin:@"name" withType:kJMXStringPin andSelector:@"setName:" ];
+        [self registerInputPin:@"name" withType:kJMXStringPin andSelector:@"setEntityName:"];
         // delay notification so that the superclass constructor can finish its job
         // since this selector is going to be called in this same thread, we know for sure
         // that it's going to be called after the init-chain has been fully executede
@@ -92,11 +99,23 @@ using namespace v8;
     return self;
 }
 
+- (void)release
+{
+    // the context retains us in the DOM so we need to
+    // check if that will be the only one retaining us
+    // after this release operation.
+    if ([self retainCount] == 2 && self.parent)
+        [self detach];
+    [super release];
+}
+
 - (void)dealloc
 {
     [self performSelectorOnMainThread:@selector(notifyRelease) withObject:nil waitUntilDone:YES];
     [self unregisterAllPins];
+    [inputPins detach];
     [inputPins release];
+    [outputPins detach];
     [outputPins release];
     [privateData release];
     [super dealloc];
@@ -218,7 +237,7 @@ using namespace v8;
 - (void)proxyInputPin:(JMXInputPin *)pin withName:(NSString *)pinName
 {
     JMXProxyPin *pPin = [JMXProxyPin proxyPin:pin withName:pinName ? pinName : pin.name];
-    [inputPins addChild:pPin];
+    [inputPins addChild:(JMXPin *)pPin];
     // We need notifications to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
     [self performSelectorOnMainThread:@selector(notifyPinAdded:) withObject:pPin waitUntilDone:NO];
 }
@@ -231,7 +250,7 @@ using namespace v8;
 - (void)proxyOutputPin:(JMXOutputPin *)pin withName:(NSString *)pinName
 {
     JMXProxyPin *pPin = [JMXProxyPin proxyPin:pin withName:pinName ? pinName : pin.name];
-    [outputPins addChild:pPin];
+    [outputPins addChild:(JMXPin *)pPin];
     // We need notifications to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
     [self performSelectorOnMainThread:@selector(notifyPinAdded:) withObject:pPin waitUntilDone:NO];
 }
@@ -358,9 +377,9 @@ using namespace v8;
 
 - (NSString *)description
 {
-    return (!name || [name isEqual:@""])
-           ? [self className]
-           : [NSString stringWithFormat:@"%@:%@", [self className], name];
+    return (!label || [label isEqual:@""])
+           ? self.name
+           : [NSString stringWithFormat:@"%@:%@", self.name, label];
 }
 
 - (void)activate
@@ -403,6 +422,31 @@ using namespace v8;
     }
 }
 
+/*
+- (void)setName:(NSString *)newName
+{
+    if (name)
+        [name release];
+    name = [[NSString stringWithFormat:@"%@:%@", [self class], newName] retain];
+}
+*/
+
+- (void)setLabel:(NSString *)newLabel
+{
+    if (label)
+        [label release];
+    label = [newLabel copy];
+    NSXMLNode *attr = [self attributeForName:@"label"];
+    [attr setStringValue:label];
+}
+
+- (void)setActive:(BOOL)newActive
+{
+    active = newActive;
+    NSXMLNode *attr = [self attributeForName:@"active"];
+    [attr setStringValue:active ? @"YES" : @"NO"];
+}
+
 #pragma mark V8
 
 - (void)jsInit:(NSValue *)argsValue
@@ -413,7 +457,7 @@ using namespace v8;
 
 #pragma mark Accessors
 
-static v8::Handle<Value>inputPins(Local<String> name, const AccessorInfo& info)
+static v8::Handle<Value>InputPins(Local<String> name, const AccessorInfo& info)
 {
     //v8::Locker lock;
     HandleScope handleScope;
@@ -429,7 +473,7 @@ static v8::Handle<Value>inputPins(Local<String> name, const AccessorInfo& info)
     return handleScope.Close(list);
 }
 
-static v8::Handle<Value>outputPins(Local<String> name, const AccessorInfo& info)
+static v8::Handle<Value>OutputPins(Local<String> name, const AccessorInfo& info)
 {
     //v8::Locker lock;
     HandleScope handleScope;
@@ -446,7 +490,7 @@ static v8::Handle<Value>outputPins(Local<String> name, const AccessorInfo& info)
 }
 
 
-v8::Handle<Value> inputPin(const Arguments& args)
+v8::Handle<Value> InputPin(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
@@ -466,7 +510,7 @@ v8::Handle<Value> inputPin(const Arguments& args)
     return v8::Undefined();
 }
 
-v8::Handle<Value> outputPin(const Arguments& args)
+v8::Handle<Value> OutputPin(const Arguments& args)
 {   
     //v8::Locker lock;
     HandleScope handleScope;
@@ -488,34 +532,53 @@ v8::Handle<Value> outputPin(const Arguments& args)
 }
 
 #pragma mark Class Template
-static Persistent<FunctionTemplate> classTemplate;
+static Persistent<FunctionTemplate> objectTemplate;
 
-v8::Persistent<v8::FunctionTemplate>JMXEntityJSClassTemplate()
+v8::Persistent<v8::FunctionTemplate>JMXEntityJSObjectTemplate()
 {
     //v8::Locker lock;
-    if (!classTemplate.IsEmpty())
-        return classTemplate;
-    NSLog(@"JMXEntity ClassTemplate created");
-    classTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
-    classTemplate->SetClassName(String::New("Entity"));
-    v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
-    classProto->Set("inputPin", FunctionTemplate::New(inputPin));
-    classProto->Set("outputPin", FunctionTemplate::New(outputPin));
+    if (!objectTemplate.IsEmpty())
+        return objectTemplate;
+    NSLog(@"JMXEntity objectTemplate created");
+    objectTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    objectTemplate->SetClassName(String::New("Entity"));
+    v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
+    classProto->Set("inputPin", FunctionTemplate::New(InputPin));
+    classProto->Set("outputPin", FunctionTemplate::New(OutputPin));
     // set instance methods
-    v8::Handle<ObjectTemplate> instanceTemplate = classTemplate->InstanceTemplate();
+    v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
     instanceTemplate->SetInternalFieldCount(1);
     // Add accessors for each of the fields of the entity.
     instanceTemplate->SetAccessor(String::NewSymbol("name"), GetStringProperty, SetStringProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("description"), GetStringProperty);
-    instanceTemplate->SetAccessor(String::NewSymbol("inputPins"), inputPins);
-    instanceTemplate->SetAccessor(String::NewSymbol("outputPins"), outputPins);
+    instanceTemplate->SetAccessor(String::NewSymbol("inputPins"), InputPins);
+    instanceTemplate->SetAccessor(String::NewSymbol("outputPins"), OutputPins);
     instanceTemplate->SetAccessor(String::NewSymbol("active"), GetBoolProperty, SetBoolProperty);
-    return classTemplate;
+    return objectTemplate;
 }
 
-+ (v8::Persistent<FunctionTemplate>)jsClassTemplate
++ (v8::Persistent<FunctionTemplate>)jsObjectTemplate
 {
-    return JMXEntityJSClassTemplate();
+    return JMXEntityJSObjectTemplate();
+}
+
+v8::Handle<Value> NativeClassName(const Arguments& args)
+{   
+    //v8::Locker lock;
+    HandleScope handleScope;
+    Class objcClass = (Class)External::Unwrap(args.Holder()->Get(String::NewSymbol("_objcClass")));
+    if (objcClass)
+        return handleScope.Close(String::New([NSStringFromClass(objcClass) UTF8String]));
+    return v8::Undefined();
+}
+
++ (void)jsRegisterClassMethods:(v8::Handle<v8::FunctionTemplate>)constructor
+{
+    constructor->InstanceTemplate()->SetInternalFieldCount(1);
+    //constructor->InstanceTemplate()->SetPointerInInternalField(0, self);
+    PropertyAttribute attrs = DontEnum;
+    constructor->Set(String::NewSymbol("_objcClass"), External::Wrap(self), attrs);
+    constructor->Set("nativeClassName", FunctionTemplate::New(NativeClassName));
 }
 
 @end

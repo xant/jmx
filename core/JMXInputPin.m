@@ -44,6 +44,7 @@
                  allowedValues:pinValues
                   initialValue:value];
     if (self) {
+        [self addAttribute:[NSXMLNode attributeWithName:@"direction" stringValue:@"input"]];
         producers = [[NSMutableArray alloc] init];
         direction = kJMXInputPin;
     }
@@ -95,6 +96,12 @@
             if ([destinationPin attachObject:self withSelector:@"deliverData:fromSender:"]) {
                 [producers addObject:destinationPin];
                 connected = YES;
+                NSXMLNode *connectedAttribute = [destinationPin attributeForName:@"connected"];
+                [connectedAttribute setStringValue:@"YES"];
+                
+                //[connections addChild:[NSXMLElement elementWithName:[destinationPin.owner description] stringValue:destinationPin.name]];
+                [destinationPin.connections addChild:[NSXMLElement elementWithName:[self.owner description] stringValue:self.name]];
+                
                 return [super connectToPin:destinationPin];
             }
         }
@@ -108,8 +115,21 @@
     @synchronized(producers) {
         [destinationPin detachObject:self];
         [producers removeObjectIdenticalTo:destinationPin];
-        if ([producers count] == 0)
+        if ([producers count] == 0) {
+            NSXMLNode *connectedAttribute = [self attributeForName:@"connected"];
+            [connectedAttribute setStringValue:@"NO"];
             connected = NO;
+        }
+    }
+    NSArray *children = [connections elementsForName:[destinationPin.owner description]];
+    for (NSXMLElement *element in children) {
+        if ([element.stringValue isEqualTo:destinationPin.name])
+            [element detach];
+    }
+    children = [destinationPin.connections elementsForName:[self.owner description]];
+    for (NSXMLElement *element in children) {
+        if ([element.stringValue isEqualTo:self.name])
+            [element detach];
     }
     [super disconnectFromPin:destinationPin];
     [destinationPin release];

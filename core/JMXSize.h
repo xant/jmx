@@ -87,6 +87,7 @@
 #pragma mark V8
 
 #ifdef __JMXV8__
++ (void)jsRegisterClassMethods:(v8::Handle<v8::FunctionTemplate>)constructor;
 v8::Handle<v8::Value> JMXSizeJSConstructor(const v8::Arguments& args);
 #endif
 

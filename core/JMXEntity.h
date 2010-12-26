@@ -62,7 +62,7 @@
 
 #define JMXV8_EXPORT_ENTITY_CLASS(__class) \
     using namespace v8;\
-    static Persistent<FunctionTemplate> classTemplate;\
+    static Persistent<FunctionTemplate> objectTemplate;\
     /*static std::map<__class *, v8::Persistent<v8::Object> > instancesMap;*/\
     void __class##JSDestructor(Persistent<Value> object, void *parameter)\
     {\
@@ -81,9 +81,9 @@
     v8::Handle<Value> __class##JSConstructor(const Arguments& args)\
     {\
         /*HandleScope handleScope;*/\
-        if (classTemplate.IsEmpty())\
-            classTemplate = [__class jsClassTemplate];\
-        Persistent<Object> jsInstance = Persistent<Object>::New(classTemplate->InstanceTemplate()->NewInstance());\
+        if (objectTemplate.IsEmpty())\
+            objectTemplate = [__class jsObjectTemplate];\
+        Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());\
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];\
         __class *instance = [[__class alloc] init];\
         if ([instance respondsToSelector:@selector(jsInit:)]) {\
@@ -148,7 +148,7 @@
  */
 @interface JMXEntity : NSXMLElement <NSCopying, JMXV8> {
 @public
-    NSString *name;
+    NSString *label;
     BOOL active;
 @protected
     /*
@@ -161,8 +161,9 @@
 }
 
 #ifdef __JMXV8__
-v8::Persistent<v8::FunctionTemplate>JMXEntityJSClassTemplate();
-+ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate;
+v8::Persistent<v8::FunctionTemplate>JMXEntityJSObjectTemplate();
++ (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate;
++ (void)jsRegisterClassMethods:(v8::Handle<v8::FunctionTemplate>)constructor;
 #endif
 
 #pragma mark Properties
@@ -177,10 +178,12 @@ v8::Persistent<v8::FunctionTemplate>JMXEntityJSClassTemplate();
  */
 @property (readwrite) BOOL active;
 /*!
- @property name
- @abstract get/set the name of the entity
+ @property label
+ @abstract get/set the label of the entity
  */
-@property (readwrite, copy) NSString *name;
+@property (readwrite, copy) NSString *label;
+
+@property (readonly) NSString *description;
 
 #pragma mark Pin API
 /*!

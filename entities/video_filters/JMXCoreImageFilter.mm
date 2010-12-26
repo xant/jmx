@@ -33,25 +33,31 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXCoreImageFilter);
 
 @implementation JMXCoreImageFilter
 
++ (NSArray *)availableFilters
+{
+    NSMutableArray *knownFilters = [[super availableFilters] mutableCopy];
+    NSArray *categories = [NSArray arrayWithObjects:kCICategoryDistortionEffect,
+                           kCICategoryGeometryAdjustment,
+                           kCICategoryColorEffect,
+                           kCICategoryColorEffect,
+                           kCICategoryStylize,
+                           kCICategorySharpen,
+                           kCICategoryBlur,
+                           kCICategoryHalftoneEffect,
+                           nil];
+    for (NSString *category in categories) {
+        NSArray *filtersInCategory = [CIFilter filterNamesInCategory:category];
+        [knownFilters addObjectsFromArray:filtersInCategory];
+    }
+    return [knownFilters autorelease];
+}
+
 - (id)init
 {
     self = [super init];
     if (self) {
         ciFilter = nil;
-        NSArray *categories = [NSArray arrayWithObjects:kCICategoryDistortionEffect,
-                               kCICategoryGeometryAdjustment,
-                               kCICategoryColorEffect,
-                               kCICategoryColorEffect,
-                               kCICategoryStylize,
-                               kCICategorySharpen,
-                               kCICategoryBlur,
-                               kCICategoryHalftoneEffect,
-                               nil];
-        for (NSString *category in categories) {
-            NSArray *filtersInCategory = [CIFilter filterNamesInCategory:category];
-            [knownFilters addObjectsFromArray:filtersInCategory];
-        }
-        [filterSelector addAllowedValues:knownFilters];
+        self.name = @"CoreImageFilter";
     }
     return self;
 }
@@ -171,14 +177,14 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXCoreImageFilter);
 #pragma mark V8
 using namespace v8;
 
-+ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
++ (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate
 {
     //Locker lock;
     HandleScope handleScope;
-    classTemplate = v8::Persistent<v8::FunctionTemplate>::New(v8::FunctionTemplate::New());
-    classTemplate->Inherit([super jsClassTemplate]);
-    classTemplate->SetClassName(String::New("CoreImageFilter"));
-    classTemplate->InstanceTemplate()->SetInternalFieldCount(1);
-    return classTemplate;
+    objectTemplate = v8::Persistent<v8::FunctionTemplate>::New(v8::FunctionTemplate::New());
+    objectTemplate->Inherit([super jsObjectTemplate]);
+    objectTemplate->SetClassName(String::New("CoreImageFilter"));
+    objectTemplate->InstanceTemplate()->SetInternalFieldCount(1);
+    return objectTemplate;
 }
 @end

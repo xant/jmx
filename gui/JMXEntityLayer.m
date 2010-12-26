@@ -122,7 +122,7 @@ JMXEntityLabelLayer *JMXEntityLabelLayerCreate(NSString *name) {
     CFRelease(backgroundColor);
     CFRelease(shadowColor);
 
-    [self addSublayer:JMXEntityLabelLayerCreate(self.entity.name)];
+    [self addSublayer:JMXEntityLabelLayerCreate(self.entity.description)];
 /*
     for (NSString *thePinName in [self.entity inputPins]) {
         JMXOutletLayer *outlet = JMXInputOutletLayerCreate([self inputPinWithName:thePinName]);

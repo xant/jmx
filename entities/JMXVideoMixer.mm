@@ -114,17 +114,17 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXVideoMixer);
 
 #pragma mark V8
 
-+ (v8::Persistent<FunctionTemplate>)jsClassTemplate
++ (v8::Persistent<FunctionTemplate>)jsObjectTemplate
 {
     //Locker lock;
     HandleScope handleScope;
-    v8::Persistent<v8::FunctionTemplate> classTemplate = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
-    classTemplate->Inherit([super jsClassTemplate]);
-    classTemplate->SetClassName(String::New("VideoMixer"));
-    classTemplate->InstanceTemplate()->SetInternalFieldCount(1);
-    classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("blendFilter"), GetStringProperty, SetStringProperty);
-    NSLog(@"JMXVideoMixer ClassTemplate created");
-    return classTemplate;
+    v8::Persistent<v8::FunctionTemplate> objectTemplate = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    objectTemplate->Inherit([super jsObjectTemplate]);
+    objectTemplate->SetClassName(String::New("VideoMixer"));
+    objectTemplate->InstanceTemplate()->SetInternalFieldCount(1);
+    objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("blendFilter"), GetStringProperty, SetStringProperty);
+    NSLog(@"JMXVideoMixer objectTemplate created");
+    return objectTemplate;
 }
 
 @end

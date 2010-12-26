@@ -38,19 +38,19 @@ using namespace v8;
     [super dealloc];
 }
 
-static Persistent<FunctionTemplate> classTemplate;
+static Persistent<FunctionTemplate> objectTemplate;
 
-+ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
++ (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate
 {
-    if (!classTemplate.IsEmpty())
-        return classTemplate;
-    NSLog(@"JMXScriptEntity ClassTemplate created");
-    classTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
-    classTemplate->Inherit([super jsClassTemplate]);
-    classTemplate->SetClassName(String::New("ThreadedEntity"));
-    v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
-    classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("frequency"), GetNumberProperty, SetNumberProperty);
-    return classTemplate;
+    if (!objectTemplate.IsEmpty())
+        return objectTemplate;
+    NSLog(@"JMXScriptEntity objectTemplate created");
+    objectTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    objectTemplate->Inherit([super jsObjectTemplate]);
+    objectTemplate->SetClassName(String::New("ThreadedEntity"));
+    v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
+    objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("frequency"), GetNumberProperty, SetNumberProperty);
+    return objectTemplate;
 }
 
 @end

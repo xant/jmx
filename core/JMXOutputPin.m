@@ -91,6 +91,9 @@
     }
     // deliver the signal to the just connected receiver
     if (rv == YES) {
+        connected = YES;
+        NSXMLNode *connectedAttribute = [self attributeForName:@"connected"];
+        [connectedAttribute setStringValue:@"YES"];
         JMXPinSignal *signal = nil;
         signal = [JMXPinSignal signalFromSender:currentSender receiver:pinReceiver data:[self readData]];
         if (signal) // send the signal on-connect
@@ -101,12 +104,8 @@
 
 - (BOOL)connectToPin:(JMXInputPin *)destinationPin
 {
-    if ((JMXPin *)destinationPin != (JMXPin *)self && destinationPin.direction == kJMXInputPin) {
-        if ([destinationPin connectToPin:self]) {
-            connected = YES;
-            return YES;
-        }
-    }
+    if ((JMXPin *)destinationPin != (JMXPin *)self && destinationPin.direction == kJMXInputPin)
+        return [destinationPin connectToPin:self];
     return NO;
 }
 
@@ -114,14 +113,23 @@
 {
     @synchronized(receivers) {
         [receivers removeObjectForKey:pinReceiver];
-        if ([receivers count] == 0)
+        if ([receivers count] == 0) {
             connected = NO;
+            NSXMLNode *connectedAttribute = [self attributeForName:@"connected"];
+            [connectedAttribute setStringValue:@"NO"];
+        }
     }
 }
 
+// disconnection (as well as connection) happens always from the input pin to the output one 
 - (void)disconnectFromPin:(JMXInputPin *)destinationPin
 {
     [destinationPin disconnectFromPin:self];
+    NSArray *children = [connections elementsForName:[destinationPin.owner description]];
+    for (NSXMLElement *element in children) {
+        if ([element.stringValue isEqualTo:destinationPin.name])
+            [element detach];
+    }
 }
 
 - (void)disconnectAllPins

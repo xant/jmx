@@ -170,14 +170,18 @@ static OSStatus _FillComplexBufferProc (
 #pragma mark V8
 using namespace v8;
 
-+ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
+static Persistent<FunctionTemplate> objectTemplate;
+
++ (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate
 {
-    v8::Persistent<FunctionTemplate> classTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
-    classTemplate->Inherit([super jsClassTemplate]);  
-    classTemplate->SetClassName(String::New("AudioOutput"));
-    classTemplate->InstanceTemplate()->SetInternalFieldCount(1);
-    NSLog(@"JMXAudioOutput ClassTemplate created");
-    return classTemplate;
+    if (!objectTemplate.IsEmpty())
+        return objectTemplate;
+    v8::Persistent<FunctionTemplate> objectTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    objectTemplate->Inherit([super jsObjectTemplate]);  
+    objectTemplate->SetClassName(String::New("AudioOutput"));
+    objectTemplate->InstanceTemplate()->SetInternalFieldCount(1);
+    NSLog(@"JMXAudioOutput objectTemplate created");
+    return objectTemplate;
 }
 
 @end

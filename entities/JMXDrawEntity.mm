@@ -22,6 +22,7 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXDrawEntity);
     if (self) {
         drawPath = [[JMXDrawPath alloc] initWithFrameSize:self.size];
         JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
+        self.name = @"DrawPath";
         if (threadedEntity)
             return threadedEntity;
     }
@@ -190,11 +191,11 @@ static v8::Handle<Value> clear(const Arguments& args)
     return v8::Undefined();
 }
 
-+ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
++ (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate
 {
-    NSLog(@"JMXDrawEntity ClassTemplate created");
+    NSLog(@"JMXDrawEntity objectTemplate created");
     v8::Persistent<v8::FunctionTemplate> entityTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
-    entityTemplate->Inherit([super jsClassTemplate]);
+    entityTemplate->Inherit([super jsObjectTemplate]);
     entityTemplate->SetClassName(String::New("DrawPath"));
     v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
     entityTemplate->InstanceTemplate()->SetInternalFieldCount(1);

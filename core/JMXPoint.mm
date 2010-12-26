@@ -97,37 +97,41 @@ using namespace v8;
 
 #pragma mark V8
 
-static v8::Persistent<FunctionTemplate> classTemplate;
+static v8::Persistent<FunctionTemplate> objectTemplate;
 
-+ (v8::Persistent<FunctionTemplate>)jsClassTemplate
++ (v8::Persistent<FunctionTemplate>)jsObjectTemplate
 {
     v8::Locker lock;
     HandleScope handleScope;
     
-    if (!classTemplate.IsEmpty())
-        return classTemplate;
+    if (!objectTemplate.IsEmpty())
+        return objectTemplate;
     
-    classTemplate = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    objectTemplate = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
       
-    classTemplate->SetClassName(String::New("Point"));
-    v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
+    objectTemplate->SetClassName(String::New("Point"));
+    v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     // set instance methods
-    v8::Handle<ObjectTemplate> instanceTemplate = classTemplate->InstanceTemplate();
+    v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
     instanceTemplate->SetInternalFieldCount(1);
     // Add accessors for each of the fields of the entity.
     instanceTemplate->SetAccessor(String::NewSymbol("x"), GetDoubleProperty, SetDoubleProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("y"), GetDoubleProperty, SetDoubleProperty);
-    return classTemplate;
+    return objectTemplate;
 }
 
 - (v8::Handle<v8::Object>)jsObj
 {
     //v8::Locker lock;
     HandleScope handle_scope;
-    v8::Handle<FunctionTemplate> classTemplate = [JMXPoint jsClassTemplate];
-    v8::Handle<Object> jsInstance = classTemplate->InstanceTemplate()->NewInstance();
+    v8::Handle<FunctionTemplate> objectTemplate = [JMXPoint jsObjectTemplate];
+    v8::Handle<Object> jsInstance = objectTemplate->InstanceTemplate()->NewInstance();
     jsInstance->SetPointerInInternalField(0, self);
     return handle_scope.Close(jsInstance);
+}
+
++ (void)jsRegisterClassMethods:(v8::Handle<v8::FunctionTemplate>)constructor
+{
 }
 
 @end
@@ -150,14 +154,14 @@ v8::Handle<v8::Value> JMXPointJSConstructor(const v8::Arguments& args)
 {
     HandleScope handleScope;
     //v8::Locker locker;
-    v8::Persistent<FunctionTemplate> classTemplate = [JMXPoint jsClassTemplate];
+    v8::Persistent<FunctionTemplate> objectTemplate = [JMXPoint jsObjectTemplate];
     int x = 0;
     int y = 0;
     if (args.Length() >= 2) {
         x = args[0]->IntegerValue();
         y = args[1]->IntegerValue();
     }
-    Persistent<Object>jsInstance = Persistent<Object>::New(classTemplate->InstanceTemplate()->NewInstance());
+    Persistent<Object>jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     JMXPoint *point = [[JMXPoint pointWithNSPoint:NSMakePoint(x, y)] retain];
     jsInstance.MakeWeak(point, JMXPointJSDestructor);

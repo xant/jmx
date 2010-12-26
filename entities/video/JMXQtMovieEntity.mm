@@ -66,6 +66,7 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
         repeat = YES;
         paused = NO;
         movieFrequency = 0;
+        self.name = @"QtMovieFile";
         [self registerInputPin:@"path" withType:kJMXStringPin andSelector:@"setMoviePath:"];
         [self registerInputPin:@"repeat" withType:kJMXNumberPin andSelector:@"setRepeat:"];
         [self registerInputPin:@"paused" withType:kJMXNumberPin andSelector:@"setPaused:"];
@@ -196,7 +197,7 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
             size = [[JMXSize sizeWithNSSize:movieSize] retain];
             fpsPin.data = self.frequency;
             NSArray *path = [file componentsSeparatedByString:@"/"];
-            self.name = [path lastObject];
+            self.label = [path lastObject];
 #ifndef __x86_64
             if (qtVisualContext) {
                 QTVisualContextTask(qtVisualContext);
@@ -358,30 +359,38 @@ static v8::Handle<Value>Close(const Arguments& args)
 static v8::Handle<Value>SupportedFileTypes(const Arguments& args)
 {
     HandleScope handleScope;
-    Class<JMXFileRead> movieFileClass = (Class)args.Holder()->GetPointerFromInternalField(1);
-    if (movieFileClass) {
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-        NSArray *availableDevices = [movieFileClass supportedFileTypes];
-        v8::Handle<Array> list = v8::Array::New([availableDevices count]);
-        for (int i = 0; i < [availableDevices count]; i++)
-            list->Set(Number::New(i), String::New([[availableDevices objectAtIndex:i] UTF8String]));
-        [pool release];
-        handleScope.Close(list);
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSArray *supportedTypes = nil;
+    JMXQtMovieEntity *movieFile = (JMXQtMovieEntity *)args.Holder()->GetPointerFromInternalField(1);
+    if (movieFile) {
+        supportedTypes = [[movieFile class] supportedFileTypes];
+    } else {
+        Class<JMXFileRead> objcClass = (Class)External::Unwrap(args.Holder()->Get(String::NewSymbol("_objcClass")));
+        supportedTypes = [objcClass supportedFileTypes];
     }
-    return handleScope.Close(Undefined());
+    v8::Handle<Array> list = v8::Array::New([supportedTypes count]);
+    for (int i = 0; i < [supportedTypes count]; i++)
+        list->Set(Number::New(i), String::New([[supportedTypes objectAtIndex:i] UTF8String]));
+    [pool release];
+    return handleScope.Close(list);
 }
 
-+ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
++ (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate
 {
     HandleScope handleScope;
-    v8::Persistent<v8::FunctionTemplate> entityTemplate = [super jsClassTemplate];
-    entityTemplate->SetClassName(String::New("QtVideoFile"));
+    v8::Persistent<v8::FunctionTemplate> entityTemplate = [super jsObjectTemplate];
+    entityTemplate->SetClassName(String::New("QtMovieFile"));
     entityTemplate->InstanceTemplate()->SetInternalFieldCount(1);
     v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
-    classProto->Set("supportedFileTypes", FunctionTemplate::New(SupportedFileTypes));
     classProto->Set("open", FunctionTemplate::New(Open));
     classProto->Set("close", FunctionTemplate::New(Close));
+    classProto->Set("supportedFileTypes", FunctionTemplate::New(SupportedFileTypes));
     return entityTemplate;
 }
 
++ (void)jsRegisterClassMethods:(v8::Handle<v8::FunctionTemplate>)constructor
+{
+    [super jsRegisterClassMethods:constructor]; // let our super register its methods (if any)
+    constructor->Set("supportedFileTypes", FunctionTemplate::New(SupportedFileTypes));
+}
 @end

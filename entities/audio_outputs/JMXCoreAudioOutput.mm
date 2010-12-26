@@ -140,16 +140,16 @@ static v8::Handle<Value>availableFilters(const Arguments& args)
     return handleScope.Close(list);
 }
 
-+ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
++ (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate
 {
-    v8::Persistent<FunctionTemplate> classTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
-    classTemplate->Inherit([super jsClassTemplate]);  
-    classTemplate->SetClassName(String::New("CoreAudioOutput"));
-    classTemplate->InstanceTemplate()->SetInternalFieldCount(1);
-    v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
+    v8::Persistent<FunctionTemplate> objectTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    objectTemplate->Inherit([super jsObjectTemplate]);  
+    objectTemplate->SetClassName(String::New("CoreAudioOutput"));
+    objectTemplate->InstanceTemplate()->SetInternalFieldCount(1);
+    v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     classProto->Set("availableFilters", FunctionTemplate::New(availableFilters));
-    NSLog(@"JMXCoreAudioOutput ClassTemplate created");
-    return classTemplate;
+    NSLog(@"JMXCoreAudioOutput objectTemplate created");
+    return objectTemplate;
 }
 
 @end

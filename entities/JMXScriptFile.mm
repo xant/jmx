@@ -24,7 +24,7 @@
     self = [super init];
     if (self) {
         path = nil;
-        self.name = @"JMXScript";
+        self.name = @"JMXScriptFile";
         self.frequency = [NSNumber numberWithDouble:1.0];
         JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
         if (threadedEntity)
@@ -60,7 +60,7 @@
             NSData *data = [fh readDataToEndOfFile];
             self.code = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             [NSString stringWithCharacters:(const unichar *)[data bytes] length:[data length]];
-            self.name = [[newPath componentsSeparatedByString:@"/"] lastObject];
+            self.label = [[newPath componentsSeparatedByString:@"/"] lastObject];
         }
     }
     return YES;

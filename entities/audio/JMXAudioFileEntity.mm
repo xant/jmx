@@ -46,6 +46,7 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXAudioFileEntity);
         audioFile = nil;
         outputPin = [self registerOutputPin:@"audio" withType:kJMXAudioPin];
         repeat = YES;
+        self.name = @"CoreAudioFile";
         [self registerInputPin:@"repeat" withType:kJMXNumberPin andSelector:@"doRepeat:"];
         currentSample = nil;
         JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
@@ -72,7 +73,7 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXAudioFileEntity);
             if (audioFile) {
                 self.frequency = [NSNumber numberWithDouble:([audioFile sampleRate]/512.0)];
                 NSArray *path = [file componentsSeparatedByString:@"/"];
-                self.name = [path lastObject];
+                self.label = [path lastObject];
                 return YES;
             }
         }
@@ -138,18 +139,44 @@ static v8::Handle<Value> close(const Arguments& args)
     return v8::Undefined();
 }
 
-+ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
+static v8::Handle<Value>SupportedFileTypes(const Arguments& args)
+{
+    HandleScope handleScope;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSArray *supportedTypes = nil;
+    JMXAudioFileEntity *audioFile = (JMXAudioFileEntity *)args.Holder()->GetPointerFromInternalField(1);
+    if (audioFile) {
+        supportedTypes = [[audioFile class] supportedFileTypes];
+    } else {
+        Class<JMXFileRead> objcClass = (Class)External::Unwrap(args.Holder()->Get(String::NewSymbol("_objcClass")));
+        supportedTypes = [objcClass supportedFileTypes];
+    }
+    v8::Handle<Array> list = v8::Array::New([supportedTypes count]);
+    for (int i = 0; i < [supportedTypes count]; i++)
+        list->Set(Number::New(i), String::New([[supportedTypes objectAtIndex:i] UTF8String]));
+    [pool release];
+    return handleScope.Close(list);
+}
+
++ (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate
 {
     //Locker lock;
-    v8::Persistent<v8::FunctionTemplate> classTemplate = v8::Persistent<FunctionTemplate>::New(v8::FunctionTemplate::New());
-    classTemplate->Inherit([super jsClassTemplate]);
-    classTemplate->SetClassName(String::New("AudioFile"));
-    classTemplate->InstanceTemplate()->SetInternalFieldCount(1);
-    v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
+    v8::Persistent<v8::FunctionTemplate> objectTemplate = v8::Persistent<FunctionTemplate>::New(v8::FunctionTemplate::New());
+    objectTemplate->Inherit([super jsObjectTemplate]);
+    objectTemplate->SetClassName(String::New("CoreAudioFile"));
+    objectTemplate->InstanceTemplate()->SetInternalFieldCount(1);
+    v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     classProto->Set("open", FunctionTemplate::New(open));
     classProto->Set("close", FunctionTemplate::New(close));
-    classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("repeat"), GetBoolProperty, SetBoolProperty);
-    return classTemplate;
+    classProto->Set("supportedFileTypes", FunctionTemplate::New(SupportedFileTypes));
+    objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("repeat"), GetBoolProperty, SetBoolProperty);
+    return objectTemplate;
+}
+
++ (void)jsRegisterClassMethods:(v8::Handle<v8::FunctionTemplate>)constructor
+{
+    [super jsRegisterClassMethods:constructor]; // let our super register its methods (if any)
+    constructor->Set("supportedFileTypes", FunctionTemplate::New(SupportedFileTypes));
 }
 
 @end

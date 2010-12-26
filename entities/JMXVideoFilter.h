@@ -30,11 +30,10 @@
     JMXInputPin *filterSelector;
     JMXOutputPin *outFrame;
     NSString *filter;
-    NSMutableArray *knownFilters;
     CIImage *currentFrame;
 }
-@property (readonly, nonatomic) NSArray *knownFilters;
++ (NSArray *)availableFilters;
+@property (readonly, nonatomic) NSArray *availableFilters;
 @property (readwrite, copy) NSString *filter;
 - (void)setFilterValue:(id)value userData:(id)userData;
-
 @end

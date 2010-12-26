@@ -260,10 +260,10 @@ static v8::Handle<Value>SetFontColor(const Arguments& args)
     return handleScope.Close(Undefined());
 }
 
-+ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
++ (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate
 {
     HandleScope handleScope;
-    v8::Persistent<v8::FunctionTemplate> entityTemplate = [super jsClassTemplate];
+    v8::Persistent<v8::FunctionTemplate> entityTemplate = [super jsObjectTemplate];
     entityTemplate->SetClassName(String::New("TextRenderer"));
     entityTemplate->InstanceTemplate()->SetInternalFieldCount(1);
     v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();

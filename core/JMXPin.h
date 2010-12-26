@@ -114,7 +114,10 @@ typedef enum {
     NSString            *ownerSignal; // weak reference (depends on the owner)
     NSMutableArray      *allowedValues;
     NSRecursiveLock     *dataLock;
+    NSXMLElement        *connections;
 }
+
+@property (readonly) NSXMLElement *connections;
 
 /*!
  @property type

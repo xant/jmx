@@ -27,7 +27,12 @@
 
 @implementation JMXVideoFilter
 
-@synthesize knownFilters, filter;
+@synthesize filter;
+
++ (NSArray *)availableFilters
+{
+    return [NSArray arrayWithObject:@""];
+}
 
 - (id)init
 {
@@ -35,14 +40,14 @@
     if (self) {
         currentFrame = nil;
         self.filter = nil;
+        self.name = @"VideoFilter";
         inFrame = [self registerInputPin:@"frame" withType:kJMXImagePin andSelector:@"newFrame:"];
         outFrame = [self registerOutputPin:@"frame" withType:kJMXImagePin];
 
-        knownFilters = [[NSMutableArray alloc] init];
-        [knownFilters addObject:@""]; // allow to set an empty string to indicate a null filter (removes current selection)
         filterSelector = [self registerInputPin:@"filter"
                                        withType:kJMXStringPin
                                     andSelector:@"setFilter:"];
+        [filterSelector addAllowedValues:[[self class] availableFilters]];
     }
     return self;
 }
@@ -53,9 +58,12 @@
         [currentFrame release];
     if (filter)
         [filter release];
-    if (knownFilters)
-        [knownFilters release];
     [super dealloc];
+}
+
+- (NSArray *)availableFilters
+{
+    return [[self class] availableFilters];
 }
 
 - (void)setFilterValue:(id)value userData:(id)userData
@@ -72,7 +80,7 @@
 using namespace v8;
 // the following global is usually defined by the JMXV8_EXPORT_ENTITY_CLASS() macro
 // but we don't want to use it because we don't want to implement a constructor in the native language
-static Persistent<FunctionTemplate> classTemplate;
+static Persistent<FunctionTemplate> objectTemplate;
 
 - (void)jsInit:(NSValue *)argsValue
 {
@@ -85,16 +93,21 @@ static Persistent<FunctionTemplate> classTemplate;
 static v8::Handle<Value> AvailableFilters(const Arguments& args)
 {
     HandleScope handleScope;
+    NSArray *availableFilters;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     JMXVideoFilter *filter = (JMXVideoFilter *)args.Holder()->GetPointerFromInternalField(0);
-    if (filter) {
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-        v8::Handle<Array> list = v8::Array::New([filter.knownFilters count]);
-        for (int i = 0; i < [filter.knownFilters count]; i++) {
-            list->Set(Number::New(i), String::New([[filter.knownFilters objectAtIndex:i] UTF8String]));
-        }
-        [pool release];
-        handleScope.Close(list);
+    if (filter) { // called as instance method
+        availableFilters = [filter availableFilters];
+    } else { // called as class method
+        Class objcClass = (Class)External::Unwrap(args.Holder()->Get(String::NewSymbol("_objcClass")));
+        availableFilters = [objcClass availableFilters];
     }
+    v8::Handle<Array> list = v8::Array::New([availableFilters count]);
+    for (int i = 0; i < [availableFilters count]; i++) {
+        list->Set(Number::New(i), String::New([[availableFilters objectAtIndex:i] UTF8String]));
+    }
+    [pool release];
+    handleScope.Close(list);
     return handleScope.Close(Undefined());
 }
 
@@ -116,21 +129,27 @@ static v8::Handle<Value> SelectFilter(const Arguments& args)
     return handleScope.Close(v8::Boolean::New(ret));
 }
 
-+ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
++ (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate
 {
     //Locker lock;
     HandleScope handleScope;
-    if (!classTemplate.IsEmpty())
-        return classTemplate;
-    classTemplate = v8::Persistent<v8::FunctionTemplate>::New(v8::FunctionTemplate::New());
-    classTemplate->Inherit([super jsClassTemplate]);
-    classTemplate->SetClassName(String::New("VideoFilter"));
-    classTemplate->InstanceTemplate()->SetInternalFieldCount(1);
-    v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
+    if (!objectTemplate.IsEmpty())
+        return objectTemplate;
+    objectTemplate = v8::Persistent<v8::FunctionTemplate>::New(v8::FunctionTemplate::New());
+    objectTemplate->Inherit([super jsObjectTemplate]);
+    objectTemplate->SetClassName(String::New("VideoFilter"));
+    objectTemplate->InstanceTemplate()->SetInternalFieldCount(1);
+    v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     classProto->Set("availableFilters", FunctionTemplate::New(AvailableFilters));
     classProto->Set("selectFilter", FunctionTemplate::New(SelectFilter));
-    classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("filter"), GetStringProperty, SetStringProperty);
-    return classTemplate;
+    objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("filter"), GetStringProperty, SetStringProperty);
+    return objectTemplate;
+}
+
++ (void)jsRegisterClassMethods:(v8::Handle<v8::FunctionTemplate>)constructor
+{
+    [super jsRegisterClassMethods:constructor]; // let our super register its methods (if any)
+    constructor->Set("availableFilters", FunctionTemplate::New(AvailableFilters));
 }
 
 @end

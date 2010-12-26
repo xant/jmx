@@ -12,6 +12,8 @@
 
 @implementation JMXProxyPin
 
+@synthesize parent, name;
+
 + (id)proxyPin:(JMXPin *)pin withName:(NSString *)name
 {
     return [[[self alloc] initWithPin:pin andName:name] autorelease];
@@ -19,28 +21,17 @@
 
 - (id)initWithPin:(JMXPin *)pin andName:(NSString *)pinName
 {
+    parent = nil;
     realObject = pin;
-    overriddenName = (pinName && ![pinName isEqualTo:@"undefined"]) ? [pinName copy] : [pin.name copy];
+    name = (pinName && ![pinName isEqualTo:@"undefined"]) ? [pinName copy] : [pin.name copy];
     return self;
 }
 
 - (void)dealloc
 {
-    if (overriddenName)
-        [overriddenName release];
+    if (name)
+        [name release];
     [super dealloc];
-}
-
-- (NSString *)name
-{
-    return overriddenName;
-}
-
-- (void)setName:(NSString *)pinName
-{
-    if (overriddenName)
-        [overriddenName release];
-    overriddenName = [pinName copy];
 }
 
 - (void)pinDisconnected:(NSNotification *)notification
@@ -60,13 +51,7 @@
 
 - (void)forwardInvocation:(NSInvocation *)anInvocation
 {
-    if ([anInvocation selector] == @selector(name) ||
-        [anInvocation selector] == @selector(setName:))
-    {
-        [anInvocation setTarget:self];
-    } else {
-        [anInvocation setTarget:realObject];
-    }
+    [anInvocation setTarget:realObject];
     [anInvocation invoke];
     // if the proxied pin is being connected, let's register for disconnect notifications 
     // so that we can propagate them for connections made through the proxy-pin

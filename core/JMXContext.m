@@ -115,7 +115,6 @@ static BOOL initialized = NO;
         NSValue *value = [NSValue valueWithNonretainedObject:entity];
         if (![entity isProxy]) {
             [entities setObject:value forKey:[NSString stringWithFormat:@"%d", entity]];
-            NSLog(@"OOIRRII %@", entity);
             [[dom rootElement] addChild:entity];
         }
     }
@@ -167,10 +166,10 @@ static BOOL initialized = NO;
 	return (NSArray *)registeredClasses;
 }
 
-- (void)dumpDOM
+- (NSString *)dumpDOM
 {
     NSData *xmlData = [dom XMLData];
-    NSLog(@"DIOKANE: %s", [xmlData bytes]);
+    return [[[NSString alloc] initWithBytesNoCopy:(void *)[xmlData bytes] length:[xmlData length] encoding:NSUTF8StringEncoding freeWhenDone:NO] autorelease];
 }
 
 #if USE_NSOPERATIONS

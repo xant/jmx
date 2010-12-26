@@ -34,7 +34,7 @@ using namespace v8;
 @implementation JMXPin
 
 @synthesize type, name, multiple, continuous, connected, sendNotifications,
-            direction, allowedValues, owner, minValue, maxValue;
+            direction, allowedValues, owner, minValue, maxValue, connections;
 
 #pragma mark Constructors
 
@@ -172,10 +172,10 @@ using namespace v8;
      allowedValues:(NSArray *)pinValues
       initialValue:(id)value
 {
-    self = [super init];
+    self = [super initWithName:pinName];
     if (self) {
         type = pinType;
-        name = [pinName retain];
+        name = [pinName copy];
         multiple = NO;
         continuous = YES;
         connected = NO;
@@ -192,6 +192,11 @@ using namespace v8;
             dataBuffer[wOffset++] = [value retain];
         }
         dataLock = [[NSRecursiveLock alloc] init];
+        connections = [[NSXMLElement elementWithName:@"connections"] retain];
+        [self addChild:connections];
+        [self addAttribute:[NSXMLNode attributeWithName:@"type" stringValue:[JMXPin nameforType:type]]];
+        [self addAttribute:[NSXMLNode attributeWithName:@"multiple" stringValue:multiple ? @"YES" : @"NO" ]];
+        [self addAttribute:[NSXMLNode attributeWithName:@"connected" stringValue:connected ? @"YES" : @"NO" ]];
     }
     return self;
 }
@@ -282,6 +287,8 @@ using namespace v8;
 
 - (void)dealloc
 {
+    [connections detach];
+    [connections release];
     [name release];
     if (allowedValues)
         [allowedValues release];
@@ -608,21 +615,21 @@ static v8::Handle<Value>exportToBoard(const Arguments& args)
     return scope.Close(v8::Boolean::New(ret));
 }
 
-static v8::Persistent<FunctionTemplate> classTemplate;
+static v8::Persistent<FunctionTemplate> objectTemplate;
 
-+ (v8::Persistent<FunctionTemplate>)jsClassTemplate
++ (v8::Persistent<FunctionTemplate>)jsObjectTemplate
 {
     //v8::Locker lock;
-    if (!classTemplate.IsEmpty())
-        return classTemplate;
-    NSLog(@"JMXPin ClassTemplate created");
-    classTemplate = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
-    classTemplate->SetClassName(String::New("Pin"));
-    v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
+    if (!objectTemplate.IsEmpty())
+        return objectTemplate;
+    NSLog(@"JMXPin objectTemplate created");
+    objectTemplate = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    objectTemplate->SetClassName(String::New("Pin"));
+    v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     classProto->Set("connect", FunctionTemplate::New(connect));
     classProto->Set("export", FunctionTemplate::New(exportToBoard));
     // set instance methods
-    v8::Handle<ObjectTemplate> instanceTemplate = classTemplate->InstanceTemplate();
+    v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
     instanceTemplate->SetInternalFieldCount(1);
     // Add accessors for each of the fields of the entity.
     instanceTemplate->SetAccessor(String::NewSymbol("type"), type);
@@ -636,15 +643,15 @@ static v8::Persistent<FunctionTemplate> classTemplate;
     instanceTemplate->SetAccessor(String::NewSymbol("sendNotifications"), GetBoolProperty, SetBoolProperty);
     //instanceTemplate->SetAccessor(String::NewSymbol("owner"), accessObjectProperty);
     //instanceTemplate->SetAccessor(String::NewSymbol("allowedValues"), allowedValues);
-    return classTemplate;
+    return objectTemplate;
 }
 
 - (v8::Handle<v8::Object>)jsObj
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    v8::Persistent<FunctionTemplate> classTemplate = [JMXPin jsClassTemplate];
-    v8::Handle<Object> jsInstance = classTemplate->InstanceTemplate()->NewInstance();
+    v8::Persistent<FunctionTemplate> objectTemplate = [JMXPin jsObjectTemplate];
+    v8::Handle<Object> jsInstance = objectTemplate->InstanceTemplate()->NewInstance();
     jsInstance->SetPointerInInternalField(0, self);
     return handleScope.Close(jsInstance);
 }

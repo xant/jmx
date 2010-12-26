@@ -22,13 +22,23 @@
 #ifdef __JMXV8__
 #include <v8.h>
 
+@required
+
 /*!
  @method jsClassTemplate
  @return a V8 Persistent<FunctionTemplate> which represents the prototype for the exported javascript class 
  */
-+ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate;
++ (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate;
 
 @optional
+
+/*!
+ @method jsRegisterClassMethods:
+ @param constructor The constructor FunctionTemplate where to attach class methods
+ @discussion If implemented, this message will be called when the constructor is registered
+             into the javascript global context. 
+ */
++ (void)jsRegisterClassMethods:(v8::Handle<v8::FunctionTemplate>)constructor;
 
 /*!
  @method jsObj

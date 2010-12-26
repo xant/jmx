@@ -9,11 +9,16 @@
 #import <Cocoa/Cocoa.h>
 #import "JMXPin.h"
 
+@class NSXMLNode;
+
 @interface JMXProxyPin : NSProxy {
     JMXPin *realObject;
-    NSString *overriddenName;
+    NSString *name;
+    NSXMLNode *parent;
 }
 
+@property (readwrite, assign) NSXMLNode *parent;
+@property (readwrite, copy)NSString *name;
 - (id)initWithPin:(JMXPin *)pin andName:(NSString *)name;
 + (id)proxyPin:(JMXPin *)pin withName:(NSString *)name;
 @end

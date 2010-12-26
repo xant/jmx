@@ -24,8 +24,6 @@
 #define __JMXV8__ 1
 #import "JMXVideoOutput.h"
 
-using namespace v8;
-
 @implementation JMXVideoOutput
 
 @synthesize size;
@@ -70,6 +68,9 @@ using namespace v8;
 }
 
 #pragma mark V8
+using namespace v8;
+
+static Persistent<FunctionTemplate> objectTemplate;
 
 - (void)jsInit:(NSValue *)argsValue
 {
@@ -129,20 +130,19 @@ static v8::Handle<Value>GetHeight(Local<String> name, const AccessorInfo& info)
     return handleScope.Close(Integer::New(voutput.size.height));
 }
 
-+ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
++ (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate
 {
     //v8::Locker lock;
-    /*
-    if (!classTemplate.IsEmpty())
-        return classTemplate;*/
-    v8::Persistent<FunctionTemplate> classTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
-    classTemplate->Inherit([super jsClassTemplate]);  
-    classTemplate->SetClassName(String::New("VideoOutput"));
-    classTemplate->InstanceTemplate()->SetInternalFieldCount(1);
-    classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("width"), GetWidth, SetWidth);
-    classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("height"), GetHeight, SetHeight);
-    NSLog(@"JMXVideoOutput ClassTemplate created");
-    return classTemplate;
+    if (!objectTemplate.IsEmpty())
+        return objectTemplate;
+    v8::Persistent<FunctionTemplate> objectTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    objectTemplate->Inherit([super jsObjectTemplate]);  
+    objectTemplate->SetClassName(String::New("VideoOutput"));
+    objectTemplate->InstanceTemplate()->SetInternalFieldCount(1);
+    objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("width"), GetWidth, SetWidth);
+    objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("height"), GetHeight, SetHeight);
+    NSLog(@"JMXVideoOutput objectTemplate created");
+    return objectTemplate;
 }
 
 @end

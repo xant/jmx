@@ -57,7 +57,7 @@ VideoFilter.availableFilters = function() {
     // Core Image
     ret = new Array();
     /* TODO - extra backends */
-    ret = ret.concat(CoreImageFilter().availableFilters());
+    ret = ret.concat(CoreImageFilter.availableFilters());
     return ret;
 }
 

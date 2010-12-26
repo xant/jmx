@@ -262,16 +262,16 @@ static v8::Handle<Value> frequency(const Arguments& args)
 }
 
 
-+ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
++ (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate
 {
     HandleScope handleScope;
-    v8::Persistent<v8::FunctionTemplate> classTemplate = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
-    classTemplate->Inherit([super jsClassTemplate]);
-    classTemplate->SetClassName(String::New("AudioSpectrum"));
-    classTemplate->InstanceTemplate()->SetInternalFieldCount(1);
-    classTemplate->PrototypeTemplate()->Set("frequencies", FunctionTemplate::New(frequencies));
-    classTemplate->PrototypeTemplate()->Set("frequency", FunctionTemplate::New(frequency));
-    return classTemplate;
+    v8::Persistent<v8::FunctionTemplate> objectTemplate = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    objectTemplate->Inherit([super jsObjectTemplate]);
+    objectTemplate->SetClassName(String::New("AudioSpectrum"));
+    objectTemplate->InstanceTemplate()->SetInternalFieldCount(1);
+    objectTemplate->PrototypeTemplate()->Set("frequencies", FunctionTemplate::New(frequencies));
+    objectTemplate->PrototypeTemplate()->Set("frequency", FunctionTemplate::New(frequency));
+    return objectTemplate;
 }
 
 @end

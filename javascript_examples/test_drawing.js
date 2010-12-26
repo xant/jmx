@@ -23,6 +23,10 @@ function randFloat() {
     return rand()%1000/1000;
 }
 
+sleep(1);
+
+echo(dumpDOM());
+
 mainloop = function() {
     //drawer.clear();
     point = new Point(rand()%width/2, rand()%height/2);
@@ -39,6 +43,7 @@ mainloop = function() {
     //drawer.rotation = rand()%360;
     //drawer.size = new Size(rand()%width, rand()%height);
     //drawer.origin = new Point(rand()%width, rand()%height);
+
     sleep(1/drawer.frequency);
 };
 

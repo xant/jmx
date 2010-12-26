@@ -128,7 +128,6 @@
 		1DDD58150DA1D0A300B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		256AC3D80F4B6AC300CF3369 /* JMXAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXAppDelegate.h; sourceTree = "<group>"; };
 		256AC3D90F4B6AC300CF3369 /* JMXAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXAppDelegate.m; sourceTree = "<group>"; };
-		256AC3F00F4B6AF500CF3369 /* JMX_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMX_Prefix.pch; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -280,7 +279,7 @@
 		AA4BFDFE12BE0CF800775B88 /* Color.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = Color.js; sourceTree = "<group>"; };
 		AA4BFDFF12BE0CF800775B88 /* AudioSpectrum.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = AudioSpectrum.js; sourceTree = "<group>"; };
 		AA4BFE0012BE0CF800775B88 /* CoreAudioOutput.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = CoreAudioOutput.js; sourceTree = "<group>"; };
-		AA4BFE0112BE0CF800775B88 /* CoreAudioAudioFile.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = CoreAudioAudioFile.js; sourceTree = "<group>"; };
+		AA4BFE0112BE0CF800775B88 /* CoreAudioFile.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = CoreAudioFile.js; sourceTree = "<group>"; };
 		AA4BFE1112BE0D7400775B88 /* AudioOutput.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = AudioOutput.js; sourceTree = "<group>"; };
 		AA4BFE1312BE0E2000775B88 /* JMX.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = JMX.js; sourceTree = "<group>"; };
 		AA4BFE1512BE135000775B88 /* VideoOutput.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = VideoOutput.js; sourceTree = "<group>"; };
@@ -296,6 +295,7 @@
 		AA8F768C12C40D2700EA8543 /* QtVideoCapture.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = QtVideoCapture.js; sourceTree = "<group>"; };
 		AA8F770712C5718600EA8543 /* MovieFile.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = MovieFile.js; sourceTree = "<group>"; };
 		AA8F770812C571A200EA8543 /* AudioFile.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = AudioFile.js; sourceTree = "<group>"; };
+		AA8F7ED912C6E16C00EA8543 /* JMX_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMX_Prefix.pch; sourceTree = "<group>"; };
 		AACE7D02129315DE00FBDC0D /* JMXScriptEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXScriptEntity.h; sourceTree = "<group>"; };
 		AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScriptEntity.mm; sourceTree = "<group>"; };
 		AACE7D311293195600FBDC0D /* JMXV8PropertyAccessors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXV8PropertyAccessors.h; sourceTree = "<group>"; };
@@ -388,7 +388,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				256AC3F00F4B6AF500CF3369 /* JMX_Prefix.pch */,
+				AA8F7ED912C6E16C00EA8543 /* JMX_Prefix.pch */,
 				256AC3D80F4B6AC300CF3369 /* JMXAppDelegate.h */,
 				256AC3D90F4B6AC300CF3369 /* JMXAppDelegate.m */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
@@ -559,7 +559,7 @@
 				AA4BFDFE12BE0CF800775B88 /* Color.js */,
 				AA4BFDFF12BE0CF800775B88 /* AudioSpectrum.js */,
 				AA4BFE0012BE0CF800775B88 /* CoreAudioOutput.js */,
-				AA4BFE0112BE0CF800775B88 /* CoreAudioAudioFile.js */,
+				AA4BFE0112BE0CF800775B88 /* CoreAudioFile.js */,
 				AA4BFE1912BE13D100775B88 /* OpenGLScreen.js */,
 				AA4B01FA12BECCCA00775B88 /* QtAudioCapture.js */,
 				AA8F768C12C40D2700EA8543 /* QtVideoCapture.js */,
@@ -608,14 +608,14 @@
 				AA3557E612795D0A00EAA2E4 /* JMXScript.h */,
 				AAFAAD87129095EB00949028 /* JMXScript.mm */,
 				825C31311275ADD6006376B8 /* JMXFileRead.h */,
+				825C31361275ADD6006376B8 /* JMXPin.h */,
+				825C31371275ADD6006376B8 /* JMXPin.mm */,
 				825C31321275ADD6006376B8 /* JMXInputPin.h */,
 				825C31331275ADD6006376B8 /* JMXInputPin.m */,
 				825C31341275ADD6006376B8 /* JMXOutputPin.h */,
 				825C31351275ADD6006376B8 /* JMXOutputPin.m */,
 				AA4B00C712BE560100775B88 /* JMXProxyPin.h */,
 				AA4B00C812BE560100775B88 /* JMXProxyPin.m */,
-				825C31361275ADD6006376B8 /* JMXPin.h */,
-				825C31371275ADD6006376B8 /* JMXPin.mm */,
 				825C31381275ADD7006376B8 /* JMXPinSignal.h */,
 				825C31391275ADD7006376B8 /* JMXPinSignal.m */,
 				825C313A1275ADD7006376B8 /* JMXPoint.h */,
@@ -656,22 +656,22 @@
 				825C31031275ADB6006376B8 /* JMXAudioOutput.mm */,
 				825C31061275ADB6006376B8 /* JMXAudioSpectrumAnalyzer.h */,
 				825C31071275ADB6006376B8 /* JMXAudioSpectrumAnalyzer.mm */,
-				825C31081275ADB6006376B8 /* JMXExporter.h */,
-				825C31091275ADB6006376B8 /* JMXExporter.m */,
 				AA4B039A12C06C7600775B88 /* JMXVideoCapture.h */,
 				AA4B039B12C06C7600775B88 /* JMXVideoCapture.mm */,
 				825C310A1275ADB6006376B8 /* JMXVideoEntity.h */,
 				825C310B1275ADB6006376B8 /* JMXVideoEntity.mm */,
 				825C310E1275ADB6006376B8 /* JMXVideoOutput.h */,
 				825C310F1275ADB6006376B8 /* JMXVideoOutput.mm */,
+				AA4BFC8212BD324A00775B88 /* JMXVideoFilter.h */,
+				AA4BFC8312BD324A00775B88 /* JMXVideoFilter.mm */,
 				AA3557D812795C5500EAA2E4 /* JMXDrawEntity.h */,
 				AA3557D912795C5500EAA2E4 /* JMXDrawEntity.mm */,
 				AA8CB78C1282BB9800A17115 /* JMXScriptFile.h */,
 				AA8CB78D1282BB9900A17115 /* JMXScriptFile.mm */,
 				AACE7D02129315DE00FBDC0D /* JMXScriptEntity.h */,
 				AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */,
-				AA4BFC8212BD324A00775B88 /* JMXVideoFilter.h */,
-				AA4BFC8312BD324A00775B88 /* JMXVideoFilter.mm */,
+				825C31081275ADB6006376B8 /* JMXExporter.h */,
+				825C31091275ADB6006376B8 /* JMXExporter.m */,
 			);
 			name = Entities;
 			path = entities;
@@ -908,6 +908,7 @@
 				GCC_ENABLE_SSE41_EXTENSIONS = YES;
 				GCC_ENABLE_SSE42_EXTENSIONS = YES;
 				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
+				GCC_ENABLE_SYMBOL_SEPARATION = NO;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_UNROLL_LOOPS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -919,6 +920,7 @@
 				LIBRARY_SEARCH_PATHS = "$PROJECT_DIR/../v8-read-only/include/**";
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
+				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				SDKROOT = macosx10.6;
 				VALID_ARCHS = "i386 x86_64";
 			};
@@ -935,6 +937,7 @@
 				GCC_ENABLE_SSE41_EXTENSIONS = YES;
 				GCC_ENABLE_SSE42_EXTENSIONS = YES;
 				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
+				GCC_ENABLE_SYMBOL_SEPARATION = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_UNROLL_LOOPS = YES;
@@ -947,6 +950,7 @@
 				LIBRARY_SEARCH_PATHS = "$PROJECT_DIR/../v8-read-only/include/**";
 				ONLY_ACTIVE_ARCH = NO;
 				PREBINDING = NO;
+				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				SDKROOT = macosx10.6;
 				VALID_ARCHS = "i386 x86_64";
 			};

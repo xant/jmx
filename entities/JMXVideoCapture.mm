@@ -36,7 +36,7 @@
 
 #pragma mark V8
 using namespace v8;
-static v8::Persistent<v8::FunctionTemplate> classTemplate;
+static v8::Persistent<v8::FunctionTemplate> objectTemplate;
 
 - (void)jsInit:(NSValue *)argsValue
 {
@@ -52,31 +52,39 @@ static v8::Persistent<v8::FunctionTemplate> classTemplate;
 static v8::Handle<Value> DefaultDevice(const Arguments& args)
 {
     HandleScope handleScope;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSString *defaultDevice = nil;
     JMXVideoCapture *vc = (JMXVideoCapture *)args.Holder()->GetPointerFromInternalField(0);
     if (vc) {
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-        NSString *defaultDevice = [[vc class] defaultDevice];
-        v8::Handle<String> deviceName = String::New([defaultDevice UTF8String]);
-        [pool release];
-        handleScope.Close(deviceName);
+        defaultDevice = [[vc class] defaultDevice];
+    } else {
+        Class objcClass = (Class)External::Unwrap(args.Holder()->Get(String::NewSymbol("_objcClass")));
+        defaultDevice = [objcClass defaultDevice];
     }
-    return handleScope.Close(Undefined());
+    v8::Handle<String> deviceName = String::New([defaultDevice UTF8String]);
+    [pool release];
+    return handleScope.Close(deviceName);
 }
 
+// class method to get a list with all available devices
 static v8::Handle<Value> AvailableDevices(const Arguments& args)
 {
     HandleScope handleScope;
-    Class vc = (Class)args.Holder()->GetPointerFromInternalField(1);
-    if (vc) {
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-        NSArray *availableDevices = [vc availableDevices];
-        v8::Handle<Array> list = v8::Array::New([availableDevices count]);
-        for (int i = 0; i < [availableDevices count]; i++)
-            list->Set(Number::New(i), String::New([[availableDevices objectAtIndex:i] UTF8String]));
-        [pool release];
-        handleScope.Close(list);
+    NSArray *availableDevices = nil;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    JMXVideoCapture *vc = (JMXVideoCapture *)args.Holder()->GetPointerFromInternalField(0);
+    if (vc) { // called as instance method
+        availableDevices = [[vc class] availableDevices];
+    } else { // called as class method
+        Class objcClass = (Class)External::Unwrap(args.Holder()->Get(String::NewSymbol("_objcClass")));
+        availableDevices = [objcClass availableDevices];
     }
-    return handleScope.Close(Undefined());
+    v8::Handle<Array> list = v8::Array::New([availableDevices count]);
+    for (int i = 0; i < [availableDevices count]; i++) {
+        list->Set(Number::New(i), String::New([[availableDevices objectAtIndex:i] UTF8String]));
+    }
+    [pool release];
+    return handleScope.Close(list);
 }
 
 static v8::Handle<Value> SelectDevice(const Arguments& args)
@@ -119,24 +127,31 @@ static v8::Handle<Value>Stop(const Arguments& args)
     return v8::Undefined();
 }
 
-+ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
++ (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate
 {
-    if (!classTemplate.IsEmpty())
-        return classTemplate;
-    NSLog(@"JMXVideoCapture ClassTemplate created");
-    v8::Persistent<v8::FunctionTemplate> classTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
-    classTemplate->Inherit([super jsClassTemplate]);
-    classTemplate->SetClassName(String::New("VideoCapture"));
-    classTemplate->InstanceTemplate()->SetInternalFieldCount(1);
-    v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
+    if (!objectTemplate.IsEmpty())
+        return objectTemplate;
+    NSLog(@"JMXVideoCapture objectTemplate created");
+    v8::Persistent<v8::FunctionTemplate> objectTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    objectTemplate->Inherit([super jsObjectTemplate]);
+    objectTemplate->SetClassName(String::New("VideoCapture"));
+    objectTemplate->InstanceTemplate()->SetInternalFieldCount(1);
+    v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     classProto->Set("start", FunctionTemplate::New(Start));
     classProto->Set("stop", FunctionTemplate::New(Stop));
     classProto->Set("selectDevice", FunctionTemplate::New(SelectDevice));
     classProto->Set("availableDevices", FunctionTemplate::New(AvailableDevices));
     classProto->Set("defaultDevice", FunctionTemplate::New(DefaultDevice));
     // accessors to image parameters
-    classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("device"), GetStringProperty, SetStringProperty);
-    return classTemplate;
+    objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("device"), GetStringProperty, SetStringProperty);
+    return objectTemplate;
+}
+
++ (void)jsRegisterClassMethods:(v8::Handle<v8::FunctionTemplate>)constructor
+{
+    [super jsRegisterClassMethods:constructor]; // let our super register its methods (if any)
+    constructor->Set("availableDevices", FunctionTemplate::New(AvailableDevices));
+    constructor->Set("defaultDevice", FunctionTemplate::New(DefaultDevice));
 }
 
 @end

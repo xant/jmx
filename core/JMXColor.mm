@@ -14,24 +14,24 @@ using namespace v8;
 
 @implementation JMXColor
 
-static v8::Persistent<FunctionTemplate> classTemplate;
+static v8::Persistent<FunctionTemplate> objectTemplate;
 
-+ (v8::Persistent<FunctionTemplate>)jsClassTemplate
++ (v8::Persistent<FunctionTemplate>)jsObjectTemplate
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    //v8::Handle<FunctionTemplate> classTemplate = FunctionTemplate::New();
+    //v8::Handle<FunctionTemplate> objectTemplate = FunctionTemplate::New();
     
-    if (!classTemplate.IsEmpty())
-        return classTemplate;
+    if (!objectTemplate.IsEmpty())
+        return objectTemplate;
     
-    classTemplate = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    objectTemplate = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
     
-    classTemplate->SetClassName(String::New("Color"));
-    //v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
+    objectTemplate->SetClassName(String::New("Color"));
+    //v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
 
     // set instance methods
-    v8::Handle<ObjectTemplate> instanceTemplate = classTemplate->InstanceTemplate();
+    v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
     instanceTemplate->SetInternalFieldCount(1);
     // Add accessors for each of the fields of the entity.
     instanceTemplate->SetAccessor(String::NewSymbol("redComponent"), GetDoubleProperty);
@@ -40,7 +40,7 @@ static v8::Persistent<FunctionTemplate> classTemplate;
     instanceTemplate->SetAccessor(String::NewSymbol("whiteComponent"), GetDoubleProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("blackComponent"), GetDoubleProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("alphaComponent"), GetDoubleProperty);
-    return classTemplate;
+    return objectTemplate;
 }
 
 - (void)dealloc
@@ -72,10 +72,14 @@ static v8::Persistent<FunctionTemplate> classTemplate;
 {
     //v8::Locker lock;
     HandleScope handle_scope;
-    v8::Handle<FunctionTemplate> classTemplate = [JMXColor jsClassTemplate];
-    v8::Handle<Object> jsInstance = classTemplate->InstanceTemplate()->NewInstance();
+    v8::Handle<FunctionTemplate> objectTemplate = [JMXColor jsObjectTemplate];
+    v8::Handle<Object> jsInstance = objectTemplate->InstanceTemplate()->NewInstance();
     jsInstance->SetPointerInInternalField(0, self);
     return handle_scope.Close(jsInstance);
+}
+
++ (void)jsRegisterClassMethods:(v8::Handle<v8::FunctionTemplate>)constructor
+{
 }
 
 @end
@@ -101,7 +105,7 @@ v8::Handle<v8::Value> JMXColorJSConstructor(const v8::Arguments& args)
 {
     HandleScope handleScope;
     //v8::Locker locker;
-    v8::Persistent<FunctionTemplate> classTemplate = [JMXColor jsClassTemplate];
+    v8::Persistent<FunctionTemplate> objectTemplate = [JMXColor jsObjectTemplate];
     CGFloat r = 0.0;
     CGFloat g = 0.0;
     CGFloat b = 0.0;
@@ -114,7 +118,7 @@ v8::Handle<v8::Value> JMXColorJSConstructor(const v8::Arguments& args)
         if (args.Length() >= 4)
             a = args[3]->NumberValue();
     }
-    Persistent<Object>jsInstance = Persistent<Object>::New(classTemplate->InstanceTemplate()->NewInstance());
+    Persistent<Object>jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     JMXColor *color = [[JMXColor colorWithDeviceRed:r green:g blue:b alpha:a] retain];
     jsInstance.MakeWeak(color, JMXColorJSDestructor);

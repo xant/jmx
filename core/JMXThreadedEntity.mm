@@ -296,6 +296,11 @@
     }
 }
 
+- (NSString *)description
+{
+    return [realEntity description];
+}
+
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector
 {
     return [realEntity methodSignatureForSelector:aSelector];
@@ -394,22 +399,22 @@ static v8::Handle<Value>Stop(const Arguments& args)
     return v8::Undefined();
 }
 
-static Persistent<FunctionTemplate> classTemplate;
+static Persistent<FunctionTemplate> objectTemplate;
 
-+ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
++ (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate
 {
-    if (!classTemplate.IsEmpty())
-        return classTemplate;
-    NSLog(@"JMXThreadedEntity ClassTemplate created");
-    classTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
-    classTemplate->Inherit(JMXEntityJSClassTemplate()); // 'super' is not available in a category
-    classTemplate->SetClassName(String::New("ThreadedEntity"));
-    v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
+    if (!objectTemplate.IsEmpty())
+        return objectTemplate;
+    NSLog(@"JMXThreadedEntity objectTemplate created");
+    objectTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    objectTemplate->Inherit(JMXEntityJSObjectTemplate()); // 'super' is not available in a category
+    objectTemplate->SetClassName(String::New("ThreadedEntity"));
+    v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     classProto->Set("start", FunctionTemplate::New(Start));
     classProto->Set("stop", FunctionTemplate::New(Stop));
-    classTemplate->InstanceTemplate()->SetInternalFieldCount(1);
-    classTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("frequency"), GetNumberProperty, SetNumberProperty);
-    return classTemplate;
+    objectTemplate->InstanceTemplate()->SetInternalFieldCount(1);
+    objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("frequency"), GetNumberProperty, SetNumberProperty);
+    return objectTemplate;
 }
 
 @end

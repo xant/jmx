@@ -92,7 +92,7 @@
 using namespace v8;
 // the following global is usually defined by the JMXV8_EXPORT_ENTITY_CLASS() macro
 // but we don't want to use it because we don't want to implement a constructor in the native language
-static Persistent<FunctionTemplate> classTemplate;
+static Persistent<FunctionTemplate> objectTemplate;
 
 - (void)jsInit:(NSValue *)argsValue
 {
@@ -126,75 +126,85 @@ static v8::Handle<Value>Stop(const Arguments& args)
 static v8::Handle<Value> DefaultDevice(const Arguments& args)
 {
     HandleScope handleScope;
-    JMXAudioCapture *vc = (JMXAudioCapture *)args.Holder()->GetPointerFromInternalField(0);
-    if (vc) {
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-        NSString *defaultDevice = [[vc class] defaultDevice];
-        v8::Handle<String> deviceName = String::New([defaultDevice UTF8String]);
-        [pool release];
-        return handleScope.Close(deviceName);
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSString *defaultDevice = nil;
+    JMXAudioCapture *ac = (JMXAudioCapture *)args.Holder()->GetPointerFromInternalField(0);
+    if (ac) {
+        defaultDevice = [[ac class] defaultDevice];
+    } else {
+        Class objcClass = (Class)External::Unwrap(args.Holder()->Get(String::NewSymbol("_objcClass")));
+        defaultDevice = [objcClass defaultDevice];
     }
-    return v8::Undefined();
+    v8::Handle<String> deviceName = String::New([defaultDevice UTF8String]);
+    [pool release];
+    return handleScope.Close(deviceName);
 }
 
 
 // class method to get a list with all available devices
-static v8::Handle<Value>AvailableDevices(const Arguments& args)
+static v8::Handle<Value> AvailableDevices(const Arguments& args)
 {
     HandleScope handleScope;
-    v8::Handle<Object> holder = args.Holder();
-    v8::String::Utf8Value value(holder->ObjectProtoToString());
-    JMXAudioCapture *entity = (JMXAudioCapture *)args.Holder()->GetPointerFromInternalField(0);
-    if (entity) {
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-        NSArray *availableDevices = [[entity class] availableDevices];
-        v8::Handle<Array> list = Array::New([availableDevices count]);
-        for (int i = 0; i < [availableDevices count]; i++) {
-            list->Set(i, String::New([[availableDevices objectAtIndex:i] UTF8String]));
-        }
-        [pool drain];
-        return handleScope.Close(list);
+    NSArray *availableDevices = nil;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    JMXAudioCapture *ac = (JMXAudioCapture *)args.Holder()->GetPointerFromInternalField(0);
+    if (ac) { // called as instance method
+        availableDevices = [[ac class] availableDevices];
+    } else { // called as class method
+        Class objcClass = (Class)External::Unwrap(args.Holder()->Get(String::NewSymbol("_objcClass")));
+        availableDevices = [objcClass availableDevices];
     }
-    return v8::Undefined();
+    v8::Handle<Array> list = v8::Array::New([availableDevices count]);
+    for (int i = 0; i < [availableDevices count]; i++) {
+        list->Set(Number::New(i), String::New([[availableDevices objectAtIndex:i] UTF8String]));
+    }
+    [pool release];
+    return handleScope.Close(list);
 }
-
 
 static v8::Handle<Value> SelectDevice(const Arguments& args)
 {
     HandleScope handleScope;
     BOOL ret = NO;
-    JMXAudioCapture *vc = (JMXAudioCapture *)args.Holder()->GetPointerFromInternalField(0);
-    if (vc) {
+    JMXAudioCapture *ac = (JMXAudioCapture *)args.Holder()->GetPointerFromInternalField(0);
+    if (ac) {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         v8::Handle<Value> arg = args[0];
         v8::String::Utf8Value value(arg);
         NSString *device = [NSString stringWithUTF8String:*value];
-        vc.device = device;
-        if ([vc.device isEqualTo:device])
+        ac.device = device;
+        if ([ac.device isEqualTo:device])
             ret = YES;
         [pool release];
     }
     return handleScope.Close(v8::Boolean::New(ret));
 }
 
-+ (v8::Persistent<v8::FunctionTemplate>)jsClassTemplate
++ (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate
 {
     HandleScope handleScope;
-    if (!classTemplate.IsEmpty())
-        return classTemplate;
-    NSLog(@"JMXAudioCapture ClassTemplate created");
-    classTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
-    classTemplate->Inherit([super jsClassTemplate]);
-    classTemplate->SetClassName(String::New("QtAudioCapture"));
-    classTemplate->InstanceTemplate()->SetInternalFieldCount(1);
-    v8::Handle<ObjectTemplate> classProto = classTemplate->PrototypeTemplate();
+    if (!objectTemplate.IsEmpty())
+        return objectTemplate;
+    NSLog(@"JMXAudioCapture objectTemplate created");
+    objectTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    objectTemplate->Inherit([super jsObjectTemplate]);
+    objectTemplate->SetClassName(String::New("QtAudioCapture"));
+    objectTemplate->InstanceTemplate()->SetInternalFieldCount(1);
+    v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     classProto->Set("start", FunctionTemplate::New(Start));
     classProto->Set("stop", FunctionTemplate::New(Stop));
     classProto->Set("availableDevices", FunctionTemplate::New(AvailableDevices));
     classProto->Set("selectDevice", FunctionTemplate::New(SelectDevice));
     classProto->Set("defaultDevice", FunctionTemplate::New(DefaultDevice));
 
-    return classTemplate;
+    return objectTemplate;
+}
+
++ (void)jsRegisterClassMethods:(v8::Handle<v8::FunctionTemplate>)constructor
+{
+    [super jsRegisterClassMethods:constructor]; // let our super register its methods (if any)
+    constructor->Set("availableDevices", FunctionTemplate::New(AvailableDevices));
+    constructor->Set("defaultDevice", FunctionTemplate::New(DefaultDevice));
 }
 
 @end

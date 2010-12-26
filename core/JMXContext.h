@@ -96,5 +96,5 @@
  */
 - (NSArray *)allEntities;
 
-- (void)dumpDOM;
+- (NSString *)dumpDOM;
 @end

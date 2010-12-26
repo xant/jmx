@@ -1,8 +1,7 @@
 //
-// Prefix header for all source files of the 'VeeJay' target in the 'VeeJay' project
+// Prefix header for all source files of the 'JMX' target in the 'JMX' project
 //
 
 #ifdef __OBJC__
     #import <Cocoa/Cocoa.h>
-	#define VJXLibraryTableViewDataType @"VJXLibraryTableViewDataType"
 #endif

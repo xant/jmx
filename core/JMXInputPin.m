@@ -44,9 +44,9 @@
                  allowedValues:pinValues
                   initialValue:value];
     if (self) {
-        [self addAttribute:[NSXMLNode attributeWithName:@"direction" stringValue:@"input"]];
         producers = [[NSMutableArray alloc] init];
         direction = kJMXInputPin;
+        [self addAttribute:[NSXMLNode attributeWithName:@"direction" stringValue:@"input"]];
     }
     return self;
 }
@@ -96,12 +96,8 @@
             if ([destinationPin attachObject:self withSelector:@"deliverData:fromSender:"]) {
                 [producers addObject:destinationPin];
                 connected = YES;
-                NSXMLNode *connectedAttribute = [destinationPin attributeForName:@"connected"];
+                NSXMLNode *connectedAttribute = [self attributeForName:@"connected"];
                 [connectedAttribute setStringValue:@"YES"];
-                
-                //[connections addChild:[NSXMLElement elementWithName:[destinationPin.owner description] stringValue:destinationPin.name]];
-                [destinationPin.connections addChild:[NSXMLElement elementWithName:[self.owner description] stringValue:self.name]];
-                
                 return [super connectToPin:destinationPin];
             }
         }

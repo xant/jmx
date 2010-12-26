@@ -181,7 +181,7 @@ using namespace v8;
         connected = NO;
         currentSender = nil;
         owner = pinOwner;
-        ownerSignal = pinSignal;
+        ownerSignal = [pinSignal copy];
         ownerUserData = userData;
         sendNotifications = YES;
         memset(dataBuffer, 0, sizeof(dataBuffer));
@@ -192,11 +192,11 @@ using namespace v8;
             dataBuffer[wOffset++] = [value retain];
         }
         dataLock = [[NSRecursiveLock alloc] init];
-        connections = [[NSXMLElement elementWithName:@"connections"] retain];
-        [self addChild:connections];
         [self addAttribute:[NSXMLNode attributeWithName:@"type" stringValue:[JMXPin nameforType:type]]];
         [self addAttribute:[NSXMLNode attributeWithName:@"multiple" stringValue:multiple ? @"YES" : @"NO" ]];
         [self addAttribute:[NSXMLNode attributeWithName:@"connected" stringValue:connected ? @"YES" : @"NO" ]];
+        connections = [[NSXMLElement alloc] initWithName:@"connections"];
+        [self addChild:connections];
     }
     return self;
 }

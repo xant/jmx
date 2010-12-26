@@ -50,6 +50,7 @@
     if (self) {
         receivers = [[NSMutableDictionary alloc] init];
         direction = kJMXOutputPin;
+        [self addAttribute:[NSXMLNode attributeWithName:@"direction" stringValue:@"output"]];
     }
     return self;
 }
@@ -66,9 +67,9 @@
     [super performSignal:signal];
     // and then propagate it to all receivers
     @synchronized (receivers) {
-        for (id receiver in receivers) {
+        for (id receiver in [receivers allKeys]) {
             signal.receiver = receiver;
-            [self sendData:signal.data toReceiver:signal.receiver withSelector:[receivers objectForKey:receiver] fromSender:signal.sender];
+            [self sendData:signal.data toReceiver:receiver withSelector:[receivers objectForKey:receiver] fromSender:signal.sender];
         }
     }
     [pool drain];
@@ -79,6 +80,14 @@
     BOOL rv = NO;
     if ([pinReceiver respondsToSelector:NSSelectorFromString(pinSignal)]) {
         if ([[pinSignal componentsSeparatedByString:@":"] count]-1 <= 2) {
+            if ([pinReceiver isKindOfClass:[JMXPin class]]) {
+                JMXPin *destinationPin = (JMXPin *)pinReceiver;
+                // XXX - for some unknown reason connections element must be added before doing the actual connection
+                //       probably this is due to some race condition since signals start to be delivered by external threads
+                //       as soon as the connection happens
+                [self.connections addChild:[NSXMLElement elementWithName:[destinationPin.owner description] stringValue:destinationPin.name]];
+                [destinationPin.connections addChild:[NSXMLElement elementWithName:[self.owner description] stringValue:self.name]];
+            }
             @synchronized(receivers) {
                 [receivers setObject:pinSignal forKey:pinReceiver];
             }

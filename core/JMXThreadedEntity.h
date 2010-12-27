@@ -95,6 +95,6 @@
 // entities should implement this message to trigger 
 // delivering of signals to all their custom output pins
 - (void)tick:(uint64_t)timeStamp;
-- (void)start;
-- (void)stop;
+- (void)startThread;
+- (void)stopThread;
 @end

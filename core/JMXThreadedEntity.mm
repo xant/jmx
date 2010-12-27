@@ -145,22 +145,18 @@
     [anInvocation invoke];
 }
 
-- (void)start
+- (void)startThread
 {
-    if (worker) {
-        [self stop];
-        [worker release];
+    if (!worker) {
+        worker = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
+        [worker setThreadPriority:1.0];
+        [worker start];
+        quit = NO;
     }
-    worker = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
-    [worker setThreadPriority:1.0];
-    [worker start];
-    realEntity.active = YES;
-    quit = NO;
 }
 
-- (void)stop {
+- (void)stopThread {
     if (worker) {
-        realEntity.active = NO;
         quit = YES;
         [worker cancel];
         // wait for the thread to really finish otherwise it could
@@ -363,14 +359,25 @@
 {
     JMXThreadedEntity *th = [self privateDataForKey:@"threadedEntity"];
     if (th)
-        [th start];
+        [th startThread];
 }
 
 - (void)stop
 {
     JMXThreadedEntity *th = [self privateDataForKey:@"threadedEntity"];
     if (th)
-        [th stop];
+        [th stopThread];
+}
+
+- (void)setActive:(BOOL)value
+{
+    if (active != value) {
+        if (value)
+            [self start];
+        else
+            [self stop];
+        active = value;
+    }
 }
 
 

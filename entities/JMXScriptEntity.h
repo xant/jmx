@@ -10,10 +10,16 @@
 #define __JMXV8__ 1
 #import "JMXEntity.h"
 
+@class JMXScript;
+
 @interface JMXScriptEntity : JMXEntity {
-    NSString *code; 
+@protected
+    NSString *code;
+    JMXScript *jsContext;
 }
 
 @property (copy) NSString *code;
+
+- (void)exec;
 
 @end

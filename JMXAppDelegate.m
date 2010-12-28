@@ -36,6 +36,7 @@
 #import "JMXCoreImageFilter.h"
 #import "JMXTextEntity.h"
 #import "JMXScriptFile.h"
+#import "JMXScriptLive.h"
 
 @implementation JMXAppDelegate
 
@@ -56,6 +57,7 @@
     [sharedContext registerClass:[JMXCoreImageFilter class]];
 	[sharedContext registerClass:[JMXTextEntity class]];
     [sharedContext registerClass:[JMXScriptFile class]];
+    [sharedContext registerClass:[JMXScriptLive class]];
 	NSLog(@"Registered %i entities", [[sharedContext registeredClasses] count]);
 }
 

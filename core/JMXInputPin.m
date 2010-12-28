@@ -139,4 +139,10 @@
     }
 }
 
+/*
+- (int)length
+{
+    NSLog(@"BLAH");
+}*/
+
 @end

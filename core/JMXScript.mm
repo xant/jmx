@@ -422,7 +422,10 @@ static v8::Handle<Value> Quit(const Arguments& args)
         // functions
         contextes[self] = ctx;
         scriptEntity = nil;
+        v8::Context::Scope context_scope(ctx);
+        char baseInclude[] = "include('JMX.js');";
         // Enter the newly created execution environment.
+        ExecJSCode(baseInclude, strlen(baseInclude), "JMX");
     }
     return self;
 }
@@ -454,6 +457,10 @@ static v8::Handle<Value> Quit(const Arguments& args)
     [super dealloc];
 }
 
+- (void)execCode:(NSString *)code
+{
+}
+
 - (void)runScript:(NSString *)source
 {
     return [self runScript:source withEntity:nil];
@@ -470,10 +477,9 @@ static v8::Handle<Value> Quit(const Arguments& args)
         scriptEntity = entity;
         //ctx->Global()->SetPointerInInternalField(0, scriptEntity);
     }
-    NSString *scriptSource = [NSString stringWithFormat:@"include('JMX.js');%@", script];
     //NSLog(@"%@", [self exportGraph:[[JMXContext sharedContext] allEntities] andPins:nil]);
     ctx->Global()->SetHiddenValue(String::New("quit"), v8::Boolean::New(0));
-    ExecJSCode([scriptSource UTF8String], [scriptSource length],
+    ExecJSCode([script UTF8String], [script length],
              entity ? [entity.name UTF8String] : [[NSString stringWithFormat:@"%@", self] UTF8String]);
     [pool drain];
 }

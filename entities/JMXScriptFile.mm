@@ -75,16 +75,12 @@
         self.code = nil;
 }
 
-- (void)runScript
-{
-}
-
 - (void)tick:(uint64_t)timeStamp
 {
     if (!self.quit) {
         self.quit = YES; // we want to stop the thread as soon as the script exits
         if (self.code)
-            [JMXScript runScript:self.code withEntity:self];
+            [self exec];
         else
             NSLog(@"JMXScriptEntity::tick(): No script to run");
         

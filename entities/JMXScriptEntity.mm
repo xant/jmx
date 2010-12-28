@@ -29,13 +29,20 @@ using namespace v8;
     self = [super init];
     if (self) {
         active = NO;
+        jsContext = [[JMXScript alloc] init];
     }
     return self;
 }
 
 - (void)dealloc
 {
+    [jsContext release];
     [super dealloc];
+}
+
+- (void)exec
+{
+    [jsContext runScript:self.code withEntity:self];
 }
 
 static Persistent<FunctionTemplate> objectTemplate;

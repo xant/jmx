@@ -84,8 +84,7 @@
         NSInteger selectedRow = [inputPins selectedRow];
         if (selectedRow >= 0) {
             NSArray *pins = [entityLayer.entity inputPins];
-            NSString *pinName = [pins objectAtIndex:selectedRow];
-            JMXInputPin *pin = [entityLayer.entity inputPinWithName:pinName];
+            JMXInputPin *pin = [pins objectAtIndex:selectedRow];
             return [pin.producers count];
         }
     }
@@ -102,7 +101,7 @@
         @synchronized(entityLayer.entity) {
             pins = [entityLayer.entity inputPins];
         }
-        JMXInputPin *pin = [entityLayer.entity inputPinWithName:[pins objectAtIndex:rowIndex]];
+        JMXInputPin *pin = [pins objectAtIndex:rowIndex];
         if (pin) {
             if (pin.type == kJMXNumberPin) {
                 if ([anObject isKindOfClass:[NSString class]])
@@ -126,7 +125,7 @@
         @synchronized(entityLayer.entity) {
             pins = [entityLayer.entity inputPins];
         }
-        JMXInputPin *pin = [entityLayer.entity inputPinWithName:[pins objectAtIndex:[sender selectedRow]]];
+        JMXInputPin *pin = [pins objectAtIndex:[sender selectedRow]];
         if (pin) {
             NSCell *cell = [sender preparedCellAtColumn:1 row:[sender selectedRow]];
             pin.data = [(NSPopUpButtonCell *)cell titleOfSelectedItem];
@@ -145,7 +144,7 @@
         @synchronized(entityLayer.entity) {
             pins = [entityLayer.entity inputPins];
         }
-        JMXInputPin *pin = [entityLayer.entity inputPinWithName:[pins objectAtIndex:[sender selectedRow]]];
+        JMXInputPin *pin = [pins objectAtIndex:[sender selectedRow]];
         if (pin) {
             NSCell *cell = [sender preparedCellAtColumn:1 row:[sender selectedRow]];
             pin.data = [NSNumber numberWithFloat:[cell floatValue]];
@@ -161,7 +160,7 @@
     @synchronized(entityLayer.entity) {
         pins = [entityLayer.entity inputPins];
     }
-    JMXInputPin *pin = [entityLayer.entity inputPinWithName:[pins objectAtIndex:[inputPins selectedRow]]];
+    JMXInputPin *pin = [pins objectAtIndex:[inputPins selectedRow]];
     if (pin.type == kJMXColorPin)
         pin.data = color;
 }
@@ -187,7 +186,7 @@
                 @synchronized(entityLayer.entity) {
                     pins = [entityLayer.entity inputPins];
                 }
-                JMXPin *pin = [entityLayer.entity inputPinWithName:[pins objectAtIndex:row]];
+                JMXPin *pin = [pins objectAtIndex:row];
                 cell = [dataCells objectForKey:pin];
                 if (cell != nil)
                     return cell;
@@ -266,7 +265,7 @@
             @synchronized(entityLayer.entity) {
                 pins = [entityLayer.entity inputPins];
             }
-            JMXPin *pin = [entityLayer.entity inputPinWithName:[pins objectAtIndex:rowIndex]];
+            JMXPin *pin = [pins objectAtIndex:rowIndex];
             if ([aCell isKindOfClass:[NSPopUpButtonCell class]])
                  [(NSPopUpButtonCell *)aCell selectItemWithTitle:pin.data];
             else if ([aCell isKindOfClass:[NSTextFieldCell class]]) {
@@ -293,7 +292,7 @@
                 @synchronized(entityLayer.entity) {
                     pins = [entityLayer.entity inputPins];
                 }
-                JMXPin *pin = [entityLayer.entity inputPinWithName:[pins objectAtIndex:rowIndex]];
+                JMXPin *pin = [pins objectAtIndex:rowIndex];
                 if (pin.type == kJMXAudioPin || pin.type == kJMXImagePin) // XXX
                     return [JMXPin nameforType:pin.type];
                 return pin.data;
@@ -305,15 +304,14 @@
             if ([[aTableColumn identifier] isEqualTo:@"pinName"])
                 return [pins objectAtIndex:rowIndex];
             else
-                return [[entityLayer.entity outputPinWithName:[pins objectAtIndex:rowIndex]] typeName];
+                return [[pins objectAtIndex:rowIndex] typeName];
         } else if (aTableView == producers) {
             NSInteger selectedRow = [inputPins selectedRow];
             if (selectedRow >= 0) {
                 @synchronized(entityLayer.entity) {
                     pins = [entityLayer.entity inputPins];
                 }
-                NSString *pinName = [pins objectAtIndex:selectedRow];
-                JMXInputPin *pin = [entityLayer.entity inputPinWithName:pinName];
+                JMXInputPin *pin = [pins objectAtIndex:selectedRow];
                 return [NSString stringWithFormat:@"%@",[[pin.producers objectAtIndex:rowIndex] description]];
             }
         }
@@ -376,8 +374,7 @@
         NSInteger selectedRow = [inputPins selectedRow];
         if (selectedRow >= 0) {
             NSArray *pins = [entityLayer.entity inputPins];
-            NSString *pinName = [pins objectAtIndex:selectedRow];
-            JMXInputPin *pin = [entityLayer.entity inputPinWithName:pinName];
+            JMXInputPin *pin = [pins objectAtIndex:selectedRow];
             if ([pin moveProducerFromIndex:(NSUInteger)srcRow toIndex:(NSUInteger)(srcRow < row)?row-1:row]) {
                 [aTableView reloadData];
                 return YES;

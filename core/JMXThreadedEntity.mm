@@ -357,25 +357,22 @@
 
 - (void)start
 {
-    JMXThreadedEntity *th = [self privateDataForKey:@"threadedEntity"];
-    if (th)
-        [th startThread];
+    self.active = YES;
 }
 
 - (void)stop
 {
-    JMXThreadedEntity *th = [self privateDataForKey:@"threadedEntity"];
-    if (th)
-        [th stopThread];
+    self.active = NO;
 }
 
 - (void)setActive:(BOOL)value
 {
+    JMXThreadedEntity *th = [self privateDataForKey:@"threadedEntity"];
     if (active != value) {
         if (value)
-            [self start];
+            [th startThread];
         else
-            [self stop];
+            [th stopThread];
         active = value;
     }
 }

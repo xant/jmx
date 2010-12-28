@@ -24,7 +24,7 @@ function AudioFile(path, type)
 {
     if (!type) {
         // TODO implement type selection
-        return CoreAudioFile();
+        return CoreAudioFile(path);
     } else {
         // TODO
     }

@@ -24,7 +24,7 @@ function MovieFile(path, type)
 {
     if (!type) {
         // TODO implement type selection
-        return QtMovieFile();
+        return QtMovieFile(path);
     } else {
         // TODO
     }

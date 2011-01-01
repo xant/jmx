@@ -405,10 +405,19 @@ using namespace v8;
 
 - (id)readData
 {
-    [dataLock lock];
-    id data = [dataBuffer[rOffset&kJMXPinDataBufferMask] retain];
-    [dataLock unlock];
-    return [data autorelease];
+    // if we have an owner which conforms to the <JMXPinOwner> protocol
+    // we will send it a message to get the actual value
+    id ret = nil;
+    if (owner && [owner conformsToProtocol:@protocol(JMXPinOwner)])
+        ret = [owner provideDataToPin:self];
+    if (!ret) {
+        // otherwise we will return the last signaled data
+        [dataLock lock];
+        ret = [dataBuffer[rOffset&kJMXPinDataBufferMask] retain];
+        [dataLock unlock];
+        [ret autorelease];
+    }
+    return ret;
 }
 
 - (void)deliverData:(id)data
@@ -521,8 +530,15 @@ using namespace v8;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     // send the signal to our owner
     // (if we are an input pin and if our owner registered a selector)
-    if (direction == kJMXInputPin && ownerSignal)
-        [self sendData:signal.data toReceiver:signal.receiver withSelector:ownerSignal fromSender:signal.sender];
+    if (direction == kJMXInputPin) {
+        if (owner) {
+            if (ownerSignal)
+                [self sendData:signal.data toReceiver:signal.receiver withSelector:ownerSignal fromSender:signal.sender];
+            else if ([owner conformsToProtocol:@protocol(JMXPinOwner)])
+                [owner performSelector:@selector(receiveData:fromPin:) withObject:signal.data withObject:self];
+    
+        }
+    }
     [pool drain];
 }
 

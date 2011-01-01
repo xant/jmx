@@ -148,6 +148,7 @@
 - (void)startThread
 {
     if (!worker) {
+        NSLog(@"Thread %@ starting", self);
         worker = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
         [worker setThreadPriority:1.0];
         [worker start];
@@ -157,6 +158,7 @@
 
 - (void)stopThread {
     if (worker) {
+        NSLog(@"Thread %@ exiting", self);
         quit = YES;
         [worker cancel];
         // wait for the thread to really finish otherwise it could
@@ -164,7 +166,7 @@
         // immediately after we return from this method
         //while (![worker isFinished])
             //[NSThread sleepForTimeInterval:0.001];
-        [worker autorelease];
+        [worker release];
         worker = nil;
     }
 }
@@ -200,7 +202,6 @@
     [self tick:timeStamp];
     previousTimeStamp = timeStamp;
     if ([[NSThread currentThread] isCancelled] || quit) {
-        NSLog(@"Thread %@ exiting", self);
         [timer invalidate];
         realEntity.active = NO;
     } else {
@@ -228,8 +229,8 @@
     NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
     [runLoop addTimer:timer forMode:NSRunLoopCommonModes];
     [runLoop run];
-    [pool drain];
     realEntity.active = NO;
+    [pool drain];
 #else
     uint64_t maxDelta = 1e9 / [frequency doubleValue];
     

@@ -146,7 +146,7 @@
  *
  * * active kJMXBooleanPin
  */
-@interface JMXEntity : NSXMLElement <NSCopying, JMXV8> {
+@interface JMXEntity : NSXMLElement <NSCopying, JMXV8, JMXPinOwner> {
 @public
     NSString *label;
     BOOL active;
@@ -158,6 +158,8 @@
     NSXMLElement *outputPins;
 @private
     NSMutableDictionary *privateData;
+    JMXInputPin *activeIn;
+    JMXOutputPin *activeOut;
 }
 
 #ifdef __JMXV8__

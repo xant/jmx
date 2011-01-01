@@ -123,19 +123,6 @@ JMXEntityLabelLayer *JMXEntityLabelLayerCreate(NSString *name) {
     CFRelease(shadowColor);
 
     [self addSublayer:JMXEntityLabelLayerCreate(self.entity.description)];
-/*
-    for (NSString *thePinName in [self.entity inputPins]) {
-        JMXOutletLayer *outlet = JMXInputOutletLayerCreate([self inputPinWithName:thePinName]);
-        [self addSublayer:outlet];
-        [self.inlets addObject:outlet];
-    }
-
-    for (NSString *thePinName in [self.entity outputPins]) {
-        JMXOutletLayer *outlet = JMXOutputOutletLayerCreate([self inputPinWithName:thePinName]);
-        [self addSublayer:outlet];
-        [self.outlets addObject:outlet];
-    }
- */
     [self recalculateFrame];
 }
 

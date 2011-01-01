@@ -10,6 +10,7 @@
 
 
 @class JMXEntityLayer;
+@class JMXTextPanel;
 
 @interface JMXEntityInspectorPanel : NSPanel <NSTableViewDataSource,NSTableViewDelegate,NSWindowDelegate> {
     IBOutlet NSTextField *entityName;
@@ -17,6 +18,7 @@
     IBOutlet NSTableView *inputPins;
     IBOutlet NSTableView *outputPins;
     IBOutlet NSTableView *producers;
+    IBOutlet JMXTextPanel *textPanel;
     NSMutableDictionary *dataCells;
 @private
     JMXEntityLayer *entityLayer; // weak reference

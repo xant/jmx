@@ -9,6 +9,7 @@
 #import "JMXEntityInspectorPanel.h"
 #import "JMXEntityLayer.h"
 #import "JMXColor.h"
+#import "JMXTextPanel.h"
 
 @interface JMXEntityInspectorPanel (Private)
 - (void)setEntity:(JMXEntityLayer *)entity;
@@ -108,7 +109,7 @@
                     pin.data = [NSNumber numberWithInt:[anObject intValue]];
                 else if ([anObject isKindOfClass:[NSNumber class]])
                     pin.data = anObject;
-            } else if (pin.type == kJMXStringPin || pin.type == kJMXTextPin) {
+            } else if (pin.type == kJMXStringPin) {
                 if ([anObject isKindOfClass:[NSString class]])
                     pin.data = anObject;
                 else if ([anObject isKindOfClass:[NSNumber class]])
@@ -152,6 +153,21 @@
     }
 }
 
+- (void)setBooleanValue:(id)sender
+{
+    if (sender == inputPins) {
+        NSArray *pins;
+        @synchronized(entityLayer.entity) {
+            pins = [entityLayer.entity inputPins];
+        }
+        JMXInputPin *pin = [pins objectAtIndex:[sender selectedRow]];
+        if (pin) {
+            NSButtonCell *cell = (NSButtonCell *)[sender preparedCellAtColumn:1 row:[sender selectedRow]];
+            pin.data = [NSNumber numberWithInt:[cell intValue]];
+        }
+    }
+}
+
 - (void)changeColor:(id)sender
 {
     NSArray *pins;
@@ -175,6 +191,36 @@
     }
 }
 
+#if 0
+- (void)setText:(NSString *)text
+{
+    NSArray *pins;
+    @synchronized(entityLayer.entity) {
+        pins = [entityLayer.entity inputPins];
+    }
+    JMXInputPin *pin = [pins objectAtIndex:[inputPins selectedRow]];
+    if (pin.type == kJMXTextPin)
+        pin.data = text;
+}
+#endif
+
+- (void)provideText:(id)sender
+{
+    if (sender == inputPins) {
+        NSArray *pins;
+        @synchronized(entityLayer.entity) {
+            pins = [entityLayer.entity inputPins];
+        }
+        JMXInputPin *pin = [pins objectAtIndex:[inputPins selectedRow]];
+#if 0
+        [textPanel setDelegate:self];
+#endif
+        [textPanel setIsVisible:YES];
+        [textPanel makeKeyAndOrderFront:sender];
+        textPanel.pin = pin;
+    }
+}
+
 - (NSCell *)tableView:(NSTableView *)tableView dataCellForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 {
     NSActionCell *cell = nil;
@@ -190,10 +236,11 @@
                 cell = [dataCells objectForKey:pin];
                 if (cell != nil)
                     return cell;
-                if (pin.type == kJMXStringPin || pin.type == kJMXTextPin) {
+                if (pin.type == kJMXStringPin) {
                     if ([pin allowedValues]) {
                         cell = [[NSPopUpButtonCell alloc] init];
                         [(NSPopUpButtonCell *)cell addItemsWithTitles:[pin allowedValues]];
+                        [(NSButtonCell *)cell setBezelStyle:NSRoundedBezelStyle];
                         [(NSPopUpButtonCell *)cell setPullsDown:NO];
                     } else {
                         cell = [[[NSTextFieldCell alloc] init] autorelease];
@@ -203,6 +250,13 @@
                     [cell setFont:[NSFont labelFontOfSize:[NSFont smallSystemFontSize]]];
                     [cell setTarget:self];
                     [cell setAction:@selector(setPopupButtonValue:)];
+                } else if (pin.type == kJMXTextPin) {
+                    cell = [[[NSButtonCell alloc] init] autorelease];
+                    [cell setTitle:@"Provide Text"];
+                    [cell setControlSize:NSMiniControlSize];
+                    [cell setFont:[NSFont labelFontOfSize:[NSFont smallSystemFontSize]]];
+                    [cell setTarget:self];
+                    [cell setAction:@selector(provideText:)];
                 } else if (pin.type == kJMXNumberPin) {
                     if (pin.minValue && pin.maxValue) {
                         cell = [[[NSSliderCell alloc] init] autorelease];
@@ -224,6 +278,14 @@
                         [cell setEditable:YES];
                     }
                 } else if (pin.type == kJMXBooleanPin) {
+                    cell = [[[NSButtonCell alloc] init] autorelease];
+                    [cell setTitle:@""];
+                    [cell setControlSize:NSMiniControlSize];
+                    [(NSButtonCell *)cell setButtonType:NSPushOnPushOffButton];
+                    [(NSButtonCell *)cell setBezelStyle:NSRoundedBezelStyle];
+                    [cell setFont:[NSFont labelFontOfSize:[NSFont smallSystemFontSize]]];
+                    [cell setTarget:self];
+                    [cell setAction:@selector(setBooleanValue:)];
                 } else if (pin.type == kJMXSizePin || pin.type == kJMXPointPin) {
                     cell = [[[NSTextFieldCell alloc] init] autorelease];
                     NSNumberFormatter *nf = [[NSNumberFormatter alloc] init];
@@ -241,6 +303,7 @@
                     cell = [[[NSButtonCell alloc] init] autorelease];
                     [cell setTitle:@"Select Color"];
                     [cell setControlSize:NSMiniControlSize];
+                    [(NSButtonCell *)cell setBezelStyle:NSRoundedBezelStyle];
                     [cell setFont:[NSFont labelFontOfSize:[NSFont smallSystemFontSize]]];
                     [cell setTarget:self];
                     [cell setAction:@selector(selectColor:)];
@@ -272,6 +335,13 @@
                 id value = pin.data;
                 if ([value isKindOfClass:[NSNumber class]]) {
                     [(NSTextFieldCell *)aCell setStringValue:[NSString stringWithFormat:@"%.2f", [value floatValue]]];
+                }
+            } else if ([aCell isKindOfClass:[NSButtonCell class]]) {
+                id value = pin.data;
+                if ([value isKindOfClass:[NSNumber class]]) {
+                    [(NSButtonCell *)aCell setIntegerValue:[value integerValue]];
+                } else {
+                    [(NSButtonCell *)aCell setIntegerValue:0];
                 }
             }
         }

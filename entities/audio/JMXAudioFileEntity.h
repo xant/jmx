@@ -33,11 +33,15 @@
     JMXAudioFile *audioFile;
     JMXAudioBuffer *currentSample;
     JMXOutputPin *outputPin;
+    BOOL paused;
     BOOL repeat; // defaults to YES
     NSUInteger offset;
 }
 
 @property (readwrite) BOOL repeat;
+
+@property (readwrite) BOOL paused;
+
 - (void)doRepeat:(id)value; // input pin setter (we will receive NSNumbers from pins)
 @end
 

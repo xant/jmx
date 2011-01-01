@@ -28,8 +28,8 @@ using namespace v8;
 {
     self = [super init];
     if (self) {
-        active = NO;
         jsContext = [[JMXScript alloc] init];
+        self.name = @"ScriptEntity";
     }
     return self;
 }

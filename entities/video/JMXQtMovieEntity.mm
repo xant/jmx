@@ -68,8 +68,8 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
         movieFrequency = 0;
         self.name = @"QtMovieFile";
         [self registerInputPin:@"path" withType:kJMXStringPin andSelector:@"setMoviePath:"];
-        [self registerInputPin:@"repeat" withType:kJMXNumberPin andSelector:@"setRepeat:"];
-        [self registerInputPin:@"paused" withType:kJMXNumberPin andSelector:@"setPaused:"];
+        [self registerInputPin:@"repeat" withType:kJMXBooleanPin andSelector:@"setBooleanPin:"];
+        [self registerInputPin:@"paused" withType:kJMXBooleanPin andSelector:@"setBooleanPin:"];
         JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
         if (threadedEntity)
             return threadedEntity;
@@ -322,6 +322,32 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
 - (void)setSize:(JMXSize *)newSize
 {
     return [super setSize:newSize];
+}
+
+- (void)setRepeatPin:(NSNumber *)newValue
+{
+    self.repeat = [newValue boolValue];
+}
+
+- (void)setPausedPin:(NSNumber *)newValue
+{
+    self.paused = [newValue boolValue];
+}
+
+#pragma mark <JMXPinOwner>
+
+- (id)provideDataToPin:(JMXPin *)aPin
+{
+    // TODO - use introspection to determine the return type of a message
+    //        to generalize using encapsulation in NSNumber/NSData/NSValue 
+    if ([aPin.name isEqualTo:@"repeat"]) {
+        return [NSNumber numberWithBool:self.repeat];
+    } else if ([aPin.name isEqualTo:@"paused"]) {
+        return [NSNumber numberWithBool:self.paused];
+    } else {
+        return [super provideDataToPin:aPin];
+    }
+    return nil;
 }
 
 #pragma mark V8

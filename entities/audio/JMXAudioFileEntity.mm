@@ -32,7 +32,7 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXAudioFileEntity);
 
 @implementation JMXAudioFileEntity
 
-@synthesize repeat;
+@synthesize repeat, paused;
 
 + (NSArray *)supportedFileTypes
 {
@@ -47,7 +47,9 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXAudioFileEntity);
         outputPin = [self registerOutputPin:@"audio" withType:kJMXAudioPin];
         repeat = YES;
         self.name = @"CoreAudioFile";
-        [self registerInputPin:@"repeat" withType:kJMXNumberPin andSelector:@"doRepeat:"];
+        [self registerInputPin:@"repeat" withType:kJMXBooleanPin andSelector:@"doRepeat:"];
+        [self registerInputPin:@"paused" withType:kJMXNumberPin andSelector:@"setPaused:"];
+
         currentSample = nil;
         JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
         if (threadedEntity)
@@ -110,11 +112,25 @@ JMXV8_EXPORT_ENTITY_CLASS(JMXAudioFileEntity);
 
 - (void)doRepeat:(id)value
 {
-    repeat = (value && 
-              [value respondsToSelector:@selector(boolValue)] && 
-              [value boolValue])
-    ? YES
-    : NO;
+    self.repeat = (value && [value respondsToSelector:@selector(boolValue)] && [value boolValue])
+                ? YES
+                : NO;
+}
+
+#pragma mark <JMXPinOwner>
+
+- (id)provideDataToPin:(JMXPin *)aPin
+{
+    // TODO - use introspection to determine the return type of a message
+    //        to generalize using encapsulation in NSNumber/NSData/NSValue 
+    if ([aPin.name isEqualTo:@"repeat"]) {
+        return [NSNumber numberWithBool:self.repeat];
+    } else if ([aPin.name isEqualTo:@"paused"]) {
+        return [NSNumber numberWithBool:self.paused];
+    } else {
+        return [super provideDataToPin:aPin];
+    }
+    return nil;
 }
 
 #pragma mark V8

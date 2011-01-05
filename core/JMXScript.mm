@@ -29,6 +29,7 @@
 #import "JMXPoint.h"
 #import "JMXColor.h"
 #import "JMXSize.h"
+#import "JMXCDATA.h"
 
 @class JMXEntity;
 
@@ -61,6 +62,7 @@ static JMXV8ClassDescriptor mappedClasses[] = {
     { "JMXPoint",                 "Point",           JMXPointJSConstructor },
     { "JMXColor",                 "Color",           JMXColorJSConstructor },
     { "JMXSize",                  "Size",            JMXSizeJSConstructor },
+    { "JMXCDATA",                 "CharacterData",   JMXCDATAJSConstructor },
     { NULL,                       NULL,              NULL }
 };
 

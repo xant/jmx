@@ -98,6 +98,7 @@
 		AAC6323C12CFCAB900B69DFE /* JMXNode.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6323B12CFCAB900B69DFE /* JMXNode.mm */; };
 		AAC6334612D36DA900B69DFE /* NSXMLNode+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6334512D36DA900B69DFE /* NSXMLNode+V8.mm */; };
 		AAC6359C12D4622400B69DFE /* DOM.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AAC6355612D45C5800B69DFE /* DOM.js */; };
+		AAC6376312D5099400B69DFE /* JMXCDATA.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6376212D5099400B69DFE /* JMXCDATA.mm */; };
 		AACE7D04129315DE00FBDC0D /* JMXScriptEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */; };
 		AACE7D331293195600FBDC0D /* JMXV8PropertyAccessors.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACE7D321293195600FBDC0D /* JMXV8PropertyAccessors.mm */; };
 		AAD139BB128EA0DF00ECB03A /* JMXDrawPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */; };
@@ -314,6 +315,8 @@
 		AAC6334412D36DA900B69DFE /* NSXMLNode+V8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSXMLNode+V8.h"; sourceTree = "<group>"; };
 		AAC6334512D36DA900B69DFE /* NSXMLNode+V8.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSXMLNode+V8.mm"; sourceTree = "<group>"; };
 		AAC6355612D45C5800B69DFE /* DOM.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = DOM.js; sourceTree = "<group>"; };
+		AAC6376112D5099400B69DFE /* JMXCDATA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXCDATA.h; sourceTree = "<group>"; };
+		AAC6376212D5099400B69DFE /* JMXCDATA.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXCDATA.mm; sourceTree = "<group>"; };
 		AACE7D02129315DE00FBDC0D /* JMXScriptEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXScriptEntity.h; sourceTree = "<group>"; };
 		AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScriptEntity.mm; sourceTree = "<group>"; };
 		AACE7D311293195600FBDC0D /* JMXV8PropertyAccessors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXV8PropertyAccessors.h; sourceTree = "<group>"; };
@@ -661,6 +664,8 @@
 				AAC6323012CFC72B00B69DFE /* JMXGraph.mm */,
 				AAC6323A12CFCAB900B69DFE /* JMXNode.h */,
 				AAC6323B12CFCAB900B69DFE /* JMXNode.mm */,
+				AAC6376112D5099400B69DFE /* JMXCDATA.h */,
+				AAC6376212D5099400B69DFE /* JMXCDATA.mm */,
 				AAC6334412D36DA900B69DFE /* NSXMLNode+V8.h */,
 				AAC6334512D36DA900B69DFE /* NSXMLNode+V8.mm */,
 			);
@@ -867,6 +872,7 @@
 				AAC6323112CFC72B00B69DFE /* JMXGraph.mm in Sources */,
 				AAC6323C12CFCAB900B69DFE /* JMXNode.mm in Sources */,
 				AAC6334612D36DA900B69DFE /* NSXMLNode+V8.mm in Sources */,
+				AAC6376312D5099400B69DFE /* JMXCDATA.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

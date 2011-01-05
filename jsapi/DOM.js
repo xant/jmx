@@ -259,3 +259,4 @@ function DocumentFragment() {
     
 }
 DocumentFragment.inherits(Node);
+

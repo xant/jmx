@@ -432,7 +432,7 @@ const unsigned short      DOCUMENT_POSITION_CONTAINS     = 0x08;
 const unsigned short      DOCUMENT_POSITION_CONTAINED_BY = 0x10;
 const unsigned short      DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC = 0x20;
 */
-static v8::Handle<Value> LookupNamespaceURI(const Arguments& args)
+static v8::Handle<Value> CompareDocumentPosition(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;

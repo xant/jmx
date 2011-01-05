@@ -561,7 +561,7 @@ static v8::Handle<Value>OutputPins(Local<String> name, const AccessorInfo& info)
 }
 
 
-v8::Handle<Value> InputPin(const Arguments& args)
+static v8::Handle<Value> InputPin(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
@@ -581,7 +581,7 @@ v8::Handle<Value> InputPin(const Arguments& args)
     return handleScope.Close(Undefined());
 }
 
-v8::Handle<Value> OutputPin(const Arguments& args)
+static v8::Handle<Value> OutputPin(const Arguments& args)
 {   
     //v8::Locker lock;
     HandleScope handleScope;
@@ -631,7 +631,7 @@ v8::Handle<Value> OutputPin(const Arguments& args)
     return objectTemplate;
 }
 
-v8::Handle<Value> NativeClassName(const Arguments& args)
+static v8::Handle<Value> NativeClassName(const Arguments& args)
 {   
     //v8::Locker lock;
     HandleScope handleScope;

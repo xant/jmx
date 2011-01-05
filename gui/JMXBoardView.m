@@ -1,6 +1,6 @@
 //
-//  JMXBoard.m
-//  GraphRep
+//  JMXBoardView.m
+//  JMX
 //
 //  Created by Igor Sutton on 8/26/10.
 //  Copyright 2010 StrayDev.com. All rights reserved.

@@ -609,7 +609,8 @@ v8::Handle<Value> OutputPin(const Arguments& args)
     //v8::Locker lock;
     if (!objectTemplate.IsEmpty())
         return objectTemplate;
-    objectTemplate = [super jsObjectTemplate];
+    objectTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    objectTemplate->Inherit([super jsObjectTemplate]);
     objectTemplate->SetClassName(String::New("Entity"));
     v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     classProto->Set("inputPin", FunctionTemplate::New(InputPin));
@@ -619,7 +620,6 @@ v8::Handle<Value> OutputPin(const Arguments& args)
     instanceTemplate->SetInternalFieldCount(1);
     
     // Add accessors for each of the fields of the entity.
-    instanceTemplate->SetAccessor(String::NewSymbol("name"), GetStringProperty, SetStringProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("description"), GetStringProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("inputPins"), InputPins);
     instanceTemplate->SetAccessor(String::NewSymbol("outputPins"), OutputPins);

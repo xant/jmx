@@ -650,7 +650,6 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
     // Add accessors for each of the fields of the entity.
     instanceTemplate->SetAccessor(String::NewSymbol("type"), type);
     instanceTemplate->SetAccessor(String::NewSymbol("direction"), direction);
-    instanceTemplate->SetAccessor(String::NewSymbol("name"), GetStringProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("multiple"), GetBoolProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("continuous"), GetBoolProperty, SetBoolProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("minValue"), GetObjectProperty);

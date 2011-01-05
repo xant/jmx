@@ -137,7 +137,10 @@ static inline void _SetProperty(id obj, char *name, id value)
                         ];
     SEL selector = NSSelectorFromString(setter);
     if (!obj || ![obj respondsToSelector:selector]) {
-        NSLog(@"Unknown setter %@", setter);
+        if ([obj respondsToSelector:NSSelectorFromString(property)])
+            NSLog(@"ReadOnly property %@", property);
+        else
+            NSLog(@"Unknown setter %@", setter);
         [pool drain];
         return;
     }

@@ -97,6 +97,7 @@
 		AAC6323112CFC72B00B69DFE /* JMXGraph.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6323012CFC72B00B69DFE /* JMXGraph.mm */; };
 		AAC6323C12CFCAB900B69DFE /* JMXNode.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6323B12CFCAB900B69DFE /* JMXNode.mm */; };
 		AAC6334612D36DA900B69DFE /* NSXMLNode+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6334512D36DA900B69DFE /* NSXMLNode+V8.mm */; };
+		AAC6359C12D4622400B69DFE /* DOM.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AAC6355612D45C5800B69DFE /* DOM.js */; };
 		AACE7D04129315DE00FBDC0D /* JMXScriptEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */; };
 		AACE7D331293195600FBDC0D /* JMXV8PropertyAccessors.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACE7D321293195600FBDC0D /* JMXV8PropertyAccessors.mm */; };
 		AAD139BB128EA0DF00ECB03A /* JMXDrawPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */; };
@@ -112,6 +113,7 @@
 			dstPath = js;
 			dstSubfolderSpec = 13;
 			files = (
+				AAC6359C12D4622400B69DFE /* DOM.js in Deploy JS API */,
 				AA4BFECF12BE25E900775B88 /* JMX.js in Deploy JS API */,
 				AA4BFED012BE25E900775B88 /* AudioOutput.js in Deploy JS API */,
 				AA4BFED112BE25E900775B88 /* VideoOutput.js in Deploy JS API */,
@@ -311,6 +313,7 @@
 		AAC6323B12CFCAB900B69DFE /* JMXNode.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXNode.mm; sourceTree = "<group>"; };
 		AAC6334412D36DA900B69DFE /* NSXMLNode+V8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSXMLNode+V8.h"; sourceTree = "<group>"; };
 		AAC6334512D36DA900B69DFE /* NSXMLNode+V8.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSXMLNode+V8.mm"; sourceTree = "<group>"; };
+		AAC6355612D45C5800B69DFE /* DOM.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = DOM.js; sourceTree = "<group>"; };
 		AACE7D02129315DE00FBDC0D /* JMXScriptEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXScriptEntity.h; sourceTree = "<group>"; };
 		AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScriptEntity.mm; sourceTree = "<group>"; };
 		AACE7D311293195600FBDC0D /* JMXV8PropertyAccessors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXV8PropertyAccessors.h; sourceTree = "<group>"; };
@@ -551,6 +554,7 @@
 			children = (
 				AA4BFDF212BE0CCE00775B88 /* core_doc */,
 				AA4BFE1312BE0E2000775B88 /* JMX.js */,
+				AAC6355612D45C5800B69DFE /* DOM.js */,
 				AA4BFE1112BE0D7400775B88 /* AudioOutput.js */,
 				AA4BFE1512BE135000775B88 /* VideoOutput.js */,
 				AA4BFEFD12BE2B4500775B88 /* VideoFilter.js */,

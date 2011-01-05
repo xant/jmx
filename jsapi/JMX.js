@@ -19,4 +19,7 @@ include("VideoCapture.js");
 include("MovieFile.js");
 include("AudioFile.js");
 
+include("DOM.js"); // DOM related additions
+
 //echo("Done initializing JMX Core API");
+

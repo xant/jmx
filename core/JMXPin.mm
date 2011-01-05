@@ -21,11 +21,11 @@
 //  along with JMX.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#define __JMXV8__
 #import "JMXPin.h"
 #import "JMXContext.h"
 #import "JMXOutputPin.h"
 #import "JMXInputPin.h"
-#import <v8.h>
 #import "JMXScript.h"
 #import "JMXEntity.h"
 
@@ -195,7 +195,7 @@ using namespace v8;
         [self addAttribute:[NSXMLNode attributeWithName:@"type" stringValue:[JMXPin nameforType:type]]];
         [self addAttribute:[NSXMLNode attributeWithName:@"multiple" stringValue:multiple ? @"YES" : @"NO" ]];
         [self addAttribute:[NSXMLNode attributeWithName:@"connected" stringValue:connected ? @"YES" : @"NO" ]];
-        connections = [[NSXMLElement alloc] initWithName:@"connections"];
+        connections = [[JMXNode alloc] initWithName:@"connections"];
         [self addChild:connections];
     }
     return self;
@@ -638,8 +638,8 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
     //v8::Locker lock;
     if (!objectTemplate.IsEmpty())
         return objectTemplate;
-    NSLog(@"JMXPin objectTemplate created");
     objectTemplate = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    objectTemplate->Inherit([super jsObjectTemplate]);
     objectTemplate->SetClassName(String::New("Pin"));
     v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     classProto->Set("connect", FunctionTemplate::New(connect));
@@ -659,6 +659,7 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
     instanceTemplate->SetAccessor(String::NewSymbol("sendNotifications"), GetBoolProperty, SetBoolProperty);
     //instanceTemplate->SetAccessor(String::NewSymbol("owner"), accessObjectProperty);
     //instanceTemplate->SetAccessor(String::NewSymbol("allowedValues"), allowedValues);
+    NSLog(@"JMXPin objectTemplate created");
     return objectTemplate;
 }
 

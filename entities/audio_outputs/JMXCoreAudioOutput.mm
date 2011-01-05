@@ -26,7 +26,7 @@
 #import "JMXCoreAudioOutput.h"
 #include "JMXScript.h"
 
-JMXV8_EXPORT_ENTITY_CLASS(JMXCoreAudioOutput);
+JMXV8_EXPORT_NODE_CLASS(JMXCoreAudioOutput);
 
 @implementation JMXCoreAudioOutput
 

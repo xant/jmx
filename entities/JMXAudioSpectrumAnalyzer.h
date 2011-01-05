@@ -39,5 +39,5 @@
 @end
 
 #ifdef __JMXV8__
-JMXV8_DECLARE_ENTITY_CONSTRUCTOR(JMXAudioSpectrumAnalyzer);
+JMXV8_DECLARE_NODE_CONSTRUCTOR(JMXAudioSpectrumAnalyzer);
 #endif

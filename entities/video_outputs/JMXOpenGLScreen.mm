@@ -33,7 +33,7 @@
 #import <AppKit/AppKit.h>
 //#import <Carbon/Carbon.h>
 
-JMXV8_EXPORT_ENTITY_CLASS(JMXOpenGLScreen);
+JMXV8_EXPORT_NODE_CLASS(JMXOpenGLScreen);
 
 @interface JMXOpenGLView : NSOpenGLView {
     CIImage *currentFrame;

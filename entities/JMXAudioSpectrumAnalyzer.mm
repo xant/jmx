@@ -15,7 +15,7 @@
 #include "JMXAudioSpectrumAnalyzer.h"
 #include "JMXScript.h"
 
-JMXV8_EXPORT_ENTITY_CLASS(JMXAudioSpectrumAnalyzer);
+JMXV8_EXPORT_NODE_CLASS(JMXAudioSpectrumAnalyzer);
 
 // XXX - just a test
 #undef memcpy

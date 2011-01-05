@@ -37,5 +37,5 @@
 #endif
 
 #ifdef __JMXV8__
-JMXV8_DECLARE_ENTITY_CONSTRUCTOR(JMXQtVideoCaptureEntity);
+JMXV8_DECLARE_NODE_CONSTRUCTOR(JMXQtVideoCaptureEntity);
 #endif

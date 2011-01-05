@@ -27,6 +27,8 @@
 #import "JMXScript.h"
 #import "JMXProxyPin.h"
 
+JMXV8_EXPORT_NODE_CLASS(JMXEntity);
+
 using namespace v8;
 
 @implementation JMXEntity
@@ -80,9 +82,9 @@ using namespace v8;
         self.name = @"Entity";
         self.label = @"";
         active = NO;
-        inputPins = [[NSXMLElement elementWithName:@"inputPins"] retain];
+        inputPins = [[NSXMLNode elementWithName:@"inputPins"] retain];
         [self addChild:inputPins];
-        outputPins = [[NSXMLElement elementWithName:@"outputPins"] retain];
+        outputPins = [[NSXMLNode elementWithName:@"outputPins"] retain];
         [self addChild:outputPins];
         [self addAttribute:[NSXMLNode attributeWithName:@"class" stringValue:NSStringFromClass([self class])]];
         [self addAttribute:[NSXMLNode attributeWithName:@"label" stringValue:label]];
@@ -601,15 +603,13 @@ v8::Handle<Value> OutputPin(const Arguments& args)
 }
 
 #pragma mark Class Template
-static Persistent<FunctionTemplate> objectTemplate;
 
-v8::Persistent<v8::FunctionTemplate>JMXEntityJSObjectTemplate()
++ (v8::Persistent<FunctionTemplate>)jsObjectTemplate
 {
     //v8::Locker lock;
     if (!objectTemplate.IsEmpty())
         return objectTemplate;
-    NSLog(@"JMXEntity objectTemplate created");
-    objectTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    objectTemplate = [super jsObjectTemplate];
     objectTemplate->SetClassName(String::New("Entity"));
     v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     classProto->Set("inputPin", FunctionTemplate::New(InputPin));
@@ -617,18 +617,18 @@ v8::Persistent<v8::FunctionTemplate>JMXEntityJSObjectTemplate()
     // set instance methods
     v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
     instanceTemplate->SetInternalFieldCount(1);
+    
     // Add accessors for each of the fields of the entity.
     instanceTemplate->SetAccessor(String::NewSymbol("name"), GetStringProperty, SetStringProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("description"), GetStringProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("inputPins"), InputPins);
     instanceTemplate->SetAccessor(String::NewSymbol("outputPins"), OutputPins);
     instanceTemplate->SetAccessor(String::NewSymbol("active"), GetBoolProperty, SetBoolProperty);
+    
+    if ([self respondsToSelector:@selector(jsObjectTemplateAddons:)])
+        [self jsObjectTemplateAddons:objectTemplate];
+    NSLog(@"JMXEntity objectTemplate created");
     return objectTemplate;
-}
-
-+ (v8::Persistent<FunctionTemplate>)jsObjectTemplate
-{
-    return JMXEntityJSObjectTemplate();
 }
 
 v8::Handle<Value> NativeClassName(const Arguments& args)

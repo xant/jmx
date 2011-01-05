@@ -94,6 +94,9 @@
 		AA8F785A12C5880100EA8543 /* AudioFile.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA8F770812C571A200EA8543 /* AudioFile.js */; };
 		AA8F806112C9D3FA00EA8543 /* JMXScriptLive.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8F806012C9D3FA00EA8543 /* JMXScriptLive.mm */; };
 		AA8F817612CB236700EA8543 /* JMXTextPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8F817512CB236700EA8543 /* JMXTextPanel.m */; };
+		AAC6323112CFC72B00B69DFE /* JMXGraph.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6323012CFC72B00B69DFE /* JMXGraph.mm */; };
+		AAC6323C12CFCAB900B69DFE /* JMXNode.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6323B12CFCAB900B69DFE /* JMXNode.mm */; };
+		AAC6334612D36DA900B69DFE /* NSXMLNode+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6334512D36DA900B69DFE /* NSXMLNode+V8.mm */; };
 		AACE7D04129315DE00FBDC0D /* JMXScriptEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */; };
 		AACE7D331293195600FBDC0D /* JMXV8PropertyAccessors.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACE7D321293195600FBDC0D /* JMXV8PropertyAccessors.mm */; };
 		AAD139BB128EA0DF00ECB03A /* JMXDrawPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */; };
@@ -302,6 +305,12 @@
 		AA8F806012C9D3FA00EA8543 /* JMXScriptLive.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScriptLive.mm; sourceTree = "<group>"; };
 		AA8F817412CB236700EA8543 /* JMXTextPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXTextPanel.h; sourceTree = "<group>"; };
 		AA8F817512CB236700EA8543 /* JMXTextPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXTextPanel.m; sourceTree = "<group>"; };
+		AAC6322F12CFC72B00B69DFE /* JMXGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXGraph.h; sourceTree = "<group>"; };
+		AAC6323012CFC72B00B69DFE /* JMXGraph.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXGraph.mm; sourceTree = "<group>"; };
+		AAC6323A12CFCAB900B69DFE /* JMXNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXNode.h; sourceTree = "<group>"; };
+		AAC6323B12CFCAB900B69DFE /* JMXNode.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXNode.mm; sourceTree = "<group>"; };
+		AAC6334412D36DA900B69DFE /* NSXMLNode+V8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSXMLNode+V8.h"; sourceTree = "<group>"; };
+		AAC6334512D36DA900B69DFE /* NSXMLNode+V8.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSXMLNode+V8.mm"; sourceTree = "<group>"; };
 		AACE7D02129315DE00FBDC0D /* JMXScriptEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXScriptEntity.h; sourceTree = "<group>"; };
 		AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScriptEntity.mm; sourceTree = "<group>"; };
 		AACE7D311293195600FBDC0D /* JMXV8PropertyAccessors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXV8PropertyAccessors.h; sourceTree = "<group>"; };
@@ -644,6 +653,12 @@
 				AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */,
 				82AD7F6E1289F3C300C85EB1 /* JMXOpenGLDraw.h */,
 				82AD7F6F1289F3C300C85EB1 /* JMXOpenGLDraw.mm */,
+				AAC6322F12CFC72B00B69DFE /* JMXGraph.h */,
+				AAC6323012CFC72B00B69DFE /* JMXGraph.mm */,
+				AAC6323A12CFCAB900B69DFE /* JMXNode.h */,
+				AAC6323B12CFCAB900B69DFE /* JMXNode.mm */,
+				AAC6334412D36DA900B69DFE /* NSXMLNode+V8.h */,
+				AAC6334512D36DA900B69DFE /* NSXMLNode+V8.mm */,
 			);
 			name = Core;
 			path = core;
@@ -845,6 +860,9 @@
 				AA4B039C12C06C7600775B88 /* JMXVideoCapture.mm in Sources */,
 				AA8F806112C9D3FA00EA8543 /* JMXScriptLive.mm in Sources */,
 				AA8F817612CB236700EA8543 /* JMXTextPanel.m in Sources */,
+				AAC6323112CFC72B00B69DFE /* JMXGraph.mm in Sources */,
+				AAC6323C12CFCAB900B69DFE /* JMXNode.mm in Sources */,
+				AAC6334612D36DA900B69DFE /* NSXMLNode+V8.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -370,10 +370,12 @@
 {
     JMXThreadedEntity *th = [self privateDataForKey:@"threadedEntity"];
     if (active != value) {
-        if (value)
-            [th startThread];
-        else
-            [th stopThread];
+        if (th) {
+            if (value)
+                [th startThread];
+            else
+                [th stopThread];
+        }
         active = value;
     }
 }
@@ -404,22 +406,15 @@ static v8::Handle<Value>Stop(const Arguments& args)
     return v8::Undefined();
 }
 
-static Persistent<FunctionTemplate> objectTemplate;
 
-+ (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate
++ (void)jsObjectTemplateAddons:(v8::Handle<v8::FunctionTemplate>)objectTemplate;
 {
-    if (!objectTemplate.IsEmpty())
-        return objectTemplate;
-    NSLog(@"JMXThreadedEntity objectTemplate created");
-    objectTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
-    objectTemplate->Inherit(JMXEntityJSObjectTemplate()); // 'super' is not available in a category
-    objectTemplate->SetClassName(String::New("ThreadedEntity"));
     v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     classProto->Set("start", FunctionTemplate::New(Start));
     classProto->Set("stop", FunctionTemplate::New(Stop));
     objectTemplate->InstanceTemplate()->SetInternalFieldCount(1);
     objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("frequency"), GetNumberProperty, SetNumberProperty);
-    return objectTemplate;
+    NSLog(@"Installed accessors for 'Threaded' entities");
 }
 
 @end

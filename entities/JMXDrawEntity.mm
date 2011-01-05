@@ -12,7 +12,7 @@
 #import "JMXColor.h"
 #import "JMXThreadedEntity.h"
 
-JMXV8_EXPORT_ENTITY_CLASS(JMXDrawEntity);
+JMXV8_EXPORT_NODE_CLASS(JMXDrawEntity);
 
 @implementation JMXDrawEntity
 

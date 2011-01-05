@@ -25,12 +25,22 @@
 @required
 
 /*!
- @method jsClassTemplate
+ @method jsObjectTemplate
  @return a V8 Persistent<FunctionTemplate> which represents the prototype for the exported javascript class 
  */
 + (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate;
 
 @optional
+
+/*!
+ @method jsObjectTemplateAddons:
+ @param objectTemplate 
+ @discussion If implemented, this message will be called when the object template is created.
+             It is mainly intended for categories which could want to expose new methods to javascript
+             (for instance the JMXEntity (Threaded) category which adds the start() and stop() methods
+             to the basic JMXEntity functionalities
+ */
++ (void)jsObjectTemplateAddons:(v8::Handle<v8::FunctionTemplate>)objectTemplate;
 
 /*!
  @method jsRegisterClassMethods:

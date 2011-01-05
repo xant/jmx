@@ -28,7 +28,7 @@
 #import "JMXScript.h"
 #import "JMXThreadedEntity.h"
 
-JMXV8_EXPORT_ENTITY_CLASS(JMXAudioFileEntity);
+JMXV8_EXPORT_NODE_CLASS(JMXAudioFileEntity);
 
 @implementation JMXAudioFileEntity
 

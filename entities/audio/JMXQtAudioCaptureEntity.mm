@@ -27,7 +27,7 @@
 #import "JMXQtAudioCaptureEntity.h"
 #include "JMXScript.h"
 
-JMXV8_EXPORT_ENTITY_CLASS(JMXQtAudioCaptureEntity);
+JMXV8_EXPORT_NODE_CLASS(JMXQtAudioCaptureEntity);
 
 #pragma mark -
 #pragma mark Converter Callback

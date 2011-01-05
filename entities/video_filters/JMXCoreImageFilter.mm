@@ -29,7 +29,7 @@
 #import "JMXV8PropertyAccessors.h"
 #import "JMXScript.h"
 
-JMXV8_EXPORT_ENTITY_CLASS(JMXCoreImageFilter);
+JMXV8_EXPORT_NODE_CLASS(JMXCoreImageFilter);
 
 @implementation JMXCoreImageFilter
 

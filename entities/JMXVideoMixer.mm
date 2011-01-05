@@ -28,7 +28,7 @@
 #import "JMXThreadedEntity.h"
 
 
-JMXV8_EXPORT_ENTITY_CLASS(JMXVideoMixer);
+JMXV8_EXPORT_NODE_CLASS(JMXVideoMixer);
 
 @implementation JMXVideoMixer
 

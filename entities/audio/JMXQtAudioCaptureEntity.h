@@ -38,5 +38,5 @@
 @end
 
 #ifdef __JMXV8__
-JMXV8_DECLARE_ENTITY_CONSTRUCTOR(JMXQtAudioCaptureEntity);
+JMXV8_DECLARE_NODE_CONSTRUCTOR(JMXQtAudioCaptureEntity);
 #endif

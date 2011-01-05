@@ -36,7 +36,7 @@
  * QTKit Bridge
  */
 
-JMXV8_EXPORT_ENTITY_CLASS(JMXQtVideoCaptureEntity);
+JMXV8_EXPORT_NODE_CLASS(JMXQtVideoCaptureEntity);
 
 @interface JMXQtVideoGrabber : QTCaptureDecompressedVideoOutput
 {

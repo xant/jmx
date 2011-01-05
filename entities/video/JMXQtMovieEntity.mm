@@ -31,7 +31,7 @@
 #import "JMXScript.h"
 #import "JMXThreadedEntity.h"
 
-JMXV8_EXPORT_ENTITY_CLASS(JMXQtMovieEntity);
+JMXV8_EXPORT_NODE_CLASS(JMXQtMovieEntity);
 
 #ifndef __x86_64
 /* Utility to set a SInt32 value in a CFDictionary
@@ -68,8 +68,8 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
         movieFrequency = 0;
         self.name = @"QtMovieFile";
         [self registerInputPin:@"path" withType:kJMXStringPin andSelector:@"setMoviePath:"];
-        [self registerInputPin:@"repeat" withType:kJMXBooleanPin andSelector:@"setBooleanPin:"];
-        [self registerInputPin:@"paused" withType:kJMXBooleanPin andSelector:@"setBooleanPin:"];
+        [self registerInputPin:@"repeat" withType:kJMXBooleanPin andSelector:@"setRepeatPin:"];
+        [self registerInputPin:@"paused" withType:kJMXBooleanPin andSelector:@"setPausedPin:"];
         JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
         if (threadedEntity)
             return threadedEntity;

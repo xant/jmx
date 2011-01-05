@@ -46,5 +46,5 @@
 @end
 
 #ifdef __JMXV8__
-JMXV8_DECLARE_ENTITY_CONSTRUCTOR(JMXAudioFileEntity);
+JMXV8_DECLARE_NODE_CONSTRUCTOR(JMXAudioFileEntity);
 #endif

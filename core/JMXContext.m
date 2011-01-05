@@ -21,9 +21,9 @@
 //  along with JMX.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#import <Foundation/NSXMLDocument.h>
 #import "JMXContext.h"
 #import "JMXEntity.h"
+#import "JMXGraph.h"
 
 #define kJMXContextSignalNumWorkers 6
 
@@ -90,7 +90,7 @@ static BOOL initialized = NO;
 		registeredClasses = [[NSMutableArray alloc] init];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasCreated:) name:@"JMXEntityWasCreated" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasDestroyed:) name:@"JMXEntityWasDestroyed" object:nil];
-        dom = [[NSXMLDocument documentWithRootElement:[NSXMLElement elementWithName:@"JMX"]] retain];
+        dom = [[JMXGraph documentWithRootElement:[NSXMLElement elementWithName:@"JMX"]] retain];
 #if USE_NSOPERATIONS
         [self initQueue];
 #endif

@@ -12,7 +12,7 @@
 #import "JMXColor.h"
 #import "JMXScript.h"
 
-JMXV8_EXPORT_ENTITY_CLASS(JMXTextEntity);
+JMXV8_EXPORT_NODE_CLASS(JMXTextEntity);
 
 @implementation JMXTextEntity
 

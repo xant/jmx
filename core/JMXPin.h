@@ -32,6 +32,7 @@
 #import "JMXAudioBuffer.h"
 #import "JMXPinSignal.h"
 #import "JMXV8.h"
+#import "JMXNode.h"
 
 @class JMXPin;
 
@@ -100,7 +101,7 @@ typedef enum {
  You should never use instances of this class directly, but you will use instead
  a concrete subclass (most likely a <code>JMXInputPin</code> or a <code>JMXOutputPin</code>)
  */
-@interface JMXPin : NSXMLElement <NSCopying, JMXV8> {
+@interface JMXPin : JMXNode {
 @protected
     JMXPinType          type;
     NSString            *name;

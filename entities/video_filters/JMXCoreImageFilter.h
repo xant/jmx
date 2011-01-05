@@ -31,5 +31,5 @@
 @end
 
 #ifdef __JMXV8__
-JMXV8_DECLARE_ENTITY_CONSTRUCTOR(JMXCoreImageFilter);
+JMXV8_DECLARE_NODE_CONSTRUCTOR(JMXCoreImageFilter);
 #endif

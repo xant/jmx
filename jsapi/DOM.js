@@ -71,6 +71,101 @@ function DOMString() {
 }
 DOMString.inherits(String);
 
+// Introduced in DOM Level 3:
+function DOMStringList() {
+    this.item = function(index) {
+        return this[index];
+    }
+    this.contains = function(str) {
+        for (i = 0; i < this.length; i++)
+            if (this[i] == str)
+                return true;
+        return false;
+    }
+    this.name = "DOMStringList";
+}
+DOMStringList.inherits(Array);
+
+// Introduced in DOM Level 3:
+function NameList() {    
+    this.addNS = function(namespaceURI, name) {
+        this[name] = namespaceURI;
+    }
+    
+    this.removeNS = function(namespaceURI, name) {
+        if (this[name] == namespaceURI)
+            delete this[name];
+    }
+    
+    this.removeName = function(name) {
+        delete this[name];
+    }
+    
+    this.getName = function(index) {
+        realIndex = index * 2;
+        return this[realIndex];
+    }
+    this.getNamespaceURI = function(index) {
+        realIndex = index * 2 + 1;
+        return this[index];
+    }
+    this.contains = function(str) {
+        if (this[str])
+            return true;
+        return false;
+    }
+    this.containsNS = function(namespaceURI, name) {
+        if (this[name] == namespaceURI)
+            return true;
+        return false;
+    }
+}
+NameList.inherits(Array);
+
+// Introduced in DOM Level 3:
+function DOMImplementationList() {
+    this.item = function(index) {
+        return this[index];
+    }
+    this.name = "DOMImplementationList";
+}
+DOMImplementationList.inherits(Array);
+
+function DOMImplementation() {
+    this.hasFeature = function(feature, version) {
+        if (feature == "Core" || feature == "XML") {
+            if (version <= 3.0)
+                return true;
+        }
+        return false;
+    }
+    
+    this.createDocumentType = function(qualifiedName, publicId, systemId) {
+        // TODO - implement
+    }
+    
+    this.createDocument = function(namespaceURI, qualifiedName, doctype) {
+        // TODO - implement
+    }
+    
+    this.getFeature = function(feature, version) {
+        // TODO - implement
+    }
+}
+
+// Introduced in DOM Level 3:
+function DOMImplementationSource() {
+    this.getDOMImplementation = function(features) {
+        // TODO - implement
+    }
+    
+    this.getDOMImplementationList = function(features) {
+        // TODO - implement
+    }
+    this.name = "DOMImplementationSource";
+}
+DOMImplementationSource.inherits(Array);
+
 // NodeList interface (extends Array)
 // http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407/core.html#ID-536297177
 function NodeList()
@@ -123,7 +218,7 @@ function NamedNodeMap() {
     }
     
     this.item = function(index) {
-        realIndex = index + index - 1;
+        realIndex = index * 2 + 1;
         return this[realIndex];
     }
     
@@ -159,3 +254,8 @@ function NamedNodeMap() {
     }
 };
 NamedNodeMap.inherits(NodeList);
+
+function DocumentFragment() {
+    
+}
+DocumentFragment.inherits(Node);

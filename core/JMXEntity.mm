@@ -578,7 +578,7 @@ v8::Handle<Value> InputPin(const Arguments& args)
         NSLog(@"Entity::inputPin(): %s not found in %@", *value, entity);
     }
     [pool drain];
-    return v8::Undefined();
+    return handleScope.Close(Undefined());
 }
 
 v8::Handle<Value> OutputPin(const Arguments& args)
@@ -599,7 +599,7 @@ v8::Handle<Value> OutputPin(const Arguments& args)
         NSLog(@"Entity::outputPin(): %s not found in %@", *value, entity);
     }
     [pool drain];
-    return v8::Undefined();
+    return handleScope.Close(Undefined());
 }
 
 #pragma mark Class Template

@@ -173,6 +173,94 @@ static v8::Handle<Value>GetNodeType(Local<String> name, const AccessorInfo& info
     return handleScope.Close(v8::Integer::New(1));
 }
 
+v8::Handle<Value> InsertBefore(const Arguments& args)
+{
+    //v8::Locker lock;
+    HandleScope handleScope;
+    id holder = (id)args.Holder()->GetPointerFromInternalField(0);
+    if ([holder isKindOfClass:[NSXMLElement class]]) {
+        NSXMLElement *node = (NSXMLElement *)holder;
+        NSXMLNode *newChild = (NSXMLNode *)args[0]->ToObject()->GetPointerFromInternalField(0);
+        if (newChild) {
+            NSXMLNode *refChild = (NSXMLNode *)args[1]->ToObject()->GetPointerFromInternalField(0);
+            NSUInteger index = [node childCount]-1;
+            if (refChild)
+                index = [refChild index] - 1;
+            [node insertChild:newChild atIndex:index];
+            return handleScope.Close(args[0]->ToObject());
+        } else {
+            // TODO - Error Messages
+        }
+    }
+    return handleScope.Close(Undefined());
+}
+
+v8::Handle<Value> ReplaceChild(const Arguments& args)
+{
+    //v8::Locker lock;
+    HandleScope handleScope;
+    id holder = (id)args.Holder()->GetPointerFromInternalField(0);
+    if ([holder isKindOfClass:[NSXMLElement class]]) {
+        NSXMLElement *node = (NSXMLElement *)holder;
+        NSXMLNode *newChild = (NSXMLNode *)args[0]->ToObject()->GetPointerFromInternalField(0);
+        NSXMLNode *oldChild = (NSXMLNode *)args[1]->ToObject()->GetPointerFromInternalField(0);
+        if (newChild && oldChild) {
+            [node replaceChildAtIndex:[oldChild index] withNode:newChild];
+            return handleScope.Close(args[0]->ToObject());
+        } else {
+            // TODO - Error Messages
+        }
+    }
+    return handleScope.Close(Undefined());
+}
+
+v8::Handle<Value> RemoveChild(const Arguments& args)
+{
+    //v8::Locker lock;
+    HandleScope handleScope;
+    id holder = (id)args.Holder()->GetPointerFromInternalField(0);
+    if ([holder isKindOfClass:[NSXMLElement class]]) {
+        NSXMLElement *node = (NSXMLElement *)holder;
+        NSXMLNode *child = (NSXMLNode *)args[0]->ToObject()->GetPointerFromInternalField(0);
+        if (child) {
+            [node removeChildAtIndex:[child index]];
+            return handleScope.Close(args[0]->ToObject());
+        } else {
+            // TODO - Error Messages
+        }
+    }
+    return handleScope.Close(Undefined());
+}
+
+v8::Handle<Value> AppendChild(const Arguments& args)
+{
+    //v8::Locker lock;
+    HandleScope handleScope;
+    id holder = (id)args.Holder()->GetPointerFromInternalField(0);
+    if ([holder isKindOfClass:[NSXMLElement class]]) {
+        NSXMLElement *node = (NSXMLElement *)holder;
+        NSXMLNode *newChild = (NSXMLNode *)args[0]->ToObject()->GetPointerFromInternalField(0);
+        if (newChild) {
+            [node addChild:newChild];
+            return handleScope.Close(args[0]->ToObject());
+        } else {
+            // TODO - Error Messages
+        }
+    }
+    return handleScope.Close(Undefined());
+}
+
+v8::Handle<Value> HasChildNodes(const Arguments& args)
+{
+    //v8::Locker lock;
+    HandleScope handleScope;
+    bool ret = false;
+    NSXMLNode *node = (NSXMLNode *)args.Holder()->GetPointerFromInternalField(0);
+    if (node)
+        ret = [node childCount] ? true : false;
+    return handleScope.Close(v8::Boolean::New(ret));
+}
+
 + (v8::Persistent<FunctionTemplate>)jsObjectTemplate
 {
     if (!objectTemplate.IsEmpty())
@@ -182,9 +270,17 @@ static v8::Handle<Value>GetNodeType(Local<String> name, const AccessorInfo& info
     objectTemplate->SetClassName(String::New("Node"));
     v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     // set instance methods
+    classProto->Set("insertBefore", FunctionTemplate::New(InsertBefore));
+    classProto->Set("replaceChild", FunctionTemplate::New(ReplaceChild));
+    classProto->Set("removeChild", FunctionTemplate::New(ReplaceChild));
+    classProto->Set("appendChild", FunctionTemplate::New(AppendChild));
+    classProto->Set("hasChildNodes", FunctionTemplate::New(HasChildNodes));
+    //classProto->Set("cloneNode", FunctionTemplate::New(CloneNode));
+
     v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
     instanceTemplate->SetInternalFieldCount(1);
     
+    // set instance accessors
     instanceTemplate->SetAccessor(String::NewSymbol("name"), GetStringProperty, SetStringProperty);
 
     // DOM Related accessors
@@ -204,54 +300,7 @@ static v8::Handle<Value>GetNodeType(Local<String> name, const AccessorInfo& info
     instanceTemplate->SetAccessor(String::NewSymbol("textContent"), GetTextContent);
 
     
-    /*
-     Element            createElement(in DOMString tagName)
-     raises(DOMException);
-     DocumentFragment   createDocumentFragment();
-     Text               createTextNode(in DOMString data);
-     Comment            createComment(in DOMString data);
-     CDATASection       createCDATASection(in DOMString data)
-     raises(DOMException);
-     ProcessingInstruction createProcessingInstruction(in DOMString target, 
-     in DOMString data)
-     raises(DOMException);
-     Attr               createAttribute(in DOMString name)
-     raises(DOMException);
-     EntityReference    createEntityReference(in DOMString name)
-     raises(DOMException);
-     NodeList           getElementsByTagName(in DOMString tagname);
-     // Introduced in DOM Level 2:
-     Node               importNode(in Node importedNode, 
-     in boolean deep)
-     raises(DOMException);
-     // Introduced in DOM Level 2:
-     Element            createElementNS(in DOMString namespaceURI, 
-     in DOMString qualifiedName)
-     raises(DOMException);
-     // Introduced in DOM Level 2:
-     Attr               createAttributeNS(in DOMString namespaceURI, 
-     in DOMString qualifiedName)
-     raises(DOMException);
-     // Introduced in DOM Level 2:
-     NodeList           getElementsByTagNameNS(in DOMString namespaceURI, 
-     in DOMString localName);
-     // Introduced in DOM Level 2:
-     Element            getElementById(in DOMString elementId);
-     
-     
-     // Introduced in DOM Level 3:
-     Node               adoptNode(in Node source)
-     raises(DOMException);
-     
-     // Introduced in DOM Level 3:
-     void               normalizeDocument();
-     // Introduced in DOM Level 3:
-     Node               renameNode(in Node n, 
-     in DOMString namespaceURI, 
-     in DOMString qualifiedName)
-     raises(DOMException);
-     
-     */
+
     NSLog(@"JMXNode objectTemplate created");
     return objectTemplate;
 }

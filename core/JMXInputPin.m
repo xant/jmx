@@ -28,15 +28,15 @@
 
 @synthesize producers;
 
-- (id)initWithName:(NSString *)pinName
-           andType:(JMXPinType)pinType
-           ownedBy:(id)pinOwner
-        withSignal:(NSString *)pinSignal
-          userData:(id)userData
-     allowedValues:(NSArray *)pinValues
-      initialValue:(id)value
+- (id)initWithLabel:(NSString *)pinLabel
+            andType:(JMXPinType)pinType
+            ownedBy:(id)pinOwner
+         withSignal:(NSString *)pinSignal
+           userData:(id)userData
+      allowedValues:(NSArray *)pinValues
+       initialValue:(id)value
 {
-    self = [super initWithName:pinName
+    self = [super initWithLabel:pinLabel
                        andType:pinType
                        ownedBy:pinOwner
                     withSignal:pinSignal

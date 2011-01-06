@@ -12,25 +12,25 @@
 
 @implementation JMXProxyPin
 
-@synthesize parent, name;
+@synthesize parent, label;
 
-+ (id)proxyPin:(JMXPin *)pin withName:(NSString *)name
++ (id)proxyPin:(JMXPin *)pin withLabel:(NSString *)label
 {
-    return [[[self alloc] initWithPin:pin andName:name] autorelease];
+    return [[[self alloc] initWithPin:pin andLabel:label] autorelease];
 }
 
-- (id)initWithPin:(JMXPin *)pin andName:(NSString *)pinName
+- (id)initWithPin:(JMXPin *)pin andLabel:(NSString *)pinLabel
 {
     parent = nil;
     realObject = pin;
-    name = (pinName && ![pinName isEqualTo:@"undefined"]) ? [pinName copy] : [pin.name copy];
+    label = (pinLabel && ![pinLabel isEqualTo:@"undefined"]) ? [pinLabel copy] : [pin.label copy];
     return self;
 }
 
 - (void)dealloc
 {
-    if (name)
-        [name release];
+    if (label)
+        [label release];
     [super dealloc];
 }
 

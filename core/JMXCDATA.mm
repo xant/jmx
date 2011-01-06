@@ -9,31 +9,37 @@
 #define __JMXV8__
 #import "JMXCDATA.h"
 
-using namespace v8;
+JMXV8_EXPORT_NODE_CLASS(JMXCDATA);
 
-static v8::Persistent<FunctionTemplate> objectTemplate;
+using namespace v8;
 
 @implementation JMXCDATA
 
 @synthesize data;
 
-- (id)init
+- (id)jmxInit
 {
-    return [self initWithKind:NSXMLTextKind options:NSXMLNodeIsCDATA];
+    if (self && !_initialized)
+        return [self initWithKind:NSXMLAttributeKind options:NSXMLNodeOptionsNone];
+    return [super init];
 }
 
 - (id)initWithKind:(NSXMLNodeKind)kind
 {
+    NSXMLNode;
     return [self initWithKind:NSXMLTextKind options:NSXMLNodeIsCDATA];
 }
 
 - (id)initWithKind:(NSXMLNodeKind)kind options:(NSUInteger)options
 {
-    self = [super initWithKind:NSXMLTextKind options:NSXMLNodeIsCDATA];
-    if (self) {
-        data = nil;
-    }
+    _initialized = YES;
+    [super initWithKind:NSXMLTextKind options:NSXMLNodeIsCDATA];
     return self;
+}
+
+- (NSXMLNodeKind)kind
+{
+    return NSXMLTextKind;
 }
 
 static v8::Handle<Value> GetData(Local<String> name, const AccessorInfo& info)
@@ -162,7 +168,7 @@ static v8::Handle<Value> ReplaceData(const Arguments& args)
         return objectTemplate;
     objectTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
     objectTemplate->Inherit([super jsObjectTemplate]);
-    objectTemplate->SetClassName(String::New("JMXCDATA"));
+    objectTemplate->SetClassName(String::New("CharacterData"));
     v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
 
     // set instance methods
@@ -183,32 +189,14 @@ static v8::Handle<Value> ReplaceData(const Arguments& args)
     return objectTemplate;
 }
 
-void JMXCDATAJSDestructor(Persistent<Value> object, void *parameter)
+- (v8::Handle<v8::Object>)jsObj
 {
+    //v8::Locker lock;
     HandleScope handle_scope;
-    v8::Locker lock;
-    JMXCDATA *obj = static_cast<JMXCDATA *>(parameter);
-    //NSLog(@"V8 WeakCallback (Point) called %@", obj);
-    [obj release];
-    if (!object.IsEmpty()) {
-        object.ClearWeak();
-        object.Dispose();
-        object.Clear();
-    }
-}
-
-v8::Handle<v8::Value> JMXCDATAJSConstructor(const v8::Arguments& args)
-{
-    HandleScope handleScope;
-    //v8::Locker locker;
-    v8::Persistent<FunctionTemplate> objectTemplate = [JMXCDATA jsObjectTemplate];
-    Persistent<Object>jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    JMXCDATA *cdata = [[JMXCDATA alloc] init];
-    jsInstance.MakeWeak(cdata, JMXCDATAJSDestructor);
-    jsInstance->SetPointerInInternalField(0, cdata);
-    [pool drain];
-    return handleScope.Close(jsInstance);
+    v8::Handle<FunctionTemplate> objectTemplate = [JMXCDATA jsObjectTemplate];
+    v8::Handle<Object> jsInstance = objectTemplate->InstanceTemplate()->NewInstance();
+    jsInstance->SetPointerInInternalField(0, self);
+    return handle_scope.Close(jsInstance);
 }
 
 @end

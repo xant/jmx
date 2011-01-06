@@ -1,5 +1,5 @@
 //
-//  JMXCDATA.h
+//  JMXAttribute.h
 //  JMX
 //
 //  Created by xant on 1/5/11.
@@ -9,14 +9,13 @@
 #import <Cocoa/Cocoa.h>
 #import "NSXMLNode+V8.h"
 
-@interface JMXCDATA : NSXMLNode {
+@interface JMXAttribute : NSXMLNode {
 @private
     BOOL _initialized;
-    NSData *data;
 }
 
-@property (retain, readwrite) NSData *data;
 
-JMXV8_DECLARE_NODE_CONSTRUCTOR(JMXCDATA);
+JMXV8_DECLARE_NODE_CONSTRUCTOR(JMXAttribute);
 
 @end
+

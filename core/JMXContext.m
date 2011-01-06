@@ -90,7 +90,12 @@ static BOOL initialized = NO;
 		registeredClasses = [[NSMutableArray alloc] init];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasCreated:) name:@"JMXEntityWasCreated" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasDestroyed:) name:@"JMXEntityWasDestroyed" object:nil];
-        dom = [[JMXGraph documentWithRootElement:[NSXMLElement elementWithName:@"JMX"]] retain];
+        NSXMLElement *root = [NSXMLElement elementWithName:@"JMX"];
+        dom = [[JMXGraph documentWithRootElement:root] retain];
+        NSXMLNode *ns = [[[NSXMLNode alloc] initWithKind:NSXMLNamespaceKind] autorelease];
+        [ns setStringValue:@"http://jmxapp.org"];
+        [ns setName:@"jmx"];
+        [root addNamespace:ns];
 #if USE_NSOPERATIONS
         [self initQueue];
 #endif
@@ -168,7 +173,7 @@ static BOOL initialized = NO;
 
 - (NSString *)dumpDOM
 {
-    NSData *xmlData = [dom XMLData];
+    NSData *xmlData = [dom XMLDataWithOptions:NSXMLNodePrettyPrint];
     return [[[NSString alloc] initWithBytesNoCopy:(void *)[xmlData bytes] length:[xmlData length] encoding:NSUTF8StringEncoding freeWhenDone:NO] autorelease];
 }
 

@@ -20,6 +20,9 @@ Function.prototype.inherits = function inherit(parent) {
     this.prototype = new parent;
     this.prototype.class = parent;
     this.prototype.parent = this.prototype;
+    this.prototype.toString = function() {
+        return this.__className__;
+    }
 }
 
 // extend the base Array class to allow 'stringifying' them
@@ -60,6 +63,8 @@ VALIDATION_ERR                 = 16;
 // Introduced in DOM Level 3:
 TYPE_MISMATCH_ERR              = 17;
 function DOMException(code) {
+    this.__className__ = "DOMException";
+
     this.code = code;
     this.number = code;
     this.message = "DOM Exception code: " + code;
@@ -68,11 +73,15 @@ function DOMException(code) {
 DOMException.inherits(Error);
 
 function DOMString() {
+    this.__className__ = "DOMString";
+
 }
 DOMString.inherits(String);
 
 // Introduced in DOM Level 3:
 function DOMStringList() {
+    this.__className__ = "DOMStringList";
+
     this.item = function(index) {
         return this[index];
     }
@@ -88,6 +97,8 @@ DOMStringList.inherits(Array);
 
 // Introduced in DOM Level 3:
 function NameList() {    
+    this.__className__ = "NameList";
+
     this.addNS = function(namespaceURI, name) {
         this[name] = namespaceURI;
     }
@@ -124,6 +135,8 @@ NameList.inherits(Array);
 
 // Introduced in DOM Level 3:
 function DOMImplementationList() {
+    this.__className__ = "DOMImplementationList";
+
     this.item = function(index) {
         return this[index];
     }
@@ -132,6 +145,8 @@ function DOMImplementationList() {
 DOMImplementationList.inherits(Array);
 
 function DOMImplementation() {
+    this.__className__ = "DOMImplementation";
+
     this.hasFeature = function(feature, version) {
         if (feature == "Core" || feature == "XML") {
             if (version <= 3.0)
@@ -155,6 +170,8 @@ function DOMImplementation() {
 
 // Introduced in DOM Level 3:
 function DOMImplementationSource() {
+    this.__className__ = "DOMImplementationSource";
+
     this.getDOMImplementation = function(features) {
         // TODO - implement
     }
@@ -170,6 +187,8 @@ DOMImplementationSource.inherits(Array);
 // http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407/core.html#ID-536297177
 function NodeList()
 {
+    this.__className__ = "NodeList";
+
     this.item = function(index) {
         return this[index];
     }
@@ -179,6 +198,8 @@ NodeList.inherits(Array);
 
 
 function NamedNodeMap() {
+    this.__className__ = "NamedNodeMap";
+
     this.getNamedItem = function(name) {
         return this[name];
     }
@@ -256,7 +277,17 @@ function NamedNodeMap() {
 NamedNodeMap.inherits(NodeList);
 
 function DocumentFragment() {
+    this.__className__ = "DocumentFragment";
     
 }
 DocumentFragment.inherits(Node);
 
+function Attr() {
+    this.__className__ = "Attr";
+}
+Attr.inherits(Attribute);
+
+function CharacterData() {
+    this.__className__ = "CharacterData";
+}
+CharacterData.inherits(CDATA);

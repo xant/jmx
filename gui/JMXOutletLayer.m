@@ -40,7 +40,7 @@
         self.entity = anEntity;
 
         JMXOutletLabelLayer *labelLayer = [[[JMXOutletLabelLayer alloc] init] autorelease];
-        labelLayer.string = thePin.name;
+        labelLayer.string = thePin.label;
         labelLayer.borderWidth = 0.0f;
         labelLayer.backgroundColor = nil;
         labelLayer.fontSize = ENTITY_OUTLET_FONT_SIZE;

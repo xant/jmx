@@ -32,21 +32,21 @@
 @implementation JMXOutputPin
 @synthesize receivers;
 
-- (id)initWithName:(NSString *)pinName
-           andType:(JMXPinType)pinType
-           ownedBy:(id)pinOwner
-        withSignal:(NSString *)pinSignal
-          userData:(id)userData
-     allowedValues:(NSArray *)pinValues
-      initialValue:(id)value
+- (id)initWithLabel:(NSString *)pinLabel
+            andType:(JMXPinType)pinType
+            ownedBy:(id)pinOwner
+         withSignal:(NSString *)pinSignal
+           userData:(id)userData
+      allowedValues:(NSArray *)pinValues
+       initialValue:(id)value
 {
-    self = [super initWithName:pinName
-                       andType:pinType
-                       ownedBy:pinOwner
-                    withSignal:pinSignal
-                      userData:userData
-                 allowedValues:pinValues
-                  initialValue:value];
+    self = [super initWithLabel:pinLabel
+                        andType:pinType
+                        ownedBy:pinOwner
+                     withSignal:pinSignal
+                       userData:userData
+                  allowedValues:pinValues
+                   initialValue:value];
     if (self) {
         receivers = [[NSMutableDictionary alloc] init];
         direction = kJMXOutputPin;

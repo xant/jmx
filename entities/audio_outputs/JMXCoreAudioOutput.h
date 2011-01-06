@@ -36,6 +36,4 @@
 
 @end
 
-#ifdef __JMXV8__
 JMXV8_DECLARE_NODE_CONSTRUCTOR(JMXCoreAudioOutput);
-#endif

@@ -55,7 +55,7 @@ using namespace v8;
     NSString *notificationName = (pin.direction == kJMXInputPin)
                                ? @"JMXEntityInputPinAdded"
                                : @"JMXEntityOutputPinAdded";
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:pin, @"pin", pin.name, @"pinName", nil];
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:pin, @"pin", pin.label, @"pinLabel", nil];
 
     [[NSNotificationCenter defaultCenter] postNotificationName:notificationName
                                                         object:self
@@ -67,7 +67,7 @@ using namespace v8;
     NSString *notificationName = (pin.direction == kJMXInputPin)
                                ? @"JMXEntityInputPinRemoved"
                                : @"JMXEntityOutputPinRemoved";
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:pin, @"pin", pin.name, @"pinName", nil];
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:pin, @"pin", pin.label, @"pinLabel", nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:notificationName 
                                                         object:self
                                                       userInfo:userInfo];
@@ -147,29 +147,29 @@ using namespace v8;
     
 }
 
-- (JMXInputPin *)registerInputPin:(NSString *)pinName 
+- (JMXInputPin *)registerInputPin:(NSString *)pinLabel 
                          withType:(JMXPinType)pinType
 {
-    return [self registerInputPin:pinName withType:pinType andSelector:@"defaultInputCallback:"];
+    return [self registerInputPin:pinLabel withType:pinType andSelector:@"defaultInputCallback:"];
 }
 
-- (JMXInputPin *)registerInputPin:(NSString *)pinName
+- (JMXInputPin *)registerInputPin:(NSString *)pinLabel
                          withType:(JMXPinType)pinType
                       andSelector:(NSString *)selector
 {
-    return [self registerInputPin:pinName
+    return [self registerInputPin:pinLabel
                          withType:pinType
                       andSelector:selector
                     allowedValues:nil
                      initialValue:nil];
 }
 
-- (JMXInputPin *)registerInputPin:(NSString *)pinName
+- (JMXInputPin *)registerInputPin:(NSString *)pinLabel
                          withType:(JMXPinType)pinType
                       andSelector:(NSString *)selector
                          userData:(id)userData
 {
-    return [self registerInputPin:pinName
+    return [self registerInputPin:pinLabel
                          withType:pinType
                       andSelector:selector
                          userData:userData
@@ -177,7 +177,7 @@ using namespace v8;
                      initialValue:nil];
 }
 
-- (JMXInputPin *)registerInputPin:(NSString *)pinName 
+- (JMXInputPin *)registerInputPin:(NSString *)pinLabel 
                          withType:(JMXPinType)pinType
                       andSelector:(NSString *)selector
                          userData:(id)userData
@@ -185,7 +185,7 @@ using namespace v8;
                      initialValue:(id)value
 {
     
-    JMXInputPin *newPin = [JMXPin pinWithName:pinName
+    JMXInputPin *newPin = [JMXPin pinWithLabel:pinLabel
                                       andType:pinType
                                  forDirection:kJMXInputPin
                                       ownedBy:self
@@ -200,13 +200,13 @@ using namespace v8;
     return newPin;
 }
 
-- (JMXInputPin *)registerInputPin:(NSString *)pinName 
+- (JMXInputPin *)registerInputPin:(NSString *)pinLabel 
                          withType:(JMXPinType)pinType
                       andSelector:(NSString *)selector
                     allowedValues:(NSArray *)pinValues
                      initialValue:(id)value
 {
-    return [self registerInputPin:pinName
+    return [self registerInputPin:pinLabel
                          withType:pinType
                       andSelector:selector
                          userData:nil
@@ -214,28 +214,28 @@ using namespace v8;
                      initialValue:value];
 }
 
-- (JMXOutputPin *)registerOutputPin:(NSString *)pinName withType:(JMXPinType)pinType
+- (JMXOutputPin *)registerOutputPin:(NSString *)pinLabel withType:(JMXPinType)pinType
 {
-    return [self registerOutputPin:pinName withType:pinType andSelector:nil];
+    return [self registerOutputPin:pinLabel withType:pinType andSelector:nil];
 }
 
-- (JMXOutputPin *)registerOutputPin:(NSString *)pinName
+- (JMXOutputPin *)registerOutputPin:(NSString *)pinLabel
                            withType:(JMXPinType)pinType
                         andSelector:(NSString *)selector
 {
-    return [self registerOutputPin:pinName
+    return [self registerOutputPin:pinLabel
                           withType:pinType
                        andSelector:selector
                      allowedValues:nil
                       initialValue:nil];
 }
 
-- (JMXOutputPin *)registerOutputPin:(NSString *)pinName
+- (JMXOutputPin *)registerOutputPin:(NSString *)pinLabel
                            withType:(JMXPinType)pinType
                         andSelector:(NSString *)selector
                            userData:(id)userData
 {
-    return [self registerOutputPin:pinName
+    return [self registerOutputPin:pinLabel
                           withType:pinType
                        andSelector:selector
                           userData:userData
@@ -243,14 +243,14 @@ using namespace v8;
                       initialValue:nil];
 }
 
-- (JMXOutputPin *)registerOutputPin:(NSString *)pinName
+- (JMXOutputPin *)registerOutputPin:(NSString *)pinLabel
                            withType:(JMXPinType)pinType
                         andSelector:(NSString *)selector
                            userData:(id)userData
                       allowedValues:(NSArray *)pinValues
                        initialValue:(id)value
 {
-    JMXOutputPin *newPin = [JMXPin pinWithName:pinName
+    JMXOutputPin *newPin = [JMXPin pinWithLabel:pinLabel
                                        andType:pinType
                                   forDirection:kJMXOutputPin
                                        ownedBy:self
@@ -266,13 +266,13 @@ using namespace v8;
 }
 
 
-- (JMXOutputPin *)registerOutputPin:(NSString *)pinName
+- (JMXOutputPin *)registerOutputPin:(NSString *)pinLabel
                            withType:(JMXPinType)pinType
                         andSelector:(NSString *)selector
                       allowedValues:(NSArray *)pinValues
                        initialValue:(id)value
 {
-    return [self registerOutputPin:pinName
+    return [self registerOutputPin:pinLabel
                           withType:pinType
                        andSelector:selector
                           userData:nil
@@ -280,9 +280,9 @@ using namespace v8;
                       initialValue:value];
 }
 
-- (void)proxyInputPin:(JMXInputPin *)pin withName:(NSString *)pinName
+- (void)proxyInputPin:(JMXInputPin *)pin withLabel:(NSString *)pinLabel
 {
-    JMXProxyPin *pPin = [JMXProxyPin proxyPin:pin withName:pinName ? pinName : pin.name];
+    JMXProxyPin *pPin = [JMXProxyPin proxyPin:pin withLabel:pinLabel ? pinLabel : pin.label];
     [inputPins addChild:(JMXPin *)pPin];
     // We need notifications to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
     // and since the entity will persist the pin we can avoid waiting for the notification to be completely propagated
@@ -291,12 +291,12 @@ using namespace v8;
 
 - (void)proxyInputPin:(JMXInputPin *)pin
 {
-    return [self proxyInputPin:pin withName:nil];
+    return [self proxyInputPin:pin withLabel:nil];
 }
 
-- (void)proxyOutputPin:(JMXOutputPin *)pin withName:(NSString *)pinName
+- (void)proxyOutputPin:(JMXOutputPin *)pin withLabel:(NSString *)pinLabel
 {
-    JMXProxyPin *pPin = [JMXProxyPin proxyPin:pin withName:pinName ? pinName : pin.name];
+    JMXProxyPin *pPin = [JMXProxyPin proxyPin:pin withLabel:pinLabel ? pinLabel : pin.label];
     [outputPins addChild:(JMXPin *)pPin];
     // We need notifications to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
     // and since the entity will persist the pin we can avoid waiting for the notification to be completely propagated
@@ -305,7 +305,7 @@ using namespace v8;
 
 - (void)proxyOutputPin:(JMXOutputPin *)pin
 {
-    return [self proxyOutputPin:pin withName:nil];
+    return [self proxyOutputPin:pin withLabel:nil];
 }
 
 // XXX - possible race conditions here (in both inputPins and outputPins)
@@ -319,7 +319,7 @@ using namespace v8;
             }];*/
     return [[inputPins children] sortedArrayUsingComparator:^(id obj1, id obj2)
             {
-                return [[obj1 name] compare:[obj2 name]];
+                return [[obj1 label] compare:[obj2 label]];
             }];
 }
 
@@ -328,30 +328,41 @@ using namespace v8;
     return [[outputPins children]
             sortedArrayUsingComparator:^(id obj1, id obj2)
             {
-                return [[obj1 name] compare:[obj2 name]];
+                return [[obj1 label] compare:[obj2 label]];
             }];
 }
 
-- (JMXInputPin *)inputPinWithName:(NSString *)pinName
+- (JMXInputPin *)inputPinWithLabel:(NSString *)pinLabel
 {
-    return [[inputPins elementsForName:pinName] lastObject];
+    for (JMXInputPin *pin in [inputPins children]) {
+        if ([pin.label isEqualTo:pinLabel])
+            return pin;
+    }
+    return nil;
 }
 
-- (JMXOutputPin *)outputPinWithName:(NSString *)pinName
+- (JMXOutputPin *)outputPinWithLabel:(NSString *)pinLabel
 {
-    return [[outputPins elementsForName:pinName] lastObject];
-}
+    for (JMXOutputPin *pin in [outputPins children]) {
+        if ([pin.label isEqualTo:pinLabel])
+            return pin;
+    }
+    return nil;}
 
-- (void)unregisterInputPin:(NSString *)pinName
+- (void)unregisterInputPin:(NSString *)pinLabel
 {
-    JMXInputPin *pin = [[[inputPins elementsForName:pinName] lastObject]retain];
+    JMXInputPin *pin = nil;
+    for (JMXInputPin *child in [inputPins children]) {
+        if ([child.label isEqualTo:pinLabel])
+            pin = [child retain];
+    }
     if (pin && pin.owner == self) {
         [pin disconnectAllPins];
         [pin detach];
     }
     // We need notifications to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
     // and since the entity will persist the pin we can avoid waiting for the notification to be completely propagated
-    [self performSelectorOnMainThread:@selector(notifyPinRemoved:) withObject:pin waitUntilDone:NO];
+    [self performSelectorOnMainThread:@selector(notifyPinRemoved:) withObject:pin waitUntilDone:YES];
     [pin release];
 }
 
@@ -362,16 +373,17 @@ using namespace v8;
                                                       userInfo:userInfo];
 }
 
-- (void)unregisterOutputPin:(NSString *)pinName
+- (void)unregisterOutputPin:(NSString *)pinLabel
 {
-    JMXOutputPin *pin = [[outputPins elementsForName:pinName] lastObject];
-    if (pin && pin.owner == self) { // don't touch it if the pin is proxed
-        [pin disconnectAllPins];
+    JMXOutputPin *pin = nil;
+    for (JMXOutputPin *child in [outputPins children]) {
+        if ([child.label isEqualTo:pinLabel])
+            pin = [child retain];
     }
     [pin detach];
     // We need notifications to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
     // and since the entity will persist the pin we can avoid waiting for the notification to be completely propagated
-    [self performSelectorOnMainThread:@selector(notifyPinRemoved:) withObject:pin waitUntilDone:NO];
+    [self performSelectorOnMainThread:@selector(notifyPinRemoved:) withObject:pin waitUntilDone:YES];
     // we can now release the pin
     [pin release];
 }
@@ -380,25 +392,25 @@ using namespace v8;
 {
     [self disconnectAllPins];
     for (JMXInputPin *pin in [inputPins children])
-        [self unregisterInputPin:pin.name];
+        [self unregisterInputPin:pin.label];
 
     for (JMXOutputPin *pin in [outputPins children])
-        [self unregisterOutputPin:pin.name];
+        [self unregisterOutputPin:pin.label];
 }
 
 - (void)outputDefaultSignals:(uint64_t)timeStamp
 {
-    JMXOutputPin *activePin = [self outputPinWithName:@"active"];    
+    JMXOutputPin *activePin = [self outputPinWithLabel:@"active"];    
     [activePin deliverData:[NSNumber numberWithBool:active] fromSender:self];
 }
 
-- (BOOL)attachObject:(id)receiver withSelector:(NSString *)selector toOutputPin:(NSString *)pinName
+- (BOOL)attachObject:(id)receiver withSelector:(NSString *)selector toOutputPin:(NSString *)pinLabel
 {
-    JMXOutputPin *pin = [self outputPinWithName:pinName];
+    JMXOutputPin *pin = [self outputPinWithLabel:pinLabel];
     if (pin) {
         // create a virtual pin to be attached to the receiver
         // not that the pin will automatically released once disconnected
-        JMXInputPin *vPin = [JMXInputPin pinWithName:@"vpin"
+        JMXInputPin *vPin = [JMXInputPin pinWithLabel:@"vpin"
                                              andType:pin.type
                                         forDirection:kJMXInputPin
                                              ownedBy:receiver
@@ -502,10 +514,10 @@ using namespace v8;
     // TODO - use introspection to determine the return type of a message
     //        to generalize using encapsulation in NSNumber/NSData/NSValue
     // XXX - it seems not possible ... further digging is required
-    if ([aPin.name isEqualTo:@"active"]) {
+    if ([aPin.label isEqualTo:@"active"]) {
         return [NSNumber numberWithBool:self.active];
     } else {
-        SEL selector = NSSelectorFromString(aPin.name);
+        SEL selector = NSSelectorFromString(aPin.label);
         if ([self respondsToSelector:selector]) {
             return [[[self performSelector:selector] retain] autorelease];
         }
@@ -569,7 +581,7 @@ static v8::Handle<Value> InputPin(const Arguments& args)
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    JMXPin *pin = [entity inputPinWithName:[NSString stringWithUTF8String:*value]];
+    JMXPin *pin = [entity inputPinWithLabel:[NSString stringWithUTF8String:*value]];
     if (pin) {
         v8::Handle<Object> pinInstance = [pin jsObj];
         [pool drain];
@@ -590,7 +602,7 @@ static v8::Handle<Value> OutputPin(const Arguments& args)
     v8::String::Utf8Value value(arg);
     Local<Value> ret;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    JMXPin *pin = [entity outputPinWithName:[NSString stringWithUTF8String:*value]];
+    JMXPin *pin = [entity outputPinWithLabel:[NSString stringWithUTF8String:*value]];
     if (pin) {
         v8::Handle<Object> pinInstance = [pin jsObj];
         [pool drain];

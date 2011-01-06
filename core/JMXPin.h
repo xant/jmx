@@ -32,7 +32,7 @@
 #import "JMXAudioBuffer.h"
 #import "JMXPinSignal.h"
 #import "JMXV8.h"
-#import "JMXNode.h"
+#import "JMXElement.h"
 
 @class JMXPin;
 
@@ -101,10 +101,10 @@ typedef enum {
  You should never use instances of this class directly, but you will use instead
  a concrete subclass (most likely a <code>JMXInputPin</code> or a <code>JMXOutputPin</code>)
  */
-@interface JMXPin : JMXNode {
+@interface JMXPin : JMXElement {
 @protected
     JMXPinType          type;
-    NSString            *name;
+    NSString            *label;
     NSMutableDictionary *properties;
     BOOL                multiple; // default NO
     BOOL                continuous; // default YES
@@ -134,10 +134,10 @@ typedef enum {
  */
 @property (readonly)  JMXPinType type;
 /*!
- @property name
- @abstract the name of the pin
+ @property label
+ @abstract the label of the pin
  */
-@property (readonly)  NSString *name;
+@property (readonly)  NSString *label;
 /*!
  @property multiple
  @abstract boolean flag which determines if the pin accepts multiple connections
@@ -195,23 +195,23 @@ typedef enum {
 @property (assign, readwrite) id data; // allow to access data as a property (using the . syntax)
 
 /*!
- @method pinWithName:andType:forDirection:ownedBy:withSignal:
- @param pinName the name
+ @method pinWithLabel:andType:forDirection:ownedBy:withSignal:
+ @param pinLabel the label
  @param pinType the type
  @param pinDirection the direction
  @param pinOwner the owner (who will receive data when signaled)
  @param pinSignal the signature of the selector to perform on the owner when a signal arrives
  @return an new initialized pin already pushed to the active autorelease pool
  */
-+ (id)pinWithName:(NSString *)name
++ (id)pinWithLabel:(NSString *)label
           andType:(JMXPinType)pinType
      forDirection:(JMXPinDirection)pinDirection
           ownedBy:(id)pinOwner
        withSignal:(NSString *)pinSignal;
 
 /*!
- @method pinWithName:andType:forDirection:ownedBy:withSignal:userData:
- @param pinName the name
+ @method pinWithLabel:andType:forDirection:ownedBy:withSignal:userData:
+ @param pinLabel the label
  @param pinType the type
  @param pinDirection the direction
  @param pinOwner the owner (who will receive data when signaled)
@@ -219,7 +219,7 @@ typedef enum {
  @param userData user defined data which will be sent to the owner together with the signaled data each time
  @return an new initialized pin already pushed to the active autorelease pool
  */
-+ (id)pinWithName:(NSString *)name
++ (id)pinWithLabel:(NSString *)label
           andType:(JMXPinType)pinType
      forDirection:(JMXPinDirection)pinDirection
           ownedBy:(id)pinOwner
@@ -227,8 +227,8 @@ typedef enum {
          userData:(id)userData;
 
 /*!
- @method pinWithName:andType:forDirection:ownedBy:withSignal:userData:allowedValues:
- @param pinName the name
+ @method pinWithLabel:andType:forDirection:ownedBy:withSignal:userData:allowedValues:
+ @param pinLabel the label
  @param pinType the type
  @param pinDirection the direction
  @param pinOwner the owner (who will receive data when signaled)
@@ -237,7 +237,7 @@ typedef enum {
  @param allowedValues NSArray containing all possible values for this pin
  @return an new initialized pin already pushed to the active autorelease pool
  */
-+ (id)pinWithName:(NSString *)name
++ (id)pinWithLabel:(NSString *)label
           andType:(JMXPinType)pinType
      forDirection:(JMXPinDirection)pinDirection
           ownedBy:(id)pinOwner
@@ -246,8 +246,8 @@ typedef enum {
     allowedValues:(NSArray *)allowedValues;
 
 /*!
- @method pinWithName:andType:forDirection:ownedBy:withSignal:userData:allowedValues:
- @param pinName the name
+ @method pinWithLabel:andType:forDirection:ownedBy:withSignal:userData:allowedValues:
+ @param pinLabel the label
  @param pinType the type
  @param pinDirection the direction
  @param pinOwner the owner (who will receive data when signaled)
@@ -257,7 +257,7 @@ typedef enum {
  @param value initial value for the new pin
  @return an new initialized pin already pushed to the active autorelease pool
  */
-+ (id)pinWithName:(NSString *)name
++ (id)pinWithLabel:(NSString *)label
           andType:(JMXPinType)pinType
      forDirection:(JMXPinDirection)pinDirection
           ownedBy:(id)pinOwner
@@ -267,36 +267,36 @@ typedef enum {
      initialValue:(id)value;
 
 /*!
- @method initWithName:andType:forDirection:ownedBy:withSignal:userData:allowedValues:
- @param pinName the name
+ @method initWithLabel:andType:forDirection:ownedBy:withSignal:userData:allowedValues:
+ @param pinLabel the label
  @param pinType the type
  @param pinOwner the owner (who will receive data when signaled)
  @param pinSignal the signature of the selector to perform on the owner when a signal arrives
  @return the initialized pin instance
  */
-- (id)initWithName:(NSString *)pinName
+- (id)initWithLabel:(NSString *)pinLabel
            andType:(JMXPinType)pinType
            ownedBy:(id)pinOwner
         withSignal:(NSString *)pinSignal;
 
 /*!
- @method initWithName:andType:forDirection:ownedBy:withSignal:userData:allowedValues:
- @param pinName the name
+ @method initWithLabel:andType:forDirection:ownedBy:withSignal:userData:allowedValues:
+ @param pinLabel the label
  @param pinType the type
  @param pinOwner the owner (who will receive data when signaled)
  @param pinSignal the signature of the selector to perform on the owner when a signal arrives
  @param userData user defined data which will be sent to the owner together with the signaled data each time
  @return the initialized pin instance
  */
-- (id)initWithName:(NSString *)pinName
+- (id)initWithLabel:(NSString *)pinLabel
            andType:(JMXPinType)pinType
            ownedBy:(id)pinOwner
         withSignal:(NSString *)pinSignal
           userData:(id)userData;
 
 /*!
- @method initWithName:andType:forDirection:ownedBy:withSignal:userData:allowedValues:
- @param pinName the name
+ @method initWithLabel:andType:forDirection:ownedBy:withSignal:userData:allowedValues:
+ @param pinLabel the label
  @param pinType the type
  @param pinOwner the owner (who will receive data when signaled)
  @param pinSignal the signature of the selector to perform on the owner when a signal arrives
@@ -304,7 +304,7 @@ typedef enum {
  @param allowedValues NSArray containing all possible values for this pin
  @return the initialized pin instance
  */
-- (id)initWithName:(NSString *)pinName
+- (id)initWithLabel:(NSString *)pinLabel
            andType:(JMXPinType)pinType
            ownedBy:(id)pinOwner
         withSignal:(NSString *)pinSignal
@@ -312,8 +312,8 @@ typedef enum {
      allowedValues:(NSArray *)allowedValues;
 
 /*!
- @method initWithName:andType:forDirection:ownedBy:withSignal:userData:allowedValues:
- @param pinName the name
+ @method initWithLabel:andType:forDirection:ownedBy:withSignal:userData:allowedValues:
+ @param pinLabel the label
  @param pinType the type
  @param pinOwner the owner (who will receive data when signaled)
  @param pinSignal the signature of the selector to perform on the owner when a signal arrives
@@ -322,7 +322,7 @@ typedef enum {
  @param value initial value for the new pin
  @return the initialized pin instance
  */
-- (id)initWithName:(NSString *)pinName
+- (id)initWithLabel:(NSString *)pinLabel
            andType:(JMXPinType)pinType
            ownedBy:(id)pinOwner
         withSignal:(NSString *)pinSignal

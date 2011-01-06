@@ -42,7 +42,7 @@
 #import <Foundation/NSXMLElement.h>
 #import "JMXInputPin.h"
 #import "JMXOutputPin.h"
-#import "JMXNode.h"
+#import "JMXElement.h"
 
 #define kJMXFpsMaxStamps 25
 
@@ -74,13 +74,13 @@
  * 
  * * active kJMXBooleanPin
  * 
- * * name kJMXStringPin
+ * * label kJMXStringPin
  *
  * This class exposes the follwing output pins:
  *
  * * active kJMXBooleanPin
  */
-@interface JMXEntity : JMXNode <JMXPinOwner> {
+@interface JMXEntity : JMXElement <JMXPinOwner> {
 @public
     NSString *label;
     BOOL active;
@@ -120,35 +120,35 @@
 /*!
  @method registerInputPin:withType:andSelector:
  @abstract create and register a new input pin
- @param pinName the name of the new pin
+ @param pinLabel the label of the new pin
  @param pinType the datatype transported on this pin
  @return the newly created pin
  */
-- (JMXInputPin *)registerInputPin:(NSString *)pinName
+- (JMXInputPin *)registerInputPin:(NSString *)pinLabel
                     withType:(JMXPinType)pinType;
 
 /*!
  @method registerInputPin:withType:andSelector:
  @abstract create and register a new input pin
- @param pinName the name of the new pin
+ @param pinLabel the label of the new pin
  @param pinType the datatype transported on this pin
  @param selector the selector to call when new data are signaled on the pin
  @return the newly created pin
  */
-- (JMXInputPin *)registerInputPin:(NSString *)pinName
+- (JMXInputPin *)registerInputPin:(NSString *)pinLabel
                     withType:(JMXPinType)pinType
                  andSelector:(NSString *)selector;
 
 /*!
  @method registerInputPin:withType:andSelector:
  @abstract create and register a new input pin
- @param pinName the name of the new pin
+ @param pinLabel the label of the new pin
  @param pinType the datatype transported on this pin
  @param selector the selector to call when new data are signaled on the pin
  @param userData private data which will be passed to the selector each time it's called
  @return the newly created pin
  */
-- (JMXInputPin *)registerInputPin:(NSString *)pinName
+- (JMXInputPin *)registerInputPin:(NSString *)pinLabel
                          withType:(JMXPinType)pinType 
                       andSelector:(NSString *)selector
                          userData:(id)userData;
@@ -156,14 +156,14 @@
 /*!
  @method registerInputPin:withType:andSelector:
  @abstract create and register a new input pin
- @param pinName the name of the new pin
+ @param pinLabel the label of the new pin
  @param pinType the datatype transported on this pin
  @param selector the selector to call when new data are signaled on the pin
  @param pinValues array with all possible values for the new pin
  @param value the initial value of the new pin
  @return the newly created pin
  */
-- (JMXInputPin *)registerInputPin:(NSString *)pinName
+- (JMXInputPin *)registerInputPin:(NSString *)pinLabel
                          withType:(JMXPinType)pinType
                       andSelector:(NSString *)selector
                     allowedValues:(NSArray *)pinValues
@@ -172,7 +172,7 @@
 /*!
  @method registerInputPin:withType:andSelector:
  @abstract create and register a new input pin
- @param pinName the name of the new pin
+ @param pinLabel the label of the new pin
  @param pinType the datatype transported on this pin
  @param selector the selector to call when new data are signaled on the pin
  @param userData private data which will be passed to the selector each time it's called
@@ -180,7 +180,7 @@
  @param value the initial value of the new pin
  @return the newly created pin
  */
-- (JMXInputPin *)registerInputPin:(NSString *)pinName 
+- (JMXInputPin *)registerInputPin:(NSString *)pinLabel 
                          withType:(JMXPinType)pinType
                       andSelector:(NSString *)selector
                          userData:(id)userData
@@ -190,35 +190,35 @@
 /*!
  @method registerOutputPin:withType:andSelector:
  @abstract create and register a new input pin
- @param pinName the name of the new pin
+ @param pinLabel the label of the new pin
  @param pinType the datatype transported on this pin
  @return the newly created pin
  */
-- (JMXOutputPin *)registerOutputPin:(NSString *)pinName
+- (JMXOutputPin *)registerOutputPin:(NSString *)pinLabel
                      withType:(JMXPinType)pinType;
 
 /*!
  @method registerOutputPin:withType:andSelector:
  @abstract create and register a new input pin
- @param pinName the name of the new pin
+ @param pinLabel the label of the new pin
  @param pinType the datatype transported on this pin
  @param selector the selector to call when new data are signaled on the pin
  @return the newly created pin
  */
-- (JMXOutputPin *)registerOutputPin:(NSString *)pinName
+- (JMXOutputPin *)registerOutputPin:(NSString *)pinLabel
                      withType:(JMXPinType)pinType
                   andSelector:(NSString *)selector;
 
 /*!
  @method registerOutputPin:withType:andSelector:
  @abstract create and register a new input pin
- @param pinName the name of the new pin
+ @param pinLabel the label of the new pin
  @param pinType the datatype transported on this pin
  @param selector the selector to call when new data are signaled on the pin
  @param userData private data which will be passed to the selector each time it's called
  @return the newly created pin
  */
-- (JMXOutputPin *)registerOutputPin:(NSString *)pinName
+- (JMXOutputPin *)registerOutputPin:(NSString *)pinLabel
                            withType:(JMXPinType)pinType 
                         andSelector:(NSString *)selector
                            userData:(id)userData;
@@ -226,7 +226,7 @@
 /*!
  @method registerOutputPin:withType:andSelector:
  @abstract create and register a new input pin
- @param pinName the name of the new pin
+ @param pinLabel the label of the new pin
  @param pinType the datatype transported on this pin
  @param selector the selector to call when new data are signaled on the pin
  @param userData private data which will be passed to the selector each time it's called
@@ -234,7 +234,7 @@
  @param value the initial value of the new pin
  @return the newly created pin
  */
-- (JMXOutputPin *)registerOutputPin:(NSString *)pinName
+- (JMXOutputPin *)registerOutputPin:(NSString *)pinLabel
                            withType:(JMXPinType)pinType
                         andSelector:(NSString *)selector
                            userData:(id)userData
@@ -244,26 +244,26 @@
 /*!
  @method registerOutputPin:withType:andSelector:
  @abstract create and register a new input pin
- @param pinName the name of the new pin
+ @param pinLabel the label of the new pin
  @param pinType the datatype transported on this pin
  @param selector the selector to call when new data are signaled on the pin
  @param pinValues array with all possible values for the new pin
  @param value the initial value of the new pin
  @return the newly created pin
  */
-- (JMXOutputPin *)registerOutputPin:(NSString *)pinName
+- (JMXOutputPin *)registerOutputPin:(NSString *)pinLabel
                            withType:(JMXPinType)pinType
                         andSelector:(NSString *)selector
                       allowedValues:(NSArray *)pinValues
                        initialValue:(id)value;
 
 /*!
- @method proxyInputPin:withName:
+ @method proxyInputPin:withLabel:
  @abstract manage/register an existing input pin as if it is ours
  @param pin the existing pin
- @param pinName the new name to assign to the proxied pin
+ @param pinLabel the new label to assign to the proxied pin
  */
-- (void)proxyInputPin:(JMXInputPin *)pin withName:(NSString *)pinName;
+- (void)proxyInputPin:(JMXInputPin *)pin withLabel:(NSString *)pinLabel;
 
 /*!
  @method proxyInputPin:
@@ -273,12 +273,12 @@
 - (void)proxyInputPin:(JMXInputPin *)pin;
 
 /*!
- @method proxyOutputPin:withName:
+ @method proxyOutputPin:withLabel:
  @abstract manage/register an existing input pin as if it is ours
  @param pin the existing pin
- @param pinName the new name to assign to the proxied pin
+ @param pinLabel the new label to assign to the proxied pin
  */
-- (void)proxyOutputPin:(JMXOutputPin *)pin withName:(NSString *)pinName;
+- (void)proxyOutputPin:(JMXOutputPin *)pin withLabel:(NSString *)pinLabel;
 
 /*!
  @method proxyOutputPin:
@@ -290,15 +290,15 @@
 /*!
  @method unregisterInputPin:
  @abstract unregister a managed input pin
- @param pinName the pin name
+ @param pinLabel the pin label
  */
-- (void)unregisterInputPin:(NSString *)pinName;
+- (void)unregisterInputPin:(NSString *)pinLabel;
 /*!
  @method unregisterOutputPin:
  @abstract unregister a managed output pin
- @param pinName the pin name
+ @param pinLabel the pin label
  */
-- (void)unregisterOutputPin:(NSString *)pinName;
+- (void)unregisterOutputPin:(NSString *)pinLabel;
 
 /*!
  @method unregisterAllPins
@@ -314,39 +314,39 @@
 
 /*!
  @method inputPins
- @abstract return an autoreleased NSArray containing names of all managed/registered input pins
+ @abstract return an autoreleased NSArray containing labels of all managed/registered input pins
  */
-// autoreleased array of strings (pin names)
+// autoreleased array of strings (pin labels)
 - (NSArray *)inputPins;
 /*!
  @method outputPins
- @abstract return an autoreleased NSArray containing names of all managed/registered output pins
+ @abstract return an autoreleased NSArray containing labels of all managed/registered output pins
  */
 - (NSArray *)outputPins;
 
 /*!
- @method inputPinWithName:
- @abstract return the input pin with the given name (if any is actually registered)
+ @method inputPinWithLabel:
+ @abstract return the input pin with the given label (if any is actually registered)
  @return the JMXInputPin object
  */
-- (JMXInputPin *)inputPinWithName:(NSString *)pinName;
+- (JMXInputPin *)inputPinWithLabel:(NSString *)pinLabel;
 /*!
- @method outputPinWithName:
- @abstract return the output pin with the given name (if any is actually registered)
+ @method outputPinWithLabel:
+ @abstract return the output pin with the given label (if any is actually registered)
  @return the JMXOutputPin object
  */
-- (JMXOutputPin *)outputPinWithName:(NSString *)pinName;
+- (JMXOutputPin *)outputPinWithLabel:(NSString *)pinLabel;
 
 /*!
  @method attachObject:withSelector:toOutputPin:
  @abstract attach any object to an output pin (this allows to debug signals sent on such pin)
  @param receiver the receiver of the pin signal
  @param selector the selector to call when delivering the signal
- @param pinName the name of the output pin to hook
+ @param pinLabel the label of the output pin to hook
  */
 - (BOOL)attachObject:(id)receiver
         withSelector:(NSString *)selector
-        toOutputPin:(NSString *)pinName;
+        toOutputPin:(NSString *)pinLabel;
 
 /*!
  @method outputDefaultSignals:

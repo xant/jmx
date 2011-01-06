@@ -134,16 +134,6 @@ JMXEntityLabelLayer *JMXEntityLabelLayerCreate(NSString *name) {
     self.frame = f;
 }
 
-- (JMXPin *)outputPinWithName:(NSString *)aPinName
-{
-    return [self.entity outputPinWithName:aPinName];
-}
-
-- (JMXPin *)inputPinWithName:(NSString *)aPinName
-{
-    return [self.entity inputPinWithName:aPinName];
-}
-
 - (void)reorderOutlets
 {
     [self setupPinsLayers:self.inlets startAtPoint:CGPointMake(self.bounds.origin.x, ENTITY_LABEL_HEIGHT) output:NO];
@@ -174,7 +164,7 @@ JMXEntityLabelLayer *JMXEntityLabelLayerCreate(NSString *name) {
 {
     NSString __block *pinName = [[notification userInfo] objectForKey:@"pinName"];
     NSUInteger index = [self.inlets indexOfObjectPassingTest:^(id obj, NSUInteger index, BOOL *stop) {
-        return [((JMXOutletLayer *)obj).pin.pin.name isEqualToString:pinName];
+        return [((JMXOutletLayer *)obj).pin.pin.label isEqualToString:pinName];
     }];
     [[self.inlets objectAtIndex:index] removeFromSuperlayer];
     [self.inlets removeObjectAtIndex:index];
@@ -195,7 +185,7 @@ JMXEntityLabelLayer *JMXEntityLabelLayerCreate(NSString *name) {
 {
     NSString __block *pinName = [[notification userInfo] objectForKey:@"pinName"];
     NSUInteger index = [self.outlets indexOfObjectPassingTest:^(id obj, NSUInteger index, BOOL *stop) {
-        return [((JMXOutletLayer *)obj).pin.pin.name isEqualToString:pinName];
+        return [((JMXOutletLayer *)obj).pin.pin.label isEqualToString:pinName];
     }];
     [[self.outlets objectAtIndex:index] removeFromSuperlayer];
     [self.outlets removeObjectAtIndex:index];
@@ -262,7 +252,7 @@ id controlForJMXPinType(JMXPinType aType)
 - (void)controlPin
 {
     for (JMXInputPin *anInputPin in self.entity.inputPins)
-        NSLog(@"name: %@, type: %@", anInputPin.name, controlForJMXPinType(anInputPin.type));
+        NSLog(@"name: %@, type: %@", anInputPin.label, controlForJMXPinType(anInputPin.type));
 }
 
 - (void)updateConnectors

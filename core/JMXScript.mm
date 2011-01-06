@@ -29,7 +29,9 @@
 #import "JMXPoint.h"
 #import "JMXColor.h"
 #import "JMXSize.h"
+#import "JMXElement.h"
 #import "JMXCDATA.h"
+#import "JMXAttribute.h"
 
 @class JMXEntity;
 
@@ -62,7 +64,10 @@ static JMXV8ClassDescriptor mappedClasses[] = {
     { "JMXPoint",                 "Point",           JMXPointJSConstructor },
     { "JMXColor",                 "Color",           JMXColorJSConstructor },
     { "JMXSize",                  "Size",            JMXSizeJSConstructor },
-    { "JMXCDATA",                 "CharacterData",   JMXCDATAJSConstructor },
+    { "NSXMLNode",                "Node",            NSXMLNodeJSConstructor },
+    { "JMXElement",               "Element",         JMXElementJSConstructor },
+    { "JMXCDATA",                 "CDATA",           JMXCDATAJSConstructor },
+    { "JMXAttribute",             "Attribute"   ,    JMXAttributeJSConstructor },
     { NULL,                       NULL,              NULL }
 };
 
@@ -539,8 +544,8 @@ static v8::Handle<Value> Quit(const Arguments& args)
     }
     
     for (JMXEntity *entity in [entityNames allKeys]) {
-        for (NSString *pinName in [entity outputPins]) {
-            JMXOutputPin *pin = [entity outputPinWithName:pinName];
+        for (NSString *pinLabel in [entity outputPins]) {
+            JMXOutputPin *pin = [entity outputPinWithLabel:pinLabel];
             if (pin.connected) {
                 for (id receiver in [pin receivers]) {
                     if ([receiver isKindOfClass:[JMXPin class]]) {

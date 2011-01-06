@@ -10,14 +10,18 @@
 #import "NSXMLNode+V8.h"
 #import "JMXV8PropertyAccessors.h"
 
+JMXV8_EXPORT_NODE_CLASS(NSXMLNode);
+
 @implementation NSXMLNode (JMXV8)
 
+- (id)jmxInit
+{
+    return [self initWithKind:NSXMLTextKind];
+}
 
 #pragma mark V8
 
 using namespace v8;
-
-static Persistent<FunctionTemplate> objectTemplate;
 
 static v8::Handle<Value>GetParentNode(Local<String> name, const AccessorInfo& info)
 {   
@@ -44,7 +48,7 @@ static v8::Handle<Value>GetChildNodes(Local<String> name, const AccessorInfo& in
     NSArray *children = [node children];
     Local<Context> ctx = v8::Context::GetCurrent();
     Local<Function> constructor = v8::Local<v8::Function>::Cast(ctx->Global()->Get(String::New("NodeList")));
-    if (!constructor.IsEmpty()) {
+    if (!constructor.IsEmpty()) {        
         v8::Handle<Object> obj = info.Holder();
         v8::Handle<Object> list = constructor->NewInstance();
         for (NSXMLNode *child in children) {

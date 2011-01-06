@@ -13,12 +13,12 @@
 
 @interface JMXProxyPin : NSProxy {
     JMXPin *realObject;
-    NSString *name;
+    NSString *label;
     NSXMLNode *parent;
 }
 
 @property (readwrite, assign) NSXMLNode *parent;
-@property (readwrite, copy)NSString *name;
-- (id)initWithPin:(JMXPin *)pin andName:(NSString *)name;
-+ (id)proxyPin:(JMXPin *)pin withName:(NSString *)name;
+@property (readwrite, copy)NSString *label;
+- (id)initWithPin:(JMXPin *)pin andLabel:(NSString *)label;
++ (id)proxyPin:(JMXPin *)pin withLabel:(NSString *)label;
 @end

@@ -249,7 +249,7 @@ static v8::Handle<Value> frequency(const Arguments& args)
     NSString *label = freq < 1000
                     ? [NSString stringWithFormat:@"%d", freq]
                     : [NSString stringWithFormat:@"%dK", freq/1000];
-    JMXPin *pin = [entity outputPinWithName:label];
+    JMXPin *pin = [entity outputPinWithLabel:label];
     if (pin) {
         NSNumber *value = [pin readData];
         if (value) {

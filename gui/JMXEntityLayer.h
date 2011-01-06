@@ -53,9 +53,6 @@
 - (id)initWithEntity:(JMXEntity *)anEntity;
 - (id)initWithEntity:(JMXEntity *)anEntity board:(JMXBoardView *)aBoard;
 
-- (JMXPin *)inputPinWithName:(NSString *)aPinName;
-- (JMXPin *)outputPinWithName:(NSString *)aPinName;
-
 - (void)recalculateFrame;
 - (void)reorderOutlets;
 - (void)select;

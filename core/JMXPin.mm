@@ -33,12 +33,12 @@ using namespace v8;
 
 @implementation JMXPin
 
-@synthesize type, name, multiple, continuous, connected, sendNotifications,
+@synthesize type, label, multiple, continuous, connected, sendNotifications,
             direction, allowedValues, owner, minValue, maxValue, connections;
 
 #pragma mark Constructors
 
-+ (id)pinWithName:(NSString *)name
++ (id)pinWithLabel:(NSString *)label
           andType:(JMXPinType)pinType
      forDirection:(JMXPinDirection)pinDirection
           ownedBy:(id)pinOwner
@@ -51,7 +51,7 @@ using namespace v8;
     id pinClass = pinDirection == kJMXInputPin
                 ? [JMXInputPin class]
                 : [JMXOutputPin class];
-    return [[[pinClass alloc]     initWithName:name
+    return [[[pinClass alloc]     initWithLabel:label
                                        andType:pinType
                                        ownedBy:pinOwner
                                     withSignal:pinSignal
@@ -61,7 +61,7 @@ using namespace v8;
             autorelease];
 }
 
-+ (id)pinWithName:(NSString *)name
++ (id)pinWithLabel:(NSString *)label
           andType:(JMXPinType)pinType
      forDirection:(JMXPinDirection)pinDirection
           ownedBy:(id)pinOwner
@@ -72,7 +72,7 @@ using namespace v8;
     id pinClass = pinDirection == kJMXInputPin
                 ? [JMXInputPin class]
                 : [JMXOutputPin class];
-    return  [pinClass pinWithName:name
+    return  [pinClass pinWithLabel:label
                               andType:pinType
                          forDirection:pinDirection
                               ownedBy:pinOwner
@@ -82,7 +82,7 @@ using namespace v8;
                          initialValue:nil];
 }
 
-+ (id)pinWithName:(NSString *)name
++ (id)pinWithLabel:(NSString *)label
           andType:(JMXPinType)pinType
      forDirection:(JMXPinDirection)pinDirection
           ownedBy:(id)pinOwner
@@ -91,7 +91,7 @@ using namespace v8;
     id pinClass = pinDirection == kJMXInputPin
                 ? [JMXInputPin class]
                 : [JMXOutputPin class];
-    return [pinClass pinWithName:name
+    return [pinClass pinWithLabel:label
                          andType:pinType
                     forDirection:pinDirection
                          ownedBy:pinOwner
@@ -100,7 +100,7 @@ using namespace v8;
                    allowedValues:nil];
 }
 
-+ (id)pinWithName:(NSString *)name
++ (id)pinWithLabel:(NSString *)label
           andType:(JMXPinType)pinType
      forDirection:(JMXPinDirection)pinDirection
           ownedBy:(id)pinOwner
@@ -110,7 +110,7 @@ using namespace v8;
     id pinClass = pinDirection == kJMXInputPin
                 ? [JMXInputPin class]
                 : [JMXOutputPin class];
-    return [pinClass pinWithName:name
+    return [pinClass pinWithLabel:label
                          andType:pinType
                     forDirection:pinDirection
                          ownedBy:pinOwner
@@ -121,12 +121,12 @@ using namespace v8;
 
 #pragma mark Initializers
 
-- (id)initWithName:(NSString *)pinName
+- (id)initWithLabel:(NSString *)pinLabel
            andType:(JMXPinType)pinType
            ownedBy:(id)pinOwner
         withSignal:(NSString *)pinSignal
 {
-    return [self initWithName:name
+    return [self initWithLabel:pinLabel
                       andType:pinType
                       ownedBy:pinOwner
                    withSignal:pinSignal
@@ -134,13 +134,13 @@ using namespace v8;
                 allowedValues:nil];
 }
 
-- (id)initWithName:(NSString *)pinName
+- (id)initWithLabel:(NSString *)pinLabel
            andType:(JMXPinType)pinType
            ownedBy:(id)pinOwner
         withSignal:(NSString *)pinSignal
           userData:(id)userData
 {
-    return [self initWithName:name
+    return [self initWithLabel:pinLabel
                       andType:pinType
                       ownedBy:pinOwner
                    withSignal:pinSignal
@@ -148,14 +148,14 @@ using namespace v8;
                 allowedValues:nil];
 }
 
-- (id)initWithName:(NSString *)pinName
+- (id)initWithLabel:(NSString *)pinLabel
            andType:(JMXPinType)pinType
            ownedBy:(id)pinOwner
         withSignal:(NSString *)pinSignal
           userData:(id)userData
      allowedValues:(NSArray *)pinValues
 {
-    return [self initWithName:pinName
+    return [self initWithLabel:pinLabel
                       andType:pinType
                       ownedBy:pinOwner
                    withSignal:pinSignal
@@ -164,7 +164,7 @@ using namespace v8;
                  initialValue:nil];
 }
 
-- (id)initWithName:(NSString *)pinName
+- (id)initWithLabel:(NSString *)pinLabel
            andType:(JMXPinType)pinType
            ownedBy:(id)pinOwner
         withSignal:(NSString *)pinSignal
@@ -172,10 +172,10 @@ using namespace v8;
      allowedValues:(NSArray *)pinValues
       initialValue:(id)value
 {
-    self = [super initWithName:pinName];
+    self = [super initWithName:@"JMXPin"];
     if (self) {
         type = pinType;
-        name = [pinName copy];
+        label = [pinLabel copy];
         multiple = NO;
         continuous = YES;
         connected = NO;
@@ -195,7 +195,8 @@ using namespace v8;
         [self addAttribute:[NSXMLNode attributeWithName:@"type" stringValue:[JMXPin nameforType:type]]];
         [self addAttribute:[NSXMLNode attributeWithName:@"multiple" stringValue:multiple ? @"YES" : @"NO" ]];
         [self addAttribute:[NSXMLNode attributeWithName:@"connected" stringValue:connected ? @"YES" : @"NO" ]];
-        connections = [[JMXNode alloc] initWithName:@"connections"];
+        [self addAttribute:[NSXMLNode attributeWithName:@"label" stringValue:label]];
+        connections = [[JMXElement alloc] initWithName:@"connections"];
         [self addChild:connections];
     }
     return self;
@@ -289,7 +290,7 @@ using namespace v8;
 {
     [connections detach];
     [connections release];
-    [name release];
+    [label release];
     if (allowedValues)
         [allowedValues release];
     [dataLock release];
@@ -356,7 +357,7 @@ using namespace v8;
     NSString *ownerName;
     if ([owner respondsToSelector:@selector(name)])
         ownerName = [owner performSelector:@selector(name)];
-    return [NSString stringWithFormat:@"%@:%@", ownerName, name];
+    return [NSString stringWithFormat:@"%@:%@", ownerName, label];
 }
 
 - (void)addAllowedValue:(id)value
@@ -613,18 +614,18 @@ static v8::Handle<Value>exportToBoard(const Arguments& args)
     JMXPin *pin = (JMXPin *)args.Holder()->GetPointerFromInternalField(0);
     v8::Handle<Value> arg = args[0];
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    NSString *name = nil;
+    NSString *label = nil;
     if (!arg.IsEmpty()) {
         v8::String::Utf8Value value(args[0]);
-        name = [NSString stringWithUTF8String:*value];
+        label = [NSString stringWithUTF8String:*value];
     }
     v8::Local<Context> globalContext = v8::Context::GetCalling();
     JMXScript *ctx = [JMXScript getContext:globalContext];
     if (ctx && ctx.scriptEntity) {        
         if (pin.direction == kJMXInputPin)
-            [ctx.scriptEntity proxyInputPin:(JMXInputPin *)pin withName:name];
+            [ctx.scriptEntity proxyInputPin:(JMXInputPin *)pin withLabel:label];
         else 
-            [ctx.scriptEntity proxyOutputPin:(JMXOutputPin *)pin withName:name];
+            [ctx.scriptEntity proxyOutputPin:(JMXOutputPin *)pin withLabel:label];
         ret = YES;
     }
     [pool release];
@@ -648,6 +649,7 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
     v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
     instanceTemplate->SetInternalFieldCount(1);
     // Add accessors for each of the fields of the entity.
+    instanceTemplate->SetAccessor(String::NewSymbol("label"), GetStringProperty, SetStringProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("type"), type);
     instanceTemplate->SetAccessor(String::NewSymbol("direction"), direction);
     instanceTemplate->SetAccessor(String::NewSymbol("multiple"), GetBoolProperty);

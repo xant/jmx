@@ -95,10 +95,11 @@
 		AA8F806112C9D3FA00EA8543 /* JMXScriptLive.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8F806012C9D3FA00EA8543 /* JMXScriptLive.mm */; };
 		AA8F817612CB236700EA8543 /* JMXTextPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8F817512CB236700EA8543 /* JMXTextPanel.m */; };
 		AAC6323112CFC72B00B69DFE /* JMXGraph.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6323012CFC72B00B69DFE /* JMXGraph.mm */; };
-		AAC6323C12CFCAB900B69DFE /* JMXNode.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6323B12CFCAB900B69DFE /* JMXNode.mm */; };
+		AAC6323C12CFCAB900B69DFE /* JMXElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6323B12CFCAB900B69DFE /* JMXElement.mm */; };
 		AAC6334612D36DA900B69DFE /* NSXMLNode+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6334512D36DA900B69DFE /* NSXMLNode+V8.mm */; };
 		AAC6359C12D4622400B69DFE /* DOM.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AAC6355612D45C5800B69DFE /* DOM.js */; };
 		AAC6376312D5099400B69DFE /* JMXCDATA.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6376212D5099400B69DFE /* JMXCDATA.mm */; };
+		AAC637E012D5204C00B69DFE /* JMXAttribute.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC637DF12D5204C00B69DFE /* JMXAttribute.mm */; };
 		AACE7D04129315DE00FBDC0D /* JMXScriptEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */; };
 		AACE7D331293195600FBDC0D /* JMXV8PropertyAccessors.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACE7D321293195600FBDC0D /* JMXV8PropertyAccessors.mm */; };
 		AAD139BB128EA0DF00ECB03A /* JMXDrawPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */; };
@@ -310,13 +311,15 @@
 		AA8F817512CB236700EA8543 /* JMXTextPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXTextPanel.m; sourceTree = "<group>"; };
 		AAC6322F12CFC72B00B69DFE /* JMXGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXGraph.h; sourceTree = "<group>"; };
 		AAC6323012CFC72B00B69DFE /* JMXGraph.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXGraph.mm; sourceTree = "<group>"; };
-		AAC6323A12CFCAB900B69DFE /* JMXNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXNode.h; sourceTree = "<group>"; };
-		AAC6323B12CFCAB900B69DFE /* JMXNode.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXNode.mm; sourceTree = "<group>"; };
+		AAC6323A12CFCAB900B69DFE /* JMXElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXElement.h; sourceTree = "<group>"; };
+		AAC6323B12CFCAB900B69DFE /* JMXElement.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXElement.mm; sourceTree = "<group>"; };
 		AAC6334412D36DA900B69DFE /* NSXMLNode+V8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSXMLNode+V8.h"; sourceTree = "<group>"; };
 		AAC6334512D36DA900B69DFE /* NSXMLNode+V8.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSXMLNode+V8.mm"; sourceTree = "<group>"; };
 		AAC6355612D45C5800B69DFE /* DOM.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = DOM.js; sourceTree = "<group>"; };
 		AAC6376112D5099400B69DFE /* JMXCDATA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXCDATA.h; sourceTree = "<group>"; };
 		AAC6376212D5099400B69DFE /* JMXCDATA.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXCDATA.mm; sourceTree = "<group>"; };
+		AAC637DE12D5204C00B69DFE /* JMXAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXAttribute.h; sourceTree = "<group>"; };
+		AAC637DF12D5204C00B69DFE /* JMXAttribute.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXAttribute.mm; sourceTree = "<group>"; };
 		AACE7D02129315DE00FBDC0D /* JMXScriptEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXScriptEntity.h; sourceTree = "<group>"; };
 		AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScriptEntity.mm; sourceTree = "<group>"; };
 		AACE7D311293195600FBDC0D /* JMXV8PropertyAccessors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXV8PropertyAccessors.h; sourceTree = "<group>"; };
@@ -620,28 +623,7 @@
 				825C312A1275ADD6006376B8 /* JMXAudioFormat.m */,
 				825C312B1275ADD6006376B8 /* JMXCompressor.h */,
 				825C312C1275ADD6006376B8 /* JMXCompressor.m */,
-				825C312D1275ADD6006376B8 /* JMXContext.h */,
-				825C312E1275ADD6006376B8 /* JMXContext.m */,
-				825C312F1275ADD6006376B8 /* JMXEntity.h */,
-				825C31301275ADD6006376B8 /* JMXEntity.mm */,
-				825C31441275ADD7006376B8 /* JMXThreadedEntity.h */,
-				825C31451275ADD7006376B8 /* JMXThreadedEntity.mm */,
-				AAFAADA1129097A200949028 /* JMXV8.h */,
-				AACE7D311293195600FBDC0D /* JMXV8PropertyAccessors.h */,
-				AACE7D321293195600FBDC0D /* JMXV8PropertyAccessors.mm */,
-				AA3557E612795D0A00EAA2E4 /* JMXScript.h */,
-				AAFAAD87129095EB00949028 /* JMXScript.mm */,
 				825C31311275ADD6006376B8 /* JMXFileRead.h */,
-				825C31361275ADD6006376B8 /* JMXPin.h */,
-				825C31371275ADD6006376B8 /* JMXPin.mm */,
-				825C31321275ADD6006376B8 /* JMXInputPin.h */,
-				825C31331275ADD6006376B8 /* JMXInputPin.m */,
-				825C31341275ADD6006376B8 /* JMXOutputPin.h */,
-				825C31351275ADD6006376B8 /* JMXOutputPin.m */,
-				AA4B00C712BE560100775B88 /* JMXProxyPin.h */,
-				AA4B00C812BE560100775B88 /* JMXProxyPin.m */,
-				825C31381275ADD7006376B8 /* JMXPinSignal.h */,
-				825C31391275ADD7006376B8 /* JMXPinSignal.m */,
 				825C313A1275ADD7006376B8 /* JMXPoint.h */,
 				825C313B1275ADD7006376B8 /* JMXPoint.mm */,
 				AAD13C48128EF2AB00ECB03A /* JMXColor.h */,
@@ -660,14 +642,37 @@
 				AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */,
 				82AD7F6E1289F3C300C85EB1 /* JMXOpenGLDraw.h */,
 				82AD7F6F1289F3C300C85EB1 /* JMXOpenGLDraw.mm */,
+				825C312F1275ADD6006376B8 /* JMXEntity.h */,
+				825C31301275ADD6006376B8 /* JMXEntity.mm */,
+				825C31441275ADD7006376B8 /* JMXThreadedEntity.h */,
+				825C31451275ADD7006376B8 /* JMXThreadedEntity.mm */,
+				825C31361275ADD6006376B8 /* JMXPin.h */,
+				825C31371275ADD6006376B8 /* JMXPin.mm */,
+				825C31321275ADD6006376B8 /* JMXInputPin.h */,
+				825C31331275ADD6006376B8 /* JMXInputPin.m */,
+				825C31341275ADD6006376B8 /* JMXOutputPin.h */,
+				825C31351275ADD6006376B8 /* JMXOutputPin.m */,
+				AA4B00C712BE560100775B88 /* JMXProxyPin.h */,
+				AA4B00C812BE560100775B88 /* JMXProxyPin.m */,
+				825C31381275ADD7006376B8 /* JMXPinSignal.h */,
+				825C31391275ADD7006376B8 /* JMXPinSignal.m */,
 				AAC6322F12CFC72B00B69DFE /* JMXGraph.h */,
 				AAC6323012CFC72B00B69DFE /* JMXGraph.mm */,
-				AAC6323A12CFCAB900B69DFE /* JMXNode.h */,
-				AAC6323B12CFCAB900B69DFE /* JMXNode.mm */,
+				AAC6323A12CFCAB900B69DFE /* JMXElement.h */,
+				AAC6323B12CFCAB900B69DFE /* JMXElement.mm */,
 				AAC6376112D5099400B69DFE /* JMXCDATA.h */,
 				AAC6376212D5099400B69DFE /* JMXCDATA.mm */,
+				AAC637DE12D5204C00B69DFE /* JMXAttribute.h */,
+				AAC637DF12D5204C00B69DFE /* JMXAttribute.mm */,
 				AAC6334412D36DA900B69DFE /* NSXMLNode+V8.h */,
 				AAC6334512D36DA900B69DFE /* NSXMLNode+V8.mm */,
+				AAFAADA1129097A200949028 /* JMXV8.h */,
+				AACE7D311293195600FBDC0D /* JMXV8PropertyAccessors.h */,
+				AACE7D321293195600FBDC0D /* JMXV8PropertyAccessors.mm */,
+				AA3557E612795D0A00EAA2E4 /* JMXScript.h */,
+				AAFAAD87129095EB00949028 /* JMXScript.mm */,
+				825C312D1275ADD6006376B8 /* JMXContext.h */,
+				825C312E1275ADD6006376B8 /* JMXContext.m */,
 			);
 			name = Core;
 			path = core;
@@ -870,9 +875,10 @@
 				AA8F806112C9D3FA00EA8543 /* JMXScriptLive.mm in Sources */,
 				AA8F817612CB236700EA8543 /* JMXTextPanel.m in Sources */,
 				AAC6323112CFC72B00B69DFE /* JMXGraph.mm in Sources */,
-				AAC6323C12CFCAB900B69DFE /* JMXNode.mm in Sources */,
+				AAC6323C12CFCAB900B69DFE /* JMXElement.mm in Sources */,
 				AAC6334612D36DA900B69DFE /* NSXMLNode+V8.mm in Sources */,
 				AAC6376312D5099400B69DFE /* JMXCDATA.mm in Sources */,
+				AAC637E012D5204C00B69DFE /* JMXAttribute.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

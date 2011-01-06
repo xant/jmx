@@ -45,6 +45,4 @@
 - (void)doRepeat:(id)value; // input pin setter (we will receive NSNumbers from pins)
 @end
 
-#ifdef __JMXV8__
 JMXV8_DECLARE_NODE_CONSTRUCTOR(JMXAudioFileEntity);
-#endif

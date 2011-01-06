@@ -18,6 +18,7 @@
  *  <li>active {Bool}</li>
  *  </ul>
  *  <br/>
+ * @base Node
  */
 function Entity()
 { 

@@ -523,7 +523,10 @@ using namespace v8;
             currentSender = sender;
         else
             currentSender = self;
-        JMXPinSignal *signal = [JMXPinSignal signalFromSender:sender receiver:owner data:data];
+        JMXPinSignal *signal;
+        @synchronized(owner) {
+            signal = [JMXPinSignal signalFromSender:sender receiver:owner data:data];
+        }
 
 #if USE_NSOPERATIONS
         NSBlockOperation *signalDelivery = [NSBlockOperation blockOperationWithBlock:^{

@@ -114,9 +114,7 @@
 {
     if (aTableView == inputPins && [[aTableColumn identifier] isEqualTo:@"pinValue"]) {
         NSArray *pins;
-        @synchronized(entityLayer.entity) {
-            pins = [entityLayer.entity inputPins];
-        }
+        pins = [entityLayer.entity inputPins]; // [entity inputPins] is supposed ti be thread-safe
         JMXInputPin *pin = [pins objectAtIndex:rowIndex];
         if (pin) {
             if (pin.type == kJMXNumberPin) {
@@ -138,9 +136,7 @@
 {
     if (sender == inputPins) {
         NSArray *pins;
-        @synchronized(entityLayer.entity) {
-            pins = [entityLayer.entity inputPins];
-        }
+        pins = [entityLayer.entity inputPins];
         JMXInputPin *pin = [pins objectAtIndex:[sender selectedRow]];
         if (pin) {
             NSCell *cell = [sender preparedCellAtColumn:1 row:[sender selectedRow]];
@@ -157,9 +153,7 @@
 {
     if (sender == inputPins) {
         NSArray *pins;
-        @synchronized(entityLayer.entity) {
-            pins = [entityLayer.entity inputPins];
-        }
+        pins = [entityLayer.entity inputPins];
         JMXInputPin *pin = [pins objectAtIndex:[sender selectedRow]];
         if (pin) {
             NSCell *cell = [sender preparedCellAtColumn:1 row:[sender selectedRow]];
@@ -172,9 +166,7 @@
 {
     if (sender == inputPins) {
         NSArray *pins;
-        @synchronized(entityLayer.entity) {
-            pins = [entityLayer.entity inputPins];
-        }
+        pins = [entityLayer.entity inputPins];
         JMXInputPin *pin = [pins objectAtIndex:[sender selectedRow]];
         if (pin) {
             NSButtonCell *cell = (NSButtonCell *)[sender preparedCellAtColumn:1 row:[sender selectedRow]];
@@ -188,9 +180,7 @@
     NSArray *pins;
     NSColorPanel *panel = sender;
     JMXColor *color = (JMXColor *)[panel color];
-    @synchronized(entityLayer.entity) {
-        pins = [entityLayer.entity inputPins];
-    }
+    pins = [entityLayer.entity inputPins];
     JMXInputPin *pin = [pins objectAtIndex:[inputPins selectedRow]];
     if (pin.type == kJMXColorPin)
         pin.data = color;
@@ -210,9 +200,7 @@
 - (void)setText:(NSString *)text
 {
     NSArray *pins;
-    @synchronized(entityLayer.entity) {
-        pins = [entityLayer.entity inputPins];
-    }
+    pins = [entityLayer.entity inputPins];
     JMXInputPin *pin = [pins objectAtIndex:[inputPins selectedRow]];
     if (pin.type == kJMXTextPin)
         pin.data = text;
@@ -223,9 +211,7 @@
 {
     if (sender == inputPins) {
         NSArray *pins;
-        @synchronized(entityLayer.entity) {
-            pins = [entityLayer.entity inputPins];
-        }
+        pins = [entityLayer.entity inputPins];
         JMXInputPin *pin = [pins objectAtIndex:[inputPins selectedRow]];
 #if 0
         [textPanel setDelegate:self];
@@ -244,9 +230,7 @@
         NSArray *pins = nil;
         if (tableView == inputPins) {
             if (![[tableColumn identifier] isEqualTo:@"pinName"]) {
-                @synchronized(entityLayer.entity) {
-                    pins = [entityLayer.entity inputPins];
-                }
+                pins = [entityLayer.entity inputPins];
                 JMXPin *pin = [pins objectAtIndex:row];
                 cell = [dataCells objectForKey:pin];
                 if (cell != nil)
@@ -281,7 +265,7 @@
                         [cell setContinuous:YES];
                         [cell setTarget:self];
                         [cell setAction:@selector(setSliderValue:)];
-                        [cell setTitle:[pin name]];
+                        [cell setTitle:pin.label];
                     } else {
                         cell = [[[NSTextFieldCell alloc] init] autorelease];
                         NSNumberFormatter *nf = [[NSNumberFormatter alloc] init];
@@ -336,13 +320,9 @@
 {
     NSArray *pins = nil;
     if (entityLayer.entity && aTableView == inputPins) {
-        @synchronized(entityLayer.entity) {
-            pins = [entityLayer.entity inputPins];
-        }
+        pins = [entityLayer.entity inputPins];
         if ([[aTableColumn identifier] isEqualTo:@"pinValue"]) {
-            @synchronized(entityLayer.entity) {
-                pins = [entityLayer.entity inputPins];
-            }
+            pins = [entityLayer.entity inputPins];
             JMXPin *pin = [pins objectAtIndex:rowIndex];
             if ([aCell isKindOfClass:[NSPopUpButtonCell class]])
                  [(NSPopUpButtonCell *)aCell selectItemWithTitle:pin.data];
@@ -368,24 +348,18 @@
     NSArray *pins = nil;
     if (entityLayer.entity) {
         if (aTableView == inputPins) {
-            @synchronized(entityLayer.entity) {
-                pins = [entityLayer.entity inputPins];
-            }
+            pins = [entityLayer.entity inputPins];
             if ([[aTableColumn identifier] isEqualTo:@"pinName"]) {
                 return [pins objectAtIndex:rowIndex];
             } else {
-                @synchronized(entityLayer.entity) {
-                    pins = [entityLayer.entity inputPins];
-                }
+                pins = [entityLayer.entity inputPins];
                 JMXPin *pin = [pins objectAtIndex:rowIndex];
                 if (pin.type == kJMXAudioPin || pin.type == kJMXImagePin) // XXX
                     return [JMXPin nameforType:pin.type];
                 return pin.data;
             }
         } else if (aTableView == outputPins) {
-            @synchronized(entityLayer.entity) {
-                pins = [entityLayer.entity outputPins];
-            }
+            pins = [entityLayer.entity outputPins];
             if ([[aTableColumn identifier] isEqualTo:@"pinName"])
                 return [pins objectAtIndex:rowIndex];
             else
@@ -393,9 +367,7 @@
         } else if (aTableView == producers) {
             NSInteger selectedRow = [inputPins selectedRow];
             if (selectedRow >= 0) {
-                @synchronized(entityLayer.entity) {
-                    pins = [entityLayer.entity inputPins];
-                }
+                pins = [entityLayer.entity inputPins];
                 JMXInputPin *pin = [pins objectAtIndex:selectedRow];
                 return [NSString stringWithFormat:@"%@",[[pin.producers objectAtIndex:rowIndex] description]];
             }

@@ -205,7 +205,7 @@ error:
     self = [super init];
     if (self) {
         grabber = [[JMXQtVideoGrabber alloc] init];
-        self.name = @"JMXQtVideoCapture";
+        self.label = @"JMXQtVideoCapture";
     } else {
         [self dealloc];
         return nil;

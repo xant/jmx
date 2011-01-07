@@ -49,7 +49,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXVideoMixer);
         [imageInputPin allowMultipleConnections:YES];
         NSSize defaultSize = { JMX_MIXER_DEFAULT_VIDEOSIZE_WIDTH, JMX_MIXER_DEFAULT_VIDEOSIZE_HEIGHT };
         self.size = [JMXSize sizeWithNSSize:defaultSize];
-        self.name = @"VideoMixer";
+        self.label = @"VideoMixer";
         currentFrame = nil;
         JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
         if (threadedEntity)

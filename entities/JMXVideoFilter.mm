@@ -40,7 +40,7 @@
     if (self) {
         currentFrame = nil;
         self.filter = nil;
-        self.name = @"VideoFilter";
+        self.label = @"VideoFilter";
         inFrame = [self registerInputPin:@"frame" withType:kJMXImagePin andSelector:@"newFrame:"];
         outFrame = [self registerOutputPin:@"frame" withType:kJMXImagePin];
 

@@ -39,7 +39,7 @@
 
         // effective fps for debugging purposes
         [self registerOutputPin:@"fps" withType:kJMXNumberPin];
-        self.name = @"VideoOutput";
+        self.label = @"VideoOutput";
     }
     return self;
 }

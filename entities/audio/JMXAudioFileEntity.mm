@@ -46,7 +46,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXAudioFileEntity);
         audioFile = nil;
         outputPin = [self registerOutputPin:@"audio" withType:kJMXAudioPin];
         repeat = YES;
-        self.name = @"CoreAudioFile";
+        self.label = @"CoreAudioFile";
         [self registerInputPin:@"repeat" withType:kJMXBooleanPin andSelector:@"doRepeat:"];
         [self registerInputPin:@"paused" withType:kJMXNumberPin andSelector:@"setPaused:"];
 

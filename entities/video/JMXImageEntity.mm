@@ -59,7 +59,7 @@
             if (imageData) {
                 self.image = [CIImage imageWithData:imageData];
                 NSArray *path = [file componentsSeparatedByString:@"/"];
-                self.name = [path lastObject];
+                self.label = [path lastObject];
                 return YES;
             }
         }

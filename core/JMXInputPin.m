@@ -119,12 +119,12 @@
     }
     NSArray *children = [connections elementsForName:[destinationPin.owner description]];
     for (NSXMLElement *element in children) {
-        if ([element.stringValue isEqualTo:destinationPin.name])
+        if ([element.stringValue isEqualTo:destinationPin.label])
             [element detach];
     }
     children = [destinationPin.connections elementsForName:[self.owner description]];
     for (NSXMLElement *element in children) {
-        if ([element.stringValue isEqualTo:self.name])
+        if ([element.stringValue isEqualTo:self.label])
             [element detach];
     }
     [super disconnectFromPin:destinationPin];

@@ -37,7 +37,7 @@
     self = [super init];
     if (self) {
         currentFrame = nil;
-        self.name = @"VideoEntity";
+        self.label = @"VideoEntity";
         colorFilter = [[CIFilter filterWithName:@"CIColorControls"] retain];
         [colorFilter setDefaults];
         alphaFilter = [[CIFilter filterWithName:@"CIAlphaFade"] retain];

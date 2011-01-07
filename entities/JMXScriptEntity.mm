@@ -28,7 +28,7 @@ using namespace v8;
 {
     self = [super init];
     if (self) {
-        self.name = @"ScriptEntity";
+        self.label = @"ScriptEntity";
     }
     return self;
 }

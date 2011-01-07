@@ -218,7 +218,7 @@ static int _frequencies[kJMXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 3
 {
     NSMutableArray *pinNames = [[NSMutableArray alloc] init];
     for (JMXOutputPin *pin in frequencyPins) {
-        [pinNames addObject:pin.name];
+        [pinNames addObject:pin.label];
     }
     [pinNames addObject:@"active"];
     [pinNames addObject:@"image"];

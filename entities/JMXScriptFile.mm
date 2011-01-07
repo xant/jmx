@@ -24,7 +24,7 @@
     self = [super init];
     if (self) {
         path = nil;
-        self.name = @"JMXScriptFile";
+        self.label = @"JMXScriptFile";
         self.frequency = [NSNumber numberWithDouble:1.0];
         JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
         if (threadedEntity)
@@ -46,7 +46,7 @@
         [self close];
     if ([self open:newPath]) {
         path = [newPath copy];
-        self.name = path;
+        self.label = path;
     } else {
         NSLog(@"JMXScriptFile::setPath(): Can't open file %@", newPath);
     }

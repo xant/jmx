@@ -438,7 +438,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         [window setReleasedWhenClosed:NO];
         [window setIsVisible:YES];
         controller = [[JMXScreenController alloc] initWithView:view];
-        self.name = @"OpenGLScreen";
+        self.label = @"OpenGLScreen";
         //[window orderBack:self];
     }
     return self;

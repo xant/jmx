@@ -36,7 +36,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXTextEntity);
         self.fgColor = [NSColor whiteColor];
         self.bgColor = [NSColor blackColor];
         self.text = @"";
-        self.name = @"TextEntity";
+        self.label = @"TextEntity";
         [attributes
          setObject:font
          forKey:NSFontAttributeName

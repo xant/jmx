@@ -484,7 +484,7 @@ static v8::Handle<Value> Quit(const Arguments& args)
     //NSLog(@"%@", [self exportGraph:[[JMXContext sharedContext] allEntities] andPins:nil]);
     ctx->Global()->SetHiddenValue(String::New("quit"), v8::Boolean::New(0));
     ExecJSCode([script UTF8String], [script length],
-             entity ? [entity.name UTF8String] : [[NSString stringWithFormat:@"%@", self] UTF8String]);
+             entity ? [entity.label UTF8String] : [[NSString stringWithFormat:@"%@", self] UTF8String]);
     [pool drain];
 }
 
@@ -526,7 +526,7 @@ static v8::Handle<Value> Quit(const Arguments& args)
     NSString *output = [[[NSString alloc] init] autorelease];
     NSMutableDictionary *entityNames = [[NSMutableDictionary alloc] init];
     for (JMXEntity *entity in entities) {
-        NSString *entityName = [NSString stringWithFormat:@"%@", entity.name];
+        NSString *entityName = [NSString stringWithFormat:@"%@", entity.label];
         NSString *numberedName = entityName;
         int cnt = 1;
         while ([entityNames objectForKey:numberedName]) {
@@ -551,8 +551,8 @@ static v8::Handle<Value> Quit(const Arguments& args)
                         if ([receiverObj isKindOfClass:[JMXEntity class]]) {
                             JMXEntity *receiverEntity = (JMXEntity *)receiverObj;
                             output = [output stringByAppendingFormat:@"%@.outputPin('%@').connect(%@.inputPin('%@'));\n",
-                                      [entityNames objectForKey:entity], pin.name, [entityNames objectForKey:receiverEntity], 
-                                      ((JMXPin *)receiver).name];
+                                      [entityNames objectForKey:entity], pin.label, [entityNames objectForKey:receiverEntity], 
+                                      ((JMXPin *)receiver).label];
                         }
                     } else {
                         // TODO - Error Messages
@@ -568,10 +568,10 @@ static v8::Handle<Value> Quit(const Arguments& args)
                 JMXEntity *owner = pin.owner;
                 if (pin.direction == kJMXOutputPin) {
                     output = [output stringByAppendingFormat:@"%@.outputPin('%@').export();",
-                              [entityNames objectForKey:owner], pin.name];
+                              [entityNames objectForKey:owner], pin.label];
                 } else {
                     output = [output stringByAppendingFormat:@"%@.inputPin('%@').export();",
-                              [entityNames objectForKey:owner], pin.name];
+                              [entityNames objectForKey:owner], pin.label];
                 }
             }
         }

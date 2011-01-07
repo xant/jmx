@@ -66,7 +66,7 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
         repeat = YES;
         paused = NO;
         movieFrequency = 0;
-        self.name = @"QtMovieFile";
+        self.label = @"QtMovieFile";
         [self registerInputPin:@"path" withType:kJMXStringPin andSelector:@"setMoviePath:"];
         [self registerInputPin:@"repeat" withType:kJMXBooleanPin andSelector:@"setRepeatPin:"];
         [self registerInputPin:@"paused" withType:kJMXBooleanPin andSelector:@"setPausedPin:"];

@@ -85,8 +85,8 @@
                 // XXX - for some unknown reason connections element must be added before doing the actual connection
                 //       probably this is due to some race condition since signals start to be delivered by external threads
                 //       as soon as the connection happens
-                [self.connections addChild:[NSXMLElement elementWithName:[destinationPin.owner description] stringValue:destinationPin.name]];
-                [destinationPin.connections addChild:[NSXMLElement elementWithName:[self.owner description] stringValue:self.name]];
+                [self.connections addChild:[NSXMLElement elementWithName:[destinationPin.owner description] stringValue:destinationPin.label]];
+                [destinationPin.connections addChild:[NSXMLElement elementWithName:[self.owner description] stringValue:self.label]];
             }
             @synchronized(receivers) {
                 [receivers setObject:pinSignal forKey:pinReceiver];
@@ -136,7 +136,7 @@
     [destinationPin disconnectFromPin:self];
     NSArray *children = [connections elementsForName:[destinationPin.owner description]];
     for (NSXMLElement *element in children) {
-        if ([element.stringValue isEqualTo:destinationPin.name])
+        if ([element.stringValue isEqualTo:destinationPin.label])
             [element detach];
     }
 }

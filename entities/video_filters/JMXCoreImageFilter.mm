@@ -57,7 +57,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXCoreImageFilter);
     self = [super init];
     if (self) {
         ciFilter = nil;
-        self.name = @"CoreImageFilter";
+        self.label = @"CoreImageFilter";
     }
     return self;
 }
@@ -112,13 +112,13 @@ JMXV8_EXPORT_NODE_CLASS(JMXCoreImageFilter);
 {
     for (JMXInputPin *pin in [inputPins children]) {
         // TODO - extendable [JMXEntity defaultInputPins]
-        if (pin.name != @"frame" && pin.name != @"filter" && pin.name != @"active")
-            [self unregisterInputPin:pin.name];
+        if (pin.label != @"frame" && pin.label != @"filter" && pin.label != @"active")
+            [self unregisterInputPin:pin.label];
     }
     for (JMXOutputPin *pin in [outputPins children]) {
         // TODO - extendable [JMXEntity defaultOutputPins]
-        if (pin.name != @"frame" && pin.name != @"active")
-            [self unregisterOutputPin:pin.name];
+        if (pin.label != @"frame" && pin.label != @"active")
+            [self unregisterOutputPin:pin.label];
     }
 }
 

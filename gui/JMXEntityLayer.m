@@ -162,9 +162,10 @@ JMXEntityLabelLayer *JMXEntityLabelLayerCreate(NSString *name) {
 
 - (void)inputPinRemoved:(NSNotification *)notification
 {
-    NSString __block *pinName = [[notification userInfo] objectForKey:@"pinName"];
+    JMXPin *pin = [[notification userInfo] objectForKey:@"pin"];
     NSUInteger index = [self.inlets indexOfObjectPassingTest:^(id obj, NSUInteger index, BOOL *stop) {
-        return [((JMXOutletLayer *)obj).pin.pin.label isEqualToString:pinName];
+        BOOL ret = (((JMXOutletLayer *)obj).pin.pin == pin) ? YES : NO;
+        return ret;
     }];
     [[self.inlets objectAtIndex:index] removeFromSuperlayer];
     [self.inlets removeObjectAtIndex:index];
@@ -183,9 +184,10 @@ JMXEntityLabelLayer *JMXEntityLabelLayerCreate(NSString *name) {
 
 - (void)outputPinRemoved:(NSNotification *)notification
 {
-    NSString __block *pinName = [[notification userInfo] objectForKey:@"pinName"];
-    NSUInteger index = [self.outlets indexOfObjectPassingTest:^(id obj, NSUInteger index, BOOL *stop) {
-        return [((JMXOutletLayer *)obj).pin.pin.label isEqualToString:pinName];
+    JMXPin * pin = [[notification userInfo] objectForKey:@"pin"];
+    NSUInteger index = [self.inlets indexOfObjectPassingTest:^(id obj, NSUInteger index, BOOL *stop) {
+        BOOL ret = (((JMXOutletLayer *)obj).pin.pin == pin) ? YES : NO;
+        return ret;
     }];
     [[self.outlets objectAtIndex:index] removeFromSuperlayer];
     [self.outlets removeObjectAtIndex:index];

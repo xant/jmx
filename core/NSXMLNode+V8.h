@@ -50,33 +50,34 @@ void __class##JSDestructor(Persistent<Value> object, void *parameter)\
 \
 v8::Handle<Value> __class##JSConstructor(const Arguments& args)\
 {\
-    /*HandleScope handleScope;*/\
+    HandleScope handleScope;\
+    Persistent<Object> jsInstance;\
     if (objectTemplate.IsEmpty())\
-    objectTemplate = [__class jsObjectTemplate];\
-    Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());\
+        objectTemplate = [__class jsObjectTemplate];\
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];\
-    __class *instance = instance = [__class alloc];\
-    if ([instance respondsToSelector:@selector(jmxInit)])\
-        [instance performSelector:@selector(jmxInit)];\
-    else\
-        [instance init];\
+    __class *instance = [[__class alloc] jmxInit];\
     if ([instance respondsToSelector:@selector(jsInit:)]) {\
         NSValue *argsValue = [NSValue valueWithPointer:(void *)&args];\
         [instance performSelector:@selector(jsInit:) withObject:argsValue];\
     }\
-    /* make the handle weak, with a callback */\
-    jsInstance.MakeWeak(instance, &__class##JSDestructor);\
-    /*instancesMap[instance] = jsInstance;*/\
-    jsInstance->SetPointerInInternalField(0, instance);\
     v8::Local<Context> currentContext = v8::Context::GetCalling();\
     JMXScript *ctx = [JMXScript getContext:currentContext];\
     if (ctx) {\
+        jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());\
+        /* make the handle weak, with a callback */\
+        jsInstance.MakeWeak(instance, &__class##JSDestructor);\
+        /*instancesMap[instance] = jsInstance;*/\
+        jsInstance->SetPointerInInternalField(0, instance);\
         [ctx addPersistentInstance:jsInstance obj:instance];\
+        [instance release];\
     } else {\
         NSLog(@"Can't find context to attach persistent instance (just leaking)");\
     }\
-    [pool release];\
-    return jsInstance;\
+    [pool drain];\
+    if (!jsInstance.IsEmpty())\
+        return handleScope.Close(jsInstance);\
+    else\
+        return handleScope.Close(Undefined());\
 }
 
 #define JMXV8_DECLARE_NODE_CONSTRUCTOR(__class)\

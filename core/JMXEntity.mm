@@ -280,13 +280,46 @@ using namespace v8;
                       initialValue:value];
 }
 
+- (void)proxiedInputPinDestroyed:(NSNotification *)info
+{
+    JMXPin *pin = [info object];
+    for (JMXPin *p in [inputPins children]) {
+        if ([p isProxy] && ((JMXProxyPin *)p).realPin == pin) {
+            [self performSelectorOnMainThread:@selector(notifyPinRemoved:) withObject:p waitUntilDone:YES];
+            NSInteger index = -1; // XXX
+            int cnt = 0;
+            for (id element in [inputPins children]) {
+                if (element == p) {
+                    index = cnt;
+                    break;
+                }
+                cnt++;
+            }
+            if (index >= 0)
+                [inputPins removeChildAtIndex:index];
+        }
+    }
+}
+
+- (void)addProxyPin:(JMXProxyPin *)pin
+{
+    [self notifyPinAdded:(JMXPin *)pin];
+    SEL selector = pin.realPin.direction == kJMXInputPin
+                 ? @selector(proxiedInputPinDestroyed:)
+                 : @selector(proxiedOutputPinDestroyed:);
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:selector
+                                                 name:@"JMXPinDestroyed"
+                                               object:pin.realPin];
+}
+
 - (void)proxyInputPin:(JMXInputPin *)pin withLabel:(NSString *)pinLabel
 {
     JMXProxyPin *pPin = [JMXProxyPin proxyPin:pin withLabel:pinLabel ? pinLabel : pin.label];
     [inputPins addChild:(JMXPin *)pPin];
     // We need notifications to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
     // and since the entity will persist the pin we can avoid waiting for the notification to be completely propagated
-    [self performSelectorOnMainThread:@selector(notifyPinAdded:) withObject:pPin waitUntilDone:NO];
+    [self performSelectorOnMainThread:@selector(addProxyPin:) withObject:pPin waitUntilDone:NO];
 }
 
 - (void)proxyInputPin:(JMXInputPin *)pin

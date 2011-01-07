@@ -198,6 +198,7 @@ using namespace v8;
         [self addAttribute:[NSXMLNode attributeWithName:@"label" stringValue:label]];
         connections = [[JMXElement alloc] initWithName:@"connections"];
         [self addChild:connections];
+        [self performSelectorOnMainThread:@selector(notifyCreation) withObject:nil waitUntilDone:NO];
     }
     return self;
 }
@@ -207,6 +208,16 @@ using namespace v8;
     // bad usage
     [self dealloc];
     return nil;
+}
+
+- (void)notifyCreation
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXPinCreated" object:self];
+}
+
+- (void)notifyRelease
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXPinDestroyed" object:self];
 }
 
 #pragma mark Implementation
@@ -288,6 +299,7 @@ using namespace v8;
 
 - (void)dealloc
 {
+    [self performSelectorOnMainThread:@selector(notifyRelease) withObject:nil waitUntilDone:YES];
     [connections detach];
     [connections release];
     [label release];
@@ -518,7 +530,7 @@ using namespace v8;
             [self performSignal:signal];
         }];
         [signalDelivery setQueuePriority:NSOperationQueuePriorityVeryHigh];
-        [signalDelivery setThreadPriority:1.0];
+        //[signalDelivery setThreadPriority:1.0];
         [[JMXContext operationQueue] addOperation:signalDelivery];
 #else
         [self performSelector:@selector(performSignal:) onThread:[JMXContext signalThread] withObject:signal waitUntilDone:NO];

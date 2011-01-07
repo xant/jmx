@@ -21,5 +21,6 @@
 @property (copy) NSString *code;
 
 - (void)exec;
+- (void)resetContext;
 
 @end

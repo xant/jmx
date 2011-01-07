@@ -83,8 +83,9 @@
             [self exec];
         else
             NSLog(@"JMXScriptEntity::tick(): No script to run");
-        
+        [self resetContext];
     }
+    
 }
 
 @end

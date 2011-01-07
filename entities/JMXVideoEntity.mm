@@ -198,7 +198,8 @@
         //        for debugging purposes
     }
     [outputFramePin deliverData:outputFrame fromSender:self];
-    [outputFrameSizePin deliverData:size];
+    if (![outputFrameSizePin.data isEqualTo:size])
+        [outputFrameSizePin deliverData:size];
 }
 
 - (CIImage *)currentFrame

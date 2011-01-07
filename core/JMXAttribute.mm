@@ -17,19 +17,18 @@ using namespace v8;
 
 - (id)jmxInit
 {
-    return [self initWithKind:NSXMLAttributeKind options:NSXMLNodeOptionsNone];
+    return [super initWithKind:NSXMLAttributeKind options:NSXMLNodeOptionsNone];
 }
 
 - (id)initWithKind:(NSXMLNodeKind)kind
 {
-    return [self initWithKind:NSXMLAttributeKind options:NSXMLNodeOptionsNone];
+    return [super initWithKind:NSXMLAttributeKind options:NSXMLNodeOptionsNone];
 }
 
 
 - (id)initWithKind:(NSXMLNodeKind)kind options:(NSUInteger)options
 {
-    [super initWithKind:NSXMLAttributeKind options:options];
-    return self;
+    return [super initWithKind:NSXMLAttributeKind options:NSXMLNodeOptionsNone];
 }
 
 #pragma mark V8

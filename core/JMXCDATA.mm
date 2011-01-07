@@ -19,22 +19,18 @@ using namespace v8;
 
 - (id)jmxInit
 {
-    if (self && !_initialized)
-        return [self initWithKind:NSXMLAttributeKind options:NSXMLNodeOptionsNone];
-    return [super init];
+    return [super initWithKind:NSXMLTextKind options:NSXMLNodeIsCDATA];
 }
 
 - (id)initWithKind:(NSXMLNodeKind)kind
 {
-    NSXMLNode;
-    return [self initWithKind:NSXMLTextKind options:NSXMLNodeIsCDATA];
+    return [super initWithKind:NSXMLTextKind options:NSXMLNodeIsCDATA];
 }
+
 
 - (id)initWithKind:(NSXMLNodeKind)kind options:(NSUInteger)options
 {
-    _initialized = YES;
-    [super initWithKind:NSXMLTextKind options:NSXMLNodeIsCDATA];
-    return self;
+    return [super initWithKind:NSXMLTextKind options:NSXMLNodeIsCDATA];
 }
 
 - (NSXMLNodeKind)kind

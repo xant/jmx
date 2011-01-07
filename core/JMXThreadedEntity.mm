@@ -65,22 +65,27 @@
                                                      selector:@selector(hookNotification:)
                                                          name:@"JMXEntityWasCreated"
                                                        object:realEntity];
+            
             [[NSNotificationCenter defaultCenter] addObserver:self
                                                      selector:@selector(hookNotification:)
                                                          name:@"JMXEntityWasDestroyed"
                                                        object:realEntity];
+            
             [[NSNotificationCenter defaultCenter] addObserver:self
                                                      selector:@selector(hookNotification:)
                                                          name:@"JMXEntityInputPinAdded"
                                                        object:nil];
-            [[NSNotificationCenter defaultCenter] addObserver:realEntity
+            
+            [[NSNotificationCenter defaultCenter] addObserver:self
                                                      selector:@selector(hookNotification:)
                                                          name:@"JMXEntityInputPinRemoved"
                                                        object:realEntity];
+            
             [[NSNotificationCenter defaultCenter] addObserver:self
                                                      selector:@selector(hookNotification:)
                                                          name:@"JMXEntityOutputPinAdded"
                                                        object:realEntity];
+            
             [[NSNotificationCenter defaultCenter] addObserver:self
                                                      selector:@selector(hookNotification:)
                                                          name:@"JMXEntityOutputPinRemoved"
@@ -124,7 +129,7 @@
 
 - (void)dealloc
 {
-    [self stop];
+    [self stopThread];
     // TODO - ensure executing the following statement on the main thread
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     //[realEntity removePrivateDataForKey:@"threadedEntity"];
@@ -368,8 +373,8 @@
 
 - (void)setActive:(BOOL)value
 {
-    JMXThreadedEntity *th = [self privateDataForKey:@"threadedEntity"];
     if (active != value) {
+        JMXThreadedEntity *th = [self privateDataForKey:@"threadedEntity"];
         if (th) {
             if (value)
                 [th startThread];
@@ -379,7 +384,6 @@
         active = value;
     }
 }
-
 
 #pragma mark V8
 using namespace v8;

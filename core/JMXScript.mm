@@ -38,7 +38,10 @@
 using namespace v8;
 using namespace std;
 
+/*
 typedef std::map<id, v8::Persistent<v8::Object> > InstMap;
+*/
+
 typedef std::pair< JMXScript *, Persistent<Context> >CtxPair;
 typedef std::map< JMXScript *, Persistent<Context> > CtxMap;
 
@@ -400,6 +403,7 @@ static v8::Handle<Value> Quit(const Arguments& args)
 {
     self = [super init];
     if (self) {
+        instancesMap = [[NSMutableDictionary alloc] init];
         v8::Locker locker;
         HandleScope handle_scope;
         Local<ObjectTemplate>ctxTemplate = ObjectTemplate::New();
@@ -439,17 +443,9 @@ static v8::Handle<Value> Quit(const Arguments& args)
 
 - (void)clearPersistentInstances
 {
-    InstMap::const_iterator end = instancesMap.end(); 
-    for (InstMap::const_iterator it = instancesMap.begin(); it != end; ++it)
-    {
-        Persistent<Object> obj = it->second;
-        if ([it->first conformsToProtocol:@protocol(JMXRunLoop)])
-            [it->first performSelector:@selector(stop)];
-        [it->first release];
-        instancesMap.erase(it->first);
-        obj.Dispose();
-        obj.Clear();
-    }
+    NSArray *objs = [instancesMap allKeys];
+    for (id obj in objs)
+        [self removePersistentInstance:obj];
 }
 
 - (void)dealloc
@@ -461,6 +457,7 @@ static v8::Handle<Value> Quit(const Arguments& args)
     contextes.erase(self);
     if (scriptEntity && [scriptEntity conformsToProtocol:@protocol(JMXRunLoop)])
             [scriptEntity performSelector:@selector(stop)];
+    [instancesMap release];
     [super dealloc];
 }
 
@@ -506,21 +503,22 @@ static v8::Handle<Value> Quit(const Arguments& args)
 
 - (void)addPersistentInstance:(Persistent<Object>)persistent obj:(id)obj
 {
-    instancesMap[obj] = persistent; 
+    NSValue *val = [NSValue valueWithPointer:*persistent];
+    [instancesMap setObject:val forKey:obj];
 }
 
 - (void)removePersistentInstance:(id)obj
 {
-    Persistent<Object>p = instancesMap[obj];
-    instancesMap.erase(obj);
+    void *p = [[instancesMap objectForKey:obj] pointerValue];
+    v8::Persistent<v8::Object> jsObj(reinterpret_cast<v8::Object*>(p));
     if ([obj conformsToProtocol:@protocol(JMXRunLoop)])
         [obj performSelector:@selector(stop)];
-    [obj release];
-    if (!p.IsEmpty()) {
-        p.ClearWeak();
-        p.Dispose();
-        p.Clear();
+    if (!jsObj.IsEmpty()) {
+        jsObj.ClearWeak();
+        jsObj.Dispose();
+        jsObj.Clear();
     }
+    [instancesMap removeObjectForKey:obj];
 }
 
 - (NSString *)exportGraph:(NSArray *)entities andPins:(NSArray *)pins

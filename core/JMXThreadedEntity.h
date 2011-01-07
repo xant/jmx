@@ -80,7 +80,7 @@
     JMXEntity *realEntity;
     NSNumber *frequency;
     BOOL quit;
-    JMXOutputPin  *frequencyPin;
+    JMXOutputPin  *frequencyPin;    
 }
 @property (readwrite, retain) NSNumber *frequency;
 @property (readonly) JMXEntity *realEntity;
@@ -94,4 +94,5 @@
 - (void)tick:(uint64_t)timeStamp;
 - (void)startThread;
 - (void)stopThread;
+
 @end

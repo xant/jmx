@@ -41,18 +41,21 @@
 {
     self = [super init];
     if (self) {
-        self.sender = theSender;
-        self.data = theData;
-        self.receiver = theReceiver;
+        sender = [theSender retain];
+        data = [theData retain];
+        receiver = [theReceiver retain];
     }
     return self;
 }
 
 - (void)dealloc
 {
-    self.sender = nil;
-    self.data = nil;
-    self.receiver = nil;
+    if (sender)
+        [sender release];
+    if (data)
+        [data release];
+    if (receiver)
+        [receiver release];
     [super dealloc];
 }
 

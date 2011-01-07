@@ -28,7 +28,6 @@ using namespace v8;
 {
     self = [super init];
     if (self) {
-        jsContext = [[JMXScript alloc] init];
         self.name = @"ScriptEntity";
     }
     return self;
@@ -36,13 +35,25 @@ using namespace v8;
 
 - (void)dealloc
 {
-    [jsContext release];
+    if (jsContext)
+        [jsContext release];
     [super dealloc];
+}
+
+- (void)resetContext
+{
+    if (jsContext)
+        [jsContext release];
+    jsContext = nil;
 }
 
 - (void)exec
 {
-    [jsContext runScript:self.code withEntity:self];
+    @synchronized(self) {
+        if (!jsContext)
+            jsContext = [[JMXScript alloc] init];
+        [jsContext runScript:self.code withEntity:self];
+    }
 }
 
 static Persistent<FunctionTemplate> objectTemplate;

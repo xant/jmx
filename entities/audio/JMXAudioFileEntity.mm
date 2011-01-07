@@ -73,7 +73,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXAudioFileEntity);
         @synchronized(audioFile) {
             audioFile = [[JMXAudioFile audioFileWithURL:[NSURL fileURLWithPath:file]] retain];
             if (audioFile) {
-                self.frequency = [NSNumber numberWithDouble:([audioFile sampleRate]/512.0)];
+                self.frequency = [NSNumber numberWithDouble:([audioFile sampleRate]/512.0) + 2]; // XXX
                 NSArray *path = [file componentsSeparatedByString:@"/"];
                 self.label = [path lastObject];
                 return YES;

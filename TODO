@@ -1,3 +1,5 @@
+- expose a complete DOM implementation so that processing.js can be used
+- provide a javascript event-driven api for entities producing frames or responding to controller-events
 - Javascript console
 - fix the hit-test 
   * apart working a bit badly, when there are multiple connections for the same "input" pin,
@@ -8,7 +10,6 @@
   * multiline-text, size and point are missing and REALLY important *
 - input controllers (at least keyboard and mouse ... but we need to support also midi/osc controllers)
 - implement an HTTP (evented i/o) framework exposed to V8
-- allow to move multiple slected items all together
 - improve JMXTextRenderer (it now uses CVPixelBuffers ... should use a CGLayer instead)
 - allow to create input pins (registering receiver-callbacks) from javascript
 - implement exporters (file save and streaming)

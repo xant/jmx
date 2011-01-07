@@ -16,6 +16,7 @@ JMXV8_EXPORT_NODE_CLASS(NSXMLNode);
 
 - (id)jmxInit
 {
+    // XXX - Note that [self initWithKind:] will implicitly call [self init]
     return [self initWithKind:NSXMLTextKind];
 }
 

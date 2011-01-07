@@ -15,7 +15,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXElement);
 
 - (id)jmxInit
 {
-    self = [self initWithKind:NSXMLElementKind];
+    self = [super initWithKind:NSXMLElementKind];
     if (self) {
         self = [super initWithName:@"JMXElement" URI:@"http://jmxapp.org"];
     }

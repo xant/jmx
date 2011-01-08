@@ -66,6 +66,8 @@
 {
     if ([self delegate])
         [[self delegate] performSelector:@selector(setText:) withObject:[[textView textStorage] string]];
+    else if (pin)
+        pin.data = [[textView textStorage] string];
 }
 
 - (void)unsetPin:(NSNotification *)notification

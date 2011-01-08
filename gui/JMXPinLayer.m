@@ -36,22 +36,20 @@
     JMXPin *inputPin = [userInfo objectForKey:@"inputPin"];
     JMXPin *outputPin = [userInfo objectForKey:@"outputPin"];
     JMXConnectorLayer *toDisconnect = nil;
-    @synchronized(connectors) {
-        for (JMXConnectorLayer *connector in connectors) {
-            if (connector.originPinLayer == self) {
-                if (connector.destinationPinLayer.pin == inputPin ||
-                    connector.destinationPinLayer.pin == outputPin)
-                {
-                    toDisconnect = connector;
-                    break;
-                }
-            } else {
-                if (connector.originPinLayer.pin == inputPin ||
-                    connector.originPinLayer.pin == outputPin)
-                {
-                    toDisconnect = connector;
-                    break;
-                }
+    for (JMXConnectorLayer *connector in connectors) {
+        if (connector.originPinLayer == self) {
+            if (connector.destinationPinLayer.pin == inputPin ||
+                connector.destinationPinLayer.pin == outputPin)
+            {
+                toDisconnect = connector;
+                break;
+            }
+        } else {
+            if (connector.originPinLayer.pin == inputPin ||
+                connector.originPinLayer.pin == outputPin)
+            {
+                toDisconnect = connector;
+                break;
             }
         }
     }
@@ -126,9 +124,7 @@
 
 - (void)updateAllConnectorsFrames
 {
-    @synchronized(connectors) {
-        [connectors makeObjectsPerformSelector:@selector(recalculateFrame)];
-    }
+    [connectors makeObjectsPerformSelector:@selector(recalculateFrame)];
 }
 
 - (BOOL)multiple
@@ -139,38 +135,24 @@
 - (BOOL)isConnected
 {
     NSUInteger count;
-    @synchronized(connectors) {
-        count = [connectors count] ? YES : NO;
-    }
+    count = [connectors count] ? YES : NO;
     return count;
 }
 
 - (void)addConnector:(JMXConnectorLayer *)theConnector
 {
-    @synchronized(connectors) {
-        [connectors addObject:theConnector];
-    }
+    [connectors addObject:theConnector];
 }
 
 - (void)removeConnector:(JMXConnectorLayer *)theConnector
 {
-    @synchronized(connectors) {
-        [connectors removeObject:theConnector];
-    }
+    [connectors removeObject:theConnector];
 }
 
 - (void)removeAllConnectors
 {
-    NSArray *connectorsCopy = nil;
-    // the connectors array could be modified through a
-    // notification so we want a copy here
-    @synchronized(connectors) {
-        connectorsCopy = [connectors copy];
-    }
-    for (JMXConnectorLayer *connector in connectorsCopy) {
-        [connector disconnect];
-    }
-    [connectorsCopy release];
+    while ([connectors count])
+        [[connectors objectAtIndex:0] disconnect];
 }
 
 - (void)setSelected:(BOOL)isSelected

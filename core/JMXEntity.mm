@@ -362,7 +362,8 @@ using namespace v8;
             sortedArrayUsingComparator:^(id obj1, id obj2)
             {
                 return [obj1 compare:obj2];
-            }];*/
+            }];
+    */
     return [[inputPins children] sortedArrayUsingComparator:^(id obj1, id obj2)
             {
                 return [[obj1 label] compare:[obj2 label]];
@@ -603,8 +604,8 @@ static v8::Handle<Value>InputPins(Local<String> name, const AccessorInfo& info)
     NSArray *inputPins = [entity inputPins];
     v8::Handle<Array> list = v8::Array::New([inputPins count]);
     int cnt = 0;
-    for (NSString *pin in inputPins) {
-        list->Set(v8::Number::New(cnt++), String::New([pin UTF8String]));
+    for (JMXPin *pin in inputPins) {
+        list->Set(v8::Number::New(cnt++), [pin jsObj]);
     }
     [pool drain];
     return handleScope.Close(list);
@@ -619,8 +620,8 @@ static v8::Handle<Value>OutputPins(Local<String> name, const AccessorInfo& info)
     NSArray *outputPins = [entity outputPins];
     v8::Handle<Array> list = v8::Array::New([outputPins count]);
     int cnt = 0;
-    for (NSString *pin in outputPins) {
-        list->Set(v8::Number::New(cnt++), String::New([pin UTF8String]));
+    for (JMXPin *pin in outputPins) {
+        list->Set(v8::Number::New(cnt++), [pin jsObj]);
     }
     [pool drain];
     return handleScope.Close(list);

@@ -11,7 +11,9 @@
 
 
 @interface JMXGraph : NSXMLDocument {
-
+    NSString *uid;
 }
+
+@property (readonly) NSString *uid;
 
 @end

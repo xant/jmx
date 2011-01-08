@@ -13,7 +13,12 @@
 @interface JMXElement : NSXMLElement {
 @private
     BOOL _initialized;
+    NSString *uid;
+    NSString *jsId;
 }
+
+@property (readonly) NSString *uid;
+@property (copy) NSString *jsId;
 
 JMXV8_DECLARE_NODE_CONSTRUCTOR(JMXElement);
 

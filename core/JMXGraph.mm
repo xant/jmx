@@ -10,14 +10,15 @@
 #import "JMXGraph.h"
 #import "JMXScript.h"
 
-
 @implementation JMXGraph
+
+@synthesize uid;
 
 - (id)init
 {
     self = [super init];
     if (self) {
-        
+        uid = [[NSString stringWithFormat:@"%8x", [self hash]] retain];
     }
     return self;
 }
@@ -32,6 +33,9 @@ using namespace v8;
     entityTemplate->SetClassName(String::New("Graph"));
     entityTemplate->InstanceTemplate()->SetInternalFieldCount(1);
     v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
+    classProto->SetInternalFieldCount(1);
+    classProto->SetAccessor(String::NewSymbol("uid"), GetStringProperty, SetStringProperty);
+
     /*
     instanceTemplate->SetAccessor(String::NewSymbol("doctype"), );
     instanceTemplate->SetAccessor(String::NewSymbol("implementation"), );

@@ -8,10 +8,39 @@
 
 #define __JMXV8__
 #import "JMXElement.h"
+#import "JMXAttribute.h"
 
 JMXV8_EXPORT_NODE_CLASS(JMXElement);
 
 @implementation JMXElement
+
+@synthesize uid, jsId;
+
+- (void)addElementAttributes
+{
+    uid = [[NSString stringWithFormat:@"%8x", [self hash]] retain];
+    [self addAttribute:[JMXAttribute attributeWithName:@"uid"
+                                           stringValue:uid]];
+    jsId = [NSStringFromClass([self class]) retain];
+    [self addAttribute:[JMXAttribute attributeWithName:@"id"
+                                           stringValue:jsId]];
+}
+
+- (id)initWithName:(NSString *)name
+{
+    self = [super initWithName:name URI:@"http://jmxapp.org"];
+    if (self)
+        [self addElementAttributes];
+    return self;
+}
+
+- (id)init
+{
+    self = [super init];
+    if (self)
+        [self addElementAttributes];
+    return self;
+}
 
 - (id)jmxInit
 {
@@ -22,13 +51,73 @@ JMXV8_EXPORT_NODE_CLASS(JMXElement);
     return self;
 }
 
+- (void)dealloc
+{
+    [uid release];
+    [jsId release];
+    [super dealloc];
+}
+
+- (void)setJsId:(NSString *)anId
+{
+    if (!anId)
+        return;
+    if (jsId)
+        [jsId release];
+    jsId = [anId copy];
+    JMXAttribute *attr = (JMXAttribute *)[self attributeForName:@"id"];
+    [attr setStringValue:jsId];
+}
+
 #pragma mark V8
 
 using namespace v8;
 
+static v8::Handle<Value> GetId(Local<String> name, const AccessorInfo& info)
+{   
+    //v8::Locker lock;
+    HandleScope handleScope;
+    JMXElement *element = (JMXElement *)info.Holder()->GetPointerFromInternalField(0);
+    if (element)
+        return handleScope.Close(v8::String::New([element.jsId UTF8String]));
+    return handleScope.Close(Undefined());
+}
+
+void SetId(Local<String> name, Local<Value> value, const AccessorInfo& info)
+{   
+    //v8::Locker lock;
+    HandleScope handleScope;
+    JMXElement *element = (JMXElement *)info.Holder()->GetPointerFromInternalField(0);
+    if (!value->IsString()) {
+        NSLog(@"Bad parameter (not string) passed to JMXCData.SetData()");
+        return;
+    }
+    String::Utf8Value str(value->ToString());
+    Local<Value> ret;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    element.jsId = [NSString stringWithUTF8String:*str];
+    [pool drain];
+}
+
 + (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate
 {
-    return [super jsObjectTemplate];
+    //v8::Locker lock;
+    if (!objectTemplate.IsEmpty())
+        return objectTemplate;
+    objectTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    objectTemplate->Inherit([super jsObjectTemplate]);
+    objectTemplate->SetClassName(String::New("Element"));
+    v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
+    
+    v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
+    instanceTemplate->SetInternalFieldCount(1);
+    
+    // Add accessors for each of the fields of the entity.
+    instanceTemplate->SetAccessor(String::NewSymbol("uid"), GetStringProperty, SetStringProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("id"), GetId, SetId);
+
+    NSLog(@"JMXElement objectTemplate created");
+    return objectTemplate;
 }
 
 + (void)jsRegisterClassMethods:(v8::Handle<v8::FunctionTemplate>)constructor

@@ -20,6 +20,11 @@ JMXV8_EXPORT_NODE_CLASS(NSXMLNode);
     return [self initWithKind:NSXMLTextKind];
 }
 
+- (NSUInteger)hash
+{
+    return (NSUInteger)self;
+}
+
 #pragma mark V8
 
 using namespace v8;

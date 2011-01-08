@@ -39,6 +39,8 @@ static BOOL initialized = NO;
 
 @implementation JMXContext
 
+@synthesize dom;
+
 + (void)initialize
 {
     if (!initialized) {

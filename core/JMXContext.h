@@ -56,6 +56,8 @@
  */
 + (void)initialize;
 
+@property (readonly) NSXMLDocument *dom;
+
 #if USE_NSOPERATIONS
 @property (readonly) NSOperationQueue *operationQueue;
 + (NSOperationQueue *)operationQueue;

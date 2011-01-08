@@ -441,29 +441,7 @@ using namespace v8;
 - (void)sendData:(id)data toReceiver:(id)receiver withSelector:(NSString *)selectorName fromSender:(id)sender
 {
     SEL selector = NSSelectorFromString(selectorName);
-    int selectorArgsNum = [[selectorName componentsSeparatedByString:@":"] count]-1;
-    // checks are now done when registering receivers
-    // so we can avoid checking again now if receiver responds to selector and
-    // if the selector expects the correct amount of arguments.
-    // this routine is expected to deliver the signals as soon as possible
-    // all safety checks must be done before putting new objects in the receivers' table
-    switch (selectorArgsNum) {
-        case 0:
-            // some listener could be uninterested to the data,
-            // but just want to get notified when something travels on a pin
-            [receiver performSelector:selector withObject:nil];
-            break;
-        case 1:
-            // some other listeners could be interested only in the data,
-            // regardless of the sender
-            [receiver performSelector:selector withObject:data];
-            break;
-        case 2:
-            [receiver performSelector:selector withObject:data withObject:ownerUserData];
-            break;
-        default:
-            NSLog(@"Unsupported selector : '%@' . It can take up to two arguments\n", selectorName);
-    }
+    [receiver performSelector:selector withObject:data withObject:ownerUserData];
 }
 
 - (BOOL)isValidData:(id)data

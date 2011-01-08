@@ -78,26 +78,19 @@
 - (BOOL)attachObject:(id)pinReceiver withSelector:(NSString *)pinSignal
 {
     BOOL rv = NO;
-    if ([pinReceiver respondsToSelector:NSSelectorFromString(pinSignal)]) {
-        if ([[pinSignal componentsSeparatedByString:@":"] count]-1 <= 2) {
-            if ([pinReceiver isKindOfClass:[JMXPin class]]) {
-                JMXPin *destinationPin = (JMXPin *)pinReceiver;
-                // XXX - for some unknown reason connections element must be added before doing the actual connection
-                //       probably this is due to some race condition since signals start to be delivered by external threads
-                //       as soon as the connection happens
-                [self.connections addChild:[NSXMLElement elementWithName:[destinationPin.owner description] stringValue:destinationPin.label]];
-                [destinationPin.connections addChild:[NSXMLElement elementWithName:[self.owner description] stringValue:self.label]];
-            }
-            @synchronized(receivers) {
-                [receivers setObject:pinSignal forKey:pinReceiver];
-            }
-            rv = YES;
-        } else {
-            NSLog(@"Unsupported selector : '%@' . It can take up to two arguments\n", pinSignal);
-        }
-    } else {
-        NSLog(@"Object %@ doesn't respond to %@\n", pinReceiver, pinSignal);
+
+    if ([pinReceiver isKindOfClass:[JMXPin class]]) {
+        JMXPin *destinationPin = (JMXPin *)pinReceiver;
+        // XXX - for some unknown reason connections element must be added before doing the actual connection
+        //       probably this is due to some race condition since signals start to be delivered by external threads
+        //       as soon as the connection happens
+        [self.connections addChild:[NSXMLElement elementWithName:[destinationPin.owner description] stringValue:destinationPin.label]];
+        [destinationPin.connections addChild:[NSXMLElement elementWithName:[self.owner description] stringValue:self.label]];
     }
+    @synchronized(receivers) {
+        [receivers setObject:pinSignal forKey:pinReceiver];
+    }
+    rv = YES;
     // deliver the signal to the just connected receiver
     if (rv == YES) {
         connected = YES;

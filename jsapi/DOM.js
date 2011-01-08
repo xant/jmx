@@ -309,7 +309,11 @@ function NamedNodeMap() {
             throw new DOMException(NO_MODIFICATION_ALLOWED_ERR);
             return null;
         }
-        if (arg.ownerDocument != this.ownerDocument) {
+        if (this.length == 0 && !this.ownerDocument) {
+            // initialize our document if we are inserting the first item
+            // and not document has been set yet
+            this.ownerDocument = arg.ownerDocument;
+        } else if (arg.ownerDocument.uid != this.ownerDocument.uid) {
             throw new DOMException(WRONG_DOCUMENT_ERR);
             return null;
         }

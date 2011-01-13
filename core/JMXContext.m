@@ -92,8 +92,9 @@ static BOOL initialized = NO;
 		registeredClasses = [[NSMutableArray alloc] init];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasCreated:) name:@"JMXEntityWasCreated" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasDestroyed:) name:@"JMXEntityWasDestroyed" object:nil];
-        NSXMLElement *root = [NSXMLElement elementWithName:@"JMX"];
-        dom = [[JMXGraph documentWithRootElement:root] retain];
+        NSXMLElement *root = [[[JMXElement alloc] initWithName:@"JMX"] autorelease];
+        dom = [[JMXGraph alloc] initWithRootElement:root];
+        [dom setName:@"JMXGraph"];
         NSXMLNode *ns = [[[NSXMLNode alloc] initWithKind:NSXMLNamespaceKind] autorelease];
         [ns setStringValue:@"http://jmxapp.org"];
         [ns setName:@"jmx"];
@@ -122,7 +123,10 @@ static BOOL initialized = NO;
         NSValue *value = [NSValue valueWithNonretainedObject:entity];
         if (![entity isProxy]) {
             [entities setObject:value forKey:[NSString stringWithFormat:@"%d", entity]];
-            [[dom rootElement] addChild:entity];
+            if (entity.owner)
+                [entity.owner addChild:entity];
+            else
+                [[dom rootElement] addChild:entity];
         }
     }
 }
@@ -175,7 +179,7 @@ static BOOL initialized = NO;
 
 - (NSString *)dumpDOM
 {
-    NSData *xmlData = [dom XMLDataWithOptions:NSXMLNodePrettyPrint];
+    NSData *xmlData = [dom XMLDataWithOptions:NSXMLNodePrettyPrint|NSXMLNodeCompactEmptyElement];
     return [[[NSString alloc] initWithBytesNoCopy:(void *)[xmlData bytes] length:[xmlData length] encoding:NSUTF8StringEncoding freeWhenDone:NO] autorelease];
 }
 

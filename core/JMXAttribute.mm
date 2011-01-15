@@ -15,6 +15,16 @@ using namespace v8;
 
 @implementation JMXAttribute
 
++ (id)attributeWithName:(NSString *)name stringValue:(NSString *)stringValue
+{
+    JMXAttribute *obj = [[JMXAttribute alloc] jmxInit];
+    if (obj) {
+        [obj setName:name];
+        [obj setStringValue:stringValue];
+    }
+    return [obj autorelease];
+}
+
 - (id)jmxInit
 {
     return [super initWithKind:NSXMLAttributeKind options:NSXMLNodeOptionsNone];

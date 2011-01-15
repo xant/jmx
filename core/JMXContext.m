@@ -90,8 +90,8 @@ static BOOL initialized = NO;
 	if (self) {
         entities = [[NSMutableDictionary alloc] init];
 		registeredClasses = [[NSMutableArray alloc] init];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasCreated:) name:@"JMXEntityWasCreated" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasDestroyed:) name:@"JMXEntityWasDestroyed" object:nil];
+        //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasCreated:) name:@"JMXEntityWasCreated" object:nil];
+        //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasDestroyed:) name:@"JMXEntityWasDestroyed" object:nil];
         NSXMLElement *root = [[[JMXElement alloc] initWithName:@"JMX"] autorelease];
         dom = [[JMXGraph alloc] initWithRootElement:root];
         [dom setName:@"JMXGraph"];
@@ -119,25 +119,30 @@ static BOOL initialized = NO;
 - (void)anEntityWasCreated:(NSNotification *)notification
 {
     JMXEntity *entity = [notification object];
-    @synchronized(self) {
-        NSValue *value = [NSValue valueWithNonretainedObject:entity];
-        if (![entity isProxy]) {
-            [entities setObject:value forKey:[NSString stringWithFormat:@"%d", entity]];
-            if (entity.owner)
-                [entity.owner addChild:entity];
-            else
-                [[dom rootElement] addChild:entity];
-        }
-    }
+    [self addEntity:entity];
 }
 
 - (void)anEntityWasDestroyed:(NSNotification *)notification
 {
     JMXEntity *entity = [notification object];
+    [self removeEntity:entity];
+}
+
+- (void)addEntity:(JMXEntity *)entity
+{
     @synchronized(self) {
-        if (![entity isProxy]) {
+        if (!entity.parent && ![entity isProxy]) {
+            NSValue *value = [NSValue valueWithNonretainedObject:entity];
+            [entities setObject:value forKey:[NSString stringWithFormat:@"%d", entity]];
+        }
+    }
+}
+
+- (void)removeEntity:(JMXEntity *)entity
+{
+    @synchronized(self) {
+        if (entity.parent && ![entity isProxy]) {
             [entities removeObjectForKey:[NSString stringWithFormat:@"%d", entity]];
-            [entity detach];
         }
     }
 }

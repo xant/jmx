@@ -26,7 +26,8 @@
  */
 #import <Cocoa/Cocoa.h>
 
-@class NSXMLDocument;
+@class JMXGraph;
+@class JMXEntity;
 
 #define USE_NSOPERATIONS 0
 
@@ -42,7 +43,7 @@
 #endif
 @private
     NSMutableDictionary *entities;
-    NSXMLDocument *dom;
+    JMXGraph *dom;
 }
 
 /*!
@@ -56,7 +57,7 @@
  */
 + (void)initialize;
 
-@property (readonly) NSXMLDocument *dom;
+@property (readonly) JMXGraph *dom;
 
 #if USE_NSOPERATIONS
 @property (readonly) NSOperationQueue *operationQueue;
@@ -97,6 +98,10 @@
  @return An array containing all existing entity-instances 
  */
 - (NSArray *)allEntities;
+
+- (void)addEntity:(JMXEntity *)entity;
+
+- (void)removeEntity:(JMXEntity *)entity;
 
 - (NSString *)dumpDOM;
 @end

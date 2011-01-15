@@ -14,11 +14,11 @@
 @interface JMXProxyPin : NSProxy {
     JMXPin *realPin;
     NSString *label;
-    NSXMLNode *parent;
+    NSXMLElement *proxyNode;
     NSUInteger index;
 }
 
-@property (readwrite, assign) NSXMLNode *parent;
+@property (readwrite, assign) NSXMLElement *parent;
 @property (readwrite, copy) NSString *label;
 @property (readonly) JMXPin *realPin;
 @property (assign) NSUInteger index;

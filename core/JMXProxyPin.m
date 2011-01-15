@@ -8,6 +8,7 @@
 
 #import "JMXProxyPin.h"
 #import "JMXPin.h"
+#import "JMXAttribute.h"
 #import <Foundation/Foundation.h>
 
 @implementation JMXProxyPin
@@ -19,7 +20,6 @@
     return [[[self alloc] initWithPin:pin andLabel:label] autorelease];
 }
 
-/*
 - (void)pinDestroyed:(NSNotification *)info
 {
     @synchronized(self) {
@@ -37,19 +37,24 @@
                                                  name:@"JMXPinDestroyed"
                                                object:pin];
 }
-*/
+
 - (id)initWithPin:(JMXPin *)pin andLabel:(NSString *)pinLabel
 {
     parent = nil;
     realPin = pin;
     label = (pinLabel && ![pinLabel isEqualTo:@"undefined"]) ? [pinLabel copy] : [pin.label copy];
+    index = 0;
+    proxyNode = [[JMXElement alloc] initWithName:@"JMXProxyPin"];
+    [proxyNode addAttribute:[JMXAttribute attributeWithName:@"pin" stringValue:pin.uid]];
+    [proxyNode addAttribute:[JMXAttribute attributeWithName:@"label" stringValue:label]];
+
     /*
     NSBlockOperation *hookPin = [NSBlockOperation blockOperationWithBlock:^{
         [self hookPin:pin];
     }];
     [hookPin setQueuePriority:NSOperationQueuePriorityVeryHigh];
     [[NSOperationQueue mainQueue] addOperation:hookPin];
-     */
+    */
     return self;
 }
 
@@ -81,7 +86,11 @@
         if (!realPin)
             return;
     }
-    [anInvocation setTarget:realPin];
+    NSXMLNode *fakeNode = [[JMXElement alloc] init];
+    if ([fakeNode respondsToSelector:[anInvocation selector]])
+        [anInvocation setTarget:proxyNode];
+    else
+        [anInvocation setTarget:realPin];
     [anInvocation invoke];
     // if the proxied pin is being connected, let's register for disconnect notifications 
     // so that we can propagate them for connections made through the proxy-pin

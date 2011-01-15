@@ -25,6 +25,7 @@
 #import "JMXPinLayer.h"
 #import "JMXOutletLayer.h"
 #import "JMXEntityLabelLayer.h"
+#import "JMXContext.h"
 
 #include <math.h>
 
@@ -73,6 +74,12 @@
                                                  selector:@selector(outputPinRemoved:)
                                                      name:@"JMXEntityOutputPinRemoved"
                                                    object:self.entity];
+       
+        // attach the new entity to the main document
+        NSXMLElement *rootElement = [[[JMXContext sharedContext] dom] rootElement];
+        @synchronized(rootElement) {
+            [rootElement addChild:anEntity];
+        }
     }
     return self;
 }
@@ -270,7 +277,6 @@ id controlForJMXPinType(JMXPinType aType)
     currentPosition.x += ceilf(point.x);
     currentPosition.y += ceilf(point.y);
     self.position = currentPosition;
-
     [self updateConnectors];
 }
 
@@ -278,6 +284,7 @@ id controlForJMXPinType(JMXPinType aType)
 {
     [self removeFromSuperlayer];
     [self.entity disconnectAllPins];
+    [self.entity detach];
 }
 
 @end

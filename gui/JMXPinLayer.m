@@ -151,8 +151,10 @@
 
 - (void)removeAllConnectors
 {
-    while ([connectors count])
-        [[connectors objectAtIndex:0] disconnect];
+    NSArray *objs = [connectors copy];
+    for (JMXConnectorLayer *connector in objs)
+        [connector disconnect];
+    [objs release];
 }
 
 - (void)setSelected:(BOOL)isSelected

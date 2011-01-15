@@ -23,8 +23,6 @@ function randFloat() {
     return rand()%1000/1000;
 }
 
-sleep(1);
-
 echo(dumpDOM());
 
 mainloop = function() {

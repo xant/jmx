@@ -23,7 +23,7 @@
     JMXEntity *scriptEntity;
     v8::Persistent<v8::Context> ctx;
     //std::map<id, v8::Persistent<v8::Object> > instancesMap;
-    NSMutableDictionary *instancesMap;
+    NSMutableDictionary *persistentInstances;
 }
 
 /*!

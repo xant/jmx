@@ -32,6 +32,8 @@
 #import "JMXElement.h"
 #import "JMXCDATA.h"
 #import "JMXAttribute.h"
+#import "JMXGraph.h"
+#import "NSXMLNode+V8.h"
 
 @class JMXEntity;
 
@@ -47,6 +49,11 @@ typedef std::map< JMXScript *, Persistent<Context> > CtxMap;
 
 CtxMap contextes;
 
+typedef struct __JMXPersistantInstance {
+    id obj;
+    v8::Persistent<Object> jsObj;
+} JMXPersistentInstance;
+
 typedef struct __JMXV8ClassDescriptor {
     const char *className;
     const char *jsClassName;
@@ -54,6 +61,7 @@ typedef struct __JMXV8ClassDescriptor {
 } JMXV8ClassDescriptor;
 
 static JMXV8ClassDescriptor mappedClasses[] = {
+    { "JMXEntity",                "Entity",          JMXEntityJSConstructor },
     { "JMXOpenGLScreen",          "OpenGLScreen",    JMXOpenGLScreenJSConstructor },
     { "JMXQtVideoCaptureEntity",  "QtVideoCapture",  JMXQtVideoCaptureEntityJSConstructor },
     { "JMXQtMovieEntity",         "QtMovieFile",     JMXQtMovieEntityJSConstructor },
@@ -71,6 +79,7 @@ static JMXV8ClassDescriptor mappedClasses[] = {
     { "JMXElement",               "Element",         JMXElementJSConstructor },
     { "JMXCDATA",                 "CDATA",           JMXCDATAJSConstructor },
     { "JMXAttribute",             "Attribute"   ,    JMXAttributeJSConstructor },
+    
     { NULL,                       NULL,              NULL }
 };
 
@@ -331,6 +340,12 @@ static v8::Handle<Value> Quit(const Arguments& args)
     return Undefined();
 }
 
+static v8::Handle<Value> GetDocument(v8::Local<v8::String> name, const v8::AccessorInfo& info)
+{
+    HandleScope handleScope;
+    return handleScope.Close([[[JMXContext sharedContext] dom] jsObj]);
+}
+
 @interface DispatchArg : NSObject
 {
     NSString *source;
@@ -403,7 +418,7 @@ static v8::Handle<Value> Quit(const Arguments& args)
 {
     self = [super init];
     if (self) {
-        instancesMap = [[NSMutableDictionary alloc] init];
+        persistentInstances = [[NSMutableDictionary alloc] init];
         v8::Locker locker;
         HandleScope handle_scope;
         Local<ObjectTemplate>ctxTemplate = ObjectTemplate::New();
@@ -428,12 +443,12 @@ static v8::Handle<Value> Quit(const Arguments& args)
         */
         [self registerClasses:ctxTemplate];
         ctx = Persistent<Context>::New(Context::New(NULL, ctxTemplate));
-
         // Create a new execution environment containing the built-in
         // functions
         contextes[self] = ctx;
         scriptEntity = nil;
         v8::Context::Scope context_scope(ctx);
+        ctx->Global()->SetAccessor(String::New("document"), GetDocument);
         char baseInclude[] = "include('JMX.js');";
         // Enter the newly created execution environment.
         ExecJSCode(baseInclude, strlen(baseInclude), "JMX");
@@ -443,21 +458,21 @@ static v8::Handle<Value> Quit(const Arguments& args)
 
 - (void)clearPersistentInstances
 {
-    NSArray *objs = [instancesMap allKeys];
+    NSArray *objs = [persistentInstances allKeys];
     for (id obj in objs)
         [self removePersistentInstance:obj];
 }
 
 - (void)dealloc
 {
+    if (scriptEntity && [scriptEntity conformsToProtocol:@protocol(JMXRunLoop)])
+        [scriptEntity performSelector:@selector(stop)];
     [self clearPersistentInstances];
-    ctx.Dispose();
     while( V8::IdleNotification() )
         ;
     contextes.erase(self);
-    if (scriptEntity && [scriptEntity conformsToProtocol:@protocol(JMXRunLoop)])
-            [scriptEntity performSelector:@selector(stop)];
-    [instancesMap release];
+    ctx.Dispose();
+    [persistentInstances release];
     [super dealloc];
 }
 
@@ -503,22 +518,34 @@ static v8::Handle<Value> Quit(const Arguments& args)
 
 - (void)addPersistentInstance:(Persistent<Object>)persistent obj:(id)obj
 {
-    NSValue *val = [NSValue valueWithPointer:*persistent];
-    [instancesMap setObject:val forKey:obj];
+    JMXPersistentInstance *instance = (JMXPersistentInstance *)malloc(sizeof(JMXPersistentInstance));
+    instance->obj = [obj retain];
+    instance->jsObj = persistent;
+    NSValue *val = [NSValue valueWithPointer:instance];
+    [persistentInstances setObject:val forKey:[obj hashString]];
 }
 
 - (void)removePersistentInstance:(id)obj
 {
-    void *p = [[instancesMap objectForKey:obj] pointerValue];
-    v8::Persistent<v8::Object> jsObj(reinterpret_cast<v8::Object*>(p));
-    if ([obj conformsToProtocol:@protocol(JMXRunLoop)])
-        [obj performSelector:@selector(stop)];
-    if (!jsObj.IsEmpty()) {
-        jsObj.ClearWeak();
-        jsObj.Dispose();
-        jsObj.Clear();
+    JMXPersistentInstance *p = nil;
+    id key;
+    if ([obj respondsToSelector:@selector(hashString)])
+        key = [obj hashString];
+    else
+        key = obj;
+    p = (JMXPersistentInstance *)[[persistentInstances objectForKey:key] pointerValue];
+    NSLog(@"Releasing Persistent Instance: %@ (%d)", p->obj, [p->obj retainCount]);
+    if (p) {
+        if ([p->obj conformsToProtocol:@protocol(JMXRunLoop)])
+            [p->obj performSelector:@selector(stop)];
+        [p->obj release];
+        if (!p->jsObj.IsEmpty()) {
+            p->jsObj.ClearWeak();
+            p->jsObj.Dispose();
+            p->jsObj.Clear();
+        }
+        [persistentInstances removeObjectForKey:key];
     }
-    [instancesMap removeObjectForKey:obj];
 }
 
 - (NSString *)exportGraph:(NSArray *)entities andPins:(NSArray *)pins

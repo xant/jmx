@@ -14,15 +14,35 @@ JMXV8_EXPORT_NODE_CLASS(NSXMLNode);
 
 @implementation NSXMLNode (JMXV8)
 
+- (id)jmxInit:(id)arg
+{
+    return [self jmxInit];
+}
+
 - (id)jmxInit
 {
     // XXX - Note that [self initWithKind:] will implicitly call [self init]
     return [self initWithKind:NSXMLTextKind];
 }
 
+
 - (NSUInteger)hash
 {
     return (NSUInteger)self;
+}
+
+- (NSString *)hashString
+{
+    return [NSString stringWithFormat:@"%d", [self hash]];
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    // we don't want copies, but we want to use such objects as keys of a dictionary
+    // so we still need to conform to the 'copying' protocol,
+    // but since we are to be considered 'immutable' we can adopt what described at the end of :
+    // http://developer.apple.com/mac/library/documentation/cocoa/conceptual/MemoryMgmt/Articles/mmImplementCopy.html
+    return [self retain];
 }
 
 #pragma mark V8
@@ -63,6 +83,7 @@ static v8::Handle<Value>GetChildNodes(Local<String> name, const AccessorInfo& in
             args[0] = [child jsObj];
             push->Call(list, 1, args);
         }
+        [pool drain];
         return handleScope.Close(list);
     } else {
         NSLog(@"Can't find constructor for class 'NodeList'");
@@ -202,10 +223,12 @@ static v8::Handle<Value> InsertBefore(const Arguments& args)
         NSXMLElement *node = (NSXMLElement *)holder;
         NSXMLNode *newChild = (NSXMLNode *)args[0]->ToObject()->GetPointerFromInternalField(0);
         if (newChild) {
-            NSXMLNode *refChild = (NSXMLNode *)args[1]->ToObject()->GetPointerFromInternalField(0);
-            NSUInteger index = [node childCount]-1;
-            if (refChild)
-                index = [refChild index] - 1;
+            NSUInteger index = [node childCount];
+            if (!args[1]->IsUndefined()) {
+                NSXMLNode *refChild = (NSXMLNode *)args[1]->ToObject()->GetPointerFromInternalField(0);
+                if (refChild)
+                    index = [refChild index];
+            }
             [node insertChild:newChild atIndex:index];
             return handleScope.Close(args[0]->ToObject());
         } else {
@@ -453,6 +476,91 @@ static v8::Handle<Value> CompareDocumentPosition(const Arguments& args)
     return handleScope.Close(v8::Integer::New(0x20)); // XXX
 }
 
+static void GatherElementsByName(NSXMLNode *node, char *name, NSMutableArray *elements)
+{
+    for (NSXMLNode *n in [node children]) {
+        if (strcmp(name, "*") == 0 || strcmp([n.name UTF8String], name) == 0)
+            [elements addObject:n];
+        GatherElementsByName(n, name, elements);
+    }
+}
+
+static v8::Handle<Value> GetElementsByTagName(const Arguments& args)
+{
+    //v8::Locker lock;
+    HandleScope handleScope;
+    v8::Handle<Object> obj = args.Holder();
+    NSXMLNode *node = (NSXMLNode *)args.Holder()->GetPointerFromInternalField(0);
+    v8::String::Utf8Value name(args[0]);
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+   // if ([node isKindOfClass:[NSXMLDocument class]])
+     //   node = [node rootElement];
+
+    //[node normalizeAdjacentTextNodesPreservingCDATA:NO];
+    /*
+    NSString *path = [NSString stringWithFormat:@"./%s", *name];
+    NSArray *elements = [node nodesForXPath:path error:&error];
+     */
+    
+    NSMutableArray *elements = [NSMutableArray array];
+    GatherElementsByName(node, *name, elements);
+    Local<Context> ctx = v8::Context::GetCurrent();
+    Local<Function> constructor = v8::Local<v8::Function>::Cast(ctx->Global()->Get(String::New("NodeList")));
+    if (!constructor.IsEmpty()) {
+        v8::Handle<Object> list = constructor->NewInstance();
+        for (NSXMLNode *element in elements) {
+            Local<Function> push = v8::Local<v8::Function>::Cast(list->Get(String::New("push")));
+            v8::Handle<Value> args[1];
+            args[0] = [element jsObj];
+            push->Call(list, 1, args);
+        }
+        [pool drain];
+        return handleScope.Close(list);
+    } else {
+        NSLog(@"Can't find constructor for class 'NodeList'");
+    }
+    [pool drain];
+    return handleScope.Close(Undefined()); // XXX
+}
+
+static v8::Handle<Value> GetAttribute(const Arguments& args)
+{
+    //v8::Locker lock;
+    HandleScope handleScope;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    v8::Handle<Value> ret = Undefined();
+    v8::String::Utf8Value name(args[0]);
+    NSXMLNode *node = (NSXMLNode *)args.Holder()->GetPointerFromInternalField(0);
+    if ([node respondsToSelector:@selector(attributeForName:)]) {
+        NSXMLNode *attribute = [node performSelector:@selector(attributeForName) withObject:[NSString stringWithUTF8String:*name]];
+        if (attribute)
+            ret = String::New([[attribute stringValue] UTF8String]);
+    } else if ([node respondsToSelector:@selector(attributes)]) {
+        NSArray *attributes = [node performSelector:@selector(attributes)];
+        for (NSXMLNode *attr in attributes) {
+            if (strcmp([attr.name UTF8String], *name) == 0)
+                ret = String::New([[attr stringValue] UTF8String]);
+        }
+    }
+    [pool drain];
+    return handleScope.Close(ret); // XXX
+}
+
+static v8::Handle<Value> SetAttribute(const Arguments& args)
+{
+    //v8::Locker lock;
+    HandleScope handleScope;
+    NSXMLNode *node = (NSXMLNode *)args.Holder()->GetPointerFromInternalField(0);
+    if (args.Length() > 1 && [node isKindOfClass:[NSXMLElement class]]) {
+        v8::String::Utf8Value name(args[0]);
+        v8::String::Utf8Value value(args[1]);
+        NSXMLNode *attr = [(NSXMLElement *)node attributeForName:[NSString stringWithUTF8String:*name]];
+        if (attr)
+            [attr setStringValue:[NSString stringWithUTF8String:*value]];
+    }
+    return handleScope.Close(v8::Integer::New(0x20)); // XXX
+}
+
 + (v8::Persistent<FunctionTemplate>)jsObjectTemplate
 {
     if (!objectTemplate.IsEmpty())
@@ -463,7 +571,7 @@ static v8::Handle<Value> CompareDocumentPosition(const Arguments& args)
     // set instance methods
     classProto->Set("insertBefore", FunctionTemplate::New(InsertBefore));
     classProto->Set("replaceChild", FunctionTemplate::New(ReplaceChild));
-    classProto->Set("removeChild", FunctionTemplate::New(ReplaceChild));
+    classProto->Set("removeChild", FunctionTemplate::New(RemoveChild));
     classProto->Set("appendChild", FunctionTemplate::New(AppendChild));
     classProto->Set("hasChildNodes", FunctionTemplate::New(HasChildNodes));
     //classProto->Set("cloneNode", FunctionTemplate::New(CloneNode));
@@ -479,6 +587,9 @@ static v8::Handle<Value> CompareDocumentPosition(const Arguments& args)
     classProto->Set("isDefaultNamespace", FunctionTemplate::New(IsDefaultNamespace));
     classProto->Set("lookupNamespaceURI", FunctionTemplate::New(LookupNamespaceURI));
     classProto->Set("compareDocumentPosition", FunctionTemplate::New(CompareDocumentPosition));
+    classProto->Set("getElementsByTagName", FunctionTemplate::New(GetElementsByTagName));
+    classProto->Set("getAttribute", FunctionTemplate::New(GetAttribute));
+    classProto->Set("setAttribute", FunctionTemplate::New(SetAttribute));
 
     v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
     instanceTemplate->SetInternalFieldCount(1);
@@ -510,7 +621,7 @@ static v8::Handle<Value> CompareDocumentPosition(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handle_scope;
-    v8::Handle<FunctionTemplate> objectTemplate = [NSXMLNode jsObjectTemplate];
+    v8::Handle<FunctionTemplate> objectTemplate = [[self class] jsObjectTemplate];
     v8::Handle<Object> jsInstance = objectTemplate->InstanceTemplate()->NewInstance();
     jsInstance->SetPointerInInternalField(0, self);
     return handle_scope.Close(jsInstance);

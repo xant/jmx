@@ -476,4 +476,17 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     [super dealloc];
 }
 
++ (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate
+{
+    //v8::Locker lock;
+    if (!objectTemplate.IsEmpty())
+        return objectTemplate;
+    v8::Persistent<FunctionTemplate> objectTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    objectTemplate->Inherit([super jsObjectTemplate]);  
+    objectTemplate->SetClassName(String::New("OpenGLScreen"));
+    objectTemplate->InstanceTemplate()->SetInternalFieldCount(1);
+    NSLog(@"JMXOpenGLScreen objectTemplate created");
+    return objectTemplate;
+}
+
 @end

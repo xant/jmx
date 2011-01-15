@@ -8,6 +8,7 @@
 
 #import "JMXScriptEntity.h"
 #import "JMXScript.h"
+#import "JMXProxyPin.h"
 
 using namespace v8;
 
@@ -42,6 +43,16 @@ using namespace v8;
 
 - (void)resetContext
 {
+    // we want to release our context.
+    // first thing ... let's detach all entities we have created
+    for (NSXMLNode *node in [self children]) {
+        if ([node isProxy]) 
+        {
+            [self unregisterPin:(JMXPin *)node]; // XXX - this cast is only to avoid a warning
+        } else if ([node isKindOfClass:[JMXEntity class]]) {
+            [node detach];
+        } 
+    }
     if (jsContext)
         [jsContext release];
     jsContext = nil;

@@ -58,7 +58,7 @@
     if (entity) {
         worker = nil;
         timer = nil;
-        realEntity = [entity retain];
+        realEntity = entity;//[entity retain];
         [realEntity addPrivateData:self forKey:@"threadedEntity"];
         NSBlockOperation *registerObservers = [NSBlockOperation blockOperationWithBlock:^{
             [[NSNotificationCenter defaultCenter] addObserver:self
@@ -100,7 +100,9 @@
         }
         // and 'effective' frequency , only for debugging purposes
         self.frequency = [NSNumber numberWithDouble:25.0];
-        JMXInputPin *inputFrequency = [entity registerInputPin:@"frequency" withType:kJMXNumberPin andSelector:@"setFrequency:"];
+        JMXInputPin *inputFrequency = [entity registerInputPin:@"frequency"
+                                                      withType:kJMXNumberPin
+                                                   andSelector:@"setFrequency:"];
         [inputFrequency setMinLimit:[NSNumber numberWithFloat:1.0]];
         [inputFrequency setMaxLimit:[NSNumber numberWithFloat:100.0]];
         inputFrequency.data = self.frequency; // set initial value
@@ -112,28 +114,14 @@
     return self;
 }
 
-
-- (id)retain
-{
-    [realEntity retain];
-    [super retain];
-    return self;
-}
-
-- (void)release
-{
-    [realEntity release];
-    [super release];
-}
-
-
 - (void)dealloc
 {
     [self stopThread];
     // TODO - ensure executing the following statement on the main thread
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     //[realEntity removePrivateDataForKey:@"threadedEntity"];
-    [realEntity release];
+    //[realEntity release];
+    [realEntity dealloc];
     [super dealloc];
 }
 

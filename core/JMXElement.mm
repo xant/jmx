@@ -21,7 +21,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXElement);
     uid = [[NSString stringWithFormat:@"%8x", [self hash]] retain];
     [self addAttribute:[JMXAttribute attributeWithName:@"uid"
                                            stringValue:uid]];
-    jsId = [NSStringFromClass([self class]) retain];
+    jsId = [[NSString stringWithFormat:@"%@.%@", NSStringFromClass([self class]), uid ] retain];
     [self addAttribute:[JMXAttribute attributeWithName:@"id"
                                            stringValue:jsId]];
 }
@@ -46,7 +46,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXElement);
 {
     self = [super initWithKind:NSXMLElementKind];
     if (self) {
-        self = [super initWithName:@"JMXElement" URI:@"http://jmxapp.org"];
+        self = [super initWithName:self.name ? self.name : @"JMXElement" URI:@"http://jmxapp.org"];
     }
     return self;
 }
@@ -99,6 +99,31 @@ void SetId(Local<String> name, Local<Value> value, const AccessorInfo& info)
     [pool drain];
 }
 
+static v8::Handle<Value> GetStyle(Local<String> name, const AccessorInfo& info)
+{   
+    //v8::Locker lock;
+    HandleScope handleScope;
+    Local<String> internalName = String::New("_style");
+    v8::Handle<Value> ret;
+    v8::Handle<Object> holder = info.Holder();
+    if (holder->IsObject()) {
+        if (!holder->Has(internalName)) {
+            ret = Object::New();
+            info.Holder()->Set(internalName, ret);
+        } else {
+            ret = info.Holder()->Get(internalName);
+        }
+    }
+    return handleScope.Close(ret);
+}
+
+void SetStyle(Local<String> name, Local<Value> value, const AccessorInfo& info)
+{   
+    //v8::Locker lock;
+    HandleScope handleScope;
+    info.Holder()->Set(name, value);
+}
+
 + (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate
 {
     //v8::Locker lock;
@@ -115,6 +140,7 @@ void SetId(Local<String> name, Local<Value> value, const AccessorInfo& info)
     // Add accessors for each of the fields of the entity.
     instanceTemplate->SetAccessor(String::NewSymbol("uid"), GetStringProperty, SetStringProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("id"), GetId, SetId);
+    instanceTemplate->SetAccessor(String::NewSymbol("style"), GetStyle, SetStyle);
 
     NSLog(@"JMXElement objectTemplate created");
     return objectTemplate;

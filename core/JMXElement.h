@@ -10,9 +10,10 @@
 #import "JMXV8.h"
 #import "NSXMLNode+V8.h"
 
+@class JMXScript;
+
 @interface JMXElement : NSXMLElement {
 @private
-    BOOL _initialized;
     NSString *uid;
     NSString *jsId;
 }

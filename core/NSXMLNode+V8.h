@@ -55,14 +55,17 @@ v8::Handle<Value> __class##JSConstructor(const Arguments& args)\
     if (objectTemplate.IsEmpty())\
         objectTemplate = [__class jsObjectTemplate];\
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];\
-    __class *instance = [[__class alloc] jmxInit];\
-    if ([instance respondsToSelector:@selector(jsInit:)]) {\
-        NSValue *argsValue = [NSValue valueWithPointer:(void *)&args];\
-        [instance performSelector:@selector(jsInit:) withObject:argsValue];\
-    }\
+    __class *instance = nil;\
     v8::Local<Context> currentContext = v8::Context::GetCalling();\
     JMXScript *ctx = [JMXScript getContext:currentContext];\
     if (ctx) {\
+        instance = [[__class alloc] jmxInit];\
+        /* connect the entity to our scriptEntity */\
+        [ctx.scriptEntity addChild:instance];\
+        if ([instance respondsToSelector:@selector(jsInit:)]) {\
+            NSValue *argsValue = [NSValue valueWithPointer:(void *)&args];\
+            [instance performSelector:@selector(jsInit:) withObject:argsValue];\
+        }\
         jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());\
         /* make the handle weak, with a callback */\
         jsInstance.MakeWeak(instance, &__class##JSDestructor);\
@@ -88,6 +91,8 @@ v8::Handle<v8::Value> __class##JSConstructor(const v8::Arguments& args);
 @interface NSXMLNode (JMXV8) <JMXV8>
 
 - (id)jmxInit;
+- (id)jmxInit:(id)arg;
+- (NSString *)hashString;
 
 JMXV8_DECLARE_NODE_CONSTRUCTOR(NSXMLNode);
 @end

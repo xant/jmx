@@ -86,11 +86,25 @@
         if (!realPin)
             return;
     }
-    NSXMLNode *fakeNode = [[JMXElement alloc] init];
-    if ([fakeNode respondsToSelector:[anInvocation selector]])
+    // XXX - in case of retain/release/dealloc operations we need to 
+    // propagate the message to both the underlying pin and fake xml node
+    // so that both are retained/released symmetrically
+    if ([anInvocation selector] == @selector(retain) ||
+        [anInvocation selector] == @selector(release) ||
+        [anInvocation selector] == @selector(dealloc)) 
+    {
         [anInvocation setTarget:proxyNode];
-    else
+        [anInvocation invoke];
         [anInvocation setTarget:realPin];
+    } else {
+        // otherwise we need to determine if we want to forward the invocation
+        // to either the underlying pin or the fake xml node
+        NSXMLNode *fakeNode = [[JMXElement alloc] init];
+        if ([fakeNode respondsToSelector:[anInvocation selector]])
+            [anInvocation setTarget:proxyNode];
+        else
+            [anInvocation setTarget:realPin];
+    }
     [anInvocation invoke];
     // if the proxied pin is being connected, let's register for disconnect notifications 
     // so that we can propagate them for connections made through the proxy-pin

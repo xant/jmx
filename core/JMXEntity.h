@@ -94,10 +94,13 @@
     NSMutableDictionary *privateData;
     JMXInputPin *activeIn;
     JMXOutputPin *activeOut;
+    JMXEntity *owner;
 }
 
 
 #pragma mark Properties
+
+@property (readonly) JMXEntity *owner;
 
 @property (readonly) NSArray *inputPins;
 
@@ -286,6 +289,9 @@
  @param pin the existing pin
  */
 - (void)proxyOutputPin:(JMXOutputPin *)pin;
+
+/* TODO - document */
+- (void)unregisterPin:(JMXPin *)pin;
 
 /*!
  @method unregisterInputPin:

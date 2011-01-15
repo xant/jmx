@@ -21,7 +21,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXElement);
     uid = [[NSString stringWithFormat:@"%8x", [self hash]] retain];
     [self addAttribute:[JMXAttribute attributeWithName:@"uid"
                                            stringValue:uid]];
-    jsId = [[NSString stringWithFormat:@"%@.%@", NSStringFromClass([self class]), uid ] retain];
+    jsId = [[NSString stringWithFormat:@"%@", uid ] retain];
     [self addAttribute:[JMXAttribute attributeWithName:@"id"
                                            stringValue:jsId]];
 }
@@ -65,6 +65,8 @@ JMXV8_EXPORT_NODE_CLASS(JMXElement);
     if (jsId)
         [jsId release];
     jsId = [anId copy];
+    // TODO - check if the ID already exists
+    // we could use document.getElementByID() ... but that could affect performances 
     JMXAttribute *attr = (JMXAttribute *)[self attributeForName:@"id"];
     [attr setStringValue:jsId];
 }

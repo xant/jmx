@@ -34,7 +34,7 @@ using namespace v8;
 @implementation JMXPin
 
 @synthesize type, label, multiple, continuous, connected, sendNotifications,
-            direction, allowedValues, owner, minValue, maxValue, connections;
+            direction, allowedValues, minValue, maxValue, connections, owner;
 
 #pragma mark Constructors
 
@@ -51,13 +51,13 @@ using namespace v8;
     id pinClass = pinDirection == kJMXInputPin
                 ? [JMXInputPin class]
                 : [JMXOutputPin class];
-    return [[[pinClass alloc]     initWithLabel:label
-                                       andType:pinType
-                                       ownedBy:pinOwner
-                                    withSignal:pinSignal
-                                      userData:userData
-                                 allowedValues:pinValues
-                                  initialValue:value]
+    return [[[pinClass alloc] initWithLabel:label
+                                    andType:pinType
+                                    ownedBy:pinOwner
+                                 withSignal:pinSignal
+                                   userData:userData
+                              allowedValues:pinValues
+                               initialValue:value]
             autorelease];
 }
 
@@ -347,15 +347,6 @@ using namespace v8;
 
 }
 
-- (id)copyWithZone:(NSZone *)zone
-{
-    // we don't want copies, but we want to use such objects as keys of a dictionary
-    // so we still need to conform to the 'copying' protocol,
-    // but since we are to be considered 'immutable' we can adopt what described at the end of :
-    // http://developer.apple.com/mac/library/documentation/cocoa/conceptual/MemoryMgmt/Articles/mmImplementCopy.html
-    return [self retain];
-}
-
 - (NSString *)typeName
 {
     NSString *aName = [JMXPin nameforType:type];
@@ -502,8 +493,10 @@ using namespace v8;
         else
             currentSender = self;
         JMXPinSignal *signal;
-        @synchronized(owner) {
-            signal = [JMXPinSignal signalFromSender:sender receiver:owner data:data];
+
+        @synchronized(self) {
+            if (owner)
+                signal = [JMXPinSignal signalFromSender:sender receiver:owner data:data];
         }
 
 #if USE_NSOPERATIONS
@@ -526,7 +519,7 @@ using namespace v8;
     // (if we are an input pin and if our owner registered a selector)
     if (direction == kJMXInputPin) {
         if (owner) {
-            if (ownerSignal)
+            if (ownerSignal && [owner respondsToSelector:NSSelectorFromString(ownerSignal)])
                 [self sendData:signal.data toReceiver:signal.receiver withSelector:ownerSignal fromSender:signal.sender];
             else if ([owner conformsToProtocol:@protocol(JMXPinOwner)])
                 [owner performSelector:@selector(receiveData:fromPin:) withObject:signal.data withObject:self];
@@ -549,6 +542,26 @@ using namespace v8;
 - (void)setData:(id)data
 {
     [self deliverData:data fromSender:self];
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    // we don't want copies, but we want to use such objects as keys of a dictionary
+    // so we still need to conform to the 'copying' protocol,
+    // but since we are to be considered 'immutable' we can adopt what described at the end of :
+    // http://developer.apple.com/mac/library/documentation/cocoa/conceptual/MemoryMgmt/Articles/mmImplementCopy.html
+    return [self retain];
+}
+
+- (void)detach
+{
+    @synchronized(self) {
+        owner = nil;
+        if (ownerSignal)
+            [ownerSignal release];
+        ownerSignal = nil;
+    }
+    [super detach];
 }
 
 #pragma mark V8

@@ -116,7 +116,6 @@ typedef enum {
     UInt32              rOffset;
     UInt32              wOffset;
     JMXPinDirection     direction;
-    id                  owner; // weak reference (the owner retains us)
     id                  minValue;
     id                  maxValue;
     id                  ownerUserData; // weak reference (depends on the owner)

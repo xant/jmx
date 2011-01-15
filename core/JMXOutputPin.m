@@ -24,6 +24,9 @@
 #import "JMXOutputPin.h"
 #import "JMXInputPin.h"
 #import "JMXContext.h"
+#import "JMXEntity.h"
+#import "JMXAttribute.h"
+//#import "JMXProxyPin.h"
 
 @interface JMXPin (Private)
 - (void)sendData:(id)data toReceiver:(id)receiver withSelector:(NSString *)selectorName fromSender:(id)sender;
@@ -84,11 +87,24 @@
         // XXX - for some unknown reason connections element must be added before doing the actual connection
         //       probably this is due to some race condition since signals start to be delivered by external threads
         //       as soon as the connection happens
-        [self.connections addChild:[NSXMLElement elementWithName:[destinationPin.owner description] stringValue:destinationPin.label]];
-        [destinationPin.connections addChild:[NSXMLElement elementWithName:[self.owner description] stringValue:self.label]];
+        JMXElement *newConnection = [JMXElement elementWithName:destinationPin.name];
+        [newConnection addAttribute:[JMXAttribute attributeWithName:@"uid" stringValue:destinationPin.uid]];
+        if (destinationPin.owner && [destinationPin.owner isKindOfClass:[JMXEntity class]])
+            [newConnection addAttribute:[JMXAttribute attributeWithName:@"entity" stringValue:[destinationPin.owner uid]]];
+        [self.connections addChild:newConnection];
+
+        newConnection = [JMXElement elementWithName:self.name];
+        [newConnection addAttribute:[JMXAttribute attributeWithName:@"uid" stringValue:self.uid]];
+        if (self.owner && [self.owner isKindOfClass:[JMXEntity class]])
+            [newConnection addAttribute:[JMXAttribute attributeWithName:@"entity" stringValue:[self.owner uid]]];
+        [destinationPin.connections addChild:newConnection];
     }
     @synchronized(receivers) {
-        [receivers setObject:pinSignal forKey:pinReceiver];
+        /*if ([pinReceiver isProxy]) {
+            [receivers setObject:pinSignal forKey:((JMXProxyPin *)pinReceiver).realPin];
+        } else {*/
+            [receivers setObject:pinSignal forKey:pinReceiver];
+        //}
     }
     rv = YES;
     // deliver the signal to the just connected receiver
@@ -114,7 +130,11 @@
 - (void)detachObject:(id)pinReceiver
 {
     @synchronized(receivers) {
-        [receivers removeObjectForKey:pinReceiver];
+        /*if ([pinReceiver isProxy]) {
+            [receivers removeObjectForKey:((JMXProxyPin *)pinReceiver).realPin];
+        } else {*/
+            [receivers removeObjectForKey:pinReceiver];
+        //}
         if ([receivers count] == 0) {
             connected = NO;
             NSXMLNode *connectedAttribute = [self attributeForName:@"connected"];
@@ -127,10 +147,12 @@
 - (void)disconnectFromPin:(JMXInputPin *)destinationPin
 {
     [destinationPin disconnectFromPin:self];
-    NSArray *children = [connections elementsForName:[destinationPin.owner description]];
-    for (NSXMLElement *element in children) {
-        if ([element.stringValue isEqualTo:destinationPin.label])
-            [element detach];
+    if (destinationPin.owner) {
+        NSArray *children = [connections elementsForName:[destinationPin.owner description]];
+        for (NSXMLElement *element in children) {
+            if ([element.stringValue isEqualTo:destinationPin.label])
+                [element detach];
+        }
     }
 }
 

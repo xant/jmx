@@ -4,7 +4,7 @@
  */
 
 /**
- * Entity is the abstract base class for all entities. It maps directly to a JMXEntity class within the JMX Engine
+ * Entity is the abstract base class for all entities. It maps directly to a Entity class within the JMX Engine
  * @constructor
  * @class
  * <h3>InputPins:</h3>

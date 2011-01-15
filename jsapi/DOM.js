@@ -26,6 +26,13 @@ Function.prototype.inherits = function inherit(parent) {
     }
 }
 
+/*
+String.prototype.toLowerCase = function()
+{
+    return this; // TODO - implement
+}
+*/
+
 /**
  * Extend the base Array class to allow 'stringifying' them
  * (so that "echo(array_variable)" will dump its content)
@@ -73,12 +80,11 @@ function DOMException(code) {
     /**
      * @private
      */
-    this.__className__ = "DOMException";
-
-    this.code = code;
-    this.number = code;
-    this.message = "DOM Exception code: " + code;
-    this.name = "DOMException";
+    Object.defineProperty(this, "__className__", { value: "DOMException", writable: false, enumerable: false });
+    Object.defineProperty(this, "code", { value: code, writable: false, enumerable: true });
+    Object.defineProperty(this, "number", { value: code, writable: false, enumerable: true });
+    Object.defineProperty(this, "message", { value: "DOM Exception code: " + code, writable: false, enumerable: true });
+    Object.defineProperty(this, "name", { value: "DOMException", writable: false, enumerable: true });
 };
 DOMException.inherits(Error);
 
@@ -93,7 +99,7 @@ function DOMString(string) {
     /**
      * @private
      */
-    this.__className__ = "DOMString";
+    Object.defineProperty(this, "__className__", { value: "DOMString", writable: false, enumerable: false });
 
 }
 DOMString.inherits(String);
@@ -109,8 +115,8 @@ function DOMStringList() {
     /**
      * @private
      */
-    this.__className__ = "DOMStringList";
-
+    Object.defineProperty(this, "__className__", { value: "DOMStringList", writable: false, enumerable: false });
+    
     this.item = function(index) {
         return this[index];
     }
@@ -120,7 +126,7 @@ function DOMStringList() {
                 return true;
         return false;
     }
-    this.name = "DOMStringList";
+    Object.defineProperty(this, "name", { value: "DOMStringList", writable: false, enumerable: true });
 }
 DOMStringList.inherits(Array);
 
@@ -135,7 +141,7 @@ function NameList() {
     /**
      * @private
      */
-    this.__className__ = "NameList";
+    Object.defineProperty(this, "__className__", { value: "NameList", writable: false, enumerable: false });
 
     this.addNS = function(namespaceURI, name) {
         this[name] = namespaceURI;
@@ -185,12 +191,12 @@ function DOMImplementationList() {
     /**
      * @private
      */
-    this.__className__ = "DOMImplementationList";
+    Object.defineProperty(this, "__className__", { value: "DOMImplementationList", writable: false, enumerable: false });
 
     this.item = function(index) {
         return this[index];
     }
-    this.name = "DOMImplementationList";
+    Object.defineProperty(this, "name", { value: "DOMImplementationList", writable: false, enumerable: false });
 }
 DOMImplementationList.inherits(Array);
 
@@ -206,7 +212,7 @@ function DOMImplementation() {
     /**
      * @private
      */
-    this.__className__ = "DOMImplementation";
+    Object.defineProperty(this, "__className__", { value: "DOMImplementation", writable: false, enumerable: false });
 
     this.hasFeature = function(feature, version) {
         if (feature == "Core" || feature == "XML") {
@@ -245,8 +251,8 @@ function DOMImplementationSource() {
     /**
      * @private
      */
-    this.__className__ = "DOMImplementationSource";
-
+    Object.defineProperty(this, "__className__", { value: "DOMImplementationSource", writable: false, enumerable: false });
+    
     this.getDOMImplementation = function(features) {
         // TODO - implement
     }
@@ -254,7 +260,7 @@ function DOMImplementationSource() {
     this.getDOMImplementationList = function(features) {
         // TODO - implement
     }
-    this.name = "DOMImplementationSource";
+    Object.defineProperty(this, "name", { value: "DOMImplementationSource", writable: false, enumerable: true });
 }
 
 /**
@@ -271,12 +277,12 @@ function NodeList()
     /**
      * @private
      */
-    this.__className__ = "NodeList";
+    Object.defineProperty(this, "__className__", { value: "NodeList", writable: false, enumerable: false });
 
     this.item = function(index) {
         return this[index];
     }
-    this.name = "NodeList";
+    Object.defineProperty(this, "name", { value: "NodeList", writable: false, enumerable: true });
 }
 NodeList.inherits(Array);
 
@@ -298,7 +304,7 @@ function NamedNodeMap() {
     /**
      * @private
      */
-    this.__className__ = "NamedNodeMap";
+    Object.defineProperty(this, "__className__", { value: "NamedNodeMap", writable: false, enumerable: false });
 
     this.getNamedItem = function(name) {
         return this[name];
@@ -404,7 +410,7 @@ function DocumentFragment() {
     /**
      * @private
      */
-    this.__className__ = "DocumentFragment";
+    Object.defineProperty(this, "__className__", { value: "DocumentFragment", writable: false, enumerable: false });
     
 }
 DocumentFragment.inherits(Node);
@@ -458,7 +464,7 @@ function Attr() {
     /**
      * @private
      */
-    this.__className__ = "Attr";
+    Object.defineProperty(this, "__className__", { value: "Attr", writable: false, enumerable: false });
 }
 Attr.inherits(Attribute);
 
@@ -466,6 +472,37 @@ function CharacterData() {
     /**
      * @private
      */
-    this.__className__ = "CharacterData";
+    Object.defineProperty(this, "__className__", { value: "CharacterData", writable: false, enumerable: false });
 }
 CharacterData.inherits(CDATA);
+
+/**
+ * @private
+ */
+Object.defineProperty(Entity, "__className__", { value: "Entity", writable: false, enumerable: false });
+
+/* Properties */
+Object.defineProperty(Entity, "inputEncoding", { value: null, writable: false, enumerable: true });
+Object.defineProperty(Entity, "notationName", { value: this.name, writable: false, enumerable: true });
+
+
+function EntityReference(entity) {
+    /**
+     * @private
+     */
+    Object.defineProperty(this, "__className__", { value: "EntityReference", writable: false, enumerable: false });
+    Object.defineProperty(this, "entity", { value: entity, writable: false, enumerable: false });
+}
+EntityReference.inherits(Node);
+
+// XXX - fake objects to let jquery.js load smoothly (does all this make sense?)
+function Window() {
+}
+window = new Window(); // XXX
+
+function Navigator() {
+    Object.defineProperty(this, "userAgent", { value: "JMX", writable: false, enumerable: false });
+}
+navigator = new Navigator(); // XXX
+
+location = new Object();

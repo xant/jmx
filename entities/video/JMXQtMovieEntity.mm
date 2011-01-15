@@ -340,9 +340,9 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
 {
     // TODO - use introspection to determine the return type of a message
     //        to generalize using encapsulation in NSNumber/NSData/NSValue 
-    if ([aPin.name isEqualTo:@"repeat"]) {
+    if ([aPin.label isEqualTo:@"repeat"]) {
         return [NSNumber numberWithBool:self.repeat];
-    } else if ([aPin.name isEqualTo:@"paused"]) {
+    } else if ([aPin.label isEqualTo:@"paused"]) {
         return [NSNumber numberWithBool:self.paused];
     } else {
         return [super provideDataToPin:aPin];

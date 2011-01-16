@@ -14,6 +14,7 @@
 @interface JMXProxyPin : NSProxy {
     JMXPin *realPin;
     NSString *label;
+	NSXMLElement *parent;
     NSXMLElement *proxyNode;
     NSUInteger index;
 }

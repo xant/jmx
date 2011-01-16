@@ -69,7 +69,6 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		AA052A6B1261D40E008C9F46 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA052A6A1261D40E008C9F46 /* QuickTime.framework */; };
 		AA2BE3F312353BA6006087E7 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE3F212353BA6006087E7 /* CoreAudio.framework */; };
 		AA2BE40B12353D5C006087E7 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE40A12353D5C006087E7 /* Accelerate.framework */; };
 		AA3557441277468800EAA2E4 /* JMXTextRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3557001277347300EAA2E4 /* JMXTextRenderer.m */; };
@@ -258,7 +257,6 @@
 		82EA042E1240BE4A00E28B72 /* JMXWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = JMXWindow.xib; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* JMX-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "JMX-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* JMX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JMX.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		AA052A6A1261D40E008C9F46 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = System/Library/Frameworks/QuickTime.framework; sourceTree = SDKROOT; };
 		AA2BE3F212353BA6006087E7 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		AA2BE40A12353D5C006087E7 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		AA3556F41277340200EAA2E4 /* JMXTextEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXTextEntity.h; sourceTree = "<group>"; };
@@ -348,7 +346,6 @@
 				AA2BE3F312353BA6006087E7 /* CoreAudio.framework in Frameworks */,
 				AA2BE40B12353D5C006087E7 /* Accelerate.framework in Frameworks */,
 				AADEBFC812414F7E00A6A06D /* AudioToolbox.framework in Frameworks */,
-				AA052A6B1261D40E008C9F46 /* QuickTime.framework in Frameworks */,
 				AA7F247212907AA500BE432F /* libv8.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -439,7 +436,6 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				AA052A691261D3FE008C9F46 /* i386 Frameworks */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 			);
@@ -548,14 +544,6 @@
 				825C30FF1275ADB6006376B8 /* JMXSoftScreen.m */,
 			);
 			path = video_outputs;
-			sourceTree = "<group>";
-		};
-		AA052A691261D3FE008C9F46 /* i386 Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				AA052A6A1261D40E008C9F46 /* QuickTime.framework */,
-			);
-			name = "i386 Frameworks";
 			sourceTree = "<group>";
 		};
 		AA4BFDD712BE0C8600775B88 /* jsapi */ = {
@@ -925,6 +913,10 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../v8-read-only\"",
 				);
+				"OTHER_LDFLAGS[sdk=macosx*][arch=i386]" = (
+					"-framework",
+					QuickTime,
+				);
 				PRODUCT_NAME = JMX;
 			};
 			name = Debug;
@@ -942,6 +934,10 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../v8-read-only\"",
+				);
+				"OTHER_LDFLAGS[sdk=macosx*][arch=i386]" = (
+					"-framework",
+					QuickTime,
 				);
 				PRODUCT_NAME = JMX;
 			};

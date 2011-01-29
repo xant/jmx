@@ -94,6 +94,11 @@
 		AA8F785A12C5880100EA8543 /* AudioFile.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA8F770812C571A200EA8543 /* AudioFile.js */; };
 		AA8F806112C9D3FA00EA8543 /* JMXScriptLive.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8F806012C9D3FA00EA8543 /* JMXScriptLive.mm */; };
 		AA8F817612CB236700EA8543 /* JMXTextPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8F817512CB236700EA8543 /* JMXTextPanel.m */; };
+		AA9C17FC12E200C400329158 /* JMXCanvasElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C17FB12E200C400329158 /* JMXCanvasElement.mm */; };
+		AA9C18DA12E2FC1000329158 /* JMXCanvasGradient.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C18D912E2FC1000329158 /* JMXCanvasGradient.mm */; };
+		AA9C190F12E32B0600329158 /* JMXCanvasPattern.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C190E12E32B0600329158 /* JMXCanvasPattern.mm */; };
+		AA9C19D412E4BDD500329158 /* JMXRect.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C19D312E4BDD500329158 /* JMXRect.mm */; };
+		AA9C1A4912E5964C00329158 /* JMXImageElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C1A4812E5964C00329158 /* JMXImageElement.mm */; };
 		AAC6323112CFC72B00B69DFE /* JMXGraph.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6323012CFC72B00B69DFE /* JMXGraph.mm */; };
 		AAC6323C12CFCAB900B69DFE /* JMXElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6323B12CFCAB900B69DFE /* JMXElement.mm */; };
 		AAC6334612D36DA900B69DFE /* NSXMLNode+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6334512D36DA900B69DFE /* NSXMLNode+V8.mm */; };
@@ -310,6 +315,17 @@
 		AA8F806012C9D3FA00EA8543 /* JMXScriptLive.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScriptLive.mm; sourceTree = "<group>"; };
 		AA8F817412CB236700EA8543 /* JMXTextPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXTextPanel.h; sourceTree = "<group>"; };
 		AA8F817512CB236700EA8543 /* JMXTextPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXTextPanel.m; sourceTree = "<group>"; };
+		AA9C17FA12E200C400329158 /* JMXCanvasElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXCanvasElement.h; sourceTree = "<group>"; };
+		AA9C17FB12E200C400329158 /* JMXCanvasElement.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXCanvasElement.mm; sourceTree = "<group>"; };
+		AA9C18D812E2FC1000329158 /* JMXCanvasGradient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXCanvasGradient.h; sourceTree = "<group>"; };
+		AA9C18D912E2FC1000329158 /* JMXCanvasGradient.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXCanvasGradient.mm; sourceTree = "<group>"; };
+		AA9C190D12E32B0600329158 /* JMXCanvasPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXCanvasPattern.h; sourceTree = "<group>"; };
+		AA9C190E12E32B0600329158 /* JMXCanvasPattern.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXCanvasPattern.mm; sourceTree = "<group>"; };
+		AA9C194712E3363100329158 /* JMXCanvasStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXCanvasStyle.h; sourceTree = "<group>"; };
+		AA9C19D212E4BDD500329158 /* JMXRect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXRect.h; sourceTree = "<group>"; };
+		AA9C19D312E4BDD500329158 /* JMXRect.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXRect.mm; sourceTree = "<group>"; };
+		AA9C1A4712E5964C00329158 /* JMXImageElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXImageElement.h; sourceTree = "<group>"; };
+		AA9C1A4812E5964C00329158 /* JMXImageElement.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXImageElement.mm; sourceTree = "<group>"; };
 		AAC6322F12CFC72B00B69DFE /* JMXGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXGraph.h; sourceTree = "<group>"; };
 		AAC6323012CFC72B00B69DFE /* JMXGraph.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXGraph.mm; sourceTree = "<group>"; };
 		AAC6323A12CFCAB900B69DFE /* JMXElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXElement.h; sourceTree = "<group>"; };
@@ -622,6 +638,8 @@
 				AAD13C49128EF2AB00ECB03A /* JMXColor.mm */,
 				825C31401275ADD7006376B8 /* JMXSize.h */,
 				825C31411275ADD7006376B8 /* JMXSize.mm */,
+				AA9C19D212E4BDD500329158 /* JMXRect.h */,
+				AA9C19D312E4BDD500329158 /* JMXRect.mm */,
 				825C313C1275ADD7006376B8 /* JMXRingBuffer.h */,
 				825C313D1275ADD7006376B8 /* JMXRingBuffer.m */,
 				825C313E1275ADD7006376B8 /* JMXRunLoop.h */,
@@ -630,8 +648,6 @@
 				825C31431275ADD7006376B8 /* JMXSpectrumAnalyzer.m */,
 				AA3556FF1277347300EAA2E4 /* JMXTextRenderer.h */,
 				AA3557001277347300EAA2E4 /* JMXTextRenderer.m */,
-				AAD139B9128EA0DF00ECB03A /* JMXDrawPath.h */,
-				AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */,
 				82AD7F6E1289F3C300C85EB1 /* JMXOpenGLDraw.h */,
 				82AD7F6F1289F3C300C85EB1 /* JMXOpenGLDraw.mm */,
 				825C312F1275ADD6006376B8 /* JMXEntity.h */,
@@ -665,6 +681,17 @@
 				825C312E1275ADD6006376B8 /* JMXContext.m */,
 				AAC6334412D36DA900B69DFE /* NSXMLNode+V8.h */,
 				AAC6334512D36DA900B69DFE /* NSXMLNode+V8.mm */,
+				AA9C17FA12E200C400329158 /* JMXCanvasElement.h */,
+				AA9C17FB12E200C400329158 /* JMXCanvasElement.mm */,
+				AA9C18D812E2FC1000329158 /* JMXCanvasGradient.h */,
+				AA9C18D912E2FC1000329158 /* JMXCanvasGradient.mm */,
+				AA9C190D12E32B0600329158 /* JMXCanvasPattern.h */,
+				AA9C190E12E32B0600329158 /* JMXCanvasPattern.mm */,
+				AAD139B9128EA0DF00ECB03A /* JMXDrawPath.h */,
+				AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */,
+				AA9C194712E3363100329158 /* JMXCanvasStyle.h */,
+				AA9C1A4712E5964C00329158 /* JMXImageElement.h */,
+				AA9C1A4812E5964C00329158 /* JMXImageElement.mm */,
 			);
 			name = Core;
 			path = core;
@@ -871,6 +898,11 @@
 				AAC6334612D36DA900B69DFE /* NSXMLNode+V8.mm in Sources */,
 				AAC6376312D5099400B69DFE /* JMXCDATA.mm in Sources */,
 				AAC637E012D5204C00B69DFE /* JMXAttribute.mm in Sources */,
+				AA9C17FC12E200C400329158 /* JMXCanvasElement.mm in Sources */,
+				AA9C18DA12E2FC1000329158 /* JMXCanvasGradient.mm in Sources */,
+				AA9C190F12E32B0600329158 /* JMXCanvasPattern.mm in Sources */,
+				AA9C19D412E4BDD500329158 /* JMXRect.mm in Sources */,
+				AA9C1A4912E5964C00329158 /* JMXImageElement.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

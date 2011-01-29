@@ -14,6 +14,11 @@ using namespace v8;
 
 @implementation JMXColor
 
++ (id)colorFromCSSString:(NSString *)cssString
+{
+    /* TODO - Implement */
+}
+
 static v8::Persistent<FunctionTemplate> objectTemplate;
 
 + (v8::Persistent<FunctionTemplate>)jsObjectTemplate
@@ -84,7 +89,7 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
 
 @end
 
-void JMXColorJSDestructor(Persistent<Value> object, void *parameter)
+static void JMXColorJSDestructor(Persistent<Value> object, void *parameter)
 {
     HandleScope handle_scope;
     v8::Locker lock;

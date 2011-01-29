@@ -126,7 +126,15 @@ static OSStatus _FillComplexBufferProc (
         err = AudioConverterFillComplexBuffer ( converter, _FillComplexBufferProc, &callbackContext, &framesRead, outputBufferList, NULL );
     }
     if (err != noErr) {
+        JMXAudioBuffer *previousSample;
+        [writersLock lock];
+        previousSample = samples[wOffset%kJMXAudioOutputSamplesBufferCount];
         samples[wOffset++%kJMXAudioOutputSamplesBufferCount] = [[JMXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&inputDescription copy:YES freeOnRelease:YES] retain];
+        [writersLock unlock];
+        // let's have the buffer released next time the active pool is drained
+        // we want to return as soon as possible
+        if (previousSample)
+            [previousSample release];
     }
 #else
     JMXAudioBuffer *previousSample;

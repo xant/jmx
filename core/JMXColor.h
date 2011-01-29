@@ -13,12 +13,15 @@
 
 #import <Cocoa/Cocoa.h>
 #import "JMXV8.h"
+#import "JMXCanvasStyle.h"
+
+/* TODO - should be a category */
 
 /*!
  @class JMXColor
  @discussion conforms to protocols: JMXV8
  */
-@interface JMXColor : NSColor <JMXV8> {
+@interface JMXColor : NSColor < JMXV8, JMXCanvasStyle > {
     
 }
 
@@ -42,6 +45,8 @@
  @abstract alpha component
  */
 @property (readonly) CGFloat a;
+
++ (id)colorFromCSSString:(NSString *)cssString;
 
 #ifdef __JMXV8__
 + (void)jsRegisterClassMethods:(v8::Handle<v8::FunctionTemplate>)constructor;

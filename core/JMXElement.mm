@@ -119,7 +119,7 @@ static v8::Handle<Value> GetStyle(Local<String> name, const AccessorInfo& info)
     return handleScope.Close(ret);
 }
 
-void SetStyle(Local<String> name, Local<Value> value, const AccessorInfo& info)
+static void SetStyle(Local<String> name, Local<Value> value, const AccessorInfo& info)
 {   
     //v8::Locker lock;
     HandleScope handleScope;

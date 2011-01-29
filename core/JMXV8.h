@@ -66,6 +66,122 @@
  */
 - (void)jsInit:(NSValue *)argsValue;
 
+#define JMXV8_EXPORT_BASE(__class) \
+using namespace v8;\
+static Persistent<FunctionTemplate> objectTemplate;\
+\
+
+#define JMXV8_EXPORT_PERSISTENT_CLASS(__class) \
+JMXV8_EXPORT_BASE(__class)\
+void __class##JSDestructor(Persistent<Value> object, void *parameter)\
+{\
+    NSLog(@"V8 WeakCallback called");\
+    __class *obj = static_cast<__class *>(parameter);\
+    Local<Context> currentContext  = v8::Context::GetCurrent();\
+    JMXScript *ctx = [JMXScript getContext:currentContext];\
+    if (ctx) {\
+        /* this will destroy the javascript object as well */\
+        [ctx removePersistentInstance:obj];\
+    } else {\
+        NSLog(@"Can't find context to attach persistent instance (just leaking)");\
+    }\
+}\
+\
+v8::Handle<Value> __class##JSConstructor(const Arguments& args)\
+{\
+    HandleScope handleScope;\
+    Persistent<Object> jsInstance;\
+    if (objectTemplate.IsEmpty())\
+        objectTemplate = [__class jsObjectTemplate];\
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];\
+    __class *instance = nil;\
+    v8::Local<Context> currentContext = v8::Context::GetCalling();\
+    JMXScript *ctx = [JMXScript getContext:currentContext];\
+    if (ctx) {\
+        instance = [[__class alloc] jmxInit];\
+        /* connect the entity to our scriptEntity */\
+        [ctx.scriptEntity addChild:instance];\
+        if ([instance respondsToSelector:@selector(jsInit:)]) {\
+            NSValue *argsValue = [NSValue valueWithPointer:(void *)&args];\
+            [instance performSelector:@selector(jsInit:) withObject:argsValue];\
+        }\
+        jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());\
+        /* make the handle weak, with a callback */\
+        jsInstance.MakeWeak(instance, &__class##JSDestructor);\
+        /*instancesMap[instance] = jsInstance;*/\
+        jsInstance->SetPointerInInternalField(0, instance);\
+        [ctx addPersistentInstance:jsInstance obj:instance];\
+        [instance release];\
+    } else {\
+        NSLog(@"Can't find context to attach persistent instance (just leaking)");\
+    }\
+    [pool drain];\
+    if (!jsInstance.IsEmpty())\
+        return handleScope.Close(jsInstance);\
+    else\
+        return handleScope.Close(Undefined());\
+}
+
+#define JMXV8_EXPORT_CLASS(__class) \
+JMXV8_EXPORT_BASE(__class)\
+void __class##JSDestructor(Persistent<Value> object, void *parameter)\
+{\
+    HandleScope handle_scope;\
+    v8::Locker lock;\
+    id obj = static_cast<id>(parameter);\
+    /*NSLog(@"V8 WeakCallback called on %@", obj); */\
+    [obj release];\
+    if (!object.IsEmpty()) {\
+        object.ClearWeak();\
+        object.Dispose();\
+        object.Clear();\
+    }\
+}\
+\
+v8::Handle<Value> __class##JSConstructor(const Arguments& args)\
+{\
+    HandleScope handleScope;\
+    Persistent<Object> jsInstance;\
+    if (objectTemplate.IsEmpty())\
+        objectTemplate = [__class jsObjectTemplate];\
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];\
+    __class *instance = [[__class alloc] jmxInit];\
+    /* connect the entity to our scriptEntity */\
+    if ([instance respondsToSelector:@selector(jsInit:)]) {\
+        NSValue *argsValue = [NSValue valueWithPointer:(void *)&args];\
+        [instance performSelector:@selector(jsInit:) withObject:argsValue];\
+    }\
+    jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());\
+    /* make the handle weak, with a callback */\
+    jsInstance.MakeWeak(instance, &__class##JSDestructor);\
+    /*instancesMap[instance] = jsInstance;*/\
+    jsInstance->SetPointerInInternalField(0, instance);\
+    [instance release];\
+    [pool drain];\
+    if (!jsInstance.IsEmpty())\
+        return handleScope.Close(jsInstance);\
+    else\
+        return handleScope.Close(Undefined());\
+}
+
+#define JMXV8_DECLARE_CONSTRUCTOR(__class)\
+v8::Handle<v8::Value> __class##JSConstructor(const v8::Arguments& args);
+
+#else
+
+/*!
+ @define JMXV8_EXPORT_NODE_CLASS
+ @abstract define both the constructor and the descructor for the mapped class
+ @param __class
+ */
+#define JMXV8_EXPORT_CLASS(__class)
+/*!
+ @define JMXV8_DECLARE_NODE_CONSTRUCTOR
+ @abstract define the constructor for the mapped class
+ @param __class
+ */
+#define JMXV8_DECLARE_CONSTRUCTOR(__class)
+
 #endif
 
 @end

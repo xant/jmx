@@ -28,6 +28,7 @@
 #import <Cocoa/Cocoa.h>
 #import <Foundation/NSXMLElement.h>
 #import "JMXSize.h"
+#import "JMXRect.h"
 #import "JMXPoint.h"
 #import "JMXAudioBuffer.h"
 #import "JMXPinSignal.h"
@@ -55,6 +56,7 @@
  @constant kJMXAudioPin JMXAudioBuffer
  @constant kJMXPointPin JMXPoint
  @constant kJMXSizePin JMXSize
+ @constant kJMXRectPin JMXRect
  @constant kJMXColorPin NSColor
  @constant kJMXBooleanPin NSNumber
  */
@@ -67,6 +69,7 @@ typedef enum {
     kJMXAudioPin,
     kJMXPointPin,
     kJMXSizePin,
+    kJMXRectPin,
     kJMXColorPin,
     kJMXBooleanPin
 } JMXPinType;

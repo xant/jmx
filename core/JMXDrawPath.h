@@ -15,6 +15,7 @@
 #import <Cocoa/Cocoa.h>
 #import "JMXSize.h"
 #import "JMXPoint.h"
+#import "JMXCanvasStyle.h"
 
 #define kJMXDrawPathBufferCount 32
 
@@ -25,14 +26,17 @@
  * This class wraps CGPath* API (from CoreGraphics) to provide 2D drawing functionalities
  * Drawing is done using an openglcontext to try obtaining best performances
  */ 
-@interface JMXDrawPath : NSObject {
+@interface JMXDrawPath : NSObject <JMXV8> {
 @protected
     CGLayerRef pathLayers[kJMXDrawPathBufferCount];
     UInt32 pathLayerOffset;
     CIImage *currentFrame;
+    id<JMXCanvasStyle,JMXV8> fillStyle;
+    id<JMXCanvasStyle,JMXV8> strokeStyle;
 @private
     JMXSize *_frameSize;
     BOOL _clear;
+    NSMutableArray *subPaths;
 }
 
 /*!
@@ -40,6 +44,12 @@
  @abstract access the currentFrame
  */
 @property (readonly) CIImage *currentFrame;
+
+@property (readwrite, retain) id<JMXCanvasStyle,JMXV8> fillStyle;
+
+@property (readwrite, retain) id<JMXCanvasStyle,JMXV8> strokeStyle;
+
+- (id)jmxInit;
 
 /*!
  @method drawPathWithFrameSize
@@ -112,4 +122,30 @@
  @abstract render the scene on the underlying texture
  */
 - (void)render;
+
+- (void)saveCurrentState;
+
+- (void)restoreCurrentState;
+
+- (void)clearRect:(JMXPoint *)origin size:(JMXSize *)size;
+- (void)fillRect:(JMXPoint *)origin size:(JMXSize *)size;
+- (void)drawRect:(JMXPoint *)origin size:(JMXSize *)size;
+
+- (void)beginPath;
+- (void)closePath;
+- (void)moveTo:(JMXPoint *)point;
+- (void)lineTo:(JMXPoint *)point;
+- (void)quadraticCurveTo:(JMXPoint *)point controlPoint:(JMXPoint *)controlPoint;
+- (void)bezierCurveTo:(JMXPoint *)point controlPoint1:(JMXPoint *)controlPoint1 controlPoint2:(JMXPoint *)controlPoint2;
+- (void)arcTo:(JMXPoint *)point endPoint:(JMXPoint *)endPoint radius:(CGFloat)radius;
+
+- (void)drawArc:(JMXPoint *)origin radius:(CGFloat)radius startAngle:(CGFloat)startAngle endAngle:(CGFloat)endAngle antiClockwise:(BOOL)antiClockwise strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor;
+
+- (void)drawArc:(JMXPoint *)origin radius:(CGFloat)radius startAngle:(CGFloat)startAngle endAngle:(CGFloat)endAngle antiClockwise:(BOOL)antiClockwise;
+- (void)fill;
+- (void)stroke;
+- (void)clip;
+- (bool)isPointInPath:(JMXPoint *)point;
+
+
 @end

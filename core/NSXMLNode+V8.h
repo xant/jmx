@@ -10,81 +10,31 @@
 
 #import "JMXV8.h"
 
-#ifndef __JMXV8__
+#ifdef __JMXV8__
+#import "NSXMLNode+V8.h"
+#import "JMXScript.h"
 
 /*!
  @define JMXV8_EXPORT_NODE_CLASS
  @abstract define both the constructor and the descructor for the mapped class
  @param __class
  */
-#define JMXV8_EXPORT_NODE_CLASS(__class)
+#define JMXV8_EXPORT_NODE_CLASS(__class) \
+    JMXV8_EXPORT_PERSISTENT_CLASS(__class)
+
 /*!
  @define JMXV8_DECLARE_NODE_CONSTRUCTOR
  @abstract define the constructor for the mapped class
  @param __class
  */
-#define JMXV8_DECLARE_NODE_CONSTRUCTOR(__class)
+#define JMXV8_DECLARE_NODE_CONSTRUCTOR(__class)\
+    JMXV8_DECLARE_CONSTRUCTOR(__class)
 
 #else
 
-#import "NSXMLNode+V8.h"
-#import "JMXScript.h"
+#define JMXV8_EXPORT_NODE_CLASS(__class)
 
-#define JMXV8_EXPORT_NODE_CLASS(__class) \
-using namespace v8;\
-static Persistent<FunctionTemplate> objectTemplate;\
-/*static std::map<__class *, v8::Persistent<v8::Object> > instancesMap;*/\
-void __class##JSDestructor(Persistent<Value> object, void *parameter)\
-{\
-    NSLog(@"V8 WeakCallback called");\
-    __class *obj = static_cast<__class *>(parameter);\
-    Local<Context> currentContext  = v8::Context::GetCurrent();\
-    JMXScript *ctx = [JMXScript getContext:currentContext];\
-    if (ctx) {\
-        /* this will destroy the javascript object as well */\
-        [ctx removePersistentInstance:obj];\
-    } else {\
-        NSLog(@"Can't find context to attach persistent instance (just leaking)");\
-    }\
-}\
-\
-v8::Handle<Value> __class##JSConstructor(const Arguments& args)\
-{\
-    HandleScope handleScope;\
-    Persistent<Object> jsInstance;\
-    if (objectTemplate.IsEmpty())\
-        objectTemplate = [__class jsObjectTemplate];\
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];\
-    __class *instance = nil;\
-    v8::Local<Context> currentContext = v8::Context::GetCalling();\
-    JMXScript *ctx = [JMXScript getContext:currentContext];\
-    if (ctx) {\
-        instance = [[__class alloc] jmxInit];\
-        /* connect the entity to our scriptEntity */\
-        [ctx.scriptEntity addChild:instance];\
-        if ([instance respondsToSelector:@selector(jsInit:)]) {\
-            NSValue *argsValue = [NSValue valueWithPointer:(void *)&args];\
-            [instance performSelector:@selector(jsInit:) withObject:argsValue];\
-        }\
-        jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());\
-        /* make the handle weak, with a callback */\
-        jsInstance.MakeWeak(instance, &__class##JSDestructor);\
-        /*instancesMap[instance] = jsInstance;*/\
-        jsInstance->SetPointerInInternalField(0, instance);\
-        [ctx addPersistentInstance:jsInstance obj:instance];\
-        [instance release];\
-    } else {\
-        NSLog(@"Can't find context to attach persistent instance (just leaking)");\
-    }\
-    [pool drain];\
-    if (!jsInstance.IsEmpty())\
-        return handleScope.Close(jsInstance);\
-    else\
-        return handleScope.Close(Undefined());\
-}
-
-#define JMXV8_DECLARE_NODE_CONSTRUCTOR(__class)\
-v8::Handle<v8::Value> __class##JSConstructor(const v8::Arguments& args);
+#define JMXV8_DECLARE_NODE_CONSTRUCTOR(__class)
 
 #endif
 

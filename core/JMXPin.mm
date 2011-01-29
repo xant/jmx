@@ -235,6 +235,8 @@ using namespace v8;
             return @"Image";
         case kJMXSizePin:
             return @"Size";
+        case kJMXRectPin:
+            return @"Rect";
         case kJMXPointPin:
             return @"Point";
         case kJMXAudioPin:
@@ -271,6 +273,10 @@ using namespace v8;
             break;
         case kJMXSizePin:
             if (![data isKindOfClass:[JMXSize class]])
+                return NO;
+            break;
+        case kJMXRectPin:
+            if (![data isKindOfClass:[JMXRect class]])
                 return NO;
             break;
         case kJMXPointPin:
@@ -444,12 +450,15 @@ using namespace v8;
         // TODO - Error Message (a not allowed value has been signaled
         return NO;
     }
+    /* TODO - validate the actual value */
     switch (self.type) {
         case kJMXNumberPin:
             break;
         case kJMXStringPin:
             break;
         case kJMXSizePin:
+            break;
+        case kJMXRectPin:
             break;
         case kJMXPointPin:
             break;

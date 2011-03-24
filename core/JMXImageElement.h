@@ -20,6 +20,9 @@
     NSUInteger naturalWidth;
     NSUInteger naturalHeight;
     BOOL complete;
+@private
+    NSData *imageData;
+    NSRecursiveLock *imageLock;
 }
 
 @property (readwrite, copy) NSString *alt;
@@ -31,6 +34,11 @@
 @property (readonly) NSUInteger naturalWidth;
 @property (readonly) NSUInteger naturalHeight;
 @property (readonly) BOOL complete;
+@property (readonly) NSData *imageData;
+
+- (CGImageRef)cgImage;
+- (CIImage *)ciImage;
+- (NSImage *)nsImage;
 
 @end
 

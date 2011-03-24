@@ -304,6 +304,7 @@
 		AA555FC712AEF39600C882FF /* CIAlphaFade.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CIAlphaFade.m; sourceTree = "<group>"; };
 		AA555FC812AEF39600C882FF /* CIAlphaFade.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CIAlphaFade.h; sourceTree = "<group>"; };
 		AA555FC912AEF39600C882FF /* CIAlphaFade.cikernel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = CIAlphaFade.cikernel; path = core/CIAlphaFade.cikernel; sourceTree = "<group>"; };
+		AA7400C6130E56EA005A205C /* JMXGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXGlobals.h; sourceTree = "<group>"; };
 		AA7F247112907AA500BE432F /* libv8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libv8.dylib; path = "../v8-read-only/libv8.dylib"; sourceTree = SOURCE_ROOT; };
 		AA8CB78C1282BB9800A17115 /* JMXScriptFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXScriptFile.h; sourceTree = "<group>"; };
 		AA8CB78D1282BB9900A17115 /* JMXScriptFile.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScriptFile.mm; sourceTree = "<group>"; };
@@ -429,6 +430,7 @@
 			isa = PBXGroup;
 			children = (
 				AA8F7ED912C6E16C00EA8543 /* JMX_Prefix.pch */,
+				AA7400C6130E56EA005A205C /* JMXGlobals.h */,
 				256AC3D80F4B6AC300CF3369 /* JMXAppDelegate.h */,
 				256AC3D90F4B6AC300CF3369 /* JMXAppDelegate.m */,
 				29B97316FDCFA39411CA2CEA /* main.m */,

@@ -7,8 +7,12 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import <JMXGlobals.h>
+
+int verbose = LOG_DEBUG;
 
 int main(int argc, char *argv[])
 {
+    openlog("JMX", LOG_PERROR, LOG_USER);
     return NSApplicationMain(argc,  (const char **) argv);
 }

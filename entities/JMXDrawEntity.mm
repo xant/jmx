@@ -16,6 +16,8 @@ JMXV8_EXPORT_NODE_CLASS(JMXDrawEntity);
 
 @implementation JMXDrawEntity
 
+@synthesize drawPath;
+
 - (id)init
 {
     self = [super init];
@@ -101,7 +103,7 @@ using namespace v8;
     }
 }
 
-static v8::Handle<Value> drawPolygon(const Arguments& args)
+static v8::Handle<Value> DrawPolygon(const Arguments& args)
 {
     HandleScope handleScope;
     //Locker locker;
@@ -136,7 +138,7 @@ static v8::Handle<Value> drawPolygon(const Arguments& args)
     return v8::Undefined();
 }
 
-static v8::Handle<Value> drawCircle(const Arguments& args)
+static v8::Handle<Value> DrawCircle(const Arguments& args)
 {
     HandleScope handleScope;
     Locker locker;
@@ -179,7 +181,7 @@ static v8::Handle<Value> drawCircle(const Arguments& args)
     return v8::Undefined();
 }
 
-static v8::Handle<Value> clear(const Arguments& args)
+static v8::Handle<Value> Clear(const Arguments& args)
 {
     HandleScope handleScope;
     Locker locker;
@@ -191,20 +193,35 @@ static v8::Handle<Value> clear(const Arguments& args)
     return v8::Undefined();
 }
 
+static v8::Handle<Value>GetCanvas(Local<String> name, const AccessorInfo& info)
+{
+    HandleScope handleScope;
+    JMXDrawEntity *entity = (JMXDrawEntity *)info.Holder()->GetPointerFromInternalField(0);
+    return handleScope.Close([entity.drawPath jsObj]);
+}
+
 + (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate
 {
-    NSLog(@"JMXDrawEntity objectTemplate created");
-    v8::Persistent<v8::FunctionTemplate> entityTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
-    entityTemplate->Inherit([super jsObjectTemplate]);
-    entityTemplate->SetClassName(String::New("DrawPath"));
-    v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
-    entityTemplate->InstanceTemplate()->SetInternalFieldCount(1);
-    classProto->Set("drawCircle", FunctionTemplate::New(drawCircle));
-    classProto->Set("drawPolygon", FunctionTemplate::New(drawPolygon));
-    classProto->Set("drawTriangle", FunctionTemplate::New(drawPolygon));
-    classProto->Set("clear", FunctionTemplate::New(clear));
+    if (!objectTemplate.IsEmpty())
+        return objectTemplate;
+    objectTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    objectTemplate->Inherit([super jsObjectTemplate]);
+    objectTemplate->SetClassName(String::New("DrawPath"));
+    v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
+    v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
+    instanceTemplate->SetInternalFieldCount(1);
+    
+    // Add accessors for each of the fields of the entity.
+    instanceTemplate->SetAccessor(String::NewSymbol("canvas"), GetCanvas);
+
+    classProto->Set("drawCircle", FunctionTemplate::New(DrawCircle));
+    classProto->Set("drawPolygon", FunctionTemplate::New(DrawPolygon));
+    classProto->Set("drawTriangle", FunctionTemplate::New(DrawPolygon));
+    classProto->Set("clear", FunctionTemplate::New(Clear));
     //classProto->Set("close", FunctionTemplate::New(close));
-    return entityTemplate;
+    NSLog(@"JMXDrawEntity objectTemplate created");
+
+    return objectTemplate;
 }
 
 @end

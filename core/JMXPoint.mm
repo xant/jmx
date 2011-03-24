@@ -166,6 +166,6 @@ v8::Handle<v8::Value> JMXPointJSConstructor(const v8::Arguments& args)
     JMXPoint *point = [[JMXPoint pointWithNSPoint:NSMakePoint(x, y)] retain];
     jsInstance.MakeWeak(point, JMXPointJSDestructor);
     jsInstance->SetPointerInInternalField(0, point);
-    [pool drain];
+    [pool drain];    
     return handleScope.Close(jsInstance);
 }

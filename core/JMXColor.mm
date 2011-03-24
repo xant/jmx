@@ -87,6 +87,12 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
 {
 }
 
+- (id)setFromString:(NSString *)style
+{
+    // TODO - Implement
+    return nil;
+}
+
 @end
 
 static void JMXColorJSDestructor(Persistent<Value> object, void *parameter)

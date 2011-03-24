@@ -135,17 +135,36 @@
 - (void)closePath;
 - (void)moveTo:(JMXPoint *)point;
 - (void)lineTo:(JMXPoint *)point;
-- (void)quadraticCurveTo:(JMXPoint *)point controlPoint:(JMXPoint *)controlPoint;
-- (void)bezierCurveTo:(JMXPoint *)point controlPoint1:(JMXPoint *)controlPoint1 controlPoint2:(JMXPoint *)controlPoint2;
-- (void)arcTo:(JMXPoint *)point endPoint:(JMXPoint *)endPoint radius:(CGFloat)radius;
 
-- (void)drawArc:(JMXPoint *)origin radius:(CGFloat)radius startAngle:(CGFloat)startAngle endAngle:(CGFloat)endAngle antiClockwise:(BOOL)antiClockwise strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor;
+- (void)quadraticCurveTo:(JMXPoint *)point
+            controlPoint:(JMXPoint *)controlPoint;
 
-- (void)drawArc:(JMXPoint *)origin radius:(CGFloat)radius startAngle:(CGFloat)startAngle endAngle:(CGFloat)endAngle antiClockwise:(BOOL)antiClockwise;
+- (void)bezierCurveTo:(JMXPoint *)point
+        controlPoint1:(JMXPoint *)controlPoint1
+        controlPoint2:(JMXPoint *)controlPoint2;
+
+- (void)arcTo:(JMXPoint *)point
+     endPoint:(JMXPoint *)endPoint
+       radius:(CGFloat)radius;
+
+- (void)drawArc:(JMXPoint *)origin
+         radius:(CGFloat)radius
+     startAngle:(CGFloat)startAngle
+       endAngle:(CGFloat)endAngle
+  antiClockwise:(BOOL)antiClockwise
+    strokeColor:(id<JMXCanvasStyle>)strokeColor
+      fillColor:(id<JMXCanvasStyle>)fillColor;
+
+- (void)drawArc:(JMXPoint *)origin
+         radius:(CGFloat)radius
+     startAngle:(CGFloat)startAngle
+       endAngle:(CGFloat)endAngle
+  antiClockwise:(BOOL)antiClockwise;
+
 - (void)fill;
 - (void)stroke;
 - (void)clip;
 - (bool)isPointInPath:(JMXPoint *)point;
-
+- (void)strokeText:(NSAttributedString *)text atPoint:(JMXPoint *)point;
 
 @end

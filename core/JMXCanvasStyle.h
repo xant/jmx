@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@protocol JMXCanvasStyle
+@protocol JMXCanvasStyle <NSObject>
 
 - setFromString:(NSString *)style;
 

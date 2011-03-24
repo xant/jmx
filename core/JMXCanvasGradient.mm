@@ -17,6 +17,8 @@ JMXV8_EXPORT_CLASS(JMXCanvasGradient)
 
 @implementation JMXCanvasGradient
 
+@synthesize mode;
+
 + (id)linearGradientFrom:(JMXPoint *)from to:(JMXPoint *)to
 {
     JMXCanvasGradient *obj = [self alloc];
@@ -103,6 +105,7 @@ JMXV8_EXPORT_CLASS(JMXCanvasGradient)
 
 - (id)setFromString:(NSString *)style
 {
+    /* TODO - Implement */
 }
 
 #pragma mark V8 (JMXCanvasGradient)

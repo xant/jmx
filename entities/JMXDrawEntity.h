@@ -15,6 +15,8 @@
     JMXDrawPath *drawPath;
 }
 
+@property (readonly) JMXDrawPath *drawPath;
+
 @end
 
 JMXV8_DECLARE_NODE_CONSTRUCTOR(JMXDrawEntity);

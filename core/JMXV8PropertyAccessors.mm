@@ -52,10 +52,8 @@ v8::Handle<Value>GetObjectProperty(Local<String> name, const AccessorInfo& info)
         } else if ([output isKindOfClass:[NSNumber class]]) {
             [pool drain];
             return handle_scope.Close(Number::New([(NSNumber *)output doubleValue]));
-        } else if ([output isKindOfClass:[JMXPin class]]) {
-            // TODO - wrap
-        } else if ([output isKindOfClass:[JMXEntity class]]) {
-            // TODO - wrap
+        } else if ([output isKindOfClass:[JMXPin class]] || [output isKindOfClass:[JMXEntity class]] || [output isKindOfClass:[JMXSize class]]) {
+            return handle_scope.Close([output jsObj]);
         } else {
             // unsupported class
         }
@@ -282,7 +280,7 @@ void SetDoubleProperty(Local<String> name, Local<Value> value, const AccessorInf
         }
         NSMethodSignature *sig = [obj methodSignatureForSelector:selector];
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:sig];
-        [invocation setArgument:&newValue atIndex:0];
+        [invocation setArgument:&newValue atIndex:2];
         [invocation setSelector:selector];
         [invocation invokeWithTarget:obj];
         [pool release];

@@ -31,6 +31,8 @@ typedef enum {
     JMXCanvasGradientMode mode;
 }
 
+@property (readonly) JMXCanvasGradientMode mode;
+
 - (id)jmxInit;
 
 + (id)linearGradientFrom:(JMXPoint *)from to:(JMXPoint *)to;

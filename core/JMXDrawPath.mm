@@ -84,8 +84,9 @@ using namespace v8;
         _frameSize = [frameSize copy];
         _clear = NO;
         currentFrame = nil;
-        fillStyle = (JMXColor *)[JMXColor blackColor];
-        strokeStyle = (JMXColor *)[JMXColor blackColor];
+        fillStyle = (JMXColor *)[JMXColor colorWithCalibratedRed:0.0 green:0.0 blue:0.0 alpha:1.0];
+        strokeStyle = (JMXColor *)[JMXColor colorWithCalibratedRed:0.0 green:0.0 blue:0.0 alpha:1.0];
+        lock = [[NSRecursiveLock alloc] init]; // XXX - remove (we don't want locks)
     }
     return self;
 }
@@ -98,12 +99,14 @@ using namespace v8;
     [_frameSize release];
     if (currentFrame)
         [currentFrame release];
+    [lock release];
     [super dealloc];
 }
 
 - (void)clearFrame
 {
     if (_clear) {
+        [lock lock];
         UInt32 pathIndex = (pathLayerOffset+1)%kJMXDrawPathBufferCount;
         CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
         CGContextSaveGState(context);
@@ -112,6 +115,7 @@ using namespace v8;
         CGContextFillRect(context, fullFrame);
         _clear = NO;
         pathLayerOffset++;
+        [lock unlock];
     }
 }
 
@@ -124,6 +128,7 @@ using namespace v8;
       fillColor:(id<JMXCanvasStyle>)fillColor
 {
     [self clearFrame];
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
     CGContextSaveGState(context);
@@ -157,9 +162,11 @@ using namespace v8;
         } else if (gradient.mode = kJMXCanvasGradientRadial) {
         }
     }*/
-    CGContextStrokePath(context, kCGPathFillStroke);
+    CGContextStrokePath(context);
     CGContextFillPath(context);
     CGContextRestoreGState(context);
+    [lock unlock];
+
 }
 
 - (void)drawArc:(JMXPoint *)origin radius:(CGFloat)radius startAngle:(CGFloat)startAngle endAngle:(CGFloat)endAngle antiClockwise:(BOOL)antiClockwise
@@ -170,6 +177,7 @@ using namespace v8;
 - (void)drawRect:(JMXPoint *)origin size:(JMXSize *)size strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
     [self clearFrame];
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
     CGContextSaveGState(context);
@@ -213,11 +221,14 @@ using namespace v8;
    /* CGContextStrokeRect(context, rect);
     if (fillColor)
         CGContextFillRect(context, rect);*/
+    [lock unlock];
+
 }
 
 - (void)drawCircle:(JMXPoint *)center radius:(NSUInteger)radius strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
     [self clearFrame];
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
     if ([strokeColor isKindOfClass:[NSColor class]]) {
@@ -254,6 +265,8 @@ using namespace v8;
     
     CGRect frameSize = { { center.x, center.y }, { radius*2, radius*2 } };
     CGContextAddEllipseInRect(context, frameSize);
+    [lock unlock];
+
 }
 
 - (void)drawTriangle:(NSArray *)points strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
@@ -270,9 +283,9 @@ using namespace v8;
 {
     [self clearFrame];
     if ([points count]) {
+        [lock lock];
         UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
         CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
-
         CGContextSaveGState(context);
         if ([strokeColor isKindOfClass:[NSColor class]]) {
             CGContextSetRGBStrokeColor (context,
@@ -317,6 +330,7 @@ using namespace v8;
             }
         }
         CGContextRestoreGState(context);
+        [lock unlock];
     } else {
         // TODO - Error messages
     }
@@ -329,169 +343,209 @@ using namespace v8;
 
 - (void)saveCurrentState
 {
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
-    
     NSGraphicsContext *pathContext = [NSGraphicsContext
                                       graphicsContextWithGraphicsPort:CGLayerGetContext(pathLayers[pathIndex])
                                       flipped:NO];
     [pathContext saveGraphicsState];
+    [lock unlock];
 }
 
 - (void)restoreCurrentState
 {
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
-    
     NSGraphicsContext *pathContext = [NSGraphicsContext
                                       graphicsContextWithGraphicsPort:CGLayerGetContext(pathLayers[pathIndex])
                                       flipped:NO];
     [pathContext restoreGraphicsState];
+    [lock unlock];
 }
 
 - (void)makeCurrentContext
 {
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
-    
     NSGraphicsContext *pathContext = [NSGraphicsContext
                                        graphicsContextWithGraphicsPort:CGLayerGetContext(pathLayers[pathIndex])
                                        flipped:NO];
     [NSGraphicsContext setCurrentContext:pathContext];
+    [lock unlock];
 }
 
 - (void)scaleX:(CGFloat)x Y:(CGFloat)y
 {
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
     CGContextScaleCTM(context, x, y);
+    [lock unlock];
 }
 
 - (void)rotate:(CGFloat)degrees
 {
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
     CGContextRotateCTM(context, degrees);
+    [lock unlock];
 }
 
 - (void)traslateX:(CGFloat)x Y:(CGFloat)y
 {
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
     CGContextScaleCTM(context, x, y);
+    [lock unlock];
 }
 
 - (void)transformA:(CGFloat)a B:(CGFloat)b C:(CGFloat)c D:(CGFloat)d E:(CGFloat)e F:(CGFloat)f
 {
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
+    [lock unlock];
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
     CGContextConcatCTM(context, CGAffineTransformMake(a, b, c, d, e, f));
 }
 
 - (void)setTransformA:(CGFloat)a B:(CGFloat)b C:(CGFloat)c D:(CGFloat)d E:(CGFloat)e F:(CGFloat)f
 {
-
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
     CGContextConcatCTM(context, CGAffineTransformInvert(CGContextGetCTM(context)));
     CGContextConcatCTM(context, CGAffineTransformMake(a, b, c, d, e, f));
+    [lock unlock];
 }
 
 - (void)clearRect:(JMXPoint *)origin size:(JMXSize *)size
 {
-    
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
     CGRect fullFrame = { origin.nsPoint, size.nsSize };
     CGContextSetRGBFillColor (context, 0.0, 0.0, 0.0, 1.0);
     CGContextFillRect(context, fullFrame);
+    [lock unlock];
 }
 
 - (void)fillRect:(JMXPoint *)origin size:(JMXSize *)size
 {
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
     CGRect fullFrame = { origin.nsPoint, size.nsSize };
     CGContextSetRGBFillColor (context, 0.0, 0.0, 0.0, 1.0);
     CGContextFillRect(context, fullFrame);
+    [lock unlock];
 }
 
 - (void)drawRect:(JMXPoint *)origin size:(JMXSize *)size
 {
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGRect rect = { { origin.x, origin.y }, { size.width, size.height } };
     CGContextAddRect(CGLayerGetContext(pathLayers[pathIndex]), rect);
+    [lock unlock];
 }
 
 - (void)beginPath
 {
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextBeginPath(CGLayerGetContext(pathLayers[pathIndex]));
+    [lock unlock];
 }
 
 - (void)closePath
 {
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextClosePath(CGLayerGetContext(pathLayers[pathIndex]));
+    [lock unlock];
 }
 
 - (void)moveTo:(JMXPoint *)point
 {
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
-    CGContextMoveToPoint(CGLayerGetContext(pathLayers[pathIndex]), point.x, point.y);   
+    CGContextMoveToPoint(CGLayerGetContext(pathLayers[pathIndex]), point.x, point.y);
+    [lock unlock];
 }
 
 - (void)lineTo:(JMXPoint *)point
 {
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
-    CGContextAddLineToPoint(CGLayerGetContext(pathLayers[pathIndex]), point.x, point.y); 
+    CGContextAddLineToPoint(CGLayerGetContext(pathLayers[pathIndex]), point.x, point.y);
+    [lock unlock];
 }
 
 - (void)quadraticCurveTo:(JMXPoint *)point controlPoint:(JMXPoint *)controlPoint
 {
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextAddQuadCurveToPoint(CGLayerGetContext(pathLayers[pathIndex]), controlPoint.x, controlPoint.y, point.x, point.y);
+    [lock unlock];
 }
 
 - (void)bezierCurveTo:(JMXPoint *)point controlPoint1:(JMXPoint *)controlPoint1 controlPoint2:(JMXPoint *)controlPoint2
 {
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextAddCurveToPoint(CGLayerGetContext(pathLayers[pathIndex]), controlPoint1.x, controlPoint1.y, controlPoint2.x, controlPoint2.y, point.x, point.y);
+    [lock unlock];
 }
 
 - (void)arcTo:(JMXPoint *)point endPoint:(JMXPoint *)endPoint radius:(CGFloat)radius
 {
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextAddArcToPoint(CGLayerGetContext(pathLayers[pathIndex]), point.x, point.y, endPoint.x, endPoint.y, radius);
+    [lock unlock];
 }
 
 - (void)fill
 {
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextFillPath(CGLayerGetContext(pathLayers[pathIndex]));
+    [lock unlock];
 }
 
 - (void)stroke
 {
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextStrokePath(CGLayerGetContext(pathLayers[pathIndex]));
+    [lock unlock];
 }
 
 - (void)clip
 {
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextClip(CGLayerGetContext(pathLayers[pathIndex]));
+    [lock unlock];
 }
 
 - (bool)isPointInPath:(JMXPoint *)point
 {
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     return CGContextPathContainsPoint(CGLayerGetContext(pathLayers[pathIndex]),
                                       CGPointMake(point.x, point.y),
                                       kCGPathFillStroke);
+    [lock unlock];
 }
 
 - (void)drawImage:(CIImage *)image
 {
     [self makeCurrentContext];
     CGRect fullFrame = CGRectMake(0, 0, _frameSize.width, _frameSize.height);
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
     // XXX - I don't know if this is convenient ... perhaps we could require 
@@ -506,12 +560,19 @@ using namespace v8;
     //CGColorSpaceRelease(colorSpace);
     //CIContext * ciContext = [CIContext contextWithCGContext:context options:[NSDictionary dictionaryWithObject:[NSValue valueWithPointer:colorSpace] forKey:kCIContextOutputColorSpace]];
     //[ciContext drawImage:image inRect:fullFrame fromRect:fullFrame];
+    [lock unlock];
+
 }
 
 - (void)strokeText:(NSAttributedString *)text atPoint:(JMXPoint *)point
 {
+    // NOTE : makeCurrentContext will lock itself ... 
+    // but since we are using a recursive lock it's still safe
+    // (no deadlock will happen)
+    [lock lock];
     [self makeCurrentContext];
     [text drawAtPoint:point.nsPoint]; // draw at offset position
+    [lock unlock];
 }
 
 /*
@@ -523,10 +584,13 @@ using namespace v8;
 
 - (void)render
 {
+    [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
     CGContextDrawPath(context, kCGPathFillStroke);
     CGContextFillPath(context);
+    [lock unlock];
+
     if (currentFrame)
         [currentFrame release];
             currentFrame = [[CIImage imageWithCGLayer:pathLayers[pathIndex]]retain];

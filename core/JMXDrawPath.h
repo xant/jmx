@@ -33,6 +33,7 @@
     CIImage *currentFrame;
     id<JMXCanvasStyle,JMXV8> fillStyle;
     id<JMXCanvasStyle,JMXV8> strokeStyle;
+    NSRecursiveLock *lock; // XXX - remove as soon as we switch to atomic operations
 @private
     JMXSize *_frameSize;
     BOOL _clear;

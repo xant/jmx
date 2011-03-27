@@ -16,6 +16,7 @@
 #import "JMXSize.h"
 #import "JMXPoint.h"
 #import "JMXCanvasStyle.h"
+#import "JMXElement.h"
 
 #define kJMXDrawPathBufferCount 32
 
@@ -26,7 +27,7 @@
  * This class wraps CGPath* API (from CoreGraphics) to provide 2D drawing functionalities
  * Drawing is done using an openglcontext to try obtaining best performances
  */ 
-@interface JMXDrawPath : NSObject <JMXV8> {
+@interface JMXDrawPath : JMXElement {
 @protected
     CGLayerRef pathLayers[kJMXDrawPathBufferCount];
     UInt32 pathLayerOffset;

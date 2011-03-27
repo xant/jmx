@@ -13,6 +13,7 @@
 #import "JMXCanvasGradient.h"
 #import "JMXCanvasPattern.h"
 #import "JMXColor.h"
+#import "JMXAttribute.h"
 
 using namespace v8;
 
@@ -39,6 +40,8 @@ using namespace v8;
 {
     self = [super init];
     if (self) {
+        self.name = @"canvas";
+        [self addAttribute:[JMXAttribute attributeWithName:@"class" stringValue:NSStringFromClass([self class])]];
         // initialize the storage for the spectrum images
         NSOpenGLPixelFormatAttribute    attributes[] = {
             NSOpenGLPFAAccelerated,
@@ -1102,7 +1105,7 @@ static void SetStyle(Local<String> name, Local<Value> value, const AccessorInfo&
     if (!objectTemplate.IsEmpty())
         return objectTemplate;
     objectTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
-    //objectTemplate->Inherit([super jsObjectTemplate]);
+    objectTemplate->Inherit([super jsObjectTemplate]);
     objectTemplate->SetClassName(String::New("CanvasRenderingContext2D"));
     v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     classProto->Set("save", FunctionTemplate::New(Save));

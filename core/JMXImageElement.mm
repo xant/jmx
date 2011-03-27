@@ -45,6 +45,14 @@ JMXV8_EXPORT_CLASS(JMXImageElement)
         [attr setStringValue:alt];
 }
 
+- (void)loadImageData
+{
+    [imageLock lock];
+    if (imageData)
+        [imageData release];
+    imageData = [[NSData dataWithContentsOfURL:[NSURL URLWithString:src]] retain];
+    [imageLock unlock];
+}
 
 - (void)setSrc:(NSString *)newValue
 {
@@ -76,16 +84,6 @@ JMXV8_EXPORT_CLASS(JMXImageElement)
     NSXMLNode *attr = [self attributeForName:@"height"];
     if (attr)
         [attr setStringValue:[NSString stringWithFormat:@"%u", newValue]];
-}
-
-- (void)loadImageData
-{
-    [imageLock lock];
-    if (imageData)
-        [imageData release];
-    NSError *error = nil;
-    imageData = [[NSData dataWithContentsOfURL:[NSURL URLWithString:src options:NSDataReadingUncached error:&error]] retain];
-    [imageLock unlock];
 }
 
 - (CGImageRef)cgImage

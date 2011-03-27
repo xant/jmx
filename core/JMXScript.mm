@@ -194,6 +194,13 @@ static v8::Handle<Value> Rand(const Arguments& args) {
     return scope.Close(v8::Integer::New(rand()));
 }
 
+
+static v8::Handle<Value> FRand(const Arguments& args) {
+    //v8::Locker lock;
+    HandleScope scope;
+    return scope.Close(v8::Number::New(rand() / (RAND_MAX + 1.0)));
+}
+
 static v8::Handle<Value> Echo(const Arguments& args) {
     if (args.Length() < 1) return v8::Undefined();
     //v8::Locker lock;
@@ -424,6 +431,7 @@ static v8::Handle<Value> GetDocument(v8::Local<v8::String> name, const v8::Acces
         Local<ObjectTemplate>ctxTemplate = ObjectTemplate::New();
 
         ctxTemplate->Set(String::New("rand"), FunctionTemplate::New(Rand));
+        ctxTemplate->Set(String::New("frand"), FunctionTemplate::New(FRand));
         ctxTemplate->Set(String::New("echo"), FunctionTemplate::New(Echo));
         ctxTemplate->Set(String::New("print"), FunctionTemplate::New(Echo));
         ctxTemplate->Set(String::New("include"), FunctionTemplate::New(Include));

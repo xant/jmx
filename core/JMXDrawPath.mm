@@ -162,7 +162,7 @@ using namespace v8;
         } else if (gradient.mode = kJMXCanvasGradientRadial) {
         }
     }*/
-    CGContextStrokePath(context);
+    CGContextDrawPath(context, kCGPathFillStroke);
     CGContextFillPath(context);
     CGContextRestoreGState(context);
     [lock unlock];
@@ -455,7 +455,9 @@ using namespace v8;
 {
     [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
+    //CGContextSaveGState(CGLayerGetContext(pathLayers[pathIndex]));
     CGContextBeginPath(CGLayerGetContext(pathLayers[pathIndex]));
+    subPaths++;
     [lock unlock];
 }
 
@@ -464,6 +466,8 @@ using namespace v8;
     [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextClosePath(CGLayerGetContext(pathLayers[pathIndex]));
+    //CGContextRestoreGState(CGLayerGetContext(pathLayers[pathIndex]));
+    subPaths--;
     [lock unlock];
 }
 
@@ -511,7 +515,24 @@ using namespace v8;
 {
     [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
-    CGContextFillPath(CGLayerGetContext(pathLayers[pathIndex]));
+    CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
+    if ([fillStyle isKindOfClass:[NSColor class]]) {
+        CGContextSetRGBFillColor (context,
+                                  [(NSColor *)fillStyle redComponent],
+                                  [(NSColor *)fillStyle greenComponent],
+                                  [(NSColor *)fillStyle blueComponent],
+                                  [(NSColor *)fillStyle alphaComponent]
+                                  );
+    } else if ([fillStyle isKindOfClass:[JMXCanvasPattern class]]) {
+        CGContextSetFillPattern(context, [(JMXCanvasPattern *)fillStyle patternRef], [(JMXCanvasPattern *)fillStyle components]);
+    }/* else if ([fillColor isKindOfClass:[JMXCanvasGradient class]]) {
+      JMXCanvasGradient *gradient = (JMXCanvasGradient *)fillColor;
+      if (gradient.mode = kJMXCanvasGradientLinear) {
+      CGContextDrawLinearGradient(context, [(JMXCanvasGradient *)strokeColor gradientRef], <#CGPoint startPoint#>, <#CGPoint endPoint#>, <#CGGradientDrawingOptions options#>)
+      } else if (gradient.mode = kJMXCanvasGradientRadial) {
+      }
+      }*/
+    CGContextFillPath(context);
     [lock unlock];
 }
 
@@ -519,7 +540,20 @@ using namespace v8;
 {
     [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
-    CGContextStrokePath(CGLayerGetContext(pathLayers[pathIndex]));
+    CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
+    if ([strokeStyle isKindOfClass:[NSColor class]]) {
+        CGContextSetRGBStrokeColor (context,
+                                    [(NSColor *)strokeStyle redComponent],
+                                    [(NSColor *)strokeStyle greenComponent],
+                                    [(NSColor *)strokeStyle blueComponent],
+                                    [(NSColor *)strokeStyle alphaComponent]
+                                    );
+    } else if ([strokeStyle isKindOfClass:[JMXCanvasPattern class]]) {
+        CGContextSetStrokePattern(context, [(JMXCanvasPattern *)strokeStyle patternRef], [(JMXCanvasPattern *)strokeStyle components]);
+    }
+    
+    
+    CGContextDrawPath(context, kCGPathFillStroke);
     [lock unlock];
 }
 
@@ -587,13 +621,15 @@ using namespace v8;
     [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
-    CGContextDrawPath(context, kCGPathFillStroke);
-    CGContextFillPath(context);
+    if (!subPaths) {
+        CGContextDrawPath(context, kCGPathFillStroke);
+        CGContextFillPath(context);
+    }
     [lock unlock];
 
     if (currentFrame)
         [currentFrame release];
-            currentFrame = [[CIImage imageWithCGLayer:pathLayers[pathIndex]]retain];
+    currentFrame = [[CIImage imageWithCGLayer:pathLayers[pathIndex]] retain];
 }
 
 - (CIImage *)currentFrame
@@ -785,7 +821,7 @@ static v8::Handle<Value> ClosePath(const Arguments& args)
     //v8::Locker lock;
     HandleScope handleScope;
     JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
-    [drawPath beginPath];
+    [drawPath closePath];
     return Undefined();
 }
 

@@ -37,7 +37,7 @@
 @private
     JMXSize *_frameSize;
     BOOL _clear;
-    NSMutableArray *subPaths;
+    NSUInteger subPaths;
 }
 
 /*!

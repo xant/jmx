@@ -19,17 +19,13 @@ x = 0;
 y = 0;
 radius = 20;
 
-function randFloat() {
-    return rand()%1000/1000;
-}
-
 echo(dumpDOM());
 
 mainloop = function() {
     //drawer.clear();
     point = new Point(rand()%width/2, rand()%height/2);
-    fgColor = new Color(randFloat(), randFloat(), randFloat(), randFloat());
-    bgColor = new Color(randFloat(), randFloat(), randFloat(), randFloat());
+    fgColor = new Color(frand(), frand(), frand(), frand());
+    bgColor = new Color(frand(), frand(), frand(), frand());
     radius = rand()%width/2;
     point1 = new Point(rand()%width, rand()%height);
     point2 = new Point(rand()%width, rand()%height);

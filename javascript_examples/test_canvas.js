@@ -13,9 +13,11 @@ while (1) {
     k = rand();
     p.x = rand()%drawer.size.width;
     p.y = rand()%drawer.size.height;
-    c = new Color(1.0, 0.0, 1.0);
+    c = new Color(frand(), frand(), frand(), 0.5);
+    b = new Color(frand(), frand(), frand(), 0.5);
     drawer.canvas.strokeText("TEST", p, null, c);
-    drawer.canvas.strokeStyle = new Color(rand()%1000/1000, rand()%1000/1000, rand()%1000/1000);
+    drawer.canvas.strokeStyle = new Color(frand(), frand(), frand());
+    drawer.canvas.fillStyle = b;
     drawer.canvas.arc(rand()%drawer.size.width, rand()%drawer.size.height, rand()%drawer.size.height, 0, 360, 0);
     sleep(1/60);
 }

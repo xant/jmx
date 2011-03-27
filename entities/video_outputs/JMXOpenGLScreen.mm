@@ -101,7 +101,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         lastTime = 0;
         fullScreen = NO;
         myWindow = nil;
-        frameSize = [[JMXSize sizeWithNSSize:frameRect.size] retain];
+        [self setSize:frameRect.size];
         lock = [[NSRecursiveLock alloc] init];
     }
     return self;
@@ -429,11 +429,11 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     self = [super initWithSize:screenSize];
     if (self) {
         NSRect frame = NSMakeRect(0, 0, size.width, size.height);
+        view = [[JMXOpenGLView alloc] initWithFrame:frame];
         window = [[NSWindow alloc] initWithContentRect:frame                                          
                                              styleMask:NSTitledWindowMask|NSMiniaturizableWindowMask
                                                backing:NSBackingStoreBuffered 
                                                  defer:NO];
-        view = [[JMXOpenGLView alloc] initWithFrame:[window frame]];
         [[window contentView] addSubview:view];
         [window setReleasedWhenClosed:NO];
         [window setIsVisible:YES];

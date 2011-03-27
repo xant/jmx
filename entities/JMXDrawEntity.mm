@@ -25,6 +25,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXDrawEntity);
         drawPath = [[JMXDrawPath alloc] initWithFrameSize:self.size];
         JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
         self.label = @"DrawPath";
+        [self addChild:drawPath];
         if (threadedEntity)
             return threadedEntity;
     }

@@ -103,6 +103,11 @@ JMXV8_EXPORT_CLASS(JMXImageElement)
     return ciImage; // NOTE - this is autoreleased
 }
 
+- (NSImage *)nsImage
+{
+    // TODO - implement
+    return nil;
+}
 #pragma mark V8
 
 using namespace v8;

@@ -106,6 +106,7 @@ JMXV8_EXPORT_CLASS(JMXCanvasGradient)
 - (id)setFromString:(NSString *)style
 {
     /* TODO - Implement */
+    return nil;
 }
 
 #pragma mark V8 (JMXCanvasGradient)

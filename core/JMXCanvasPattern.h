@@ -27,6 +27,7 @@
 
 + (id)patternWithBounds:(NSRect)bounds xStep:(NSUInteger)xStep yStep:(NSUInteger)yStep tiling:(CGPatternTiling)tilingMode isColored:(BOOL)isColored;
 - (id)initWithBounds:(NSRect)bounds xStep:(NSUInteger)xStep yStep:(NSUInteger)yStep tiling:(CGPatternTiling)tilingMode isColored:(BOOL)isColored;
+- (id)jmxInit;
 - (CGPatternRef)patternRef;
 - (CGFloat *)components;
 

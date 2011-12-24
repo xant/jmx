@@ -428,7 +428,8 @@ using namespace v8;
     [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
-    CGRect fullFrame = { origin.nsPoint, size.nsSize };
+    CGRect fullFrame = CGRectMake(origin.nsPoint.x, origin.nsPoint.y,
+                                  size.nsSize.width, size.nsSize.height);
     CGContextSetRGBFillColor (context, 0.0, 0.0, 0.0, 1.0);
     CGContextFillRect(context, fullFrame);
     [lock unlock];
@@ -439,8 +440,8 @@ using namespace v8;
     [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
-    CGRect fullFrame = { origin.nsPoint, size.nsSize };
-    CGContextSetRGBFillColor (context, 0.0, 0.0, 0.0, 1.0);
+    CGRect fullFrame = CGRectMake(origin.nsPoint.x, origin.nsPoint.y,
+                                  size.nsSize.width, size.nsSize.height);    CGContextSetRGBFillColor (context, 0.0, 0.0, 0.0, 1.0);
     CGContextFillRect(context, fullFrame);
     [lock unlock];
 }

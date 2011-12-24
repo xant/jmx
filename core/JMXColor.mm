@@ -17,6 +17,7 @@ using namespace v8;
 + (id)colorFromCSSString:(NSString *)cssString
 {
     /* TODO - Implement */
+    return nil;
 }
 
 static v8::Persistent<FunctionTemplate> objectTemplate;

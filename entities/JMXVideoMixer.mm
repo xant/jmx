@@ -61,6 +61,10 @@ JMXV8_EXPORT_NODE_CLASS(JMXVideoMixer);
 
 - (void)dealloc
 {    
+    if (blendFilter)
+        [blendFilter release];
+    if (ciBlendFilter)
+        [ciBlendFilter release];
     [super dealloc];
 }
 
@@ -76,7 +80,9 @@ JMXV8_EXPORT_NODE_CLASS(JMXVideoMixer);
                     [ciBlendFilter release];
                 ciBlendFilter = [newBlendFilter retain];
                 [ciBlendFilter setDefaults];
-                blendFilter = [newBlendFilter copy];
+                if (blendFilter)
+                    [blendFilter release];
+                blendFilter = [blendFilterName copy];
             }
         }
     }

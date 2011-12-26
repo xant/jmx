@@ -324,8 +324,9 @@
         if ([[aTableColumn identifier] isEqualTo:@"pinValue"]) {
             pins = [entityLayer.entity inputPins];
             JMXPin *pin = [pins objectAtIndex:rowIndex];
-            if ([aCell isKindOfClass:[NSPopUpButtonCell class]])
-                 [(NSPopUpButtonCell *)aCell selectItemWithTitle:pin.data];
+            if ([aCell isKindOfClass:[NSPopUpButtonCell class]]) {
+                [(NSPopUpButtonCell *)aCell selectItemWithTitle:pin.data];
+            }
             else if ([aCell isKindOfClass:[NSTextFieldCell class]]) {
                 id value = pin.data;
                 if ([value isKindOfClass:[NSNumber class]]) {

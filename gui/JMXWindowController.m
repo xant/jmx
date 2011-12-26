@@ -28,15 +28,16 @@
 
 - (IBAction)toggleInspector:(id)sender
 {
-	NSMenuItem *menuItem = (NSMenuItem *)sender;
 	if ([inspectorPanel isVisible]) {
         [inspectorPanel close];
-		[menuItem setTitle:@"Show Inspector"];
+        if ([sender isKindOfClass:[NSMenuItem class]])
+            [(NSMenuItem *)sender setTitle:@"Show Inspector"];
 	}
 	else {
         [inspectorPanel setIsVisible:YES];
         [inspectorPanel makeKeyAndOrderFront:sender];
-		[menuItem setTitle:@"Hide Inspector"];
+        if ([sender isKindOfClass:[NSMenuItem class]])
+            [(NSMenuItem *)sender setTitle:@"Hide Inspector"];
 	}
 }
 

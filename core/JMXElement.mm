@@ -49,8 +49,12 @@ JMXV8_EXPORT_NODE_CLASS(JMXElement);
 {
     self = [super initWithKind:NSXMLElementKind];
     if (self) {
-        self = [super initWithName:self.name ? self.name : @"JMXElement" URI:@"http://jmxapp.org"];
+        //self = [super initWithName:self.name ? self.name : @"JMXElement" URI:@"http://jmxapp.org"];
         //[[[[JMXContext sharedContext] dom] rootElement] addChild:self];
+        if (!self.name || [self.name isEqualToString:@""])
+            self.name = @"JMXElement";
+        if (!self.URI || [self.URI isEqualToString:@""])
+            self.URI = @"http://jmxapp.org";
     }
     return self;
 }
@@ -74,13 +78,6 @@ JMXV8_EXPORT_NODE_CLASS(JMXElement);
     JMXAttribute *attr = (JMXAttribute *)[self attributeForName:@"id"];
     [attr setStringValue:jsId];
 }
-
-/*
-- (void)_XMLStringWithOptions:(NSUInteger)options appendingToString:(NSMutableString *)string
-{
-    
-}
-*/
 
 #pragma mark V8
 

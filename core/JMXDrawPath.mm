@@ -33,9 +33,14 @@ using namespace v8;
     return [[[self alloc] initWithFrameSize:frameSize] autorelease];
 }
 
-- (id)jmxInit
+- (id)init
 {
     return [self initWithFrameSize:[JMXSize sizeWithNSSize:NSMakeSize(JMX_DRAWPATH_WIDTH_DEFAULT, JMX_DRAWPATH_HEIGHT_DEFAULT)]];
+}
+
+- (id)jmxInit
+{
+    return [super jmxInit];
 }
 
 - (id)initWithFrameSize:(JMXSize *)frameSize

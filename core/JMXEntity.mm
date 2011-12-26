@@ -113,6 +113,7 @@ using namespace v8;
         [[JMXContext sharedContext] addEntity:self];
         [self performSelectorOnMainThread:@selector(notifyCreation) withObject:nil waitUntilDone:NO];
         privateData = [[[NSMutableDictionary alloc] init] retain];
+        //NSLog(@"Class: %@ initialized", [self class]);
     }
     return self;
 }

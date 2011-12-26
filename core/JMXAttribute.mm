@@ -8,6 +8,7 @@
 
 #define __JMXV8__
 #import "JMXAttribute.h"
+#import "JMXElement.h"
 
 JMXV8_EXPORT_NODE_CLASS(JMXAttribute);
 

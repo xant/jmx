@@ -87,7 +87,6 @@
 		AA54B28B12A1215000EC60B2 /* jmx-icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = AA54B28A12A1215000EC60B2 /* jmx-icon.icns */; };
 		AA55601412AEF7CC00C882FF /* CIAlphaFade.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AA555FC912AEF39600C882FF /* CIAlphaFade.cikernel */; };
 		AA5563C412B188EB00C882FF /* CIAlphaFade.m in Sources */ = {isa = PBXBuildFile; fileRef = AA555FC712AEF39600C882FF /* CIAlphaFade.m */; };
-		AA635BC814A80BC200D42754 /* NSArray+NSArray_XML.m in Sources */ = {isa = PBXBuildFile; fileRef = AA635BC714A80BC000D42754 /* NSArray+NSArray_XML.m */; };
 		AA7F247212907AA500BE432F /* libv8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA7F247112907AA500BE432F /* libv8.dylib */; };
 		AA8CB78E1282BB9900A17115 /* JMXScriptFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8CB78D1282BB9900A17115 /* JMXScriptFile.mm */; };
 		AA8F785812C5880100EA8543 /* VideoCapture.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA4B039812C06C3000775B88 /* VideoCapture.js */; };
@@ -305,8 +304,6 @@
 		AA555FC712AEF39600C882FF /* CIAlphaFade.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CIAlphaFade.m; sourceTree = "<group>"; };
 		AA555FC812AEF39600C882FF /* CIAlphaFade.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CIAlphaFade.h; sourceTree = "<group>"; };
 		AA555FC912AEF39600C882FF /* CIAlphaFade.cikernel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = CIAlphaFade.cikernel; path = core/CIAlphaFade.cikernel; sourceTree = "<group>"; };
-		AA635BC614A80BBE00D42754 /* NSArray+NSArray_XML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+NSArray_XML.h"; sourceTree = "<group>"; };
-		AA635BC714A80BC000D42754 /* NSArray+NSArray_XML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+NSArray_XML.m"; sourceTree = "<group>"; };
 		AA7400C6130E56EA005A205C /* JMXGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXGlobals.h; sourceTree = "<group>"; };
 		AA7F247112907AA500BE432F /* libv8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libv8.dylib; path = "../v8-read-only/libv8.dylib"; sourceTree = SOURCE_ROOT; };
 		AA8CB78C1282BB9800A17115 /* JMXScriptFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXScriptFile.h; sourceTree = "<group>"; };
@@ -697,8 +694,6 @@
 				AA9C194712E3363100329158 /* JMXCanvasStyle.h */,
 				AA9C1A4712E5964C00329158 /* JMXImageElement.h */,
 				AA9C1A4812E5964C00329158 /* JMXImageElement.mm */,
-				AA635BC614A80BBE00D42754 /* NSArray+NSArray_XML.h */,
-				AA635BC714A80BC000D42754 /* NSArray+NSArray_XML.m */,
 			);
 			name = Core;
 			path = core;
@@ -910,7 +905,6 @@
 				AA9C190F12E32B0600329158 /* JMXCanvasPattern.mm in Sources */,
 				AA9C19D412E4BDD500329158 /* JMXRect.mm in Sources */,
 				AA9C1A4912E5964C00329158 /* JMXImageElement.mm in Sources */,
-				AA635BC814A80BC200D42754 /* NSArray+NSArray_XML.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

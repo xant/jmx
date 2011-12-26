@@ -40,8 +40,14 @@
         entitiesFromFile = [[NSMutableArray alloc] init];
         entitiesPosition = [[NSMutableDictionary alloc] init];
 		
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasRemoved:) name:@"JMXBoardEntityWasRemoved" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasMoved:) name:@"JMXBoardEntityWasMoved" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(anEntityWasRemoved:)
+                                                     name:@"JMXBoardEntityWasRemoved"
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(anEntityWasMoved:)
+                                                     name:@"JMXBoardEntityWasMoved"
+                                                   object:nil];
     }
     return self;
 }
@@ -78,7 +84,9 @@
         JMXEntity *anEntity = [[[userInfo objectForKey:@"class"] alloc] init];
         [(id<JMXFileRead>)anEntity open:filename];
         [entities addObject:anEntity];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasCreated" object:anEntity userInfo:userInfo];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasCreated"
+                                                            object:anEntity
+                                                          userInfo:userInfo];
         [anEntity release];
     }
 
@@ -103,7 +111,9 @@
     else {
         JMXEntity *anEntity = [[aClass alloc] init];
         [entities addObject:anEntity];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasCreated" object:anEntity userInfo:userInfo];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasCreated"
+                                                            object:anEntity
+                                                          userInfo:userInfo];
         [anEntity release];
     }
 }

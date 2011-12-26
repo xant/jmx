@@ -74,7 +74,7 @@ using namespace v8;
                                                         object:self
                                                       userInfo:userInfo];
 }
-
+/*
 - (id)jmxInit:(id)arg
 {
     self = [super jmxInit:arg];
@@ -92,7 +92,7 @@ using namespace v8;
     }
     return self;
 }
-
+*/
 
 - (id)init
 {
@@ -104,11 +104,9 @@ using namespace v8;
         self.name = @"JMXEntity";
         self.label = @"";
         active = NO;
-
         [self addAttribute:[JMXAttribute attributeWithName:@"class" stringValue:NSStringFromClass([self class])]];
         [self addAttribute:[JMXAttribute attributeWithName:@"label" stringValue:label]];
         [self addAttribute:[JMXAttribute attributeWithName:@"active" stringValue:@"NO"]];
-
         activeIn = [self registerInputPin:@"active" withType:kJMXBooleanPin andSelector:@"setActivePin:"  allowedValues:nil initialValue:[NSNumber numberWithBool:NO]];
         activeOut = [self registerOutputPin:@"active" withType:kJMXBooleanPin];
         [self registerInputPin:@"name" withType:kJMXStringPin andSelector:@"setEntityName:"];

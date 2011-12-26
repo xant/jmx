@@ -15,6 +15,19 @@
 
 @synthesize uid;
 
++ (Class)replacementClassForClass:(Class)currentClass {
+    if ( currentClass == [NSXMLElement class] ) {
+        return [JMXElement class];
+    }
+    return [super replacementClassForClass:currentClass];
+}
+
+/*
+- (id)initWithData:(NSData *)data options:(NSUInteger)mask error:(NSError **)error
+{
+    
+}
+*/
 - (id)init
 {
     self = [super init];

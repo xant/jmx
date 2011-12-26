@@ -9,6 +9,8 @@
 #define __JMXV8__
 #import "JMXElement.h"
 #import "JMXAttribute.h"
+#import "JMXContext.h"
+#import "JMXGraph.h"
 
 JMXV8_EXPORT_NODE_CLASS(JMXElement);
 
@@ -48,6 +50,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXElement);
     self = [super initWithKind:NSXMLElementKind];
     if (self) {
         self = [super initWithName:self.name ? self.name : @"JMXElement" URI:@"http://jmxapp.org"];
+        //[[[[JMXContext sharedContext] dom] rootElement] addChild:self];
     }
     return self;
 }
@@ -71,6 +74,13 @@ JMXV8_EXPORT_NODE_CLASS(JMXElement);
     JMXAttribute *attr = (JMXAttribute *)[self attributeForName:@"id"];
     [attr setStringValue:jsId];
 }
+
+/*
+- (void)_XMLStringWithOptions:(NSUInteger)options appendingToString:(NSMutableString *)string
+{
+    
+}
+*/
 
 #pragma mark V8
 

@@ -202,13 +202,25 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
             destinationRect.origin.y = (height-scaledHeight)/2;
         }
 
+        // XXX - this seems unnecessary (at least on lion ... and we don't care of retro compatibility)
         // clean the OpenGL context 
-        glClearColor(0.0, 0.0, 0.0, 0.0);         
-        glClear(GL_COLOR_BUFFER_BIT);
-        [ciContext drawImage:image inRect:destinationRect fromRect:sourceRect];
-        [image release];
+        //glClearColor(0.0, 0.0, 0.0, 0.0);         
+        //glClear(GL_COLOR_BUFFER_BIT);
+        
+        // XXX - it seems that since osx 10.7 different CVDisplayLink callbacks,
+        //       registered for different opengl contexts but on the same physical display
+        //       are called in different threads.
+        //       Since we access the same CIImage from different threads,
+        //       to draw it on different contextes and possibly applying different
+        //       filters, we need to protect the whole rendering steps in a critical
+        //       section (synchronized against our class itself to make it a g
+        //       lobal lock for all living opengl screens)
+        @synchronized([self class]) { // BIG LOCK
+            [ciContext drawImage:image inRect:destinationRect fromRect:sourceRect];
+            [image release];
+            [[self openGLContext] flushBuffer];
+        }
     }
-    [[self openGLContext] flushBuffer];
     [self setNeedsDisplay:NO];
     [lock unlock];
     //CGLUnlockContext((CGLContextObj)[[self openGLContext] CGLContextObj]);
@@ -465,6 +477,8 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 
 - (void)dealloc
 {
+    [self disconnectAllPins];
+    [window release];
     if (view) {
         [view release];
         view = nil;
@@ -472,7 +486,6 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     if (controller)
         [controller release];
     controller = nil;
-    [window release];
     [super dealloc];
 }
 

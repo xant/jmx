@@ -160,6 +160,10 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         return;
     lastTime = timeStamp;
     [lock lock];
+    if (!self.window) {
+        [lock unlock];
+        return;
+    }
     if (needsResize) {
         NSRect actualRect = [[self window] contentRectForFrameRect:[self frame]];
         NSRect newRect = NSMakeRect(0, 0, frameSize.width, frameSize.height);
@@ -177,7 +181,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     }
     //if (CGLLockContext((CGLContextObj)[[self openGLContext] CGLContextObj]) != kCGLNoError)
       //  NSLog(@"Could not lock CGLContext");
-    [[self openGLContext] makeCurrentContext];
+    //[[self openGLContext] makeCurrentContext];
     CIImage *image = [self.currentFrame retain];
     if (image && ciContext) {
         CGRect sourceRect = { { 0, 0, }, { frameSize.width, frameSize.height } };
@@ -240,6 +244,10 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     if (CGLLockContext((CGLContextObj)[[self openGLContext] CGLContextObj]) != kCGLNoError)
          NSLog(@"Could not lock CGLContext");
     [lock lock];
+    if (!self.window) {
+        [lock unlock];
+        return;
+    }
     NSRect bounds = [self frame];
     GLfloat minX, minY, maxX, maxY;
     minX = NSMinX(bounds);

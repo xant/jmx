@@ -117,18 +117,19 @@
             connected = NO;
         }
     }
-    if (destinationPin.owner) {
-        NSArray *children = [connections elementsForName:[destinationPin.owner description]];
-        for (NSXMLElement *element in children) {
-            if ([element.stringValue isEqualTo:destinationPin.label])
-                [element detach];
+
+    for (NSXMLElement *element in connections.children) {
+        if ([[element attributeForName:@"uid"] isEqual:[destinationPin attributeForName:@"uid"]]) {
+            [element detach];
+            break;
         }
     }
     if (self.owner) {
-        NSArray *children = [destinationPin.connections elementsForName:[self.owner description]];
-        for (NSXMLElement *element in children) {
-            if ([element.stringValue isEqualTo:self.label])
+        for (NSXMLElement *element in destinationPin.connections.children) {
+            if ([[element attributeForName:@"uid"] isEqual:[self attributeForName:@"uid"]]) {
                 [element detach];
+                break;
+            }
         }
     }
     [super disconnectFromPin:destinationPin];

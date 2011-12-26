@@ -147,11 +147,10 @@
 - (void)disconnectFromPin:(JMXInputPin *)destinationPin
 {
     [destinationPin disconnectFromPin:self];
-    if (destinationPin.owner) {
-        NSArray *children = [connections elementsForName:[destinationPin.owner description]];
-        for (NSXMLElement *element in children) {
-            if ([element.stringValue isEqualTo:destinationPin.label])
-                [element detach];
+    for (NSXMLElement *element in [connections children]) {
+        if ([[element attributeForName:@"uid"] isEqual:[destinationPin attributeForName:@"uid"]]) {
+            [element detach];
+            break;
         }
     }
 }

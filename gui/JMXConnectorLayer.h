@@ -48,11 +48,11 @@ enum Direction {
 	CGColorRef foregroundColor;
 }
 
-@property (assign) BOOL selected;
 @property (assign) JMXBoardView *boardView;
 @property (assign) CGPoint initialPosition;
 @property (assign) NSUInteger direction;
-@property (assign) CGColorRef foregroundColor;
+@property (nonatomic, assign) CGColorRef foregroundColor;
+@property (nonatomic, assign) BOOL selected;
 
 // make this weak references otherwise pins will be overretained an never released
 // the following two properties must be defined as atomic because can be accessed

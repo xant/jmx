@@ -56,6 +56,7 @@
     [super dealloc];
 }
 
+
 - (BOOL)containsPoint:(CGPoint)p
 {
     // This connector is still temporary and we don't want it to return to the
@@ -63,16 +64,7 @@
     if (self.originPinLayer == nil || self.destinationPinLayer == nil)
         return NO;
     
-    CGContextRef theContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
-    BOOL containsPoint = NO;
-
-    CGContextSaveGState(theContext);
-
-    CGContextAddPath(theContext, path);
-    containsPoint = CGContextPathContainsPoint(theContext, p, kCGPathFillStroke);
-    CGContextRestoreGState(theContext);
-
-    return containsPoint;
+    return CGPathContainsPoint(path, nil, p, true);
 }
 
 - (void)drawInContext:(CGContextRef)theContext

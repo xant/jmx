@@ -72,7 +72,7 @@
     if (returnCode == NSCancelButton)
         return;
 
-    NSString *filename = [panel filename];
+    NSString *filename = [[panel URL] path];
 
     if (filename) {
         JMXEntity *anEntity = [[[userInfo objectForKey:@"class"] alloc] init];
@@ -94,13 +94,11 @@
         [userInfo setObject:aClass forKey:@"class"];
 
         NSOpenPanel *panel = [NSOpenPanel openPanel];
-        [panel beginSheetForDirectory:nil
-                                 file:nil
-                                types:[aClass performSelector:@selector(supportedFileTypes)]
-                       modalForWindow:[self windowForSheet]
-                        modalDelegate:self
-                       didEndSelector:@selector(openPanelDidEnd:returnCode:userInfo:)
-                          contextInfo:[userInfo retain]];
+        panel.allowedFileTypes = [aClass performSelector:@selector(supportedFileTypes)];
+        [panel beginSheetModalForWindow:[self windowForSheet]
+                      completionHandler:^(NSInteger returnCode) {
+                          [self openPanelDidEnd:panel returnCode:returnCode userInfo:userInfo];
+                      }];
     }
     else {
         JMXEntity *anEntity = [[aClass alloc] init];
@@ -108,7 +106,6 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasCreated" object:anEntity userInfo:userInfo];
         [anEntity release];
     }
-    [userInfo release];
 }
 
 #pragma mark -
@@ -116,7 +113,7 @@
 
 - (void)anEntityWasRemoved:(NSNotification *)aNotification
 {
-    NSLog(@"%s", _cmd);
+    //NSLog(@"%s", _cmd);
     JMXEntity *entity = [aNotification object];
     [entitiesPosition removeObjectForKey:entity];
     [entities removeObject:entity];

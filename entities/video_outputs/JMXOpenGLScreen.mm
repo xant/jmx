@@ -175,8 +175,8 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         [[self window] setMovable:YES]; // XXX - this shouldn't be necessary
         needsResize = NO;
     }
-    if (CGLLockContext((CGLContextObj)[[self openGLContext] CGLContextObj]) != kCGLNoError)
-        NSLog(@"Could not lock CGLContext");
+    //if (CGLLockContext((CGLContextObj)[[self openGLContext] CGLContextObj]) != kCGLNoError)
+      //  NSLog(@"Could not lock CGLContext");
     [[self openGLContext] makeCurrentContext];
     CIImage *image = [self.currentFrame retain];
     if (image && ciContext) {
@@ -211,7 +211,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     [[self openGLContext] flushBuffer];
     [self setNeedsDisplay:NO];
     [lock unlock];
-    CGLUnlockContext((CGLContextObj)[[self openGLContext] CGLContextObj]);
+    //CGLUnlockContext((CGLContextObj)[[self openGLContext] CGLContextObj]);
 }
 
 - (void)drawRect:(NSRect)rect

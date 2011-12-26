@@ -49,6 +49,9 @@
 
 - (void)dealloc
 {
+    // ensure deselecting ourself if we are referenced by the boardview controller
+    if (boardView.boardViewController.selectedConnectorLayer == self)
+        boardView.boardViewController.selectedConnectorLayer = nil;
     self.originPinLayer = nil;
     self.destinationPinLayer = nil;
     if (path)

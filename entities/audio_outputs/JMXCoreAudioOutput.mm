@@ -36,7 +36,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXCoreAudioOutput);
     NSArray *availableDevices = [JMXAudioDevice outputDevices];
     for (JMXAudioDevice *dev in availableDevices)
         [devicesList addObject:[dev deviceUID]];
-    return availableDevices;
+    return devicesList;
 }
 
 - (id)init

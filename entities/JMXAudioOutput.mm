@@ -151,7 +151,8 @@ static OSStatus _FillComplexBufferProc (
         needsPrefill = NO;
 }
 
-// this will only be called by the audiooutput mainthred
+// this will only be called by the audio-output mainthread
+// so we can avoid using locks
 - (JMXAudioBuffer *)currentSample
 {
     //NSLog(@"r: %d - w: %d", rOffset % kJMXAudioOutputSamplesBufferCount , wOffset % kJMXAudioOutputSamplesBufferCount);

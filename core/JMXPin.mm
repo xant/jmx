@@ -486,7 +486,7 @@ using namespace v8;
         // - an input pin which allows multiple producers (like mixers)
         // - when the user connect a new producer a signal is sent, and the signal from
         //   current producer could still being executed.
-        [dataLock lock]; // in single-producer mode, this lock will always be free to lock
+        [dataLock lock]; // in single-producer mode, this mutex will be always free to lock
         UInt32 wOff = wOffset&kJMXPinDataBufferMask;
         if (rOffset != wOffset) {
             UInt32 rOff = rOffset++&kJMXPinDataBufferMask;
@@ -558,7 +558,7 @@ using namespace v8;
     // we don't want copies, but we want to use such objects as keys of a dictionary
     // so we still need to conform to the 'copying' protocol,
     // but since we are to be considered 'immutable' we can adopt what described at the end of :
-    // http://developer.apple.com/mac/library/documentation/cocoa/conceptual/MemoryMgmt/Articles/mmImplementCopy.html
+    // http://developer.apple.com/library/mac/#documentation/cocoa/Reference/Foundation/Protocols/NSCopying_Protocol/Reference/Reference.html#//apple_ref/occ/intf/NSCopying
     return [self retain];
 }
 

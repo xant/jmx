@@ -252,8 +252,10 @@ static OSStatus _FillComplexBufferProc (
     //@synchronized(outputPin) {
         AudioStreamBasicDescription format;
        // AudioBufferList buffer;
-        if (currentBuffer)
+        if (currentBuffer) {
             [currentBuffer release];
+            currentBuffer = nil;
+        }
         [[[sampleBuffer formatDescription] attributeForKey:QTFormatDescriptionAudioStreamBasicDescriptionAttribute] getValue:&format];
         AudioBufferList *buffer = [sampleBuffer audioBufferListWithOptions:(QTSampleBufferAudioBufferListOptions)QTSampleBufferAudioBufferListOptionAssure16ByteAlignment];
         

@@ -27,18 +27,24 @@ using namespace v8;
 
 - (id)jmxInit
 {
-    return [super initWithKind:NSXMLAttributeKind options:NSXMLNodeOptionsNone];
+    self = [self initWithKind:NSXMLAttributeKind options:NSXMLNodeOptionsNone];
+    return self;
 }
 
 - (id)initWithKind:(NSXMLNodeKind)kind
 {
-    return [super initWithKind:NSXMLAttributeKind options:NSXMLNodeOptionsNone];
+    self = [super initWithKind:NSXMLAttributeKind options:NSXMLNodeOptionsNone];
+    return self;
 }
 
 
 - (id)initWithKind:(NSXMLNodeKind)kind options:(NSUInteger)options
 {
-    return [super initWithKind:NSXMLAttributeKind options:NSXMLNodeOptionsNone];
+    self = [super initWithKind:NSXMLAttributeKind options:NSXMLNodeOptionsNone];
+    if (self) {
+        //_kind = NSXMLAttributeKind;
+    }
+    return self;
 }
 
 #pragma mark V8

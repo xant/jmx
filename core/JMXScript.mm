@@ -97,12 +97,20 @@ static v8::Handle<Value> ExportPin(const Arguments& args) {
     v8::String::Utf8Value proto(pinObj->ToString());
     NSString *objectType = [NSString stringWithUTF8String:*proto];
     if ([objectType isEqualToString:@"[object Pin]"]) {
-        v8::Handle<v8::Value> fArgs[args.Length()-1];
-        for (int i = 0; i < args.Length()-1; i++)
-            fArgs[i] = args[i+1];
+        v8::Handle<Value> ret = Undefined();
         v8::Handle<Function> exportFunction = v8::Local<v8::Function>::Cast(pinObj->Get(String::New("export")));
+        int nArgs = args.Length() ? args.Length() - 1 : 0;
+        v8::Handle<v8::Value> *fArgs = nArgs
+                                     ? (v8::Handle<v8::Value> *)malloc(sizeof(v8::Handle<v8::Value>) * nArgs)
+                                     : nil;
+        for (int i = 0; nArgs; i++)
+            fArgs[i] = args[i+1];
         // call the 'export()' proptotype method exposed by Pin objects
-        return scope.Close(exportFunction->Call(pinObj, args.Length()-1, fArgs));
+        ret = exportFunction->Call(pinObj, nArgs, fArgs);
+        if (fArgs)
+            free(fArgs);
+        
+        return scope.Close(ret);
     } else {
         NSLog(@"(exportPin) Bad argument: %@", objectType);
     }
@@ -320,17 +328,21 @@ static v8::Handle<Value> Run(const Arguments& args)
             HandleScope iterationScope;
             if (globalObject->GetHiddenValue(String::New("quit"))->BooleanValue())
                 break;
-            v8::Local<v8::Function> foo =
-            v8::Local<v8::Function>::Cast(args[0]);
-            v8::Handle<v8::Value> fArgs[args.Length()-1];
-            for (int i = 0; i < args.Length()-1; i++)
+            v8::Local<v8::Function> foo = v8::Local<v8::Function>::Cast(args[0]);
+            int nArgs = args.Length() ? args.Length() - 1 : 0;
+            v8::Handle<v8::Value> *fArgs = nArgs
+                                         ? (v8::Handle<v8::Value> *)malloc(sizeof(v8::Handle<v8::Value>) * nArgs)
+                                         : nil;
+            for (int i = 0; i < nArgs; i++)
                 fArgs[i] = args[i+1];
-            //v8::Local<v8::Value> result = foo->Call(foo, args.Length()-1, fArgs);
-            foo->Call(foo, args.Length()-1, fArgs);
+            //v8::Local<v8::Value> result = 
+            foo->Call(foo, nArgs, fArgs);
+            if (fArgs)
+                free(fArgs);
         }
         // restore quit status for nested loops
         //v8::Locker::StopPreemption();
-        if (globalObject->SetHiddenValue(String::New("quit"), v8::Boolean::New(0)));
+        globalObject->SetHiddenValue(String::New("quit"), v8::Boolean::New(0));
     }
     //v8::Locker::StartPreemption(50);
     v8::Handle<Primitive> t = Undefined();
@@ -476,8 +488,8 @@ static v8::Handle<Value> GetDocument(v8::Local<v8::String> name, const v8::Acces
     if (scriptEntity && [scriptEntity conformsToProtocol:@protocol(JMXRunLoop)])
         [scriptEntity performSelector:@selector(stop)];
     [self clearPersistentInstances];
-    while( V8::IdleNotification() )
-        ;
+    //while( V8::IdleNotification() )
+      //  ;
     contextes.erase(self);
     ctx.Dispose();
     [persistentInstances release];
@@ -542,7 +554,7 @@ static v8::Handle<Value> GetDocument(v8::Local<v8::String> name, const v8::Acces
     else
         key = obj;
     p = (JMXPersistentInstance *)[[persistentInstances objectForKey:key] pointerValue];
-    NSLog(@"Releasing Persistent Instance: %@ (%d)", p->obj, [p->obj retainCount]);
+    NSLog(@"Releasing Persistent Instance: %@ (%lu)", p->obj, [p->obj retainCount]);
     if (p) {
         if ([p->obj conformsToProtocol:@protocol(JMXRunLoop)])
             [p->obj performSelector:@selector(stop)];

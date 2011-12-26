@@ -18,6 +18,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXElement);
 
 - (void)addElementAttributes
 {
+    
     uid = [[NSString stringWithFormat:@"%8x", [self hash]] retain];
     [self addAttribute:[JMXAttribute attributeWithName:@"uid"
                                            stringValue:uid]];
@@ -151,6 +152,11 @@ static void SetStyle(Local<String> name, Local<Value> value, const AccessorInfo&
 + (void)jsRegisterClassMethods:(v8::Handle<v8::FunctionTemplate>)constructor
 {
     return [super jsRegisterClassMethods:constructor];
+}
+
+- (void)appendToNode:(NSXMLElement *)parentNode
+{
+    [parentNode addChild:[self retain]];
 }
 
 @end

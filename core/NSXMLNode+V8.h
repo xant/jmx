@@ -11,7 +11,6 @@
 #import "JMXV8.h"
 
 #ifdef __JMXV8__
-#import "NSXMLNode+V8.h"
 #import "JMXScript.h"
 
 /*!

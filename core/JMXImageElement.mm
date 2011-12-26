@@ -105,7 +105,7 @@ JMXV8_EXPORT_CLASS(JMXImageElement)
 
 - (NSImage *)nsImage
 {
-    // TODO - implement
+    // TODO - IMPLEMENT
     return nil;
 }
 #pragma mark V8

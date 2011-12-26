@@ -41,6 +41,8 @@
 
 @property (assign) NSPoint nsPoint;
 
++ (id)pointWithX:(CGFloat)x Y:(CGFloat)y;
+
 /*!
  @method pointWithNSPoint:
  @abstract create a new JMXPoint by wrapping an existing NSPoint

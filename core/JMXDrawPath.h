@@ -17,6 +17,7 @@
 #import "JMXPoint.h"
 #import "JMXCanvasStyle.h"
 #import "JMXElement.h"
+#import "NSFont+V8.h"
 
 #define kJMXDrawPathBufferCount 32
 
@@ -39,6 +40,9 @@
     JMXSize *_frameSize;
     BOOL _clear;
     NSUInteger subPaths;
+    double globalAlpha;
+    NSString *globalCompositeOperation;
+    NSFont *font;
 }
 
 /*!
@@ -50,6 +54,10 @@
 @property (readwrite, retain) id<JMXCanvasStyle,JMXV8> fillStyle;
 
 @property (readwrite, retain) id<JMXCanvasStyle,JMXV8> strokeStyle;
+
+@property (readwrite, copy) NSString *globalCompositeOperation;
+@property (readwrite, assign) double globalAlpha;
+@property (readwrite, retain) NSFont *font;
 
 - (id)jmxInit;
 

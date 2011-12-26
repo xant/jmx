@@ -11,6 +11,8 @@
  */
 #import <Cocoa/Cocoa.h>
 
+@class JMXElement;
+
 /*!
  @protocol JMXV8
  @discussion Any native class exported to V8 must conform to this protocol.
@@ -98,9 +100,10 @@ v8::Handle<Value> __class##JSConstructor(const Arguments& args)\
     v8::Local<Context> currentContext = v8::Context::GetCalling();\
     JMXScript *ctx = [JMXScript getContext:currentContext];\
     if (ctx) {\
-        instance = [[__class alloc] jmxInit];\
+        instance = [[__class alloc] jmxInit:ctx.scriptEntity];\
         /* connect the entity to our scriptEntity */\
-        [ctx.scriptEntity addChild:instance];\
+        /*if ([instance isKindOfClass:[JMXElement class]])*/\
+            /*[ctx.scriptEntity addChild:instance];*/\
         if ([instance respondsToSelector:@selector(jsInit:)]) {\
             NSValue *argsValue = [NSValue valueWithPointer:(void *)&args];\
             [instance performSelector:@selector(jsInit:) withObject:argsValue];\

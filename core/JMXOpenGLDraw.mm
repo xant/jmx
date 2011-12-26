@@ -7,6 +7,7 @@
 //
 
 #import "JMXOpenGLDraw.h"
+#import <GLUT/GLUT.h>
 
 @interface JMXOpenGLDraw ()
 

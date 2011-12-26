@@ -19,7 +19,7 @@ x = 0;
 y = 0;
 radius = 20;
 
-echo(dumpDOM());
+//echo(dumpDOM());
 
 /*
 elements = drawer.getElementsByTagName('canvas');

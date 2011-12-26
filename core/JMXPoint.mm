@@ -31,6 +31,11 @@ using namespace v8;
 
 @synthesize nsPoint;
 
++ (id)pointWithX:(CGFloat)x Y:(CGFloat)y
+{
+    return [self pointWithNSPoint:NSMakePoint(x, y)];
+}
+
 + (id)pointWithNSPoint:(NSPoint)point
 {
     id obj = [JMXPoint alloc];

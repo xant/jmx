@@ -14,6 +14,8 @@
 #import "JMXCanvasPattern.h"
 #import "JMXColor.h"
 #import "JMXAttribute.h"
+#import <Foundation/Foundation.h>
+#include <regex.h>
 
 using namespace v8;
 
@@ -24,7 +26,7 @@ using namespace v8;
 
 @implementation JMXDrawPath
 
-@synthesize fillStyle, strokeStyle;
+@synthesize fillStyle, strokeStyle, globalAlpha, globalCompositeOperation, font;
 
 + (id)drawPathWithFrameSize:(JMXSize *)frameSize
 {
@@ -428,8 +430,7 @@ using namespace v8;
     [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
-    CGRect fullFrame = CGRectMake(origin.nsPoint.x, origin.nsPoint.y,
-                                  size.nsSize.width, size.nsSize.height);
+    CGRect fullFrame = { origin.nsPoint, size.nsSize };
     CGContextSetRGBFillColor (context, 0.0, 0.0, 0.0, 1.0);
     CGContextFillRect(context, fullFrame);
     [lock unlock];
@@ -440,8 +441,8 @@ using namespace v8;
     [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
-    CGRect fullFrame = CGRectMake(origin.nsPoint.x, origin.nsPoint.y,
-                                  size.nsSize.width, size.nsSize.height);    CGContextSetRGBFillColor (context, 0.0, 0.0, 0.0, 1.0);
+    CGRect fullFrame = { origin.nsPoint, size.nsSize };
+    CGContextSetRGBFillColor (context, 0.0, 0.0, 0.0, 1.0);
     CGContextFillRect(context, fullFrame);
     [lock unlock];
 }
@@ -641,6 +642,32 @@ using namespace v8;
     CIImage *image = nil;
     image = [currentFrame retain];
     return [currentFrame autorelease];
+}
+
+static NSString *validCompositeOperations[] = { 
+    @"source-atop",
+    @"source-in",
+    @"source-out",
+    @"source-over",
+    @"destination-atop",
+    @"destination-in",
+    @"destination-out",
+    @"destination-over",
+    @"lighter",
+    @"copy",
+    @"xor",
+    @"vendorName-operationName",
+    nil
+};
+
+- (void)setGlobalCompositeOperation:(NSString *)operation
+{
+    for (int i = 0; validCompositeOperations[i]; i++) {
+        if ([operation caseInsensitiveCompare:validCompositeOperations[i]] == NSOrderedSame) {
+            globalCompositeOperation = [validCompositeOperations[i] copy];
+        }
+    }
+    // TODO - Error Messages
 }
 
 #pragma mark V8
@@ -962,7 +989,7 @@ static v8::Handle<Value> DrawFocusRing(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
+    //JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     BOOL test = NO;
     if (args.Length() > 3) {
         // TODO - Implement
@@ -1003,6 +1030,42 @@ static v8::Handle<Value> DrawImage(const Arguments& args)
     return handleScope.Close(v8::Boolean::New(false));
 }
 
+// void strokeText(in DOMString text, in double x, in double y, in optional double maxWidth);
+static v8::Handle<Value> StrokeText(const Arguments& args)
+{
+    //v8::Locker lock;
+    HandleScope handleScope;
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
+    if (args.Length() >= 3) {
+        int maxWidth = 0;
+        if (args.Length() > 3) { // maxWidth has been provided
+            maxWidth = args[2]->IntegerValue();
+            if (maxWidth == 0) // The spec says to stop doing anything if 0 has been passed as maxWidth
+                return handleScope.Close(v8::Undefined());
+        }
+
+        JMXColor *textColor = (JMXColor *)[JMXColor whiteColor];
+        String::Utf8Value text(args[0]->ToString());
+        CGFloat x = args[1]->NumberValue();
+        CGFloat y = args[2]->NumberValue();
+        JMXPoint * strokePoint = [JMXPoint pointWithX:x Y:y];
+
+        
+        NSMutableDictionary *attribs = [NSMutableDictionary dictionary];
+        [attribs
+         setObject:drawPath.font
+         forKey:NSFontAttributeName
+         ];
+        [attribs
+         setObject:textColor
+         forKey:NSForegroundColorAttributeName
+         ];
+        NSAttributedString *string = [[[NSAttributedString alloc] initWithString:[NSString stringWithUTF8String:*text] attributes:attribs] autorelease];
+        [drawPath strokeText:string atPoint:strokePoint];
+    }
+    return handleScope.Close(v8::Undefined());
+}
+
 v8::Handle<Value>GetStyle(Local<String> name, const AccessorInfo& info)
 {
     HandleScope handleScope;
@@ -1014,58 +1077,6 @@ v8::Handle<Value>GetStyle(Local<String> name, const AccessorInfo& info)
         return [[drawPath strokeStyle] jsObj];
     }
     return handleScope.Close(Undefined());
-}
-
-static v8::Handle<Value> StrokeText(const Arguments& args)
-{
-    //v8::Locker lock;
-    HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
-    if (args.Length()) {
-        NSFont *textFont = [NSFont systemFontOfSize:[NSFont systemFontSize]];
-        JMXColor *textColor = (JMXColor *)[JMXColor whiteColor];
-        JMXPoint *strokePoint = [JMXPoint pointWithNSPoint:NSMakePoint(0, 0)];
-        String::Utf8Value text(args[0]->ToString());
-        if (args.Length() > 1) {
-            if (args[1]->IsObject() && !args[1].IsEmpty()) {
-                String::Utf8Value arg1Type(args[1]->ToString());
-                if (strcmp(*arg1Type, "[object Point]") == 0) {
-                    strokePoint = (JMXPoint *)args[1]->ToObject()->GetPointerFromInternalField(0);
-                }
-            }
-        }
-        if (args.Length() > 2) {
-            if (args[2]->IsObject() && !args[2].IsEmpty()) {
-                String::Utf8Value arg1Type(args[2]->ToString());
-                if (strcmp(*arg1Type, "[object Font]") == 0) {
-                    textFont = (NSFont *)args[2]->ToObject()->GetPointerFromInternalField(0);
-                }
-            }
-
-        }
-        if (args.Length() > 3) {
-            if (args[3]->IsObject() && !args[3].IsEmpty()) {
-                String::Utf8Value arg1Type(args[3]->ToString());
-                if (strcmp(*arg1Type, "[object Color]") == 0) {
-                    textColor = (JMXColor *)args[3]->ToObject()->GetPointerFromInternalField(0);
-                }
-            }
-            
-        }
-        
-        NSMutableDictionary *attribs = [NSMutableDictionary dictionary];
-        [attribs
-         setObject:textFont
-         forKey:NSFontAttributeName
-         ];
-        [attribs
-         setObject:textColor
-         forKey:NSForegroundColorAttributeName
-         ];
-        NSAttributedString *string = [[[NSAttributedString alloc] initWithString:[NSString stringWithUTF8String:*text] attributes:attribs] autorelease];
-        [drawPath strokeText:string atPoint:strokePoint];
-    }
-    return handleScope.Close(v8::Undefined());
 }
 
 static void SetStyle(Local<String> name, Local<Value> value, const AccessorInfo& info)
@@ -1087,6 +1098,48 @@ static void SetStyle(Local<String> name, Local<Value> value, const AccessorInfo&
                 // TODO - Error Messages
             }
         }
+    }
+}
+
+v8::Handle<Value>GetFont(Local<String> name, const AccessorInfo& info)
+{
+    HandleScope handleScope;
+    String::Utf8Value nameStr(name);
+    JMXDrawPath *drawPath = (JMXDrawPath *)info.Holder()->GetPointerFromInternalField(0);
+    if (drawPath == 0)
+        return [drawPath.font jsObj];
+    return handleScope.Close(Undefined());
+}
+
+static void SetFont(Local<String> name, Local<Value> value, const AccessorInfo& info)
+{
+    //v8::Locker lock;
+    HandleScope handle_scope;
+    JMXDrawPath *drawPath = (JMXDrawPath *)info.Holder()->GetPointerFromInternalField(0);
+    String::Utf8Value str(value->ToString());
+    if (value->IsObject()) {
+        if (strcmp(*str, "[object Font]") == 0) {
+            v8::Handle<Object> object = value->ToObject();
+            NSFont *font = (NSFont *)object->GetPointerFromInternalField(0);
+            String::Utf8Value nameStr(name);
+            drawPath.font = font;
+        }
+    } else {
+        NSString *fontString = [NSString stringWithUTF8String:*str];
+        regex_t exp;
+        regmatch_t matches[4];
+        
+        if (regcomp(&exp, "(\\w+) (\\d+)(px|em|pt)", REG_EXTENDED) == 0) {
+            if (regexec(&exp, *str, 4, matches, 0) == 0) {
+                /* TODO - take specified font size into account */
+            }
+        }
+        
+        NSFont *font = [NSFont fontWithName:fontString size:[NSFont systemFontSize]];
+        if (font)
+            drawPath.font = font;
+        else 
+            NSLog(@"Unknown font: %s", *str);
     }
 }
 
@@ -1156,10 +1209,10 @@ static void SetStyle(Local<String> name, Local<Value> value, const AccessorInfo&
     instanceTemplate->SetAccessor(String::NewSymbol("globalAlpha"), GetDoubleProperty, SetDoubleProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("fillStyle"), GetStyle, SetStyle);
     instanceTemplate->SetAccessor(String::NewSymbol("strokeStyle"), GetStyle, SetStyle);
-
+    instanceTemplate->SetAccessor(String::NewSymbol("globalCompositeOperation"), GetStringProperty, SetStringProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("font"), GetFont, SetFont);
+    
     /*
-    instanceTemplate->SetAccessor(String::NewSymbol("globalCompositeOperation"), , );
-    instanceTemplate->SetAccessor(String::NewSymbol("globalCompositeOperation"), , );
     instanceTemplate->SetAccessor(String::NewSymbol("lineWidth"), , );
     instanceTemplate->SetAccessor(String::NewSymbol("lineCap"), , );
     instanceTemplate->SetAccessor(String::NewSymbol("lineJoin"), , );
@@ -1168,7 +1221,7 @@ static void SetStyle(Local<String> name, Local<Value> value, const AccessorInfo&
     instanceTemplate->SetAccessor(String::NewSymbol("shadowOffsetY"), , );
     instanceTemplate->SetAccessor(String::NewSymbol("shadowBlur"), , );
     instanceTemplate->SetAccessor(String::NewSymbol("shadowColor"), , );
-    instanceTemplate->SetAccessor(String::NewSymbol("font"), , );
+    
     instanceTemplate->SetAccessor(String::NewSymbol("textAlign"), , );
     instanceTemplate->SetAccessor(String::NewSymbol("textBaseline"), , );
     */

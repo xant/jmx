@@ -17,7 +17,6 @@ using namespace v8;
 + (id)colorFromCSSString:(NSString *)cssString
 {
     /* TODO - Implement */
-    return nil;
 }
 
 static v8::Persistent<FunctionTemplate> objectTemplate;
@@ -73,6 +72,9 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
 {
     return [self alphaComponent];
 }
+
+#pragma mark -
+#pragma mark V8
 
 - (v8::Handle<v8::Object>)jsObj
 {

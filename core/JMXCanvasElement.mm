@@ -65,6 +65,8 @@ static v8::Handle<Value> GetContext(const Arguments& args)
 
 static v8::Handle<Value> ToDataURL(const Arguments& args)
 {
+    // TODO - Implement
+    return v8::Undefined();
 }
 
 + (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate

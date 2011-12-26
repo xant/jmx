@@ -50,6 +50,16 @@ static const CGPatternCallbacks patternCallbacks = {
     return self;
 }
 
+- (id)jmxInit
+{
+    return [self init];
+}
+
+- (id)jmxInit:(id)arg
+{
+    return [self init];
+}
+ 
 - (id)init
 {
     self = [super init];
@@ -60,11 +70,6 @@ static const CGPatternCallbacks patternCallbacks = {
         currentPattern = nil;
     }
     return self;
-}
-
-- (id)jmxInit
-{
-    return [self init];
 }
 
 - (CGPatternRef)patternRef

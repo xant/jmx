@@ -134,8 +134,9 @@
 
 - (void)forwardInvocation:(NSInvocation *)anInvocation
 {
-    [anInvocation setTarget:realEntity];
-    [anInvocation invoke];
+    if ([realEntity respondsToSelector:anInvocation.selector]) {
+        [anInvocation invokeWithTarget:realEntity];
+    }
 }
 
 - (void)startThread

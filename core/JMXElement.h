@@ -21,6 +21,8 @@
 @property (readonly) NSString *uid;
 @property (copy) NSString *jsId;
 
+- (void)appendToNode:(id<JMXV8>)owner;
+
 JMXV8_DECLARE_NODE_CONSTRUCTOR(JMXElement);
 
 @end

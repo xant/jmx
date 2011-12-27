@@ -532,7 +532,7 @@ static v8::Handle<Value> GetAttribute(const Arguments& args)
     v8::String::Utf8Value name(args[0]);
     NSXMLNode *node = (NSXMLNode *)args.Holder()->GetPointerFromInternalField(0);
     if ([node respondsToSelector:@selector(attributeForName:)]) {
-        NSXMLNode *attribute = [node performSelector:@selector(attributeForName) withObject:[NSString stringWithUTF8String:*name]];
+        NSXMLNode *attribute = [node performSelector:@selector(attributeForName:) withObject:[NSString stringWithUTF8String:*name]];
         if (attribute)
             ret = String::New([[attribute stringValue] UTF8String]);
     } else if ([node respondsToSelector:@selector(attributes)]) {

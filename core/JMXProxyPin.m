@@ -99,8 +99,7 @@
     } else {
         // otherwise we need to determine if we want to forward the invocation
         // to either the underlying pin or the fake xml node
-        NSXMLNode *fakeNode = [[JMXElement alloc] init];
-        if ([fakeNode respondsToSelector:[anInvocation selector]])
+        if ([proxyNode respondsToSelector:[anInvocation selector]])
             [anInvocation setTarget:proxyNode];
         else
             [anInvocation setTarget:realPin];

@@ -121,6 +121,9 @@
  @method makeCurrentContext
  @abstract make the internal CGContext the current one (allowing direct drawing using CoreGraphics API)
  */
+
+- (void)drawPixel:(JMXPoint *)point strokeColor:(NSColor *)strokeColor;
+
 - (void)makeCurrentContext; // allow to use an NSBezierPath directly
 /*!
  @method clear

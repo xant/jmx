@@ -98,7 +98,8 @@
                 [entity performSelector:@selector(open:) withObject:[fileURL absoluteString]];
             }
             if ([entity conformsToProtocol:@protocol(JMXRunLoop)])
-                [entity performSelector:@selector(start)];            [document.entities addObject:entity];
+                [entity performSelector:@selector(start)];
+            [document.entities addObject:entity];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasCreated" object:entity];
             [entity release];
         } // TODO - add support for script files (and generalize)

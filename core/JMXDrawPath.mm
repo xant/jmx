@@ -346,6 +346,35 @@ using namespace v8;
     }
 }
 
+- (void)drawPixel:(JMXPoint *)origin strokeColor:(NSColor *)strokeColor
+{
+    [self clearFrame];
+    [lock lock];
+    UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
+    CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
+    CGContextSaveGState(context);
+    
+    if ([strokeColor isKindOfClass:[NSColor class]]) {
+        /*CGContextSetRGBStrokeColor (context,
+                                    [(NSColor *)strokeColor redComponent],
+                                    [(NSColor *)strokeColor greenComponent],
+                                    [(NSColor *)strokeColor blueComponent],
+                                    [(NSColor *)strokeColor alphaComponent]
+                                    );*/
+        CGContextSetRGBFillColor (context,
+                                    [(NSColor *)strokeColor redComponent],
+                                    [(NSColor *)strokeColor greenComponent],
+                                    [(NSColor *)strokeColor blueComponent],
+                                    [(NSColor *)strokeColor alphaComponent]
+                                    );
+    }
+    CGRect rect = { { origin.x, origin.y }, { 1, 1 } };
+    CGContextFillRect(context, rect);
+    CGContextRestoreGState(context);
+    [lock unlock];
+    
+}
+
 - (void)clear
 {
     _clear = YES;

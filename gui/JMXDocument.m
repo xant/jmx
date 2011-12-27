@@ -116,6 +116,7 @@
                                                           userInfo:userInfo];
         [anEntity release];
     }
+    [userInfo release];
 }
 
 #pragma mark -

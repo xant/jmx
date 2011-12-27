@@ -52,6 +52,13 @@ JMXV8_EXPORT_NODE_CLASS(JMXDrawEntity);
     }
 }
 
+- (void)drawPixel:(JMXPoint *)point strokeColor:(NSColor *)strokeColor
+{
+    @synchronized(drawPath) {
+        [drawPath drawPixel:point strokeColor:strokeColor];
+    }
+}
+
 - (void)drawTriangle:(NSArray *)points strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
     @synchronized(drawPath) {
@@ -182,6 +189,32 @@ static v8::Handle<Value> DrawCircle(const Arguments& args)
     return v8::Undefined();
 }
 
+static v8::Handle<Value> DrawPixel(const Arguments& args)
+{
+    HandleScope handleScope;
+    //Locker locker;
+    JMXDrawEntity *entity = (JMXDrawEntity *)args.Holder()->GetPointerFromInternalField(0);
+    if (args.Length() >= 1 && args[0]->IsObject()) {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        v8::Handle<Object> origin = args[0]->ToObject();
+        if (!origin.IsEmpty()) {
+            JMXPoint *point = [(JMXPoint *)origin->GetPointerFromInternalField(0) retain];
+            NSColor *strokeColor = [[NSColor whiteColor] retain];
+            if (args.Length() >= 2) {
+                v8::Handle<Object>colorObj = args[1]->ToObject();
+                strokeColor = (JMXColor *)colorObj->GetPointerFromInternalField(0);
+                if (strokeColor)
+                    [strokeColor retain];
+            }
+            [entity drawPixel:point strokeColor:strokeColor];
+            [point release];
+            [strokeColor release];
+        }
+        [pool drain];
+    }
+    return v8::Undefined();
+}
+
 static v8::Handle<Value> Clear(const Arguments& args)
 {
     HandleScope handleScope;
@@ -218,6 +251,7 @@ static v8::Handle<Value>GetCanvas(Local<String> name, const AccessorInfo& info)
     classProto->Set("drawCircle", FunctionTemplate::New(DrawCircle));
     classProto->Set("drawPolygon", FunctionTemplate::New(DrawPolygon));
     classProto->Set("drawTriangle", FunctionTemplate::New(DrawPolygon));
+    classProto->Set("drawPixel", FunctionTemplate::New(DrawPixel));
     classProto->Set("clear", FunctionTemplate::New(Clear));
     //classProto->Set("close", FunctionTemplate::New(close));
     NSLog(@"JMXDrawEntity objectTemplate created");

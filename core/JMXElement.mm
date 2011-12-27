@@ -20,13 +20,18 @@ JMXV8_EXPORT_NODE_CLASS(JMXElement);
 
 - (void)addElementAttributes
 {
-    
-    uid = [[NSString stringWithFormat:@"%8x", [self hash]] retain];
-    [self addAttribute:[JMXAttribute attributeWithName:@"uid"
-                                           stringValue:uid]];
-    jsId = [[NSString stringWithFormat:@"%@", uid ] retain];
-    [self addAttribute:[JMXAttribute attributeWithName:@"id"
-                                           stringValue:jsId]];
+    if (!uid) {
+        uid = [[NSString stringWithFormat:@"%8x", [self hash]] retain];
+        [self addAttribute:[JMXAttribute attributeWithName:@"uid"
+                                               stringValue:uid]];
+    }
+    if (!jsId) {
+        jsId = [[NSString stringWithFormat:@"%@", uid ] retain];
+        [self addAttribute:[JMXAttribute attributeWithName:@"id"
+                                               stringValue:jsId]];
+    } else {
+        NSLog(@"PORKODIO");
+    }
 }
 
 - (id)initWithName:(NSString *)name
@@ -40,8 +45,6 @@ JMXV8_EXPORT_NODE_CLASS(JMXElement);
 - (id)init
 {
     self = [super init];
-    if (self)
-        [self addElementAttributes];
     return self;
 }
 
@@ -61,6 +64,8 @@ JMXV8_EXPORT_NODE_CLASS(JMXElement);
 
 - (void)dealloc
 {
+    [self removeAttributeForName:@"uid"];
+    [self removeAttributeForName:@"id"];
     [uid release];
     [jsId release];
     [super dealloc];

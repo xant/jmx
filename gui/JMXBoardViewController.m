@@ -117,6 +117,7 @@
             [entitiesController setSelectedObjects:[NSArray arrayWithObject:anEntityLayer]];
             [self setSelectedConnectorLayer:nil];
         }
+        [selectedObjects release];
     }
     else {
         [entitiesController setSelectedObjects:[NSArray array]];

@@ -139,6 +139,11 @@
     }
 }
 
+- (BOOL)respondsToSelector:(SEL)aSelector
+{
+    return [realEntity respondsToSelector:aSelector];
+}
+
 - (void)startThread
 {
     if (!worker) {

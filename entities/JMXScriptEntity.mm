@@ -76,9 +76,12 @@ static Persistent<FunctionTemplate> objectTemplate;
     NSLog(@"JMXScriptEntity objectTemplate created");
     objectTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
     objectTemplate->Inherit([super jsObjectTemplate]);
-    objectTemplate->SetClassName(String::New("ThreadedEntity"));
+    objectTemplate->SetClassName(String::New("ScriptEntity"));
     v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
-    objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("frequency"), GetNumberProperty, SetNumberProperty);
+    v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
+
+   instanceTemplate->SetAccessor(String::NewSymbol("frequency"), GetNumberProperty, SetNumberProperty);
+    instanceTemplate->SetInternalFieldCount(1);
     return objectTemplate;
 }
 

@@ -22,14 +22,15 @@ radius = 20;
 echo(dumpDOM());
 
 /*
-elements = drawer.getElementsByTagName('canvas');
+elements = drawer.getElementsByTagName('canvas')[0];
 canvas = elements[0];
 */
-canvas = $('canvas:first').get(0);
+canvas = $('canvas:first', drawer).get(0);
+//canvas = drawer.getElementsByTagName('canvas')[0];
 
 mainloop = function() {
     //drawer.clear();
-    point = new Point(rand()%width/2, rand()%height/2);
+    point = new Point(rand()%width, rand()%height);
     fgColor = new Color(frand(), frand(), frand(), frand());
     bgColor = new Color(frand(), frand(), frand(), frand());
     radius = rand()%width/2;

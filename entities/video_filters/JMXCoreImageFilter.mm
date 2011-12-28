@@ -110,12 +110,12 @@ JMXV8_EXPORT_NODE_CLASS(JMXCoreImageFilter);
 
 - (void)removeFilterAttributesPins
 {
-    for (JMXInputPin *pin in [inputPins children]) {
+    for (JMXInputPin *pin in [self inputPins]) {
         // TODO - extendable [JMXEntity defaultInputPins]
         if (pin.label != @"frame" && pin.label != @"filter" && pin.label != @"active")
             [self unregisterInputPin:pin.label];
     }
-    for (JMXOutputPin *pin in [outputPins children]) {
+    for (JMXOutputPin *pin in [self outputPins]) {
         // TODO - extendable [JMXEntity defaultOutputPins]
         if (pin.label != @"frame" && pin.label != @"active")
             [self unregisterOutputPin:pin.label];

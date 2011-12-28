@@ -44,7 +44,6 @@
 		825C31471275ADD7006376B8 /* JMXAudioDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31261275ADD6006376B8 /* JMXAudioDevice.m */; };
 		825C31481275ADD7006376B8 /* JMXAudioFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31281275ADD6006376B8 /* JMXAudioFile.m */; };
 		825C31491275ADD7006376B8 /* JMXAudioFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C312A1275ADD6006376B8 /* JMXAudioFormat.m */; };
-		825C314A1275ADD7006376B8 /* JMXCompressor.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C312C1275ADD6006376B8 /* JMXCompressor.m */; };
 		825C314B1275ADD7006376B8 /* JMXContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C312E1275ADD6006376B8 /* JMXContext.m */; };
 		825C314C1275ADD7006376B8 /* JMXEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31301275ADD6006376B8 /* JMXEntity.mm */; };
 		825C314D1275ADD7006376B8 /* JMXInputPin.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31331275ADD6006376B8 /* JMXInputPin.m */; };
@@ -214,8 +213,6 @@
 		825C31281275ADD6006376B8 /* JMXAudioFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXAudioFile.m; sourceTree = "<group>"; };
 		825C31291275ADD6006376B8 /* JMXAudioFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXAudioFormat.h; sourceTree = "<group>"; };
 		825C312A1275ADD6006376B8 /* JMXAudioFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXAudioFormat.m; sourceTree = "<group>"; };
-		825C312B1275ADD6006376B8 /* JMXCompressor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXCompressor.h; sourceTree = "<group>"; };
-		825C312C1275ADD6006376B8 /* JMXCompressor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXCompressor.m; sourceTree = "<group>"; };
 		825C312D1275ADD6006376B8 /* JMXContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXContext.h; sourceTree = "<group>"; };
 		825C312E1275ADD6006376B8 /* JMXContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXContext.m; sourceTree = "<group>"; };
 		825C312F1275ADD6006376B8 /* JMXEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXEntity.h; sourceTree = "<group>"; };
@@ -304,7 +301,7 @@
 		AA54B28A12A1215000EC60B2 /* jmx-icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "jmx-icon.icns"; sourceTree = "<group>"; };
 		AA555FC712AEF39600C882FF /* CIAlphaFade.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CIAlphaFade.m; sourceTree = "<group>"; };
 		AA555FC812AEF39600C882FF /* CIAlphaFade.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CIAlphaFade.h; sourceTree = "<group>"; };
-		AA555FC912AEF39600C882FF /* CIAlphaFade.cikernel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = CIAlphaFade.cikernel; path = core/CIAlphaFade.cikernel; sourceTree = "<group>"; };
+		AA555FC912AEF39600C882FF /* CIAlphaFade.cikernel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CIAlphaFade.cikernel; sourceTree = "<group>"; };
 		AA7400C6130E56EA005A205C /* JMXGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXGlobals.h; sourceTree = "<group>"; };
 		AA7F247112907AA500BE432F /* libv8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libv8.dylib; path = "../v8-read-only/libv8.dylib"; sourceTree = SOURCE_ROOT; };
 		AA8CB78C1282BB9800A17115 /* JMXScriptFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXScriptFile.h; sourceTree = "<group>"; };
@@ -373,15 +370,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		080E96DDFE201D6D7F000001 /* Classes */ = {
+		080E96DDFE201D6D7F000001 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				AA4BFDD712BE0C8600775B88 /* jsapi */,
-				AAF17A90123E4D9D001319BA /* Core */,
+				AA830A2614AB4CD900E7F544 /* V8+DOM */,
+				AA830A2A14AB4EF400E7F544 /* Core */,
+				AA830A2914AB4EC300E7F544 /* Protocols */,
+				AA830A2B14AB4EF800E7F544 /* Drawing */,
+				AA830A2814AB4E9B00E7F544 /* Audio */,
+				AA830A2C14AB4F7500E7F544 /* CoreImage Filters */,
 				AAF17A91123E4DFA001319BA /* Entities */,
+				AA4BFDD712BE0C8600775B88 /* jsapi */,
 				8245763C1227DF2900236FE4 /* GUI */,
 			);
-			name = Classes;
+			name = Sources;
 			sourceTree = "<group>";
 		};
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
@@ -420,7 +422,7 @@
 		29B97314FDCFA39411CA2CEA /* MoviePlayerD */ = {
 			isa = PBXGroup;
 			children = (
-				080E96DDFE201D6D7F000001 /* Classes */,
+				080E96DDFE201D6D7F000001 /* Sources */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
@@ -444,7 +446,6 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				AA555FC912AEF39600C882FF /* CIAlphaFade.cikernel */,
 				AA54B28A12A1215000EC60B2 /* jmx-icon.icns */,
 				8D1107310486CEB800E47090 /* JMX-Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
@@ -510,25 +511,27 @@
 			path = gui;
 			sourceTree = "<group>";
 		};
-		825C30E51275ADB6006376B8 /* exporters */ = {
+		825C30E51275ADB6006376B8 /* Exporters */ = {
 			isa = PBXGroup;
 			children = (
 				825C30E61275ADB6006376B8 /* JMXQtExporter.h */,
 				825C30E71275ADB6006376B8 /* JMXQtExporter.m */,
 			);
+			name = Exporters;
 			path = exporters;
 			sourceTree = "<group>";
 		};
-		825C30E81275ADB6006376B8 /* video_filters */ = {
+		825C30E81275ADB6006376B8 /* Video Filters */ = {
 			isa = PBXGroup;
 			children = (
 				825C30E91275ADB6006376B8 /* JMXCoreImageFilter.h */,
 				825C30EA1275ADB6006376B8 /* JMXCoreImageFilter.mm */,
 			);
+			name = "Video Filters";
 			path = video_filters;
 			sourceTree = "<group>";
 		};
-		825C30EB1275ADB6006376B8 /* video */ = {
+		825C30EB1275ADB6006376B8 /* Video */ = {
 			isa = PBXGroup;
 			children = (
 				825C310C1275ADB6006376B8 /* JMXVideoMixer.h */,
@@ -542,10 +545,11 @@
 				AA3556F41277340200EAA2E4 /* JMXTextEntity.h */,
 				AA3556F51277340200EAA2E4 /* JMXTextEntity.mm */,
 			);
+			name = Video;
 			path = video;
 			sourceTree = "<group>";
 		};
-		825C30F61275ADB6006376B8 /* audio_outputs */ = {
+		825C30F61275ADB6006376B8 /* Audio Outputs */ = {
 			isa = PBXGroup;
 			children = (
 				825C30F71275ADB6006376B8 /* JMXCoreAudioOutput.h */,
@@ -553,10 +557,11 @@
 				825C30F91275ADB6006376B8 /* JMXQtAudioOutput.h */,
 				825C30FA1275ADB6006376B8 /* JMXQtAudioOutput.m */,
 			);
+			name = "Audio Outputs";
 			path = audio_outputs;
 			sourceTree = "<group>";
 		};
-		825C30FB1275ADB6006376B8 /* video_outputs */ = {
+		825C30FB1275ADB6006376B8 /* Video Outputs */ = {
 			isa = PBXGroup;
 			children = (
 				825C30FC1275ADB6006376B8 /* JMXOpenGLScreen.h */,
@@ -564,6 +569,7 @@
 				825C30FE1275ADB6006376B8 /* JMXSoftScreen.h */,
 				825C30FF1275ADB6006376B8 /* JMXSoftScreen.m */,
 			);
+			name = "Video Outputs";
 			path = video_outputs;
 			sourceTree = "<group>";
 		};
@@ -608,7 +614,7 @@
 			path = jsapi/core_doc;
 			sourceTree = SOURCE_ROOT;
 		};
-		AA830A2514AB4C9A00E7F544 /* scriptable_entities */ = {
+		AA830A2514AB4C9A00E7F544 /* Scriptable Entities */ = {
 			isa = PBXGroup;
 			children = (
 				AA8CB78C1282BB9800A17115 /* JMXScriptFile.h */,
@@ -616,7 +622,7 @@
 				AA8F805F12C9D3FA00EA8543 /* JMXScriptLive.h */,
 				AA8F806012C9D3FA00EA8543 /* JMXScriptLive.mm */,
 			);
-			name = scriptable_entities;
+			name = "Scriptable Entities";
 			sourceTree = "<group>";
 		};
 		AA830A2614AB4CD900E7F544 /* V8+DOM */ = {
@@ -658,27 +664,12 @@
 				AA9C1A4812E5964C00329158 /* JMXImageElement.mm */,
 			);
 			name = "V8+DOM";
+			path = core;
 			sourceTree = "<group>";
 		};
-		AA8CC473128745B600A17115 /* audio */ = {
+		AA830A2814AB4E9B00E7F544 /* Audio */ = {
 			isa = PBXGroup;
 			children = (
-				825C31001275ADB6006376B8 /* JMXAudioMixer.h */,
-				825C31011275ADB6006376B8 /* JMXAudioMixer.mm */,
-				825C30EC1275ADB6006376B8 /* JMXAudioFileEntity.h */,
-				825C30ED1275ADB6006376B8 /* JMXAudioFileEntity.mm */,
-				825C30F01275ADB6006376B8 /* JMXQtAudioCaptureEntity.h */,
-				825C30F11275ADB6006376B8 /* JMXQtAudioCaptureEntity.mm */,
-			);
-			path = audio;
-			sourceTree = "<group>";
-		};
-		AAF17A90123E4D9D001319BA /* Core */ = {
-			isa = PBXGroup;
-			children = (
-				AA830A2614AB4CD900E7F544 /* V8+DOM */,
-				AA555FC712AEF39600C882FF /* CIAlphaFade.m */,
-				AA555FC812AEF39600C882FF /* CIAlphaFade.h */,
 				825C31231275ADD6006376B8 /* JMXAudioBuffer.h */,
 				825C31241275ADD6006376B8 /* JMXAudioBuffer.m */,
 				825C31251275ADD6006376B8 /* JMXAudioDevice.h */,
@@ -687,19 +678,29 @@
 				825C31281275ADD6006376B8 /* JMXAudioFile.m */,
 				825C31291275ADD6006376B8 /* JMXAudioFormat.h */,
 				825C312A1275ADD6006376B8 /* JMXAudioFormat.m */,
-				825C312B1275ADD6006376B8 /* JMXCompressor.h */,
-				825C312C1275ADD6006376B8 /* JMXCompressor.m */,
-				825C31311275ADD6006376B8 /* JMXFileRead.h */,
-				825C313C1275ADD7006376B8 /* JMXRingBuffer.h */,
-				825C313D1275ADD7006376B8 /* JMXRingBuffer.m */,
-				825C313E1275ADD7006376B8 /* JMXRunLoop.h */,
-				825C313F1275ADD7006376B8 /* JMXSeekable.h */,
 				825C31421275ADD7006376B8 /* JMXSpectrumAnalyzer.h */,
 				825C31431275ADD7006376B8 /* JMXSpectrumAnalyzer.m */,
-				AA3556FF1277347300EAA2E4 /* JMXTextRenderer.h */,
-				AA3557001277347300EAA2E4 /* JMXTextRenderer.m */,
-				82AD7F6E1289F3C300C85EB1 /* JMXOpenGLDraw.h */,
-				82AD7F6F1289F3C300C85EB1 /* JMXOpenGLDraw.mm */,
+			);
+			name = Audio;
+			path = core;
+			sourceTree = "<group>";
+		};
+		AA830A2914AB4EC300E7F544 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				825C31311275ADD6006376B8 /* JMXFileRead.h */,
+				825C313F1275ADD7006376B8 /* JMXSeekable.h */,
+				825C313E1275ADD7006376B8 /* JMXRunLoop.h */,
+			);
+			name = Protocols;
+			path = core;
+			sourceTree = "<group>";
+		};
+		AA830A2A14AB4EF400E7F544 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				825C313C1275ADD7006376B8 /* JMXRingBuffer.h */,
+				825C313D1275ADD7006376B8 /* JMXRingBuffer.m */,
 				825C312F1275ADD6006376B8 /* JMXEntity.h */,
 				825C31301275ADD6006376B8 /* JMXEntity.mm */,
 				825C31441275ADD7006376B8 /* JMXThreadedEntity.h */,
@@ -716,23 +717,39 @@
 				825C31391275ADD7006376B8 /* JMXPinSignal.m */,
 				825C312D1275ADD6006376B8 /* JMXContext.h */,
 				825C312E1275ADD6006376B8 /* JMXContext.m */,
-				AAD139B9128EA0DF00ECB03A /* JMXDrawPath.h */,
-				AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */,
 			);
 			name = Core;
 			path = core;
 			sourceTree = "<group>";
 		};
-		AAF17A91123E4DFA001319BA /* Entities */ = {
+		AA830A2B14AB4EF800E7F544 /* Drawing */ = {
 			isa = PBXGroup;
 			children = (
-				825C30E51275ADB6006376B8 /* exporters */,
-				825C30E81275ADB6006376B8 /* video_filters */,
-				825C30EB1275ADB6006376B8 /* video */,
-				AA8CC473128745B600A17115 /* audio */,
-				825C30F61275ADB6006376B8 /* audio_outputs */,
-				825C30FB1275ADB6006376B8 /* video_outputs */,
-				AA830A2514AB4C9A00E7F544 /* scriptable_entities */,
+				AA3556FF1277347300EAA2E4 /* JMXTextRenderer.h */,
+				AA3557001277347300EAA2E4 /* JMXTextRenderer.m */,
+				82AD7F6E1289F3C300C85EB1 /* JMXOpenGLDraw.h */,
+				82AD7F6F1289F3C300C85EB1 /* JMXOpenGLDraw.mm */,
+				AAD139B9128EA0DF00ECB03A /* JMXDrawPath.h */,
+				AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */,
+			);
+			name = Drawing;
+			path = core;
+			sourceTree = "<group>";
+		};
+		AA830A2C14AB4F7500E7F544 /* CoreImage Filters */ = {
+			isa = PBXGroup;
+			children = (
+				AA555FC912AEF39600C882FF /* CIAlphaFade.cikernel */,
+				AA555FC712AEF39600C882FF /* CIAlphaFade.m */,
+				AA555FC812AEF39600C882FF /* CIAlphaFade.h */,
+			);
+			name = "CoreImage Filters";
+			path = core;
+			sourceTree = "<group>";
+		};
+		AA830A2D14AB4FC400E7F544 /* Base Classes */ = {
+			isa = PBXGroup;
+			children = (
 				AA4B020712BED1BB00775B88 /* JMXAudioCapture.h */,
 				AA4B020812BED1BB00775B88 /* JMXAudioCapture.mm */,
 				825C31021275ADB6006376B8 /* JMXAudioOutput.h */,
@@ -753,6 +770,35 @@
 				AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */,
 				825C31081275ADB6006376B8 /* JMXExporter.h */,
 				825C31091275ADB6006376B8 /* JMXExporter.m */,
+			);
+			name = "Base Classes";
+			sourceTree = "<group>";
+		};
+		AA8CC473128745B600A17115 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				825C31001275ADB6006376B8 /* JMXAudioMixer.h */,
+				825C31011275ADB6006376B8 /* JMXAudioMixer.mm */,
+				825C30EC1275ADB6006376B8 /* JMXAudioFileEntity.h */,
+				825C30ED1275ADB6006376B8 /* JMXAudioFileEntity.mm */,
+				825C30F01275ADB6006376B8 /* JMXQtAudioCaptureEntity.h */,
+				825C30F11275ADB6006376B8 /* JMXQtAudioCaptureEntity.mm */,
+			);
+			name = Audio;
+			path = audio;
+			sourceTree = "<group>";
+		};
+		AAF17A91123E4DFA001319BA /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				AA830A2D14AB4FC400E7F544 /* Base Classes */,
+				825C30E51275ADB6006376B8 /* Exporters */,
+				825C30E81275ADB6006376B8 /* Video Filters */,
+				825C30EB1275ADB6006376B8 /* Video */,
+				AA8CC473128745B600A17115 /* Audio */,
+				825C30F61275ADB6006376B8 /* Audio Outputs */,
+				825C30FB1275ADB6006376B8 /* Video Outputs */,
+				AA830A2514AB4C9A00E7F544 /* Scriptable Entities */,
 			);
 			name = Entities;
 			path = entities;
@@ -879,7 +925,6 @@
 				825C31471275ADD7006376B8 /* JMXAudioDevice.m in Sources */,
 				825C31481275ADD7006376B8 /* JMXAudioFile.m in Sources */,
 				825C31491275ADD7006376B8 /* JMXAudioFormat.m in Sources */,
-				825C314A1275ADD7006376B8 /* JMXCompressor.m in Sources */,
 				825C314B1275ADD7006376B8 /* JMXContext.m in Sources */,
 				825C314C1275ADD7006376B8 /* JMXEntity.mm in Sources */,
 				825C314D1275ADD7006376B8 /* JMXInputPin.m in Sources */,

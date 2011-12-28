@@ -294,9 +294,12 @@ using namespace v8;
     return newPin;
 }
 
-- (void)proxiedInputPinDestroyed:(NSNotification *)info
+- (void)proxiedPinDestroyed:(NSNotification *)info
 {
     JMXPin *pin = [info object];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:@"JMXPinDestroyed"
+                                                  object:pin];
     for (id p in [self children]) {
         if ([p isKindOfClass:[JMXPin class]] && [p isProxy] && ((JMXProxyPin *)p).realPin == pin) {
             [self performSelectorOnMainThread:@selector(notifyPinRemoved:) withObject:p waitUntilDone:YES];
@@ -308,11 +311,8 @@ using namespace v8;
 - (void)addProxyPin:(JMXProxyPin *)pin
 {
     [self notifyPinAdded:(JMXPin *)pin];
-    SEL selector = pin.realPin.direction == kJMXInputPin
-                 ? @selector(proxiedInputPinDestroyed:)
-                 : @selector(proxiedOutputPinDestroyed:);
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:selector
+                                             selector:@selector(proxiedPinDestroyed:)
                                                  name:@"JMXPinDestroyed"
                                                object:pin.realPin];
 }
@@ -501,9 +501,11 @@ using namespace v8;
 
 - (void)disconnectAllPins
 {
-    for (id child in [self children])
-        if ([child isKindOfClass:[JMXPin class]])
+    for (id child in [self children]) {
+        if (![child isProxy] && [child isKindOfClass:[JMXPin class]])
             [(JMXPin *)child disconnectAllPins];
+        [child detach];
+    }
 }
 
 - (NSString *)description

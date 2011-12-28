@@ -57,14 +57,67 @@
 
 - (void)unsetEntity:(JMXEntityLayer *)anEntityLayer
 {
-    if (entityLayer == anEntityLayer)
+    if (entityLayer == anEntityLayer) {
+        if (entityLayer) {
+            [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                            name:@"JMXEntityInputPinRemoved"
+                                                          object:entityLayer.entity];
+            [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                            name:@"JMXEntityOutputPinRemoved"
+                                                          object:entityLayer.entity];
+            [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                            name:@"JMXEntityInputPinAdded"
+                                                          object:entityLayer.entity];
+            [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                            name:@"JMXEntityOutputPinAdded"
+                                                          object:entityLayer.entity];
+        }
         entityLayer = nil;
+    }
+}
+
+- (void)pinUpdated:(NSNotification *)aNotification
+{
+    JMXPin *pin = [[aNotification userInfo] objectForKey:@"pin"];
+    if (pin.direction == kJMXInputPin)
+        [inputPins reloadData];
+    else
+        [outputPins reloadData];
 }
 
 - (void)setEntity:(JMXEntityLayer *)anEntityLayer
 {
+    if (entityLayer) {
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:@"JMXEntityOutputPinRemoved"
+                                                      object:entityLayer.entity];
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:@"JMXEntityInputPinRemoved"
+                                                      object:entityLayer.entity];
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:@"JMXEntityInputPinAdded"
+                                                      object:entityLayer.entity];
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:@"JMXEntityOutputPinAdded"
+                                                      object:entityLayer.entity];
+    }
     entityLayer = anEntityLayer;
-
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(pinUpdated:)
+                                                 name:@"JMXEntityInputPinRemoved"
+                                               object:entityLayer.entity];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(pinUpdated:)
+                                                 name:@"JMXEntityOutputPinRemoved"
+                                               object:entityLayer.entity];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(pinUpdated:)
+                                                 name:@"JMXEntityInputPinAdded"
+                                               object:entityLayer.entity];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(pinUpdated:)
+                                                 name:@"JMXEntityOutputPinAdded"
+                                               object:entityLayer.entity];
     //[inputPins setDataSource:inspector];
     if ([inputPins dataSource] != self) {
         [inputPins setDataSource:self];
@@ -141,10 +194,6 @@
         if (pin) {
             NSCell *cell = [sender preparedCellAtColumn:1 row:[sender selectedRow]];
             pin.data = [(NSPopUpButtonCell *)cell titleOfSelectedItem];
-            // XXX - the following line is necessary to have the table updated if the new selections 
-            //       involves creation/removal of pins (so new pins must be enumerated in the table)
-            //       for instance JMXCoreImageFilters, when selecting a new filter
-            [inputPins performSelector:@selector(reloadData) withObject:nil afterDelay:0.1];
         }
     }
 }
@@ -229,6 +278,9 @@
     if (entityLayer.entity && tableColumn != nil) {
         NSArray *pins = nil;
         if (tableView == inputPins) {
+            pins = entityLayer.entity.inputPins;
+            if ([pins count] <= row)
+                return [[[NSCell alloc] init] autorelease];
             if (![[tableColumn identifier] isEqualTo:@"pinName"]) {
                 pins = [entityLayer.entity inputPins];
                 JMXPin *pin = [pins objectAtIndex:row];
@@ -320,7 +372,9 @@
 {
     NSArray *pins = nil;
     if (entityLayer.entity && aTableView == inputPins) {
-        pins = [entityLayer.entity inputPins];
+        pins = entityLayer.entity.inputPins;
+        if ([pins count] <= rowIndex)
+            return;
         if ([[aTableColumn identifier] isEqualTo:@"pinValue"]) {
             pins = [entityLayer.entity inputPins];
             JMXPin *pin = [pins objectAtIndex:rowIndex];
@@ -350,6 +404,8 @@
     if (entityLayer.entity) {
         if (aTableView == inputPins) {
             pins = [entityLayer.entity inputPins];
+            if ([pins count] <= rowIndex)
+                return @"";
             if ([[aTableColumn identifier] isEqualTo:@"pinName"]) {
                 return [pins objectAtIndex:rowIndex];
             } else {
@@ -450,6 +506,20 @@
 
 - (void)clear
 {
+    if (entityLayer) {
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:@"JMXEntityOutputPinRemoved"
+                                                      object:entityLayer.entity];
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:@"JMXEntityInputPinRemoved"
+                                                      object:entityLayer.entity];
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:@"JMXEntityInputPinAdded"
+                                                      object:entityLayer.entity];
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:@"JMXEntityOutputPinAdded"
+                                                      object:entityLayer.entity];
+    }
     entityLayer = nil;
     [self clearTableView:inputPins];
     [self clearTableView:outputPins];

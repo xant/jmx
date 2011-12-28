@@ -89,8 +89,6 @@
                                                           userInfo:userInfo];
         [anEntity release];
     }
-
-    [userInfo release];
 }
 
 - (void)createEntityWithClass:(Class)aClass atPoint:(NSPoint)aPoint

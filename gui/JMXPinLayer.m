@@ -68,7 +68,7 @@
     if (self) {
         outlet = anOutlet;
         selected = NO;
-        connectors = [[[NSMutableArray alloc] init] retain];
+        connectors = [[NSMutableArray alloc] init];
         self.frame = CGRectMake(thePoint.x, thePoint.y, PIN_OUTLET_WIDTH, PIN_OUTLET_HEIGHT);
         pin = [thePin retain];
         [[NSNotificationCenter defaultCenter] addObserver:self

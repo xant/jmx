@@ -54,23 +54,37 @@ using namespace v8;
 
 - (void)notifyPinAdded:(JMXPin *)pin
 {
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:pin, @"pin", pin.label, @"pinLabel", nil];
+
+    // TODO - deprecated this one
     NSString *notificationName = (pin.direction == kJMXInputPin)
                                ? @"JMXEntityInputPinAdded"
                                : @"JMXEntityOutputPinAdded";
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:pin, @"pin", pin.label, @"pinLabel", nil];
-
     [[NSNotificationCenter defaultCenter] postNotificationName:notificationName
+                                                        object:self
+                                                      userInfo:userInfo];
+    
+    // in favour of this more generic notification.
+    // Observers can take care of determining if it's an input or output pin by themselves.
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXEntityPinAdded" 
                                                         object:self
                                                       userInfo:userInfo];
 }
 
 - (void)notifyPinRemoved:(JMXPin *)pin
 {
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:pin, @"pin", pin.label, @"pinLabel", nil];
+    
+    // TODO - deprecated this one
     NSString *notificationName = (pin.direction == kJMXInputPin)
                                ? @"JMXEntityInputPinRemoved"
                                : @"JMXEntityOutputPinRemoved";
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:pin, @"pin", pin.label, @"pinLabel", nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:notificationName 
+                                                        object:self
+                                                      userInfo:userInfo];
+    // in favour of this more generic notification.
+    // Observers can take care of determining if it's an input or output pin by themselves.
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXEntityPinRemoved" 
                                                         object:self
                                                       userInfo:userInfo];
 }

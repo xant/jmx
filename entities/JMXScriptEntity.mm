@@ -41,21 +41,28 @@ using namespace v8;
     [super dealloc];
 }
 
+- (void)unregisterPin:(JMXPin *)pin
+{
+    [super unregisterPin:pin];
+}
 - (void)resetContext
 {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     // we want to release our context.
     // first thing ... let's detach all entities we have created
     for (NSXMLNode *node in [self children]) {
-        if ([node isProxy]) 
+        if ([node isKindOfClass:[JMXProxyPin class]]) 
         {
             [self unregisterPin:(JMXPin *)node]; // XXX - this cast is only to avoid a warning
         } else if ([node isKindOfClass:[JMXEntity class]]) {
+            // XXX - what about thread entities? (which are also proxied)
             [node detach];
         } 
     }
     if (jsContext)
         [jsContext release];
     jsContext = nil;
+    [pool drain];
 }
 
 - (void)exec

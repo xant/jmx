@@ -101,8 +101,6 @@
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"JMXPinConnected" object:pin];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"JMXPinDisconnected" object:pin];
     if (connectors) {
         [self removeAllConnectors];
         [connectors release];
@@ -111,6 +109,13 @@
         [pin release];
     if (tempConnector)
         [tempConnector release];
+    // NOTE: observers MUST be removed only after removeAllConnectors has finished
+    //       and the underlying pin has been released, otherwise we could miss
+    //       notifications sent by proxypins (which actually catch the notification
+    //       from the real pin and propagates it to upper layers knowing only about 
+    //       the proxy instance.
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"JMXPinConnected" object:pin];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"JMXPinDisconnected" object:pin];
     [super dealloc];
 }
 

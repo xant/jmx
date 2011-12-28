@@ -127,19 +127,17 @@ using namespace v8;
     // their execution (which will happen in the main thread) 
     // so an invalid object will be accessed and a crash will occur
     [self disconnectAllPins];
+    [self unregisterAllPins];
     // TODO - append operations to a queue and run them all at once
     // on the main thread
     @synchronized(self) {
         for (NSXMLNode *node in [self children]) {
-            if ([node isKindOfClass:[JMXPin class]]) {
-                // as explained above ... we need to wait until done
-                [self performSelectorOnMainThread:@selector(notifyPinRemoved:) withObject:node waitUntilDone:YES];
-            }
             [node detach];
         }
         // as explained above ... we need to wait until done
         [self performSelectorOnMainThread:@selector(notifyRelease) withObject:nil waitUntilDone:YES];
     }
+
     @synchronized(privateData) {
         [privateData release];
         privateData = nil;
@@ -301,9 +299,10 @@ using namespace v8;
                                                     name:@"JMXPinDestroyed"
                                                   object:pin];
     for (id p in [self children]) {
-        if ([p isKindOfClass:[JMXPin class]] && [p isProxy] && ((JMXProxyPin *)p).realPin == pin) {
+        if ([p isProxy] && ((JMXProxyPin *)p).realPin == pin) {
             [self performSelectorOnMainThread:@selector(notifyPinRemoved:) withObject:p waitUntilDone:YES];
             [p detach];
+            break;
         }
     }
 }
@@ -469,6 +468,18 @@ using namespace v8;
 {
     [self disconnectAllPins];
     for (id child in [self children]) {
+        if ([child isProxy] && [child respondsToSelector:@selector(realPin)]) {
+            NSBlockOperation *unregisterObserver = [NSBlockOperation blockOperationWithBlock:^{
+                [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                                name:@"JMXPinDestroyed"
+                                                              object:((JMXProxyPin *)child).realPin];
+            }];
+            [unregisterObserver setQueuePriority:NSOperationQueuePriorityVeryHigh];
+            [[NSOperationQueue mainQueue] addOperations:[NSArray arrayWithObject:unregisterObserver]
+                                      waitUntilFinished:YES];
+            JMXPin *pin = (JMXPin *)child;
+            [self unregisterPin:pin];
+        }
         if ([child isKindOfClass:[JMXPin class]]) {
             JMXPin *pin = (JMXPin *)child;
             [self unregisterPin:pin];
@@ -502,9 +513,10 @@ using namespace v8;
 - (void)disconnectAllPins
 {
     for (id child in [self children]) {
-        if (![child isProxy] && [child isKindOfClass:[JMXPin class]])
-            [(JMXPin *)child disconnectAllPins];
-        [child detach];
+        if ([child respondsToSelector:@selector(disconnectAllPins)]) {
+            if (![child isKindOfClass:[JMXEntity class]])
+                [child performSelector:@selector(disconnectAllPins)];
+        }
     }
 }
 

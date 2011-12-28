@@ -305,7 +305,9 @@ using namespace v8;
 
 - (void)dealloc
 {
-    [self performSelectorOnMainThread:@selector(notifyRelease) withObject:nil waitUntilDone:YES];
+    @synchronized(self) {
+        [self performSelectorOnMainThread:@selector(notifyRelease) withObject:nil waitUntilDone:YES];
+    }
     [connections detach];
     [connections release];
     [label release];
@@ -318,33 +320,57 @@ using namespace v8;
 - (BOOL)connectToPin:(JMXPin *)destinationPin
 {
     NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:destinationPin, @"outputPin", self, @"inputPin", nil];
-    // send a connect notification for all involved pins
-    if (self.sendNotifications) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXPinConnected"
-                                                            object:self
-                                                          userInfo:userInfo];
+
+    NSBlockOperation *notification = [NSBlockOperation blockOperationWithBlock:^{
+        // send a connect notification for all involved pins
+        if (self.sendNotifications) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXPinConnected"
+                                                                object:self
+                                                              userInfo:userInfo];
+        }
+        if (destinationPin.sendNotifications) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXPinConnected"
+                                                                object:destinationPin
+                                                              userInfo:userInfo];
+        }
+    }];
+    [notification setQueuePriority:NSOperationQueuePriorityVeryHigh];
+    if (![[NSThread currentThread] isMainThread]) {
+        [[NSOperationQueue mainQueue] addOperations:[NSArray arrayWithObject:notification]
+                                  waitUntilFinished:YES];
+    } else {
+        [notification start];
+        [notification waitUntilFinished];
     }
-    if (destinationPin.sendNotifications) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXPinConnected"
-                                                            object:destinationPin
-                                                          userInfo:userInfo];
-    }
+
+    
     return YES;
 }
 
 - (void)disconnectFromPin:(JMXPin *)destinationPin
 {
     NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:destinationPin, @"outputPin", self, @"inputPin", nil];
-    // send a disconnect notification for all the involved pins
-    if (self.sendNotifications) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXPinDisconnected"
-                                                            object:self
-                                                          userInfo:userInfo];
-    }
-    if (destinationPin.sendNotifications) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXPinDisconnected"
-                                                            object:destinationPin
-                                                          userInfo:userInfo];
+    
+    NSBlockOperation *notification = [NSBlockOperation blockOperationWithBlock:^{
+        // send a disconnect notification for all the involved pins
+        if (self.sendNotifications) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXPinDisconnected"
+                                                                object:self
+                                                              userInfo:userInfo];
+        }
+        if (destinationPin.sendNotifications) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXPinDisconnected"
+                                                                object:destinationPin
+                                                              userInfo:userInfo];
+        }
+    }];
+    [notification setQueuePriority:NSOperationQueuePriorityVeryHigh];
+    if (![[NSThread currentThread] isMainThread]) {
+        [[NSOperationQueue mainQueue] addOperations:[NSArray arrayWithObject:notification]
+                                  waitUntilFinished:YES];
+    } else {
+        [notification start];
+        [notification waitUntilFinished];
     }
 }
 

@@ -26,6 +26,7 @@
         [[NSNotificationCenter defaultCenter] removeObserver:self
                                                         name:@"JMXPinDestroyed"
                                                       object:realPin];
+        [realPin release];
         realPin = nil;
     }
 }
@@ -41,7 +42,7 @@
 - (id)initWithPin:(JMXPin *)pin andLabel:(NSString *)pinLabel
 {
     parent = nil;
-    realPin = pin;
+    realPin = [pin retain];
     label = (pinLabel && ![pinLabel isEqualTo:@"undefined"]) ? [pinLabel copy] : [pin.label copy];
     index = 0;
     proxyNode = [[JMXElement alloc] initWithName:@"JMXProxyPin"];
@@ -53,7 +54,8 @@
         [self hookPin:pin];
     }];
     [hookPin setQueuePriority:NSOperationQueuePriorityVeryHigh];
-    [[NSOperationQueue mainQueue] addOperation:hookPin];
+    [[NSOperationQueue mainQueue] addOperations:[NSArray arrayWithObject:hookPin]
+                              waitUntilFinished:YES];
     */
     return self;
 }
@@ -62,6 +64,8 @@
 {
     if (label)
         [label release];
+    if (realPin)
+        [realPin release];
     [super dealloc];
 }
 

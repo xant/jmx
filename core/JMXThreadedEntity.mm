@@ -58,7 +58,7 @@
     if (entity) {
         worker = nil;
         timer = nil;
-        realEntity = entity;//[entity retain];
+        realEntity = [entity retain];
         [realEntity addPrivateData:self forKey:@"threadedEntity"];
         NSBlockOperation *registerObservers = [NSBlockOperation blockOperationWithBlock:^{
             [[NSNotificationCenter defaultCenter] addObserver:self
@@ -93,7 +93,8 @@
         }];
         [registerObservers setQueuePriority:NSOperationQueuePriorityVeryHigh];
         if (![[NSThread currentThread] isMainThread]) {
-            [[NSOperationQueue mainQueue] addOperation:registerObservers];
+            [[NSOperationQueue mainQueue] addOperations:[NSArray arrayWithObject:registerObservers]
+                                      waitUntilFinished:YES];
         } else {
             [registerObservers start];
             [registerObservers waitUntilFinished];
@@ -120,8 +121,7 @@
     // TODO - ensure executing the following statement on the main thread
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     //[realEntity removePrivateDataForKey:@"threadedEntity"];
-    //[realEntity release];
-    [realEntity dealloc];
+    [realEntity release];
     [super dealloc];
 }
 
@@ -164,7 +164,7 @@
         // sill retaining something which is supposed to be released
         // immediately after we return from this method
         //while (![worker isFinished])
-            //[NSThread sleepForTimeInterval:0.001];
+          //  [NSThread sleepForTimeInterval:0.1];
         [worker release];
         worker = nil;
     }
@@ -368,6 +368,7 @@
 - (void)setActive:(BOOL)value
 {
     if (active != value) {
+        active = value;
         JMXThreadedEntity *th = [self privateDataForKey:@"threadedEntity"];
         if (th) {
             if (value)
@@ -375,7 +376,6 @@
             else
                 [th stopThread];
         }
-        active = value;
     }
 }
 

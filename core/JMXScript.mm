@@ -320,14 +320,23 @@ static v8::Handle<Value> Run(const Arguments& args)
     v8::Locker locker;
     Local<Context> context = v8::Context::GetCalling();
     Local<Object> globalObject  = context->Global();
+    //JMXEntity *entity = (JMXEntity *)globalObject->GetPointerFromInternalField(0);
     //v8::Locker::StopPreemption();
     //globalObject->SetHiddenValue(String::New("quit"), v8::Boolean::New(0));
     if (args.Length() >= 1 && args[0]->IsFunction()) {
-        //v8::Locker::StartPreemption(50);
+        v8::Locker::StartPreemption(50);
         while (1) {
             HandleScope iterationScope;
             if (globalObject->GetHiddenValue(String::New("quit"))->BooleanValue())
                 break;
+            
+            v8::Local<v8::Object> obj = globalObject->Get(String::New("scriptEntity"))->ToObject();
+            JMXEntity *entity = (JMXEntity *)obj->GetPointerFromInternalField(0);
+            //ctx->Global()->Set(String::New("scriptEntity"), [scriptEntity jsObj]);
+
+            if (!entity.active) {
+                break;
+            }
             v8::Local<v8::Function> foo = v8::Local<v8::Function>::Cast(args[0]);
             int nArgs = args.Length() ? args.Length() - 1 : 0;
             v8::Handle<v8::Value> *fArgs = nArgs
@@ -341,10 +350,11 @@ static v8::Handle<Value> Run(const Arguments& args)
                 free(fArgs);
         }
         // restore quit status for nested loops
-        //v8::Locker::StopPreemption();
+        v8::Locker::StopPreemption();
         globalObject->SetHiddenValue(String::New("quit"), v8::Boolean::New(0));
     }
     //v8::Locker::StartPreemption(50);
+    NSLog(@"Javascript context is exiting");
     v8::Handle<Primitive> t = Undefined();
     return reinterpret_cast<v8::Handle<String>&>(t);
 }
@@ -478,18 +488,23 @@ static v8::Handle<Value> GetDocument(v8::Local<v8::String> name, const v8::Acces
 
 - (void)clearPersistentInstances
 {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSArray *objs = [persistentInstances allKeys];
     for (id obj in objs)
         [self removePersistentInstance:obj];
+    [pool drain];
 }
 
 - (void)dealloc
 {
+    v8::Locker locker;
+    v8::HandleScope handle_scope;
     if (scriptEntity && [scriptEntity conformsToProtocol:@protocol(JMXRunLoop)])
         [scriptEntity performSelector:@selector(stop)];
+    //ctx->Global()->Set(String::New("scriptEntity"), v8::Undefined());
     [self clearPersistentInstances];
-    //while( V8::IdleNotification() )
-      //  ;
+    while( V8::IdleNotification() )
+        ;
     contextes.erase(self);
     ctx.Dispose();
     [persistentInstances release];
@@ -515,6 +530,7 @@ static v8::Handle<Value> GetDocument(v8::Local<v8::String> name, const v8::Acces
     if (entity) {
         scriptEntity = entity;
         ctx->Global()->Set(String::New("scriptEntity"), [scriptEntity jsObj]);
+        //ctx->Global()->SetPointerInInternalField(0, scriptEntity);
     }
     //NSLog(@"%@", [self exportGraph:[[JMXContext sharedContext] allEntities] andPins:nil]);
     ctx->Global()->SetHiddenValue(String::New("quit"), v8::Boolean::New(0));

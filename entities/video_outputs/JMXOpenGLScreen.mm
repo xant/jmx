@@ -279,9 +279,11 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 - (void)cleanup
 {
     [lock lock];
-    if (ciContext) {
-        [ciContext release];
-        ciContext = nil;
+    @synchronized([self class]) {
+        if (ciContext) {
+            [ciContext release];
+            ciContext = nil;
+        }
     }
     if (frameSize)
         [frameSize release];

@@ -427,7 +427,7 @@ using namespace v8;
 {
     JMXInputPin *pin = nil;
     @synchronized(self) {
-        for (JMXOutputPin *child in [self outputPins]) {
+        for (JMXOutputPin *child in [self inputPins]) {
             if (child.direction == kJMXInputPin && [child.label isEqualTo:pinLabel]) {
                 pin = [child retain];
                 break;

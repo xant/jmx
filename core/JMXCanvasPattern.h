@@ -20,6 +20,7 @@
     JMXRect *rect;
     CGImage *image;
     CGPatternTiling tilingMode;
+    CGFloat components[4];
 }
 
 @property (readonly) JMXRect *rect;

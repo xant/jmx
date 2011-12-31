@@ -41,10 +41,16 @@
     @synchronized(self) {
         while (wOffset-rOffset < kJMXAudioFileBufferCount/2) {
             JMXAudioBuffer *newSample = [self readFrames:512];
-            if (newSample)
+            if (samples[wOffset%kJMXAudioFileBufferCount]) {
+                [samples[wOffset%kJMXAudioFileBufferCount] release];
+                samples[wOffset%kJMXAudioFileBufferCount] = nil;
+            }
+            if (newSample) {
                 samples[wOffset++%kJMXAudioFileBufferCount] = [newSample retain];
-            else 
+            } else {
+                // end of file
                 break;
+            }
         }
         isFilling = NO;
     }
@@ -79,8 +85,19 @@
     return self;
 }
 
+- (void)clearBuffer
+{
+    for (int i = 0; i < kJMXAudioFileBufferCount; i++) {
+        if (samples[i]) {
+            [samples[i] release];
+            samples[i] = nil;
+        }
+    }
+}
+
 - (void)dealloc
 {
+    [self clearBuffer];
     if (audioFile)
         ExtAudioFileDispose(audioFile);
     [super dealloc];
@@ -88,12 +105,16 @@
 
 - (JMXAudioBuffer *)readSample
 {
-    JMXAudioBuffer *sample = [samples[rOffset++%kJMXAudioFileBufferCount] autorelease];
+    JMXAudioBuffer *sample = nil;
+    @synchronized(self) {
+        sample = samples[rOffset%kJMXAudioFileBufferCount];
+        samples[rOffset++%kJMXAudioFileBufferCount] = nil;
+    }
     if (wOffset - rOffset < kJMXAudioFileBufferCount / 4 && !isFilling) {
         isFilling = YES;
         [self performSelectorOnMainThread:@selector(fillBuffer) withObject:nil waitUntilDone:NO];
     }
-    return sample;
+    return [sample autorelease];
 }
 
 - (JMXAudioBuffer *)readFrames:(NSUInteger)numFrames
@@ -119,7 +140,7 @@
 	// Set the desired client (output) data format
 	err = ExtAudioFileSetProperty(audioFile, kExtAudioFileProperty_ClientDataFormat, sizeof(theOutputFormat), &theOutputFormat);
 	if(err) {
-        NSLog(@"MyGetOpenALAudioData: ExtAudioFileSetProperty(kExtAudioFileProperty_ClientDataFormat) FAILED, Error = %ld\n", err);
+        NSLog(@"MyGetOpenALAudioData: ExtAudioFileSetProperty(kExtAudioFileProperty_ClientDataFormat) FAILED, Error = %d\n", err);
         return nil;
     }
 	
@@ -127,7 +148,7 @@
 	thePropertySize = sizeof(theFileLengthInFrames);
 	err = ExtAudioFileGetProperty(audioFile, kExtAudioFileProperty_FileLengthFrames, &thePropertySize, &theFileLengthInFrames);
 	if(err) {
-        NSLog(@"MyGetOpenALAudioData: ExtAudioFileGetProperty(kExtAudioFileProperty_FileLengthFrames) FAILED, Error = %ld\n", err);
+        NSLog(@"MyGetOpenALAudioData: ExtAudioFileGetProperty(kExtAudioFileProperty_FileLengthFrames) FAILED, Error = %d\n", err);
         return nil;
     }
 	
@@ -160,7 +181,7 @@
 			// failure
 			free (data);
             free(theDataBuffer);
-			NSLog(@"MyGetOpenALAudioData: ExtAudioFileRead FAILED, Error = %ld\n", err);
+			NSLog(@"MyGetOpenALAudioData: ExtAudioFileRead FAILED, Error = %d\n", err);
             return nil;
 		}	
     }

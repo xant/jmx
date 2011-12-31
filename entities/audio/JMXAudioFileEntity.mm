@@ -93,7 +93,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXAudioFileEntity);
     JMXAudioBuffer *sample = nil;
     if (active && audioFile) {
         sample = [audioFile readSample];
-        if ([audioFile currentOffset] >= [audioFile numFrames] - (512*[audioFile numChannels])) {
+        if (!sample && [audioFile currentOffset] >= [audioFile numFrames] - (512*[audioFile numChannels])) {
             [audioFile seekToOffset:0];
             if (repeat) { // loop on the file if we have to
                 sample = [audioFile readSample];

@@ -70,7 +70,6 @@ static OSStatus _FillComplexBufferProc (
         needsPrefill = YES;
         rOffset = wOffset = 0;
         memset(samples, 0, sizeof(samples));
-        writersLock = [[NSRecursiveLock alloc] init];
     }
     return self;
 }
@@ -127,10 +126,10 @@ static OSStatus _FillComplexBufferProc (
     }
     if (err != noErr) {
         JMXAudioBuffer *previousSample;
-        [writersLock lock];
-        previousSample = samples[wOffset%kJMXAudioOutputSamplesBufferCount];
-        samples[wOffset++%kJMXAudioOutputSamplesBufferCount] = [[JMXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&inputDescription copy:YES freeOnRelease:YES] retain];
-        [writersLock unlock];
+        @synchronized(samples) {
+            previousSample = samples[wOffset%kJMXAudioOutputSamplesBufferCount];
+            samples[wOffset++%kJMXAudioOutputSamplesBufferCount] = [[JMXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&inputDescription copy:YES freeOnRelease:YES] retain];
+        }
         // let's have the buffer released next time the active pool is drained
         // we want to return as soon as possible
         if (previousSample)
@@ -158,9 +157,12 @@ static OSStatus _FillComplexBufferProc (
     //NSLog(@"r: %d - w: %d", rOffset % kJMXAudioOutputSamplesBufferCount , wOffset % kJMXAudioOutputSamplesBufferCount);
     JMXAudioBuffer *sample = nil;
     if (rOffset < wOffset && !needsPrefill) {
-        sample = samples[rOffset++%kJMXAudioOutputSamplesBufferCount];
+        @synchronized(self) {
+            sample = samples[rOffset%kJMXAudioOutputSamplesBufferCount];
+            samples[rOffset++%kJMXAudioOutputSamplesBufferCount] = nil;
+        }
     }
-    return sample;
+    return [sample autorelease];
 }
 
 - (void)dealloc
@@ -169,8 +171,10 @@ static OSStatus _FillComplexBufferProc (
         [format dealloc];
     if (writersLock)
         [writersLock release];
-    while (rOffset < wOffset) 
-        [samples[rOffset++%kJMXAudioOutputSamplesBufferCount] release];
+    for (int i = 0; i < kJMXAudioOutputSamplesBufferCount; i++) {
+        if (samples[i])
+            [samples[i] release];
+    }
     if (convertedBuffer)
         free(convertedBuffer);
     [super dealloc];

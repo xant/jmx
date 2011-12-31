@@ -76,6 +76,8 @@
  */
 + (id)audioFileWithURL:(NSURL *)url;
 
+- (id)initWithURL:(NSURL *)url;
+
 /*!
  @method readSample
  @abstract read next audio frame

@@ -13,16 +13,38 @@
 
 @class JMXElement;
 
+#ifndef __JMXV8__
+
+@protocol JMXV8
+
+@end
+
+/*!
+ @define JMXV8_EXPORT_NODE_CLASS
+ @abstract define both the constructor and the descructor for the mapped class
+ @param __class
+ */
+#define JMXV8_EXPORT_CLASS(__class)
+/*!
+ @define JMXV8_DECLARE_NODE_CONSTRUCTOR
+ @abstract define the constructor for the mapped class
+ @param __class
+ */
+#define JMXV8_DECLARE_CONSTRUCTOR(__class)
+
+#else
+
+#include <v8.h>
+
 /*!
  @protocol JMXV8
  @discussion Any native class exported to V8 must conform to this protocol.
              the JMXScript class (which manages bindings between javascript and native instances)
              will expect mapped classes to conform to this protocol.
  */
+
 @protocol JMXV8
 
-#ifdef __JMXV8__
-#include <v8.h>
 
 @required
 
@@ -68,6 +90,8 @@
  */
 - (void)jsInit:(NSValue *)argsValue;
 
+@end
+
 #define JMXV8_EXPORT_BASE(__class) \
 using namespace v8;\
 static Persistent<FunctionTemplate> objectTemplate;\
@@ -102,8 +126,9 @@ v8::Handle<Value> __class##JSConstructor(const Arguments& args)\
     if (ctx) {\
         instance = [[__class alloc] jmxInit];\
         /* connect the entity to our scriptEntity */\
-        if ([instance isKindOfClass:[JMXElement class]])\
-            [ctx.scriptEntity addChild:instance];\
+        if ([instance isKindOfClass:[JMXElement class]]) {\
+            [ctx.scriptEntity performSelector:@selector(hookEntity:) withObject:instance];\
+        }\
         if ([instance respondsToSelector:@selector(jsInit:)]) {\
             NSValue *argsValue = [NSValue valueWithPointer:(void *)&args];\
             [instance performSelector:@selector(jsInit:) withObject:argsValue];\
@@ -170,21 +195,4 @@ v8::Handle<Value> __class##JSConstructor(const Arguments& args)\
 #define JMXV8_DECLARE_CONSTRUCTOR(__class)\
 v8::Handle<v8::Value> __class##JSConstructor(const v8::Arguments& args);
 
-#else
-
-/*!
- @define JMXV8_EXPORT_NODE_CLASS
- @abstract define both the constructor and the descructor for the mapped class
- @param __class
- */
-#define JMXV8_EXPORT_CLASS(__class)
-/*!
- @define JMXV8_DECLARE_NODE_CONSTRUCTOR
- @abstract define the constructor for the mapped class
- @param __class
- */
-#define JMXV8_DECLARE_CONSTRUCTOR(__class)
-
 #endif
-
-@end

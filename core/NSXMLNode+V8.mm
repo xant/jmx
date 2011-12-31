@@ -9,6 +9,7 @@
 #define __JMXV8__
 #import "NSXMLNode+V8.h"
 #import "JMXV8PropertyAccessors.h"
+#import "JMXElement.h"
 
 JMXV8_EXPORT_NODE_CLASS(NSXMLNode);
 
@@ -611,7 +612,10 @@ static v8::Handle<Value> SetAttribute(const Arguments& args)
     instanceTemplate->SetAccessor(String::NewSymbol("ownerDocument"), GetOwnerDocument);
     instanceTemplate->SetAccessor(String::NewSymbol("prefix"), GetPrefix);
     instanceTemplate->SetAccessor(String::NewSymbol("baseURI"), GetBaseURI);
-    instanceTemplate->SetAccessor(String::NewSymbol("textContent"), GetTextContent);    
+    instanceTemplate->SetAccessor(String::NewSymbol("textContent"), GetTextContent);
+    
+    // XXX - JMX addition : the 'value' accessor is not defined by the DOM spec
+    instanceTemplate->SetAccessor(String::NewSymbol("value"), GetTextContent);    
 
     NSLog(@"JMXNode objectTemplate created");
     return objectTemplate;

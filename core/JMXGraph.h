@@ -7,7 +7,6 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "NSXMLNode+V8.h"
 
 
 @interface JMXGraph : NSXMLDocument {

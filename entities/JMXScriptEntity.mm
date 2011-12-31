@@ -9,6 +9,7 @@
 #import "JMXScriptEntity.h"
 #import "JMXScript.h"
 #import "JMXProxyPin.h"
+#import "JMXGraphFragment.h"
 
 using namespace v8;
 
@@ -51,11 +52,12 @@ using namespace v8;
     // we want to release our context.
     // first thing ... let's detach all entities we have created
     for (NSXMLNode *node in [self children]) {
-        if ([node isKindOfClass:[JMXProxyPin class]]) 
-        {
+        if ([node isKindOfClass:[JMXProxyPin class]]) {
             [self unregisterPin:(JMXPin *)node]; // XXX - this cast is only to avoid a warning
-        } else if ([node isKindOfClass:[JMXEntity class]]) {
-            // XXX - what about thread entities? (which are also proxied)
+        } else if ([node isKindOfClass:[JMXGraphFragment class]]) {
+            for (JMXEntity *entity in [node children]) {
+                [entity detach];
+            }
             [node detach];
         } 
     }
@@ -72,6 +74,17 @@ using namespace v8;
             jsContext = [[JMXScript alloc] init];
         [jsContext runScript:self.code withEntity:self];
     }
+}
+
+- (void)hookEntity:(JMXEntity *)entity
+{
+    NSArray *elements = [self elementsForName:@"Entities"];
+    JMXElement *holder = [elements count] ? [elements objectAtIndex:0] : nil;
+    if (!holder) {
+        holder = [[JMXGraphFragment alloc] initWithName:@"Entities"];
+        [self addChild:holder];
+    }
+    [holder addChild:entity];
 }
 
 static Persistent<FunctionTemplate> objectTemplate;

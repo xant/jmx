@@ -10,6 +10,7 @@
 #import "JMXGraph.h"
 #import "JMXScript.h"
 #import "JMXElement.h"
+#import "NSXMLNode+V8.h"
 
 @implementation JMXGraph
 

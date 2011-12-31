@@ -22,5 +22,6 @@
 
 - (void)exec;
 - (void)resetContext;
+- (void)hookEntity:(JMXEntity *)entity;
 
 @end

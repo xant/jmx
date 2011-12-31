@@ -14,6 +14,6 @@
 - (id)jmxInit;
 - (id)jmxInit:(id)arg;
 
-JMXV8_DECLARE_CONSTRUCTOR(NSXMLNode);
+JMXV8_DECLARE_CONSTRUCTOR(NSXMLFont);
 
 @end

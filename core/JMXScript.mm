@@ -33,6 +33,7 @@
 #import "JMXCDATA.h"
 #import "JMXAttribute.h"
 #import "JMXGraph.h"
+#import "JMXGraphFragment.h"
 #import "NSXMLNode+V8.h"
 
 @class JMXEntity;
@@ -61,24 +62,25 @@ typedef struct __JMXV8ClassDescriptor {
 } JMXV8ClassDescriptor;
 
 static JMXV8ClassDescriptor mappedClasses[] = {
-    { "JMXEntity",                "Entity",          JMXEntityJSConstructor },
-    { "JMXOpenGLScreen",          "OpenGLScreen",    JMXOpenGLScreenJSConstructor },
-    { "JMXQtVideoCaptureEntity",  "QtVideoCapture",  JMXQtVideoCaptureEntityJSConstructor },
-    { "JMXQtMovieEntity",         "QtMovieFile",     JMXQtMovieEntityJSConstructor },
-    { "JMXCoreImageFilter",       "CoreImageFilter", JMXCoreImageFilterJSConstructor },
-    { "JMXVideoMixer",            "VideoMixer",      JMXVideoMixerJSConstructor },
-    { "JMXAudioFileEntity",       "CoreAudioFile",   JMXAudioFileEntityJSConstructor },
-    { "JMXCoreAudioOutput",       "CoreAudioOutput", JMXCoreAudioOutputJSConstructor },
-    { "JMXQtAudioCaptureEntity",  "QtAudioCapture",  JMXQtAudioCaptureEntityJSConstructor },
-    { "JMXAudioSpectrumAnalyzer", "AudioSpectrum",   JMXAudioSpectrumAnalyzerJSConstructor },
-    { "JMXDrawEntity",            "DrawPath",        JMXDrawEntityJSConstructor },
-    { "JMXPoint",                 "Point",           JMXPointJSConstructor },
-    { "JMXColor",                 "Color",           JMXColorJSConstructor },
-    { "JMXSize",                  "Size",            JMXSizeJSConstructor },
-    { "NSXMLNode",                "Node",            NSXMLNodeJSConstructor },
-    { "JMXElement",               "Element",         JMXElementJSConstructor },
-    { "JMXCDATA",                 "CDATA",           JMXCDATAJSConstructor },
-    { "JMXAttribute",             "Attribute"   ,    JMXAttributeJSConstructor },
+    { "JMXEntity",                "Entity",           JMXEntityJSConstructor },
+    { "JMXOpenGLScreen",          "OpenGLScreen",     JMXOpenGLScreenJSConstructor },
+    { "JMXQtVideoCaptureEntity",  "QtVideoCapture",   JMXQtVideoCaptureEntityJSConstructor },
+    { "JMXQtMovieEntity",         "QtMovieFile",      JMXQtMovieEntityJSConstructor },
+    { "JMXCoreImageFilter",       "CoreImageFilter",  JMXCoreImageFilterJSConstructor },
+    { "JMXVideoMixer",            "VideoMixer",       JMXVideoMixerJSConstructor },
+    { "JMXAudioFileEntity",       "CoreAudioFile",    JMXAudioFileEntityJSConstructor },
+    { "JMXCoreAudioOutput",       "CoreAudioOutput",  JMXCoreAudioOutputJSConstructor },
+    { "JMXQtAudioCaptureEntity",  "QtAudioCapture",   JMXQtAudioCaptureEntityJSConstructor },
+    { "JMXAudioSpectrumAnalyzer", "AudioSpectrum",    JMXAudioSpectrumAnalyzerJSConstructor },
+    { "JMXDrawEntity",            "DrawPath",         JMXDrawEntityJSConstructor },
+    { "JMXPoint",                 "Point",            JMXPointJSConstructor },
+    { "JMXColor",                 "Color",            JMXColorJSConstructor },
+    { "JMXSize",                  "Size",             JMXSizeJSConstructor },
+    { "NSXMLNode",                "Node",             NSXMLNodeJSConstructor },
+    { "JMXElement",               "Element",          JMXElementJSConstructor },
+    { "JMXCDATA",                 "CDATA",            JMXCDATAJSConstructor },
+    { "JMXAttribute",             "Attribute",        JMXAttributeJSConstructor },
+    { "JMXGraphFragment",         "DocumentFragment", JMXGraphFragmentJSConstructor },
     
     { NULL,                       NULL,              NULL }
 };

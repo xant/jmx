@@ -17,6 +17,94 @@ using namespace v8;
 + (id)colorFromCSSString:(NSString *)cssString
 {
     /* TODO - Implement */
+    // XXX - requires OSX 10.7
+    CGFloat r = 0.0, g = 0.0, b = 0.0;
+    NSString *colorStringRegExp = @"(#[0-9a-f]+|rgb\\(\\s*\\d+\\%?\\s*,\\s*\\d+\\%?\\s*,\\s*\\d+\\%?\\s*\\))";
+    NSError *error = NULL;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:colorStringRegExp
+                                                                           options:NSRegularExpressionCaseInsensitive
+                                                                             error:&error];
+    NSUInteger numberOfMatches = [regex numberOfMatchesInString:cssString
+                                                        options:0
+                                                          range:NSMakeRange(0, [cssString length])];
+    
+    if (numberOfMatches) {
+        NSRange rangeOfFirstMatch = [regex rangeOfFirstMatchInString:cssString options:0 range:NSMakeRange(0, [cssString length])];
+        NSArray *matches = [regex matchesInString:cssString
+                                          options:0
+                                            range:NSMakeRange(0, [cssString length])];
+        for (NSTextCheckingResult *match in matches) {
+            NSRange matchRange = [match range];
+            NSRange rangeOfFirstCapture = [match rangeAtIndex:1];
+            if (rangeOfFirstCapture.location + rangeOfFirstCapture.length <= [cssString length]) {
+                NSString *substringForFirstMatch = [cssString substringWithRange:rangeOfFirstCapture];
+                if ([substringForFirstMatch characterAtIndex:0] == '#') {
+                    if (rangeOfFirstCapture.location + rangeOfFirstCapture.length <= [cssString length]) {
+                        NSString *substringForFirstMatch = [cssString substringWithRange:rangeOfFirstCapture];
+                        if ([substringForFirstMatch length] == 3) {
+                            NSMutableString *fullColorString = [NSMutableString stringWithCapacity:6];
+                            for (int i = 1; i < [substringForFirstMatch length]; i++) {
+                                unichar hexchar = [substringForFirstMatch characterAtIndex:i];
+                                NSString *component = [NSString stringWithFormat:@"%c%c", hexchar, hexchar];
+                                [fullColorString appendString:component];
+                            }
+                            substringForFirstMatch = fullColorString;
+                        }
+                        if ([substringForFirstMatch length] == 6) {
+                            NSRange range = { 1, 2 };
+                            for (int i = 0; i < 6; i+=2) {
+                                NSString *hex = [substringForFirstMatch substringWithRange:range];
+                                range.location += 2;
+                                int numericalValue = 0;
+                                if (sscanf([hex UTF8String], "%02x", &numericalValue) == 0) {
+                                    switch (i) {
+                                        case 0:
+                                            r = numericalValue/255;
+                                            break;
+                                        case 1:
+                                            g = numericalValue/255;
+                                            break;
+                                        case 2:
+                                            b = numericalValue/255;
+                                            break;
+                                        default:
+                                            // TODO - Error Messages
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else if ([substringForFirstMatch characterAtIndex:0] == 'r') {
+                    NSString *pattern = @"rgb\\(\\s*(\\d+\\%?)\\s*,\\s*(\\d+\\%?)\\s*,\\s*(\\d+\\%?)\\s*\\)";
+                    NSRegularExpression *subRegex = [NSRegularExpression regularExpressionWithPattern:pattern
+                                                                                             options:NSRegularExpressionCaseInsensitive
+                                                                                               error:&error];
+                    NSUInteger numberOfMatches = [subRegex numberOfMatchesInString:substringForFirstMatch
+                                                                        options:0
+                                                                          range:NSMakeRange(0, [cssString length])];
+                    if (numberOfMatches) {
+                        NSRange rgbRange = [match range];
+                        NSRange redStringRange = [match rangeAtIndex:1];
+                        NSString *redString = [substringForFirstMatch substringWithRange:redStringRange];
+                        NSRange greenStringRange = [match rangeAtIndex:2];
+                        NSString *greenString = [substringForFirstMatch substringWithRange:greenStringRange];
+                        NSRange blueStringRange = [match rangeAtIndex:3];
+                        NSString *blueString = [substringForFirstMatch substringWithRange:blueStringRange];
+                        // TODO - handle %
+                        if (redString)
+                            r = [redString intValue]/255;
+                        if (greenString)
+                            g = [greenString intValue]/255;
+                        if (blueString)
+                            b = [blueString intValue]/255;
+                    }
+                    
+                }
+            }
+        }
+    }
+    return [NSColor colorWithDeviceRed:r green:g blue:b alpha:1];
 }
 
 static v8::Persistent<FunctionTemplate> objectTemplate;

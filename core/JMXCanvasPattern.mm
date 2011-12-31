@@ -68,6 +68,8 @@ static const CGPatternCallbacks patternCallbacks = {
         tilingMode = kCGPatternTilingNoDistortion;
         image = nil;
         currentPattern = nil;
+        for (int i = 0; i < 4; i++)
+            components[i] = 1.0;
     }
     return self;
 }
@@ -83,6 +85,11 @@ static const CGPatternCallbacks patternCallbacks = {
 {
     // TODO - Implement
     return self;
+}
+
+- (CGFloat *)components
+{
+    return components;
 }
 
 #pragma mark V8

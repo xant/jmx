@@ -365,6 +365,7 @@
     self.active = NO;
 }
 
+/*
 - (void)setActive:(BOOL)value
 {
     if (active != value) {
@@ -378,6 +379,7 @@
         }
     }
 }
+ */
 
 #pragma mark V8
 using namespace v8;

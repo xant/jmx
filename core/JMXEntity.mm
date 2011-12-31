@@ -28,6 +28,7 @@
 #import "JMXProxyPin.h"
 #import "JMXAttribute.h"
 #import "JMXContext.h"
+#import "JMXThreadedEntity.h"
 
 JMXV8_EXPORT_NODE_CLASS(JMXEntity);
 
@@ -35,7 +36,8 @@ using namespace v8;
 
 @implementation JMXEntity
 
-@synthesize label, active, owner;
+@dynamic label, active;
+@synthesize owner;
 
 - (void)notifyModifications
 {
@@ -441,7 +443,7 @@ using namespace v8;
 {
     JMXInputPin *pin = nil;
     @synchronized(self) {
-        for (JMXOutputPin *child in [self inputPins]) {
+        for (JMXInputPin *child in [self inputPins]) {
             if (child.direction == kJMXInputPin && [child.label isEqualTo:pinLabel]) {
                 pin = [child retain];
                 break;
@@ -590,21 +592,48 @@ using namespace v8;
 }
 */
 
-- (void)setLabel:(NSString *)newLabel
+- (NSString *)label
 {
-    if (label)
-        [label release];
-    label = [newLabel copy];
-    NSXMLNode *attr = [self attributeForName:@"label"];
-    [attr setStringValue:label];
+    @synchronized(self) {
+        return [[label retain] autorelease];
+    }
 }
 
-- (void)setActive:(BOOL)newActive
+- (void)setLabel:(NSString *)newLabel
 {
-    active = newActive;
-    NSXMLNode *attr = [self attributeForName:@"active"];
-    [attr setStringValue:active ? @"YES" : @"NO"];
-    activeOut.data = [NSNumber numberWithBool:active];
+    @synchronized(self) {
+        if (label)
+            [label release];
+        label = [newLabel copy];
+        NSXMLNode *attr = [self attributeForName:@"label"];
+        [attr setStringValue:label];
+    }
+}
+
+- (BOOL)active
+{
+    @synchronized(self) {
+        return active;
+    }
+}
+
+- (void)setActive:(BOOL)value
+{
+    @synchronized(self) {
+        if (active != value) {
+            active = value;
+            JMXThreadedEntity *th = [self privateDataForKey:@"threadedEntity"];
+            if (th) {
+                if (value)
+                    [th startThread];
+                else
+                    [th stopThread];
+            }
+        }
+        NSXMLNode *attr = [self attributeForName:@"active"];
+        [attr setStringValue:active ? @"YES" : @"NO"];
+        activeOut.data = [NSNumber numberWithBool:active];
+    }
 }
 
 #pragma mark <JMXPinOwner>

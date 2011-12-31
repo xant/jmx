@@ -104,6 +104,21 @@ function DOMString(string) {
 }
 DOMString.inherits(String);
 
+
+/**
+ * Type Definition DOMTimeStamp
+ * A DOMTimeStamp represents a number of milliseconds.
+ *
+ *
+ * IDL Definition
+ *
+ * typedef unsigned long long DOMTimeStamp;
+ *
+ */
+function DOMTimeStamp(number) {
+}
+DOMTimeStamp.inherits(Number);
+
 /**
  * DOMStringList
  * @constructor
@@ -406,14 +421,13 @@ NamedNodeMap.inherits(NodeList);
  *
  * @base Node
  */
+/* XXX - this is now implemented in native code to extend JMXElement
 function DocumentFragment() {
-    /**
-     * @private
-     */
     Object.defineProperty(this, "__className__", { value: "DocumentFragment", writable: false, enumerable: false });
-    
+    return new JMXGraphFragment();
 }
 DocumentFragment.inherits(Node);
+*/
 
 /**
  * DocumentFragment

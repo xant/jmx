@@ -140,7 +140,7 @@
 	// Set the desired client (output) data format
 	err = ExtAudioFileSetProperty(audioFile, kExtAudioFileProperty_ClientDataFormat, sizeof(theOutputFormat), &theOutputFormat);
 	if(err) {
-        NSLog(@"MyGetOpenALAudioData: ExtAudioFileSetProperty(kExtAudioFileProperty_ClientDataFormat) FAILED, Error = %d\n", err);
+        NSLog(@"MyGetOpenALAudioData: ExtAudioFileSetProperty(kExtAudioFileProperty_ClientDataFormat) FAILED, Error = %ld\n", (long)err);
         return nil;
     }
 	
@@ -148,7 +148,7 @@
 	thePropertySize = sizeof(theFileLengthInFrames);
 	err = ExtAudioFileGetProperty(audioFile, kExtAudioFileProperty_FileLengthFrames, &thePropertySize, &theFileLengthInFrames);
 	if(err) {
-        NSLog(@"MyGetOpenALAudioData: ExtAudioFileGetProperty(kExtAudioFileProperty_FileLengthFrames) FAILED, Error = %d\n", err);
+        NSLog(@"MyGetOpenALAudioData: ExtAudioFileGetProperty(kExtAudioFileProperty_FileLengthFrames) FAILED, Error = %ld\n", (long)err);
         return nil;
     }
 	
@@ -181,7 +181,7 @@
 			// failure
 			free (data);
             free(theDataBuffer);
-			NSLog(@"MyGetOpenALAudioData: ExtAudioFileRead FAILED, Error = %d\n", err);
+			NSLog(@"MyGetOpenALAudioData: ExtAudioFileRead FAILED, Error = %ld\n", (long)err);
             return nil;
 		}	
     }

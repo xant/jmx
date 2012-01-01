@@ -353,7 +353,7 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, JMXAudioDev
     theStatus = AudioObjectGetPropertyData( kAudioObjectSystemObject, &propertyAddress, 0, NULL, &theSize, &theID );
 	if (theStatus == 0)
 		return [[self class] deviceWithID:theID];
-    NSLog(@"Can't init defaultDevice %d (%d)", whichDevice, theStatus);
+    NSLog(@"Can't init defaultDevice %d (%ld)", whichDevice, (long)theStatus);
 	return nil;
 }
 

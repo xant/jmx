@@ -59,7 +59,7 @@
 	[sharedContext registerClass:[JMXTextEntity class]];
     [sharedContext registerClass:[JMXScriptFile class]];
     [sharedContext registerClass:[JMXScriptLive class]];
-	INFO("Registered %lu entities", [[sharedContext registeredClasses] count]);
+	INFO("Registered %ul entities", (unsigned int)[[sharedContext registeredClasses] count]);
 }
 
 - (void)awakeFromNib

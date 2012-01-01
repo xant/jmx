@@ -571,7 +571,7 @@ static v8::Handle<Value> GetDocument(v8::Local<v8::String> name, const v8::Acces
     else
         key = obj;
     p = (JMXPersistentInstance *)[[persistentInstances objectForKey:key] pointerValue];
-    NSLog(@"Releasing Persistent Instance: %@ (%lu)", p->obj, [p->obj retainCount]);
+    NSLog(@"Releasing Persistent Instance: %@ (%lu)", p->obj, (unsigned long)[p->obj retainCount]);
     if (p) {
         if ([p->obj conformsToProtocol:@protocol(JMXRunLoop)])
             [p->obj performSelector:@selector(stop)];

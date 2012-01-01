@@ -348,7 +348,7 @@
 		AACE7D321293195600FBDC0D /* JMXV8PropertyAccessors.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXV8PropertyAccessors.mm; sourceTree = "<group>"; };
 		AAD139B9128EA0DF00ECB03A /* JMXDrawPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXDrawPath.h; sourceTree = "<group>"; };
 		AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXDrawPath.mm; sourceTree = "<group>"; };
-		AAD13C48128EF2AB00ECB03A /* NSColor+V8.h */ = {isa = PBXFileReference; fileEncoding = 4; path = "NSColor+V8.h"; sourceTree = "<group>"; };
+		AAD13C48128EF2AB00ECB03A /* NSColor+V8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSColor+V8.h"; sourceTree = "<group>"; };
 		AAD13C49128EF2AB00ECB03A /* NSColor+V8.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSColor+V8.mm"; sourceTree = "<group>"; };
 		AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		AAFAAD87129095EB00949028 /* JMXScript.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScript.mm; sourceTree = "<group>"; };

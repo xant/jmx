@@ -111,7 +111,7 @@ static OSStatus _FillComplexBufferProc (
         
         if( ![device open: &o_returnedError] )
         {
-            NSLog(@"Unable to open the capture device (%ld)", [o_returnedError code]);
+            NSLog(@"Unable to open the capture device (%ld)", (long)[o_returnedError code]);
             goto error;
         }
         
@@ -134,14 +134,14 @@ static OSStatus _FillComplexBufferProc (
         ret = [session addInput:input error: &o_returnedError];
         if( !ret )
         {
-            NSLog(@"default audio capture device could not be added to capture session (%ld)", [o_returnedError code]);
+            NSLog(@"default audio capture device could not be added to capture session (%ld)", (long)[o_returnedError code]);
             goto error;
         }
         
         ret = [session addOutput:self error: &o_returnedError];
         if( !ret )
         {
-            NSLog(@"output could not be added to capture session (%ld)", [o_returnedError code]);
+            NSLog(@"output could not be added to capture session (%ld)", (long)[o_returnedError code]);
             goto error;
         }
         

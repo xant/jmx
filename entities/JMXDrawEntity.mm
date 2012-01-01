@@ -9,7 +9,7 @@
 #define __JMXV8__
 #import "JMXDrawEntity.h"
 #include "JMXScript.h"
-#import "JMXColor.h"
+#import "NSColor+V8.h"
 #import "JMXThreadedEntity.h"
 
 JMXV8_EXPORT_NODE_CLASS(JMXDrawEntity);

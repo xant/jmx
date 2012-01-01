@@ -109,7 +109,7 @@
 		AACE7D04129315DE00FBDC0D /* JMXScriptEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */; };
 		AACE7D331293195600FBDC0D /* JMXV8PropertyAccessors.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACE7D321293195600FBDC0D /* JMXV8PropertyAccessors.mm */; };
 		AAD139BB128EA0DF00ECB03A /* JMXDrawPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */; };
-		AAD13C4A128EF2AB00ECB03A /* JMXColor.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD13C49128EF2AB00ECB03A /* JMXColor.mm */; };
+		AAD13C4A128EF2AB00ECB03A /* NSColor+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD13C49128EF2AB00ECB03A /* NSColor+V8.mm */; };
 		AADEBFC812414F7E00A6A06D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */; };
 		AAFAAD88129095EB00949028 /* JMXScript.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAFAAD87129095EB00949028 /* JMXScript.mm */; };
 /* End PBXBuildFile section */
@@ -348,8 +348,8 @@
 		AACE7D321293195600FBDC0D /* JMXV8PropertyAccessors.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXV8PropertyAccessors.mm; sourceTree = "<group>"; };
 		AAD139B9128EA0DF00ECB03A /* JMXDrawPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXDrawPath.h; sourceTree = "<group>"; };
 		AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXDrawPath.mm; sourceTree = "<group>"; };
-		AAD13C48128EF2AB00ECB03A /* JMXColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXColor.h; sourceTree = "<group>"; };
-		AAD13C49128EF2AB00ECB03A /* JMXColor.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXColor.mm; sourceTree = "<group>"; };
+		AAD13C48128EF2AB00ECB03A /* NSColor+V8.h */ = {isa = PBXFileReference; fileEncoding = 4; path = "NSColor+V8.h"; sourceTree = "<group>"; };
+		AAD13C49128EF2AB00ECB03A /* NSColor+V8.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSColor+V8.mm"; sourceTree = "<group>"; };
 		AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		AAFAAD87129095EB00949028 /* JMXScript.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScript.mm; sourceTree = "<group>"; };
 		AAFAADA1129097A200949028 /* JMXV8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXV8.h; sourceTree = "<group>"; };
@@ -652,8 +652,8 @@
 				AAC637DF12D5204C00B69DFE /* JMXAttribute.mm */,
 				825C313A1275ADD7006376B8 /* JMXPoint.h */,
 				825C313B1275ADD7006376B8 /* JMXPoint.mm */,
-				AAD13C48128EF2AB00ECB03A /* JMXColor.h */,
-				AAD13C49128EF2AB00ECB03A /* JMXColor.mm */,
+				AAD13C48128EF2AB00ECB03A /* NSColor+V8.h */,
+				AAD13C49128EF2AB00ECB03A /* NSColor+V8.mm */,
 				825C31401275ADD7006376B8 /* JMXSize.h */,
 				825C31411275ADD7006376B8 /* JMXSize.mm */,
 				AA9C19D212E4BDD500329158 /* JMXRect.h */,
@@ -954,7 +954,7 @@
 				AA8CB78E1282BB9900A17115 /* JMXScriptFile.mm in Sources */,
 				82AD7F701289F3C300C85EB1 /* JMXOpenGLDraw.mm in Sources */,
 				AAD139BB128EA0DF00ECB03A /* JMXDrawPath.mm in Sources */,
-				AAD13C4A128EF2AB00ECB03A /* JMXColor.mm in Sources */,
+				AAD13C4A128EF2AB00ECB03A /* NSColor+V8.mm in Sources */,
 				82A21F5E12902EE50002738B /* JMXDocumentSplitViewDelegate.m in Sources */,
 				AAFAAD88129095EB00949028 /* JMXScript.mm in Sources */,
 				82A2206D129091910002738B /* JMXBoardViewController.m in Sources */,

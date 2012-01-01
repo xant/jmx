@@ -27,7 +27,7 @@
 #import "JMXOutputPin.h"
 #import "JMXDrawEntity.h"
 #import "JMXPoint.h"
-#import "JMXColor.h"
+#import "NSColor+V8.h"
 #import "JMXSize.h"
 #import "JMXElement.h"
 #import "JMXCDATA.h"

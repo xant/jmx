@@ -7,7 +7,7 @@
 //
 
 #define __JMXV8__ 1
-#import "JMXColor.h"
+#import "NSColor+V8.h"
 #import "JMXScript.h"
 
 using namespace v8;

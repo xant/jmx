@@ -8,7 +8,7 @@
 
 #define __JMXV8__
 #import "JMXCanvasGradient.h"
-#import "JMXColor.h"
+#import "NSColor+V8.h"
 #import "JMXPoint.h"
 
 #pragma mark JMXCanvasGradient

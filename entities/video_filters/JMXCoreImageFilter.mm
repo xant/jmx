@@ -24,7 +24,7 @@
 #import <QuartzCore/CIFilter.h>
 #import "JMXContext.h"
 #define __JMXV8__
-#import "JMXColor.h"
+#import "NSColor+V8.h"
 #import "JMXCoreImageFilter.h"
 #import "JMXV8PropertyAccessors.h"
 #import "JMXScript.h"

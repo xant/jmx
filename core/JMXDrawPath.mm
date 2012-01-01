@@ -12,7 +12,7 @@
 #import "JMXScript.h"
 #import "JMXCanvasGradient.h"
 #import "JMXCanvasPattern.h"
-#import "JMXColor.h"
+#import "NSColor+V8.h"
 #import "JMXAttribute.h"
 #import <Foundation/Foundation.h>
 #include <regex.h>

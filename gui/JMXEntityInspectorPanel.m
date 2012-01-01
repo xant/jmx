@@ -23,7 +23,7 @@
 
 #import "JMXEntityInspectorPanel.h"
 #import "JMXEntityLayer.h"
-#import "JMXColor.h"
+#import "NSColor+V8.h"
 #import "JMXTextPanel.h"
 
 @interface JMXEntityInspectorPanel (Private)

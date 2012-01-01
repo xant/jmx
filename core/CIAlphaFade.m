@@ -63,10 +63,15 @@ static CIKernel *alphaFadeKernel = nil;
     return [self apply: alphaFadeKernel, src, outputOpacity, nil];
 }
 
+- (CIFilter *)filterWithName:(NSString *)name
+{
+    return [CIAlphaFade filterWithName:name];
+}
+
 + (void)initialize
 {
     [CIFilter registerFilterName: @"CIAlphaFadeBlendMode"
-        constructor: self
+        constructor:[[[self alloc] init] autorelease]
         classAttributes: [NSDictionary dictionaryWithObjectsAndKeys:
 			@"Fade Alpha", kCIAttributeFilterDisplayName,
 			[NSArray arrayWithObjects:

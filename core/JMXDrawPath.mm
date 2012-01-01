@@ -94,8 +94,8 @@ using namespace v8;
         _frameSize = [frameSize copy];
         _clear = NO;
         currentFrame = nil;
-        fillStyle = (JMXColor *)[JMXColor colorWithCalibratedRed:0.0 green:0.0 blue:0.0 alpha:1.0];
-        strokeStyle = (JMXColor *)[JMXColor colorWithCalibratedRed:0.0 green:0.0 blue:0.0 alpha:1.0];
+        fillStyle = (NSColor *)[NSColor colorWithCalibratedRed:0.0 green:0.0 blue:0.0 alpha:1.0];
+        strokeStyle = (NSColor *)[NSColor colorWithCalibratedRed:0.0 green:0.0 blue:0.0 alpha:1.0];
         lock = [[NSRecursiveLock alloc] init]; // XXX - remove (we don't want locks)
     }
     return self;
@@ -391,7 +391,7 @@ using namespace v8;
     [lock unlock];
 }
 
-- (void)restoreCurrentState
+- (void)restorePreviousState
 {
     [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
@@ -647,7 +647,9 @@ using namespace v8;
     // (no deadlock will happen)
     [lock lock];
     [self makeCurrentContext];
+    [self saveCurrentState];
     [text drawAtPoint:point.nsPoint]; // draw at offset position
+    [self restorePreviousState];
     [lock unlock];
 }
 
@@ -697,11 +699,21 @@ static NSString *validCompositeOperations[] = {
     nil
 };
 
+- (NSString *)globalCompositeOperation
+{
+    @synchronized(self) {
+        return [[globalCompositeOperation retain] autorelease];
+    }
+}
+
 - (void)setGlobalCompositeOperation:(NSString *)operation
 {
     for (int i = 0; validCompositeOperations[i]; i++) {
         if ([operation caseInsensitiveCompare:validCompositeOperations[i]] == NSOrderedSame) {
-            globalCompositeOperation = [validCompositeOperations[i] copy];
+            @synchronized(self) {
+                globalCompositeOperation = [validCompositeOperations[i] copy];
+            }
+            break;
         }
     }
     // TODO - Error Messages
@@ -729,7 +741,7 @@ static v8::Handle<Value> Restore(const Arguments& args)
     JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
-    [drawPath restoreCurrentState];
+    [drawPath restorePreviousState];
     return Undefined();
 }
 
@@ -1081,7 +1093,7 @@ static v8::Handle<Value> StrokeText(const Arguments& args)
                 return handleScope.Close(v8::Undefined());
         }
 
-        JMXColor *textColor = (JMXColor *)[JMXColor whiteColor];
+        NSColor *textColor = (NSColor *)[NSColor whiteColor];
         String::Utf8Value text(args[0]->ToString());
         CGFloat x = args[1]->NumberValue();
         CGFloat y = args[2]->NumberValue();
@@ -1125,7 +1137,7 @@ static void SetStyle(Local<String> name, Local<Value> value, const AccessorInfo&
     if (value->IsObject()) {
         if (strcmp(*str, "[object Color]") == 0) {
             v8::Handle<Object> object = value->ToObject();
-            JMXColor *color = (JMXColor *)object->GetPointerFromInternalField(0);
+            NSColor *color = (NSColor *)object->GetPointerFromInternalField(0);
             String::Utf8Value nameStr(name);
             if (strcmp(*nameStr, "strokeStyle") == 0) {
                 [drawPath setStrokeStyle:color];

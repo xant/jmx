@@ -53,7 +53,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXTextEntity);
         renderedText = nil;
         JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
         if (threadedEntity)
-            return threadedEntity;
+            return (JMXTextEntity *)threadedEntity;
         [self dealloc];
     }
     return nil;
@@ -239,7 +239,7 @@ static v8::Handle<Value>SetBackgroundColor(const Arguments& args)
     String::Utf8Value str(args[0]->ToString());
     if (strcmp(*str, "[object Color]") == 0) {
         v8::Handle<Object> object = args[0]->ToObject();
-        JMXColor *color = (JMXColor *)object->GetPointerFromInternalField(0);
+        NSColor *color = (NSColor *)object->GetPointerFromInternalField(0);
         [entity setBackgroundColor:color];
         ret = YES;
     }
@@ -254,7 +254,7 @@ static v8::Handle<Value>SetFontColor(const Arguments& args)
     String::Utf8Value str(args[0]->ToString());
     if (strcmp(*str, "[object Color]") == 0) {
         v8::Handle<Object> object = args[0]->ToObject();
-        JMXColor *color = (JMXColor *)object->GetPointerFromInternalField(0);
+        NSColor *color = (NSColor *)object->GetPointerFromInternalField(0);
         [entity setFontColor:color];
     }
     return handleScope.Close(Undefined());

@@ -34,7 +34,12 @@
     AudioBufferList *deinterleavedBuffer;
     UInt32 runcycleCount;
     Float32 frequencyValues[kJMXAudioSpectrumNumFrequencies];
+    NSArray *frequencies;
 }
+
+- (id)initWithFrequencies:(NSArray *)freqs;
+- (int)frequencyAtIndex:(NSUInteger)index;
+- (int)numberOfFrequencies;
 
 @end
 

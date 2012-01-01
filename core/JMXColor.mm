@@ -12,7 +12,8 @@
 
 using namespace v8;
 
-@implementation JMXColor
+@implementation NSColor (JMXColor)
+
 
 + (id)colorFromCSSString:(NSString *)cssString
 {
@@ -29,12 +30,10 @@ using namespace v8;
                                                           range:NSMakeRange(0, [cssString length])];
     
     if (numberOfMatches) {
-        NSRange rangeOfFirstMatch = [regex rangeOfFirstMatchInString:cssString options:0 range:NSMakeRange(0, [cssString length])];
         NSArray *matches = [regex matchesInString:cssString
                                           options:0
                                             range:NSMakeRange(0, [cssString length])];
         for (NSTextCheckingResult *match in matches) {
-            NSRange matchRange = [match range];
             NSRange rangeOfFirstCapture = [match rangeAtIndex:1];
             if (rangeOfFirstCapture.location + rangeOfFirstCapture.length <= [cssString length]) {
                 NSString *substringForFirstMatch = [cssString substringWithRange:rangeOfFirstCapture];
@@ -84,7 +83,7 @@ using namespace v8;
                                                                         options:0
                                                                           range:NSMakeRange(0, [cssString length])];
                     if (numberOfMatches) {
-                        NSRange rgbRange = [match range];
+                        //NSRange rgbRange = [match range];
                         NSRange redStringRange = [match rangeAtIndex:1];
                         NSString *redString = [substringForFirstMatch substringWithRange:redStringRange];
                         NSRange greenStringRange = [match rangeAtIndex:2];
@@ -136,11 +135,6 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
     return objectTemplate;
 }
 
-- (void)dealloc
-{
-    [super dealloc];
-}
-
 - (CGFloat)r
 {
     return [self redComponent];
@@ -168,7 +162,7 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
 {
     //v8::Locker lock;
     HandleScope handle_scope;
-    v8::Handle<FunctionTemplate> objectTemplate = [JMXColor jsObjectTemplate];
+    v8::Handle<FunctionTemplate> objectTemplate = [NSColor jsObjectTemplate];
     v8::Handle<Object> jsInstance = objectTemplate->InstanceTemplate()->NewInstance();
     jsInstance->SetPointerInInternalField(0, self);
     return handle_scope.Close(jsInstance);
@@ -190,7 +184,7 @@ static void JMXColorJSDestructor(Persistent<Value> object, void *parameter)
 {
     HandleScope handle_scope;
     v8::Locker lock;
-    JMXColor *obj = static_cast<JMXColor *>(parameter);
+    NSColor *obj = static_cast<NSColor *>(parameter);
     //NSLog(@"V8 WeakCallback (Color) called ");
     [obj release];
     //Persistent<Object> instance = v8::Persistent<Object>::Cast(object);
@@ -207,7 +201,7 @@ v8::Handle<v8::Value> JMXColorJSConstructor(const v8::Arguments& args)
 {
     HandleScope handleScope;
     //v8::Locker locker;
-    v8::Persistent<FunctionTemplate> objectTemplate = [JMXColor jsObjectTemplate];
+    v8::Persistent<FunctionTemplate> objectTemplate = [NSColor jsObjectTemplate];
     CGFloat r = 0.0;
     CGFloat g = 0.0;
     CGFloat b = 0.0;
@@ -222,7 +216,7 @@ v8::Handle<v8::Value> JMXColorJSConstructor(const v8::Arguments& args)
     }
     Persistent<Object>jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    JMXColor *color = [[JMXColor colorWithDeviceRed:r green:g blue:b alpha:a] retain];
+    NSColor *color = [[NSColor colorWithDeviceRed:r green:g blue:b alpha:a] retain];
     jsInstance.MakeWeak(color, JMXColorJSDestructor);
     jsInstance->SetPointerInInternalField(0, color);
     [pool drain];

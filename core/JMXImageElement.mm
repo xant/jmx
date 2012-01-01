@@ -35,14 +35,23 @@ JMXV8_EXPORT_CLASS(JMXImageElement)
     return self;
 }
 
+- (NSString *)alt
+{
+    @synchronized(self) {
+        return alt;
+    }
+}
+
 - (void)setAlt:(NSString *)newValue
 {
-    if (alt)
-        [alt release];
-    alt = [newValue copy];
-    NSXMLNode *attr = [self attributeForName:@"alt"];
-    if (attr)
-        [attr setStringValue:alt];
+    @synchronized(self) {
+        if (alt)
+            [alt release];
+        alt = [newValue copy];
+        NSXMLNode *attr = [self attributeForName:@"alt"];
+        if (attr)
+            [attr setStringValue:alt];
+    }
 }
 
 - (void)loadImageData
@@ -54,36 +63,63 @@ JMXV8_EXPORT_CLASS(JMXImageElement)
     [imageLock unlock];
 }
 
+- (NSString *)src
+{
+    @synchronized(self) {
+        return src;
+    }
+}
+
 - (void)setSrc:(NSString *)newValue
 {
-    if (src) {
-        if ([src isEqualTo:newValue]) // same value has been provided
-            return; // we don't need to do anything
-        // let's release the old value if instead a new one has
-        // been provided
-        [src release]; 
+    @synchronized(self) {
+        if (src) {
+            if ([src isEqualTo:newValue]) // same value has been provided
+                return; // we don't need to do anything
+            // let's release the old value if instead a new one has
+            // been provided
+            [src release]; 
+        }
+        src = [newValue copy];
+        NSXMLNode *attr = [self attributeForName:@"src"];
+        if (attr)
+            [attr setStringValue:src];
     }
-    src = [newValue copy];
-    NSXMLNode *attr = [self attributeForName:@"src"];
-    if (attr)
-        [attr setStringValue:src];
     [self loadImageData];
+}
+
+- (NSUInteger)width
+{
+    @synchronized(self) {
+        return width;
+    }
 }
 
 - (void)setWidth:(NSUInteger)newValue
 {
-    width = newValue;
-    NSXMLNode *attr = [self attributeForName:@"width"];
-    if (attr)
-        [attr setStringValue:[NSString stringWithFormat:@"%u", newValue]];
+    @synchronized(self) {
+        width = newValue;
+        NSXMLNode *attr = [self attributeForName:@"width"];
+        if (attr)
+            [attr setStringValue:[NSString stringWithFormat:@"%u", newValue]];
+    }
+}
+
+- (NSUInteger)height
+{
+    @synchronized(self) {
+        return height;
+    }
 }
 
 - (void)setHeight:(NSUInteger)newValue
 {
-    height = newValue;
-    NSXMLNode *attr = [self attributeForName:@"height"];
-    if (attr)
-        [attr setStringValue:[NSString stringWithFormat:@"%u", newValue]];
+    @synchronized(self) {
+        height = newValue;
+        NSXMLNode *attr = [self attributeForName:@"height"];
+        if (attr)
+            [attr setStringValue:[NSString stringWithFormat:@"%u", newValue]];
+    }
 }
 
 - (CGImageRef)cgImage

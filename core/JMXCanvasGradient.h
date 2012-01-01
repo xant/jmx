@@ -41,7 +41,7 @@ typedef enum {
 - (id)initLinearFrom:(JMXPoint *)from to:(JMXPoint *)to;
 - (id)initRadialFrom:(JMXPoint *)from radius:(CGFloat)r1 to:(JMXPoint *)to radius:(CGFloat)r2;
 
-- (void)addColor:(JMXColor *)color stop:(NSUInteger)offset;
+- (void)addColor:(NSColor *)color stop:(NSUInteger)offset;
 - (CGGradientRef)gradientRef;
 
 @end

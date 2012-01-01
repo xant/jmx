@@ -76,18 +76,27 @@
     [self setIsVisible:NO];
 }
 
+- (JMXInputPin *)pin
+{
+    @synchronized(self) {
+        return [[pin retain] autorelease];
+    }
+}
+
 - (void)setPin:(JMXInputPin *)aPin
 {
-    if (pin != aPin) {
-        [[NSNotificationCenter defaultCenter] removeObserver:self 
-                                                        name:@"JMXEntityInputPinRemoved" 
-                                                      object:pin.owner];
-        pin = aPin;
-        if (pin) {
-            [[NSNotificationCenter defaultCenter] addObserver:self 
-                                                     selector:@selector(unsetPin:)
-                                                         name:@"JMXEntityInputPinRemoved" 
-                                                       object:pin.owner];
+    @synchronized(self) {
+        if (pin != aPin) {
+            [[NSNotificationCenter defaultCenter] removeObserver:self 
+                                                            name:@"JMXEntityInputPinRemoved" 
+                                                          object:pin.owner];
+            pin = aPin;
+            if (pin) {
+                [[NSNotificationCenter defaultCenter] addObserver:self 
+                                                         selector:@selector(unsetPin:)
+                                                             name:@"JMXEntityInputPinRemoved" 
+                                                           object:pin.owner];
+            }
         }
     }
 }

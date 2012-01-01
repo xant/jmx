@@ -21,9 +21,7 @@
  @class JMXColor
  @discussion conforms to protocols: JMXV8
  */
-@interface JMXColor : NSColor < JMXV8, JMXCanvasStyle > {
-    
-}
+@interface NSColor (JMXColor) < JMXV8, JMXCanvasStyle > 
 
 /*!
  @property r

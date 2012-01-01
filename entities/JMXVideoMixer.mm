@@ -53,7 +53,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXVideoMixer);
         currentFrame = nil;
         JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
         if (threadedEntity)
-            return threadedEntity;
+            return (JMXVideoMixer *)threadedEntity;
         [self dealloc];
     }
     return nil;
@@ -66,6 +66,13 @@ JMXV8_EXPORT_NODE_CLASS(JMXVideoMixer);
     if (ciBlendFilter)
         [ciBlendFilter release];
     [super dealloc];
+}
+
+- (NSString *)blendFilter
+{
+    @synchronized(self) {
+        return [[blendFilter retain] autorelease];
+    }
 }
 
 - (void)setBlendFilter:(NSString *)blendFilterName

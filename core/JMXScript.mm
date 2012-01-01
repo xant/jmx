@@ -532,7 +532,6 @@ static v8::Handle<Value> GetDocument(v8::Local<v8::String> name, const v8::Acces
     if (entity) {
         scriptEntity = entity;
         ctx->Global()->Set(String::New("scriptEntity"), [scriptEntity jsObj]);
-        //ctx->Global()->SetPointerInInternalField(0, scriptEntity);
     }
     //NSLog(@"%@", [self exportGraph:[[JMXContext sharedContext] allEntities] andPins:nil]);
     ctx->Global()->SetHiddenValue(String::New("quit"), v8::Boolean::New(0));

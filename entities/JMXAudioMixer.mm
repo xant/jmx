@@ -33,7 +33,7 @@
         // TODO - if using aggregate device we don't need to be threaded
         JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
         if (threadedEntity)
-            return threadedEntity;
+            return (JMXAudioMixer *)threadedEntity;
         [self dealloc];
     }
     return nil;
@@ -151,13 +151,22 @@
     }
 }
 
+- (BOOL)useAggregateDevice
+{
+    @synchronized(self) {
+        return useAggregateDevice;
+    }
+}
+
 - (void)setUseAggregateDevice:(BOOL)value
 {
     // refulse to change the flag if we are running
     // TODO - we should just stop/restart and allow 
     //        changing the mode while running
-    if (!self.active)
-        useAggregateDevice = value;
+    @synchronized(self) {
+        if (!self.active)
+            useAggregateDevice = value;
+    }
 }
 
 @end

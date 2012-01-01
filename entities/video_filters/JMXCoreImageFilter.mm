@@ -92,7 +92,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXCoreImageFilter);
             @try {
                 if ([value isKindOfClass:[JMXPoint class]]) { // XXX
                     [ciFilter setValue:[CIVector vectorWithX:[value x] Y:[value y]] forKey:pinName];
-                } else if ([value isKindOfClass:[JMXColor class]]) {
+                } else if ([value isKindOfClass:[NSColor class]]) {
                     CIColor *color = [CIColor colorWithRed:[value redComponent]
                                                      green:[value greenComponent]
                                                       blue:[value blueComponent]];

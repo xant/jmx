@@ -101,7 +101,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXQtVideoCaptureEntity);
     
     if( ![device open: &o_returnedError] )
     {
-        NSLog(@"Unable to open the capture device (%i)", [o_returnedError code]);
+        NSLog(@"Unable to open the capture device (%ld)", [o_returnedError code]);
         goto error;
     }
     
@@ -129,14 +129,14 @@ JMXV8_EXPORT_NODE_CLASS(JMXQtVideoCaptureEntity);
     ret = [session addInput:input error: &o_returnedError];
     if( !ret )
     {
-        NSLog(@"default video capture device could not be added to capture session (%i)", [o_returnedError code]);
+        NSLog(@"default video capture device could not be added to capture session (%ld)", [o_returnedError code]);
         goto error;
     }
     
     ret = [session addOutput:self error: &o_returnedError];
     if( !ret )
     {
-        NSLog(@"output could not be added to capture session (%i)", [o_returnedError code]);
+        NSLog(@"output could not be added to capture session (%ld)", [o_returnedError code]);
         goto error;
     }
     

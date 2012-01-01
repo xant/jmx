@@ -82,7 +82,7 @@ JMXV8_EXPORT_CLASS(JMXCanvasGradient)
     return [self init];
 }
 
-- (void)addColor:(JMXColor *)color stop:(NSUInteger)offset
+- (void)addColor:(NSColor *)color stop:(NSUInteger)offset
 {
     [colors addObject:color];
     [locations addObject:[NSNumber numberWithUnsignedInt:offset]];
@@ -119,7 +119,7 @@ static v8::Handle<Value> AddColorStop(const Arguments& args)
     if (args.Length() > 1) {
         v8::String::Utf8Value colorString(args[0]);
         double offset = args[1]->NumberValue();
-        JMXColor *color = [JMXColor colorFromCSSString:[NSString stringWithUTF8String:*colorString]];
+        NSColor *color = [NSColor colorFromCSSString:[NSString stringWithUTF8String:*colorString]];
         if (color) {
             [gradient addColor:color stop:offset];
         }

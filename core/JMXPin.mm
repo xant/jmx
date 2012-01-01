@@ -224,7 +224,7 @@ using namespace v8;
 
 + (NSString *)nameforType:(JMXPinType)type
 {
-    switch (type) {
+    switch ((int)type) {
         case kJMXStringPin:
             return @"String";
         case kJMXTextPin:
@@ -477,7 +477,7 @@ using namespace v8;
         return NO;
     }
     /* TODO - validate the actual value */
-    switch (self.type) {
+    switch ((int)self.type) {
         case kJMXNumberPin:
             break;
         case kJMXStringPin:

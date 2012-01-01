@@ -24,11 +24,21 @@ JMXV8_EXPORT_NODE_CLASS(JMXAudioSpectrumAnalyzer);
 #define kJMXAudioSpectrumImageWidth 320
 #define kJMXAudioSpectrumImageHeight 240
 
-static int _frequencies[kJMXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 350, 500, 750, 1000, 2000, 3000, 4000, 5000, 8000, 16000 }; 
+static int _defaultFrequencies[kJMXAudioSpectrumNumFrequencies] = 
+    { 30, 80, 125, 250, 350, 500, 750, 1000, 2000, 3000, 4000, 5000, 8000, 16000 }; 
 
 @implementation JMXAudioSpectrumAnalyzer
 
 - (id)init
+{
+    NSMutableArray *freqs = [NSMutableArray arrayWithCapacity:kJMXAudioSpectrumNumFrequencies];
+    for (int i = 0; i < kJMXAudioSpectrumNumFrequencies; i++) {
+        [freqs addObject:[NSNumber numberWithInt:_defaultFrequencies[i]]];
+    }
+    return [self initWithFrequencies:freqs];
+}
+
+- (id)initWithFrequencies:(NSArray *)freqs
 {
     self = [super init];
     if (self) {
@@ -72,13 +82,14 @@ static int _frequencies[kJMXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 3
         deinterleavedBuffer->mBuffers[1].mDataByteSize = sampleSize*numBins;
         deinterleavedBuffer->mBuffers[1].mData = calloc(1,sampleSize*numBins);
         
+        frequencies = [freqs copy];
         // setup the frequency pins
         frequencyPins = [[NSMutableArray alloc] init];
-        for (int i = 0; i < kJMXAudioSpectrumNumFrequencies; i++) {
-            int freq = _frequencies[i];
+        for (NSNumber *frequency in frequencies) {
+            int freq = [frequency intValue];
             NSString *pinName = freq < 1000
-                              ? [NSString stringWithFormat:@"%dHz", freq]
-                              : [NSString stringWithFormat:@"%dKhz", freq/1000]; 
+            ? [NSString stringWithFormat:@"%dHz", freq]
+            : [NSString stringWithFormat:@"%dKhz", freq/1000]; 
             [frequencyPins addObject:[self registerOutputPin:pinName withType:kJMXNumberPin]];
         }
         
@@ -126,23 +137,23 @@ static int _frequencies[kJMXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 3
                     size:[JMXSize sizeWithNSSize:frequencyRect.size]
              strokeColor:[NSColor yellowColor] fillColor:[NSColor yellowColor]];
 
-        /*
         NSMutableDictionary *attribs = [NSMutableDictionary dictionary];
         [attribs setObject:[NSFont labelFontOfSize:10] forKey:NSFontAttributeName];
         [attribs setObject:[NSColor lightGrayColor]
                     forKey:NSForegroundColorAttributeName];
+        int freq = [[frequencies objectAtIndex:i] intValue];
         // XXX - how to use bordercolor now? 
-        NSString *label = _frequencies[i] < 1000
-        ? [NSString stringWithFormat:@"%d", _frequencies[i]]
-        : [NSString stringWithFormat:@"%dK", _frequencies[i]/1000]; 
-        NSAttributedString * string = [[[NSAttributedString alloc] initWithString:label 
+        NSString *freqLabel = freq < 1000
+                            ? [NSString stringWithFormat:@"%d", freq]
+                            : [NSString stringWithFormat:@"%dK", freq/1000]; 
+        NSAttributedString * string = [[[NSAttributedString alloc] initWithString:freqLabel 
                                                                        attributes:attribs]
                                        autorelease];
-        NSPoint point;
-        point.x = frequencyRect.origin.x+4;
-        point.y = 4;
-        [string drawAtPoint:point];
-         */
+        NSPoint nsPoint;
+        nsPoint.x = frequencyRect.origin.x;
+        nsPoint.y = 4;
+        JMXPoint *point = [JMXPoint pointWithNSPoint:nsPoint];
+        [drawer strokeText:string atPoint:point];
     }
     [drawer render];
     [imagePin deliverData:[drawer currentFrame]];
@@ -196,7 +207,8 @@ static int _frequencies[kJMXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 3
         [analyzer getMagnitude:spectrumBuffer min:minAmp max:maxAmp];
         
         for (UInt32 i = 0; i < kJMXAudioSpectrumNumFrequencies; i++) {	// for each frequency
-            int offset = _frequencies[i]*numBins/44100*analyzer.numChannels;
+            int freq = [[frequencies objectAtIndex:i] intValue];
+            int offset = freq*numBins/44100*analyzer.numChannels;
             Float32 value = (((Float32 *)(spectrumBuffer->mBuffers[0].mData))[offset] +
                              ((Float32 *)(spectrumBuffer->mBuffers[1].mData))[offset]) * 0.5;
             if (value < 0.0)
@@ -226,15 +238,29 @@ static int _frequencies[kJMXAudioSpectrumNumFrequencies] = { 30, 80, 125, 250, 3
     return [pinNames autorelease];
 }
 
+- (int)numberOfFrequencies
+{
+    return [frequencies count];
+}
+
+- (int)frequencyAtIndex:(NSUInteger)index
+{
+    if ([frequencies count] > index)
+        return [[frequencies objectAtIndex:index] intValue];
+    return -1;
+}
+
 #pragma mark V8
 using namespace v8;
 
 static v8::Handle<Value>frequencies(const Arguments& args)
 {
     HandleScope handleScope;
-    v8::Handle<Array> list = v8::Array::New(kJMXAudioSpectrumNumFrequencies);
-    for (int i = 0; i < kJMXAudioSpectrumNumFrequencies; i++) {
-        list->Set(i, v8::Integer::New(_frequencies[i]));
+    JMXAudioSpectrumAnalyzer *entity = (JMXAudioSpectrumAnalyzer *)args.Holder()->GetPointerFromInternalField(0);
+    v8::Handle<Array> list = v8::Array::New(entity.numberOfFrequencies);
+    for (int i = 0; i < entity.numberOfFrequencies; i++) {
+        int freq = [entity frequencyAtIndex:i];
+        list->Set(i, v8::Integer::New(freq));
     }
     return handleScope.Close(list);
 }

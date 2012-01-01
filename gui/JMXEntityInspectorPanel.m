@@ -209,7 +209,7 @@
 {
     NSArray *pins;
     NSColorPanel *panel = sender;
-    JMXColor *color = (JMXColor *)[panel color];
+    NSColor *color = (NSColor *)[panel color];
     pins = [entityLayer.entity inputPins];
     JMXInputPin *pin = [pins objectAtIndex:[inputPins selectedRow]];
     if (pin.type == kJMXColorPin)

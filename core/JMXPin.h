@@ -61,7 +61,7 @@
  @constant kJMXBooleanPin NSNumber
  */
 typedef enum {
-    kJMXVoidPin,
+    kJMXVoidPin = 0,
     kJMXStringPin,
     kJMXTextPin,
     kJMXNumberPin,

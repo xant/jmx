@@ -28,6 +28,8 @@ canvas = elements[0];
 canvas = $('canvas:first', drawer).get(0);
 //canvas = drawer.getElementsByTagName('canvas')[0];
 
+entities = $('Entities').get(0);
+
 mainloop = function() {
     //drawer.clear();
     point = new Point(rand()%width, rand()%height);

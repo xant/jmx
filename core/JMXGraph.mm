@@ -110,7 +110,7 @@ static NSXMLNode *GatherElementById(NSXMLNode *node, char *jsId)
 
 static v8::Handle<Value> GetElementById(const Arguments& args)
 {
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
    // NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     v8::String::Utf8Value jsId(args[0]);

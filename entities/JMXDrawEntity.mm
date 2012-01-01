@@ -27,7 +27,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXDrawEntity);
         self.label = @"DrawPath";
         [self addChild:drawPath];
         if (threadedEntity)
-            return threadedEntity;
+            return (JMXDrawEntity *)threadedEntity;
     }
     return nil;
 }
@@ -129,12 +129,12 @@ static v8::Handle<Value> DrawPolygon(const Arguments& args)
         if (args.Length() >= 2 && args[1]->IsObject()) {
             v8::Local<Object>colorObj = args[1]->ToObject();
             if (!colorObj.IsEmpty())
-                strokeColor = [(JMXColor *)colorObj->GetPointerFromInternalField(0) retain]; 
+                strokeColor = [(NSColor *)colorObj->GetPointerFromInternalField(0) retain]; 
         }
         if (args.Length() >= 3 && args[2]->IsObject()) {
             v8::Local<Object>colorObj = args[2]->ToObject();
             if (!colorObj.IsEmpty())
-                fillColor = [(JMXColor *)colorObj->GetPointerFromInternalField(0) retain]; 
+                fillColor = [(NSColor *)colorObj->GetPointerFromInternalField(0) retain]; 
         }
         [entity drawPolygon:points strokeColor:strokeColor fillColor:fillColor];
         [points release];
@@ -168,13 +168,13 @@ static v8::Handle<Value> DrawCircle(const Arguments& args)
             NSColor *fillColor = nil;
             if (args.Length() >= 3) {
                 v8::Handle<Object>colorObj = args[2]->ToObject();
-                strokeColor = (JMXColor *)colorObj->GetPointerFromInternalField(0);
+                strokeColor = (NSColor *)colorObj->GetPointerFromInternalField(0);
                 if (strokeColor)
                     [strokeColor retain];
             }
             if (args.Length() >= 4) {
                 v8::Handle<Object>colorObj = args[3]->ToObject();
-                fillColor = (JMXColor *)colorObj->GetPointerFromInternalField(0);
+                fillColor = (NSColor *)colorObj->GetPointerFromInternalField(0);
                 if (fillColor)
                     [fillColor retain];
             }
@@ -202,7 +202,7 @@ static v8::Handle<Value> DrawPixel(const Arguments& args)
             NSColor *strokeColor = [[NSColor whiteColor] retain];
             if (args.Length() >= 2) {
                 v8::Handle<Object>colorObj = args[1]->ToObject();
-                strokeColor = (JMXColor *)colorObj->GetPointerFromInternalField(0);
+                strokeColor = (NSColor *)colorObj->GetPointerFromInternalField(0);
                 if (strokeColor)
                     [strokeColor retain];
             }

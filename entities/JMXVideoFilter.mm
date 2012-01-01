@@ -71,10 +71,18 @@
     // Do nothing in the base implementation
 }
 
+- (NSString *)filter
+{
+    @synchronized(self) {
+        return filter;
+    }
+}
+
 - (void)setFilter:(NSString *)filterName
 {
     // Do nothing in the base implementation
 }
+
 #pragma mark V8
 
 using namespace v8;

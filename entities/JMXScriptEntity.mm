@@ -69,11 +69,9 @@ using namespace v8;
 
 - (void)exec
 {
-    @synchronized(self) {
-        if (!jsContext)
-            jsContext = [[JMXScript alloc] init];
-        [jsContext runScript:self.code withEntity:self];
-    }
+    if (!jsContext)
+        jsContext = [[JMXScript alloc] init];
+    [jsContext runScript:self.code withEntity:self];
 }
 
 - (void)hookEntity:(JMXEntity *)entity

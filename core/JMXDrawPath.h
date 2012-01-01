@@ -138,7 +138,7 @@
 
 - (void)saveCurrentState;
 
-- (void)restoreCurrentState;
+- (void)restorePreviousState;
 
 - (void)clearRect:(JMXPoint *)origin size:(JMXSize *)size;
 - (void)fillRect:(JMXPoint *)origin size:(JMXSize *)size;

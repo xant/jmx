@@ -28,7 +28,7 @@
         self.frequency = [NSNumber numberWithDouble:1.0];
         JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
         if (threadedEntity)
-            return threadedEntity;
+            return (JMXScriptFile *)threadedEntity;
     }
     [self dealloc];
     return nil;
@@ -39,15 +39,24 @@
     [super dealloc];
 }
 
+- (NSString *)path
+{
+    @synchronized(self) {
+        return path;
+    }
+}
+
 - (void)setPath:(NSString *)newPath
 {
-    if (path)
-        [self close];
-    if ([self open:newPath]) {
-        path = [newPath copy];
-        self.label = path;
-    } else {
-        NSLog(@"JMXScriptFile::setPath(): Can't open file %@", newPath);
+    @synchronized(self) {
+        if (path)
+            [self close];
+        if ([self open:newPath]) {
+            path = [newPath copy];
+            self.label = path;
+        } else {
+            NSLog(@"JMXScriptFile::setPath(): Can't open file %@", newPath);
+        }
     }
 }
 

@@ -53,7 +53,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXAudioFileEntity);
         currentSample = nil;
         JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
         if (threadedEntity)
-            return threadedEntity;
+            return (JMXAudioFileEntity *)threadedEntity;
     }
     return nil;
 }

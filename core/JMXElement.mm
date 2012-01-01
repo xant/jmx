@@ -71,17 +71,26 @@ JMXV8_EXPORT_NODE_CLASS(JMXElement);
     [super dealloc];
 }
 
+- (NSString *)jsId
+{
+    @synchronized(self) {
+        return [[jsId retain] autorelease];
+    }
+}
+
 - (void)setJsId:(NSString *)anId
 {
-    if (!anId)
-        return;
-    if (jsId)
-        [jsId release];
-    jsId = [anId copy];
-    // TODO - check if the ID already exists
-    // we could use document.getElementByID() ... but that could affect performances 
-    JMXAttribute *attr = (JMXAttribute *)[self attributeForName:@"id"];
-    [attr setStringValue:jsId];
+    @synchronized(self) {
+        if (!anId)
+            return;
+        if (jsId)
+            [jsId release];
+        jsId = [anId copy];
+        // TODO - check if the ID already exists
+        // we could use document.getElementByID() ... but that could affect performances 
+        JMXAttribute *attr = (JMXAttribute *)[self attributeForName:@"id"];
+        [attr setStringValue:jsId];
+    }
 }
 
 #pragma mark V8

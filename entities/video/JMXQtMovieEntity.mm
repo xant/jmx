@@ -72,7 +72,7 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
         [self registerInputPin:@"paused" withType:kJMXBooleanPin andSelector:@"setPausedPin:"];
         JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
         if (threadedEntity)
-            return threadedEntity;
+            return (JMXQtMovieEntity *)threadedEntity;
         // TODO - Error Messages
         [self dealloc];
     }
@@ -127,11 +127,20 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
 }
 #endif
 
+- (NSString *)moviePath
+{
+    @synchronized(self) {
+        return moviePath;
+    }
+}
+
 - (void)setMoviePath:(NSString *)path
 {
-    if (moviePath)
-        [self close];
-    [self open:path];
+    @synchronized(self) {
+        if (moviePath)
+            [self close];
+        [self open:path];
+    }
 }
 
 - (BOOL)open:(NSString *)file

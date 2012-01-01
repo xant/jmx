@@ -11,7 +11,6 @@
 #import <JMXCanvasStyle.h>
 
 @class JMXPoint;
-@class JMXColor;
 @class JMXRect;
 
 @interface JMXCanvasPattern : NSObject < JMXV8, JMXCanvasStyle >

@@ -29,7 +29,7 @@
  @abstract custom CIFilter to control the alpha componenent of a CIImage
  @discussion it exposes a single custom input attribute : "outputOpacity"
  */
-@interface CIAlphaFade: CIFilter
+@interface CIAlphaFade: CIFilter <CIFilterConstructor>
 {
     CIImage   *inputImage;
     NSNumber  *outputOpacity;

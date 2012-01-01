@@ -43,7 +43,7 @@
         JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
         if (threadedEntity) {
             self.frequency = [NSNumber numberWithDouble:0.5]; // override frequency
-            return threadedEntity;
+            return (JMXImageEntity *)threadedEntity;
         }
         [self dealloc];
     }

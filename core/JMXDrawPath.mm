@@ -57,15 +57,7 @@ using namespace v8;
             (NSOpenGLPixelFormatAttribute) 0
         };
         NSOpenGLPixelFormat *format = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attributes] autorelease];
-        /*
-         //Create the OpenGL pixel buffer to render into
-         pixelBuffer = [[NSOpenGLPixelBuffer alloc] initWithTextureTarget:GL_TEXTURE_RECTANGLE_EXT textureInternalFormat:GL_RGBA textureMaxMipMapLevel:0 pixelsWide:layerSize.width pixelsHigh:layerSize.height];
-         if(pixelBuffer == nil) {
-         NSLog(@"Cannot create OpenGL pixel buffer");
-         [self release];
-         return nil;
-         }
-         */
+
         pathLayerOffset = 0;
         for (int i = 0; i < kJMXDrawPathBufferCount; i++) {
             
@@ -84,10 +76,7 @@ using namespace v8;
             CGColorSpaceRelease(colorSpace);
             
             CGSize layerSize = { frameSize.width, frameSize.height };
-            /*  XXX - this is slower
-            CGContextRef cgContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
-            pathLayers[i] = CGLayerCreateWithContext(cgContext, layerSize, nil);
-            */
+
             pathLayers[i] = [ciContext createCGLayerWithSize:layerSize info: nil];
             CGContextBeginPath(CGLayerGetContext(pathLayers[i]));
         }
@@ -243,22 +232,14 @@ using namespace v8;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
     if ([strokeColor isKindOfClass:[NSColor class]]) {
         CGContextSetRGBStrokeColor (context,
-                                    [(NSColor *)strokeColor redComponent],
-                                    [(NSColor *)strokeColor greenComponent],
-                                    [(NSColor *)strokeColor blueComponent],
-                                    [(NSColor *)strokeColor alphaComponent]
-                                    );
+                                    strokeColor.r, strokeColor.g, strokeColor.b, strokeColor.a);
     } else if ([strokeColor isKindOfClass:[JMXCanvasPattern class]]) {
         CGContextSetStrokePattern(context, [(JMXCanvasPattern *)strokeColor patternRef], [(JMXCanvasPattern *)strokeColor components]);
     }
     
     if ([fillColor isKindOfClass:[NSColor class]]) {
         CGContextSetRGBFillColor (context,
-                                  [(NSColor *)fillColor redComponent],
-                                  [(NSColor *)fillColor greenComponent],
-                                  [(NSColor *)fillColor blueComponent],
-                                  [(NSColor *)fillColor alphaComponent]
-                                  );
+                                  fillColor.r, fillColor.g, fillColor.b, fillColor.a);
     } else if ([fillColor isKindOfClass:[JMXCanvasPattern class]]) {
         CGContextSetFillPattern(context, [(JMXCanvasPattern *)fillColor patternRef], [(JMXCanvasPattern *)fillColor components]);
     } else if ([fillColor isKindOfClass:[JMXCanvasGradient class]]) {
@@ -299,11 +280,7 @@ using namespace v8;
         CGContextSaveGState(context);
         if ([strokeColor isKindOfClass:[NSColor class]]) {
             CGContextSetRGBStrokeColor (context,
-                                        [(NSColor *)strokeColor redComponent],
-                                        [(NSColor *)strokeColor greenComponent],
-                                        [(NSColor *)strokeColor blueComponent],
-                                        [(NSColor *)strokeColor alphaComponent]
-                                        );
+                                        strokeColor.r, strokeColor.g, strokeColor.b, strokeColor.a);
         } else if ([strokeColor isKindOfClass:[JMXCanvasPattern class]]) {
             CGContextSetStrokePattern(context, [(JMXCanvasPattern *)strokeColor patternRef], [(JMXCanvasPattern *)strokeColor components]);
         }
@@ -317,11 +294,7 @@ using namespace v8;
         CGContextClosePath(context);
         if ([fillColor isKindOfClass:[NSColor class]]) {
             CGContextSetRGBFillColor (context,
-                                      [(NSColor *)fillColor redComponent],
-                                      [(NSColor *)fillColor greenComponent],
-                                      [(NSColor *)fillColor blueComponent],
-                                      [(NSColor *)fillColor alphaComponent]
-                                      );
+                                      fillColor.r, fillColor.g, fillColor.b, fillColor.a);
         } else if ([fillColor isKindOfClass:[JMXCanvasPattern class]]) {
             CGContextSetFillPattern(context, [(JMXCanvasPattern *)fillColor patternRef], [(JMXCanvasPattern *)fillColor components]);
         } else if ([fillColor isKindOfClass:[JMXCanvasGradient class]]) {
@@ -346,28 +319,15 @@ using namespace v8;
     }
 }
 
-- (void)drawPixel:(JMXPoint *)origin strokeColor:(NSColor *)strokeColor
+- (void)drawPixel:(JMXPoint *)origin fillColor:(NSColor *)fillColor
 {
     [self clearFrame];
     [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
-    CGContextSaveGState(context);
-    
-    if ([strokeColor isKindOfClass:[NSColor class]]) {
-        /*CGContextSetRGBStrokeColor (context,
-                                    [(NSColor *)strokeColor redComponent],
-                                    [(NSColor *)strokeColor greenComponent],
-                                    [(NSColor *)strokeColor blueComponent],
-                                    [(NSColor *)strokeColor alphaComponent]
-                                    );*/
-        CGContextSetRGBFillColor (context,
-                                    [(NSColor *)strokeColor redComponent],
-                                    [(NSColor *)strokeColor greenComponent],
-                                    [(NSColor *)strokeColor blueComponent],
-                                    [(NSColor *)strokeColor alphaComponent]
-                                    );
-    }
+    CGContextSaveGState(context);    
+    CGContextSetRGBFillColor (context, fillColor.r, fillColor.g,
+        fillColor.b, fillColor.a);
     CGRect rect = { { origin.x, origin.y }, { 1, 1 } };
     CGContextFillRect(context, rect);
     CGContextRestoreGState(context);

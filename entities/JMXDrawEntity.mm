@@ -52,10 +52,10 @@ JMXV8_EXPORT_NODE_CLASS(JMXDrawEntity);
     }
 }
 
-- (void)drawPixel:(JMXPoint *)point strokeColor:(NSColor *)strokeColor
+- (void)drawPixel:(JMXPoint *)point fillColor:(NSColor *)fillColor
 {
     @synchronized(drawPath) {
-        [drawPath drawPixel:point strokeColor:strokeColor];
+        [drawPath drawPixel:point fillColor:fillColor];
     }
 }
 
@@ -199,16 +199,16 @@ static v8::Handle<Value> DrawPixel(const Arguments& args)
         v8::Handle<Object> origin = args[0]->ToObject();
         if (!origin.IsEmpty()) {
             JMXPoint *point = [(JMXPoint *)origin->GetPointerFromInternalField(0) retain];
-            NSColor *strokeColor = [[NSColor whiteColor] retain];
+            NSColor *fillColor = [[NSColor whiteColor] retain];
             if (args.Length() >= 2) {
                 v8::Handle<Object>colorObj = args[1]->ToObject();
-                strokeColor = (NSColor *)colorObj->GetPointerFromInternalField(0);
-                if (strokeColor)
-                    [strokeColor retain];
+                fillColor = (NSColor *)colorObj->GetPointerFromInternalField(0);
+                if (fillColor)
+                    [fillColor retain];
             }
-            [entity drawPixel:point strokeColor:strokeColor];
+            [entity drawPixel:point fillColor:fillColor];
             [point release];
-            [strokeColor release];
+            [fillColor release];
         }
         [pool drain];
     }

@@ -41,11 +41,12 @@
 
 // designated initializer
 /*!
- @method initWithAttributedString:
+ @method setAttributedString:
  @param attributedString
  @return the initialized instance
  */
-- (id) initWithAttributedString:(NSAttributedString *)attributedString;
+- (void) setAttributedString:(NSAttributedString *)attributedString;
+
 /*!
  @method initWithString:font:textColor:boxColor:borderColor
  @param aString the string
@@ -55,7 +56,7 @@
  @param borderColor the border color
  @return the initialized instance
  */
-- (id) initWithString:(NSString *)aString font:(NSFont *)font textColor:(NSColor *)textColor boxColor:(NSColor *)boxColor borderColor:(NSColor *)borderColor;
+- (void) setString:(NSString *)aString font:(NSFont *)font textColor:(NSColor *)textColor boxColor:(NSColor *)boxColor borderColor:(NSColor *)borderColor;
 
 /*!
  @method initWithAttributedString:
@@ -63,7 +64,7 @@
  @param attribs NSDictionary containing attributes to use for the internally used NSAttributedString
  @return the initialized instance
  */
-- (id) initWithString:(NSString *)aString withAttributes:(NSDictionary *)attribs;
+- (void) setString:(NSString *)aString withAttributes:(NSDictionary *)attribs;
 
 /*!
  @method textColor

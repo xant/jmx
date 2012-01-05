@@ -92,14 +92,14 @@ JMXV8_EXPORT_NODE_CLASS(JMXTextEntity);
     if (ret == noErr) {
         // TODO - Implement properly
         //NSFont * font =[NSFont fontWithName:@"Helvetica" size:32.0];
-        [renderer initWithString:text withAttributes:stanStringAttrib];
-        [renderer drawOnBuffer:textFrame];
         @synchronized(self) {
+            [renderer setString:text withAttributes:stanStringAttrib];
+            [renderer drawOnBuffer:textFrame];
             if (renderedText)
                 [renderedText release];
             renderedText = [[CIImage imageWithCVImageBuffer:textFrame] retain];
+            CVPixelBufferRelease(textFrame);
         }
-        CVPixelBufferRelease(textFrame);
         needsNewFrame = NO;
     } else {
         // TODO - Error Messages
@@ -189,10 +189,12 @@ JMXV8_EXPORT_NODE_CLASS(JMXTextEntity);
 
 - (void)tick:(uint64_t)timeStamp
 {
-    if (renderedText) {
-        if (currentFrame)
-            [currentFrame release];
-        currentFrame = [renderedText retain];
+    @synchronized(self) {
+        if (renderedText) {
+            if (currentFrame)
+                [currentFrame release];
+            currentFrame = [renderedText retain];
+        }
     }
     [super tick:timeStamp];
 }

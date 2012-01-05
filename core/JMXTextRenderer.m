@@ -87,24 +87,34 @@
 #pragma mark -
 #pragma mark Initializers
 
-// designated initializer
-- (id) initWithAttributedString:(NSAttributedString *)attributedString
+- (id)init
 {
-	[super init];
-    if (string)
-        [string release];
-	string = [attributedString retain];
-    staticFrame = NO;
-	antialias = YES;
-	marginSize.width = 4.0f; // standard margins
-	marginSize.height = 2.0f;
-	cRadius = 4.0f;
-	requiresUpdate = YES;
-	// all other variables 0 or NULL
-	return self;
+    self = [super init];
+    if (self) {
+        staticFrame = NO;
+        antialias = YES;
+        marginSize.width = 4.0f; // standard margins
+        marginSize.height = 2.0f;
+        cRadius = 4.0f;
+        requiresUpdate = YES;
+    }
+    return self;
 }
 
-- (id) initWithString:(NSString *)aString font:(NSFont *)font textColor:(NSColor *)theTextColor boxColor:(NSColor *)theBoxColor borderColor:(NSColor *)theBorderColor;
+#pragma mark -
+#pragma mark messages
+
+- (void) setAttributedString:(NSAttributedString *)attributedString
+{
+    @synchronized(self) {
+        if (string)
+            [string release];
+        string = [attributedString retain];
+    }
+	// all other variables 0 or NULL
+}
+
+- (void) setString:(NSString *)aString font:(NSFont *)font textColor:(NSColor *)theTextColor boxColor:(NSColor *)theBoxColor borderColor:(NSColor *)theBorderColor;
 {
     NSMutableDictionary *attribs = [NSMutableDictionary dictionary];
     [attribs
@@ -120,50 +130,56 @@
      forKey:NSBackgroundColorAttributeName
      ];
     // XXX - how to use bordercolor now? 
-	return [self initWithAttributedString:[[[NSAttributedString alloc] initWithString:aString attributes:attribs] autorelease]];
+    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:aString attributes:attribs];
+    [self setAttributedString:attributedString];
+    [attributedString release];
 }
 
-- (id) initWithString:(NSString *)aString withAttributes:(NSDictionary *)attribs
+- (void) setString:(NSString *)aString withAttributes:(NSDictionary *)attribs
 {
-	return [self initWithAttributedString:[[[NSAttributedString alloc] initWithString:aString attributes:attribs] autorelease]];
+    NSAttributedString *str = [[NSAttributedString alloc] initWithString:aString attributes:attribs];
+    [self setAttributedString:str];
+    [str release];
 }
 
 - (void) genImage
 {
-    if (image)
-        [image release];
-    if (bitmap)
-        [bitmap release];
-	
-    
-	if ((NO == staticFrame)) { // find frame size if we have not already found it
-		frameSize = [string size]; // current string size
-		frameSize.width += marginSize.width * 2.0f; // add padding
-		frameSize.height += marginSize.height * 2.0f;
-	}
-	image = [[NSImage alloc] initWithSize:frameSize];
-	
-	[image lockFocus];
-	[[NSGraphicsContext currentContext] setShouldAntialias:antialias];
-	if ([boxColor alphaComponent]) { // this should be == 0.0f but need to make sure
-		[boxColor set]; 
-		NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height) , 0.5, 0.5)
-                                                             xRadius:cRadius yRadius:cRadius];
-		[path fill];
-	}
-    
-	if ([borderColor alphaComponent]) {
-		[borderColor set]; 
-		NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height), 0.5, 0.5) 
-														xRadius:cRadius yRadius:cRadius];
-		[path setLineWidth:1.0f];
-		[path stroke];
-	}
-	
-	[textColor set]; 
-	[string drawAtPoint:NSMakePoint (marginSize.width, marginSize.height)]; // draw at offset position
-	bitmap = [[NSBitmapImageRep alloc] initWithFocusedViewRect:NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height)];
-	[image unlockFocus];
+    @synchronized(self) {
+        if (image)
+            [image release];
+        if (bitmap)
+            [bitmap release];
+        
+        
+        if ((NO == staticFrame)) { // find frame size if we have not already found it
+            frameSize = [string size]; // current string size
+            frameSize.width += marginSize.width * 2.0f; // add padding
+            frameSize.height += marginSize.height * 2.0f;
+        }
+        image = [[NSImage alloc] initWithSize:frameSize];
+        
+        [image lockFocus];
+        [[NSGraphicsContext currentContext] setShouldAntialias:antialias];
+        if ([boxColor alphaComponent]) { // this should be == 0.0f but need to make sure
+            [boxColor set]; 
+            NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height) , 0.5, 0.5)
+                                                                 xRadius:cRadius yRadius:cRadius];
+            [path fill];
+        }
+        
+        if ([borderColor alphaComponent]) {
+            [borderColor set]; 
+            NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height), 0.5, 0.5) 
+                                                            xRadius:cRadius yRadius:cRadius];
+            [path setLineWidth:1.0f];
+            [path stroke];
+        }
+        
+        [textColor set]; 
+        [string drawAtPoint:NSMakePoint (marginSize.width, marginSize.height)]; // draw at offset position
+        bitmap = [[NSBitmapImageRep alloc] initWithFocusedViewRect:NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height)];
+        [image unlockFocus];
+    }
 }
 
 #pragma mark Text Color
@@ -270,12 +286,6 @@
 	}
 	requiresUpdate = YES;
 }
-
-- (void) setString:(NSString *)aString withAttributes:(NSDictionary *)attribs; // set string after initial creation
-{
-	[self setString:[[[NSAttributedString alloc] initWithString:aString attributes:attribs] autorelease]];
-}
-
 
 #pragma mark -
 #pragma mark Drawing

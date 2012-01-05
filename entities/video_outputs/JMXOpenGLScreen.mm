@@ -243,11 +243,10 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 {
     if (CGLLockContext((CGLContextObj)[[self openGLContext] CGLContextObj]) != kCGLNoError)
          NSLog(@"Could not lock CGLContext");
-    [lock lock];
-    if (!self.window) {
-        [lock unlock];
+    if (!self.window)
         return;
-    }
+    
+    [lock lock];
     NSRect bounds = [self frame];
     GLfloat minX, minY, maxX, maxY;
     minX = NSMinX(bounds);

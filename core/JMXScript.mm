@@ -234,7 +234,7 @@ static v8::Handle<Value> DumpDOM(const Arguments& args) {
     return scope.Close(output);
 }
 
-static v8::Handle<Value> ExecJSCode(const char *code, uint32_t length, const char *name)
+static BOOL ExecJSCode(const char *code, uint32_t length, const char *name)
 {
     HandleScope scope;
     v8::Handle<v8::Value> result;
@@ -248,11 +248,12 @@ static v8::Handle<Value> ExecJSCode(const char *code, uint32_t length, const cha
             // Convert the result to an ASCII string and print it.
             //String::AsciiValue ascii(result);
             //NSLog(@"%s\n", *ascii);
+            return YES;
         }
     } else {
         ReportException(&try_catch);
     }
-    return scope.Close(result);
+    return NO;
 }
 
 static v8::Handle<Value> Include(const Arguments& args) {
@@ -274,12 +275,13 @@ static v8::Handle<Value> Include(const Arguments& args) {
             path = [NSString stringWithFormat:@"~/Library/JMX/js/%s", [mainBundle builtInPlugInsPath], *value];
         }
     }
+    BOOL ret = NO;
     if (fh) {
         NSData *data = [fh readDataToEndOfFile];
-        ExecJSCode((const char *)[data bytes], [data length], [path UTF8String]);
+        ret = ExecJSCode((const char *)[data bytes], [data length], [path UTF8String]);
     }
     [pool release];
-    return v8::Undefined();
+    return scope.Close(v8::Boolean::New(ret ? 1 : 0));
 }
 
 static v8::Handle<Value> ListEntities(const Arguments& args)
@@ -377,6 +379,19 @@ static v8::Handle<Value> GetDocument(v8::Local<v8::String> name, const v8::Acces
     return handleScope.Close([[[JMXContext sharedContext] dom] jsObj]);
 }
 
+static v8::Handle<Value> AddRunLoop(const Arguments& args)
+{   
+    HandleScope handleScope;
+    v8::Locker locker;
+    Local<Context> context = v8::Context::GetCalling();
+    Local<Object> globalObject  = context->Global();
+    if (args.Length() >= 1 && args[0]->IsFunction()) {
+        v8::Handle<Array> array = v8::Handle<Array>::Cast(globalObject->GetHiddenValue(String::New("runLoops")));
+        array->Set(array->Length(), args[0]);        
+    }
+    return handleScope.Close(Undefined());
+}
+
 @interface DispatchArg : NSObject
 {
     NSString *source;
@@ -393,16 +408,17 @@ static v8::Handle<Value> GetDocument(v8::Local<v8::String> name, const v8::Acces
 
 @synthesize scriptEntity;
 
-+ (void)runScript:(NSString *)source
++ (BOOL)runScript:(NSString *)source
 {
     return [self runScript:source withEntity:nil];
 }
 
-+ (void)runScript:(NSString *)source withEntity:(JMXEntity *)entity
++ (BOOL)runScript:(NSString *)source withEntity:(JMXEntity *)entity
 {
     JMXScript *jsContext = [[self alloc] init];
-    [jsContext runScript:source withEntity:entity];
+    BOOL ret = [jsContext runScript:source withEntity:entity];
     [jsContext release];
+    return ret;
 }
 
 + (void)dispatchScript:(DispatchArg *)arg
@@ -445,6 +461,24 @@ static v8::Handle<Value> GetDocument(v8::Local<v8::String> name, const v8::Acces
     [pool drain];
 }
 
+- (void)JSRunLoop:(id)userInfo
+{
+    v8::Locker locker;
+    HandleScope handleScope;
+    v8::Handle<Array> array = v8::Handle<Array>::Cast(ctx->Global()->GetHiddenValue(String::New("runLoops")));
+    if (!array.IsEmpty() && array->Length()) {
+        for (int i = 0; i < array->Length(); i++) {
+            Local<v8::Value> obj = array->Get(i);
+            if (obj->IsFunction()) {
+                v8::Local<v8::Function> foo = v8::Local<v8::Function>::Cast(obj);
+                v8::Handle<Value> ret = foo->Call(foo, 0, nil);
+                if (ret.IsEmpty() || !ret->IsTrue())
+                    array->Delete(i);
+            }
+        }
+    }
+}
+
 - (id)init
 {
     self = [super init];
@@ -466,6 +500,7 @@ static v8::Handle<Value> GetDocument(v8::Local<v8::String> name, const v8::Acces
         ctxTemplate->Set(String::New("dumpDOM"), FunctionTemplate::New(DumpDOM));
         ctxTemplate->Set(String::New("run"), FunctionTemplate::New(Run));
         ctxTemplate->Set(String::New("quit"), FunctionTemplate::New(Quit));
+        ctxTemplate->Set(String::New("addRunLoop"), FunctionTemplate::New(AddRunLoop));
 
         ctxTemplate->SetInternalFieldCount(1);
         
@@ -484,6 +519,9 @@ static v8::Handle<Value> GetDocument(v8::Local<v8::String> name, const v8::Acces
         char baseInclude[] = "include('JMX.js');";
         // Enter the newly created execution environment.
         ExecJSCode(baseInclude, strlen(baseInclude), "JMX");
+        ctx->Global()->SetHiddenValue(String::New("runLoops"), v8::Array::New());
+        runLoopTimer = [[NSTimer timerWithTimeInterval:1/60 target:self selector:@selector(JSRunLoop:) userInfo:nil repeats:YES] retain];
+        [[NSRunLoop currentRunLoop] addTimer:runLoopTimer forMode:NSRunLoopCommonModes];
     }
     return self;
 }
@@ -501,6 +539,10 @@ static v8::Handle<Value> GetDocument(v8::Local<v8::String> name, const v8::Acces
 {
     v8::Locker locker;
     v8::HandleScope handle_scope;
+    if (runLoopTimer) {
+        [runLoopTimer invalidate];
+        [runLoopTimer release];
+    }
     if (scriptEntity && [scriptEntity conformsToProtocol:@protocol(JMXRunLoop)])
         [scriptEntity performSelector:@selector(stop)];
     //ctx->Global()->Set(String::New("scriptEntity"), v8::Undefined());
@@ -517,12 +559,12 @@ static v8::Handle<Value> GetDocument(v8::Local<v8::String> name, const v8::Acces
 {
 }
 
-- (void)runScript:(NSString *)source
+- (BOOL)runScript:(NSString *)source
 {
     return [self runScript:source withEntity:nil];
 }
 
-- (void)runScript:(NSString *)script withEntity:(JMXEntity *)entity
+- (BOOL)runScript:(NSString *)script withEntity:(JMXEntity *)entity
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     v8::Locker locker;
@@ -535,9 +577,11 @@ static v8::Handle<Value> GetDocument(v8::Local<v8::String> name, const v8::Acces
     }
     //NSLog(@"%@", [self exportGraph:[[JMXContext sharedContext] allEntities] andPins:nil]);
     ctx->Global()->SetHiddenValue(String::New("quit"), v8::Boolean::New(0));
-    ExecJSCode([script UTF8String], [script length],
-             entity ? [entity.label UTF8String] : [[NSString stringWithFormat:@"%@", self] UTF8String]);
+    BOOL ret = ExecJSCode([script UTF8String], [script length],
+                          entity ? [entity.label UTF8String] : [[NSString stringWithFormat:@"%@", self] UTF8String]);
+    
     [pool drain];
+    return ret;
 }
 
 + (JMXScript *)getContext:(Local<Context>&)currentContext

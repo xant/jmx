@@ -4,10 +4,10 @@
  */
 function Global() {
     /**
-     * The brightness of the output frame.
+     * The scriptEntity owning this global context
      * @type JMXScriptEntity
      */
-    this.scriptEntity = 0;
+    this.scriptEntity = null;
     
     /**
      * print provided string to stdout
@@ -31,23 +31,23 @@ function Global() {
         
     }
 
-    this.include = function() {
+    this.include = function(path) {
         
     }
 
-    this.sleep = function() {
+    this.sleep = function(secs) {
         
     }
 
-    this.lsdir = function() {
+    this.lsdir = function(path) {
         
     }
 
-    this.isdir = function() {
+    this.isdir = function(path) {
         
     }
 
-    this.exportPin = function() {
+    this.exportPin = function(pin) {
         
     }
 
@@ -58,5 +58,7 @@ function Global() {
     }
 
     this.quit = function() {
-        
+    }
+
+    this.addRunLoop = function(callback) {
     }

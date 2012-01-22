@@ -24,6 +24,7 @@
     v8::Persistent<v8::Context> ctx;
     //std::map<id, v8::Persistent<v8::Object> > instancesMap;
     NSMutableDictionary *persistentInstances;
+    NSTimer *runLoopTimer;
 }
 
 /*!
@@ -60,27 +61,27 @@
  @abstract run a script in the current thread using a new (autoreleased) JMXScript instace 
  @param source an NSString holding the javascript sourcecode
  */
-+ (void)runScript:(NSString *)source;
++ (BOOL)runScript:(NSString *)source;
 /*!
  @method runScript:withEntity:
  @abstract run a script in the current thread using a new (autoreleased) JMXScript instace
  @param source an NSString holding the javascript sourcecode
  @param entity the script entity to be bound to the execution context
  */
-+ (void)runScript:(NSString *)source withEntity:(JMXEntity *)entity;
++ (BOOL)runScript:(NSString *)source withEntity:(JMXEntity *)entity;
 /*!
  @method runScript:
  @abstract run a script in the current thread
  @param source an NSString holding the javascript sourcecode
  */
-- (void)runScript:(NSString *)source;
+- (BOOL)runScript:(NSString *)source;
 /*!
  @method runScript:withEntity:
  @abstract run a script in the current thread
  @param source an NSString holding the javascript sourcecode
  @param entity the script entity to be bound to the execution context
  */
-- (void)runScript:(NSString *)source withEntity:(JMXEntity *)entity;
+- (BOOL)runScript:(NSString *)source withEntity:(JMXEntity *)entity;
 /*!
  @method addPersistentInstance:obj
  @abstract add a new persistent instance to the internal map

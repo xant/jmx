@@ -11,7 +11,7 @@
 
 @class NSXMLNode;
 
-@interface JMXProxyPin : NSProxy {
+@interface JMXProxyPin : NSProxy <NSCopying> {
     JMXPin *realPin;
     NSString *label;
 	NSXMLElement *parent;

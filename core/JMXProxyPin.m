@@ -84,6 +84,14 @@
 
 }
 
+
+- (BOOL)isKindOfClass:(Class)aClass
+{
+    if (realPin)
+        return [realPin isKindOfClass:aClass];
+    return NO;
+}
+
 - (void)forwardInvocation:(NSInvocation *)anInvocation
 {
     @synchronized(self) {
@@ -137,5 +145,14 @@
     return [realPin methodSignatureForSelector:aSelector];
 }
 
+- (id)copyWithZone:(NSZone *)zone
+{
+    return [self retain];
+}
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"JMXProxyPin:%@", label];
+}
 
 @end

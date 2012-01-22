@@ -629,6 +629,7 @@ static v8::Handle<Value> AddRunLoop(const Arguments& args)
     }
 }
 
+#if 0
 - (NSString *)exportGraph:(NSArray *)entities andPins:(NSArray *)pins
 {
     NSString *output = [[[NSString alloc] init] autorelease];
@@ -686,5 +687,6 @@ static v8::Handle<Value> AddRunLoop(const Arguments& args)
     }
     return output;
 }
+#endif
 
 @end

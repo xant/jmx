@@ -377,8 +377,7 @@ using namespace v8;
     return [[[self children] objectsAtIndexes:[[self children] indexesOfObjectsPassingTest:
                                                ^(id obj, NSUInteger idx, BOOL *stop)
                                                {
-                                                   if ([obj isKindOfClass:[JMXPin class]] &&
-                                                       ((JMXPin *)obj).direction == kJMXInputPin)
+                                                   if ([obj isKindOfClass:[JMXInputPin class]])
                                                    {
                                                        return YES;
                                                    }
@@ -397,8 +396,7 @@ using namespace v8;
     return [[children objectsAtIndexes:[children indexesOfObjectsPassingTest:
                                                ^(id obj, NSUInteger idx, BOOL *stop)
                                                {
-                                                   if ([obj isKindOfClass:[JMXPin class]] &&
-                                                       ((JMXPin *)obj).direction == kJMXOutputPin) 
+                                                   if ([obj isKindOfClass:[JMXOutputPin class]]) 
                                                    {
                                                        return YES;
                                                    }

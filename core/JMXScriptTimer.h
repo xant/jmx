@@ -12,6 +12,9 @@
 @interface JMXScriptTimer : NSObject <JMXV8> {
 @private
     NSTimer *timer;
+    BOOL repeats;
+    NSString *statements;
+    //void (^block)();
 #ifdef __JMXV8__
     v8::Persistent<v8::Function> function;
 #endif
@@ -21,7 +24,19 @@
 @property (nonatomic, assign) v8::Persistent<v8::Function> function;
 #endif
 @property (nonatomic, readonly) NSTimer *timer;
+@property (nonatomic, readonly) BOOL repeats;
+@property (nonatomic, copy) NSString *statements;
+//@property (nonatomic, assign) void (^block)();
 
-+ (id)scriptTimerWithFireDate:(NSDate *)date interval:(NSTimeInterval)interval target:(id)target selector:(SEL)selector;
-- (id)initWithFireDate:(NSDate *)date interval:(NSTimeInterval)interval target:(id)target selector:(SEL)selector;
++ (id)scriptTimerWithFireDate:(NSDate *)date
+                     interval:(NSTimeInterval)interval
+                       target:(id)target
+                     selector:(SEL)selector
+                       repeats:(BOOL)repeats;
+
+- (id)initWithFireDate:(NSDate *)date
+              interval:(NSTimeInterval)interval
+                target:(id)target
+              selector:(SEL)selector
+                repeats:(BOOL)repeats;
 @end

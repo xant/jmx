@@ -239,7 +239,9 @@ static BOOL ExecJSCode(const char *code, uint32_t length, const char *name)
     HandleScope scope;
     v8::Handle<v8::Value> result;
     v8::TryCatch try_catch;
-    v8::Handle<v8::Script> compiledScript = v8::Script::Compile(String::New(code, length), String::New(name));
+    Local<String> codeString = String::New(code, length);
+    Local<String> nameString = String::New(name);
+    v8::Handle<v8::Script> compiledScript = v8::Script::Compile(codeString, nameString);
     if (!compiledScript.IsEmpty()) {
         result = compiledScript->Run();
         if (result.IsEmpty()) {
@@ -389,7 +391,8 @@ static v8::Handle<Value> AddToRunLoop(const Arguments& args)
         JMXScriptTimer *foo = [JMXScriptTimer scriptTimerWithFireDate:[NSDate dateWithTimeIntervalSinceNow:args[1]->NumberValue()]
                                                               interval:args[1]->NumberValue()
                                                                 target:scriptContext
-                                                              selector:@selector(JSRunLoop:)];
+                                                              selector:@selector(JSRunLoop:)
+                                                               repeats:YES];
         foo.function = Persistent<Function>::New(Handle<Function>::Cast(args[0]));
         foo.function->SetHiddenValue(String::New("lastUpdate"), v8::Number::New([[NSDate date] timeIntervalSince1970]));
         foo.function->SetHiddenValue(String::New("interval"), args[1]);
@@ -418,14 +421,79 @@ static v8::Handle<Value> RemoveFromRunLoop(const Arguments& args)
     return handleScope.Close(v8::Boolean::New(0));
 }
 
+static v8::Handle<Value> SetInterval(const Arguments& args)
+{
+    v8::Locker locker;
+    HandleScope handleScope;
+    Local<Context> context = v8::Context::GetCalling();
+    Local<Object> globalObject  = context->Global();
+    v8::Local<v8::Object> obj = globalObject->Get(String::New("scriptEntity"))->ToObject();
+    JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetPointerFromInternalField(0);
+    JMXScript *scriptContext = entity.jsContext;    if (args.Length() >= 2 && args[0]->IsString() && args[1]->IsNumber()) {
+        JMXScriptTimer *foo = [JMXScriptTimer scriptTimerWithFireDate:[NSDate dateWithTimeIntervalSinceNow:args[1]->NumberValue()]
+                                                             interval:args[1]->NumberValue()/1000 // millisecs here
+                                                               target:scriptContext
+                                                             selector:@selector(JSRunLoop:)
+                                                              repeats:YES];
+        v8::String::Utf8Value statements(args[0]->ToString());
+        foo.statements = [NSString stringWithUTF8String:*statements];
+        [[NSRunLoop currentRunLoop] addTimer:foo.timer forMode:NSRunLoopCommonModes];
+        [scriptContext.runloopTimers addObject:foo];
+        return handleScope.Close([foo jsObj]);
+    }
+    return handleScope.Close(Undefined());
+}
+
+static v8::Handle<Value> SetTimeout(const Arguments& args)
+{
+    v8::Locker locker;
+    HandleScope handleScope;
+    Local<Context> context = v8::Context::GetCalling();
+    Local<Object> globalObject  = context->Global();
+    v8::Local<v8::Object> obj = globalObject->Get(String::New("scriptEntity"))->ToObject();
+    JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetPointerFromInternalField(0);
+    JMXScript *scriptContext = entity.jsContext;
+    if (args.Length() >= 2 && args[0]->IsString() && args[1]->IsNumber()) {
+        JMXScriptTimer *foo = [JMXScriptTimer scriptTimerWithFireDate:[NSDate dateWithTimeIntervalSinceNow:args[1]->NumberValue()]
+                                                             interval:args[1]->NumberValue()/1000 // millisecs here
+                                                               target:scriptContext
+                                                             selector:@selector(JSRunLoop:)
+                                                              repeats:NO];
+        v8::String::Utf8Value statements(args[0]->ToString());
+        foo.statements = [NSString stringWithUTF8String:*statements];
+        [[NSRunLoop currentRunLoop] addTimer:foo.timer forMode:NSRunLoopCommonModes];
+        [scriptContext.runloopTimers addObject:foo];
+        return handleScope.Close([foo jsObj]);
+    }
+    return handleScope.Close(Undefined());
+}
+
+static v8::Handle<Value> ClearTimeout(const Arguments& args)
+{
+    v8::Locker locker;
+    HandleScope handleScope;
+    Local<Context> context = v8::Context::GetCalling();
+    Local<Object> globalObject  = context->Global();
+    v8::Local<v8::Object> obj = globalObject->Get(String::New("scriptEntity"))->ToObject();
+    JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetPointerFromInternalField(0);
+    JMXScript *scriptContext = entity.jsContext;
+    JMXScriptTimer *foo = (JMXScriptTimer *)Local<Object>::Cast(args[0])->GetPointerFromInternalField(0);
+    if (foo && [scriptContext.runloopTimers containsObject:foo]) {
+        [foo.timer invalidate];
+        [scriptContext.runloopTimers removeObject:foo];
+        return handleScope.Close(v8::Boolean::New(1));
+    }
+    return handleScope.Close(v8::Boolean::New(0));
+}
+
 
 @interface DispatchArg : NSObject
 {
     NSString *source;
-    JMXEntity *entity;
+    JMXScriptEntity *entity;
 }
 @property (retain) NSString *source;
-@property (retain) JMXEntity *entity;
+@property (retain) JMXScriptEntity *entity;
 @end
 @implementation DispatchArg
 @synthesize source, entity;
@@ -490,18 +558,23 @@ static v8::Handle<Value> RemoveFromRunLoop(const Arguments& args)
 
 - (void)JSRunLoop:(NSTimer *)timer
 {
-
     v8::Locker locker;
     HandleScope handleScope;
- 
     JMXScriptTimer *foo = timer.userInfo;
-    v8::Handle<Value> ret = foo.function->Call(foo.function, 0, nil);
-
-
-    foo.function->SetHiddenValue(String::New("lastUpdate"), v8::Number::New([[NSDate date] timeIntervalSince1970]));
-    if (ret.IsEmpty() || !ret->IsTrue()) {
-        [foo.timer invalidate];
-        [runloopTimers removeObject:foo];
+    if (foo.statements && [foo.statements length]) {
+        v8::Context::Scope context_scope(ctx);
+        ExecJSCode([foo.statements UTF8String], [foo.statements length], "JMXScriptTimeout");
+        if (!foo.repeats) {
+            [foo.timer invalidate];
+            [runloopTimers removeObject:foo];
+        }
+    } else {
+        v8::Handle<Value> ret = foo.function->Call(foo.function, 0, nil);
+        foo.function->SetHiddenValue(String::New("lastUpdate"), v8::Number::New([[NSDate date] timeIntervalSince1970]));
+        if (ret.IsEmpty() || !ret->IsTrue() || !foo.repeats) {
+            [foo.timer invalidate];
+            [runloopTimers removeObject:foo];
+        }
     }
 }
 
@@ -529,9 +602,12 @@ static v8::Handle<Value> RemoveFromRunLoop(const Arguments& args)
         ctxTemplate->Set(String::New("addToRunLoop"), FunctionTemplate::New(AddToRunLoop));
         ctxTemplate->Set(String::New("removeFromRunLoop"), FunctionTemplate::New(RemoveFromRunLoop));
 
-        ctxTemplate->Set(String::New("setTimeout"), FunctionTemplate::New(AddToRunLoop));
-        ctxTemplate->Set(String::New("clearTimeout"), FunctionTemplate::New(RemoveFromRunLoop));
+        ctxTemplate->Set(String::New("setTimeout"), FunctionTemplate::New(SetTimeout));
+        ctxTemplate->Set(String::New("clearTimeout"), FunctionTemplate::New(ClearTimeout));
 
+        ctxTemplate->Set(String::New("setInterval"), FunctionTemplate::New(SetInterval));
+        ctxTemplate->Set(String::New("clearInterval"), FunctionTemplate::New(ClearTimeout)); // alias for ClearTimeout
+        
         ctxTemplate->SetInternalFieldCount(1);
         
         /* TODO - think if worth exposing such global functions
@@ -551,6 +627,7 @@ static v8::Handle<Value> RemoveFromRunLoop(const Arguments& args)
         ExecJSCode(baseInclude, strlen(baseInclude), "JMX");
         //ctx->Global()->SetPointerInInternalField(0, self);
         runloopTimers = [[NSMutableSet alloc] initWithCapacity:100];
+        operationQueue = [[NSOperationQueue alloc] init];
     }
     return self;
 }
@@ -562,6 +639,13 @@ static v8::Handle<Value> RemoveFromRunLoop(const Arguments& args)
     for (id obj in objs)
         [self removePersistentInstance:obj];
     [pool drain];
+}
+
+- (void)clearTimers
+{
+    for (JMXScriptTimer *scriptTimer in runloopTimers)
+        [scriptTimer.timer invalidate];
+    [runloopTimers removeAllObjects];
 }
 
 - (void)dealloc
@@ -577,6 +661,7 @@ static v8::Handle<Value> RemoveFromRunLoop(const Arguments& args)
     ctx.Dispose();
     [persistentInstances release];
     [runloopTimers release];
+    [operationQueue release];
     [super dealloc];
 }
 

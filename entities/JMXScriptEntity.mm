@@ -38,8 +38,10 @@ using namespace v8;
 
 - (void)dealloc
 {
-    if (jsContext)
+    if (jsContext) {
+        [jsContext clearTimers];
         [jsContext release];
+    }
     [super dealloc];
 }
 

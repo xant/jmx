@@ -13,14 +13,26 @@ using namespace v8;
 
 @implementation JMXScriptTimer
 
-@synthesize function,timer;
+@synthesize function, timer, repeats, statements;//, block;
 
-+ (id)scriptTimerWithFireDate:(NSDate *)date interval:(NSTimeInterval)interval target:(id)target selector:(SEL)selector
++ (id)scriptTimerWithFireDate:(NSDate *)date
+                     interval:(NSTimeInterval)interval
+                       target:(id)target
+                     selector:(SEL)selector
+                      repeats:(BOOL)repeats
 {
-    return [[[self alloc] initWithFireDate:date interval:interval target:target selector:selector] autorelease];
+    return [[[self alloc] initWithFireDate:date
+                                  interval:interval
+                                    target:target
+                                  selector:selector
+                                   repeats:repeats] autorelease];
 }
 
-- (id)initWithFireDate:(NSDate *)date interval:(NSTimeInterval)interval target:(id)target selector:(SEL)selector
+- (id)initWithFireDate:(NSDate *)date
+              interval:(NSTimeInterval)interval
+                target:(id)target
+              selector:(SEL)selector
+               repeats:(BOOL)shouldRepeat
 {
     self = [super init];
     if (self) {
@@ -29,7 +41,8 @@ using namespace v8;
                                        target:target
                                      selector:selector
                                      userInfo:self
-                                      repeats:YES];
+                                      repeats:shouldRepeat];
+        repeats = shouldRepeat;
     }
     return self;
 
@@ -64,6 +77,7 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
     if (!function.IsEmpty())
         function.Dispose();
     [timer release];
+    [statements release];
     [super dealloc];
 }
 

@@ -25,6 +25,7 @@
     //std::map<id, v8::Persistent<v8::Object> > instancesMap;
     NSMutableDictionary *persistentInstances;
     NSMutableSet *runloopTimers;
+    NSOperationQueue *operationQueue;
 }
 
 /*!
@@ -97,5 +98,7 @@
  @discussion * TODO *
  */
 - (void)removePersistentInstance:(id)obj;
+
+- (void)clearTimers;
 
 @end

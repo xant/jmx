@@ -36,6 +36,7 @@
 #import "JMXGraphFragment.h"
 #import "NSXMLNode+V8.h"
 #import "JMXScriptTimer.h"
+#import "JMXScriptEntity.h"
 
 using namespace v8;
 using namespace std;
@@ -331,7 +332,7 @@ static v8::Handle<Value> Run(const Arguments& args)
                 break;
             
             v8::Local<v8::Object> obj = globalObject->Get(String::New("scriptEntity"))->ToObject();
-            JMXEntity *entity = (JMXEntity *)obj->GetPointerFromInternalField(0);
+            JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetPointerFromInternalField(0);
             //ctx->Global()->Set(String::New("scriptEntity"), [scriptEntity jsObj]);
 
             if (!entity.active) {
@@ -381,7 +382,9 @@ static v8::Handle<Value> AddToRunLoop(const Arguments& args)
     HandleScope handleScope;
     Local<Context> context = v8::Context::GetCalling();
     Local<Object> globalObject  = context->Global();
-    JMXScript *scriptContext = (JMXScript *)globalObject->GetPointerFromInternalField(0);
+    v8::Local<v8::Object> obj = globalObject->Get(String::New("scriptEntity"))->ToObject();
+    JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetPointerFromInternalField(0);
+    JMXScript *scriptContext = entity.jsContext;
     if (args.Length() >= 2 && args[0]->IsFunction() && args[1]->IsNumber()) {
         JMXScriptTimer *foo = [JMXScriptTimer scriptTimerWithFireDate:[NSDate dateWithTimeIntervalSinceNow:args[1]->NumberValue()]
                                                               interval:args[1]->NumberValue()
@@ -403,7 +406,9 @@ static v8::Handle<Value> RemoveFromRunLoop(const Arguments& args)
     HandleScope handleScope;
     Local<Context> context = v8::Context::GetCalling();
     Local<Object> globalObject  = context->Global();
-    JMXScript *scriptContext = (JMXScript *)globalObject->GetPointerFromInternalField(0);
+    v8::Local<v8::Object> obj = globalObject->Get(String::New("scriptEntity"))->ToObject();
+    JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetPointerFromInternalField(0);
+    JMXScript *scriptContext = entity.jsContext;
     JMXScriptTimer *foo = (JMXScriptTimer *)Local<Object>::Cast(args[0])->GetPointerFromInternalField(0);
     if (foo && [scriptContext.runloopTimers containsObject:foo]) {
         [foo.timer invalidate];
@@ -435,7 +440,7 @@ static v8::Handle<Value> RemoveFromRunLoop(const Arguments& args)
     return [self runScript:source withEntity:nil];
 }
 
-+ (BOOL)runScript:(NSString *)source withEntity:(JMXEntity *)entity
++ (BOOL)runScript:(NSString *)source withEntity:(JMXScriptEntity *)entity
 {
     JMXScript *jsContext = [[self alloc] init];
     BOOL ret = [jsContext runScript:source withEntity:entity];
@@ -451,7 +456,7 @@ static v8::Handle<Value> RemoveFromRunLoop(const Arguments& args)
 }
 
 // TODO - use a NSOperationQueue
-+ (void)runScriptInBackground:(NSString *)source withEntity:(JMXEntity *)entity {
++ (void)runScriptInBackground:(NSString *)source withEntity:(JMXScriptEntity *)entity {
     DispatchArg *arg = [[DispatchArg alloc] init];
     arg.source = source;
     arg.entity = entity;
@@ -544,7 +549,7 @@ static v8::Handle<Value> RemoveFromRunLoop(const Arguments& args)
         char baseInclude[] = "include('JMX.js');";
         // Enter the newly created execution environment.
         ExecJSCode(baseInclude, strlen(baseInclude), "JMX");
-        ctx->Global()->SetPointerInInternalField(0, self);
+        //ctx->Global()->SetPointerInInternalField(0, self);
         runloopTimers = [[NSMutableSet alloc] initWithCapacity:100];
     }
     return self;
@@ -584,7 +589,7 @@ static v8::Handle<Value> RemoveFromRunLoop(const Arguments& args)
     return [self runScript:source withEntity:nil];
 }
 
-- (BOOL)runScript:(NSString *)script withEntity:(JMXEntity *)entity
+- (BOOL)runScript:(NSString *)script withEntity:(JMXScriptEntity *)entity
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     v8::Locker locker;

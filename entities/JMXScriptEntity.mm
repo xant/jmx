@@ -15,7 +15,7 @@ using namespace v8;
 
 @implementation JMXScriptEntity
 
-@synthesize code;
+@synthesize code, jsContext;
 
 + (void)initialize
 {

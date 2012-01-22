@@ -12,7 +12,7 @@
 #import <Cocoa/Cocoa.h>
 #include "JMXV8PropertyAccessors.h"
 
-@class JMXEntity;
+@class JMXScriptEntity;
 
 /*!
  @class JMXScript
@@ -20,7 +20,7 @@
  */
 @interface JMXScript : NSObject {
 @private
-    JMXEntity *scriptEntity;
+    JMXScriptEntity *scriptEntity;
     v8::Persistent<v8::Context> ctx;
     //std::map<id, v8::Persistent<v8::Object> > instancesMap;
     NSMutableDictionary *persistentInstances;
@@ -29,12 +29,12 @@
 
 /*!
  @property scriptEntity
- @abstract JMXEntity subclass bound to the javascript global context being executed
+ @abstract JMXScriptEntity instance bound to the javascript global context being executed
  @discussion the global script entity, if defined, allows exporting input/output pins to the board
              and actually reporesents a bridge between the graph created inside the script itself 
              and the main graph managed through the board
  */
-@property (readonly, nonatomic) JMXEntity *scriptEntity;
+@property (readonly, nonatomic) JMXScriptEntity *scriptEntity;
 @property (readonly, nonatomic) NSMutableSet *runloopTimers;
 /*!
  @method getContext:
@@ -55,7 +55,7 @@
  @param source an NSString holding the javascript sourcecode
  @param entity the script entity to be bound to the execution context
  */
-+ (void)runScriptInBackground:(NSString *)source withEntity:(JMXEntity *)entity;
++ (void)runScriptInBackground:(NSString *)source withEntity:(JMXScriptEntity *)entity;
 /*!
  @method runScript:
  @abstract run a script in the current thread using a new (autoreleased) JMXScript instace 
@@ -68,7 +68,7 @@
  @param source an NSString holding the javascript sourcecode
  @param entity the script entity to be bound to the execution context
  */
-+ (BOOL)runScript:(NSString *)source withEntity:(JMXEntity *)entity;
++ (BOOL)runScript:(NSString *)source withEntity:(JMXScriptEntity *)entity;
 /*!
  @method runScript:
  @abstract run a script in the current thread
@@ -81,7 +81,7 @@
  @param source an NSString holding the javascript sourcecode
  @param entity the script entity to be bound to the execution context
  */
-- (BOOL)runScript:(NSString *)source withEntity:(JMXEntity *)entity;
+- (BOOL)runScript:(NSString *)source withEntity:(JMXScriptEntity *)entity;
 /*!
  @method addPersistentInstance:obj
  @abstract add a new persistent instance to the internal map

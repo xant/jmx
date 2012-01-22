@@ -19,6 +19,7 @@
 }
 
 @property (copy) NSString *code;
+@property (readonly) JMXScript *jsContext;
 
 - (BOOL)exec;
 - (void)resetContext;

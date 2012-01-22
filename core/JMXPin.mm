@@ -229,6 +229,8 @@ using namespace v8;
             return @"String";
         case kJMXTextPin:
             return @"Text";
+        case kJMXCodePin:
+            return @"Code";
         case kJMXNumberPin:
             return @"Number";
         case kJMXImagePin:
@@ -252,8 +254,11 @@ using namespace v8;
 - (BOOL)isCorrectDataType:(id)data
 {
     switch (type) {
+        // NOTE: String, Text and Code and up being mapped against the same datatype
+        //       (NSString) so it's safe to allow connections among pins of those types 
         case kJMXStringPin:
         case kJMXTextPin:
+        case kJMXCodePin:
             if (![data isKindOfClass:[NSString class]])
                 return NO;
             break;

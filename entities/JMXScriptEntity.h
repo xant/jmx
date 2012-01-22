@@ -20,7 +20,7 @@
 
 @property (copy) NSString *code;
 
-- (void)exec;
+- (BOOL)exec;
 - (void)resetContext;
 - (void)hookEntity:(JMXEntity *)entity;
 

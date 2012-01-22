@@ -15,8 +15,8 @@
 {
     self = [super init];
     if (self) {
-        codeInputPin = [self registerInputPin:@"code" withType:kJMXTextPin andSelector:@"execCode:"];
-        codeOutputPin = [self registerOutputPin:@"code" withType:kJMXTextPin andSelector:@"executedCode:"];
+        codeInputPin = [self registerInputPin:@"code" withType:kJMXCodePin andSelector:@"execCode:"];
+        codeOutputPin = [self registerOutputPin:@"runningCode" withType:kJMXCodePin andSelector:@"executedCode:"];
         history = [[NSString alloc] init];
     }
     return self;
@@ -25,11 +25,14 @@
 - (void)execCode:(NSString *)jsCode
 {
     self.code = jsCode;
-    [self exec];
-    NSString *newHistory = [NSString stringWithFormat:@"%@\n%@", history, jsCode];
-    [history release];
-    history = [newHistory retain];
-    codeOutputPin.data = history;
+    if ([self exec]) {
+        NSString *newHistory = [NSString stringWithFormat:@"%@\n%@", history, jsCode];
+        [history release];
+        history = [newHistory retain];
+        codeOutputPin.data = history;
+    } else {
+        // TODO - show an alert to the user
+    }
 }
 
 @end

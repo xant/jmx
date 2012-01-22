@@ -25,6 +25,7 @@
 #import "JMXEntityLayer.h"
 #import "NSColor+V8.h"
 #import "JMXTextPanel.h"
+#import "JMXCodePanel.h"
 
 @interface JMXEntityInspectorPanel (Private)
 - (void)setEntity:(JMXEntityLayer *)entity;
@@ -32,12 +33,31 @@
 
 @implementation JMXEntityInspectorPanel
 
+@synthesize entityName,
+            pinInspector,
+            inputPins,
+            outputPins,
+            producers,
+            textPanel,
+            codePanel;
+
 - (void)awakeFromNib
 {
     entityName = nil;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasSelected:) name:@"JMXBoardEntityWasSelected" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasUnselected:) name:@"JMXBoardEntityWasUnselected" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasRemoved:) name:@"JMXBoardEntityWasRemoved" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(anEntityWasSelected:)
+                                                 name:@"JMXBoardEntityWasSelected"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(anEntityWasUnselected:)
+                                                 name:@"JMXBoardEntityWasUnselected"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(anEntityWasRemoved:)
+                                                 name:@"JMXBoardEntityWasRemoved" object:nil];
+    
     dataCells =[[NSMutableDictionary alloc] init];
 }
 
@@ -226,29 +246,28 @@
     }
 }
 
-#if 0
-- (void)setText:(NSString *)text
-{
-    NSArray *pins;
-    pins = [entityLayer.entity inputPins];
-    JMXInputPin *pin = [pins objectAtIndex:[inputPins selectedRow]];
-    if (pin.type == kJMXTextPin)
-        pin.data = text;
-}
-#endif
-
 - (void)provideText:(id)sender
 {
     if (sender == inputPins) {
         NSArray *pins;
         pins = [entityLayer.entity inputPins];
         JMXInputPin *pin = [pins objectAtIndex:[inputPins selectedRow]];
-#if 0
-        [textPanel setDelegate:self];
-#endif
         [textPanel setIsVisible:YES];
         [textPanel makeKeyAndOrderFront:sender];
         textPanel.pin = pin;
+    }
+}
+
+
+- (void)provideCode:(id)sender
+{
+    if (sender == inputPins) {
+        NSArray *pins;
+        pins = [entityLayer.entity inputPins];
+        JMXInputPin *pin = [pins objectAtIndex:[inputPins selectedRow]];
+        [codePanel setIsVisible:YES];
+        [codePanel makeKeyAndOrderFront:sender];
+        codePanel.pin = pin;
     }
 }
 
@@ -282,13 +301,13 @@
                     [cell setFont:[NSFont labelFontOfSize:[NSFont smallSystemFontSize]]];
                     [cell setTarget:self];
                     [cell setAction:@selector(setPopupButtonValue:)];
-                } else if (pin.type == kJMXTextPin) {
+                } else if (pin.type == kJMXTextPin || pin.type == kJMXCodePin) {
                     cell = [[[NSButtonCell alloc] init] autorelease];
-                    [cell setTitle:@"Provide Text"];
+                    [cell setTitle:(pin.type == kJMXTextPin) ? @"Provide Text" : @"Provide Code"];
                     [cell setControlSize:NSMiniControlSize];
                     [cell setFont:[NSFont labelFontOfSize:[NSFont smallSystemFontSize]]];
                     [cell setTarget:self];
-                    [cell setAction:@selector(provideText:)];
+                    [cell setAction:(pin.type == kJMXTextPin) ? @selector(provideText:) : @selector(provideCode:)];
                 } else if (pin.type == kJMXNumberPin) {
                     if (pin.minValue && pin.maxValue) {
                         cell = [[[NSSliderCell alloc] init] autorelease];

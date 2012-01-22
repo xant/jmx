@@ -23,24 +23,48 @@
 
 #import "JMXTextPanel.h"
 #import "JMXInputPin.h"
+#import "JMXEntity.h"
 
 @implementation JMXTextPanel
 
 @synthesize pin;
 
-- (void)awakeFromNib
+- (id)initWithContentRect:(NSRect)contentRect 
+                styleMask:(NSUInteger)aStyle 
+                  backing:(NSBackingStoreType)bufferingType
+                    defer:(BOOL)flag
 {
-    pin = nil;
+    self = [super initWithContentRect:contentRect
+                            styleMask:aStyle
+                              backing:bufferingType
+                                defer:flag];
+    if (self) {
+    }
+    return self;
 }
 
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super init];
+    if (self) {
+        
+    }
+    return self;
+}
+
+- (void)awakeFromNib
+{
+    [super awakeFromNib];
+}
+
+- (void)dealloc
+{
+    [super dealloc];
+}
 - (void)textDidChange:(NSNotification *)aNotification
 {
-    NSTextView *aTextView = [aNotification object];
+    //NSTextView *aTextView = [aNotification object];
     if ([liveButton state] == NSOnState) {
-        if ([self delegate])
-            [[self delegate] performSelector:@selector(setText:) withObject:[[aTextView textStorage] string]];
-        else if (pin)
-            pin.data = [[aTextView textStorage] string];
+        [self update:self];
     }
 }
 
@@ -64,10 +88,13 @@
 
 - (IBAction)update:(id)sender
 {
-    if ([self delegate])
-        [[self delegate] performSelector:@selector(setText:) withObject:[[textView textStorage] string]];
-    else if (pin)
-        pin.data = [[textView textStorage] string];
+    NSString *text = [[textView textStorage] string];
+    if ([self delegate]) {
+        [[self delegate] performSelector:@selector(setText:)
+                              withObject:text];
+    } else if (pin) {
+        pin.data = text;
+    }
 }
 
 - (void)unsetPin:(NSNotification *)notification
@@ -86,17 +113,17 @@
 - (void)setPin:(JMXInputPin *)aPin
 {
     @synchronized(self) {
-        if (pin != aPin) {
-            [[NSNotificationCenter defaultCenter] removeObserver:self 
-                                                            name:@"JMXEntityInputPinRemoved" 
-                                                          object:pin.owner];
-            pin = aPin;
-            if (pin) {
-                [[NSNotificationCenter defaultCenter] addObserver:self 
-                                                         selector:@selector(unsetPin:)
-                                                             name:@"JMXEntityInputPinRemoved" 
-                                                           object:pin.owner];
-            }
+        if (pin == aPin)
+            return;
+        [[NSNotificationCenter defaultCenter] removeObserver:self 
+                                                        name:@"JMXEntityInputPinRemoved" 
+                                                      object:pin.owner];
+        pin = aPin;
+        if (pin) {
+            [[NSNotificationCenter defaultCenter] addObserver:self 
+                                                     selector:@selector(unsetPin:)
+                                                         name:@"JMXEntityInputPinRemoved" 
+                                                       object:pin.owner];
         }
     }
 }

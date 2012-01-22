@@ -26,18 +26,21 @@
 
 @class JMXEntityLayer;
 @class JMXTextPanel;
+@class JMXCodePanel;
 
 @interface JMXEntityInspectorPanel : NSPanel <NSTableViewDataSource,NSTableViewDelegate,NSWindowDelegate> {
-    IBOutlet NSTextField *entityName;
-    IBOutlet NSTabView *pinInspector;
-    IBOutlet NSTableView *inputPins;
-    IBOutlet NSTableView *outputPins;
-    IBOutlet NSTableView *producers;
-    IBOutlet JMXTextPanel *textPanel;
     NSMutableDictionary *dataCells;
 @private
     JMXEntityLayer *entityLayer; // weak reference
 }
+
+@property (nonatomic, assign) IBOutlet NSTextField *entityName;
+@property (nonatomic, assign) IBOutlet NSTabView *pinInspector;
+@property (nonatomic, assign) IBOutlet NSTableView *inputPins;
+@property (nonatomic, assign) IBOutlet NSTableView *outputPins;
+@property (nonatomic, assign) IBOutlet NSTableView *producers;
+@property (nonatomic, assign) IBOutlet JMXTextPanel *textPanel;
+@property (nonatomic, assign) IBOutlet JMXCodePanel *codePanel;
 
 - (void)setEntity:(JMXEntityLayer *)entity;
 - (void)unsetEntity:(JMXEntityLayer *)entity;

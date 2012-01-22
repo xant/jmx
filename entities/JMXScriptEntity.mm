@@ -42,10 +42,6 @@ using namespace v8;
     [super dealloc];
 }
 
-- (void)unregisterPin:(JMXPin *)pin
-{
-    [super unregisterPin:pin];
-}
 - (void)resetContext
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -67,11 +63,11 @@ using namespace v8;
     [pool drain];
 }
 
-- (void)exec
+- (BOOL)exec
 {
     if (!jsContext)
         jsContext = [[JMXScript alloc] init];
-    [jsContext runScript:self.code withEntity:self];
+    return [jsContext runScript:self.code withEntity:self];
 }
 
 - (void)hookEntity:(JMXEntity *)entity

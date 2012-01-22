@@ -51,6 +51,7 @@
  @constant kJMXVoidPin NSVoid
  @constant kJMXStringPin NSString
  @constant kJMXTextPin NSString
+ @constant kJMXCodePin NSString
  @constant kJMXNumberPin NSNumber
  @constant kJMXImagePin CIImage
  @constant kJMXAudioPin JMXAudioBuffer
@@ -64,6 +65,7 @@ typedef enum {
     kJMXVoidPin = 0,
     kJMXStringPin,
     kJMXTextPin,
+    kJMXCodePin,
     kJMXNumberPin,
     kJMXImagePin,
     kJMXAudioPin,

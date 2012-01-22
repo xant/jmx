@@ -380,9 +380,9 @@ static v8::Handle<Value> GetDocument(v8::Local<v8::String> name, const v8::Acces
 }
 
 static v8::Handle<Value> AddRunLoop(const Arguments& args)
-{   
-    HandleScope handleScope;
+{
     v8::Locker locker;
+    HandleScope handleScope;
     Local<Context> context = v8::Context::GetCalling();
     Local<Object> globalObject  = context->Global();
     if (args.Length() >= 1 && args[0]->IsFunction()) {

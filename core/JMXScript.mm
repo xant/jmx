@@ -244,10 +244,7 @@ static BOOL ExecJSCode(const char *code, uint32_t length, const char *name)
         result = compiledScript->Run();
         if (result.IsEmpty()) {
             ReportException(&try_catch);
-        } else if (!result->IsUndefined()) {
-            // Convert the result to an ASCII string and print it.
-            //String::AsciiValue ascii(result);
-            //NSLog(@"%s\n", *ascii);
+        } else {
             return YES;
         }
     } else {

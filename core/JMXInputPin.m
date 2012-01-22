@@ -86,7 +86,7 @@
 
 - (BOOL)connectToPin:(JMXOutputPin *)destinationPin
 {
-    if (self.type == destinationPin.type) {
+    if ([self canConnectToPin:destinationPin]) {
         @synchronized(producers) {
             if ([producers count] && !multiple) {
                     [[producers objectAtIndex:0] detachObject:self];

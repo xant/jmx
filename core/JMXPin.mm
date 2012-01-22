@@ -571,7 +571,9 @@ using namespace v8;
 
 - (BOOL)canConnectToPin:(JMXPin *)pin
 {
-    return (type == pin.type && direction != pin.direction) ? YES : NO;
+    JMXPinType pinType = pin.type;
+    int check = kJMXTextPin|kJMXCodePin|kJMXTextPin;
+    return (((type&check && pinType&check) || type == pinType) && direction != pin.direction) ? YES : NO;
 }
 
 - (id)data

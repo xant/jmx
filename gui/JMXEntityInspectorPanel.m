@@ -65,6 +65,13 @@
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [dataCells release];
+    self.entityName = nil;
+    self.pinInspector = nil;
+    self.inputPins = nil;
+    self.outputPins = nil;
+    self.producers = nil;
+    self.textPanel = nil;
+    self.codePanel = nil;
     [super dealloc];
 }
 

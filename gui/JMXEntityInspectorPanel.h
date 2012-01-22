@@ -32,6 +32,14 @@
     NSMutableDictionary *dataCells;
 @private
     JMXEntityLayer *entityLayer; // weak reference
+    
+    NSTextField *entityName;
+    NSTabView *pinInspector;
+    NSTableView *inputPins;
+    NSTableView *outputPins;
+    NSTableView *producers;
+    JMXTextPanel *textPanel;
+    JMXCodePanel *codePanel;
 }
 
 @property (nonatomic, assign) IBOutlet NSTextField *entityName;

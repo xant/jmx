@@ -24,7 +24,7 @@
     v8::Persistent<v8::Context> ctx;
     //std::map<id, v8::Persistent<v8::Object> > instancesMap;
     NSMutableDictionary *persistentInstances;
-    NSTimer *runLoopTimer;
+    NSMutableSet *runloopTimers;
 }
 
 /*!
@@ -35,7 +35,7 @@
              and the main graph managed through the board
  */
 @property (readonly, nonatomic) JMXEntity *scriptEntity;
-
+@property (readonly, nonatomic) NSMutableSet *runloopTimers;
 /*!
  @method getContext:
  @abstract get the JMXScript instance where the provided currentContext is being managed/executed

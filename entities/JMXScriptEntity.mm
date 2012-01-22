@@ -60,8 +60,10 @@ using namespace v8;
             [node detach];
         } 
     }
-    if (jsContext)
+    if (jsContext) {
+        [jsContext clearTimers];
         [jsContext release];
+    }
     jsContext = [[JMXScript alloc] init];
     [pool drain];
 }

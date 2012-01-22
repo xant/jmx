@@ -24,5 +24,6 @@
 
 - (IBAction)toggleInspector:(id)sender;
 - (IBAction)toggleLibrary:(id)sender;
+- (IBAction)showJavascriptExamples:(id)sender;
 
 @end

@@ -23,6 +23,7 @@
 #ifdef __JMXV8__
 @property (nonatomic, assign) v8::Persistent<v8::Function> function;
 #endif
+
 @property (nonatomic, readonly) NSTimer *timer;
 @property (nonatomic, readonly) BOOL repeats;
 @property (nonatomic, copy) NSString *statements;

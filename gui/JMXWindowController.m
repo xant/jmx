@@ -58,6 +58,15 @@
 	
 }
 
+- (IBAction)showJavascriptExamples:(id)sender
+{
+    //NSURL *url = [[[NSBundle mainBundle] sharedSupportURL] URLByAppendingPathComponent:@"javascript_examples"];
+    
+    NSURL *url = [[NSURL fileURLWithPath:[[NSBundle mainBundle] sharedSupportPath]]
+                  URLByAppendingPathComponent:@"javascript_examples"];
+
+    [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:[NSArray arrayWithObject:url]];
+}
 #pragma mark -
 
 - (void)setBoardViewController:(NSViewController *)vc

@@ -76,6 +76,13 @@
 		AA3557451277468800EAA2E4 /* JMXTextEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA3556F51277340200EAA2E4 /* JMXTextEntity.mm */; };
 		AA3557DA12795C5500EAA2E4 /* JMXDrawEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA3557D912795C5500EAA2E4 /* JMXDrawEntity.mm */; };
 		AA38D1CC12DCC2CA00208826 /* jquery.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA38D1CB12DCC29D00208826 /* jquery.js */; };
+		AA490DD214CC5F8E00407C0D /* draw_pixels.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA490DC314CC5F4900407C0D /* draw_pixels.js */; };
+		AA490DD314CC5F8E00407C0D /* filter_videofile.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA490DC414CC5F4900407C0D /* filter_videofile.js */; };
+		AA490DD414CC5F8E00407C0D /* play_mp3dir.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA490DC514CC5F4900407C0D /* play_mp3dir.js */; };
+		AA490DD514CC5F8E00407C0D /* swap_videofiles.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA490DC614CC5F4900407C0D /* swap_videofiles.js */; };
+		AA490DD614CC5F8F00407C0D /* test_canvas.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA490DC714CC5F4900407C0D /* test_canvas.js */; };
+		AA490DD714CC5F8F00407C0D /* test_drawing_canvas.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA490DC814CC5F4900407C0D /* test_drawing_canvas.js */; };
+		AA490DD814CC5F8F00407C0D /* test_drawing.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA490DC914CC5F4900407C0D /* test_drawing.js */; };
 		AA4B00C912BE560100775B88 /* JMXProxyPin.m in Sources */ = {isa = PBXBuildFile; fileRef = AA4B00C812BE560100775B88 /* JMXProxyPin.m */; };
 		AA4B01F412BEC85F00775B88 /* AudioCapture.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA4B01F312BEC85500775B88 /* AudioCapture.js */; };
 		AA4B020912BED1BB00775B88 /* JMXAudioCapture.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4B020812BED1BB00775B88 /* JMXAudioCapture.mm */; };
@@ -117,6 +124,23 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		AA490DD114CC5F7C00407C0D /* Deploy JS examples */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = javascript_examples;
+			dstSubfolderSpec = 12;
+			files = (
+				AA490DD214CC5F8E00407C0D /* draw_pixels.js in Deploy JS examples */,
+				AA490DD314CC5F8E00407C0D /* filter_videofile.js in Deploy JS examples */,
+				AA490DD414CC5F8E00407C0D /* play_mp3dir.js in Deploy JS examples */,
+				AA490DD514CC5F8E00407C0D /* swap_videofiles.js in Deploy JS examples */,
+				AA490DD614CC5F8F00407C0D /* test_canvas.js in Deploy JS examples */,
+				AA490DD714CC5F8F00407C0D /* test_drawing_canvas.js in Deploy JS examples */,
+				AA490DD814CC5F8F00407C0D /* test_drawing.js in Deploy JS examples */,
+			);
+			name = "Deploy JS examples";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AA4BFED712BE260500775B88 /* Deploy JS API */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 12;
@@ -278,6 +302,13 @@
 		AA3557D912795C5500EAA2E4 /* JMXDrawEntity.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXDrawEntity.mm; sourceTree = "<group>"; };
 		AA3557E612795D0A00EAA2E4 /* JMXScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXScript.h; sourceTree = "<group>"; };
 		AA38D1CB12DCC29D00208826 /* jquery.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = jquery.js; sourceTree = "<group>"; };
+		AA490DC314CC5F4900407C0D /* draw_pixels.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = draw_pixels.js; path = javascript_examples/draw_pixels.js; sourceTree = "<group>"; };
+		AA490DC414CC5F4900407C0D /* filter_videofile.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = filter_videofile.js; path = javascript_examples/filter_videofile.js; sourceTree = "<group>"; };
+		AA490DC514CC5F4900407C0D /* play_mp3dir.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = play_mp3dir.js; path = javascript_examples/play_mp3dir.js; sourceTree = "<group>"; };
+		AA490DC614CC5F4900407C0D /* swap_videofiles.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = swap_videofiles.js; path = javascript_examples/swap_videofiles.js; sourceTree = "<group>"; };
+		AA490DC714CC5F4900407C0D /* test_canvas.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = test_canvas.js; path = javascript_examples/test_canvas.js; sourceTree = "<group>"; };
+		AA490DC814CC5F4900407C0D /* test_drawing_canvas.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = test_drawing_canvas.js; path = javascript_examples/test_drawing_canvas.js; sourceTree = "<group>"; };
+		AA490DC914CC5F4900407C0D /* test_drawing.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = test_drawing.js; path = javascript_examples/test_drawing.js; sourceTree = "<group>"; };
 		AA4B00C712BE560100775B88 /* JMXProxyPin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXProxyPin.h; sourceTree = "<group>"; };
 		AA4B00C812BE560100775B88 /* JMXProxyPin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXProxyPin.m; sourceTree = "<group>"; };
 		AA4B01F312BEC85500775B88 /* AudioCapture.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = AudioCapture.js; sourceTree = "<group>"; };
@@ -456,6 +487,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				AA490DD914CC5F9C00407C0D /* Javascript Examples */,
 				AA54B28A12A1215000EC60B2 /* jmx-icon.icns */,
 				8D1107310486CEB800E47090 /* JMX-Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
@@ -583,6 +615,20 @@
 			);
 			name = "Video Outputs";
 			path = video_outputs;
+			sourceTree = "<group>";
+		};
+		AA490DD914CC5F9C00407C0D /* Javascript Examples */ = {
+			isa = PBXGroup;
+			children = (
+				AA490DC314CC5F4900407C0D /* draw_pixels.js */,
+				AA490DC414CC5F4900407C0D /* filter_videofile.js */,
+				AA490DC514CC5F4900407C0D /* play_mp3dir.js */,
+				AA490DC614CC5F4900407C0D /* swap_videofiles.js */,
+				AA490DC714CC5F4900407C0D /* test_canvas.js */,
+				AA490DC814CC5F4900407C0D /* test_drawing_canvas.js */,
+				AA490DC914CC5F4900407C0D /* test_drawing.js */,
+			);
+			name = "Javascript Examples";
 			sourceTree = "<group>";
 		};
 		AA4BFDD712BE0C8600775B88 /* jsapi */ = {
@@ -833,6 +879,7 @@
 				8D11072E0486CEB800E47090 /* Frameworks */,
 				AAF6CA91127CD1320015AEDE /* Deploy third-party libraries */,
 				AA4BFED712BE260500775B88 /* Deploy JS API */,
+				AA490DD114CC5F7C00407C0D /* Deploy JS examples */,
 			);
 			buildRules = (
 			);

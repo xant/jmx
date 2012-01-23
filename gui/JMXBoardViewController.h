@@ -34,7 +34,7 @@
 @property (nonatomic, assign) JMXConnectorLayer *selectedConnectorLayer;
 @property (nonatomic, retain) NSMutableArray *entities;
 @property (nonatomic, retain) IBOutlet JMXEntitiesController *entitiesController;
-
+//@property (nonatomic, retain) IBOutlet 
 #pragma mark -
 #pragma mark IBActions
 

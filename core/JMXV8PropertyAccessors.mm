@@ -47,13 +47,17 @@ v8::Handle<Value>GetObjectProperty(Local<String> name, const AccessorInfo& info)
     if (obj && [obj respondsToSelector:selector]) {
         id output = [obj performSelector:selector];
         if ([output isKindOfClass:[NSString class]]) {
+            Handle<String> string = String::New([(NSString *)output UTF8String], [(NSString *)output length]);
             [pool drain];
-            return handle_scope.Close(String::New([(NSString *)output UTF8String], [(NSString *)output length]));
+            return handle_scope.Close(string);
         } else if ([output isKindOfClass:[NSNumber class]]) {
+            Handle<String> string = String::New([(NSString *)output UTF8String], [(NSString *)output length]);
             [pool drain];
             return handle_scope.Close(Number::New([(NSNumber *)output doubleValue]));
         } else if ([output isKindOfClass:[JMXPin class]] || [output isKindOfClass:[JMXEntity class]] || [output isKindOfClass:[JMXSize class]]) {
-            return handle_scope.Close([output jsObj]);
+            Handle<Object> jsObj = [output jsObj];
+            [pool drain];
+            return handle_scope.Close(jsObj);
         } else {
             // unsupported class
         }

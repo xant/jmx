@@ -37,10 +37,12 @@
 #import "NSXMLNode+V8.h"
 #import "JMXScriptTimer.h"
 #import "JMXScriptEntity.h"
+#import "node.h"
+#import "v8_typed_array.h"
 
 using namespace v8;
 using namespace std;
-
+using namespace node;
 /*
 typedef std::map<id, v8::Persistent<v8::Object> > InstMap;
 */
@@ -578,13 +580,26 @@ static v8::Handle<Value> ClearTimeout(const Arguments& args)
     }
 }
 
+- (void)nodejsRun
+{
+        v8::Locker locker;
+        v8::HandleScope handle_scope;
+        v8::Context::Scope context_scope(ctx);
+        uv_run(uv_default_loop());
+}
+
 - (id)init
 {
     self = [super init];
     if (self) {
-        persistentInstances = [[NSMutableDictionary alloc] init];
+        // initialize node.js
+        char *argv[2] = { (char *)"JMX", NULL };
+        char **parsedArgv = node::Init(1, argv);
+        //v8::V8::Initialize();
         v8::Locker locker;
-        HandleScope handle_scope;
+        v8::HandleScope handle_scope;
+        
+        persistentInstances = [[NSMutableDictionary alloc] init];
         Local<ObjectTemplate>ctxTemplate = ObjectTemplate::New();
 
         ctxTemplate->Set(String::New("rand"), FunctionTemplate::New(Rand));
@@ -622,12 +637,24 @@ static v8::Handle<Value> ClearTimeout(const Arguments& args)
         scriptEntity = nil;
         v8::Context::Scope context_scope(ctx);
         ctx->Global()->SetAccessor(String::New("document"), GetDocument);
-        char baseInclude[] = "include('JMX.js');";
-        // Enter the newly created execution environment.
-        ExecJSCode(baseInclude, strlen(baseInclude), "JMX");
         //ctx->Global()->SetPointerInInternalField(0, self);
         runloopTimers = [[NSMutableSet alloc] initWithCapacity:100];
         operationQueue = [[NSOperationQueue alloc] init];
+        
+        // last part of node initialization
+        Handle<Object> process = node::SetupProcessObject(1, parsedArgv);
+        v8_typed_array::AttachBindings(ctx->Global());
+        
+        // Create all the objects, load modules, do everything.
+        // so your next reading stop should be node::Load()!
+        node::Load(process);
+        
+        char baseInclude[] = "include('JMX.js');";
+        // Enter the newly created execution environment.
+        ExecJSCode(baseInclude, strlen(baseInclude), "JMX");
+        
+        NSTimer *timer = [NSTimer timerWithTimeInterval:0.25 target:self selector:@selector(nodejsRun) userInfo:nil repeats:YES];
+        [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
     }
     return self;
 }

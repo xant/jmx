@@ -14,6 +14,9 @@
 	NSSplitView *documentSplitView;
 	NSViewController *boardViewController;
     IBOutlet NSPanel *inspectorPanel;
+    IBOutlet NSTextView *outputPanel;
+    int stdout_pipe[2];
+    int stderr_pipe[2];
 }
 
 @property (nonatomic, assign) IBOutlet NSSplitView *documentSplitView;

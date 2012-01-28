@@ -38,14 +38,12 @@ JMXV8_EXPORT_NODE_CLASS(JMXOpenGLScreen);
 @interface JMXOpenGLView : NSOpenGLView {
     CIImage *currentFrame;
     CIContext *ciContext;
-    CVDisplayLinkRef    displayLink; // the displayLink that runs the show
-    CGDirectDisplayID   viewDisplayID;
-    uint64_t lastTime;
     BOOL fullScreen;
     NSWindow *myWindow;
     BOOL needsResize;
     NSRecursiveLock *lock;
-
+    uint64_t lastTime;
+    
 #if MAC_OS_X_VERSION_10_6
     CGDisplayModeRef     savedMode;
 #else
@@ -54,7 +52,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXOpenGLScreen);
     JMXSize *frameSize;
 }
 
-@property (retain) CIImage *currentFrame;
+@property (atomic, retain) CIImage *currentFrame;
 
 - (void)setSize:(NSSize)size;
 - (void)cleanup;
@@ -62,6 +60,51 @@ JMXV8_EXPORT_NODE_CLASS(JMXOpenGLScreen);
 
 @end
 
+@interface JMXOpenGLViewWrapper : NSObject
+{
+    JMXOpenGLView *openglView;
+}
+@property (atomic, assign) JMXOpenGLView *openglView; // weak reference
++ (id)openglViewWrapperWithOpenglView:(JMXOpenGLView *)view;
+- (id)initWithOpenglView:(JMXOpenGLView *)view;
+@end
+
+@implementation JMXOpenGLViewWrapper
+@synthesize openglView;
+
++ (id)openglViewWrapperWithOpenglView:(JMXOpenGLView *)view
+{
+    return [[[self alloc] initWithOpenglView:view] autorelease];
+}
+
+- (id)initWithOpenglView:(JMXOpenGLView *)view
+{
+    self = [super init];
+    if (self) {
+        self.openglView = view;
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+    /*
+    CVDisplayLinkStop(displayLink);
+    CVDisplayLinkRelease(displayLink);
+     */
+    [super dealloc];
+}
+
+- (NSString *)hashString
+{
+    return [NSString stringWithFormat:@"%d", [openglView hash]];
+}
+
+@end
+
+static NSMutableDictionary *__openglOutputs = nil;
+static CVDisplayLinkRef    displayLink; // the displayLink that runs the show
+static CGDirectDisplayID   viewDisplayID;
 static CVReturn renderCallback(CVDisplayLinkRef displayLink, 
                                const CVTimeStamp *inNow, 
                                const CVTimeStamp *inOutputTime, 
@@ -70,7 +113,9 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
                                void *displayLinkContext)
 {    
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    [(JMXOpenGLView*)displayLinkContext renderFrame:inNow->hostTime];
+    for (JMXOpenGLViewWrapper *wrapper in [__openglOutputs allValues]) {
+        [wrapper.openglView renderFrame:inNow->hostTime];
+    }
     [pool drain];
     return noErr;
 }
@@ -78,6 +123,22 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 @implementation JMXOpenGLView
 
 @synthesize currentFrame;
+
++ (void)initialize
+{
+    [super initialize];
+    //viewDisplayID = (CGDirectDisplayID)[[[[[self window] screen] deviceDescription] objectForKey:@"NSScreenNumber"] intValue];
+    
+    viewDisplayID = CGMainDisplayID();
+    CVReturn ret = CVDisplayLinkCreateWithCGDisplay(viewDisplayID, &displayLink);
+    if (ret != noErr) {
+        // TODO - Error Messages
+    }
+    // Set up display link callbacks
+    NSLog(@"Creating CVDisplayLink");
+    CVDisplayLinkSetOutputCallback(displayLink, renderCallback, nil);
+    CVDisplayLinkStart(displayLink);
+}
 
 - (id)initWithFrame:(NSRect)frameRect
 {
@@ -98,11 +159,16 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     if (self) {
         currentFrame = nil;
         ciContext = nil;
-        lastTime = 0;
         fullScreen = NO;
         myWindow = nil;
+        lastTime = 0;
         [self setSize:frameRect.size];
         lock = [[NSRecursiveLock alloc] init];
+        if (!__openglOutputs) {
+            __openglOutputs = [[NSMutableDictionary alloc] initWithCapacity:5];
+        }
+        JMXOpenGLViewWrapper *wrapper = [JMXOpenGLViewWrapper openglViewWrapperWithOpenglView:self];
+        [__openglOutputs setObject:wrapper forKey:[wrapper hashString]];
     }
     return self;
 }
@@ -126,29 +192,19 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         NSOpenGLPixelFormat    *openGLPixelFormat = [self pixelFormat];
 
         [self setNeedsDisplay:YES];
-        viewDisplayID = (CGDirectDisplayID)[[[[[self window] screen] deviceDescription] objectForKey:@"NSScreenNumber"] intValue];  
+  
         for (virtualScreen = 0; virtualScreen < [openGLPixelFormat  numberOfVirtualScreens]; virtualScreen++)
         {
             [openGLPixelFormat getValues:&displayMask forAttribute:NSOpenGLPFAScreenMask forVirtualScreen:virtualScreen];
             totalDisplayMask |= displayMask;
         }
-        CVReturn ret = CVDisplayLinkCreateWithCGDisplay(viewDisplayID, &displayLink);
-        if (ret != noErr) {
-            // TODO - Error Messages
-        }
-        // Set up display link callbacks
-        NSLog(@"Creating CVDisplayLink");
-        CVDisplayLinkSetOutputCallback(displayLink, renderCallback, self);
-        CVDisplayLinkStart(displayLink);
         [self setNeedsDisplay:YES];
     }
 }
 
 - (void)dealloc
 {
-    NSLog(@"Releasing CVDisplayLink");
-    CVDisplayLinkStop(displayLink);
-    CVDisplayLinkRelease(displayLink);
+    [__openglOutputs removeObjectForKey:[NSString stringWithFormat:@"%d", [self hash]]];
     [self cleanup];
     [lock release];
     [super dealloc];
@@ -159,9 +215,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     if (timeStamp-lastTime < 1e9/30) // HC
         return;
     lastTime = timeStamp;
-    [lock lock];
     if (!self.window) {
-        [lock unlock];
         return;
     }
     if (needsResize) {
@@ -179,6 +233,8 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         [[self window] setMovable:YES]; // XXX - this shouldn't be necessary
         needsResize = NO;
     }
+    //[lock lock];
+
     //if (CGLLockContext((CGLContextObj)[[self openGLContext] CGLContextObj]) != kCGLNoError)
       //  NSLog(@"Could not lock CGLContext");
     //[[self openGLContext] makeCurrentContext];
@@ -211,22 +267,13 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         //glClearColor(0.0, 0.0, 0.0, 0.0);         
         //glClear(GL_COLOR_BUFFER_BIT);
         
-        // XXX - it seems that since osx 10.7 different CVDisplayLink callbacks,
-        //       registered for different opengl contexts but on the same physical display
-        //       are called in different threads.
-        //       Since we access the same CIImage from different threads,
-        //       to draw it on different contextes and possibly applying different
-        //       filters, we need to protect the whole rendering steps in a critical
-        //       section (synchronized against our class itself to make it a g
-        //       lobal lock for all living opengl screens)
-        @synchronized([self class]) { // BIG LOCK
-            [ciContext drawImage:image inRect:destinationRect fromRect:sourceRect];
-            [image release];
-            [[self openGLContext] flushBuffer];
-        }
+
+        [ciContext drawImage:image inRect:destinationRect fromRect:sourceRect];
+        [image release];
+        [[self openGLContext] flushBuffer];
     }
     [self setNeedsDisplay:NO];
-    [lock unlock];
+    //[lock unlock];
     //CGLUnlockContext((CGLContextObj)[[self openGLContext] CGLContextObj]);
 }
 
@@ -246,7 +293,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     if (!self.window)
         return;
     
-    [lock lock];
+    //[lock lock];
     NSRect bounds = [self frame];
     GLfloat minX, minY, maxX, maxY;
     minX = NSMinX(bounds);
@@ -270,30 +317,28 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
     [[self openGLContext] flushBuffer];
-    [lock unlock];
+    //[lock unlock];
     CGLUnlockContext((CGLContextObj)[[self openGLContext] CGLContextObj]);
 }
 
 
 - (void)cleanup
 {
-    [lock lock];
-    @synchronized([self class]) {
-        if (ciContext) {
-            [ciContext release];
-            ciContext = nil;
-        }
+    //[lock lock];
+    if (ciContext) {
+        [ciContext release];
+        ciContext = nil;
     }
     if (frameSize)
         [frameSize release];
     frameSize = nil;
     //self.currentFrame = nil;
-    [lock unlock];  
+    //[lock unlock];  
 }
 
 - (void)setSize:(NSSize)size
 {
-    [lock lock];
+    //[lock lock];
     NSRect actualRect = [[self window] contentRectForFrameRect:[self frame]];
     // XXX - we actually don't allow setting a 0-size (for neither width nor height)
     if (size.width && size.height &&
@@ -305,7 +350,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         frameSize = [[JMXSize sizeWithNSSize:size] retain];
         needsResize = YES;
     }
-    [lock unlock];
+    //[lock unlock];
 }
 
 - (IBAction)toggleFullScreen:(id)sender
@@ -455,9 +500,9 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
                                              styleMask:NSTitledWindowMask|NSMiniaturizableWindowMask
                                                backing:NSBackingStoreBuffered 
                                                  defer:NO];
-        [[window contentView] addSubview:view];
         [window setReleasedWhenClosed:NO];
         [window setIsVisible:YES];
+        [[window contentView] addSubview:view];
         controller = [[JMXScreenController alloc] initWithView:view];
         self.label = @"OpenGLScreen";
         //[window orderBack:self];

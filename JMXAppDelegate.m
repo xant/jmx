@@ -41,7 +41,7 @@
 
 @implementation JMXAppDelegate
 
-@synthesize window, layersTableView;
+@synthesize window, layersTableView, batchMode;
 
 - (void)applicationWillFinishLaunching:(NSNotification *)notification {
 	JMXContext *sharedContext = [JMXContext sharedContext];
@@ -77,4 +77,12 @@
     return [self retain];
 }
 
+- (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename
+{
+    JMXScriptFile *file = [[JMXScriptFile alloc] init];
+    file.path = filename;
+    file.active = YES;
+    batchMode = YES;
+    return YES;
+}
 @end

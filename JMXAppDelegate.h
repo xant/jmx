@@ -30,9 +30,11 @@
 #endif
     NSWindow *window;
     NSTableView *layersTableView;
+    BOOL batchMode;
 }
 
 @property (assign) IBOutlet NSWindow *window;
 @property (assign) IBOutlet NSTableView *layersTableView;
-
+@property (readonly) BOOL batchMode;
+    
 @end

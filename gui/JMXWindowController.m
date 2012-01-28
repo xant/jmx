@@ -8,6 +8,7 @@
 
 #import "JMXWindowController.h"
 #import "JMXBoardViewController.h"
+#import "JMXAppDelegate.h"
 
 @implementation JMXWindowController
 
@@ -31,7 +32,7 @@
 - (void) consoleOutput:(id)object
 {
     NSAutoreleasePool * p = [[NSAutoreleasePool alloc] init];
-    char buf[1024];
+    char buf[65536];
     struct timeval timeout;
     fd_set rfds;
     
@@ -80,16 +81,22 @@
 
 - (void)windowDidLoad
 {
-	[documentSplitView setPosition:200.0f ofDividerAtIndex:0];
-	[documentSplitView adjustSubviews];	
-    pipe(stdout_pipe);
-    pipe(stderr_pipe);
-    dup2(stdout_pipe[1], fileno(stdout));
-    dup2(stderr_pipe[1], fileno(stderr));
-    close(stdout_pipe[1]);
-    close(stderr_pipe[1]);
-    [NSThread detachNewThreadSelector:@selector(consoleOutput:) 
-                             toTarget:self withObject:nil];
+    JMXAppDelegate *appDelegate = [[NSApplication sharedApplication] delegate];
+    if (appDelegate.batchMode) {
+        [self.window close];
+        self.window = nil;
+    } else {
+        [documentSplitView setPosition:200.0f ofDividerAtIndex:0];
+        [documentSplitView adjustSubviews];
+        pipe(stdout_pipe);
+        pipe(stderr_pipe);
+        dup2(stdout_pipe[1], fileno(stdout));
+        dup2(stderr_pipe[1], fileno(stderr));
+        close(stdout_pipe[1]);
+        close(stderr_pipe[1]);
+        [NSThread detachNewThreadSelector:@selector(consoleOutput:) 
+                                 toTarget:self withObject:nil];
+    }
 }
 
 #pragma mark -

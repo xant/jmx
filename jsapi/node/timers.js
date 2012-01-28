@@ -199,11 +199,21 @@ exports.clearTimeout = function(timer) {
 
 
 exports.setInterval = function(callback, repeat) {
+  if (typeof callback == "string")
+    callback = new Function(callback);
+
   var timer = new Timer();
 
   var args = Array.prototype.slice.call(arguments, 2);
   timer.ontimeout = function() {
-    callback.apply(timer, args);
+    try {
+      callback.apply(timer, args);
+    } catch (err) {
+        console.error(err);
+        console.error('Invalidating interval callback: ' + callback.toString());
+        timer.ontimeout = null;
+        timer.close();
+    }
   }
 
   timer.start(repeat, repeat ? repeat : 1);

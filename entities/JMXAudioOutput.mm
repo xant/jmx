@@ -56,7 +56,9 @@ static OSStatus _FillComplexBufferProc (
     self = [super init];
     if (self) {
         audioInputPin = [self registerInputPin:@"audio" withType:kJMXAudioPin andSelector:@"newSample:"];
+        
         currentSamplePin = [self registerOutputPin:@"currentSample" withType:kJMXAudioPin];
+        
         converter = NULL;
         outputDescription = format.audioStreamBasicDescription;
         outputBufferList = (AudioBufferList *)calloc(sizeof(AudioBufferList), 1);
@@ -146,6 +148,7 @@ static OSStatus _FillComplexBufferProc (
     if (previousSample)
         [previousSample release];
 #endif
+    [currentSamplePin deliverData:buffer fromSender:self];
     if (wOffset > kJMXAudioOutputSamplesBufferPrefillCount)
         needsPrefill = NO;
 }

@@ -104,7 +104,6 @@ JMXV8_EXPORT_NODE_CLASS(JMXCoreAudioOutput);
                 outOutputData->mBuffers[i].mNumberChannels = sample.bufferList->mBuffers[i].mNumberChannels;
             }
         }
-        [currentSamplePin deliverData:sample fromSender:self];
     } else {
         //NSLog(@"NO FRAME");
     }

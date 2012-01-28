@@ -476,7 +476,6 @@ function connect(self, address, port, addressType) {
     self.remotePort = port;
   }
   self.remoteAddress = address;
-
   // TODO return promise from Socket.prototype.connect which
   // wraps _connectReq.
 

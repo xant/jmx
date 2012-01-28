@@ -55,14 +55,9 @@
     // others like the debugger or running --eval arguments. Here we decide
     // which mode we run in.
 
-    if (NativeModule.exists('_third_party_main')) {
-      // To allow people to extend Node in different ways, this hook allows
-      // one to drop a file lib/_third_party_main.js into the build
-      // directory which will be executed instead of Node's normal loading.
-      process.nextTick(function() {
-        NativeModule.require('_third_party_main');
-      });
-
+    if (1) { // JMX
+      var Module = NativeModule.require('module');
+      global.require = Module.prototype.require;
     } else if (process.argv[1] == 'debug') {
       // Start the debugger agent
       var d = NativeModule.require('_debugger');
@@ -104,7 +99,6 @@
       if (NativeModule.require('tty').isatty(0)) {
         // REPL
         var repl = Module.requireRepl().start('> ', null, null, true);
-
       } else {
         // Read all of stdin - execute it.
         process.stdin.resume();

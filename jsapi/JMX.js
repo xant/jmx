@@ -23,6 +23,4 @@ include("DOM.js"); // DOM related additions
 
 include("jquery.js");
 
-include("node.js");
-
 //echo("Done initializing JMX Core API");

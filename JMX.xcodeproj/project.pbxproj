@@ -215,7 +215,6 @@
 		AAF376A314CCCE5E00347F40 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAF376A214CCCE5E00347F40 /* libcrypto.dylib */; };
 		AAF376A514CCCE9700347F40 /* fs.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF376A414CCCE9700347F40 /* fs.c */; };
 		AAF376B414CCCEF400347F40 /* http_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF376AA14CCCEF400347F40 /* http_parser.c */; };
-		AAF376C114CD576100347F40 /* node.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AAF3753E14CCBE8700347F40 /* node.js */; };
 		AAFAAD88129095EB00949028 /* JMXScript.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAFAAD87129095EB00949028 /* JMXScript.mm */; };
 /* End PBXBuildFile section */
 
@@ -243,7 +242,6 @@
 			dstPath = js;
 			dstSubfolderSpec = 13;
 			files = (
-				AAF376C114CD576100347F40 /* node.js in Deploy JS API */,
 				AA38D1CC12DCC2CA00208826 /* jquery.js in Deploy JS API */,
 				AAC6359C12D4622400B69DFE /* DOM.js in Deploy JS API */,
 				AA4BFECF12BE25E900775B88 /* JMX.js in Deploy JS API */,
@@ -519,6 +517,16 @@
 		AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXDrawPath.mm; sourceTree = "<group>"; };
 		AAD13C48128EF2AB00ECB03A /* NSColor+V8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSColor+V8.h"; sourceTree = "<group>"; };
 		AAD13C49128EF2AB00ECB03A /* NSColor+V8.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSColor+V8.mm"; sourceTree = "<group>"; };
+		AAD27FCC14CE15DD00D3A5FB /* ares.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ares.h; sourceTree = "<group>"; };
+		AAD27FCD14CE15DD00D3A5FB /* ares_version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ares_version.h; sourceTree = "<group>"; };
+		AAD27FCF14CE15DD00D3A5FB /* eio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = eio.h; sourceTree = "<group>"; };
+		AAD27FD014CE15DD00D3A5FB /* ev.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ev.h; sourceTree = "<group>"; };
+		AAD27FD114CE15DD00D3A5FB /* ngx-queue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ngx-queue.h"; sourceTree = "<group>"; };
+		AAD27FD214CE15DD00D3A5FB /* tree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tree.h; sourceTree = "<group>"; };
+		AAD27FD314CE15DD00D3A5FB /* uv-unix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "uv-unix.h"; sourceTree = "<group>"; };
+		AAD27FD414CE15DD00D3A5FB /* uv-win.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "uv-win.h"; sourceTree = "<group>"; };
+		AAD27FD514CE15DD00D3A5FB /* uv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uv.h; sourceTree = "<group>"; };
+		AADB066914CE0FCA007A175D /* node.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = node.js; sourceTree = "<group>"; };
 		AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		AAF3753614CCBE8700347F40 /* cares_wrap.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cares_wrap.cc; sourceTree = "<group>"; };
 		AAF3753714CCBE8700347F40 /* fs_event_wrap.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fs_event_wrap.cc; sourceTree = "<group>"; };
@@ -526,7 +534,6 @@
 		AAF3753914CCBE8700347F40 /* handle_wrap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = handle_wrap.h; sourceTree = "<group>"; };
 		AAF3753B14CCBE8700347F40 /* node.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = node.cc; sourceTree = "<group>"; };
 		AAF3753D14CCBE8700347F40 /* node.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = node.h; sourceTree = "<group>"; };
-		AAF3753E14CCBE8700347F40 /* node.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = node.js; path = ../node.js/node.js; sourceTree = "<group>"; };
 		AAF3753F14CCBE8700347F40 /* node_buffer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = node_buffer.cc; sourceTree = "<group>"; };
 		AAF3754014CCBE8700347F40 /* node_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = node_buffer.h; sourceTree = "<group>"; };
 		AAF3754214CCBE8700347F40 /* node_constants.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = node_constants.cc; sourceTree = "<group>"; };
@@ -927,7 +934,6 @@
 				AA8F770712C5718600EA8543 /* MovieFile.js */,
 				AA8F770812C571A200EA8543 /* AudioFile.js */,
 				AA38D1CB12DCC29D00208826 /* jquery.js */,
-				AAF3753E14CCBE8700347F40 /* node.js */,
 			);
 			path = jsapi;
 			sourceTree = SOURCE_ROOT;
@@ -959,6 +965,7 @@
 		AA70A01114CDE389000A7FA1 /* node */ = {
 			isa = PBXGroup;
 			children = (
+				AADB066914CE0FCA007A175D /* node.js */,
 				AA70A01214CDE389000A7FA1 /* _debugger.js */,
 				AA70A01314CDE389000A7FA1 /* _linklist.js */,
 				AA70A01414CDE389000A7FA1 /* assert.js */,
@@ -1176,6 +1183,31 @@
 			path = audio;
 			sourceTree = "<group>";
 		};
+		AAD27FCB14CE15DD00D3A5FB /* include */ = {
+			isa = PBXGroup;
+			children = (
+				AAD27FCC14CE15DD00D3A5FB /* ares.h */,
+				AAD27FCD14CE15DD00D3A5FB /* ares_version.h */,
+				AAD27FCE14CE15DD00D3A5FB /* uv-private */,
+				AAD27FD514CE15DD00D3A5FB /* uv.h */,
+			);
+			name = include;
+			path = uv/include;
+			sourceTree = "<group>";
+		};
+		AAD27FCE14CE15DD00D3A5FB /* uv-private */ = {
+			isa = PBXGroup;
+			children = (
+				AAD27FCF14CE15DD00D3A5FB /* eio.h */,
+				AAD27FD014CE15DD00D3A5FB /* ev.h */,
+				AAD27FD114CE15DD00D3A5FB /* ngx-queue.h */,
+				AAD27FD214CE15DD00D3A5FB /* tree.h */,
+				AAD27FD314CE15DD00D3A5FB /* uv-unix.h */,
+				AAD27FD414CE15DD00D3A5FB /* uv-win.h */,
+			);
+			path = "uv-private";
+			sourceTree = "<group>";
+		};
 		AAF17A91123E4DFA001319BA /* Entities */ = {
 			isa = PBXGroup;
 			children = (
@@ -1205,6 +1237,7 @@
 		AAF375A214CCC2C600347F40 /* uv */ = {
 			isa = PBXGroup;
 			children = (
+				AAD27FCB14CE15DD00D3A5FB /* include */,
 				AAF376A414CCCE9700347F40 /* fs.c */,
 				AAF3765A14CCC4E500347F40 /* ev */,
 				AAF3763314CCC4A900347F40 /* eio */,
@@ -1742,7 +1775,7 @@
 					"-D__POSIX__=1",
 					"-D_LARGEFILE_SOURCE",
 					"-D_FILE_OFFSET_BITS=64",
-					"-DARCH=\\\"$(ARCH)\\\"",
+					"-DARCH=\\\"Universal\\\"",
 					"-DPLATFORM=\\\"darwin\\\"",
 					"-DEV_EMBED_ENABLE=0",
 					"-DX_STACKSIZE=65536",
@@ -1790,7 +1823,7 @@
 					"-D__POSIX__=1",
 					"-D_LARGEFILE_SOURCE",
 					"-D_FILE_OFFSET_BITS=64",
-					"-DARCH=\\\"$(ARCH)\\\"",
+					"-DARCH=\\\"Universal\\\"",
 					"-DPLATFORM=\\\"darwin\\\"",
 					"-DEV_EMBED_ENABLE=0",
 					"-DX_STACKSIZE=65536",

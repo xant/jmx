@@ -31,7 +31,6 @@ using namespace v8;
     self = [super init];
     if (self) {
         self.label = @"ScriptEntity";
-        jsContext = [[JMXScript alloc] init];
     }
     return self;
 }
@@ -63,13 +62,15 @@ using namespace v8;
     if (jsContext) {
         [jsContext clearTimers];
         [jsContext release];
+        jsContext = nil;
     }
-    jsContext = [[JMXScript alloc] init];
     [pool drain];
 }
 
 - (BOOL)exec
 {
+    if (!jsContext)
+        jsContext = [[JMXScript alloc] init];
     return [jsContext runScript:self.code withEntity:self];
 }
 

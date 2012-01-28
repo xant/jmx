@@ -87,6 +87,17 @@ static JMXV8ClassDescriptor mappedClasses[] = {
     { NULL,                       NULL,              NULL }
 };
 
+void JSExit(int code)
+{
+    v8::Locker locker;
+    v8::HandleScope handleScope;
+    v8::Local<v8::Context> context = v8::Context::GetCalling();
+    v8::Local<v8::Object> globalObject  = context->Global();
+    v8::Local<v8::Object> obj = globalObject->Get(v8::String::New("scriptEntity"))->ToObject();
+    JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetPointerFromInternalField(0);
+    [entity resetContext];
+}
+
 // Extracts a C string from a V8 Utf8Value.
 static const char* ToCString(const v8::String::Utf8Value& value) {
     return *value ? *value : "<string conversion failed>";
@@ -231,7 +242,7 @@ static v8::Handle<Value> DumpDOM(const Arguments& args) {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     HandleScope scope;
     NSString *xmlString = [[JMXContext sharedContext] dumpDOM];
-    v8::Handle<String> output = String::New([xmlString UTF8String]);
+    v8::Handle<String> output = String::New([xmlString UTF8String], [xmlString length]);
     [pool release];
     return scope.Close(output);
 }
@@ -353,6 +364,7 @@ static v8::Handle<Value> Run(const Arguments& args)
             foo->Call(foo, nArgs, fArgs);
             if (fArgs)
                 free(fArgs);
+            uv_next(uv_default_loop());
         }
         // restore quit status for nested loops
         v8::Locker::StopPreemption();
@@ -505,6 +517,15 @@ static v8::Handle<Value> ClearTimeout(const Arguments& args)
 
 @synthesize scriptEntity, runloopTimers;
 
+static char *argv[2] = { (char *)"JMX", NULL };
+
++ (void)initialize
+{
+    // initialize node.js
+    node::Init(1, argv);
+    v8::V8::Initialize();
+}
+
 + (BOOL)runScript:(NSString *)source
 {
     return [self runScript:source withEntity:nil];
@@ -582,20 +603,21 @@ static v8::Handle<Value> ClearTimeout(const Arguments& args)
 
 - (void)nodejsRun
 {
+    @try {
         v8::Locker locker;
         v8::HandleScope handle_scope;
         v8::Context::Scope context_scope(ctx);
-        uv_run(uv_default_loop());
+        uv_next(uv_default_loop());
+    }
+    @catch (NSException *exception) {
+        NSLog(@"%@", exception);
+    }
 }
 
 - (id)init
 {
     self = [super init];
     if (self) {
-        // initialize node.js
-        char *argv[2] = { (char *)"JMX", NULL };
-        char **parsedArgv = node::Init(1, argv);
-        //v8::V8::Initialize();
         v8::Locker locker;
         v8::HandleScope handle_scope;
         
@@ -641,8 +663,8 @@ static v8::Handle<Value> ClearTimeout(const Arguments& args)
         runloopTimers = [[NSMutableSet alloc] initWithCapacity:100];
         operationQueue = [[NSOperationQueue alloc] init];
         
-        // last part of node initialization
-        Handle<Object> process = node::SetupProcessObject(1, parsedArgv);
+        // second part of node initialization
+        Handle<Object> process = node::SetupProcessObject(1, argv);
         v8_typed_array::AttachBindings(ctx->Global());
         
         // Create all the objects, load modules, do everything.
@@ -652,9 +674,9 @@ static v8::Handle<Value> ClearTimeout(const Arguments& args)
         char baseInclude[] = "include('JMX.js');";
         // Enter the newly created execution environment.
         ExecJSCode(baseInclude, strlen(baseInclude), "JMX");
-        
-        NSTimer *timer = [NSTimer timerWithTimeInterval:0.25 target:self selector:@selector(nodejsRun) userInfo:nil repeats:YES];
-        [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+
+        nodejsRunTimer = [NSTimer timerWithTimeInterval:0.25 target:self selector:@selector(nodejsRun) userInfo:nil repeats:YES];
+        [[NSRunLoop currentRunLoop] addTimer:nodejsRunTimer forMode:NSRunLoopCommonModes];
     }
     return self;
 }
@@ -673,6 +695,7 @@ static v8::Handle<Value> ClearTimeout(const Arguments& args)
     for (JMXScriptTimer *scriptTimer in runloopTimers)
         [scriptTimer.timer invalidate];
     [runloopTimers removeAllObjects];
+    [nodejsRunTimer invalidate];
 }
 
 - (void)dealloc
@@ -682,6 +705,7 @@ static v8::Handle<Value> ClearTimeout(const Arguments& args)
     if (scriptEntity && [scriptEntity conformsToProtocol:@protocol(JMXRunLoop)])
         [scriptEntity performSelector:@selector(stop)];
     [self clearPersistentInstances];
+    
     while( V8::IdleNotification() )
         ;
     contextes.erase(self);

@@ -184,11 +184,7 @@ static BOOL initialized = NO;
 
 - (NSString *)dumpDOM
 {
-    NSData *xmlData = [dom XMLDataWithOptions:NSXMLNodePrettyPrint|NSXMLNodeCompactEmptyElement];
-    return [[[NSString alloc] initWithBytesNoCopy:(void *)[xmlData bytes]
-                                           length:[xmlData length]
-                                         encoding:NSUTF8StringEncoding
-                                     freeWhenDone:NO] autorelease];
+    return [dom XMLStringWithOptions:NSXMLNodePrettyPrint|NSXMLNodeCompactEmptyElement];
 }
 
 #if USE_NSOPERATIONS

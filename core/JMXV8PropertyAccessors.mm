@@ -51,9 +51,9 @@ v8::Handle<Value>GetObjectProperty(Local<String> name, const AccessorInfo& info)
             [pool drain];
             return handle_scope.Close(string);
         } else if ([output isKindOfClass:[NSNumber class]]) {
-            Handle<String> string = String::New([(NSString *)output UTF8String], [(NSString *)output length]);
+            Handle<Number> number = Number::New([(NSNumber *)output doubleValue]);
             [pool drain];
-            return handle_scope.Close(Number::New([(NSNumber *)output doubleValue]));
+            return handle_scope.Close(number);
         } else if ([output isKindOfClass:[JMXPin class]] || [output isKindOfClass:[JMXEntity class]] || [output isKindOfClass:[JMXSize class]]) {
             Handle<Object> jsObj = [output jsObj];
             [pool drain];

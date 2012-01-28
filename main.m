@@ -14,5 +14,6 @@ int verbose = LOG_DEBUG;
 int main(int argc, char *argv[])
 {
     openlog("JMX", LOG_PERROR, LOG_USER);
+    NSString *blah = nil;
     return NSApplicationMain(argc,  (const char **) argv);
 }

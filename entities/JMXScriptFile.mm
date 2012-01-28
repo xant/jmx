@@ -9,6 +9,7 @@
 #import "JMXScriptFile.h"
 #import "JMXScript.h"
 #import "JMXThreadedEntity.h"
+#import "JMXAppDelegate.h"
 
 @implementation JMXScriptFile
 
@@ -91,7 +92,10 @@
             [self exec];
         else
             NSLog(@"JMXScriptEntity::tick(): No script to run");
-        [self resetContext];
+        //[self resetContext];
+        //JMXAppDelegate *appDelegate = [[NSApplication sharedApplication] delegate];
+        //if (appDelegate.batchMode)
+        //    exit(0);
     }
     
 }

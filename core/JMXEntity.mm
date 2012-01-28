@@ -77,7 +77,7 @@ using namespace v8;
 {
     NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:pin, @"pin", pin.label, @"pinLabel", nil];
     
-    // TODO - deprecated this one
+    // TODO - deprecate this one
     NSString *notificationName = (pin.direction == kJMXInputPin)
                                ? @"JMXEntityInputPinRemoved"
                                : @"JMXEntityOutputPinRemoved";
@@ -431,9 +431,13 @@ using namespace v8;
 {
     [pin disconnectAllPins];
     [pin detach];
-    // We need notifications to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
-    // and since the entity will persist the pin we can avoid waiting for the notification to be completely propagated
-    [self performSelectorOnMainThread:@selector(notifyPinRemoved:) withObject:pin waitUntilDone:YES];
+    if ([[NSThread currentThread] isMainThread]) {
+        [self notifyPinRemoved:pin];
+    } else {
+        // notifications needs to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
+        // and since the entity will persist the pin we can avoid waiting for the notification to be completely propagated
+        [self performSelectorOnMainThread:@selector(notifyPinRemoved:) withObject:pin waitUntilDone:YES];
+    }
     // we can now release the pin
 }
 

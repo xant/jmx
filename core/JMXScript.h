@@ -26,6 +26,7 @@
     NSMutableDictionary *persistentInstances;
     NSMutableSet *runloopTimers;
     NSOperationQueue *operationQueue;
+    NSTimer *nodejsRunTimer;
 }
 
 /*!

@@ -65,6 +65,8 @@
     @synchronized(textBuffer) {
         [textBuffer setString:@""];
     }
+    self.pin = nil;
+    [self setIsVisible:NO];
 }
 
 - (void)setPin:(JMXInputPin *)aPin
@@ -87,7 +89,7 @@
             if (!outputCodePin)
                 return;
             //NSString *text = [[textView textStorage] string];
-            //textView.textStorage = @"";
+            [textView setString:@""];
             NSString *data = outputCodePin.data;
             if (data)
                 [textView insertText:(NSString *)outputCodePin.data];

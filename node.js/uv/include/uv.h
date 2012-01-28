@@ -204,7 +204,10 @@ UV_EXTERN uv_loop_t* uv_default_loop();
  * of the loop drops to zero.
  */
 UV_EXTERN int uv_run (uv_loop_t*);
-
+    
+// XXX - added by JMX
+UV_EXTERN int uv_next(uv_loop_t* loop);
+    
 /*
  * Manually modify the event loop's reference count. Useful if the user wants
  * to have a handle or timeout that doesn't keep the loop alive.

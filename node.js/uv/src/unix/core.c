@@ -187,9 +187,14 @@ uv_loop_t* uv_default_loop() {
   return default_loop_ptr;
 }
 
+// XXX - added by JMX
+int uv_next(uv_loop_t* loop) {
+  ev_run(loop->ev, EVRUN_ONCE|EVRUN_NOWAIT);// 0);
+  return 0;
+}
 
 int uv_run(uv_loop_t* loop) {
-  ev_run(loop->ev, EVRUN_ONCE|EVRUN_NOWAIT);// 0);
+  ev_run(loop->ev, 0);
   return 0;
 }
 

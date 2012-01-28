@@ -24,9 +24,9 @@
 #include <uv.h>
 
 #include <v8-debug.h>
-#ifdef HAVE_DTRACE
+//#ifdef HAVE_DTRACE
 # include <node_dtrace.h>
-#endif
+//#endif
 
 #include <locale.h>
 #include <signal.h>
@@ -87,6 +87,10 @@ typedef int mode_t;
 #endif
 #include <node_script.h>
 #include <v8_typed_array.h>
+
+extern void JSExit(int code);
+
+#define exit(__code) JSExit(__code)
 
 using namespace v8;
 
@@ -1327,13 +1331,13 @@ Local<Value> ExecuteString(Handle<String> source, Handle<Value> filename) {
   Local<v8::Script> script = v8::Script::Compile(source, filename);
   if (script.IsEmpty()) {
     ReportException(try_catch, true);
-    exit(1);
+    //exit(1);
   }
 
   Local<Value> result = script->Run();
   if (result.IsEmpty()) {
     ReportException(try_catch, true);
-    exit(1);
+    //exit(1);
   }
 
   return scope.Close(result);
@@ -1779,7 +1783,8 @@ void FatalException(TryCatch &try_catch) {
   // Report and exit if process has no "uncaughtException" listener
   if (length == 0) {
     ReportException(try_catch, true);
-    exit(1);
+    //exit(1);
+    return;
   }
 
   // Otherwise fire the process "uncaughtException" event
@@ -2142,7 +2147,7 @@ Handle<Object> SetupProcessObject(int argc, char *argv[]) {
   return process;
 }
 
-
+/*
 static void AtExit() {
   uv_tty_reset_mode();
 }
@@ -2152,7 +2157,7 @@ static void SignalExit(int signal) {
   uv_tty_reset_mode();
   _exit(1);
 }
-
+*/
 
 void Load(Handle<Object> process) {
   // Compile, execute the src/node.js file. (Which was included as static C
@@ -2161,7 +2166,7 @@ void Load(Handle<Object> process) {
 
   // The node.js file returns a function 'f'
 
-  atexit(AtExit);
+  //atexit(AtExit);
 
   TryCatch try_catch;
 
@@ -2186,9 +2191,9 @@ void Load(Handle<Object> process) {
   Local<Object> global = v8::Context::GetCurrent()->Global();
   Local<Value> args[1] = { Local<Value>::New(process) };
 
-#ifdef HAVE_DTRACE
+//#ifdef HAVE_DTRACE
   InitDTrace(global);
-#endif
+//#endif
 
   f->Call(global, 1, args);
 
@@ -2381,7 +2386,7 @@ char** Init(int argc, char *argv[]) {
     // a breakpoint on the first line of the startup script
     v8argc += 2;
     v8argv = new char*[v8argc];
-    memcpy(v8argv, argv, sizeof(argv) * node::option_end_index);
+    memcpy(v8argv, argv, sizeof((char **)argv) * node::option_end_index);
     v8argv[node::option_end_index] = const_cast<char*>("--expose_debug_as");
     v8argv[node::option_end_index + 1] = const_cast<char*>("v8debug");
   }
@@ -2404,8 +2409,8 @@ char** Init(int argc, char *argv[]) {
 #ifdef __POSIX__
   // Ignore SIGPIPE
   RegisterSignalHandler(SIGPIPE, SIG_IGN);
-  RegisterSignalHandler(SIGINT, SignalExit);
-  RegisterSignalHandler(SIGTERM, SignalExit);
+  //RegisterSignalHandler(SIGINT, SignalExit);
+  //RegisterSignalHandler(SIGTERM, SignalExit);
 #endif // __POSIX__
 
   uv_prepare_init(uv_default_loop(), &node::prepare_tick_watcher);

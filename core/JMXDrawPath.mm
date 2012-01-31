@@ -317,6 +317,7 @@ using namespace v8;
     CGRect rect = { { origin.x, origin.y }, { 1, 1 } };
     CGContextFillRect(context, rect);
     CGContextRestoreGState(context);
+    [self render];
     [lock unlock];
 }
 

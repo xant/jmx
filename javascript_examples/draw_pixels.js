@@ -38,7 +38,7 @@ mainloop = function() {
         point = new Point(rand()%width, rand()%height);
         drawer.drawPixel(point, color);
     }
-    sleep(1/1000);
+    sleep(1/60);
 };
 
 run(mainloop);

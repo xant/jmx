@@ -531,22 +531,44 @@ HEADERS_RECEIVED = 2;
 LOADING = 3;
 DONE = 4;
 
+var http = require('http');
+var url = require('url');
+
 function XMLHttpRequest() {
     this.open = function(method, url, async, user, password) {
-        if (method.toLowerCase() == "get") {
-            
-        } else if (method.toLowerCase() == "post") {
-            
-        }
-        this.onreadystatechange();
+        this.method = method;
+        this.url = url;
+        this.async = async;
+        this.user = user;
+        this.password = password;
+        this.headers = { };
     }
+    
     this.setRequestHeader = function(header, value) {
-        
+        this.headers[header] = value;
     }
     
     this.send = function(arg) {
         if (this.status != OPENED)
             throw(new DOMException(INVALID_STATE_ERR));
+        var agent = new http.Agent({ port: 80, maxSockets: 1 }); 
+        if (method.toLowerCase() == "get") {
+            
+        } else if (method.toLowerCase() == "post") {
+            
+        }
+        http.get({
+                     port: common.PORT,
+                     path: '/hello',
+                     headers: {'Accept': '*/*', 'Foo': 'bar'},
+                     agent: agent
+                     }, function(res) {
+                     assert.equal(200, res.statusCode);
+                     responses_recvd += 1;
+                     res.setEncoding('utf8');
+                     res.on('data', function(chunk) { body0 += chunk; }); 
+                     common.debug('Got /hello response');
+                 }); 
         
     }
     Object.defineProperty(this, "onreadystatechange", { value: function() { }, writable: true, enumerable: false });

@@ -45,6 +45,7 @@
     double globalAlpha;
     NSString *globalCompositeOperation;
     NSFont *font;
+    CGFloat lineWidth;
     BOOL _needsRender;
     BOOL _didFill;
     BOOL _didStroke;
@@ -64,6 +65,7 @@
 @property (readwrite, assign) double globalAlpha;
 @property (readwrite, retain) NSFont *font;
 @property (readonly) JMXSize *frameSize;
+@property (readwrite, assign) CGFloat lineWidth;
 
 - (id)jmxInit;
 

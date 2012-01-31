@@ -130,11 +130,12 @@
       return t.setTimeout.apply(this, arguments);
     };
 
+ /*
     global.setInterval = function() {
       var t = NativeModule.require('timers');
       return t.setInterval.apply(this, arguments);
     };
-
+  */
     global.clearTimeout = function() {
       var t = NativeModule.require('timers');
       return t.clearTimeout.apply(this, arguments);

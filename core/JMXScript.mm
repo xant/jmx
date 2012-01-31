@@ -448,14 +448,23 @@ static v8::Handle<Value> SetInterval(const Arguments& args)
     Local<Object> globalObject  = context->Global();
     v8::Local<v8::Object> obj = globalObject->Get(String::New("scriptEntity"))->ToObject();
     JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetPointerFromInternalField(0);
-    JMXScript *scriptContext = entity.jsContext;    if (args.Length() >= 2 && args[0]->IsString() && args[1]->IsNumber()) {
+    JMXScript *scriptContext = entity.jsContext;
+    if (args.Length() >= 2 && args[1]->IsNumber() && 
+        (args[0]->IsString() || args[0]->IsFunction()) )
+    {
         JMXScriptTimer *foo = [JMXScriptTimer scriptTimerWithFireDate:[NSDate dateWithTimeIntervalSinceNow:args[1]->NumberValue()]
                                                              interval:args[1]->NumberValue()/1000 // millisecs here
                                                                target:scriptContext
                                                              selector:@selector(JSRunLoop:)
                                                               repeats:YES];
-        v8::String::Utf8Value statements(args[0]->ToString());
-        foo.statements = [NSString stringWithUTF8String:*statements];
+        if (args[0]->IsString()) {
+            v8::String::Utf8Value statements(args[0]->ToString());
+            foo.statements = [NSString stringWithUTF8String:*statements];
+        } else {
+            foo.function = Persistent<Function>::New(Handle<Function>::Cast(args[0]));
+            foo.function->SetHiddenValue(String::New("lastUpdate"), v8::Number::New([[NSDate date] timeIntervalSince1970]));
+            foo.function->SetHiddenValue(String::New("interval"), args[1]);
+        }
         [[NSRunLoop currentRunLoop] addTimer:foo.timer forMode:NSRunLoopCommonModes];
         [scriptContext addRunloopTimer:foo];
         return handleScope.Close([foo jsObj]);
@@ -599,7 +608,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
     } else {
         v8::Handle<Value> ret = foo.function->Call(foo.function, 0, nil);
         foo.function->SetHiddenValue(String::New("lastUpdate"), v8::Number::New([[NSDate date] timeIntervalSince1970]));
-        if (ret.IsEmpty() || !ret->IsTrue() || !foo.repeats) {
+        if ((ret.IsEmpty() || !ret->IsTrue()) && !foo.repeats) {
             [foo.timer invalidate];
             [runloopTimers removeObject:foo];
         }

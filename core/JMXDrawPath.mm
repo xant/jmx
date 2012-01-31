@@ -699,6 +699,21 @@ using namespace v8;
 }
 */
 
+- (CGFloat)lineWidth
+{
+    return lineWidth;
+}
+
+- (void)setLineWidth:(CGFloat)newLineWidth
+{
+    lineWidth = newLineWidth;
+    [lock lock];
+    UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
+    CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
+    CGContextSetLineWidth(context, lineWidth);
+    [lock unlock];
+}
+
 - (void)render
 {
     _needsRender = YES;
@@ -1352,7 +1367,7 @@ v8::Handle<Value>GetFont(Local<String> name, const AccessorInfo& info)
     HandleScope handleScope;
     String::Utf8Value nameStr(name);
     JMXDrawPath *drawPath = (JMXDrawPath *)info.Holder()->GetPointerFromInternalField(0);
-    if (drawPath == 0)
+    if (drawPath)
         return [drawPath.font jsObj];
     return handleScope.Close(Undefined());
 }
@@ -1387,6 +1402,26 @@ static void SetFont(Local<String> name, Local<Value> value, const AccessorInfo& 
             drawPath.font = font;
         else 
             NSLog(@"Unknown font: %s", *str);
+    }
+}
+
+v8::Handle<Value>GetLineWidth(Local<String> name, const AccessorInfo& info)
+{
+    HandleScope handleScope;
+    String::Utf8Value nameStr(name);
+    JMXDrawPath *drawPath = (JMXDrawPath *)info.Holder()->GetPointerFromInternalField(0);
+    if (drawPath)
+        return handleScope.Close(v8::Number::New(drawPath.lineWidth));
+    return handleScope.Close(Undefined());
+}
+
+static void SetLineWidth(Local<String> name, Local<Value> value, const AccessorInfo& info)
+{
+    //v8::Locker lock;
+    HandleScope handle_scope;
+    JMXDrawPath *drawPath = (JMXDrawPath *)info.Holder()->GetPointerFromInternalField(0);
+    if (value->IsNumber()) {
+        drawPath.lineWidth = value->ToNumber()->NumberValue();
     }
 }
 
@@ -1457,8 +1492,8 @@ static void SetFont(Local<String> name, Local<Value> value, const AccessorInfo& 
     instanceTemplate->SetAccessor(String::NewSymbol("globalCompositeOperation"), GetStringProperty, SetStringProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("font"), GetFont, SetFont);
     
+    instanceTemplate->SetAccessor(String::NewSymbol("lineWidth"), GetLineWidth, SetLineWidth);
     /*
-    instanceTemplate->SetAccessor(String::NewSymbol("lineWidth"), , );
     instanceTemplate->SetAccessor(String::NewSymbol("lineCap"), , );
     instanceTemplate->SetAccessor(String::NewSymbol("lineJoin"), , );
     instanceTemplate->SetAccessor(String::NewSymbol("miterLimit"), , );

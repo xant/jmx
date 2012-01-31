@@ -93,12 +93,14 @@
 
 - (void)tick:(uint64_t)timeStamp
 {
-    if (!self.quit) {
-        self.quit = YES; // we want to stop the thread as soon as the script exits
-        if (self.code)
+    if (!self.quit && !isRunning) {
+        //self.quit = YES; // we want to stop the thread as soon as the script exits
+        if (self.code) {
+            isRunning = YES;
             [self exec];
-        else
+        } else {
             NSLog(@"JMXScriptEntity::tick(): No script to run");
+        }
         //[self resetContext];
         //JMXAppDelegate *appDelegate = [[NSApplication sharedApplication] delegate];
         //if (appDelegate.batchMode)

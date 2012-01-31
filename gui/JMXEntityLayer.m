@@ -26,7 +26,6 @@
 #import "JMXOutletLayer.h"
 #import "JMXEntityLabelLayer.h"
 #import "JMXContext.h"
-
 #include <math.h>
 
 #define JMXInputOutletLayerCreate(x) [[[JMXOutletLayer alloc] initWithPin:(x) andPoint:NSZeroPoint isOutput:NO entity:self] autorelease]
@@ -285,6 +284,7 @@ id controlForJMXPinType(JMXPinType aType)
     [self removeFromSuperlayer];
     [self.entity disconnectAllPins];
     [self.entity detach];
+    self.entity.active = NO;
 }
 
 @end

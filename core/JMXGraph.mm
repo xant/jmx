@@ -10,6 +10,7 @@
 #import "JMXGraph.h"
 #import "JMXScript.h"
 #import "JMXElement.h"
+#import "JMXCanvasElement.h"
 #import "NSXMLNode+V8.h"
 
 @implementation JMXGraph
@@ -63,7 +64,9 @@ static v8::Handle<Value> CreateElement(const Arguments& args)
     Local<Context> currentContext  = v8::Context::GetCurrent();
     JMXScript *ctx = [JMXScript getContext:currentContext];
     if (ctx) {
-        JMXElement *element = [[JMXElement alloc] initWithName:name];
+        JMXElement *element = [name isEqualToString:@"canvas"]
+                            ? [[JMXCanvasElement alloc] init]
+                            : [[JMXElement alloc] initWithName:name];
         Persistent<Object> jsInstance = Persistent<Object>::New([element jsObj]);
         jsInstance->SetPointerInInternalField(0, element);
         [ctx addPersistentInstance:jsInstance obj:element];
@@ -122,7 +125,24 @@ static v8::Handle<Value> GetElementById(const Arguments& args)
     if (element) 
         return handleScope.Close([element jsObj]);
     return Undefined();
-}  
+}
+
+static v8::Handle<Value> MapSet(Local<String> name, Local<Value> value, const AccessorInfo &info)
+{
+    v8::Locker lock;
+    HandleScope handleScope;
+    Local<Object> obj = Local<Object>::Cast(info.Holder()->GetHiddenValue(String::NewSymbol("map")));
+    obj->Set(name, value);
+    return Undefined();
+}
+
+static v8::Handle<Value> MapGet(Local<String> name, const AccessorInfo &info)
+{
+    v8::Locker lock;
+    HandleScope handleScope;
+    Local<Object> obj = Local<Object>::Cast(info.Holder()->GetHiddenValue(String::NewSymbol("map")));
+    return handleScope.Close(obj->Get(name));
+}
 
 - (v8::Handle<v8::Object>)jsObj
 {
@@ -131,6 +151,7 @@ static v8::Handle<Value> GetElementById(const Arguments& args)
     v8::Persistent<FunctionTemplate> objectTemplate = [JMXGraph jsObjectTemplate];
     v8::Handle<Object> jsInstance = objectTemplate->InstanceTemplate()->NewInstance();
     jsInstance->SetPointerInInternalField(0, self);
+    //jsInstance->SetHiddenValue(String::NewSymbol("map"), Object::New());
     return handle_scope.Close(jsInstance);
 }
 
@@ -152,8 +173,14 @@ static v8::Handle<Value> GetElementById(const Arguments& args)
     v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
     instanceTemplate->SetAccessor(String::NewSymbol("uid"), GetStringProperty, SetStringProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("documentElement"), GetRootNode);
+    instanceTemplate->SetAccessor(String::NewSymbol("body"), GetRootNode); // XXX - hack
 
+    
+    //instanceTemplate->SetNamedPropertyHandler(MapGet, MapSet);
+    
     instanceTemplate->SetInternalFieldCount(1);
+    
+    
     
     return objectTemplate;
 }

@@ -100,6 +100,10 @@ using namespace v8;
     return [[JMXPoint alloc] initWithNSPoint:nsPoint];
 }
 
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"Point: { X: %.2f, Y: %.2f }", nsPoint.x, nsPoint.y];
+}
 #pragma mark V8
 
 static v8::Persistent<FunctionTemplate> objectTemplate;

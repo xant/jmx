@@ -34,14 +34,7 @@
 #import "JMXPinSignal.h"
 #import "JMXV8.h"
 #import "JMXElement.h"
-
-@class JMXPin;
-
-@protocol JMXPinOwner
-@required
-- (id)provideDataToPin:(JMXPin *)pin;
-- (void)receiveData:(id)data fromPin:(JMXPin *)pin;
-@end
+#import "JMXPinOwner.h"
 
 @class JMXEntity;
 

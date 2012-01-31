@@ -13,6 +13,9 @@
 #include "JMXV8PropertyAccessors.h"
 
 @class JMXScriptEntity;
+@class JMXEvent;
+@class JMXEventListener;
+@class JMXScriptTimer;
 
 /*!
  @class JMXScript
@@ -27,6 +30,7 @@
     NSMutableSet *runloopTimers;
     NSOperationQueue *operationQueue;
     NSTimer *nodejsRunTimer;
+    NSMutableDictionary *eventListeners;
 }
 
 /*!
@@ -37,7 +41,8 @@
              and the main graph managed through the board
  */
 @property (readonly, nonatomic) JMXScriptEntity *scriptEntity;
-@property (readonly, nonatomic) NSMutableSet *runloopTimers;
+@property (readonly, nonatomic) NSSet *runloopTimers;
+@property (readonly, nonatomic) NSDictionary *eventListeners;
 /*!
  @method getContext:
  @abstract get the JMXScript instance where the provided currentContext is being managed/executed
@@ -101,5 +106,12 @@
 - (void)removePersistentInstance:(id)obj;
 
 - (void)clearTimers;
+
+- (void)addRunloopTimer:(JMXScriptTimer *)timer;
+- (void)removeRunloopTimer:(JMXScriptTimer *)timer;
+- (void)addListener:(JMXEventListener *)listener forEvent:(NSString *)event;
+- (void)removeListener:(JMXEventListener *)listener forEvent:(NSString *)event;
+- (BOOL)dispatchEvent:(JMXEvent *)event;
+- (BOOL)dispatchEvent:(JMXEvent *)anEvent toTarget:(NSXMLNode *)aTarget;
 
 @end

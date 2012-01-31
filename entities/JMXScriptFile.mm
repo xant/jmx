@@ -84,6 +84,13 @@
         self.code = nil;
 }
 
+- (void)setActive:(BOOL)yesOrNo
+{
+    [super setActive:yesOrNo];
+    if (!yesOrNo)
+        [self performSelector:@selector(resetContext) withObject:nil afterDelay:0.5];
+}
+
 - (void)tick:(uint64_t)timeStamp
 {
     if (!self.quit) {

@@ -108,6 +108,9 @@
 		AA9C190F12E32B0600329158 /* JMXCanvasPattern.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C190E12E32B0600329158 /* JMXCanvasPattern.mm */; };
 		AA9C19D412E4BDD500329158 /* JMXRect.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C19D312E4BDD500329158 /* JMXRect.mm */; };
 		AA9C1A4912E5964C00329158 /* JMXImageElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C1A4812E5964C00329158 /* JMXImageElement.mm */; };
+		AAB71A0714D6BF0200BE8C35 /* JMXImageData.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAB71A0614D6BF0200BE8C35 /* JMXImageData.mm */; };
+		AAB71A0A14D6D89E00BE8C35 /* JMXUint8ClampedArray.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAB71A0914D6D89D00BE8C35 /* JMXUint8ClampedArray.mm */; };
+		AAB71A0D14D7585500BE8C35 /* JMXEventListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAB71A0C14D7585400BE8C35 /* JMXEventListener.mm */; };
 		AAC6323112CFC72B00B69DFE /* JMXGraph.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6323012CFC72B00B69DFE /* JMXGraph.mm */; };
 		AAC6323C12CFCAB900B69DFE /* JMXElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6323B12CFCAB900B69DFE /* JMXElement.mm */; };
 		AAC6334612D36DA900B69DFE /* NSXMLNode+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6334512D36DA900B69DFE /* NSXMLNode+V8.mm */; };
@@ -120,6 +123,8 @@
 		AAD139BB128EA0DF00ECB03A /* JMXDrawPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */; };
 		AAD13C4A128EF2AB00ECB03A /* NSColor+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD13C49128EF2AB00ECB03A /* NSColor+V8.mm */; };
 		AADEBFC812414F7E00A6A06D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */; };
+		AAEA251914D4D2B800533049 /* processing.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AAEA251714D4D29A00533049 /* processing.js */; };
+		AAEA251C14D4D5A200533049 /* JMXEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEA251B14D4D5A000533049 /* JMXEvent.mm */; };
 		AAF3757914CCBE8700347F40 /* cares_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3753614CCBE8700347F40 /* cares_wrap.cc */; };
 		AAF3757A14CCBE8700347F40 /* fs_event_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3753714CCBE8700347F40 /* fs_event_wrap.cc */; };
 		AAF3757B14CCBE8700347F40 /* handle_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3753814CCBE8700347F40 /* handle_wrap.cc */; };
@@ -242,6 +247,7 @@
 			dstPath = js;
 			dstSubfolderSpec = 13;
 			files = (
+				AAEA251914D4D2B800533049 /* processing.js in Deploy JS API */,
 				AA38D1CC12DCC2CA00208826 /* jquery.js in Deploy JS API */,
 				AAC6359C12D4622400B69DFE /* DOM.js in Deploy JS API */,
 				AA4BFECF12BE25E900775B88 /* JMX.js in Deploy JS API */,
@@ -496,6 +502,12 @@
 		AA9C19D312E4BDD500329158 /* JMXRect.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXRect.mm; sourceTree = "<group>"; };
 		AA9C1A4712E5964C00329158 /* JMXImageElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXImageElement.h; sourceTree = "<group>"; };
 		AA9C1A4812E5964C00329158 /* JMXImageElement.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXImageElement.mm; sourceTree = "<group>"; };
+		AAB71A0514D6BF0200BE8C35 /* JMXImageData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXImageData.h; sourceTree = "<group>"; };
+		AAB71A0614D6BF0200BE8C35 /* JMXImageData.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXImageData.mm; sourceTree = "<group>"; };
+		AAB71A0814D6D89D00BE8C35 /* JMXUint8ClampedArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXUint8ClampedArray.h; sourceTree = "<group>"; };
+		AAB71A0914D6D89D00BE8C35 /* JMXUint8ClampedArray.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXUint8ClampedArray.mm; sourceTree = "<group>"; };
+		AAB71A0B14D7585300BE8C35 /* JMXEventListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXEventListener.h; sourceTree = "<group>"; };
+		AAB71A0C14D7585400BE8C35 /* JMXEventListener.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXEventListener.mm; sourceTree = "<group>"; };
 		AAC6322F12CFC72B00B69DFE /* JMXGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXGraph.h; sourceTree = "<group>"; };
 		AAC6323012CFC72B00B69DFE /* JMXGraph.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXGraph.mm; sourceTree = "<group>"; };
 		AAC6323A12CFCAB900B69DFE /* JMXElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXElement.h; sourceTree = "<group>"; };
@@ -528,6 +540,10 @@
 		AAD27FD514CE15DD00D3A5FB /* uv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uv.h; sourceTree = "<group>"; };
 		AADB066914CE0FCA007A175D /* node.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = node.js; sourceTree = "<group>"; };
 		AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		AAEA251314D4AC4800533049 /* JMXPinOwner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXPinOwner.h; sourceTree = "<group>"; };
+		AAEA251714D4D29A00533049 /* processing.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = processing.js; sourceTree = "<group>"; };
+		AAEA251A14D4D59F00533049 /* JMXEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXEvent.h; sourceTree = "<group>"; };
+		AAEA251B14D4D5A000533049 /* JMXEvent.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXEvent.mm; sourceTree = "<group>"; };
 		AAF3753614CCBE8700347F40 /* cares_wrap.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cares_wrap.cc; sourceTree = "<group>"; };
 		AAF3753714CCBE8700347F40 /* fs_event_wrap.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fs_event_wrap.cc; sourceTree = "<group>"; };
 		AAF3753814CCBE8700347F40 /* handle_wrap.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = handle_wrap.cc; sourceTree = "<group>"; };
@@ -934,6 +950,7 @@
 				AA8F770712C5718600EA8543 /* MovieFile.js */,
 				AA8F770812C571A200EA8543 /* AudioFile.js */,
 				AA38D1CB12DCC29D00208826 /* jquery.js */,
+				AAEA251714D4D29A00533049 /* processing.js */,
 			);
 			path = jsapi;
 			sourceTree = SOURCE_ROOT;
@@ -1057,6 +1074,14 @@
 				AA9C1A4812E5964C00329158 /* JMXImageElement.mm */,
 				AA93701B14CC2FF9001D9BB3 /* JMXScriptTimer.h */,
 				AA93701C14CC2FFA001D9BB3 /* JMXScriptTimer.mm */,
+				AAEA251A14D4D59F00533049 /* JMXEvent.h */,
+				AAEA251B14D4D5A000533049 /* JMXEvent.mm */,
+				AAB71A0514D6BF0200BE8C35 /* JMXImageData.h */,
+				AAB71A0614D6BF0200BE8C35 /* JMXImageData.mm */,
+				AAB71A0814D6D89D00BE8C35 /* JMXUint8ClampedArray.h */,
+				AAB71A0914D6D89D00BE8C35 /* JMXUint8ClampedArray.mm */,
+				AAB71A0B14D7585300BE8C35 /* JMXEventListener.h */,
+				AAB71A0C14D7585400BE8C35 /* JMXEventListener.mm */,
 			);
 			name = "V8+DOM";
 			path = core;
@@ -1086,6 +1111,7 @@
 				825C31311275ADD6006376B8 /* JMXFileRead.h */,
 				825C313F1275ADD7006376B8 /* JMXSeekable.h */,
 				825C313E1275ADD7006376B8 /* JMXRunLoop.h */,
+				AAEA251314D4AC4800533049 /* JMXPinOwner.h */,
 			);
 			name = Protocols;
 			path = core;
@@ -1716,6 +1742,10 @@
 				AAF3769414CCC4E500347F40 /* event.c in Sources */,
 				AAF376A514CCCE9700347F40 /* fs.c in Sources */,
 				AAF376B414CCCEF400347F40 /* http_parser.c in Sources */,
+				AAEA251C14D4D5A200533049 /* JMXEvent.mm in Sources */,
+				AAB71A0714D6BF0200BE8C35 /* JMXImageData.mm in Sources */,
+				AAB71A0A14D6D89E00BE8C35 /* JMXUint8ClampedArray.mm in Sources */,
+				AAB71A0D14D7585500BE8C35 /* JMXEventListener.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

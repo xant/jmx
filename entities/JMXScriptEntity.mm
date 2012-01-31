@@ -6,6 +6,7 @@
 //  Copyright 2010 Dyne.org. All rights reserved.
 //
 
+#define __JMXV8__ 1
 #import "JMXScriptEntity.h"
 #import "JMXScript.h"
 #import "JMXProxyPin.h"

@@ -21,14 +21,13 @@ JMXV8_EXPORT_NODE_CLASS(JMXCanvasElement);
 
 - (id)initWithName:(NSString *)name
 {
-    return [self init];
+    return [self initWithName:@"canvas"];
 }
 
 - (id)initWithFrameSize:(JMXSize *)frameSize
 {
-    self = [super init];
+    self = [super initWithName:@"canvas"];
     if (self) {
-        self.name = @"canvas";
         self.width = frameSize.width; // HC
         self.height = frameSize.height; // HC
         drawPath = [[JMXDrawPath alloc] initWithFrameSize:[JMXSize sizeWithNSSize:NSMakeSize(self.width, self.height)]];
@@ -38,9 +37,8 @@ JMXV8_EXPORT_NODE_CLASS(JMXCanvasElement);
 
 - (id)init
 {
-    self = [super init];
+    self = [super initWithName:@"canvas"];
     if (self) {
-        self.name = @"canvas";
         self.width = 640; // HC
         self.height = 480; // HC
         drawPath = [[JMXDrawPath alloc] initWithFrameSize:[JMXSize sizeWithNSSize:NSMakeSize(self.width, self.height)]];
@@ -55,12 +53,17 @@ using namespace v8;
 static v8::Handle<Value> GetContext(const Arguments& args)
 {
     //v8::Locker lock;
-    HandleScope handleScope;
-    JMXCanvasElement *element = (JMXCanvasElement *)args.Holder()->GetPointerFromInternalField(0);
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
     
-    return [element.drawPath jsObj];
+    if (strcasecmp(*value, "2d") == 0) { 
+        HandleScope handleScope;
+        JMXCanvasElement *element = (JMXCanvasElement *)args.Holder()->GetPointerFromInternalField(0);
+
+        
+        return handleScope.Close([element.drawPath jsObj]);
+    } 
+    return Undefined();
 }
 
 static v8::Handle<Value> ToDataURL(const Arguments& args)
@@ -76,7 +79,7 @@ static v8::Handle<Value> ToDataURL(const Arguments& args)
         return objectTemplate;
     objectTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
     objectTemplate->Inherit([super jsObjectTemplate]);
-    objectTemplate->SetClassName(String::New("Canvas"));
+    objectTemplate->SetClassName(String::New("HTMLCanvasElement"));
     v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     classProto->Set("getContext", FunctionTemplate::New(GetContext));
     classProto->Set("toDataURL", FunctionTemplate::New(ToDataURL));

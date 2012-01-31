@@ -19,8 +19,8 @@ using namespace v8;
 {
     /* TODO - Implement */
     // XXX - requires OSX 10.7
-    CGFloat r = 0.0, g = 0.0, b = 0.0;
-    NSString *colorStringRegExp = @"(#[0-9a-f]+|rgb\\(\\s*\\d+\\%?\\s*,\\s*\\d+\\%?\\s*,\\s*\\d+\\%?\\s*\\))";
+    CGFloat r = 0.0, g = 0.0, b = 0.0, a = 1.0;
+    NSString *colorStringRegExp = @"(#[0-9a-f]+|rgba\\(\\s*\\d+\\%?\\s*,\\s*\\d+\\%?\\s*,\\s*\\d+\\%?\\s*\\,\\s*\\d+\\%?\\s*\\))";
     NSError *error = NULL;
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:colorStringRegExp
                                                                            options:NSRegularExpressionCaseInsensitive
@@ -75,14 +75,20 @@ using namespace v8;
                         }
                     }
                 } else if ([substringForFirstMatch characterAtIndex:0] == 'r') {
-                    NSString *pattern = @"rgb\\(\\s*(\\d+\\%?)\\s*,\\s*(\\d+\\%?)\\s*,\\s*(\\d+\\%?)\\s*\\)";
+                    NSString *pattern = @"rgba\\(\\s*(\\d+\\%?)\\s*,\\s*(\\d+\\%?)\\s*,\\s*(\\d+\\%?)\\s*,\\s*(\\d+\\%?)\\s*\\)";
                     NSRegularExpression *subRegex = [NSRegularExpression regularExpressionWithPattern:pattern
                                                                                              options:NSRegularExpressionCaseInsensitive
                                                                                                error:&error];
+                    
+                    
                     NSUInteger numberOfMatches = [subRegex numberOfMatchesInString:substringForFirstMatch
                                                                         options:0
-                                                                          range:NSMakeRange(0, [cssString length])];
+                                                                          range:NSMakeRange(0, [substringForFirstMatch length])];
                     if (numberOfMatches) {
+                        NSArray *matches = [subRegex matchesInString:substringForFirstMatch
+                                                          options:0
+                                                            range:NSMakeRange(0, [substringForFirstMatch length])];
+                        NSTextCheckingResult *match = [matches objectAtIndex:0];
                         //NSRange rgbRange = [match range];
                         NSRange redStringRange = [match rangeAtIndex:1];
                         NSString *redString = [substringForFirstMatch substringWithRange:redStringRange];
@@ -90,20 +96,24 @@ using namespace v8;
                         NSString *greenString = [substringForFirstMatch substringWithRange:greenStringRange];
                         NSRange blueStringRange = [match rangeAtIndex:3];
                         NSString *blueString = [substringForFirstMatch substringWithRange:blueStringRange];
+                        NSRange alphaStringRange = [match rangeAtIndex:4];
+                        NSString *alphaString = [substringForFirstMatch substringWithRange:alphaStringRange];
                         // TODO - handle %
                         if (redString)
-                            r = [redString intValue]/255;
+                            r = (CGFloat )[redString intValue]/255;
                         if (greenString)
-                            g = [greenString intValue]/255;
+                            g = (CGFloat)[greenString intValue]/255;
                         if (blueString)
-                            b = [blueString intValue]/255;
+                            b = (CGFloat)[blueString intValue]/255;
+                        if (alphaString)
+                            a = (a <= 1) ? a : (CGFloat)[alphaString intValue]/255;
                     }
                     
                 }
             }
         }
     }
-    return [NSColor colorWithDeviceRed:r green:g blue:b alpha:1];
+    return [NSColor colorWithDeviceRed:r green:g blue:b alpha:a];
 }
 
 static v8::Persistent<FunctionTemplate> objectTemplate;

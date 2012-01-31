@@ -8,6 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol JMXPinOwner <NSObject>
+@class JMXPin;
 
+@protocol JMXPinOwner
+@required
+- (id)provideDataToPin:(JMXPin *)pin;
+- (void)receiveData:(id)data fromPin:(JMXPin *)pin;
 @end

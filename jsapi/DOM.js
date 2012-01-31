@@ -513,10 +513,45 @@ EntityReference.inherits(Node);
 function Window() {
 }
 window = new Window(); // XXX
-
+window.setInterval = global.setInterval;
+window.clearInterval = global.clearInterval;
+window.document = global.document;
 function Navigator() {
     Object.defineProperty(this, "userAgent", { value: "JMX", writable: false, enumerable: false });
 }
 navigator = new Navigator(); // XXX
 
 location = new Object();
+
+
+// states
+UNSENT = 0;
+OPENED = 1;
+HEADERS_RECEIVED = 2;
+LOADING = 3;
+DONE = 4;
+
+function XMLHttpRequest() {
+    this.open = function(method, url, async, user, password) {
+        if (method.toLowerCase() == "get") {
+            
+        } else if (method.toLowerCase() == "post") {
+            
+        }
+        this.onreadystatechange();
+    }
+    this.setRequestHeader = function(header, value) {
+        
+    }
+    
+    this.send = function(arg) {
+        if (this.status != OPENED)
+            throw(new DOMException(INVALID_STATE_ERR));
+        
+    }
+    Object.defineProperty(this, "onreadystatechange", { value: function() { }, writable: true, enumerable: false });
+    Object.defineProperty(this, "status", { value: 0, writable: false, enumerable: false });
+    Object.defineProperty(this, "statusText", { value: "", writable: false, enumerable: false });
+
+
+}

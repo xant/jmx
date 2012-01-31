@@ -10,12 +10,16 @@
 #import "JMXDrawPath.h"
 #import "JMXVideoEntity.h"
 
+@class JMXCanvasElement;
+
 @interface JMXDrawEntity : JMXVideoEntity {
 @private
-    JMXDrawPath *drawPath;
+    JMXCanvasElement *canvas;
+    JMXDrawPath *drawPath; // weak reference
 }
 
 @property (readonly) JMXDrawPath *drawPath;
+@property (readonly) JMXCanvasElement *canvas;
 
 @end
 

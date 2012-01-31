@@ -11,21 +11,23 @@
 #include "JMXScript.h"
 #import "NSColor+V8.h"
 #import "JMXThreadedEntity.h"
+#import "JMXCanvasElement.h"
 
 JMXV8_EXPORT_NODE_CLASS(JMXDrawEntity);
 
 @implementation JMXDrawEntity
 
-@synthesize drawPath;
+@synthesize drawPath, canvas;
 
 - (id)init
 {
     self = [super init];
     if (self) {
-        drawPath = [[JMXDrawPath alloc] initWithFrameSize:self.size];
+        canvas = [[JMXCanvasElement alloc] init];
         JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
         self.label = @"DrawPath";
-        [self addChild:drawPath];
+        drawPath = canvas.drawPath; // NOTE : weak reference (it's owned by the canvas)
+        [self addChild:canvas];
         if (threadedEntity)
             return (JMXDrawEntity *)threadedEntity;
     }
@@ -34,7 +36,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXDrawEntity);
 
 - (void)dealloc
 {
-    [drawPath release];
+    [canvas release];
     [super dealloc];
 }
 
@@ -82,7 +84,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXDrawEntity);
 - (void)tick:(uint64_t)timeStamp
 {
     @synchronized(drawPath) {
-        [drawPath render];
+        //[drawPath render];
         if (currentFrame)
             [currentFrame release];
         currentFrame = [drawPath.currentFrame retain];
@@ -231,7 +233,7 @@ static v8::Handle<Value>GetCanvas(Local<String> name, const AccessorInfo& info)
 {
     HandleScope handleScope;
     JMXDrawEntity *entity = (JMXDrawEntity *)info.Holder()->GetPointerFromInternalField(0);
-    return handleScope.Close([entity.drawPath jsObj]);
+    return handleScope.Close([entity.canvas jsObj]);
 }
 
 + (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate

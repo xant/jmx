@@ -8,7 +8,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-
 @interface JMXGraph : NSXMLDocument {
     NSString *uid;
 }

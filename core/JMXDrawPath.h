@@ -19,6 +19,8 @@
 #import "JMXElement.h"
 #import "NSFont+V8.h"
 
+@class JMXImageData;
+
 #define kJMXDrawPathBufferCount 32
 
 /*!
@@ -37,12 +39,15 @@
     id<JMXCanvasStyle,JMXV8> strokeStyle;
     NSRecursiveLock *lock; // XXX - remove as soon as we switch to atomic operations
 @private
-    JMXSize *_frameSize;
+    JMXSize *frameSize;
     BOOL _clear;
     NSUInteger subPaths;
     double globalAlpha;
     NSString *globalCompositeOperation;
     NSFont *font;
+    BOOL _needsRender;
+    BOOL _didFill;
+    BOOL _didStroke;
 }
 
 /*!
@@ -58,6 +63,7 @@
 @property (readwrite, copy) NSString *globalCompositeOperation;
 @property (readwrite, assign) double globalAlpha;
 @property (readwrite, retain) NSFont *font;
+@property (readonly) JMXSize *frameSize;
 
 - (id)jmxInit;
 
@@ -164,14 +170,6 @@
          radius:(CGFloat)radius
      startAngle:(CGFloat)startAngle
        endAngle:(CGFloat)endAngle
-  antiClockwise:(BOOL)antiClockwise
-    strokeColor:(id<JMXCanvasStyle>)strokeColor
-      fillColor:(id<JMXCanvasStyle>)fillColor;
-
-- (void)drawArc:(JMXPoint *)origin
-         radius:(CGFloat)radius
-     startAngle:(CGFloat)startAngle
-       endAngle:(CGFloat)endAngle
   antiClockwise:(BOOL)antiClockwise;
 
 - (void)fill;
@@ -180,4 +178,7 @@
 - (bool)isPointInPath:(JMXPoint *)point;
 - (void)strokeText:(NSAttributedString *)text atPoint:(JMXPoint *)point;
 
+- (void)drawImageData:(JMXImageData *)imageData
+             fromRect:(CGRect)fromRect
+               toRect:(CGRect)toRect;
 @end

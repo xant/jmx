@@ -25,8 +25,9 @@ echo(dumpDOM());
 elements = drawer.getElementsByTagName('canvas')[0];
 canvas = elements[0];
 */
-canvas = $('canvas:first', drawer).get(0);
 //canvas = drawer.getElementsByTagName('canvas')[0];
+canvas = $('canvas:first', drawer).get(0);
+ctx = canvas.getContext("2d");
 
 entities = $('Entities').get(0);
 
@@ -41,17 +42,21 @@ mainloop = function() {
     point3 = new Point(rand()%width, rand()%height);
     point4 = new Point(rand()%width, rand()%height);
     point5 = new Point(rand()%width, rand()%height);
-    canvas.strokeStyle = fgColor;
-    canvas.fillStyle = bgColor;
-    canvas.arc(point.x, point.y, radius, 0, 360, 0);
-    canvas.beginPath();
-    canvas.moveTo(point1.x, point1.y);
-    canvas.lineTo(point2.x, point2.y);
-    canvas.lineTo(point3.x, point3.y);
-    canvas.lineTo(point4.x, point4.y);
+    ctx.strokeStyle = fgColor;
+    ctx.fillStyle = bgColor;
+    ctx.beginPath();
+    ctx.moveTo(point1.x, point1.y);
+    ctx.lineTo(point2.x, point2.y);
+    ctx.lineTo(point3.x, point3.y);
+    ctx.lineTo(point4.x, point4.y);
+    ctx.stroke();
+    ctx.fill();
+    ctx.closePath();
+    ctx.beginPath();
+    ctx.arc(point.x, point.y, radius, 0, 360, 0);
+    ctx.stroke();
+    ctx.fill();
     canvas.closePath();
-    canvas.stroke();
-    canvas.fill();
     
     //drawer.rotation = rand()%360;
     //drawer.size = new Size(rand()%width, rand()%height);

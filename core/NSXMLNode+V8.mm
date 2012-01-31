@@ -10,6 +10,10 @@
 #import "NSXMLNode+V8.h"
 #import "JMXV8PropertyAccessors.h"
 #import "JMXElement.h"
+#import "JMXEvent.h"
+#import "JMXEventListener.h"
+#import "JMXScriptEntity.h"
+#import "JMXAttribute.h"
 
 JMXV8_EXPORT_NODE_CLASS(NSXMLNode);
 
@@ -555,11 +559,86 @@ static v8::Handle<Value> SetAttribute(const Arguments& args)
     if (args.Length() > 1 && [node isKindOfClass:[NSXMLElement class]]) {
         v8::String::Utf8Value name(args[0]);
         v8::String::Utf8Value value(args[1]);
-        NSXMLNode *attr = [(NSXMLElement *)node attributeForName:[NSString stringWithUTF8String:*name]];
+        NSString *nameString = [NSString stringWithUTF8String:*name];
+        NSString *valueString = [NSString stringWithUTF8String:*value];
+
+        NSXMLNode *attr = [(NSXMLElement *)node attributeForName:nameString];
         if (attr)
-            [attr setStringValue:[NSString stringWithUTF8String:*value]];
+            [attr setStringValue:valueString];
+        else
+            [(NSXMLElement *)node addAttribute:[JMXAttribute attributeWithName:nameString
+                                                                   stringValue:valueString]];
     }
     return handleScope.Close(v8::Integer::New(0x20)); // XXX
+}
+
+static v8::Handle<Value> AddEventListener(const Arguments& args)
+{
+    //v8::Locker lock;
+    HandleScope handleScope;
+    NSXMLNode *node = (NSXMLNode *)args.Holder()->GetPointerFromInternalField(0);
+    if (args.Length() > 2 && args[0]->IsString() && args[1]->IsFunction()
+        && (args[2]->IsBoolean() || args[2]->IsNumber()))
+    {
+        v8::String::Utf8Value type(args[0]);
+
+        JMXEventListener *listener = [[[JMXEventListener alloc] init] autorelease];
+        listener.function = Persistent<Function>::New(Handle<Function>::Cast(args[0]));
+        listener.target = node;
+        listener.capture = args[2]->IsUndefined() ? NO : args[2]->BooleanValue();
+        Local<Context> context = v8::Context::GetCalling();
+        Local<Object> globalObject  = context->Global();
+        v8::Local<v8::Object> entityObj = globalObject->Get(String::New("scriptEntity"))->ToObject();
+        JMXScriptEntity *entity = (JMXScriptEntity *)entityObj->GetPointerFromInternalField(0);
+        JMXScript *scriptContext = entity.jsContext;
+        [scriptContext addListener:listener forEvent:[NSString stringWithUTF8String:*type]];
+    }
+    return handleScope.Close(Undefined()); // XXX
+}
+
+static v8::Handle<Value> RemoveEventListener(const Arguments& args)
+{
+    //v8::Locker lock;
+    HandleScope handleScope;
+    NSXMLNode *node = (NSXMLNode *)args.Holder()->GetPointerFromInternalField(0);
+    if (args.Length() > 2 && args[0]->IsString() && args[1]->IsObject()
+        && (args[2]->IsBoolean() || args[2]->IsNumber()))
+    {
+        v8::String::Utf8Value type(args[0]);
+        
+        Handle<Object> obj = args[1]->ToObject();
+        JMXEventListener *listener = (JMXEventListener *)obj->GetPointerFromInternalField(0);
+        BOOL capture = args[2]->BooleanValue();
+        Local<Context> context = v8::Context::GetCalling();
+        Local<Object> globalObject  = context->Global();
+        v8::Local<v8::Object> entityObj = globalObject->Get(String::New("scriptEntity"))->ToObject();
+        JMXScriptEntity *entity = (JMXScriptEntity *)entityObj->GetPointerFromInternalField(0);
+        JMXScript *scriptContext = entity.jsContext;
+        [scriptContext removeListener:listener forEvent:[NSString stringWithUTF8String:*type]];
+    }
+    return handleScope.Close(Undefined()); // XXX
+}
+
+static v8::Handle<Value> DispatchEvent(const Arguments& args)
+{
+    //v8::Locker lock;
+    BOOL ret = NO;
+    HandleScope handleScope;
+    NSXMLNode *node = (NSXMLNode *)args.Holder()->GetPointerFromInternalField(0);
+    if (args.Length() && args[0]->IsObject())
+    {
+        v8::String::Utf8Value type(args[0]);
+        
+        Handle<Object> obj = args[0]->ToObject();
+        JMXEvent *event = (JMXEvent *)obj->GetPointerFromInternalField(0);
+        Local<Context> context = v8::Context::GetCalling();
+        Local<Object> globalObject  = context->Global();
+        v8::Local<v8::Object> entityObj = globalObject->Get(String::New("scriptEntity"))->ToObject();
+        JMXScriptEntity *entity = (JMXScriptEntity *)entityObj->GetPointerFromInternalField(0);
+        JMXScript *scriptContext = entity.jsContext;
+        ret = [scriptContext dispatchEvent:event];
+    }
+    return handleScope.Close(v8::Boolean::New(ret)); // XXX
 }
 
 + (v8::Persistent<FunctionTemplate>)jsObjectTemplate
@@ -591,6 +670,10 @@ static v8::Handle<Value> SetAttribute(const Arguments& args)
     classProto->Set("getElementsByTagName", FunctionTemplate::New(GetElementsByTagName));
     classProto->Set("getAttribute", FunctionTemplate::New(GetAttribute));
     classProto->Set("setAttribute", FunctionTemplate::New(SetAttribute));
+    classProto->Set("setAttribute", FunctionTemplate::New(SetAttribute));
+    classProto->Set("addEventListener", FunctionTemplate::New(AddEventListener));
+    classProto->Set("removeEventListener", FunctionTemplate::New(RemoveEventListener));
+    classProto->Set("dispatchEvent", FunctionTemplate::New(DispatchEvent));
 
     v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
     instanceTemplate->SetInternalFieldCount(1);

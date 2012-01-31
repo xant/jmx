@@ -30,7 +30,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXElement);
         [self addAttribute:[JMXAttribute attributeWithName:@"id"
                                                stringValue:jsId]];
     } else {
-        NSLog(@"PORKODIO");
+        // TODO - should never happen ... but handle the error condition if it does
     }
 }
 

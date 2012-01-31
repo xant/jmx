@@ -27,6 +27,7 @@
 #import "JMXOutputPin.h"
 #import "JMXDrawEntity.h"
 #import "JMXPoint.h"
+#import "JMXImageData.h"
 #import "NSColor+V8.h"
 #import "JMXSize.h"
 #import "JMXElement.h"
@@ -37,6 +38,9 @@
 #import "NSXMLNode+V8.h"
 #import "JMXScriptTimer.h"
 #import "JMXScriptEntity.h"
+#import "JMXEvent.h"
+#import "JMXEventListener.h"
+#import "JMXCanvasElement.h"
 #import "node.h"
 #import "v8_typed_array.h"
 
@@ -83,7 +87,7 @@ static JMXV8ClassDescriptor mappedClasses[] = {
     { "JMXCDATA",                 "CDATA",            JMXCDATAJSConstructor },
     { "JMXAttribute",             "Attribute",        JMXAttributeJSConstructor },
     { "JMXGraphFragment",         "DocumentFragment", JMXGraphFragmentJSConstructor },
-    
+    { "JMXCanvasElement",         "HTMLCanvasElement",JMXCanvasElementJSConstructor },
     { NULL,                       NULL,              NULL }
 };
 
@@ -411,7 +415,7 @@ static v8::Handle<Value> AddToRunLoop(const Arguments& args)
         foo.function->SetHiddenValue(String::New("lastUpdate"), v8::Number::New([[NSDate date] timeIntervalSince1970]));
         foo.function->SetHiddenValue(String::New("interval"), args[1]);
         [[NSRunLoop currentRunLoop] addTimer:foo.timer forMode:NSRunLoopCommonModes];
-        [scriptContext.runloopTimers addObject:foo];
+        [scriptContext addRunloopTimer:foo];
         return handleScope.Close([foo jsObj]);
     }
     return handleScope.Close(Undefined());
@@ -429,7 +433,7 @@ static v8::Handle<Value> RemoveFromRunLoop(const Arguments& args)
     JMXScriptTimer *foo = (JMXScriptTimer *)Local<Object>::Cast(args[0])->GetPointerFromInternalField(0);
     if (foo && [scriptContext.runloopTimers containsObject:foo]) {
         [foo.timer invalidate];
-        [scriptContext.runloopTimers removeObject:foo];
+        [scriptContext removeRunloopTimer:foo];
         return handleScope.Close(v8::Boolean::New(1));
     }
     return handleScope.Close(v8::Boolean::New(0));
@@ -452,7 +456,7 @@ static v8::Handle<Value> SetInterval(const Arguments& args)
         v8::String::Utf8Value statements(args[0]->ToString());
         foo.statements = [NSString stringWithUTF8String:*statements];
         [[NSRunLoop currentRunLoop] addTimer:foo.timer forMode:NSRunLoopCommonModes];
-        [scriptContext.runloopTimers addObject:foo];
+        [scriptContext addRunloopTimer:foo];
         return handleScope.Close([foo jsObj]);
     }
     return handleScope.Close(Undefined());
@@ -476,7 +480,7 @@ static v8::Handle<Value> SetTimeout(const Arguments& args)
         v8::String::Utf8Value statements(args[0]->ToString());
         foo.statements = [NSString stringWithUTF8String:*statements];
         [[NSRunLoop currentRunLoop] addTimer:foo.timer forMode:NSRunLoopCommonModes];
-        [scriptContext.runloopTimers addObject:foo];
+        [scriptContext addRunloopTimer:foo];
         return handleScope.Close([foo jsObj]);
     }
     return handleScope.Close(Undefined());
@@ -494,7 +498,7 @@ static v8::Handle<Value> ClearTimeout(const Arguments& args)
     JMXScriptTimer *foo = (JMXScriptTimer *)Local<Object>::Cast(args[0])->GetPointerFromInternalField(0);
     if (foo && [scriptContext.runloopTimers containsObject:foo]) {
         [foo.timer invalidate];
-        [scriptContext.runloopTimers removeObject:foo];
+        [scriptContext addRunloopTimer:foo];
         return handleScope.Close(v8::Boolean::New(1));
     }
     return handleScope.Close(v8::Boolean::New(0));
@@ -515,7 +519,7 @@ static v8::Handle<Value> ClearTimeout(const Arguments& args)
 
 @implementation JMXScript
 
-@synthesize scriptEntity, runloopTimers;
+@synthesize scriptEntity, runloopTimers, eventListeners;
 
 static char *argv[2] = { (char *)"JMX", NULL };
 
@@ -661,6 +665,8 @@ static char *argv[2] = { (char *)"JMX", NULL };
         ctx->Global()->SetAccessor(String::New("document"), GetDocument);
         //ctx->Global()->SetPointerInInternalField(0, self);
         runloopTimers = [[NSMutableSet alloc] initWithCapacity:100];
+        eventListeners = [[NSMutableDictionary alloc] initWithCapacity:50];
+        
         operationQueue = [[NSOperationQueue alloc] init];
         
         // second part of node initialization
@@ -712,6 +718,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
     ctx.Dispose();
     [persistentInstances release];
     [runloopTimers release];
+    [eventListeners release];
     [operationQueue release];
     [super dealloc];
 }
@@ -788,6 +795,51 @@ static char *argv[2] = { (char *)"JMX", NULL };
         }
         [persistentInstances removeObjectForKey:key];
     }
+}
+
+- (void)addRunloopTimer:(JMXScriptTimer *)timer
+{
+    [runloopTimers addObject:timer];
+}
+- (void)removeRunloopTimer:(JMXScriptTimer *)timer
+{
+    [runloopTimers removeObject:timer];
+}
+
+- (void)addListener:(JMXEventListener *)listener forEvent:(NSString *)event
+{
+    NSMutableSet *listeners = [eventListeners objectForKey:event];
+    if (!listeners) {
+        listeners = [[[NSMutableSet alloc] initWithCapacity:50] autorelease];
+        [eventListeners setObject:listeners forKey:event];
+    }
+    [listeners addObject:listener];
+}
+- (void)removeListener:(JMXEventListener *)listener forEvent:(NSString *)event
+{
+    NSMutableSet *listeners = [eventListeners objectForKey:event];
+    if (listeners)
+        [listeners removeObject:event];
+}
+
+- (BOOL)dispatchEvent:(JMXEvent *)anEvent toTarget:(NSXMLNode *)aTarget
+{
+    // TODO - support capturing
+    NSMutableSet *listeners = [eventListeners objectForKey:anEvent.type];
+    for (JMXEventListener *listener in listeners) {
+        if ([listener.target isEqual:aTarget])
+            [listener dispatch];
+    }
+    return NO;
+}
+
+- (BOOL)dispatchEvent:(JMXEvent *)anEvent
+{
+    NSMutableSet *listeners = [eventListeners objectForKey:anEvent.type];
+    for (JMXEventListener *listener in listeners) {
+        [listener dispatch];
+    }
+    return NO;
 }
 
 #if 0

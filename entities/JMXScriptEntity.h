@@ -7,7 +7,6 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#define __JMXV8__ 1
 #import "JMXEntity.h"
 
 @class JMXScript;

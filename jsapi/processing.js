@@ -1086,11 +1086,13 @@
     var descent = Math.round(i / w4);
     pfont.ascent = correctionFactor * (baseline - ascent);
     pfont.descent = correctionFactor * (descent - baseline);
+    /*
     if (document.defaultView.getComputedStyle) {
       var leadDivHeight = document.defaultView.getComputedStyle(leadDiv, null).getPropertyValue("height");
       leadDivHeight = correctionFactor * leadDivHeight.replace("px", "");
       if (leadDivHeight >= pfont.size * 2) pfont.leading = Math.round(leadDivHeight / 2)
     }
+    */
     document.body.removeChild(leadDiv)
   }
   function PFont(name, size) {
@@ -1167,7 +1169,7 @@
       var fontface = document.createElement("style");
       fontface.setAttribute("type", "text/css");
       fontface.innerHTML = "@font-face {\n" + '  font-family: "PjsEmptyFont";' + "\n" + "  src: url('data:application/x-font-ttf;base64," + generateTinyFont() + "')\n" + "       format('truetype');\n" + "}";
-      document.head.appendChild(fontface);
+      //document.head.appendChild(fontface);
       var element = document.createElement("span");
       element.style.cssText = 'position: absolute; top: 0; left: 0; opacity: 0; font-family: "PjsEmptyFont", fantasy;';
       element.innerHTML = "AAAAAAAA";
@@ -1176,7 +1178,7 @@
       this.initialized = true
     },
     getElementWidth: function(element) {
-      return document.defaultView.getComputedStyle(element, "").getPropertyValue("width")
+      //return document.defaultView.getComputedStyle(element, "").getPropertyValue("width")
     },
     timeAttempted: 0,
     pending: function(intervallength) {
@@ -1207,7 +1209,7 @@
       var style = document.createElement("style");
       style.setAttribute("type", "text/css");
       style.innerHTML = "@font-face{\n  font-family: '" + fontName + "';\n  src:  url('" + fontUrl + "');\n}\n";
-      document.head.appendChild(style);
+      //document.head.appendChild(style);
       this.addedList[fontName] = true;
       var element = document.createElement("span");
       element.style.cssText = "position: absolute; top: 0; left: 0; opacity: 0;";
@@ -1223,7 +1225,7 @@
     var curElement, pgraphicsMode = aCanvas === undef && aCode === undef;
     if (pgraphicsMode) curElement = document.createElement("canvas");
     else curElement = typeof aCanvas === "string" ? document.getElementById(aCanvas) : aCanvas;
-    if (! (curElement instanceof HTMLCanvasElement)) throw "called Processing constructor without passing canvas element reference or id.";
+    //if (! (curElement instanceof HTMLCanvasElement)) throw "called Processing constructor without passing canvas element reference or id.";
 
     function unimplemented(s) {
       Processing.debug("Unimplemented - " + s)
@@ -5308,19 +5310,19 @@
     Drawing2D.prototype.smooth = function() {
       renderSmooth = true;
       var style = curElement.style;
-      style.setProperty("image-rendering", "optimizeQuality", "important");
-      style.setProperty("-ms-interpolation-mode", "bicubic", "important");
+      //style.setProperty("image-rendering", "optimizeQuality", "important");
+      //style.setProperty("-ms-interpolation-mode", "bicubic", "important");
       if (curContext.hasOwnProperty("mozImageSmoothingEnabled")) curContext.mozImageSmoothingEnabled = true
     };
     Drawing3D.prototype.smooth = nop;
     Drawing2D.prototype.noSmooth = function() {
       renderSmooth = false;
       var style = curElement.style;
-      style.setProperty("image-rendering", "optimizeSpeed", "important");
-      style.setProperty("image-rendering", "-moz-crisp-edges", "important");
-      style.setProperty("image-rendering", "-webkit-optimize-contrast", "important");
-      style.setProperty("image-rendering", "optimize-contrast", "important");
-      style.setProperty("-ms-interpolation-mode", "nearest-neighbor", "important");
+      //style.setProperty("image-rendering", "optimizeSpeed", "important");
+      //style.setProperty("image-rendering", "-moz-crisp-edges", "important");
+      //style.setProperty("image-rendering", "-webkit-optimize-contrast", "important");
+      //style.setProperty("image-rendering", "optimize-contrast", "important");
+      //style.setProperty("-ms-interpolation-mode", "nearest-neighbor", "important");
       if (curContext.hasOwnProperty("mozImageSmoothingEnabled")) curContext.mozImageSmoothingEnabled = false
     };
     Drawing3D.prototype.noSmooth = nop;
@@ -6583,7 +6585,8 @@
       __isPImage: true,
       updatePixels: function() {
         var canvas = this.sourceImg;
-        if (canvas && canvas instanceof HTMLCanvasElement && this.__isDirty) canvas.getContext("2d").putImageData(this.imageData, 0, 0);
+        //if (canvas && canvas instanceof HTMLCanvasElement && this.__isDirty)
+          canvas.getContext("2d").putImageData(this.imageData, 0, 0);
         this.__isDirty = false
       },
       fromHTMLImageData: function(htmlImg) {
@@ -9988,7 +9991,7 @@
   };
   if (isDOMPresent) {
     window["Processing"] = Processing;
-    document.addEventListener("DOMContentLoaded", init, false)
+    //document.addEventListener("DOMContentLoaded", init, false)
   } else this.Processing = Processing
 })(window, window.document, Math);
 

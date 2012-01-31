@@ -314,7 +314,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     glDisable(GL_FOG);
     glDisable(GL_DEPTH_TEST);
     glPixelZoom(1.0, 1.0);
-    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClearColor(1.0, 1.0, 1.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
     [[self openGLContext] flushBuffer];
     //[lock unlock];

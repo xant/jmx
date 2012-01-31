@@ -99,6 +99,7 @@ void JSExit(int code)
     v8::Local<v8::Object> globalObject  = context->Global();
     v8::Local<v8::Object> obj = globalObject->Get(v8::String::New("scriptEntity"))->ToObject();
     JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetPointerFromInternalField(0);
+    entity.active = NO;
     [entity resetContext];
 }
 

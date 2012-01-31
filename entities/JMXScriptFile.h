@@ -14,6 +14,7 @@
 @interface JMXScriptFile : JMXScriptEntity <JMXFileRead> {
 @private
     NSString *path;
+    BOOL isRunning;
 }
 
 @property (copy) NSString *path;

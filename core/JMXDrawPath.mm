@@ -598,6 +598,7 @@ using namespace v8;
     CGPathRef path = CGContextCopyPath(context);
     CGContextDrawPath(context, _didStroke ? kCGPathFillStroke : kCGPathFill);
     CGContextAddPath(context, path);
+    CGPathRelease(path);
     CGContextRestoreGState(context);
     _didFill = YES;
     [lock unlock];
@@ -613,6 +614,7 @@ using namespace v8;
     CGPathRef path = CGContextCopyPath(context);
     CGContextDrawPath(context, _didFill ? kCGPathFillStroke : kCGPathStroke);
     CGContextAddPath(context, path);
+    CGPathRelease(path);
     CGContextRestoreGState(context);
     _didStroke = YES;
     [lock unlock];
@@ -1377,6 +1379,7 @@ static void SetFont(Local<String> name, Local<Value> value, const AccessorInfo& 
             if (regexec(&exp, *str, 4, matches, 0) == 0) {
                 /* TODO - take specified font size into account */
             }
+            regfree(&exp);
         }
         
         NSFont *font = [NSFont fontWithName:fontString size:[NSFont systemFontSize]];

@@ -28,13 +28,14 @@
 #import "JMXInputPin.h"
 #import "JMXScript.h"
 #import "JMXEntity.h"
+#import "JMXScriptPinWrapper.h"
 
 using namespace v8;
 
 @implementation JMXPin
 
 @synthesize type, label, multiple, continuous, connected, sendNotifications,
-            direction, allowedValues, minValue, maxValue, connections, owner;
+            direction, allowedValues, minValue, maxValue, connections, owner, mode;
 
 #pragma mark Constructors
 
@@ -635,7 +636,15 @@ static v8::Handle<Value>connect(const Arguments& args)
     BOOL ret = NO;
     HandleScope handleScope;
     JMXPin *pin = (JMXPin *)args.Holder()->GetPointerFromInternalField(0);
-    if (args[0]->IsObject()) {
+    if (args[0]->IsFunction()) {
+        v8::Local<Context> globalContext = v8::Context::GetCalling();
+        JMXScript *ctx = [JMXScript getContext:globalContext];
+        JMXScriptPinWrapper *wrapper = [JMXScriptPinWrapper pinWrapperWithName:@"jsFunction"
+                                                                      function:Persistent<Function>::New(Handle<Function>::Cast(args[0]))
+                                                                  scriptEntity:ctx.scriptEntity];
+        [wrapper connectToPin:pin];
+        [wrapper retain];
+    } else if (args[0]->IsObject()) {
         String::Utf8Value str(args[0]->ToString());
         if (strcmp(*str, "[object Pin]") == 0) {
             v8::Handle<Object> object = args[0]->ToObject();

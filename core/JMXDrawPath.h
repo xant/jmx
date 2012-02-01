@@ -49,6 +49,7 @@
     BOOL _needsRender;
     BOOL _didFill;
     BOOL _didStroke;
+    BOOL invertYCoordinates;
 }
 
 /*!
@@ -66,7 +67,7 @@
 @property (readwrite, retain) NSFont *font;
 @property (readonly) JMXSize *frameSize;
 @property (readwrite, assign) CGFloat lineWidth;
-
+@property (assign) BOOL invertYCoordinates;
 - (id)jmxInit;
 
 /*!
@@ -178,7 +179,7 @@
 - (void)stroke;
 - (void)clip;
 - (bool)isPointInPath:(JMXPoint *)point;
-- (void)strokeText:(NSAttributedString *)text atPoint:(JMXPoint *)point;
+- (void)strokeText:(NSString *)text atPoint:(JMXPoint *)point;
 
 - (void)drawImageData:(JMXImageData *)imageData
              fromRect:(CGRect)fromRect

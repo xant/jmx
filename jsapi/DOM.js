@@ -39,15 +39,16 @@ String.prototype.toLowerCase = function()
  * @addon
  */
 Array.prototype.toString = function() {
-    out = "{ ";
-    for (i = 0; i < nodes.length; i++) {
+    out = "Array: { ";
+    for (i = 0; i < this.length; i++) {
         if (i > 0)
             out += ", ";
-        out += this[i];
+        out += this[i].toString();
     }
-    out += " }";
+    out += "}";
     return out;
 }
+//Array.defineProperty(Array, "__className__", { value: "Array", writable: false, enumerable: false });
 
 /**
  * ExceptionCodes

@@ -43,6 +43,8 @@
 @property (readonly, nonatomic) JMXScriptEntity *scriptEntity;
 @property (readonly, nonatomic) NSSet *runloopTimers;
 @property (readonly, nonatomic) NSDictionary *eventListeners;
+@property (readonly) v8::Persistent<v8::Context> ctx;
+
 /*!
  @method getContext:
  @abstract get the JMXScript instance where the provided currentContext is being managed/executed
@@ -96,6 +98,12 @@
  @param obj the native obj-c instance bound to the persistent object
  @discussion * TODO *
  */
+
+- (void)execCode:(NSString *)code;
+- (void)execFunction:(v8::Handle<v8::Function>)function;
+- (void)execFunction:(v8::Handle<v8::Function>)function
+       withArguments:(v8::Handle<v8::Value> *)argv
+               count:(NSUInteger)count;
 - (void)addPersistentInstance:(v8::Persistent<v8::Object>)persistent obj:(id)obj;
 /*!
  @method removePersistentInstance:

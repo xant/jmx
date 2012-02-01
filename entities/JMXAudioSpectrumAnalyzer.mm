@@ -14,6 +14,7 @@
 #import "JMXDrawPath.h"
 #include "JMXAudioSpectrumAnalyzer.h"
 #include "JMXScript.h"
+#import "NSColor+V8.h"
 
 JMXV8_EXPORT_NODE_CLASS(JMXAudioSpectrumAnalyzer);
 
@@ -88,8 +89,8 @@ static int _defaultFrequencies[kJMXAudioSpectrumNumFrequencies] =
         for (NSNumber *frequency in frequencies) {
             int freq = [frequency intValue];
             NSString *pinName = freq < 1000
-            ? [NSString stringWithFormat:@"%dHz", freq]
-            : [NSString stringWithFormat:@"%dKhz", freq/1000]; 
+                              ? [NSString stringWithFormat:@"%dHz", freq]
+                              : [NSString stringWithFormat:@"%dKhz", freq/1000]; 
             [frequencyPins addObject:[self registerOutputPin:pinName withType:kJMXNumberPin]];
         }
         
@@ -100,6 +101,7 @@ static int _defaultFrequencies[kJMXAudioSpectrumNumFrequencies] =
         [imageSizePin deliverData:[JMXSize sizeWithNSSize:frameSize]];
         drawer = [[JMXDrawPath drawPathWithFrameSize:
                                [JMXSize sizeWithNSSize:NSMakeSize(kJMXAudioSpectrumImageWidth, kJMXAudioSpectrumImageHeight)]] retain];
+        drawer.invertYCoordinates = YES;
     }
     return self;
 }
@@ -123,6 +125,7 @@ static int _defaultFrequencies[kJMXAudioSpectrumNumFrequencies] =
 - (void)drawSpectrumImage
 {    
     [drawer clear];
+
     for (int i = 0; i < kJMXAudioSpectrumNumFrequencies; i++) {
         Float32 value = frequencyValues[i];
         int barWidth = kJMXAudioSpectrumImageWidth/kJMXAudioSpectrumNumFrequencies;
@@ -132,30 +135,28 @@ static int _defaultFrequencies[kJMXAudioSpectrumNumFrequencies] =
         frequencyRect.size.width = barWidth-4;
         UInt32 topPadding = frequencyRect.origin.y + 20; // HC
         frequencyRect.size.height = MIN(value*0.75, kJMXAudioSpectrumImageHeight-topPadding);
-        
-        [drawer drawRect:[JMXPoint pointWithNSPoint:frequencyRect.origin]
-                    size:[JMXSize sizeWithNSSize:frequencyRect.size]
-             strokeColor:[NSColor yellowColor] fillColor:[NSColor yellowColor]];
-
-        NSMutableDictionary *attribs = [NSMutableDictionary dictionary];
-        [attribs setObject:[NSFont labelFontOfSize:10] forKey:NSFontAttributeName];
-        [attribs setObject:[NSColor lightGrayColor]
-                    forKey:NSForegroundColorAttributeName];
+        drawer.strokeStyle = [NSColor yellowColor];
+        drawer.fillStyle = [NSColor yellowColor];
+        [drawer fillRect:[JMXPoint pointWithNSPoint:frequencyRect.origin]
+                    size:[JMXSize sizeWithNSSize:frequencyRect.size]];
+        [drawer stroke];
+        [drawer fill];
         int freq = [[frequencies objectAtIndex:i] intValue];
         // XXX - how to use bordercolor now? 
         NSString *freqLabel = freq < 1000
                             ? [NSString stringWithFormat:@"%d", freq]
                             : [NSString stringWithFormat:@"%dK", freq/1000]; 
-        NSAttributedString * string = [[[NSAttributedString alloc] initWithString:freqLabel 
-                                                                       attributes:attribs]
-                                       autorelease];
+
         NSPoint nsPoint;
         nsPoint.x = frequencyRect.origin.x;
         nsPoint.y = 4;
         JMXPoint *point = [JMXPoint pointWithNSPoint:nsPoint];
-        [drawer strokeText:string atPoint:point];
+        drawer.font = [NSFont labelFontOfSize:10];
+        drawer.strokeStyle = [NSColor lightGrayColor];
+        [drawer strokeText:freqLabel atPoint:point];
+        [drawer stroke];
+        [drawer fill];
     }
-    [drawer render];
     [imagePin deliverData:[drawer currentFrame]];
 }
 
@@ -228,14 +229,11 @@ static int _defaultFrequencies[kJMXAudioSpectrumNumFrequencies] =
 // override outputPins to return them properly sorted
 - (NSArray *)outputPins
 {
-    NSMutableArray *pinNames = [[NSMutableArray alloc] init];
-    for (JMXOutputPin *pin in frequencyPins) {
-        [pinNames addObject:pin.label];
-    }
-    [pinNames addObject:@"active"];
-    [pinNames addObject:@"image"];
-    [pinNames addObject:@"imageSize"];
-    return [pinNames autorelease];
+    NSMutableArray *pins = [[NSMutableArray alloc] initWithArray:frequencyPins copyItems:NO];
+    [pins addObject:activeOut];
+    [pins addObject:imagePin];
+    [pins addObject:imageSizePin];
+    return [pins autorelease];
 }
 
 - (int)numberOfFrequencies

@@ -529,7 +529,7 @@ static v8::Handle<Value> ClearTimeout(const Arguments& args)
 
 @implementation JMXScript
 
-@synthesize scriptEntity, runloopTimers, eventListeners;
+@synthesize scriptEntity, runloopTimers, eventListeners, ctx;
 
 static char *argv[2] = { (char *)"JMX", NULL };
 
@@ -613,6 +613,22 @@ static char *argv[2] = { (char *)"JMX", NULL };
             [runloopTimers removeObject:foo];
         }
     }
+}
+
+- (void)execFunction:(v8::Handle<v8::Function>)function
+       withArguments:(v8::Handle<v8::Value> *)argv
+               count:(NSUInteger)count
+{
+    v8::Locker locker;
+    HandleScope handleScope;
+    v8::Handle<Value> ret = function->Call(function, count, argv); 
+}
+
+- (void)execFunction:(v8::Handle<v8::Function>)function
+{
+    v8::Locker locker;
+    HandleScope handleScope;
+    v8::Handle<Value> ret = function->Call(function, 0, nil);
 }
 
 - (void)nodejsRun
@@ -735,6 +751,10 @@ static char *argv[2] = { (char *)"JMX", NULL };
 
 - (void)execCode:(NSString *)code
 {
+    BOOL ret = ExecJSCode((const char *)[code bytes], [code length], [code UTF8String]);
+    if (!ret) {
+        // TODO - handle error conditions
+    }
 }
 
 - (BOOL)runScript:(NSString *)source

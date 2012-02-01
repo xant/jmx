@@ -679,6 +679,7 @@ static v8::Handle<Value>InputPins(Local<String> name, const AccessorInfo& info)
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSArray *inputPins = [entity inputPins];
     v8::Handle<Array> list = v8::Array::New([inputPins count]);
+    NSLog(@"PORKODIO %@", inputPins);
     int cnt = 0;
     for (JMXPin *pin in inputPins) {
         list->Set(v8::Number::New(cnt++), [pin jsObj]);

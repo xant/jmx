@@ -15,10 +15,12 @@
 @protected
     NSString *code;
     JMXScript *jsContext;
+    NSThread *executionThread;
 }
 
 @property (copy) NSString *code;
 @property (readonly) JMXScript *jsContext;
+@property (readonly) NSThread *executionThread;
 
 - (BOOL)exec;
 - (void)resetContext;

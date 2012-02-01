@@ -90,10 +90,10 @@
     NSMutableDictionary *outputPins;*/
     NSXMLElement *inputPins;
     NSXMLElement *outputPins;
-@private
-    NSMutableDictionary *privateData;
     JMXInputPin *activeIn;
     JMXOutputPin *activeOut;
+@private
+    NSMutableDictionary *privateData;
     JMXEntity *owner;
 }
 

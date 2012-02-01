@@ -68,6 +68,7 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		AA02230F14D8BB8C00E7908F /* JMXScriptPinWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA02230E14D8BB8C00E7908F /* JMXScriptPinWrapper.mm */; };
 		AA08D33B14B5AA4500D19015 /* JMXCodePanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA08D33A14B5AA4400D19015 /* JMXCodePanel.m */; };
 		AA1E53AD14AE114D00F80337 /* JMXGraphFragment.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA1E53AC14AE114D00F80337 /* JMXGraphFragment.mm */; };
 		AA2BE3F312353BA6006087E7 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE3F212353BA6006087E7 /* CoreAudio.framework */; };
@@ -388,6 +389,8 @@
 		82EA042E1240BE4A00E28B72 /* JMXWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = JMXWindow.xib; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* JMX-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "JMX-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* JMX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JMX.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA02230D14D8BB8C00E7908F /* JMXScriptPinWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXScriptPinWrapper.h; sourceTree = "<group>"; };
+		AA02230E14D8BB8C00E7908F /* JMXScriptPinWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScriptPinWrapper.mm; sourceTree = "<group>"; };
 		AA08D33914B5AA4400D19015 /* JMXCodePanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXCodePanel.h; sourceTree = "<group>"; };
 		AA08D33A14B5AA4400D19015 /* JMXCodePanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXCodePanel.m; sourceTree = "<group>"; };
 		AA1E53AB14AE114D00F80337 /* JMXGraphFragment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXGraphFragment.h; sourceTree = "<group>"; };
@@ -1074,6 +1077,8 @@
 				AA9C1A4812E5964C00329158 /* JMXImageElement.mm */,
 				AA93701B14CC2FF9001D9BB3 /* JMXScriptTimer.h */,
 				AA93701C14CC2FFA001D9BB3 /* JMXScriptTimer.mm */,
+				AA02230D14D8BB8C00E7908F /* JMXScriptPinWrapper.h */,
+				AA02230E14D8BB8C00E7908F /* JMXScriptPinWrapper.mm */,
 				AAEA251A14D4D59F00533049 /* JMXEvent.h */,
 				AAEA251B14D4D5A000533049 /* JMXEvent.mm */,
 				AAB71A0514D6BF0200BE8C35 /* JMXImageData.h */,
@@ -1746,6 +1751,7 @@
 				AAB71A0714D6BF0200BE8C35 /* JMXImageData.mm in Sources */,
 				AAB71A0A14D6D89E00BE8C35 /* JMXUint8ClampedArray.mm in Sources */,
 				AAB71A0D14D7585500BE8C35 /* JMXEventListener.mm in Sources */,
+				AA02230F14D8BB8C00E7908F /* JMXScriptPinWrapper.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

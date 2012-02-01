@@ -87,7 +87,7 @@
         self.window = nil;
     } else {
         [documentSplitView setPosition:200.0f ofDividerAtIndex:0];
-        [documentSplitView adjustSubviews];
+        [documentSplitView adjustSubviews];/*
         pipe(stdout_pipe);
         pipe(stderr_pipe);
         dup2(stdout_pipe[1], fileno(stdout));
@@ -95,7 +95,7 @@
         close(stdout_pipe[1]);
         close(stderr_pipe[1]);
         [NSThread detachNewThreadSelector:@selector(consoleOutput:) 
-                                 toTarget:self withObject:nil];
+                                 toTarget:self withObject:nil];*/
     }
 }
 

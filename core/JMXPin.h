@@ -81,6 +81,12 @@ typedef enum {
     kJMXAnyPin
 } JMXPinDirection;
 
+typedef enum {
+    kJMXPinModeAuto = 0,
+    kJMXPinModeActive,
+    kJMXPinModePassive
+} JMXPinMode;
+
 /*!
  @define kJMXPinDataBufferMask
  @parseOnly
@@ -122,9 +128,12 @@ typedef enum {
     NSMutableArray      *allowedValues;
     NSRecursiveLock     *dataLock;
     NSXMLElement        *connections;
+    JMXPinMode          mode;
 }
 
 @property (readonly) NSXMLElement *connections;
+
+@property (readonly) JMXPinMode mode;
 
 /*!
  @property type

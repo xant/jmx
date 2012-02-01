@@ -16,7 +16,7 @@ using namespace v8;
 
 @implementation JMXScriptEntity
 
-@synthesize code, jsContext;
+@synthesize code, jsContext, executionThread;
 
 + (void)initialize
 {
@@ -38,10 +38,9 @@ using namespace v8;
 
 - (void)dealloc
 {
-    if (jsContext) {
-        [jsContext clearTimers];
-        [jsContext release];
-    }
+    [jsContext clearTimers];
+    [jsContext release];
+    [executionThread release];;
     [super dealloc];
 }
 
@@ -72,6 +71,8 @@ using namespace v8;
 {
     if (!jsContext)
         jsContext = [[JMXScript alloc] init];
+    [executionThread release];
+    executionThread = [[NSThread currentThread] retain];
     return [jsContext runScript:self.code withEntity:self];
 }
 

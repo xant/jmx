@@ -15,9 +15,11 @@ while (1) {
     p.y = rand()%drawer.size.height;
     c = new Color(frand(), frand(), frand(), 0.5);
     b = new Color(frand(), frand(), frand(), 0.5);
-    drawer.canvas.getContext("2d").strokeText("TEST", p, null, c);
     drawer.canvas.getContext("2d").strokeStyle = new Color(frand(), frand(), frand());
     drawer.canvas.getContext("2d").fillStyle = b;
-    drawer.canvas.getContext("2d").arc(rand()%drawer.size.width, rand()%drawer.size.height, rand()%drawer.size.height, 0, 360, 0);
+    drawer.canvas.getContext("2d").strokeText("TEST", p.x, p.y);
+    //drawer.canvas.getContext("2d").arc(rand()%drawer.size.width, rand()%drawer.size.height, 10, 0, 360, 0);
+    //drawer.canvas.getContext("2d").stroke();
+    //drawer.canvas.getContext("2d").fill();
     sleep(1/60);
 }

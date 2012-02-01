@@ -55,7 +55,10 @@ using namespace v8;
         CGContextSaveGState(context);
         CGRect fullFrame = { { 0, 0 }, { frameSize.width, frameSize.height } };
         CGContextSetRGBFillColor (context, 1.0, 1.0, 1.0, 1.0);
+        CGPathRef path = CGContextCopyPath(context);
         CGContextFillRect(context, fullFrame);
+        CGContextAddPath(context, path);
+        CGPathRelease(path);
         CGContextRestoreGState(context);
         _clear = NO;
         pathLayerOffset++;
@@ -99,9 +102,12 @@ using namespace v8;
 
             pathLayers[i] = [ciContext createCGLayerWithSize:layerSize info: nil];
             CGContextRef context = CGLayerGetContext(pathLayers[i]);
+            //CGContextTranslateCTM(context, 0, aFrameSize.height);
+            //CGContextScaleCTM(context, 1.0, -1.0);
             CGAffineTransform flipVertical = CGAffineTransformMake(1, 0, 0, -1, 0, aFrameSize.height);
             CGContextConcatCTM(context, flipVertical);
-            //CGContextBeginPath(CGLayerGetContext(pathLayers[i]));
+            CGContextBeginPath(context);
+            CGContextMoveToPoint(context, 0, 0);
         }
         frameSize = [aFrameSize copy];
         _clear = YES;
@@ -140,14 +146,14 @@ using namespace v8;
     [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
-    CGContextSaveGState(context);
+    //CGContextSaveGState(context);
 
     /*  if (!CGContextIsPathEmpty(context)) {
      CGContextAddLineToPoint(context, origin.x, origin.y); // calculate start point properly
      }*/
     CGContextAddArc(context, origin.x, origin.y, radius, startAngle, endAngle, antiClockwise);
     //CGContextDrawPath(context, kCGPathFillStroke);
-    CGContextRestoreGState(context);
+    //CGContextRestoreGState(context);
     [lock unlock];
     [self render];
 }
@@ -417,7 +423,10 @@ using namespace v8;
     CGRect fullFrame = CGRectMake(origin.nsPoint.x, origin.nsPoint.y,
                                   size.nsSize.width, size.nsSize.height);
     CGContextSetRGBFillColor (context, 1.0, 1.0, 1.0, 1.0);
+    CGPathRef path = CGContextCopyPath(context);
     CGContextFillRect(context, fullFrame);
+    CGContextAddPath(context, path);
+    CGPathRelease(path);
     CGContextRestoreGState(context);
     [lock unlock];
 }
@@ -505,8 +514,13 @@ using namespace v8;
     [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
-
+    //CGContextSaveGState(context);
+    //CGPathRef path = CGContextCopyPath(context);
     CGContextFillRect(context, fullFrame);
+    //CGContextAddPath(context, path);
+    //CGPathRelease(path);
+    //CGContextRestoreGState(context);
+    [self render];
     [lock unlock];
 }
 
@@ -514,9 +528,12 @@ using namespace v8;
 {
     [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
+    CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
+
     CGRect rect = CGRectMake(origin.nsPoint.x, origin.nsPoint.y,
                                   size.nsSize.width, size.nsSize.height);
-    CGContextAddRect(CGLayerGetContext(pathLayers[pathIndex]), rect);
+    CGContextStrokeRect(context, rect);
+    [self render];
     [lock unlock];
 }
 
@@ -653,7 +670,10 @@ using namespace v8;
     //       loaded from a file ... and so no extra work will be done by creating
     //       the NSBitameImageRep
     NSBitmapImageRep* rep = [[[NSBitmapImageRep alloc] initWithCIImage:image] autorelease];
+    CGContextSaveGState(context);
+    CGContextConcatCTM(context, CGAffineTransformInvert(CGContextGetCTM(context)));
     CGContextDrawImage(context, fullFrame, rep.CGImage);
+    CGContextRestoreGState(context);
     // XXX - the following code doesn't work
     //CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     //CGColorSpaceRelease(colorSpace);
@@ -687,6 +707,9 @@ using namespace v8;
     [lock lock];
     [self makeCurrentContext];
     [self saveCurrentState];
+    UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
+    CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
+    CGContextConcatCTM(context, CGAffineTransformInvert(CGContextGetCTM(context)));
     [text drawAtPoint:point.nsPoint]; // draw at offset position
     [self restorePreviousState];
     [lock unlock];
@@ -731,9 +754,13 @@ using namespace v8;
      CGContextFillPath(context);
      }
      CGContextRestoreGState(context);*/
-    if (currentFrame)
-        [currentFrame release];
-    currentFrame = [[CIImage imageWithCGLayer:pathLayers[pathIndex]] retain];
+    if (!CGContextIsPathEmpty(context))
+    {
+        if (currentFrame)
+            [currentFrame release];
+        currentFrame = [[CIImage imageWithCGLayer:pathLayers[pathIndex]] retain];
+        _didFill = _didStroke = NO;
+    }
     [lock unlock];
     _needsRender = NO;
 }
@@ -978,7 +1005,8 @@ static v8::Handle<Value> MoveTo(const Arguments& args)
     HandleScope handleScope;
     JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() > 1) {
-        [drawPath moveTo:[JMXPoint pointWithNSPoint:NSMakePoint(args[0]->NumberValue(), args[1]->NumberValue())]];
+        [drawPath moveTo:[JMXPoint pointWithNSPoint:NSMakePoint(args[0]->NumberValue(),
+                                                                args[1]->NumberValue())]];
     }
     return Undefined();
 }
@@ -989,7 +1017,8 @@ static v8::Handle<Value> LineTo(const Arguments& args)
     HandleScope handleScope;
     JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() > 1) {
-        [drawPath lineTo:[JMXPoint pointWithNSPoint:NSMakePoint(args[0]->NumberValue(), args[1]->NumberValue())]];
+        [drawPath lineTo:[JMXPoint pointWithNSPoint:NSMakePoint(args[0]->NumberValue(), 
+                                                                args[1]->NumberValue())]];
     }
     return Undefined();
 }
@@ -1154,19 +1183,22 @@ static v8::Handle<Value> GetImageData(const Arguments& args)
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     CIImage *image = drawPath.currentFrame;
     CGRect rect = [image extent];
+    if (args.Length() > 3) {
+        rect.origin.x = args[0]->NumberValue();
+        rect.origin.y = args[1]->NumberValue();
+        rect.size.width = args[2]->NumberValue();
+        rect.size.height = args[3]->NumberValue();
+    }
     if (image) {
-        
-        if (args.Length() > 3) {
-            rect.origin.x = args[0]->NumberValue();
-            rect.origin.y = args[1]->NumberValue();
-            rect.size.width = args[2]->NumberValue();
-            rect.size.height = args[3]->NumberValue();
-        }
         JMXImageData *imageData = [JMXImageData imageDataWithImage:image rect:rect];
         Handle<Object> obj = [imageData jsObj];
         [pool drain];
         return handleScope.Close(obj);
-        
+    } else {
+        JMXImageData *imageData = [JMXImageData imageWithSize:rect.size];
+        Handle<Object> obj = [imageData jsObj];
+        [pool drain];
+        return handleScope.Close(obj);
     }
     // TODO - exceptions
     [pool drain];
@@ -1286,7 +1318,7 @@ static v8::Handle<Value> StrokeText(const Arguments& args)
                 return handleScope.Close(v8::Undefined());
         }
 
-        NSColor *textColor = (NSColor *)[NSColor whiteColor];
+        NSColor *textColor = (NSColor *)[NSColor blackColor];
         String::Utf8Value text(args[0]->ToString());
         CGFloat x = args[1]->NumberValue();
         CGFloat y = args[2]->NumberValue();

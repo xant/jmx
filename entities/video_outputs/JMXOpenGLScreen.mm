@@ -268,7 +268,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         //glClear(GL_COLOR_BUFFER_BIT);
         
 
-        [ciContext drawImage:image inRect:destinationRect fromRect:sourceRect];
+        [ciContext drawImage:[image imageByCroppingToRect:sourceRect] inRect:destinationRect fromRect:sourceRect];
         [image release];
         [[self openGLContext] flushBuffer];
     }

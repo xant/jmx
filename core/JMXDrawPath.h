@@ -21,7 +21,7 @@
 
 @class JMXImageData;
 
-#define kJMXDrawPathBufferCount 32
+#define kJMXDrawPathBufferCount 2
 
 /*!
  * @class JMXDrawPath

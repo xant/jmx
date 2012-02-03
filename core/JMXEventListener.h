@@ -11,6 +11,8 @@
 
 @interface JMXEventListener : NSObject <JMXV8>
 {
+    BOOL capture;
+    NSXMLNode *target;
 #ifdef __JMXV8__
     v8::Persistent<v8::Function> function;
 #endif

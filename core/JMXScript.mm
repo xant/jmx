@@ -751,7 +751,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
 
 - (void)execCode:(NSString *)code
 {
-    BOOL ret = ExecJSCode((const char *)[code bytes], [code length], [code UTF8String]);
+    BOOL ret = ExecJSCode((const char *)[code UTF8String], [code length], "code");
     if (!ret) {
         // TODO - handle error conditions
     }

@@ -689,6 +689,33 @@ static v8::Handle<Value>exportToBoard(const Arguments& args)
     return scope.Close(v8::Boolean::New(ret));
 }
 
+static void SetData(Local<String> name, Local<Value> value, const AccessorInfo& info)
+{
+    //Locker lock;
+    HandleScope handleScope;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    String::Utf8Value nameStr(name);
+    id val = nil;
+    if (value->IsNumber()) {
+        val = [NSNumber numberWithDouble:value->ToNumber()->NumberValue()];
+    } else if (value->IsString()) {
+        String::Utf8Value str(value->ToString());
+        val = [NSString stringWithUTF8String:*str];
+    } else if (value->IsObject()) {
+        val = (id)value->ToObject()->GetPointerFromInternalField(0);
+    } else {
+        NSLog(@"Bad parameter (not object) passed to %s", *nameStr);
+        return;
+    }
+    JMXPin *obj = (JMXPin *)info.Holder()->GetPointerFromInternalField(0);
+    if (val) {
+        [obj setData:val];
+    } else {
+        // TODO - Error messages
+    }
+    [pool release];
+}
+
 static v8::Persistent<FunctionTemplate> objectTemplate;
 
 + (v8::Persistent<FunctionTemplate>)jsObjectTemplate
@@ -713,6 +740,7 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
     instanceTemplate->SetAccessor(String::NewSymbol("continuous"), GetBoolProperty, SetBoolProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("minValue"), GetObjectProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("maxValue"), GetObjectProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("data"), GetObjectProperty, SetData);
     instanceTemplate->SetAccessor(String::NewSymbol("connected"), GetBoolProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("sendNotifications"), GetBoolProperty, SetBoolProperty);
     //instanceTemplate->SetAccessor(String::NewSymbol("owner"), accessObjectProperty);

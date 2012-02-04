@@ -75,8 +75,8 @@ spectrum.outputPin('250Hz').connect(function(f) {
 
     if (radius < 15)
         radius = 15;
-    if (radius > 300)
-        radius = 300;
+    if (radius > 400)
+        radius = 400;
     old250 = f;
     drawer.saturation = f;
     pin.data = f;

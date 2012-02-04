@@ -24,7 +24,6 @@
 	JMXPinLayer *hoveredPinLayer;
     NSMutableArray *selected;
     NSMutableArray *entities;
-
     JMXEntitiesController *entitiesController;
     NSPoint lastDragLocation;
 }
@@ -33,8 +32,7 @@
 @property (nonatomic, assign) JMXEntityLayer *selectedLayer;
 @property (nonatomic, assign) JMXConnectorLayer *selectedConnectorLayer;
 @property (nonatomic, retain) NSMutableArray *entities;
-@property (nonatomic, retain) IBOutlet JMXEntitiesController *entitiesController;
-//@property (nonatomic, retain) IBOutlet 
+@property (nonatomic, readonly) JMXEntitiesController *entitiesController;
 #pragma mark -
 #pragma mark IBActions
 

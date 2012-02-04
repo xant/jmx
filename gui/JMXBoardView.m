@@ -22,7 +22,6 @@
 //
 
 #import "JMXBoardView.h"
-#import "JMXBoardLayer.h"
 #import "JMXQtMovieEntity.h"
 #import "JMXAudioFileEntity.h"
 #import "JMXFileRead.h"
@@ -46,9 +45,13 @@
 
 - (void)awakeFromNib
 {
-    JMXBoardLayer *boardLayer = [[[JMXBoardLayer alloc] init] autorelease];
-    self.layer = boardLayer;
+    //JMXBoardLayer *boardLayer = [[[JMXBoardLayer alloc] init] autorelease];
+    //self.layer = boardLayer;
     [self setWantsLayer:YES];
+    CGColorRef backgroundColor = CGColorCreateGenericRGB(1.0f, 1.0f, 1.0f, 1.0f);
+    self.layer.backgroundColor = backgroundColor;
+    CFRelease(backgroundColor);
+    self.layer.geometryFlipped = NO;
 }
 
 #pragma mark -

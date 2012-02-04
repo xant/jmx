@@ -34,7 +34,6 @@
 @synthesize selectedConnectorLayer;
 @synthesize entities;
 @synthesize entitiesController;
-
 #pragma mark -
 #pragma mark Private
 
@@ -71,7 +70,7 @@
 
     selected = [[NSMutableArray alloc] init];
     entities = [[NSMutableArray alloc] init];
-    [entitiesController setContent:entities];
+    entitiesController = [[JMXEntitiesController alloc] init];
 }
 
 - (void)dealloc
@@ -79,6 +78,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [selected release];
     [entities release];
+    [entitiesController release];
     [super dealloc];
 }
 

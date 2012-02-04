@@ -9,6 +9,7 @@
 #import "JMXWindowController.h"
 #import "JMXBoardViewController.h"
 #import "JMXAppDelegate.h"
+#import "JMXEntitiesController.h"
 
 @implementation JMXWindowController
 
@@ -157,4 +158,14 @@
 	}	
 }
 
+
+// if the main window is being dragged we need to remove selection
+// for some weird reason if there is a selection , the selected layer will disappear
+// from the board (even if still present and added as sublayer, it seems it's not drawn anyway ...
+// even if forcing calls to '- (void)drawInContext:'
+- (void)mouseDragged:(NSEvent *)theEvent
+{
+    [((JMXBoardViewController *)boardViewController).entitiesController unselectAll];
+    [super mouseDragged:theEvent];
+}
 @end

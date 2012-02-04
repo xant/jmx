@@ -474,7 +474,9 @@ using namespace v8;
     }
     [fillStyle release];
     fillStyle = [aFillStyle retain];
-    if ([fillStyle isKindOfClass:[NSColor class]]) {
+    if (!fillStyle) {
+        CGContextSetRGBFillColor(context, 0, 0, 0, 0);
+    } else if ([fillStyle isKindOfClass:[NSColor class]]) {
         NSColor *calibratedColor = [(NSColor *)fillStyle colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
         CGContextSetRGBFillColor (context,
                                     [(NSColor *)calibratedColor redComponent],
@@ -483,13 +485,7 @@ using namespace v8;
                                     [(NSColor *)calibratedColor alphaComponent]);
     } else if ([fillStyle isKindOfClass:[JMXCanvasPattern class]]) {
         CGContextSetFillPattern(context, [(JMXCanvasPattern *)fillStyle patternRef], [(JMXCanvasPattern *)fillStyle components]);
-    }/* else if ([fillColor isKindOfClass:[JMXCanvasGradient class]]) {
-      JMXCanvasGradient *gradient = (JMXCanvasGradient *)fillColor;
-      if (gradient.mode = kJMXCanvasGradientLinear) {
-      CGContextDrawLinearGradient(context, [(JMXCanvasGradient *)strokeColor gradientRef], <#CGPoint startPoint#>, <#CGPoint endPoint#>, <#CGGradientDrawingOptions options#>)
-      } else if (gradient.mode = kJMXCanvasGradientRadial) {
-      }
-    }*/
+    }
     [lock unlock];
 }
 
@@ -513,7 +509,9 @@ using namespace v8;
     }
     [strokeStyle release];
     strokeStyle = [aStrokeStyle retain];
-    if ([strokeStyle isKindOfClass:[NSColor class]]) {
+    if (!strokeStyle) {
+        CGContextSetRGBStrokeColor(context, 0, 0, 0, 0);
+    } else if ([strokeStyle isKindOfClass:[NSColor class]]) {
         NSColor *calibratedColor = [(NSColor *)strokeStyle colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
         CGContextSetRGBStrokeColor (context,
                                     [(NSColor *)calibratedColor redComponent],
@@ -522,13 +520,7 @@ using namespace v8;
                                     [(NSColor *)calibratedColor alphaComponent]);
     }  else if ([strokeStyle isKindOfClass:[JMXCanvasPattern class]]) {
         CGContextSetFillPattern(context, [(JMXCanvasPattern *)strokeStyle patternRef], [(JMXCanvasPattern *)strokeStyle components]);
-    }/* else if ([fillColor isKindOfClass:[JMXCanvasGradient class]]) {
-      JMXCanvasGradient *gradient = (JMXCanvasGradient *)fillColor;
-      if (gradient.mode = kJMXCanvasGradientLinear) {
-      CGContextDrawLinearGradient(context, [(JMXCanvasGradient *)strokeColor gradientRef], <#CGPoint startPoint#>, <#CGPoint endPoint#>, <#CGGradientDrawingOptions options#>)
-      } else if (gradient.mode = kJMXCanvasGradientRadial) {
-      }
-    }*/
+    }
     [lock unlock];
 }
 
@@ -634,12 +626,27 @@ using namespace v8;
     [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
+#if 1
     //CGContextSaveGState(context);
     CGPathRef path = CGContextCopyPath(context);
     CGContextDrawPath(context, _didStroke ? kCGPathFillStroke : kCGPathFill);
+
+    if ([fillStyle isKindOfClass:[JMXCanvasGradient class]]) {
+        JMXCanvasGradient *gradient = (JMXCanvasGradient *)fillStyle;
+        if (gradient.mode == kJMXCanvasGradientLinear) {
+            CGContextClip(context);
+            CGRect rect = CGContextGetClipBoundingBox(context);
+            CGContextDrawLinearGradient(context, gradient.gradientRef, rect.origin,
+                CGPointMake(rect.origin.x + rect.size.width, rect.origin.y + rect.size.height), 0);
+        } else if (gradient.mode == kJMXCanvasGradientRadial) {
+
+        }
+    }
+    
     CGContextAddPath(context, path);
     CGPathRelease(path);
     //CGContextRestoreGState(context);
+#endif
     _didFill = YES;
     [lock unlock];
     [self render];
@@ -650,12 +657,27 @@ using namespace v8;
     [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
+#if 1
     //CGContextSaveGState(context);
     CGPathRef path = CGContextCopyPath(context);
     CGContextDrawPath(context, _didFill ? kCGPathFillStroke : kCGPathStroke);
+    
+    if ([strokeStyle isKindOfClass:[JMXCanvasGradient class]]) {
+        JMXCanvasGradient *gradient = (JMXCanvasGradient *)strokeStyle;
+        if (gradient.mode == kJMXCanvasGradientLinear) {
+            CGContextClip(context);
+            CGRect rect = CGContextGetClipBoundingBox(context);
+            CGContextDrawLinearGradient(context, gradient.gradientRef, rect.origin,
+                                        CGPointMake(rect.origin.x + rect.size.width, rect.origin.y + rect.size.height), 0);
+        } else if (gradient.mode == kJMXCanvasGradientRadial) {
+            
+        }
+    }
+    
     CGContextAddPath(context, path);
     CGPathRelease(path);
     //CGContextRestoreGState(context);
+#endif
     _didStroke = YES;
     [lock unlock];
     [self render];
@@ -697,11 +719,6 @@ using namespace v8;
         CGContextConcatCTM(context, CGAffineTransformInvert(CGContextGetCTM(context)));
     CGContextDrawImage(context, fullFrame, rep.CGImage);
     CGContextRestoreGState(context);
-    // XXX - the following code doesn't work
-    //CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    //CGColorSpaceRelease(colorSpace);
-    //CIContext * ciContext = [CIContext contextWithCGContext:context options:[NSDictionary dictionaryWithObject:[NSValue valueWithPointer:colorSpace] forKey:kCIContextOutputColorSpace]];
-    //[ciContext drawImage:image inRect:fullFrame fromRect:fullFrame];
     [lock unlock];
     [self render];
 }
@@ -808,22 +825,30 @@ using namespace v8;
     [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
-    /*CGContextSaveGState(context);
-     if (!subPaths) {
-     CGContextDrawPath(context, kCGPathFillStroke);
-     CGContextFillPath(context);
-     }
-     CGContextRestoreGState(context);*/
-    //if (!CGContextIsPathEmpty(context))
-    //{
+
+#if 0
+    BOOL fillOrStroke = (_didFill || _didStroke);
+    CGPathDrawingMode drawingMode = kCGPathFillStroke;
+    if (fillOrStroke && !(_didFill && _didStroke)) {
+        if (_didFill)
+            drawingMode = kCGPathFill;
+        else if (_didStroke)
+            drawingMode = kCGPathStroke;
+    }
+    if (fillOrStroke) {
+        _didFill = _didStroke = NO;
+        CGContextDrawPath(context, drawingMode);
+    }
+#endif
+    
+    if (_needsRender) {
         [self clearFrame:NO];
         if (currentFrame)
             [currentFrame release];
         currentFrame = [[CIImage imageWithCGLayer:pathLayers[pathIndex]] retain];
-        _didFill = _didStroke = NO;
-    //}
+        _needsRender = NO;
+    }
     [lock unlock];
-    _needsRender = NO;
 }
 
 - (CIImage *)currentFrame

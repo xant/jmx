@@ -1422,7 +1422,7 @@ static v8::Handle<Value> MeasureText(const Arguments& args)
     if (args.Length() >= 1) {
         String::Utf8Value text(args[0]->ToString());
         NSString *textString = [NSString stringWithUTF8String:*text];
-        CGSize size = [textString sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:drawPath.font, NSFontAttributeName, nil]];
+        NSSize size = [textString sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:drawPath.font, NSFontAttributeName, nil]];
         JMXSize *textSize = [JMXSize sizeWithNSSize:size];
         return handleScope.Close([textSize jsObj]);
     }

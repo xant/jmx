@@ -437,9 +437,11 @@
         } else if (aTableView == producers) {
             NSInteger selectedRow = [inputPins selectedRow];
             pins = [entityLayer.entity inputPins];
-            if (selectedRow >= 0 && pins.count) {
+            if (selectedRow >= 0 && pins.count > selectedRow)
+            {
                 JMXInputPin *pin = [pins objectAtIndex:selectedRow];
-                return [NSString stringWithFormat:@"%@",[[pin.producers objectAtIndex:rowIndex] description]];
+                if (pin.producers.count > rowIndex)
+                    return [NSString stringWithFormat:@"%@",[[pin.producers objectAtIndex:rowIndex] description]];
             }
         }
     }

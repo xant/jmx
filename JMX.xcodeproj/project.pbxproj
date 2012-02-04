@@ -109,6 +109,9 @@
 		AA9C190F12E32B0600329158 /* JMXCanvasPattern.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C190E12E32B0600329158 /* JMXCanvasPattern.mm */; };
 		AA9C19D412E4BDD500329158 /* JMXRect.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C19D312E4BDD500329158 /* JMXRect.mm */; };
 		AA9C1A4912E5964C00329158 /* JMXImageElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C1A4812E5964C00329158 /* JMXImageElement.mm */; };
+		AAB50B5F14DD4956002F385C /* processing_sample1.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AAB50B5914DD493E002F385C /* processing_sample1.js */; };
+		AAB50B6014DD4956002F385C /* processing_sample2.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AAB50B5A14DD493E002F385C /* processing_sample2.js */; };
+		AAB50B6114DD4956002F385C /* processing_sample3.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AAB50B5B14DD493E002F385C /* processing_sample3.js */; };
 		AAB71A0714D6BF0200BE8C35 /* JMXImageData.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAB71A0614D6BF0200BE8C35 /* JMXImageData.mm */; };
 		AAB71A0A14D6D89E00BE8C35 /* JMXUint8ClampedArray.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAB71A0914D6D89D00BE8C35 /* JMXUint8ClampedArray.mm */; };
 		AAB71A0D14D7585500BE8C35 /* JMXEventListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAB71A0C14D7585400BE8C35 /* JMXEventListener.mm */; };
@@ -231,6 +234,9 @@
 			dstPath = javascript_examples;
 			dstSubfolderSpec = 12;
 			files = (
+				AAB50B5F14DD4956002F385C /* processing_sample1.js in Deploy JS examples */,
+				AAB50B6014DD4956002F385C /* processing_sample2.js in Deploy JS examples */,
+				AAB50B6114DD4956002F385C /* processing_sample3.js in Deploy JS examples */,
 				AA490DD214CC5F8E00407C0D /* draw_pixels.js in Deploy JS examples */,
 				AA490DD314CC5F8E00407C0D /* filter_videofile.js in Deploy JS examples */,
 				AA490DD414CC5F8E00407C0D /* play_mp3dir.js in Deploy JS examples */,
@@ -505,6 +511,9 @@
 		AA9C19D312E4BDD500329158 /* JMXRect.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXRect.mm; sourceTree = "<group>"; };
 		AA9C1A4712E5964C00329158 /* JMXImageElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXImageElement.h; sourceTree = "<group>"; };
 		AA9C1A4812E5964C00329158 /* JMXImageElement.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXImageElement.mm; sourceTree = "<group>"; };
+		AAB50B5914DD493E002F385C /* processing_sample1.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = processing_sample1.js; path = javascript_examples/processing_sample1.js; sourceTree = "<group>"; };
+		AAB50B5A14DD493E002F385C /* processing_sample2.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = processing_sample2.js; path = javascript_examples/processing_sample2.js; sourceTree = "<group>"; };
+		AAB50B5B14DD493E002F385C /* processing_sample3.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = processing_sample3.js; path = javascript_examples/processing_sample3.js; sourceTree = "<group>"; };
 		AAB71A0514D6BF0200BE8C35 /* JMXImageData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXImageData.h; sourceTree = "<group>"; };
 		AAB71A0614D6BF0200BE8C35 /* JMXImageData.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXImageData.mm; sourceTree = "<group>"; };
 		AAB71A0814D6D89D00BE8C35 /* JMXUint8ClampedArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXUint8ClampedArray.h; sourceTree = "<group>"; };
@@ -927,6 +936,9 @@
 		AA490DD914CC5F9C00407C0D /* Javascript Examples */ = {
 			isa = PBXGroup;
 			children = (
+				AAB50B5914DD493E002F385C /* processing_sample1.js */,
+				AAB50B5A14DD493E002F385C /* processing_sample2.js */,
+				AAB50B5B14DD493E002F385C /* processing_sample3.js */,
 				AA490DC314CC5F4900407C0D /* draw_pixels.js */,
 				AA490DC414CC5F4900407C0D /* filter_videofile.js */,
 				AA490DC514CC5F4900407C0D /* play_mp3dir.js */,
@@ -1785,6 +1797,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1833,6 +1846,7 @@
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_DEBUGGING_SYMBOLS = full;
+				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

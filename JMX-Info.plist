@@ -39,7 +39,7 @@
 	<string>${MACOSX_DEPLOYMENT_TARGET}</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Created by xant and igor
-Copyright 2010 Dyne.org. All rights reserved.</string>
+Copyright 2012 Dyne.org. All rights reserved.</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>

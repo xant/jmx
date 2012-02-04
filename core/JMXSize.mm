@@ -73,8 +73,12 @@
 
 - (BOOL)isEqual:(JMXSize *)object
 {
-    if (nsSize.height == object.height && nsSize.width == object.width)
+    if ([object isKindOfClass:[JMXSize class]] && 
+        nsSize.height == object.height &&
+        nsSize.width == object.width)
+    {
         return YES;
+    }
     return NO;
 }
 

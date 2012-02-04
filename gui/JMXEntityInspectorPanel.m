@@ -94,6 +94,8 @@
                                                           object:entityLayer.entity];
         }
         entityLayer = nil;
+        [inputPins deselectAll:self];
+        [outputPins deselectAll:self];
     }
 }
 
@@ -125,6 +127,9 @@
                                              selector:@selector(pinUpdated:)
                                                  name:@"JMXEntityPinRemoved"
                                                object:entityLayer.entity];
+
+    [inputPins deselectAll:self];
+    [outputPins deselectAll:self];
 
     //[inputPins setDataSource:inspector];
     if ([inputPins dataSource] != self) {
@@ -411,27 +416,28 @@
     if (entityLayer.entity) {
         if (aTableView == inputPins) {
             pins = [entityLayer.entity inputPins];
-            if ([pins count] <= rowIndex)
-                return @"";
-            if ([[aTableColumn identifier] isEqualTo:@"pinName"]) {
-                return [pins objectAtIndex:rowIndex];
-            } else {
-                pins = [entityLayer.entity inputPins];
-                JMXPin *pin = [pins objectAtIndex:rowIndex];
-                if (pin.type == kJMXAudioPin || pin.type == kJMXImagePin) // XXX
-                    return [JMXPin nameforType:pin.type];
-                return pin.data;
+            if (pins.count > rowIndex) {
+                if ([[aTableColumn identifier] isEqualTo:@"pinName"]) {
+                    return [pins objectAtIndex:rowIndex];
+                } else {
+                    JMXPin *pin = [pins objectAtIndex:rowIndex];
+                    if (pin.type == kJMXAudioPin || pin.type == kJMXImagePin) // XXX
+                        return [JMXPin nameforType:pin.type];
+                    return pin.data;
+                }
             }
         } else if (aTableView == outputPins) {
             pins = [entityLayer.entity outputPins];
-            if ([[aTableColumn identifier] isEqualTo:@"pinName"])
-                return [pins objectAtIndex:rowIndex];
-            else
-                return [[pins objectAtIndex:rowIndex] typeName];
+            if (pins.count > rowIndex) {
+                if ([[aTableColumn identifier] isEqualTo:@"pinName"])
+                    return [pins objectAtIndex:rowIndex];
+                else
+                    return [[pins objectAtIndex:rowIndex] typeName];
+            }
         } else if (aTableView == producers) {
             NSInteger selectedRow = [inputPins selectedRow];
-            if (selectedRow >= 0) {
-                pins = [entityLayer.entity inputPins];
+            pins = [entityLayer.entity inputPins];
+            if (selectedRow >= 0 && pins.count) {
                 JMXInputPin *pin = [pins objectAtIndex:selectedRow];
                 return [NSString stringWithFormat:@"%@",[[pin.producers objectAtIndex:rowIndex] description]];
             }

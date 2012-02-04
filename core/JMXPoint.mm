@@ -86,8 +86,11 @@ using namespace v8;
 
 - (BOOL)isEqual:(JMXPoint *)object
 {
-    if (nsPoint.y == object.y && nsPoint.x == object.x)
+    if ([object isKindOfClass:[JMXPoint class]] &&
+        nsPoint.y == object.y && nsPoint.x == object.x)
+    {
         return YES;
+    }
     return NO;
 }
 

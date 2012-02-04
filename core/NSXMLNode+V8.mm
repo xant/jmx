@@ -498,14 +498,6 @@ static v8::Handle<Value> GetElementsByTagName(const Arguments& args)
     NSXMLNode *node = (NSXMLNode *)args.Holder()->GetPointerFromInternalField(0);
     v8::String::Utf8Value name(args[0]);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-   // if ([node isKindOfClass:[NSXMLDocument class]])
-     //   node = [node rootElement];
-
-    //[node normalizeAdjacentTextNodesPreservingCDATA:NO];
-    /*
-    NSString *path = [NSString stringWithFormat:@"./%s", *name];
-    NSArray *elements = [node nodesForXPath:path error:&error];
-     */
     
     NSMutableArray *elements = [NSMutableArray array];
     GatherElementsByName(node, *name, elements);

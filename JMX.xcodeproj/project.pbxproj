@@ -511,6 +511,7 @@
 		AAB50B5B14DD493E002F385C /* processing_sample3.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = processing_sample3.js; path = javascript_examples/processing_sample3.js; sourceTree = "<group>"; };
 		AAB50B6214DD6402002F385C /* JMXEntitiesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXEntitiesController.h; sourceTree = "<group>"; };
 		AAB50B6314DD6403002F385C /* JMXEntitiesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXEntitiesController.m; sourceTree = "<group>"; };
+		AAB50B6514DDA472002F385C /* JMX.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = JMX.entitlements; sourceTree = "<group>"; };
 		AAB71A0514D6BF0200BE8C35 /* JMXImageData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXImageData.h; sourceTree = "<group>"; };
 		AAB71A0614D6BF0200BE8C35 /* JMXImageData.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXImageData.mm; sourceTree = "<group>"; };
 		AAB71A0814D6D89D00BE8C35 /* JMXUint8ClampedArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXUint8ClampedArray.h; sourceTree = "<group>"; };
@@ -764,6 +765,7 @@
 		29B97314FDCFA39411CA2CEA /* MoviePlayerD */ = {
 			isa = PBXGroup;
 			children = (
+				AAB50B6514DDA472002F385C /* JMX.entitlements */,
 				080E96DDFE201D6D7F000001 /* Sources */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,

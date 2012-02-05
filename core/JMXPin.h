@@ -133,7 +133,7 @@ typedef enum {
 
 @property (readonly) NSXMLElement *connections;
 
-@property (readonly) JMXPinMode mode;
+@property (assign) JMXPinMode mode;
 
 /*!
  @property type

@@ -36,6 +36,7 @@
  */
 @interface JMXInputPin : JMXPin {
     NSMutableArray      *producers;
+    int passiveProducersCount;
 }
 /*!
  @property producers

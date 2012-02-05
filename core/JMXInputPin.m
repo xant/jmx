@@ -70,6 +70,16 @@
     return [array autorelease];
 }
 
+- (id)readData
+{
+    if (passiveProducersCount) {
+        JMXOutputPin *producer = [producers objectAtIndex:0];
+        return [producer readData];
+    } else {
+        return [super readData];
+    }
+}
+
 - (BOOL)moveProducerFromIndex:(NSUInteger)src toIndex:(NSUInteger)dst
 {
     @synchronized(producers) {
@@ -89,15 +99,20 @@
     if ([self canConnectToPin:destinationPin]) {
         @synchronized(producers) {
             if ([producers count] && !multiple) {
-                    [[producers objectAtIndex:0] detachObject:self];
-                    [super disconnectFromPin:[producers objectAtIndex:0]];
-                    [producers removeObjectAtIndex:0];
+                JMXOutputPin *producer = [producers objectAtIndex:0];
+                [producer detachObject:self];
+                [super disconnectFromPin:producer];
+                if (producer.mode == kJMXPinModePassive)
+                    passiveProducersCount--;
+                [producers removeObjectAtIndex:0];
             }
             if ([destinationPin attachObject:self withSelector:@"deliverData:fromSender:"]) {
                 [producers addObject:destinationPin];
                 connected = YES;
                 NSXMLNode *connectedAttribute = [self attributeForName:@"connected"];
                 [connectedAttribute setStringValue:@"YES"];
+                if (destinationPin.mode == kJMXPinModePassive)
+                    passiveProducersCount++;
                 return [super connectToPin:destinationPin];
             }
         }
@@ -111,6 +126,8 @@
     @synchronized(producers) {
         [destinationPin detachObject:self];
         [producers removeObjectIdenticalTo:destinationPin];
+        if (destinationPin.mode == kJMXPinModePassive)
+            passiveProducersCount--;
         if ([producers count] == 0) {
             NSXMLNode *connectedAttribute = [self attributeForName:@"connected"];
             [connectedAttribute setStringValue:@"NO"];
@@ -141,6 +158,7 @@
     @synchronized(producers) {
         while ([producers count])
             [self disconnectFromPin:[producers objectAtIndex:0]];
+        passiveProducersCount = 0;
     }
 }
 

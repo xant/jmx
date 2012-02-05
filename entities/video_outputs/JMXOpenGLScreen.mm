@@ -33,6 +33,8 @@
 #import <AppKit/AppKit.h>
 //#import <Carbon/Carbon.h>
 
+#define NO_CVDISPLAYLINK
+
 JMXV8_EXPORT_NODE_CLASS(JMXOpenGLScreen);
 
 @interface JMXOpenGLView : NSOpenGLView {
@@ -44,6 +46,10 @@ JMXV8_EXPORT_NODE_CLASS(JMXOpenGLScreen);
     NSRecursiveLock *lock;
     uint64_t lastTime;
     
+#ifdef NO_CVDISPLAYLINK
+    BOOL needsRedraw;
+#endif
+    
 #if MAC_OS_X_VERSION_10_6
     CGDisplayModeRef     savedMode;
 #else
@@ -53,6 +59,9 @@ JMXV8_EXPORT_NODE_CLASS(JMXOpenGLScreen);
 }
 
 @property (atomic, retain) CIImage *currentFrame;
+#ifdef NO_CVDISPLAYLINK
+@property (atomic, assign) BOOL needsRedraw;
+#endif
 
 - (void)setSize:(NSSize)size;
 - (void)cleanup;
@@ -123,13 +132,18 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 @implementation JMXOpenGLView
 
 @synthesize currentFrame;
+#ifdef NO_CVDISPLAYLINK
+@synthesize needsRedraw;
+#endif
 
 + (void)initialize
 {
     [super initialize];
-    //viewDisplayID = (CGDirectDisplayID)[[[[[self window] screen] deviceDescription] objectForKey:@"NSScreenNumber"] intValue];
-    
+#ifdef NO_CVDISPLAYLINK
     viewDisplayID = CGMainDisplayID();
+#else
+    viewDisplayID = (CGDirectDisplayID)[[[[[self window] screen] deviceDescription] objectForKey:@"NSScreenNumber"] intValue];
+    
     CVReturn ret = CVDisplayLinkCreateWithCGDisplay(viewDisplayID, &displayLink);
     if (ret != noErr) {
         // TODO - Error Messages
@@ -138,6 +152,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     NSLog(@"Creating CVDisplayLink");
     CVDisplayLinkSetOutputCallback(displayLink, renderCallback, nil);
     CVDisplayLinkStart(displayLink);
+#endif
 }
 
 - (id)initWithFrame:(NSRect)frameRect
@@ -184,7 +199,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
                                            colorSpace:colorSpace
                                               options:nil] retain];
         CGColorSpaceRelease(colorSpace);
-
+#ifndef NO_CVDISPLAYLINK
         // Create display link 
         CGOpenGLDisplayMask    totalDisplayMask = 0;
         int            virtualScreen;
@@ -198,6 +213,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
             [openGLPixelFormat getValues:&displayMask forAttribute:NSOpenGLPFAScreenMask forVirtualScreen:virtualScreen];
             totalDisplayMask |= displayMask;
         }
+#endif
         [self setNeedsDisplay:YES];
     }
 }
@@ -212,12 +228,17 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 
 - (void)renderFrame:(uint64_t)timeStamp
 {
-    if (timeStamp-lastTime < 1e9/30) // HC
+
+#ifndef NO_CVDISPLAYLINK
+    if (timeStamp-lastTime < 1e9/30) //HC
         return;
+#endif
+    
     lastTime = timeStamp;
     if (!self.window) {
         return;
     }
+
     if (needsResize) {
         NSRect actualRect = [[self window] contentRectForFrameRect:[self frame]];
         NSRect newRect = NSMakeRect(0, 0, frameSize.width, frameSize.height);
@@ -233,11 +254,46 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         [[self window] setMovable:YES]; // XXX - this shouldn't be necessary
         needsResize = NO;
     }
-    //[lock lock];
 
-    //if (CGLLockContext((CGLContextObj)[[self openGLContext] CGLContextObj]) != kCGLNoError)
-      //  NSLog(@"Could not lock CGLContext");
-    //[[self openGLContext] makeCurrentContext];
+#ifdef NO_CVDISPLAYLINK
+    CIImage *image = nil;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    image = [currentFrame retain];
+
+    if (self.needsRedraw) {
+        if (image && ciContext) {
+            CGRect sourceRect = { { 0, 0, }, { frameSize.width, frameSize.height } };
+            CGRect screenFrame = NSRectToCGRect([[self window] contentRectForFrameRect:[self frame]]);
+            CGFloat scaledWidth, scaledHeight;
+            CGFloat width = screenFrame.size.width;
+            CGFloat height = screenFrame.size.height;
+            if (width > height) {
+                scaledHeight = height;
+                scaledWidth = (scaledHeight*frameSize.width)/frameSize.height;
+            } else {
+                scaledWidth = width;
+                scaledHeight = (scaledWidth*frameSize.height)/frameSize.width;
+            }
+            CGRect  destinationRect = CGRectMake(screenFrame.origin.x, screenFrame.origin.y,
+                                                 scaledWidth, scaledHeight);
+            
+            
+            if (fullScreen)
+            {   
+                destinationRect.origin.x = (width-scaledWidth)/2;
+                destinationRect.origin.y = (height-scaledHeight)/2;
+            }
+
+            [lock lock];
+            [ciContext drawImage:[image imageByCroppingToRect:sourceRect] inRect:destinationRect fromRect:sourceRect];
+            [lock unlock];
+            [[self openGLContext] flushBuffer];
+        }
+        self.needsRedraw = NO;
+    }
+    [image release];
+    [pool release];
+#else
     CIImage *image = [self.currentFrame retain];
     if (image && ciContext) {
         CGRect sourceRect = { { 0, 0, }, { frameSize.width, frameSize.height } };
@@ -261,20 +317,12 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
             destinationRect.origin.x = (width-scaledWidth)/2;
             destinationRect.origin.y = (height-scaledHeight)/2;
         }
-
-        // XXX - this seems unnecessary (at least on lion ... and we don't care of retro compatibility)
-        // clean the OpenGL context 
-        //glClearColor(0.0, 0.0, 0.0, 0.0);         
-        //glClear(GL_COLOR_BUFFER_BIT);
-        
-
         [ciContext drawImage:[image imageByCroppingToRect:sourceRect] inRect:destinationRect fromRect:sourceRect];
         [image release];
         [[self openGLContext] flushBuffer];
     }
+#endif
     [self setNeedsDisplay:NO];
-    //[lock unlock];
-    //CGLUnlockContext((CGLContextObj)[[self openGLContext] CGLContextObj]);
 }
 
 - (void)drawRect:(NSRect)rect
@@ -317,10 +365,32 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     glClearColor(1.0, 1.0, 1.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
     [[self openGLContext] flushBuffer];
+#ifdef NO_CVDISPLAYLINK
+    self.needsRedraw = YES;
+#endif
     //[lock unlock];
     CGLUnlockContext((CGLContextObj)[[self openGLContext] CGLContextObj]);
 }
 
+#ifdef NO_CVDISPLAYLINK
+- (CIImage *)currentFrame
+{
+    [lock lock];
+    CIImage *image = [currentFrame retain];
+    [lock unlock];
+    return [image autorelease];
+}
+
+- (void)setCurrentFrame:(CIImage *)frame
+{
+    [lock lock];
+    [currentFrame release];
+    currentFrame = [frame retain];
+    self.needsRedraw = YES;
+    [self renderFrame:0];
+    [lock unlock];
+}
+#endif
 
 - (void)cleanup
 {

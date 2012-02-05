@@ -34,6 +34,10 @@ entities = $('Entities').get(0);
 
 mainloop = function() {
     //drawer.clear();
+ 
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+    ctx.fillRect(0, 0, width, height);
+
     point = new Point(rand()%width, rand()%height);
     fgColor = new Color(frand(), frand(), frand(), frand());
     bgColor = new Color(frand(), frand(), frand(), frand());

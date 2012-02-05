@@ -168,7 +168,9 @@ static OSStatus _FillComplexBufferProc (
     }
     return [sample autorelease];
 #else
-    return audioInputPin.data;
+    JMXAudioBuffer *sample = audioInputPin.data;
+    currentSamplePin.data = sample;
+    return sample;
 #endif
 }
 

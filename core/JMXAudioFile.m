@@ -42,7 +42,7 @@
     // we don't want to lock outside of the loop
     // in the worst case we will do an extra iteration ...
     // which is not a big deal (having a long-term lock is much worse)
-    NSLog(@"%@ buffering starts", self.url );
+    //NSLog(@"%@ buffering starts", self.url );
     while (wOffset-rOffset < kJMXAudioFileBufferCount/2) {
         @synchronized(self) {
             JMXAudioBuffer *newSample = [self readFrames:512];
@@ -58,7 +58,7 @@
             }
         }
     }
-    NSLog(@"%@ buffering ends", self.url);
+    //NSLog(@"%@ buffering ends", self.url);
     isFilling = NO;
     [pool drain];
 }

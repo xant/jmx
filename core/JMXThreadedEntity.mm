@@ -111,6 +111,8 @@
         stampCount = 0;
         previousTimeStamp = 0;
         quit = NO;
+        entity.active = YES;
+        [self startThread];
     }
     return self;
 }

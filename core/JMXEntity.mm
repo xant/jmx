@@ -130,6 +130,7 @@ using namespace v8;
         [self performSelectorOnMainThread:@selector(notifyCreation) withObject:nil waitUntilDone:NO];
         privateData = [[[NSMutableDictionary alloc] init] retain];
         //NSLog(@"Class: %@ initialized", [self class]);
+        self.active = YES;
     }
     return self;
 }
@@ -624,18 +625,20 @@ using namespace v8;
     @synchronized(self) {
         if (active != value) {
             active = value;
-            JMXThreadedEntity *th = [self privateDataForKey:@"threadedEntity"];
-            if (th) {
-                if (value)
-                    [th startThread];
-                else
-                    [th stopThread];
-            }
+            NSXMLNode *attr = [self attributeForName:@"active"];
+            [attr setStringValue:active ? @"YES" : @"NO"];
+            activeOut.data = [NSNumber numberWithBool:active];
         }
-        NSXMLNode *attr = [self attributeForName:@"active"];
-        [attr setStringValue:active ? @"YES" : @"NO"];
-        activeOut.data = [NSNumber numberWithBool:active];
     }
+    JMXThreadedEntity *th = [self privateDataForKey:@"threadedEntity"];
+    if (th) {
+        if (value)
+            [th startThread];
+        else
+            [th stopThread];
+    }
+    if ([self conformsToProtocol:@protocol(JMXRunLoop)])
+        [self start];
 }
 
 #pragma mark <JMXPinOwner>

@@ -2,7 +2,6 @@ width = 640;
 height = 480;
 
 drawer = new DrawPath();
-drawer.start();
 
 // Uncommend the following block if you want a debug video-output
 screen = new VideoOutput(width, height);

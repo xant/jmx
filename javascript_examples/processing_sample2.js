@@ -2,7 +2,6 @@ width = 640;
 height = 480;
 
 drawer = new DrawPath(width, height);
-drawer.start();
 
 // comment the following lines if you don't want 
 // the output window to be automatically created

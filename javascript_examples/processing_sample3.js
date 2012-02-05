@@ -2,7 +2,6 @@ width = 640;
 height = 480;
 
 drawer = new DrawPath(width, height);
-drawer.start();
 
 // UNCOMMENT TO ACTIVATE A VIDEO FILTER
 filter = new VideoFilter("CIZoomBlur");
@@ -15,7 +14,6 @@ drawer.outputPin('frameSize').export();
 drawer.inputPin('saturation').export();
 
 audio = new AudioCapture;
-audio.start();
 
 spectrum = new AudioSpectrum;
 audio.outputPin('audio').connect(spectrum.inputPin('audio'));

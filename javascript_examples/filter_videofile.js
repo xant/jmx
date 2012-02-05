@@ -3,7 +3,7 @@ screen = new VideoOutput();
 screen.width = 512;
 screen.height = 384;
 // open a new movie file
-movie = new MovieFile("/Users/xant/test.avi");
+movie = new MovieFile("/Users/xant/test.mov");
 movie.saturation = 10.0;
 
 // create a color-invert filter
@@ -24,8 +24,6 @@ input = movie.outputPin('frame');
 colorInvertInput.connect(input);
 comicEffectInput.connect(colorInvertOutput);
 output.connect(comicEffectOutput); // connect them
-
-movie.start(); // start the movie
 
 cnt = 0;
 mainloop = function() {

@@ -2,7 +2,6 @@ width = 512;
 height = 384;
 
 drawer = new DrawPath(width, height);
-drawer.start();
 
 // UNCOMMENT TO ACTIVATE A VIDEO FILTER
 filter = new VideoFilter("CIZoomBlur");

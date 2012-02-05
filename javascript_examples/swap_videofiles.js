@@ -17,14 +17,11 @@ output2.sendNotifications = false;
 videomixer = new VideoMixer();
 videomixer.inputPin('video').connect(output1);
 videomixer.inputPin('video').connect(output2);
-videomixer.start(); // start the mixer
 */
 // and connect the mixer to the second screen
 //screen2.inputPin('frame').connect(videomixer.outputPin('video'));
 
 // start the movies
-movie.start(); 
-movie2.start();
 
 outputs = new Array(output1, output2);
 cnt = 0;

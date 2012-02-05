@@ -1,6 +1,5 @@
 out = new VideoOutput(640,480);
 drawer = new DrawPath(640, 480);
-drawer.start();
 drawer.outputPin('frame').export();
 drawer.outputPin('frame').connect(out.inputPin('frame'));
 drawer.canvas.getContext("2d").drawImage('/Users/xant/broken-LCD.jpg');

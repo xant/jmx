@@ -574,7 +574,12 @@ using namespace v8;
 {
     JMXPinType pinType = pin.type;
     int check = kJMXTextPin|kJMXCodePin|kJMXTextPin;
-    return (((type&check && pinType&check) || type == pinType) && direction != pin.direction) ? YES : NO;
+    BOOL typeCheck = (((type&check && pinType&check) || type == pinType) && direction != pin.direction) ? YES : NO;
+    BOOL modeCheck = ((pin.mode == kJMXPinModeAuto || self.mode == kJMXPinModeAuto) || 
+                      (pin.mode == kJMXPinModeActive && self.mode == kJMXPinModePassive) ||
+                      (pin.mode == kJMXPinModePassive && self.mode == kJMXPinModeActive))
+                    ? YES : NO;
+    return (typeCheck && modeCheck) ? YES : NO;
 }
 
 - (id)data

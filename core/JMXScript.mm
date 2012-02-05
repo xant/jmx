@@ -722,7 +722,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
         // Enter the newly created execution environment.
         ExecJSCode(baseInclude, strlen(baseInclude), "JMX");
 
-        nodejsRunTimer = [NSTimer timerWithTimeInterval:0.25 target:self selector:@selector(nodejsRun) userInfo:nil repeats:YES];
+        nodejsRunTimer = [[NSTimer timerWithTimeInterval:0.25 target:self selector:@selector(nodejsRun) userInfo:nil repeats:YES] retain];
         [[NSRunLoop currentRunLoop] addTimer:nodejsRunTimer forMode:NSRunLoopCommonModes];
     }
     return self;
@@ -743,6 +743,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
         [scriptTimer.timer invalidate];
     [runloopTimers removeAllObjects];
     [nodejsRunTimer invalidate];
+    [nodejsRunTimer release];
 }
 
 - (void)dealloc

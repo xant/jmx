@@ -548,12 +548,14 @@ using namespace v8;
 
 - (void)activate
 {
-    self.active = YES;
+    if (!self.active)
+        self.active = YES;
 }
 
 - (void)deactivate
 {
-    self.active = NO;
+    if (self.active)
+        self.active = NO;
 }
 
 - (void)setActivePin:(NSNumber *)value

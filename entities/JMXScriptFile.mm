@@ -11,6 +11,8 @@
 #import "JMXThreadedEntity.h"
 #import "JMXAppDelegate.h"
 
+extern void JSExit(int code);
+
 @implementation JMXScriptFile
 
 @synthesize path;
@@ -86,9 +88,12 @@
 
 - (void)setActive:(BOOL)yesOrNo
 {
+    if (self.active == yesOrNo)
+        return;
+    
     [super setActive:yesOrNo];
     if (!yesOrNo)
-        [self performSelector:@selector(resetContext) withObject:nil afterDelay:0.5];
+        [self resetContext];
 }
 
 - (void)tick:(uint64_t)timeStamp

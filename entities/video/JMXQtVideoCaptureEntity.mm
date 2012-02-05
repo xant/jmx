@@ -78,6 +78,9 @@ JMXV8_EXPORT_NODE_CLASS(JMXQtVideoCaptureEntity);
 /* Coming from Apple sample code */
 - (void)startCapture:(JMXQtVideoCaptureEntity *)controller
 {
+    if (session) // a session is already running
+        return;
+    
     NSLog(@"QTCapture opened");
     bool ret = false;
     
@@ -206,6 +209,8 @@ error:
     if (self) {
         grabber = [[JMXQtVideoGrabber alloc] init];
         self.label = @"JMXQtVideoCapture";
+        if (self.active)
+            [grabber startCapture:self];
     } else {
         [self dealloc];
         return nil;

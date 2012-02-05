@@ -47,6 +47,12 @@ using namespace v8;
 - (void)resetContext
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+
+    if (jsContext) {
+        [jsContext clearTimers];
+        [jsContext release];
+        jsContext = nil;
+    }
     // we want to release our context.
     // first thing ... let's detach all entities we have created
     for (NSXMLNode *node in [self children]) {
@@ -58,11 +64,6 @@ using namespace v8;
             }
             [node detach];
         } 
-    }
-    if (jsContext) {
-        [jsContext clearTimers];
-        [jsContext release];
-        jsContext = nil;
     }
     [pool drain];
 }

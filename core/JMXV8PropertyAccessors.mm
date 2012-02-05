@@ -35,6 +35,11 @@ v8::Handle<Value>GetPointProperty(Local<String> name, const AccessorInfo& info)
     return GetObjectProperty(name, info);
 }
 
+v8::Handle<Value>GetColorProperty(Local<String> name, const AccessorInfo& info)
+{
+    return GetObjectProperty(name, info);
+}
+
 v8::Handle<Value>GetObjectProperty(Local<String> name, const AccessorInfo& info)
 {
     //Locker lock;
@@ -165,6 +170,25 @@ void SetStringProperty(Local<String> name, Local<Value> value, const AccessorInf
          NSString *newValue = [[NSString alloc] initWithUTF8String:*str];
         _SetProperty(obj, *nameStr, newValue);
         [newValue release];
+    }
+}
+
+void SetColorProperty(Local<String> name, Local<Value> value, const AccessorInfo& info)
+{
+    //Locker lock;
+    HandleScope handleScope;
+    String::Utf8Value nameStr(name);
+    if (!value->IsObject()) {
+        NSLog(@"Bad parameter (not object) passed to %s", *nameStr);
+        return;
+    }
+    Handle<Object> val = value->ToObject();
+    if (!val.IsEmpty()) {
+        id newVal = (id)val->GetPointerFromInternalField(0);
+        if (newVal) {
+            id obj = (id)info.Holder()->GetPointerFromInternalField(0);
+            _SetProperty(obj, *nameStr, newVal);
+        }
     }
 }
 

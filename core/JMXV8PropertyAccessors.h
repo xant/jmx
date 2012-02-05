@@ -101,6 +101,10 @@ v8::Handle<v8::Value>GetObjectProperty(v8::Local<v8::String> name, const v8::Acc
         argument passed from javascript)
  @return a v8::Handle encapsulating the return value
  */
+
+v8::Handle<v8::Value>GetColorProperty(v8::Local<v8::String> name, const v8::AccessorInfo& info);
+void SetColorProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::AccessorInfo& info);
+
 void SetNumberProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::AccessorInfo& info);
 /*!
  @function SetStringProperty

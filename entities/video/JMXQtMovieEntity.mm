@@ -222,6 +222,7 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
         if (moviePath)
             [moviePath release];
         moviePath = [file copy];
+        self.active = YES;
         return YES;
     }
     return NO;

@@ -117,10 +117,12 @@ JMXV8_EXPORT_NODE_CLASS(JMXCoreAudioOutput);
 {
 }
 
+/*
 - (void)audioDeviceDidOverload:(JMXAudioDevice *)device
 {
     NSLog(@"Overload!");
 }
+*/
 
 #pragma mark V8
 using namespace v8;

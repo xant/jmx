@@ -323,22 +323,5 @@ static OSStatus _FillComplexBufferProc (
 	[grabber stopCapture];
 }
 
-/*
-v8::Handle<Value> NativeClassName(const Arguments& args)
-{   
-    //v8::Locker lock;
-    HandleScope handleScope;
-    NSLog(@"PARAPAPPA");
-    return v8::Undefined();
-}
-
-+ (void)jsRegisterClassMethods:(v8::Handle<v8::FunctionTemplate>)constructor
-{
-    NSLog(@"EKKOMI");
-    constructor->InstanceTemplate()->SetInternalFieldCount(1);
-    //constructor->InstanceTemplate()->SetPointerInInternalField(0, self);
-    constructor->Set("nativeClassName", FunctionTemplate::New(NativeClassName));
-}
-*/
 @end
 

@@ -14,13 +14,79 @@ using namespace v8;
 
 @implementation NSColor (JMXColor)
 
+// Based on Foley and van Dam algorithm.
+void ConvertHSLToRGB (const CGFloat *hslComponents, CGFloat *rgbComponents) {
+    CGFloat hue = hslComponents[0];
+    CGFloat saturation = hslComponents[1];
+    CGFloat lightness = hslComponents[2];
+    
+    CGFloat temp1, temp2;
+    CGFloat rgb[3];  // "temp3"
+    
+    if (saturation == 0) {
+        // Like totally gray man.
+        rgb[0] = rgb[1] = rgb[2] = lightness;
+        
+    } else {
+        if (lightness < 0.5) temp2 = lightness * (1.0 + saturation);
+        else                 temp2 = (lightness + saturation) - (lightness * saturation);
+        
+        temp1 = (lightness * 2.0) - temp2;
+        
+        // Convert hue to 0..1
+        hue /= 360.0;
+        if (hue > 1.0)
+            hue -= floor(hue);
+        // Use the rgb array as workspace for our "temp3"s
+        rgb[0] = hue + (1.0 / 3.0);
+        rgb[1] = hue;
+        rgb[2] = hue - (1.0 / 3.0);
+        
+        // Magic
+        for (int i = 0; i < 3; i++) {
+            if (rgb[i] < 0.0)        rgb[i] += 1.0;
+            else if (rgb[i] > 1.0)   rgb[i] -= 1.0;
+            
+            if (6.0 * rgb[i] < 1.0)      rgb[i] = temp1 + ((temp2 - temp1)
+                                                           * 6.0 * rgb[i]);
+            else if (2.0 * rgb[i] < 1.0) rgb[i] = temp2;
+            else if (3.0 * rgb[i] < 2.0) rgb[i] = temp1 + ((temp2 - temp1)
+                                                           * ((2.0 / 3.0) - rgb[i]) * 6.0);
+            else                         rgb[i] = temp1;
+        }
+    }
+    
+    // Clamp to 0..1 and put into the return pile.
+    for (int i = 0; i < 3; i++) {
+        rgbComponents[i] = MAX (0.0, MIN (1.0, rgb[i]));
+    }
+    
+} // ConvertHSLToRGB
 
 + (id)colorFromCSSString:(NSString *)cssString
 {
+    // TODO - handle them all
+    if ([cssString isEqualToString:@"white"]  ||
+        [cssString isEqualToString:@"black"]  ||
+        [cssString isEqualToString:@"red"]    ||
+        [cssString isEqualToString:@"green"]  ||
+        [cssString isEqualToString:@"blue"]   ||
+        [cssString isEqualToString:@"gray"]   ||
+        [cssString isEqualToString:@"yellow"] ||
+        [cssString isEqualToString:@"purple"] ||
+        [cssString isEqualToString:@"brown"])
+    {
+        NSString *selectorString = [NSString stringWithFormat:@"%@Color", cssString];
+
+        return [[NSColor class] performSelector:NSSelectorFromString(selectorString)];
+    }
+    
     /* TODO - Implement */
     // XXX - requires OSX 10.7
     CGFloat r = 0.0, g = 0.0, b = 0.0, a = 1.0;
-    NSString *colorStringRegExp = @"(#[0-9a-f]+|rgba\\(\\s*\\d+\\%?\\s*,\\s*\\d+\\%?\\s*,\\s*\\d+\\%?\\s*\\,\\s*\\d+\\%?\\s*\\))";
+    NSString *colorStringRegExp = @"(#[0-9a-f]+|"
+                                  @"rgba\\(\\s*\\d+\\%?\\s*,\\s*\\d+\\%?\\s*,\\s*\\d+\\%?\\s*\\,\\s*[0-9\\.]+\\s*\\)|"
+                                  @"hsl\\(\\s*[0-9\\.]+\\%?\\s*,\\s*[0-9\\.]+\\%?\\s*,\\s*[0-9\\.]+\\%?\\s*\\))";
     NSError *error = NULL;
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:colorStringRegExp
                                                                            options:NSRegularExpressionCaseInsensitive
@@ -75,7 +141,7 @@ using namespace v8;
                         }
                     }
                 } else if ([substringForFirstMatch characterAtIndex:0] == 'r') {
-                    NSString *pattern = @"rgba\\(\\s*(\\d+\\%?)\\s*,\\s*(\\d+\\%?)\\s*,\\s*(\\d+\\%?)\\s*,\\s*(\\d+\\%?)\\s*\\)";
+                    NSString *pattern = @"rgba\\(\\s*(\\d+\\%?)\\s*,\\s*(\\d+\\%?)\\s*,\\s*(\\d+\\%?)\\s*,\\s*([0-9\\.]+)\\s*\\)";
                     NSRegularExpression *subRegex = [NSRegularExpression regularExpressionWithPattern:pattern
                                                                                              options:NSRegularExpressionCaseInsensitive
                                                                                                error:&error];
@@ -106,7 +172,50 @@ using namespace v8;
                         if (blueString)
                             b = (CGFloat)[blueString intValue]/255;
                         if (alphaString)
-                            a = (a <= 1) ? a : (CGFloat)[alphaString intValue]/255;
+                            a = (CGFloat)[alphaString floatValue];
+                    }
+                    
+                } else if ([substringForFirstMatch characterAtIndex:0] == 'h') {
+                    NSString *pattern = @"hsl\\(\\s*([0-9\\.]+\\%?)\\s*,\\s*([0-9\\.]+\\%?)\\s*,\\s*([0-9\\.]+\\%?)\\s*\\)";
+                    NSRegularExpression *subRegex = [NSRegularExpression regularExpressionWithPattern:pattern
+                                                                                              options:NSRegularExpressionCaseInsensitive
+                                                                                                error:&error];
+                    
+                    
+                    NSUInteger numberOfMatches = [subRegex numberOfMatchesInString:substringForFirstMatch
+                                                                           options:0
+                                                                             range:NSMakeRange(0, [substringForFirstMatch length])];
+                    if (numberOfMatches) {
+                        NSArray *matches = [subRegex matchesInString:substringForFirstMatch
+                                                             options:0
+                                                               range:NSMakeRange(0, [substringForFirstMatch length])];
+                        NSTextCheckingResult *match = [matches objectAtIndex:0];
+                        //NSRange rgbRange = [match range];
+                        NSRange redStringRange = [match rangeAtIndex:1];
+                        NSString *redString = [substringForFirstMatch substringWithRange:redStringRange];
+                        NSRange greenStringRange = [match rangeAtIndex:2];
+                        NSString *greenString = [substringForFirstMatch substringWithRange:greenStringRange];
+                        NSRange blueStringRange = [match rangeAtIndex:3];
+                        NSString *blueString = [substringForFirstMatch substringWithRange:blueStringRange];
+                        // TODO - handle %
+                        if (redString)
+                            r = (CGFloat )[redString floatValue];
+                        if (greenString)
+                            if ([greenString rangeOfString:@"%"].location != NSNotFound) {
+                                g = [greenString floatValue]/100.0;
+                            } else {
+                                g = (CGFloat)[greenString floatValue];
+                            }
+                        if (blueString)
+                            b = (CGFloat)[blueString floatValue];
+
+                        CGFloat rgb[3];
+                        CGFloat hsl[3] = { r, g, b };
+                        ConvertHSLToRGB(hsl, rgb);
+                        r = rgb[0];
+                        g = rgb[1];
+                        b = rgb[2];
+                        a = 1.0;
                     }
                     
                 }

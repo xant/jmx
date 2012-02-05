@@ -56,7 +56,7 @@ static OSStatus _FillComplexBufferProc (
     self = [super init];
     if (self) {
         audioInputPin = [self registerInputPin:@"audio" withType:kJMXAudioPin andSelector:@"newSample:"];
-        
+        audioInputPin.mode = kJMXPinModeActive;
         currentSamplePin = [self registerOutputPin:@"currentSample" withType:kJMXAudioPin];
         
         converter = NULL;
@@ -157,6 +157,7 @@ static OSStatus _FillComplexBufferProc (
 // so we can avoid using locks
 - (JMXAudioBuffer *)currentSample
 {
+#if 0
     //NSLog(@"r: %d - w: %d", rOffset % kJMXAudioOutputSamplesBufferCount , wOffset % kJMXAudioOutputSamplesBufferCount);
     JMXAudioBuffer *sample = nil;
     if (rOffset < wOffset && !needsPrefill) {
@@ -166,6 +167,9 @@ static OSStatus _FillComplexBufferProc (
         }
     }
     return [sample autorelease];
+#else
+    return audioInputPin.data;
+#endif
 }
 
 - (void)dealloc

@@ -31,7 +31,7 @@
 #import <AudioToolbox/ExtendedAudioFile.h>
 #import "JMXAudioBuffer.h"
 
-#define kJMXAudioFileBufferCount 4096
+#define kJMXAudioFileBufferCount (1024*10) // 40MB for 4k-sized samples 
 
 /*!
  @class JMXAudioFile
@@ -47,8 +47,10 @@
     UInt32 rOffset;
     UInt32 wOffset;
     BOOL isFilling;
+    NSURL *url;
 }
 
+@property (copy) NSURL *url;
 /*!
  @property sampleRate
  */

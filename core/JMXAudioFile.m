@@ -26,6 +26,7 @@
 
 
 @implementation JMXAudioFile
+@synthesize url;
 
 + (id)audioFileWithURL:(NSURL *)url
 {
@@ -38,8 +39,12 @@
 - (void)fillBuffer
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    @synchronized(self) {
-        while (wOffset-rOffset < kJMXAudioFileBufferCount/2) {
+    // we don't want to lock outside of the loop
+    // in the worst case we will do an extra iteration ...
+    // which is not a big deal (having a long-term lock is much worse)
+    NSLog(@"%@ buffering starts", self.url );
+    while (wOffset-rOffset < kJMXAudioFileBufferCount/2) {
+        @synchronized(self) {
             JMXAudioBuffer *newSample = [self readFrames:512];
             if (samples[wOffset%kJMXAudioFileBufferCount]) {
                 [samples[wOffset%kJMXAudioFileBufferCount] release];
@@ -52,20 +57,22 @@
                 break;
             }
         }
-        isFilling = NO;
     }
+    NSLog(@"%@ buffering ends", self.url);
+    isFilling = NO;
     [pool drain];
 }
 
-- (id)initWithURL:(NSURL *)url
+- (id)initWithURL:(NSURL *)anURL
 {
     OSStatus err = noErr;
     self = [super init];
     if (self) {
+        self.url = anURL;
         UInt32 thePropertySize = sizeof(fileFormat);
         rOffset = wOffset = 0;
         isFilling = NO;
-        err = ExtAudioFileOpenURL ( (CFURLRef)url, &audioFile );
+        err = ExtAudioFileOpenURL ( (CFURLRef)anURL, &audioFile );
         if (err != noErr) {
             NSLog(@"Can't open file");
             // TODO - ErrorMessages
@@ -75,7 +82,8 @@
         if (err != noErr) {
             // TODO - ErrorMessages
         } else {
-            [self fillBuffer];
+            isFilling = YES;
+            [self performSelectorInBackground:@selector(fillBuffer) withObject:nil];
         }
     }
     if (err != noErr) {
@@ -100,6 +108,7 @@
     [self clearBuffer];
     if (audioFile)
         ExtAudioFileDispose(audioFile);
+    self.url = nil;
     [super dealloc];
 }
 
@@ -109,10 +118,12 @@
     @synchronized(self) {
         sample = samples[rOffset%kJMXAudioFileBufferCount];
         samples[rOffset++%kJMXAudioFileBufferCount] = nil;
-    }
-    if (wOffset - rOffset < kJMXAudioFileBufferCount / 4 && !isFilling) {
-        isFilling = YES;
-        [self performSelectorOnMainThread:@selector(fillBuffer) withObject:nil waitUntilDone:NO];
+        if (wOffset - rOffset < kJMXAudioFileBufferCount / 4 && !isFilling &&
+            !(self.currentOffset >= self.numFrames - (512 * self.numChannels)))
+        {
+            isFilling = YES;
+            [self performSelectorInBackground:@selector(fillBuffer) withObject:nil];
+        }
     }
     return [sample autorelease];
 }

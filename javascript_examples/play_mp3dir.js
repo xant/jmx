@@ -20,19 +20,17 @@ exportedOut.export();
 basepath = '/Users/xant/Documents/Music/Studentessi/'; // XXX - change me
 // ok, now we can iterate over mp3 files and play them in sequence
 list = lsdir(basepath);
-for (i = 0; i < list.length; i++) {
+i = 0;
+run(function() {
     if (list[i].indexOf('.mp3') >= 0 && !isdir(basepath+list[i])) {
         echo(list[i]);
         audiofile.open(basepath+list[i]);
         audiofile.repeat = false; // we don't want to play always the same file
-        audiofile.start();
-        run(function() {
-            // if EOF is reached, the entity will be automatically deactivated
-            if (!audiofile.active) 
-                quit(); // so we can go ahead to play next file
-            sleep(1);
-        });
     }
-}
+    while (audiofile.active)
+        sleep(0.25);
+    if (++i >= list.length)
+        quit();
+});
 echo ("No more files to play!");
 // when the script will end, all resources (and entities) will be released

@@ -45,17 +45,18 @@ JMXV8_EXPORT_NODE_CLASS(JMXAudioFileEntity);
     if (self) {
         audioFile = nil;
         outputPin = [self registerOutputPin:@"audio" withType:kJMXAudioPin];
+        outputPin.mode = kJMXPinModePassive;
         repeat = YES;
         self.label = @"CoreAudioFile";
         [self registerInputPin:@"repeat" withType:kJMXBooleanPin andSelector:@"doRepeat:"];
         [self registerInputPin:@"paused" withType:kJMXNumberPin andSelector:@"setPaused:"];
 
         currentSample = nil;
-        JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
-        if (threadedEntity)
-            return (JMXAudioFileEntity *)threadedEntity;
+        //JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
+        //if (threadedEntity)
+          //  return (JMXAudioFileEntity *)threadedEntity;
     }
-    return nil;
+    return self;
 }
 
 - (void)dealloc
@@ -67,6 +68,25 @@ JMXV8_EXPORT_NODE_CLASS(JMXAudioFileEntity);
     [super dealloc];
 }
 
+- (JMXAudioBuffer *)audio
+{
+    JMXAudioBuffer *sample = nil;
+    if (audioFile) {
+        sample = [audioFile readSample];
+        if (!sample && [audioFile currentOffset] >= [audioFile numFrames] - (512*[audioFile numChannels])) {
+            [audioFile seekToOffset:0];
+            if (repeat) { // loop on the file if we have to
+                sample = [audioFile readSample];
+            } else {
+                self.active = NO;
+                return nil;
+            }
+        }
+    } 
+    return sample;
+            
+}
+
 - (BOOL)open:(NSString *)file
 {
     if (file) {
@@ -76,6 +96,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXAudioFileEntity);
                 self.frequency = [NSNumber numberWithDouble:([audioFile sampleRate]/512.0)]; // XXX
                 NSArray *path = [file componentsSeparatedByString:@"/"];
                 self.label = [path lastObject];
+                self.active = YES;
                 return YES;
             }
         }
@@ -88,27 +109,18 @@ JMXV8_EXPORT_NODE_CLASS(JMXAudioFileEntity);
     // TODO - IMPLEMENT
 }
 
+/*
 - (void)tick:(uint64_t)timeStamp
 {
-    JMXAudioBuffer *sample = nil;
-    if (active && audioFile) {
-        sample = [audioFile readSample];
-        if (!sample && [audioFile currentOffset] >= [audioFile numFrames] - (512*[audioFile numChannels])) {
-            [audioFile seekToOffset:0];
-            if (repeat) { // loop on the file if we have to
-                sample = [audioFile readSample];
-            } else {
-                self.active = NO;
-                return;
-            }
-        }
-    } 
+    JMXAudioBuffer *sample = [self audio];
+
     if (sample)
         [outputPin deliverData:sample fromSender:self];
     else
         [outputPin deliverData:nil fromSender:self];
     [self outputDefaultSignals:timeStamp];
 }
+*/
 
 - (void)doRepeat:(id)value
 {

@@ -50,6 +50,10 @@
     BOOL _didFill;
     BOOL _didStroke;
     BOOL invertYCoordinates;
+    NSColor *shadowColor;
+    CGFloat shadowOffsetX;
+    CGFloat shadowOffsetY;
+    CGFloat shadowBlur;
 }
 
 /*!
@@ -61,6 +65,12 @@
 @property (readwrite, retain) id<JMXCanvasStyle,JMXV8> fillStyle;
 
 @property (readwrite, retain) id<JMXCanvasStyle,JMXV8> strokeStyle;
+
+@property (readwrite, retain) NSColor *shadowColor;
+
+@property (readwrite, assign) CGFloat shadowOffsetX;
+@property (readwrite, assign) CGFloat shadowOffsetY;
+@property (readwrite, assign) CGFloat shadowBlur;
 
 @property (readwrite, copy) NSString *globalCompositeOperation;
 @property (readwrite, assign) double globalAlpha;

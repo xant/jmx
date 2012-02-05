@@ -30,7 +30,8 @@ using namespace v8;
 
 @synthesize fillStyle, strokeStyle, globalAlpha,
             globalCompositeOperation, font, frameSize,
-            invertYCoordinates;
+            invertYCoordinates, shadowColor, shadowOffsetX,
+            shadowOffsetY, shadowBlur;
 
 + (id)drawPathWithFrameSize:(JMXSize *)frameSize
 {
@@ -136,6 +137,7 @@ using namespace v8;
         [currentFrame release];
     [strokeStyle release];
     [fillStyle release];
+    [shadowColor release];
     [lock release];
     [super dealloc];
 }
@@ -393,7 +395,7 @@ using namespace v8;
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
     if (x && y)
-        CGContextScaleCTM(context, x, y);
+        CGContextTranslateCTM(context, x, y);
     [lock unlock];
 }
 
@@ -660,6 +662,14 @@ using namespace v8;
 #if 1
     //CGContextSaveGState(context);
     CGPathRef path = CGContextCopyPath(context);
+    if (shadowColor && shadowColor.alphaComponent > 0.0) {
+        CGSize shadowSize = CGSizeMake(shadowOffsetX, shadowOffsetY);
+        CGFloat components[4];
+        NSColor *calibratedColor = [shadowColor colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+        [calibratedColor getRed:&components[0] green:&components[1] blue:&components[2] alpha:&components[3]];
+        
+        CGContextSetShadowWithColor(context, shadowSize, shadowBlur, CGColorCreate([[shadowColor colorSpace] CGColorSpace], components));
+    }
     CGContextDrawPath(context, _didFill ? kCGPathFillStroke : kCGPathStroke);
     
     if ([strokeStyle isKindOfClass:[JMXCanvasGradient class]]) {
@@ -1494,6 +1504,26 @@ static void SetStyle(Local<String> name, Local<Value> value, const AccessorInfo&
     }
 }
 
+static void SetShadowColor(Local<String> name, Local<Value> value, const AccessorInfo& info)
+{
+    //v8::Locker lock;
+    HandleScope handle_scope;
+    NSColor *color = nil;
+    JMXDrawPath *drawPath = (JMXDrawPath *)info.Holder()->GetPointerFromInternalField(0);
+    String::Utf8Value str(value->ToString());
+    if (value->IsObject()) {
+        if (strcmp(*str, "[object Color]") == 0) {
+            v8::Handle<Object> object = value->ToObject();
+            color = (NSColor *)object->GetPointerFromInternalField(0);
+        }
+    } else {
+        color = [NSColor colorFromCSSString:[NSString stringWithUTF8String:*str]];
+    }
+    if (color) {
+        [drawPath setShadowColor:color];
+    }
+}
+
 v8::Handle<Value>GetFont(Local<String> name, const AccessorInfo& info)
 {
     HandleScope handleScope;
@@ -1625,14 +1655,17 @@ static void SetLineWidth(Local<String> name, Local<Value> value, const AccessorI
     instanceTemplate->SetAccessor(String::NewSymbol("font"), GetFont, SetFont);
     
     instanceTemplate->SetAccessor(String::NewSymbol("lineWidth"), GetLineWidth, SetLineWidth);
+    instanceTemplate->SetAccessor(String::NewSymbol("shadowColor"), GetColorProperty, SetShadowColor);
+    instanceTemplate->SetAccessor(String::NewSymbol("shadowOffsetX"), GetDoubleProperty, SetDoubleProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("shadowOffsetY"), GetDoubleProperty, SetDoubleProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("shadowBlur"), GetDoubleProperty, SetDoubleProperty);
+
+    
     /*
     instanceTemplate->SetAccessor(String::NewSymbol("lineCap"), , );
     instanceTemplate->SetAccessor(String::NewSymbol("lineJoin"), , );
     instanceTemplate->SetAccessor(String::NewSymbol("miterLimit"), , );
-    instanceTemplate->SetAccessor(String::NewSymbol("shadowOffsetX"), , );
-    instanceTemplate->SetAccessor(String::NewSymbol("shadowOffsetY"), , );
-    instanceTemplate->SetAccessor(String::NewSymbol("shadowBlur"), , );
-    instanceTemplate->SetAccessor(String::NewSymbol("shadowColor"), , );
+
     
     instanceTemplate->SetAccessor(String::NewSymbol("textAlign"), , );
     instanceTemplate->SetAccessor(String::NewSymbol("textBaseline"), , );

@@ -376,7 +376,7 @@ static v8::Handle<Value> Run(const Arguments& args)
         globalObject->SetHiddenValue(String::New("quit"), v8::Boolean::New(0));
     }
     //v8::Locker::StartPreemption(50);
-    NSLog(@"Javascript context is exiting");
+    NSLog(@"Javascript run() is exiting");
     v8::Handle<Primitive> t = Undefined();
     return reinterpret_cast<v8::Handle<String>&>(t);
 }

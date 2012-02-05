@@ -254,21 +254,25 @@ static v8::Handle<Value> DumpDOM(const Arguments& args) {
 
 static BOOL ExecJSCode(const char *code, uint32_t length, const char *name)
 {
-    HandleScope scope;
-    v8::Handle<v8::Value> result;
-    v8::TryCatch try_catch;
-    Local<String> codeString = String::New(code, length);
-    Local<String> nameString = String::New(name);
-    v8::Handle<v8::Script> compiledScript = v8::Script::Compile(codeString, nameString);
-    if (!compiledScript.IsEmpty()) {
-        result = compiledScript->Run();
-        if (result.IsEmpty()) {
-            ReportException(&try_catch);
+    @try {
+        HandleScope scope;
+        v8::Handle<v8::Value> result;
+        v8::TryCatch try_catch;
+        Local<String> codeString = String::New(code, length);
+        Local<String> nameString = String::New(name);
+        v8::Handle<v8::Script> compiledScript = v8::Script::Compile(codeString, nameString);
+        if (!compiledScript.IsEmpty()) {
+            result = compiledScript->Run();
+            if (result.IsEmpty()) {
+                ReportException(&try_catch);
+            } else {
+                return YES;
+            }
         } else {
-            return YES;
+            ReportException(&try_catch);
         }
-    } else {
-        ReportException(&try_catch);
+    } @catch (NSException *e) {
+        NSLog(@"%@", e);
     }
     return NO;
 }
@@ -606,11 +610,22 @@ static char *argv[2] = { (char *)"JMX", NULL };
             [runloopTimers removeObject:foo];
         }
     } else {
-        v8::Handle<Value> ret = foo.function->Call(foo.function, 0, nil);
-        foo.function->SetHiddenValue(String::New("lastUpdate"), v8::Number::New([[NSDate date] timeIntervalSince1970]));
-        if ((ret.IsEmpty() || !ret->IsTrue()) && !foo.repeats) {
-            [foo.timer invalidate];
-            [runloopTimers removeObject:foo];
+        @try {
+            v8::TryCatch try_catch;
+            v8::Handle<Value> ret = foo.function->Call(foo.function, 0, nil);
+            if (ret.IsEmpty()) {
+                ReportException(&try_catch);
+                [foo.timer invalidate];
+                [runloopTimers removeObject:foo];
+                return;
+            }
+            foo.function->SetHiddenValue(String::New("lastUpdate"), v8::Number::New([[NSDate date] timeIntervalSince1970]));
+            if (!ret->IsTrue() && !foo.repeats) {
+                [foo.timer invalidate];
+                [runloopTimers removeObject:foo];
+            }
+        } @catch (NSException *e) {
+            NSLog(@"%@", e);
         }
     }
 }

@@ -314,8 +314,8 @@
     [entitiesController setSelectedObjects:[NSArray arrayWithObject:entityLayer]];
     [self.boardView.layer addSublayer:entityLayer];
 
-    if ([anEntity conformsToProtocol:@protocol(JMXRunLoop)])
-        [anEntity performSelector:@selector(start)];
+    /*if ([anEntity conformsToProtocol:@protocol(JMXRunLoop)])
+        [anEntity performSelector:@selector(start)];*/
 }
 
 - (void)boardWasModified:(NSNotification *)aNotification

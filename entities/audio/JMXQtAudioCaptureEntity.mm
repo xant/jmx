@@ -214,6 +214,8 @@ static OSStatus _FillComplexBufferProc (
         grabber = [[JMXQtAudioGrabber alloc] init];
         device = [JMXQtAudioCaptureEntity defaultDevice];
         captureDevice = [[QTCaptureDevice deviceWithUniqueID:device] retain];
+        if (self.active)
+            [grabber startCapture:self];
     } else {
         [self dealloc];
         return nil;

@@ -230,8 +230,12 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
 }
 
 - (BOOL)open:(NSString *)file {
+#ifndef __x86_64
     [self performSelectorOnMainThread:@selector(_open:) withObject:file waitUntilDone:YES];
     return (movie && self.active);
+#else
+    return [self _open:file];
+#endif
 }
 
 - (void)close {

@@ -40,7 +40,8 @@
     JMXInputPin *fpsPin; // allows to override fps (setting the pin value)
     JMXOutputPin *outputFramePin;
     JMXOutputPin *outputFrameSizePin;
-
+    BOOL loopFrame;
+    
 @private
     CIFilter *colorFilter;
     CIFilter *alphaFilter;
@@ -57,6 +58,7 @@
 @property (copy) JMXPoint *origin;
 @property (copy) JMXSize  *size;
 @property (readonly) CIImage *currentFrame;
+@property (assign) BOOL loopFrame;
 
 - (void)tick:(uint64_t)timeStamp; // conform to 'tick' required by JMXRunLoop
 

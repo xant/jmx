@@ -30,7 +30,7 @@
 @implementation JMXVideoEntity
 
 @synthesize alpha, saturation, brightness, contrast, rotation,
-            origin, size, scaleRatio, fps;
+            origin, size, scaleRatio, fps, loopFrame;
 
 - (id)init
 {
@@ -120,6 +120,12 @@
                    andSelector:@"setSize:"
                  allowedValues:nil
                   initialValue:self.size];
+        
+        loopFrame = NO;
+        [self registerInputPin:@"loopFrame"
+                      withType:kJMXBooleanPin
+                   andSelector:@"setLoopFrame:"
+                 allowedValues:nil initialValue:[NSNumber numberWithBool:loopFrame]];
 
         fpsPin = [self registerInputPin:@"fps" withType:kJMXNumberPin andSelector:@"setFps:"];
         [fpsPin setMinLimit:[NSNumber numberWithDouble:1.0]];
@@ -201,18 +207,44 @@
             [rotoTransform appendTransform:rotoTranslate];
             [transform appendTransform:rotoTransform];
         }
+        [transformFilter setDefaults];
+        [transformFilter setValue:transform forKey:@"inputTransform"];
+        [transformFilter setValue:frame forKey:@"inputImage"];
         if (origin.x || origin.y) {
             applyTransforms = YES;
             NSAffineTransform *originTransform = [NSAffineTransform transform];
-            [originTransform translateXBy:origin.x yBy:origin.y];
+            CGRect rect = [outputFrame extent];
+            CGFloat x = fmod(origin.x, rect.size.width);
+            CGFloat y = fmod(origin.y, rect.size.height);
+
+            //x = (abs(origin.x) < rect.size.width) ? origin.x : rect.size.width-(abs(origin.x));
+            //y = (abs(origin.y) < rect.size.height) ? origin.y : 0;
+
+            [originTransform translateXBy:x yBy:y];
             [transform appendTransform:originTransform];
-        }
-        if (applyTransforms) {
-            [transformFilter setDefaults];
-            [transformFilter setValue:transform forKey:@"inputTransform"];
-            [transformFilter setValue:frame forKey:@"inputImage"];
+            CIFilter *originFilter = transformFilter;
+            if (loopFrame )//&& origin.x + size.width > rect.origin.x+rect.size.width)
+            {
+                CIImage *firstFrame = [transformFilter valueForKey:@"outputImage"];
+               
+                NSAffineTransform *loopTransform = [NSAffineTransform transform];
+                [loopTransform translateXBy:(x > 0 ? -size.width : size.width) yBy:y];
+                [transform appendTransform:loopTransform];
+                [transformFilter setValue:frame forKey:@"inputImage"];
+                
+                CIImage *secondFrame = [transformFilter valueForKey:@"outputImage"];
+                
+                CIFilter *blendFilter = [CIFilter filterWithName:@"CIScreenBlendMode"];
+                [blendFilter setDefaults];
+                [blendFilter setValue:firstFrame forKey:@"inputImage"];
+                [blendFilter setValue:secondFrame forKey:@"inputBackgroundImage"];
+                originFilter = blendFilter;
+            }
+            frame = [originFilter valueForKey:@"outputImage"];
+        } else if (applyTransforms) {
             frame = [transformFilter valueForKey:@"outputImage"];
         }
+        
         if (frame) {
             // apply alpha
             [alphaFilter setValue:alpha forKey:@"outputOpacity"];
@@ -263,6 +295,8 @@ static v8::Persistent<v8::FunctionTemplate> objectTemplate;
     objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("saturation"), GetNumberProperty, SetNumberProperty);
     objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("size"), GetSizeProperty, SetSizeProperty);
     objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("origin"), GetPointProperty, SetPointProperty);
+    objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("loopFrame"), GetBoolProperty, SetBoolProperty);
+
     return objectTemplate;
 }
 

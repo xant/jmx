@@ -191,7 +191,7 @@ JMXEntityLabelLayer *JMXEntityLabelLayerCreate(NSString *name) {
 - (void)outputPinRemoved:(NSNotification *)notification
 {
     JMXPin * pin = [[notification userInfo] objectForKey:@"pin"];
-    NSUInteger index = [self.inlets indexOfObjectPassingTest:^(id obj, NSUInteger index, BOOL *stop) {
+    NSUInteger index = [self.outlets indexOfObjectPassingTest:^(id obj, NSUInteger index, BOOL *stop) {
         BOOL ret = (((JMXOutletLayer *)obj).pin.pin == pin) ? YES : NO;
         return ret;
     }];

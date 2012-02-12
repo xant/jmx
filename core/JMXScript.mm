@@ -41,6 +41,7 @@
 #import "JMXEvent.h"
 #import "JMXEventListener.h"
 #import "JMXCanvasElement.h"
+#import "JMXPhidgetEncoderEntity.h"
 #import "node.h"
 #import "v8_typed_array.h"
 
@@ -88,6 +89,7 @@ static JMXV8ClassDescriptor mappedClasses[] = {
     { "JMXAttribute",             "Attribute",        JMXAttributeJSConstructor },
     { "JMXGraphFragment",         "DocumentFragment", JMXGraphFragmentJSConstructor },
     { "JMXCanvasElement",         "HTMLCanvasElement",JMXCanvasElementJSConstructor },
+    { "JMXPhidgetEncoderEntity",  "PhidgetEncoder",   JMXPhidgetEncoderEntityJSConstructor },
     { NULL,                       NULL,              NULL }
 };
 

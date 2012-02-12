@@ -8,6 +8,8 @@
 
 #import <Phidget21/Phidget21.h>
 #import "JMXEntity.h"
+#import "JMXV8.h"
+
 
 @interface JMXPhidgetEncoderEntity : JMXEntity
 {
@@ -22,5 +24,7 @@
 
 - (void)phidgetAdded:(id)nothing;
 - (void)phidgetRemoved:(id)nothing;
+
+JMXV8_DECLARE_NODE_CONSTRUCTOR(JMXPhidgetEncoderEntity);
 
 @end

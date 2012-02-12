@@ -27,7 +27,7 @@
 
 @implementation JMXVideoFilter
 
-@synthesize filter;
+@synthesize filter  ;
 
 + (NSArray *)availableFilters
 {
@@ -67,18 +67,6 @@
 }
 
 - (void)setFilterValue:(id)value userData:(id)userData
-{
-    // Do nothing in the base implementation
-}
-
-- (NSString *)filter
-{
-    @synchronized(self) {
-        return filter;
-    }
-}
-
-- (void)setFilter:(NSString *)filterName
 {
     // Do nothing in the base implementation
 }

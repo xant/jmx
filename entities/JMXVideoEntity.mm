@@ -102,6 +102,19 @@
                    andSelector:@"setOrigin:"
                  allowedValues:nil
                   initialValue:self.origin];
+        
+        [self registerInputPin:@"originX"
+                      withType:kJMXNumberPin
+                   andSelector:@"setOriginX:"
+                 allowedValues:nil
+                  initialValue:[NSNumber numberWithDouble:self.origin.x]];
+        
+        [self registerInputPin:@"originY"
+                      withType:kJMXNumberPin
+                   andSelector:@"setOriginY:"
+                 allowedValues:nil
+                  initialValue:[NSNumber numberWithDouble:self.origin.y]];
+        
         [self registerInputPin:@"frameSize"
                       withType:kJMXSizePin
                    andSelector:@"setSize:"
@@ -119,6 +132,17 @@
         [outputFrameSizePin allowMultipleConnections:YES];
     }
     return self;
+}
+
+- (void)setOriginX:(NSNumber *)x
+{
+    self.origin.x = [x doubleValue];
+}
+
+
+- (void)setOriginY:(NSNumber *)y
+{
+    self.origin.y = [y doubleValue];
 }
 
 - (void)dealloc

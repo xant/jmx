@@ -149,31 +149,30 @@ static void ReportException(v8::TryCatch* try_catch) {
     if (message.IsEmpty()) {
         // V8 didn't provide any extra information about this error; just
         // print the exception.
-        printf("%s\n", exception_string);
+        NSLog(@"%s", exception_string);
     } else {
         // Print (filename):(line number): (message).
         v8::String::Utf8Value filename(message->GetScriptResourceName());
         const char* filename_string = ToCString(filename);
         int linenum = message->GetLineNumber();
-        printf("%s:%i: %s\n", filename_string, linenum, exception_string);
+        NSLog(@"%s:%i: %s", filename_string, linenum, exception_string);
         // Print line of source code.
         v8::String::Utf8Value sourceline(message->GetSourceLine());
         const char* sourceline_string = ToCString(sourceline);
-        printf("%s\n", sourceline_string);
+        NSLog(@"%s", sourceline_string);
         // Print wavy underline (GetUnderline is deprecated).
         int start = message->GetStartColumn();
-        for (int i = 0; i < start; i++) {
-            printf(" ");
-        }   
         int end = message->GetEndColumn();
-        for (int i = start; i < end; i++) {
-            printf("^");
-        }   
-        printf("\n");
+        NSMutableString *indent = [NSMutableString stringWithCapacity:end];
+        for (int i = 0; i < start; i++)
+            [indent appendString:@" "];
+        for (int i = start; i < end; i++)
+            [indent appendString:@"^"];
+        NSLog(@"%@", indent);
         v8::String::Utf8Value stack_trace(try_catch->StackTrace());
         if (stack_trace.length() > 0) {
             const char* stack_trace_string = ToCString(stack_trace);
-            printf("%s\n", stack_trace_string);
+            NSLog(@"%s", stack_trace_string);
         }  
     }
 }
@@ -593,8 +592,10 @@ static char *argv[2] = { (char *)"JMX", NULL };
     for (int i = 0; mappedClasses[i].className != NULL; i++) {
         v8::Handle<FunctionTemplate> constructor = FunctionTemplate::New(mappedClasses[i].jsConstructor);
         Class entityClass = NSClassFromString([NSString stringWithUTF8String:mappedClasses[i].className]);
-        [entityClass jsRegisterClassMethods:constructor];
-        ctxTemplate->Set(String::New(mappedClasses[i].jsClassName), constructor);
+        if (entityClass) {
+            [entityClass jsRegisterClassMethods:constructor];
+            ctxTemplate->Set(String::New(mappedClasses[i].jsClassName), constructor);
+        }
     }
     [pool drain];
 }

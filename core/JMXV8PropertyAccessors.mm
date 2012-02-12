@@ -238,7 +238,7 @@ void SetBoolProperty(Local<String> name, Local<Value> value, const AccessorInfo&
         }
         NSMethodSignature *sig = [obj methodSignatureForSelector:selector];
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:sig];
-        [invocation setArgument:&newValue atIndex:0];
+        [invocation setArgument:&newValue atIndex:2];
         [invocation setSelector:selector];
         [invocation invokeWithTarget:obj];
         [pool release];

@@ -617,14 +617,14 @@ using namespace v8;
 
 - (BOOL)active
 {
-    @synchronized(self) {
+    @synchronized(activeOut) {
         return active;
     }
 }
 
 - (void)setActive:(BOOL)value
 {
-    @synchronized(self) {
+    @synchronized(activeOut) {
         if (active != value) {
             active = value;
             NSXMLNode *attr = [self attributeForName:@"active"];

@@ -96,7 +96,7 @@
                             allowedValues:nil
                              initialValue:[NSNumber numberWithFloat:1.0]];
         [inputPin setMinLimit:[NSNumber numberWithFloat:0.0]];
-        [inputPin setMaxLimit:[NSNumber numberWithFloat:100.0]];
+        [inputPin setMaxLimit:[NSNumber numberWithFloat:5.0]];
         [self registerInputPin:@"origin"
                       withType:kJMXPointPin
                    andSelector:@"setOrigin:"
@@ -182,9 +182,11 @@
             applyTransforms = YES;
             float xScale = size.width / imageRect.size.width;
             float yScale = size.height / imageRect.size.height;
-            // TODO - take scaleRatio into account for further scaling requested by the user
             if (xScale && yScale)
-                [transform scaleXBy:xScale yBy:yScale];
+                [transform scaleXBy:xScale * scaleRatio.floatValue yBy:yScale * scaleRatio.floatValue];
+        } else if (scaleRatio.floatValue != 1.0) {
+            applyTransforms = YES;
+            [transform scaleXBy:scaleRatio.floatValue yBy:scaleRatio.floatValue];
         }
         if ([rotation floatValue]) {
             applyTransforms = YES;

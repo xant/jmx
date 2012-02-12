@@ -30,7 +30,7 @@
 @implementation JMXVideoEntity
 
 @synthesize alpha, saturation, brightness, contrast, rotation,
-            origin, size, scaleRatio, fps, loopFrame;
+            origin, size, scaleRatio, fps, tileFrame;
 
 - (id)init
 {
@@ -121,11 +121,11 @@
                  allowedValues:nil
                   initialValue:self.size];
         
-        loopFrame = NO;
-        [self registerInputPin:@"loopFrame"
+        tileFrame = NO;
+        [self registerInputPin:@"tileFrame"
                       withType:kJMXBooleanPin
-                   andSelector:@"setLoopFrame:"
-                 allowedValues:nil initialValue:[NSNumber numberWithBool:loopFrame]];
+                   andSelector:@"setTileFrame:"
+                 allowedValues:nil initialValue:[NSNumber numberWithBool:tileFrame]];
 
         fpsPin = [self registerInputPin:@"fps" withType:kJMXNumberPin andSelector:@"setFps:"];
         [fpsPin setMinLimit:[NSNumber numberWithDouble:1.0]];
@@ -223,7 +223,7 @@
             [originTransform translateXBy:x yBy:y];
             [transform appendTransform:originTransform];
             CIFilter *originFilter = transformFilter;
-            if (loopFrame )//&& origin.x + size.width > rect.origin.x+rect.size.width)
+            if (tileFrame)
             {
                 CIImage *firstFrame = [transformFilter valueForKey:@"outputImage"];
                
@@ -295,7 +295,7 @@ static v8::Persistent<v8::FunctionTemplate> objectTemplate;
     objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("saturation"), GetNumberProperty, SetNumberProperty);
     objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("size"), GetSizeProperty, SetSizeProperty);
     objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("origin"), GetPointProperty, SetPointProperty);
-    objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("loopFrame"), GetBoolProperty, SetBoolProperty);
+    objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("tileFrame"), GetBoolProperty, SetBoolProperty);
 
     return objectTemplate;
 }

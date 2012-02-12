@@ -33,10 +33,12 @@
     NSWindow *window;
     JMXOpenGLView *view;
     JMXScreenController *controller;
+    BOOL fullScreen;
 }
 
 @property (readonly) NSWindow *window;
 @property (readonly) JMXOpenGLView *view;
+@property (assign) BOOL fullScreen;
 
 @end
 

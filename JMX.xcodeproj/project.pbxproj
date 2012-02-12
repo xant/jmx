@@ -66,6 +66,8 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		AA004D8214E7148600009CF9 /* JMXPhidgetEncoderEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = AA004D8114E7148600009CF9 /* JMXPhidgetEncoderEntity.m */; };
+		AA004D8414E714B200009CF9 /* Phidget21.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA004D8314E714B200009CF9 /* Phidget21.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		AA02230F14D8BB8C00E7908F /* JMXScriptPinWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA02230E14D8BB8C00E7908F /* JMXScriptPinWrapper.mm */; };
 		AA08D33B14B5AA4500D19015 /* JMXCodePanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA08D33A14B5AA4400D19015 /* JMXCodePanel.m */; };
 		AA1E53AD14AE114D00F80337 /* JMXGraphFragment.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA1E53AC14AE114D00F80337 /* JMXGraphFragment.mm */; };
@@ -121,6 +123,7 @@
 		AAC6376312D5099400B69DFE /* JMXCDATA.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6376212D5099400B69DFE /* JMXCDATA.mm */; };
 		AAC637E012D5204C00B69DFE /* JMXAttribute.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC637DF12D5204C00B69DFE /* JMXAttribute.mm */; };
 		AACCC73F14A921B500D44D71 /* NSFont+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACCC73E14A921B500D44D71 /* NSFont+V8.mm */; };
+		AACD67AE14DEEF66007C7B31 /* canvas_sample1.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AACD67AC14DEEF52007C7B31 /* canvas_sample1.js */; };
 		AACE7D04129315DE00FBDC0D /* JMXScriptEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */; };
 		AACE7D331293195600FBDC0D /* JMXV8PropertyAccessors.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACE7D321293195600FBDC0D /* JMXV8PropertyAccessors.mm */; };
 		AAD139BB128EA0DF00ECB03A /* JMXDrawPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */; };
@@ -233,6 +236,7 @@
 			dstPath = javascript_examples;
 			dstSubfolderSpec = 12;
 			files = (
+				AACD67AE14DEEF66007C7B31 /* canvas_sample1.js in Deploy JS examples */,
 				AAB50B5F14DD4956002F385C /* processing_sample1.js in Deploy JS examples */,
 				AAB50B6014DD4956002F385C /* processing_sample2.js in Deploy JS examples */,
 				AAB50B6114DD4956002F385C /* processing_sample3.js in Deploy JS examples */,
@@ -390,6 +394,9 @@
 		82EA042E1240BE4A00E28B72 /* JMXWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = JMXWindow.xib; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* JMX-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "JMX-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* JMX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JMX.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA004D8014E7148600009CF9 /* JMXPhidgetEncoderEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXPhidgetEncoderEntity.h; sourceTree = "<group>"; };
+		AA004D8114E7148600009CF9 /* JMXPhidgetEncoderEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXPhidgetEncoderEntity.m; sourceTree = "<group>"; };
+		AA004D8314E714B200009CF9 /* Phidget21.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Phidget21.framework; path = Library/Frameworks/Phidget21.framework; sourceTree = SDKROOT; };
 		AA02230D14D8BB8C00E7908F /* JMXScriptPinWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXScriptPinWrapper.h; sourceTree = "<group>"; };
 		AA02230E14D8BB8C00E7908F /* JMXScriptPinWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScriptPinWrapper.mm; sourceTree = "<group>"; };
 		AA08D33914B5AA4400D19015 /* JMXCodePanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXCodePanel.h; sourceTree = "<group>"; };
@@ -531,6 +538,7 @@
 		AAC637DF12D5204C00B69DFE /* JMXAttribute.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXAttribute.mm; sourceTree = "<group>"; };
 		AACCC73D14A921B500D44D71 /* NSFont+V8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFont+V8.h"; sourceTree = "<group>"; };
 		AACCC73E14A921B500D44D71 /* NSFont+V8.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSFont+V8.mm"; sourceTree = "<group>"; };
+		AACD67AC14DEEF52007C7B31 /* canvas_sample1.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = canvas_sample1.js; path = javascript_examples/canvas_sample1.js; sourceTree = "<group>"; };
 		AACE7D02129315DE00FBDC0D /* JMXScriptEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXScriptEntity.h; sourceTree = "<group>"; };
 		AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScriptEntity.mm; sourceTree = "<group>"; };
 		AACE7D311293195600FBDC0D /* JMXV8PropertyAccessors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXV8PropertyAccessors.h; sourceTree = "<group>"; };
@@ -720,6 +728,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA004D8414E714B200009CF9 /* Phidget21.framework in Frameworks */,
 				AAF376A314CCCE5E00347F40 /* libcrypto.dylib in Frameworks */,
 				AAF376A114CCCE5100347F40 /* libz.dylib in Frameworks */,
 				AAF3769F14CCCE2C00347F40 /* libssl.dylib in Frameworks */,
@@ -765,6 +774,7 @@
 		29B97314FDCFA39411CA2CEA /* MoviePlayerD */ = {
 			isa = PBXGroup;
 			children = (
+				AA004D8314E714B200009CF9 /* Phidget21.framework */,
 				AAB50B6514DDA472002F385C /* JMX.entitlements */,
 				080E96DDFE201D6D7F000001 /* Sources */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -933,6 +943,7 @@
 		AA490DD914CC5F9C00407C0D /* Javascript Examples */ = {
 			isa = PBXGroup;
 			children = (
+				AACD67AC14DEEF52007C7B31 /* canvas_sample1.js */,
 				AAB50B5914DD493E002F385C /* processing_sample1.js */,
 				AAB50B5A14DD493E002F385C /* processing_sample2.js */,
 				AAB50B5B14DD493E002F385C /* processing_sample3.js */,
@@ -1205,6 +1216,8 @@
 				AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */,
 				825C31081275ADB6006376B8 /* JMXExporter.h */,
 				825C31091275ADB6006376B8 /* JMXExporter.m */,
+				AA004D8014E7148600009CF9 /* JMXPhidgetEncoderEntity.h */,
+				AA004D8114E7148600009CF9 /* JMXPhidgetEncoderEntity.m */,
 			);
 			name = "Base Classes";
 			sourceTree = "<group>";
@@ -1760,6 +1773,7 @@
 				AAB71A0D14D7585500BE8C35 /* JMXEventListener.mm in Sources */,
 				AA02230F14D8BB8C00E7908F /* JMXScriptPinWrapper.mm in Sources */,
 				AAB50B6414DD6405002F385C /* JMXEntitiesController.m in Sources */,
+				AA004D8214E7148600009CF9 /* JMXPhidgetEncoderEntity.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -495,14 +495,36 @@ static NSMutableDictionary *__openglOutputs = nil;
     [super dealloc];
 }
 
+- (BOOL)fullScreen
+{
+    @synchronized(self) {
+        return fullScreen;
+    }
+}
+
+- (void)setFullScreen:(BOOL)yesOrNo
+{
+    @synchronized(self) {
+        if (fullScreen == yesOrNo)
+            return;
+        fullScreen = yesOrNo;
+        [view performSelectorOnMainThread:@selector(toggleFullScreen:)
+                               withObject:self
+                            waitUntilDone:YES];
+    }
+    
+}
+
 + (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate
 {
     //v8::Locker lock;
     if (!objectTemplate.IsEmpty())
         return objectTemplate;
     v8::Persistent<FunctionTemplate> objectTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
-    objectTemplate->Inherit([super jsObjectTemplate]);  
+    objectTemplate->Inherit([super jsObjectTemplate]);
     objectTemplate->SetClassName(String::New("OpenGLScreen"));
+    objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("fullScreen"), GetBoolProperty, SetBoolProperty);
+
     objectTemplate->InstanceTemplate()->SetInternalFieldCount(1);
     NSLog(@"JMXOpenGLScreen objectTemplate created");
     return objectTemplate;

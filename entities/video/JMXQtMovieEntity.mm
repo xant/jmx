@@ -143,7 +143,7 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
     }
 }
 
-- (BOOL)open:(NSString *)file
+- (BOOL)_open:(NSString *)file
 {
     if (file != nil) {
         NSError *error;
@@ -151,6 +151,7 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
         @synchronized(self) {
             if (movie)
                 [movie release];
+            
             // Setter already releases and retains where appropriate.
             movie = [[QTMovie movieWithFile:file error:&error] retain];
             
@@ -226,6 +227,11 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
         return YES;
     }
     return NO;
+}
+
+- (BOOL)open:(NSString *)file {
+    [self performSelectorOnMainThread:@selector(_open:) withObject:file waitUntilDone:YES];
+    return (movie && self.active);
 }
 
 - (void)close {

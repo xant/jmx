@@ -639,8 +639,12 @@ using namespace v8;
         else
             [th stopThread];
     }
-    if ([self conformsToProtocol:@protocol(JMXRunLoop)])
-        [self start];
+    if ([self conformsToProtocol:@protocol(JMXRunLoop)]) {
+        if (value)
+            [self start];
+        else
+            [self stop];
+    }
 }
 
 #pragma mark <JMXPinOwner>

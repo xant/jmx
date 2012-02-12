@@ -185,27 +185,13 @@ static int gotPositionChange(CPhidgetEncoderHandle phid, void *context, int ind,
 - (void)phidgetRemoved:(id)nothing
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	/*
-	[connectedField setTitleWithMnemonic:@"Nothing"];
-	[serialField setTitleWithMnemonic:@""];
-	[versionField setTitleWithMnemonic:@""];
-	[numInputsField setTitleWithMnemonic:@""];
-	[numEncodersField setTitleWithMnemonic:@""];
-	
-	[encoderBox setHidden:TRUE];
-	[inputsBox setHidden:TRUE];
-	
-	NSRect frame = [mainWindow frame];
-	int heightChange = frame.size.height - 192;
-	frame.origin.y += heightChange;
-	frame.size.height -= heightChange;
-	[mainWindow setMinSize:frame.size];
-	[mainWindow setFrame:frame display:YES animate:NO];
-	
-	[self setPicture:0:0];
-	*/
+    for (NSArray *pinArray in encoders) {
+        for (JMXPin *pin in pinArray) {
+            [self unregisterPin:pin];
+        }
+    }
+    [encoders removeAllObjects];
 	[pool release];
-	//[mainWindow display];
 }
 
 - (void)InputChange:(NSArray *)inputChangeData

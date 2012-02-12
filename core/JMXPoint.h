@@ -40,6 +40,8 @@
 }
 
 @property (assign) NSPoint nsPoint;
+@property (assign) CGFloat x;
+@property (assign) CGFloat y;
 
 + (id)pointWithX:(CGFloat)x Y:(CGFloat)y;
 
@@ -62,13 +64,12 @@
  @abstract get the x coordinate
  @return the x coordinate
  */
-- (CGFloat)x;
+
 /*!
  @method y
  @abstract get the y coordinate
  @return the y coordinate
  */
-- (CGFloat)y;
 
 #ifdef __JMXV8__
 + (void)jsRegisterClassMethods:(v8::Handle<v8::FunctionTemplate>)constructor;

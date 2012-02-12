@@ -82,21 +82,33 @@
 
 - (void)windowDidLoad
 {
+    NSLog(@"Entering viewDidLoad\n");
     JMXAppDelegate *appDelegate = [[NSApplication sharedApplication] delegate];
     if (appDelegate.batchMode) {
         [self.window close];
         self.window = nil;
     } else {
         [documentSplitView setPosition:200.0f ofDividerAtIndex:0];
-        [documentSplitView adjustSubviews];/*
-        pipe(stdout_pipe);
-        pipe(stderr_pipe);
-        dup2(stdout_pipe[1], fileno(stdout));
-        dup2(stderr_pipe[1], fileno(stderr));
+        [documentSplitView adjustSubviews];
+        /*
+        int ret = pipe(stdout_pipe);
+        NSLog(@"CHECK1: %d\n", ret);
+        ret = pipe(stderr_pipe);
+        NSLog(@"CHECK2: %d\n", ret);
+
+        ret = dup2(stdout_pipe[1], fileno(stdout));
+        NSLog(@"CHECK3: %d\n", ret);
+
+        ret = dup2(stderr_pipe[1], fileno(stderr));
+        NSLog(@"CHECK4: %d\n", ret);
+
         close(stdout_pipe[1]);
         close(stderr_pipe[1]);
         [NSThread detachNewThreadSelector:@selector(consoleOutput:) 
-                                 toTarget:self withObject:nil];*/
+                                 toTarget:self withObject:nil];
+         */
+        JMXAppDelegate *appDelegate = [[NSApplication sharedApplication] delegate];
+        appDelegate.consoleView = outputPanel;
     }
 }
 

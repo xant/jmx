@@ -23,6 +23,9 @@
 
 #import <Cocoa/Cocoa.h>
 
+#ifndef __JMXAppDelegate_H__
+#define __JMXAppDelgate_H__
+
 #if MAC_OS_X_VERSION_10_6
 @interface JMXAppDelegate : NSObject <NSApplicationDelegate> {
 #else
@@ -31,10 +34,16 @@
     NSWindow *window;
     NSTableView *layersTableView;
     BOOL batchMode;
+    NSTextView *consoleView;
 }
 
 @property (assign) IBOutlet NSWindow *window;
 @property (assign) IBOutlet NSTableView *layersTableView;
 @property (readonly) BOOL batchMode;
-    
+@property (assign) NSTextView *consoleView;
+
+- (void)logMessage:(NSString *)message, ...;
+
 @end
+
+#endif

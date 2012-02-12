@@ -37,11 +37,12 @@
 #import "JMXTextEntity.h"
 #import "JMXScriptFile.h"
 #import "JMXScriptLive.h"
+#import "JMXPhidgetEncoderEntity.h"
 #import "JMXGlobals.h"
 
 @implementation JMXAppDelegate
 
-@synthesize window, layersTableView, batchMode;
+@synthesize window, layersTableView, batchMode, consoleView;
 
 - (void)applicationWillFinishLaunching:(NSNotification *)notification {
 	JMXContext *sharedContext = [JMXContext sharedContext];
@@ -59,6 +60,7 @@
 	[sharedContext registerClass:[JMXTextEntity class]];
     [sharedContext registerClass:[JMXScriptFile class]];
     [sharedContext registerClass:[JMXScriptLive class]];
+    [sharedContext registerClass:[JMXPhidgetEncoderEntity class]];
 	INFO("Registered %ul entities", (unsigned int)[[sharedContext registeredClasses] count]);
 }
 
@@ -85,4 +87,29 @@
     batchMode = YES;
     return YES;
 }
+
+- (void)updateOutput:(NSString*)msg
+{
+    NSAttributedString *attrString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\n", msg]
+                                                                     attributes:[NSDictionary dictionaryWithObject:[NSColor whiteColor]
+                                                                                                            forKey:NSForegroundColorAttributeName]];
+    [[consoleView textStorage] appendAttributedString:attrString];
+    [consoleView scrollRangeToVisible:NSMakeRange([[[consoleView textStorage] characters] count], 0)];
+    [attrString release];
+}
+
+
+- (void)logMessage:(NSString *)message, ...
+{
+    if (consoleView && message) {
+        //NSString *msg = [[NSString alloc] initWithCString:buf encoding:NSASCIIStringEncoding];
+        va_list args;
+        va_start(args, message);
+        NSString *msg = [[[NSString alloc] initWithFormat:message arguments:args] autorelease];
+        // same as above... we really need to avoid updating the textview in a different thread
+        [self performSelectorOnMainThread:@selector(updateOutput:)
+                               withObject:msg waitUntilDone:NO];
+    }
+}
+
 @end

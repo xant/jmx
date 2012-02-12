@@ -29,4 +29,7 @@
 
 #define VERBOSE_DEFAULT         LOG_WARNING     //!< \brief default verbose level (syslog LOG_* value)
 
+
+#define NSLog(__format, args...) do { [(JMXAppDelegate *)[[NSApplication sharedApplication] delegate] logMessage:__format, ## args ]; } while (0)
+
 extern int verbose;

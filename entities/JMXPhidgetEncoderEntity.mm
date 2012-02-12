@@ -81,8 +81,15 @@ static int gotPositionChange(CPhidgetEncoderHandle phid, void *context, int ind,
             CPhidget_openRemote((CPhidgetHandle)encoder, serial, NULL, [[passwordField stringValue] UTF8String]);
         else*/
             CPhidget_open((CPhidgetHandle)encoder, serial);
+        encoders = [[NSMutableArray alloc] initWithCapacity:3];
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [encoders release];
+    [super dealloc];
 }
 
 - (void)phidgetAdded:(id)nothing
@@ -99,7 +106,7 @@ static int gotPositionChange(CPhidgetEncoderHandle phid, void *context, int ind,
 	CPhidget_getDeviceID((CPhidgetHandle)encoder, &devid);
 	CPhidgetEncoder_getInputCount(encoder, &numInputs);
 	CPhidgetEncoder_getEncoderCount(encoder, &numEncoders);
-	
+/*	
     switch(devid)
 	{
 		case PHIDID_ENCODER_1ENCODER_1INPUT:
@@ -113,42 +120,54 @@ static int gotPositionChange(CPhidgetEncoderHandle phid, void *context, int ind,
 			break;
 		default:
 			break;
-	}
+	}*/
+    for (NSArray *pinArray in encoders) {
+        for (JMXPin *pin in pinArray) {
+            [self unregisterPin:pin];
+        }
+    }
+    [encoders removeAllObjects];
     for(i=0;i<numEncoders;i++)
 	{
 		int enabled;
 		CPhidgetEncoder_getEnabled(encoder, i, &enabled);
         if (enabled) {
-            encoderPin = [self registerOutputPin:[NSString stringWithFormat:@"encoder%d", i]
-                           withType:kJMXNumberPin];
+            NSMutableArray *pinArray = [NSMutableArray arrayWithCapacity:3];
+            [pinArray addObject:[self registerOutputPin:[NSString stringWithFormat:@"encoder%d_position", i]
+                                               withType:kJMXNumberPin]];
+            [pinArray addObject:[self registerOutputPin:[NSString stringWithFormat:@"encoder%d_ms", i]
+                                               withType:kJMXNumberPin]];
+            [pinArray addObject:[self registerOutputPin:[NSString stringWithFormat:@"encoder%d_delta", i]
+                                               withType:kJMXNumberPin]];
+            [encoders addObject:pinArray];
         }
-        
+        /*
         switch(devid)
 		{
 			case PHIDID_ENCODER_1ENCODER_1INPUT:
-                /*
+                
 				[[positionSliders cellWithTag:i] setMaxValue:250];
 				[[positionSliders cellWithTag:i] setMinValue:-250];
 				[[enabledCheckboxes cellWithTag:i] setEnabled:false];
-                 */
+                 
 				break;
 			case PHIDID_ENCODER_HS_1ENCODER:
-                /*
+                
 				[[positionSliders cellWithTag:i] setMaxValue:50000];
 				[[positionSliders cellWithTag:i] setMinValue:-50000];
 				[[enabledCheckboxes cellWithTag:i] setEnabled:false];
-                */
+                
 				break;
 			case PHIDID_ENCODER_HS_4ENCODER_4INPUT:
-                /*
+                
 				[[positionSliders cellWithTag:i] setMaxValue:50000];
 				[[positionSliders cellWithTag:i] setMinValue:-50000];
 				[[enabledCheckboxes cellWithTag:i] setEnabled:true];
-                 */
+                 
 				break;
 			default:
 				break;
-		}
+		}*/
 	}
     if(numInputs)
 	{
@@ -208,7 +227,16 @@ static int gotPositionChange(CPhidgetEncoderHandle phid, void *context, int ind,
 	[[msTimes cellWithTag:[[positionChangeData objectAtIndex:0] intValue]] 
 	 setIntValue:[[positionChangeData objectAtIndex:1] intValue]];
 	*/
+    NSArray *pinArray = [encoders objectAtIndex:[[positionChangeData objectAtIndex:0] intValue]];
+    JMXOutputPin *encoderPin = [pinArray objectAtIndex:0];
+    JMXOutputPin *timePin = [pinArray objectAtIndex:1];
+    JMXOutputPin *deltaPin = [pinArray objectAtIndex:2];
+    
+    
+    timePin.data = [positionChangeData objectAtIndex:1];
+    deltaPin.data = [positionChangeData objectAtIndex:2];
     encoderPin.data = [positionChangeData objectAtIndex:3];
+    
 
 	if(!CPhidgetEncoder_getIndexPosition(encoder, [[positionChangeData objectAtIndex:0] intValue], &index))
 	{

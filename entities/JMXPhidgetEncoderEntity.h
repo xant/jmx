@@ -16,7 +16,7 @@
 @protected
     CPhidgetEncoderHandle encoder;
     int numInputs, numEncoders;
-    JMXOutputPin *encoderPin;
+    NSMutableArray *encoders;
 }
 
 - (void)InputChange:(NSArray *)inputChangeData;

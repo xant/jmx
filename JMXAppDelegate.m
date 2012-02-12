@@ -60,7 +60,9 @@
 	[sharedContext registerClass:[JMXTextEntity class]];
     [sharedContext registerClass:[JMXScriptFile class]];
     [sharedContext registerClass:[JMXScriptLive class]];
-    [sharedContext registerClass:[JMXPhidgetEncoderEntity class]];
+    Class phidgetEncoderClass = NSClassFromString(@"JMXPhidgetEncoderEntity");
+    if (phidgetEncoderClass)
+        [sharedContext registerClass:phidgetEncoderClass];
 	INFO("Registered %ul entities", (unsigned int)[[sharedContext registeredClasses] count]);
 }
 
@@ -91,8 +93,12 @@
 - (void)updateOutput:(NSString*)msg
 {
     NSAttributedString *attrString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\n", msg]
-                                                                     attributes:[NSDictionary dictionaryWithObject:[NSColor whiteColor]
-                                                                                                            forKey:NSForegroundColorAttributeName]];
+                                                                     attributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                                 [NSColor whiteColor],
+                                                                                 NSForegroundColorAttributeName,
+                                                                                 [NSFont fontWithName:@"Courier" size:12],
+                                                                                 NSFontAttributeName,
+                                                                                 nil]];
     [[consoleView textStorage] appendAttributedString:attrString];
     [consoleView scrollRangeToVisible:NSMakeRange([[[consoleView textStorage] characters] count], 0)];
     [attrString release];

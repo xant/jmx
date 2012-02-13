@@ -422,7 +422,7 @@
                 } else {
                     JMXPin *pin = [pins objectAtIndex:rowIndex];
                     if (pin.type == kJMXAudioPin || pin.type == kJMXImagePin) // XXX
-                        return [JMXPin nameforType:pin.type];
+                        return [JMXPin nameForType:pin.type];
                     return pin.data;
                 }
             }

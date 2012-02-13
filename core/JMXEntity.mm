@@ -228,15 +228,19 @@ using namespace v8;
                                      userData:userData
                                 allowedValues:pinValues
                                  initialValue:(id)value];
-    if (newPin) {
-        @synchronized(self) {
-            [self addChild:newPin];
-        }
-        // We need notifications to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
-        // and since the entity will persist the pin we can avoid waiting for the notification to be completely propagated
-        [self performSelectorOnMainThread:@selector(notifyPinAdded:) withObject:newPin waitUntilDone:NO];
-    }
+    if (newPin)
+        [self registerInputPin:newPin];
     return newPin;
+}
+
+- (void)registerInputPin:(JMXInputPin *)aPin
+{
+    @synchronized(self) {
+        [self addChild:aPin];
+    }
+    // We need notifications to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
+    // and since the entity will persist the pin we can avoid waiting for the notification to be completely propagated
+    [self performSelectorOnMainThread:@selector(notifyPinAdded:) withObject:aPin waitUntilDone:NO];
 }
 
 - (JMXOutputPin *)registerOutputPin:(NSString *)pinLabel withType:(JMXPinType)pinType
@@ -299,14 +303,19 @@ using namespace v8;
                                  allowedValues:pinValues
                                   initialValue:(id)value];
     if (newPin) {
-        @synchronized(self) {
-            [self addChild:newPin];
-        }
-        // We need notifications to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
-        // and since the entity will persist the pin we can avoid waiting for the notification to be completely propagated
-        [self performSelectorOnMainThread:@selector(notifyPinAdded:) withObject:newPin waitUntilDone:NO];
+        [self registerOutputPin:newPin];
     }
     return newPin;
+}
+
+- (void)registerOutputPin:(JMXOutputPin *)aPin
+{
+    @synchronized(self) {
+        [self addChild:aPin];
+    }
+    // We need notifications to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
+    // and since the entity will persist the pin we can avoid waiting for the notification to be completely propagated
+    [self performSelectorOnMainThread:@selector(notifyPinAdded:) withObject:aPin waitUntilDone:NO];
 }
 
 - (void)proxiedPinDestroyed:(NSNotification *)info
@@ -560,7 +569,8 @@ using namespace v8;
 
 - (void)setActivePin:(NSNumber *)value
 {
-    self.active = [value boolValue];
+    if ([value isKindOfClass:[NSNumber class]])
+        self.active = [value boolValue];
 }
 
 - (id)privateDataForKey:(NSString *)key

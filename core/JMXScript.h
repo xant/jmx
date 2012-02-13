@@ -101,7 +101,7 @@
 
 - (void)execCode:(NSString *)code;
 - (void)execFunction:(v8::Handle<v8::Function>)function;
-- (void)execFunction:(v8::Handle<v8::Function>)function
+- (v8::Handle<v8::Value>)execFunction:(v8::Handle<v8::Function>)function
        withArguments:(v8::Handle<v8::Value> *)argv
                count:(NSUInteger)count;
 - (void)addPersistentInstance:(v8::Persistent<v8::Object>)persistent obj:(id)obj;

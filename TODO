@@ -1,10 +1,10 @@
-- allow to change entity names from the GUI (it used to work ... but not anymore)
 - allow to provide input values (of any supported type) through the GUI
   * size and point are missing and REALLY important *
-- input controllers (at least keyboard and mouse ... but we need to support also midi/osc controllers)
+- allow to change entity names from the GUI (it used to work ... but not anymore)
+- osc entity (input and output)
 - implement exporters (file save and streaming)
-- improve (and finish implementing) JMXAudioMixer
+- import openCV to implement core entities for image-analysis
 - allow to group 'diagrams' from the GUI and to access such groups as a sort of 'macro' in other diagrams
 - write a kernel extension to export video mixers as video-input-devices
 - write a kernel extension to export audio mixers as audio-input/output-devices
-- import openCV to implement core entities for image-analysis
+- improve (and finish implementing) JMXAudioMixer

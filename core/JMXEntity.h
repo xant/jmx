@@ -190,6 +190,8 @@
                     allowedValues:(NSArray *)pinValues
                      initialValue:(id)value;
 
+- (void)registerInputPin:(JMXInputPin *)aPin;
+
 /*!
  @method registerOutputPin:withType:andSelector:
  @abstract create and register a new input pin
@@ -259,6 +261,8 @@
                         andSelector:(NSString *)selector
                       allowedValues:(NSArray *)pinValues
                        initialValue:(id)value;
+
+- (void)registerOutputPin:(JMXOutputPin *)aPin;
 
 /*!
  @method proxyInputPin:withLabel:

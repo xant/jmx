@@ -10,6 +10,8 @@
 #import "JMXEntity.h"
 
 @class JMXScript;
+@class JMXScriptInputPin;
+@class JMXScriptOutputPin;
 
 @interface JMXScriptEntity : JMXEntity {
 @protected
@@ -25,5 +27,14 @@
 - (BOOL)exec;
 - (void)resetContext;
 - (void)hookEntity:(JMXEntity *)entity;
+
+#ifdef __JMXV8__
+- (JMXScriptInputPin *)registerJSInputPinWithLabel:(NSString *)label
+                                        type:(JMXPinType)type
+                                    function:(v8::Persistent<v8::Function>)function;
+- (JMXScriptOutputPin *)registerJSOutputPinWithLabel:(NSString *)label
+                                          type:(JMXPinType)type
+                                      function:(v8::Persistent<v8::Function>)function;
+#endif
 
 @end

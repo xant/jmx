@@ -251,7 +251,7 @@ JMXEntityLabelLayer *JMXEntityLabelLayerCreate(NSString *name) {
 
 id controlForJMXPinType(JMXPinType aType)
 {
-    NSString *name = [JMXPin nameforType:aType];
+    NSString *name = [JMXPin nameForType:aType];
     if (name)
         return name;
     return @"None";

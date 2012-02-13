@@ -193,7 +193,7 @@ using namespace v8;
             dataBuffer[wOffset++] = [value retain];
         }
         dataLock = [[NSRecursiveLock alloc] init];
-        [self addAttribute:[NSXMLNode attributeWithName:@"type" stringValue:[JMXPin nameforType:type]]];
+        [self addAttribute:[NSXMLNode attributeWithName:@"type" stringValue:[JMXPin nameForType:type]]];
         [self addAttribute:[NSXMLNode attributeWithName:@"multiple" stringValue:multiple ? @"YES" : @"NO" ]];
         [self addAttribute:[NSXMLNode attributeWithName:@"connected" stringValue:connected ? @"YES" : @"NO" ]];
         [self addAttribute:[NSXMLNode attributeWithName:@"label" stringValue:label]];
@@ -223,7 +223,7 @@ using namespace v8;
 
 #pragma mark Implementation
 
-+ (NSString *)nameforType:(JMXPinType)type
++ (NSString *)nameForType:(JMXPinType)type
 {
     switch ((int)type) {
         case kJMXStringPin:
@@ -248,6 +248,19 @@ using namespace v8;
             return @"Color";
         case kJMXBooleanPin:
             return @"Boolean";
+    }
+    return nil;
+}
+
++ (NSString *)nameForMode:(JMXPinMode)mode
+{
+    switch ((int)mode) {
+        case kJMXPinModeAuto:
+            return @"Auto";
+        case kJMXPinModeActive:
+            return @"Active";
+        case kJMXPinModePassive:
+            return @"Passive";
     }
     return nil;
 }
@@ -387,7 +400,15 @@ using namespace v8;
 
 - (NSString *)typeName
 {
-    NSString *aName = [JMXPin nameforType:type];
+    NSString *aName = [JMXPin nameForType:type];
+    if (aName)
+        return aName;
+    return @"Unknown";
+}
+
+- (NSString *)modeName
+{
+    NSString *aName = [JMXPin nameForMode:mode];
     if (aName)
         return aName;
     return @"Unknown";
@@ -450,8 +471,14 @@ using namespace v8;
     // if we have an owner which conforms to the <JMXPinOwner> protocol
     // we will send it a message to get the actual value
     id ret = nil;
-    if (owner && [owner conformsToProtocol:@protocol(JMXPinOwner)])
-        ret = [owner provideDataToPin:self];
+    
+    if (direction == kJMXOutputPin && owner) {
+        SEL signal = NSSelectorFromString(ownerSignal);
+        if (ownerSignal && [owner respondsToSelector:signal])
+            ret = [owner performSelector:signal];
+        else if ([owner conformsToProtocol:@protocol(JMXPinOwner)])
+            ret = [owner provideDataToPin:self];
+    }
     if (!ret) {
         // otherwise we will return the last signaled data
         [dataLock lock];
@@ -635,6 +662,18 @@ static v8::Handle<Value>type(Local<String> name, const AccessorInfo& info)
     return handle_scope.Close(ret);
 }
 
+static v8::Handle<Value>mode(Local<String> name, const AccessorInfo& info)
+{
+    //v8::Locker lock;
+    HandleScope handle_scope;
+    JMXPin *pin = (JMXPin *)info.Holder()->GetPointerFromInternalField(0);
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSString *modeName = [pin modeName];
+    v8::Handle<String> ret = String::New([modeName UTF8String], [modeName length]);
+    [pool drain];
+    return handle_scope.Close(ret);
+}
+
 static v8::Handle<Value>connect(const Arguments& args)
 {
     //v8::Locker lock;
@@ -741,6 +780,7 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
     // Add accessors for each of the fields of the entity.
     instanceTemplate->SetAccessor(String::NewSymbol("label"), GetStringProperty, SetStringProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("type"), type);
+    instanceTemplate->SetAccessor(String::NewSymbol("mode"), mode);
     instanceTemplate->SetAccessor(String::NewSymbol("direction"), direction);
     instanceTemplate->SetAccessor(String::NewSymbol("multiple"), GetBoolProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("continuous"), GetBoolProperty, SetBoolProperty);
@@ -759,7 +799,7 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    v8::Persistent<FunctionTemplate> objectTemplate = [JMXPin jsObjectTemplate];
+    v8::Persistent<FunctionTemplate> objectTemplate = [[self class] jsObjectTemplate];
     v8::Handle<Object> jsInstance = objectTemplate->InstanceTemplate()->NewInstance();
     jsInstance->SetPointerInInternalField(0, self);
     return handleScope.Close(jsInstance);

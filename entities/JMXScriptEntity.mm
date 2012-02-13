@@ -11,6 +11,10 @@
 #import "JMXScript.h"
 #import "JMXProxyPin.h"
 #import "JMXGraphFragment.h"
+#import "JMXScriptInputPin.h"
+#import "JMXScriptOutputPin.h"
+#import "JMXImageData.h"
+#import "NSColor+V8.h"
 
 using namespace v8;
 
@@ -86,6 +90,98 @@ using namespace v8;
         [self addChild:holder];
     }
     [holder addChild:entity];
+}
+
+- (JMXScriptInputPin *)registerJSInputPinWithLabel:(NSString *)aLabel
+                                        type:(JMXPinType)type
+                                    function:(v8::Persistent<v8::Function>)function
+{
+    //JMXInputPin *pin = [self registerInputPin:aLabel withType:type];
+    JMXScriptInputPin *pin = [[[JMXScriptInputPin alloc] initWithLabel:aLabel andType:type ownedBy:self withSignal:nil] autorelease];
+    pin.function = function;
+    [self registerInputPin:pin];
+    return pin;
+}
+
+- (JMXScriptOutputPin *)registerJSOutputPinWithLabel:(NSString *)aLabel
+                                          type:(JMXPinType)type
+                                      function:(v8::Persistent<v8::Function>)function
+{
+    JMXScriptOutputPin *pin = [[[JMXScriptOutputPin alloc] initWithLabel:aLabel andType:type ownedBy:self withSignal:nil] autorelease];
+    pin.function = function;
+    [self registerOutputPin:pin];
+    return pin;
+}
+
+#pragma mark -
+#pragma JMXPinOwner
+- (id)provideDataToPin:(JMXOutputPin *)aPin
+{
+    if ([aPin isKindOfClass:[JMXScriptOutputPin class]]) {
+        JMXScriptOutputPin *pin = (JMXScriptOutputPin *)aPin;
+        if (pin.function == Undefined() || pin.function.IsEmpty())
+            return nil;
+        Locker locker;
+        HandleScope handleScope;
+        Handle<Value> args[1];
+        v8::Context::Scope context_scope(jsContext.ctx);
+        args[0] = [pin jsObj];
+        Handle<Value> ret = [jsContext execFunction:pin.function withArguments:args count:1];
+        if (ret->IsNumber()) {
+            return [NSNumber numberWithDouble:ret->ToNumber()->NumberValue()];
+        } else if (ret->IsString()) {
+            String::Utf8Value str(ret->ToString());
+            return [NSString stringWithUTF8String:*str];
+        } else if (ret->IsObject()) {
+            return (id)ret->ToObject()->GetPointerFromInternalField(0);
+        }
+    } else {
+        return [super provideDataToPin:aPin];
+    }
+    return nil;
+}
+
+- (void)receiveData:(id)data fromPin:(JMXInputPin *)aPin
+{
+    if ([aPin isKindOfClass:[JMXScriptInputPin class]]) {
+        JMXScriptOutputPin *pin = (JMXScriptOutputPin *)aPin;
+        if (pin.function == Undefined() || pin.function.IsEmpty())
+            return;
+        Locker locker;
+        HandleScope handleScope;
+        Handle<Value> args[1];
+        args[0] = Undefined();
+        v8::Context::Scope context_scope(jsContext.ctx);
+        switch (pin.type) {
+            case kJMXStringPin:
+            case kJMXTextPin:
+            case kJMXCodePin:
+                args[0] = v8::String::New([(NSString *)data UTF8String]);
+                break;
+            case kJMXNumberPin:
+                args[0] = v8::Number::New([(NSNumber *)data doubleValue]);
+                break;
+            case kJMXImagePin:
+                args[0] = [[JMXImageData imageDataWithImage:(CIImage *)data rect:[(CIImage *)data extent]] jsObj];
+                break;
+            case kJMXColorPin:
+                args[0] = [(NSColor *)data jsObj];
+                break;
+            case kJMXSizePin:
+                args[0] = [(JMXSize *)data jsObj];
+                break;
+            case kJMXPointPin:
+                args[0] = [(JMXPoint *)data jsObj];
+                break;
+            default:
+                // TODO - Error Message
+                break;
+        }
+        [jsContext execFunction:pin.function withArguments:args count:1];
+    } else {
+        [super receiveData:data fromPin:aPin];
+    }
+    // XXX - base implementation doesn't do anything
 }
 
 static Persistent<FunctionTemplate> objectTemplate;

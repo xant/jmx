@@ -72,4 +72,5 @@
  @discussion this method does nothing if the passed pin is not connected to us (so not in <code>producers</code>
  */
 - (void)disconnectFromPin:(JMXInputPin *)destinationPin;
+
 @end

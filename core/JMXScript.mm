@@ -42,6 +42,8 @@
 #import "JMXEventListener.h"
 #import "JMXCanvasElement.h"
 #import "JMXPhidgetEncoderEntity.h"
+#import "JMXScriptInputPin.h"
+#import "JMXScriptOutputPin.h"
 #import "node.h"
 #import "v8_typed_array.h"
 
@@ -90,6 +92,8 @@ static JMXV8ClassDescriptor mappedClasses[] = {
     { "JMXGraphFragment",         "DocumentFragment", JMXGraphFragmentJSConstructor         },
     { "JMXCanvasElement",         "HTMLCanvasElement",JMXCanvasElementJSConstructor         },
     { "JMXPhidgetEncoderEntity",  "PhidgetEncoder",   JMXPhidgetEncoderEntityJSConstructor  },
+    { "JMXScriptInputPin",        "InputPin",         JMXInputPinJSConstructor              },
+    { "JMXScriptOutputPin",       "OutputPin",        JMXOutputPinJSConstructor             },
     { NULL,                       NULL,               NULL                                  }
 };
 
@@ -455,7 +459,7 @@ static v8::Handle<Value> SetInterval(const Arguments& args)
     JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetPointerFromInternalField(0);
     JMXScript *scriptContext = entity.jsContext;
     if (args.Length() >= 2 && args[1]->IsNumber() && 
-        (args[0]->IsString() || args[0]->IsFunction()) )
+        (args[0]->IsString() || args[0]->IsFunction()))
     {
         JMXScriptTimer *foo = [JMXScriptTimer scriptTimerWithFireDate:[NSDate dateWithTimeIntervalSinceNow:args[1]->NumberValue()]
                                                              interval:args[1]->NumberValue()/1000 // millisecs here
@@ -640,13 +644,13 @@ static char *argv[2] = { (char *)"JMX", NULL };
     }
 }
 
-- (void)execFunction:(v8::Handle<v8::Function>)function
+- (v8::Handle<Value>)execFunction:(v8::Handle<v8::Function>)function
        withArguments:(v8::Handle<v8::Value> *)argv
                count:(NSUInteger)count
 {
     v8::Locker locker;
     HandleScope handleScope;
-    v8::Handle<Value> ret = function->Call(function, count, argv); 
+    return handleScope.Close(function->Call(function, count, argv)); 
 }
 
 - (void)execFunction:(v8::Handle<v8::Function>)function

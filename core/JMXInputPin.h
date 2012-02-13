@@ -69,4 +69,6 @@
  @discussion this method does nothing if the passed pin is not connected to us (so not in @link producers @/link
  */
 - (void)disconnectFromPin:(JMXOutputPin *)destinationPin;
+
 @end
+

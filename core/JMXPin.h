@@ -81,6 +81,12 @@ typedef enum {
     kJMXAnyPin
 } JMXPinDirection;
 
+/*!
+ @enum
+ @constant kJMXPinModeAuto  
+ @constant kJMXPinModeActive Actively produces a signal
+ @constant kJMXPinModePassive Passively provides a signal when requested
+ */
 typedef enum {
     kJMXPinModeAuto = 0,
     kJMXPinModeActive,
@@ -343,7 +349,16 @@ typedef enum {
  @param type the @link JMXPinType @/link we want the printable name for
  @return NSString with the printable name
  */
-+ (NSString *)nameforType:(JMXPinType)type;
++ (NSString *)nameForType:(JMXPinType)type;
+
+/*!
+ @method nameforMode:
+ @abstract returns an NSString with a printable name for a specific pin mode
+ @param type the @link JMXPinMode @/link we want the printable name for
+ @return NSString with the printable name
+ */
++ (NSString *)nameForMode:(JMXPinMode)mode;
+
 /*!
  @method connectToPin:(JMXPin *)destinationPin
  @param destinationPin the pin we want to make the connection with

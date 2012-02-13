@@ -125,12 +125,13 @@
   };
 
   startup.globalTimeouts = function() {
+    /* XXX - JMX timetouts are faster ... so we don't bother using the ones provided here
     global.setTimeout = function() {
       var t = NativeModule.require('timers');
       return t.setTimeout.apply(this, arguments);
     };
 
- /*
+ 
     global.setInterval = function() {
       var t = NativeModule.require('timers');
       return t.setInterval.apply(this, arguments);

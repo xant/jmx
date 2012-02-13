@@ -124,7 +124,7 @@ v8::Handle<Value>GetIntProperty(Local<String> name, const AccessorInfo& info)
 {
     //Locker lock;
     HandleScope handle_scope;
-    int ret = 0;
+    NSInteger ret = 0;
     String::Utf8Value value(name);
     
     id obj = (id)info.Holder()->GetPointerFromInternalField(0);

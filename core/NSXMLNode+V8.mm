@@ -575,7 +575,7 @@ static v8::Handle<Value> AddEventListener(const Arguments& args)
         v8::String::Utf8Value type(args[0]);
 
         JMXEventListener *listener = [[[JMXEventListener alloc] init] autorelease];
-        listener.function = Persistent<Function>::New(Handle<Function>::Cast(args[0]));
+        listener.function = Persistent<Function>::New(Handle<Function>::Cast(args[1]));
         listener.target = node;
         listener.capture = args[2]->IsUndefined() ? NO : args[2]->BooleanValue();
         Local<Context> context = v8::Context::GetCalling();

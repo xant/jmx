@@ -516,6 +516,8 @@ function Window() {
 window = new Window(); // XXX
 window.setInterval = global.setInterval;
 window.clearInterval = global.clearInterval;
+window.pageXOffset = 0;
+window.pageYOffset = 0;
 window.document = global.document;
 function Navigator() {
     Object.defineProperty(this, "userAgent", { value: "JMX", writable: false, enumerable: false });
@@ -575,6 +577,4 @@ function XMLHttpRequest() {
     Object.defineProperty(this, "onreadystatechange", { value: function() { }, writable: true, enumerable: false });
     Object.defineProperty(this, "status", { value: 0, writable: false, enumerable: false });
     Object.defineProperty(this, "statusText", { value: "", writable: false, enumerable: false });
-
-
 }

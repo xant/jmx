@@ -10,8 +10,10 @@
 
 @interface JMXGraph : NSXMLDocument {
     NSString *uid;
+    NSXMLNode *headNode;
 }
 
 @property (readonly) NSString *uid;
+@property (readonly) NSXMLNode *headNode;
 
 @end

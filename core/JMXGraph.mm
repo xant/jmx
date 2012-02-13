@@ -15,7 +15,7 @@
 
 @implementation JMXGraph
 
-@synthesize uid;
+@synthesize uid, headNode;
 
 + (Class)replacementClassForClass:(Class)currentClass {
     if ( currentClass == [NSXMLElement class] ) {
@@ -35,8 +35,17 @@
     self = [super init];
     if (self) {
         uid = [[NSString stringWithFormat:@"%8x", [self hash]] retain];
+        headNode = [[NSXMLNode alloc] initWithKind:NSXMLElementKind];
+        headNode.name = @"head";
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [uid release];
+    [headNode release];
+    [super dealloc];
 }
 
 #pragma mark V8
@@ -50,6 +59,14 @@ static v8::Handle<Value>GetRootNode(Local<String> name, const AccessorInfo& info
     HandleScope handleScope;
     JMXGraph *document = (JMXGraph *)info.Holder()->GetPointerFromInternalField(0);
     return handleScope.Close([[document rootElement] jsObj]);
+}
+
+static v8::Handle<Value>GetHeadNode(Local<String> name, const AccessorInfo& info)
+{
+    //v8::Locker lock;
+    HandleScope handleScope;
+    JMXGraph *document = (JMXGraph *)info.Holder()->GetPointerFromInternalField(0);
+    return handleScope.Close([[document headNode] jsObj]);
 }
 
 static v8::Handle<Value> CreateElement(const Arguments& args)
@@ -144,6 +161,40 @@ static v8::Handle<Value> MapGet(Local<String> name, const AccessorInfo &info)
     return handleScope.Close(obj->Get(name));
 }
 
+static v8::Handle<Value> GetPropertyValue(const Arguments& args)
+{
+    v8::Locker lock;
+    HandleScope handleScope;
+    if (args.Length() && args[0]->IsString()) {
+        return handleScope.Close(args.Holder()->ToObject()->Get(args[0]));
+    }
+    return Undefined();
+}
+
+static v8::Handle<Value> GetComputedStyle(const Arguments& args)
+{
+    v8::Locker lock;
+    HandleScope handleScope;
+    Handle<ObjectTemplate> obj = ObjectTemplate::New();
+    obj->Set("paddingLeft", Integer::New(0));
+    obj->Set("paddingTop", Integer::New(0));
+    obj->Set("borderLeft", Integer::New(0));
+    obj->Set("borderTop", Integer::New(0));
+    obj->Set("height", String::New("0px"));
+    obj->Set("width", String::New("0px"));
+    obj->Set("getPropertyValue", FunctionTemplate::New(GetPropertyValue));
+    return handleScope.Close(obj->NewInstance());
+}
+
+static v8::Handle<Value> DefaultView(Local<String> name, const AccessorInfo &info)
+{
+    v8::Locker lock;
+    HandleScope handleScope;
+    Handle<ObjectTemplate> obj = ObjectTemplate::New();
+    obj->Set("getComputedStyle", FunctionTemplate::New(GetComputedStyle));
+    return handleScope.Close(obj->NewInstance());
+}
+
 - (v8::Handle<v8::Object>)jsObj
 {
     //v8::Locker lock;
@@ -174,8 +225,9 @@ static v8::Handle<Value> MapGet(Local<String> name, const AccessorInfo &info)
     instanceTemplate->SetAccessor(String::NewSymbol("uid"), GetStringProperty, SetStringProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("documentElement"), GetRootNode);
     instanceTemplate->SetAccessor(String::NewSymbol("body"), GetRootNode); // XXX - hack
+    instanceTemplate->SetAccessor(String::NewSymbol("head"), GetHeadNode); // XXX - hack
 
-    
+    instanceTemplate->SetAccessor(String::NewSymbol("defaultView"), DefaultView);
     //instanceTemplate->SetNamedPropertyHandler(MapGet, MapSet);
     
     instanceTemplate->SetInternalFieldCount(1);

@@ -1086,13 +1086,11 @@
     var descent = Math.round(i / w4);
     pfont.ascent = correctionFactor * (baseline - ascent);
     pfont.descent = correctionFactor * (descent - baseline);
-    /*
     if (document.defaultView.getComputedStyle) {
       var leadDivHeight = document.defaultView.getComputedStyle(leadDiv, null).getPropertyValue("height");
       leadDivHeight = correctionFactor * leadDivHeight.replace("px", "");
       if (leadDivHeight >= pfont.size * 2) pfont.leading = Math.round(leadDivHeight / 2)
     }
-    */
     document.body.removeChild(leadDiv)
   }
   function PFont(name, size) {
@@ -1169,7 +1167,7 @@
       var fontface = document.createElement("style");
       fontface.setAttribute("type", "text/css");
       fontface.innerHTML = "@font-face {\n" + '  font-family: "PjsEmptyFont";' + "\n" + "  src: url('data:application/x-font-ttf;base64," + generateTinyFont() + "')\n" + "       format('truetype');\n" + "}";
-      //document.head.appendChild(fontface);
+      document.head.appendChild(fontface);
       var element = document.createElement("span");
       element.style.cssText = 'position: absolute; top: 0; left: 0; opacity: 0; font-family: "PjsEmptyFont", fantasy;';
       element.innerHTML = "AAAAAAAA";
@@ -1178,7 +1176,7 @@
       this.initialized = true
     },
     getElementWidth: function(element) {
-      //return document.defaultView.getComputedStyle(element, "").getPropertyValue("width")
+      return document.defaultView.getComputedStyle(element, "").getPropertyValue("width")
     },
     timeAttempted: 0,
     pending: function(intervallength) {
@@ -1209,7 +1207,7 @@
       var style = document.createElement("style");
       style.setAttribute("type", "text/css");
       style.innerHTML = "@font-face{\n  font-family: '" + fontName + "';\n  src:  url('" + fontUrl + "');\n}\n";
-      //document.head.appendChild(style);
+      document.head.appendChild(style);
       this.addedList[fontName] = true;
       var element = document.createElement("span");
       element.style.cssText = "position: absolute; top: 0; left: 0; opacity: 0;";

@@ -22,7 +22,7 @@ function sketchProc(processing) {
   processing.height = height;
   //processing.size( 200, 200 );
   processing.strokeWeight( 10 );
-  processing.frameRate( 15 );
+  processing.frameRate( 25 );
   X = width / 2;
   Y = height / 2;
   nX = X;
@@ -32,8 +32,8 @@ function sketchProc(processing) {
     radius = radius + Math.sin( processing.frameCount / 4 );
           
     // Track circle to new destination
-    X+=(nX-X)/delay;
-    Y+=(nY-Y)/delay;
+    X+=(nX-X)/(delay*2);
+    Y+=(nY-Y)/(delay*2);
     //       
     // Fill canvas grey
     processing.background( 100 );
@@ -46,6 +46,11 @@ function sketchProc(processing) {
                              
     // Draw circle
     processing.ellipse( X, Y, radius, radius ); 
+  };
+
+  processing.mouseMoved = function() {
+      nX = processing.mouseX;
+      nY = processing.mouseY;  
   };
 }
 

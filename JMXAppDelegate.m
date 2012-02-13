@@ -60,9 +60,12 @@
 	[sharedContext registerClass:[JMXTextEntity class]];
     [sharedContext registerClass:[JMXScriptFile class]];
     [sharedContext registerClass:[JMXScriptLive class]];
-    Class phidgetEncoderClass = NSClassFromString(@"JMXPhidgetEncoderEntity");
-    if (phidgetEncoderClass)
-        [sharedContext registerClass:phidgetEncoderClass];
+    if (CPhidgetEncoder_create != NULL) {
+        // XXX - exception case for weakly linked Phidget library
+        //       if it's not available at runtime we don't want to register the phidget-related entities
+        //       or the application will crash when the user tries accessing them
+        [sharedContext registerClass:[JMXPhidgetEncoderEntity class]];
+    }
 	INFO("Registered %ul entities", (unsigned int)[[sharedContext registeredClasses] count]);
 }
 

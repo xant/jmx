@@ -1551,7 +1551,7 @@ static void SetFont(Local<String> name, Local<Value> value, const AccessorInfo& 
         NSString *fontString = [NSString stringWithUTF8String:*str];
         regex_t exp;
         regmatch_t matches[4];
-        
+        // normal normal normal 12px/14.399999999999999px "Arial", sans-serif
         if (regcomp(&exp, "(\\w+) (\\d+)(px|em|pt)", REG_EXTENDED) == 0) {
             if (regexec(&exp, *str, 4, matches, 0) == 0) {
                 /* TODO - take specified font size into account */

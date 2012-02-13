@@ -710,6 +710,7 @@ static void SetData(Local<String> name, Local<Value> value, const AccessorInfo& 
         val = (id)value->ToObject()->GetPointerFromInternalField(0);
     } else {
         NSLog(@"Bad parameter (not object) passed to %s", *nameStr);
+        [pool release];
         return;
     }
     JMXPin *obj = (JMXPin *)info.Holder()->GetPointerFromInternalField(0);

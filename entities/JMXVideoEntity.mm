@@ -217,9 +217,6 @@
             CGFloat x = fmod(origin.x, rect.size.width);
             CGFloat y = fmod(origin.y, rect.size.height);
 
-            //x = (abs(origin.x) < rect.size.width) ? origin.x : rect.size.width-(abs(origin.x));
-            //y = (abs(origin.y) < rect.size.height) ? origin.y : 0;
-
             [originTransform translateXBy:x yBy:y];
             [transform appendTransform:originTransform];
             CIFilter *originFilter = transformFilter;

@@ -68,7 +68,6 @@ static int gotPositionChange(CPhidgetEncoderHandle phid, void *context, int ind,
 {
     self = [super init];
     if (self) {
-    
         CPhidgetEncoder_create(&encoder);
         CPhidget_set_OnAttach_Handler((CPhidgetHandle)encoder, gotAttach, self);
         CPhidget_set_OnDetach_Handler((CPhidgetHandle)encoder, gotDetach, self);
@@ -106,21 +105,7 @@ static int gotPositionChange(CPhidgetEncoderHandle phid, void *context, int ind,
 	CPhidget_getDeviceID((CPhidgetHandle)encoder, &devid);
 	CPhidgetEncoder_getInputCount(encoder, &numInputs);
 	CPhidgetEncoder_getEncoderCount(encoder, &numEncoders);
-/*	
-    switch(devid)
-	{
-		case PHIDID_ENCODER_1ENCODER_1INPUT:
 
-			break;
-		case PHIDID_ENCODER_HS_1ENCODER:
-
-			break;
-		case PHIDID_ENCODER_HS_4ENCODER_4INPUT:
-
-			break;
-		default:
-			break;
-	}*/
     for (NSArray *pinArray in encoders) {
         for (JMXPin *pin in pinArray) {
             [self unregisterPin:pin];
@@ -141,34 +126,7 @@ static int gotPositionChange(CPhidgetEncoderHandle phid, void *context, int ind,
                                                withType:kJMXNumberPin]];
             [encoders addObject:pinArray];
         }
-        /*
-        switch(devid)
-		{
-			case PHIDID_ENCODER_1ENCODER_1INPUT:
-                
-				[[positionSliders cellWithTag:i] setMaxValue:250];
-				[[positionSliders cellWithTag:i] setMinValue:-250];
-				[[enabledCheckboxes cellWithTag:i] setEnabled:false];
-                 
-				break;
-			case PHIDID_ENCODER_HS_1ENCODER:
-                
-				[[positionSliders cellWithTag:i] setMaxValue:50000];
-				[[positionSliders cellWithTag:i] setMinValue:-50000];
-				[[enabledCheckboxes cellWithTag:i] setEnabled:false];
-                
-				break;
-			case PHIDID_ENCODER_HS_4ENCODER_4INPUT:
-                
-				[[positionSliders cellWithTag:i] setMaxValue:50000];
-				[[positionSliders cellWithTag:i] setMinValue:-50000];
-				[[enabledCheckboxes cellWithTag:i] setEnabled:true];
-                 
-				break;
-			default:
-				break;
-		}*/
-	}
+    }
     if(numInputs)
 	{
 		/*[inputs renewRows:1 columns:numInputs];
@@ -205,14 +163,7 @@ static int gotPositionChange(CPhidgetEncoderHandle phid, void *context, int ind,
 - (void)PositionChange:(NSArray *)positionChangeData
 {
 	int index;
-	/*
-	[[positions cellWithTag:[[positionChangeData objectAtIndex:0] intValue]] 
-	 setIntValue:[[positionChangeData objectAtIndex:3] intValue]];
-	[[positionSliders cellWithTag:[[positionChangeData objectAtIndex:0] intValue]] 
-	 setIntValue:[[positionChangeData objectAtIndex:3] intValue]];
-	[[msTimes cellWithTag:[[positionChangeData objectAtIndex:0] intValue]] 
-	 setIntValue:[[positionChangeData objectAtIndex:1] intValue]];
-	*/
+
     NSArray *pinArray = [encoders objectAtIndex:[[positionChangeData objectAtIndex:0] intValue]];
     JMXOutputPin *encoderPin = [pinArray objectAtIndex:0];
     JMXOutputPin *timePin = [pinArray objectAtIndex:1];
@@ -226,9 +177,7 @@ static int gotPositionChange(CPhidgetEncoderHandle phid, void *context, int ind,
 
 	if(!CPhidgetEncoder_getIndexPosition(encoder, [[positionChangeData objectAtIndex:0] intValue], &index))
 	{
-        /*
-		[[indexes cellWithTag:[[positionChangeData objectAtIndex:0] intValue]] 
-		 setIntValue:index];*/
+
 	}
 }
 
@@ -251,20 +200,28 @@ int errorCounter = 0;
 			break;
 		default:
 			errorCounter++;
-			
-			NSAttributedString *string = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\n",errorString]];
-			/*
-			[[errorEventLog textStorage] beginEditing];
-			[[errorEventLog textStorage] appendAttributedString:string];
-			[[errorEventLog textStorage] endEditing];
-			
-			[errorEventLogCounter setIntValue:errorCounter];
-			if(![errorEventLogWindow isVisible])
-				[errorEventLogWindow setIsVisible:YES];*/
+			NSLog(@"%@ - Error: %@", self, errorString);
 			break;
 	}
 }
 
+#pragma mark v8 Class Template
 
++ (v8::Persistent<FunctionTemplate>)jsObjectTemplate
+{
+    //v8::Locker lock;
+    if (!objectTemplate.IsEmpty())
+        return objectTemplate;
+    objectTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    objectTemplate->Inherit([super jsObjectTemplate]);
+    objectTemplate->SetClassName(String::New("PhidgetEncoder"));
+    v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
+    // set instance methods
+    v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
+    instanceTemplate->SetInternalFieldCount(1);
+    NSLog(@"JMXPhidgetEncoderEntity objectTemplate created");
+    return objectTemplate;
+}
+ 
 
 @end

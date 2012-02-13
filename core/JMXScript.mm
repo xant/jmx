@@ -69,28 +69,28 @@ typedef struct __JMXV8ClassDescriptor {
 } JMXV8ClassDescriptor;
 
 static JMXV8ClassDescriptor mappedClasses[] = {
-    { "JMXEntity",                "Entity",           JMXEntityJSConstructor },
-    { "JMXOpenGLScreen",          "OpenGLScreen",     JMXOpenGLScreenJSConstructor },
-    { "JMXQtVideoCaptureEntity",  "QtVideoCapture",   JMXQtVideoCaptureEntityJSConstructor },
-    { "JMXQtMovieEntity",         "QtMovieFile",      JMXQtMovieEntityJSConstructor },
-    { "JMXCoreImageFilter",       "CoreImageFilter",  JMXCoreImageFilterJSConstructor },
-    { "JMXVideoMixer",            "VideoMixer",       JMXVideoMixerJSConstructor },
-    { "JMXAudioFileEntity",       "CoreAudioFile",    JMXAudioFileEntityJSConstructor },
-    { "JMXCoreAudioOutput",       "CoreAudioOutput",  JMXCoreAudioOutputJSConstructor },
-    { "JMXQtAudioCaptureEntity",  "QtAudioCapture",   JMXQtAudioCaptureEntityJSConstructor },
+    { "JMXEntity",                "Entity",           JMXEntityJSConstructor                },
+    { "JMXOpenGLScreen",          "OpenGLScreen",     JMXOpenGLScreenJSConstructor          },
+    { "JMXQtVideoCaptureEntity",  "QtVideoCapture",   JMXQtVideoCaptureEntityJSConstructor  },
+    { "JMXQtMovieEntity",         "QtMovieFile",      JMXQtMovieEntityJSConstructor         },
+    { "JMXCoreImageFilter",       "CoreImageFilter",  JMXCoreImageFilterJSConstructor       },
+    { "JMXVideoMixer",            "VideoMixer",       JMXVideoMixerJSConstructor            },
+    { "JMXAudioFileEntity",       "CoreAudioFile",    JMXAudioFileEntityJSConstructor       },
+    { "JMXCoreAudioOutput",       "CoreAudioOutput",  JMXCoreAudioOutputJSConstructor       },
+    { "JMXQtAudioCaptureEntity",  "QtAudioCapture",   JMXQtAudioCaptureEntityJSConstructor  },
     { "JMXAudioSpectrumAnalyzer", "AudioSpectrum",    JMXAudioSpectrumAnalyzerJSConstructor },
-    { "JMXDrawEntity",            "DrawPath",         JMXDrawEntityJSConstructor },
-    { "JMXPoint",                 "Point",            JMXPointJSConstructor },
-    { "JMXColor",                 "Color",            JMXColorJSConstructor },
-    { "JMXSize",                  "Size",             JMXSizeJSConstructor },
-    { "NSXMLNode",                "Node",             NSXMLNodeJSConstructor },
-    { "JMXElement",               "Element",          JMXElementJSConstructor },
-    { "JMXCDATA",                 "CDATA",            JMXCDATAJSConstructor },
-    { "JMXAttribute",             "Attribute",        JMXAttributeJSConstructor },
-    { "JMXGraphFragment",         "DocumentFragment", JMXGraphFragmentJSConstructor },
-    { "JMXCanvasElement",         "HTMLCanvasElement",JMXCanvasElementJSConstructor },
-    { "JMXPhidgetEncoderEntity",  "PhidgetEncoder",   JMXPhidgetEncoderEntityJSConstructor },
-    { NULL,                       NULL,              NULL }
+    { "JMXDrawEntity",            "DrawPath",         JMXDrawEntityJSConstructor            },
+    { "JMXPoint",                 "Point",            JMXPointJSConstructor                 },
+    { "JMXColor",                 "Color",            JMXColorJSConstructor                 },
+    { "JMXSize",                  "Size",             JMXSizeJSConstructor                  },
+    { "NSXMLNode",                "Node",             NSXMLNodeJSConstructor                },
+    { "JMXElement",               "Element",          JMXElementJSConstructor               },
+    { "JMXCDATA",                 "CDATA",            JMXCDATAJSConstructor                 },
+    { "JMXAttribute",             "Attribute",        JMXAttributeJSConstructor             },
+    { "JMXGraphFragment",         "DocumentFragment", JMXGraphFragmentJSConstructor         },
+    { "JMXCanvasElement",         "HTMLCanvasElement",JMXCanvasElementJSConstructor         },
+    { "JMXPhidgetEncoderEntity",  "PhidgetEncoder",   JMXPhidgetEncoderEntityJSConstructor  },
+    { NULL,                       NULL,               NULL                                  }
 };
 
 void JSExit(int code)
@@ -591,6 +591,13 @@ static char *argv[2] = { (char *)"JMX", NULL };
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     for (int i = 0; mappedClasses[i].className != NULL; i++) {
         v8::Handle<FunctionTemplate> constructor = FunctionTemplate::New(mappedClasses[i].jsConstructor);
+        if (strcmp(mappedClasses[i].className, "JMXPhidgetEncoderEntity") == 0) {
+            // XXX - exception case for weakly linked Phidget library
+            //       if it's not available at runtime we don't want to register the phidget-related entities
+            //       or the application will crash when the user tries accessing them
+            if (CPhidgetEncoder_create == NULL)
+                continue;
+        }
         Class entityClass = NSClassFromString([NSString stringWithUTF8String:mappedClasses[i].className]);
         if (entityClass) {
             [entityClass jsRegisterClassMethods:constructor];
@@ -876,8 +883,15 @@ static char *argv[2] = { (char *)"JMX", NULL };
     // TODO - support capturing
     NSMutableSet *listeners = [eventListeners objectForKey:anEvent.type];
     for (JMXEventListener *listener in listeners) {
-        if ([listener.target isEqual:aTarget])
-            [listener dispatch];
+        if ([listener.target isEqual:aTarget]) {
+            Locker locker;
+            HandleScope handleScope;
+            v8::Context::Scope context_scope(ctx);
+            Handle<Value> args[1];
+            args[0] = [anEvent jsObj];
+            [self execFunction:listener.function withArguments:args count:1];
+            //[listener dispatch];
+        }
     }
     return NO;
 }
@@ -886,7 +900,12 @@ static char *argv[2] = { (char *)"JMX", NULL };
 {
     NSMutableSet *listeners = [eventListeners objectForKey:anEvent.type];
     for (JMXEventListener *listener in listeners) {
-        [listener dispatch];
+        Locker locker;
+        HandleScope handleScope;
+        v8::Context::Scope context_scope(ctx);
+        Handle<Value> args[1];
+        args[0] = [anEvent jsObj];
+        [self execFunction:listener.function withArguments:args count:1];
     }
     return NO;
 }

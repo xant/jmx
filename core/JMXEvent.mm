@@ -105,7 +105,7 @@ static void JMXEventJSDestructor(Persistent<Value> object, void *parameter)
 {
     //v8::Locker lock;
     HandleScope handle_scope;
-    Handle<FunctionTemplate> objectTemplate = [JMXEvent jsObjectTemplate];
+    Handle<FunctionTemplate> objectTemplate = [[self class] jsObjectTemplate];
     Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
     jsInstance->SetPointerInInternalField(0, self);
     jsInstance.MakeWeak([self retain], JMXEventJSDestructor);

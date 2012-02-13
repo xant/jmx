@@ -23,17 +23,50 @@
 
 #import <Cocoa/Cocoa.h>
 #import "JMXVideoOutput.h"
+#import "JMXScreenController.h"
 
-@class JMXOpenGLView;
-@class JMXScreenController;
+#pragma mark -
+#pragma mark JMXOpenGLView
 
-@interface JMXOpenGLScreen : JMXVideoOutput {
+@interface JMXOpenGLView : NSOpenGLView {
+    CIImage *currentFrame;
+    CIContext *ciContext;
+    BOOL fullScreen;
+    NSWindow *myWindow;
+    BOOL needsResize;
+    NSRecursiveLock *lock;
+    uint64_t lastTime;
+    
+#if MAC_OS_X_VERSION_10_6
+    CGDisplayModeRef     savedMode;
+#else
+    CFDictionaryRef      savedMode;
+#endif
+    JMXSize *frameSize;
+}
+
+@property (atomic, retain) CIImage *currentFrame;
+
+- (void)setSize:(NSSize)size;
+- (void)cleanup;
+- (IBAction)toggleFullScreen:(id)sender;
+//- (void)renderFrame:(uint64_t)timeStamp;
+
+@end
+
+#pragma mark -
+#pragma mark JMXOpenGLScreen
+
+@interface JMXOpenGLScreen : JMXVideoOutput 
+<JMXScreenControllerDelegate>
+{
 
 @private
     NSWindow *window;
     JMXOpenGLView *view;
     JMXScreenController *controller;
     BOOL fullScreen;
+    JMXScript *ctx; // weak reference
 }
 
 @property (readonly) NSWindow *window;

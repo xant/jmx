@@ -22,7 +22,15 @@ using namespace v8;
 
 - (void)dispatch
 {
-    
+    /*
+    v8::Locker lock;
+    HandleScope handleScope;
+    TryCatch tryCatch;
+    v8::Handle<Value> ret = function->Call(function, 0, nil);
+    if (ret.IsEmpty()) {
+        String::Utf8Value error(tryCatch.Exception());
+        NSLog(@"%s", *error);
+    }*/
 }
 
 #pragma mark V8

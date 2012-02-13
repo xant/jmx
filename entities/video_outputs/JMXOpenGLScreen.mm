@@ -30,35 +30,12 @@
 #import "JMXScript.h"
 #import "JMXOpenGLScreen.h"
 #import "JMXSize.h"
+#import "JMXMouseEvent.h"
+
 #import <AppKit/AppKit.h>
 //#import <Carbon/Carbon.h>
 
 JMXV8_EXPORT_NODE_CLASS(JMXOpenGLScreen);
-
-@interface JMXOpenGLView : NSOpenGLView {
-    CIImage *currentFrame;
-    CIContext *ciContext;
-    BOOL fullScreen;
-    NSWindow *myWindow;
-    BOOL needsResize;
-    NSRecursiveLock *lock;
-    uint64_t lastTime;
-    
-#if MAC_OS_X_VERSION_10_6
-    CGDisplayModeRef     savedMode;
-#else
-    CFDictionaryRef      savedMode;
-#endif
-    JMXSize *frameSize;
-}
-
-@property (atomic, retain) CIImage *currentFrame;
-
-- (void)setSize:(NSSize)size;
-- (void)cleanup;
-//- (void)renderFrame:(uint64_t)timeStamp;
-
-@end
 
 @interface JMXOpenGLViewWrapper : NSObject
 {
@@ -370,77 +347,16 @@ static NSMutableDictionary *__openglOutputs = nil;
 }
 @end
 
-
-@interface JMXScreenController : NSWindowController {
-    NSMutableArray *_keyEvents;
-    JMXOpenGLView *_view;
-}
-- (NSDictionary *)getEvent;
-@end
-
-@implementation JMXScreenController
-
-- (id)initWithView:(JMXOpenGLView *)view
-{
-    _keyEvents = [[NSMutableArray arrayWithCapacity:100] retain];
-    _view = view;
-    return [super initWithWindow:[_view window]];
-}
-
-- (NSDictionary *)getEvent
-{
-    NSDictionary *event = NULL;
-    @synchronized(self) {
-        if ([_keyEvents count]) {
-            event = [_keyEvents objectAtIndex:0];
-            [_keyEvents removeObjectAtIndex:0];
-        }
-    }
-    return event;
-}
-
-
-- (void)insertEvent:(NSEvent *)event OfType:(NSString *)type WithState:(NSString *)state
-{
-    NSDictionary *entry;
-    // create the entry
-    entry = [[NSDictionary 
-              dictionaryWithObjects:
-              [NSArray arrayWithObjects:
-               event, state, type, nil
-               ]
-              forKeys:
-              [NSArray arrayWithObjects:
-               @"event", @"state", @"type", nil
-               ]
-              ] retain];
-    @synchronized(self) {
-        [_keyEvents addObject:entry];
-    }
-}
-
-- (void)keyUp:(NSEvent *)event
-{
-    //NSLog(@"Keyrelease (%hu, modifier flags: 0x%x) %@\n", [event keyCode], [event modifierFlags], [event charactersIgnoringModifiers]);
-    [self insertEvent:[event retain] OfType:@"kbd" WithState:@"released"];
-}
-
-// handle keystrokes
-- (void)keyDown:(NSEvent *)event
-{
-    ///NSLog(@"Keypress (%hu, modifier flags: 0x%x) %@\n", [event keyCode], [event modifierFlags], [event charactersIgnoringModifiers]);
-    [self insertEvent:event OfType:@"kbd" WithState:@"pressed"]; 
-    if ([event keyCode] == 3 && [event modifierFlags]&NSCommandKeyMask) { // %-f to switch fullscreen
-        [_view toggleFullScreen:self];
-        [self setWindow:[_view window]];
-    }
-}
-
-@end
-
 @implementation JMXOpenGLScreen
 
 @synthesize window, view;
+
+- (void)jsInit:(NSValue *)argsValue
+{
+    [super jsInit:argsValue];
+    v8::Local<Context> currentContext = v8::Context::GetCalling();
+    ctx = [JMXScript getContext:currentContext];
+}
 
 - (id)initWithSize:(NSSize)screenSize
 {
@@ -455,7 +371,7 @@ static NSMutableDictionary *__openglOutputs = nil;
         [window setReleasedWhenClosed:NO];
         [window setIsVisible:YES];
         [[window contentView] addSubview:view];
-        controller = [[JMXScreenController alloc] initWithView:view];
+        controller = [[JMXScreenController alloc] initWithView:view delegate:self];
         self.label = @"OpenGLScreen";
         //[window orderBack:self];
     }
@@ -513,6 +429,92 @@ static NSMutableDictionary *__openglOutputs = nil;
                             waitUntilDone:YES];
     }
     
+}
+
+#pragma mark -
+#pragma mark JMXScreenControllerDelegate
+- (void)mouseUp:(NSEvent *)event inView:(JMXOpenGLView *)view
+{
+    if (ctx) {
+        JMXMouseEvent *mouseEvent = [[[JMXMouseEvent alloc] initWithType:@"mousereleased"
+                                                                  target:nil
+                                                                listener:nil
+                                                                 capture:NO] autorelease];
+        NSPoint location = event.locationInWindow;
+        mouseEvent.screenX = location.x;
+        mouseEvent.screenY = self.size.height - location.y;
+        [ctx dispatchEvent:mouseEvent];
+    }
+}
+
+- (void)mouseDown:(NSEvent *)event inView:(JMXOpenGLView *)view
+{
+    if (ctx) {
+        JMXMouseEvent *mouseEvent = [[[JMXMouseEvent alloc] initWithType:@"mousepressed"
+                                                                  target:nil
+                                                                listener:nil
+                                                                 capture:NO] autorelease];
+        NSPoint location = event.locationInWindow;
+        mouseEvent.screenX = location.x;
+        mouseEvent.screenY = self.size.height - location.y;
+        [ctx dispatchEvent:mouseEvent];
+    }
+}
+
+- (void)mouseMoved:(NSEvent *)event inView:(JMXOpenGLView *)view
+{
+    if (ctx) {
+        JMXMouseEvent *mouseEvent = [[[JMXMouseEvent alloc] initWithType:@"mousemove"
+                              target:nil
+                            listener:nil
+                             capture:NO] autorelease];
+        NSPoint location = event.locationInWindow;
+        mouseEvent.screenX = location.x;
+        mouseEvent.screenY = self.size.height - location.y;
+        [ctx dispatchEvent:mouseEvent];
+    }
+}
+
+- (void)mouseEntered:(NSEvent *)event inView:(JMXOpenGLView *)view
+{
+    if (ctx) {
+        JMXMouseEvent *mouseEvent = [[[JMXMouseEvent alloc] initWithType:@"mouseover"
+                                                                  target:nil
+                                                                listener:nil
+                                                                 capture:NO] autorelease];
+        NSPoint location = event.locationInWindow;
+        mouseEvent.screenX = location.x;
+        mouseEvent.screenY = self.size.height - location.y;
+        [ctx dispatchEvent:mouseEvent];
+    }
+}
+
+- (void)mouseExited:(NSEvent *)event inView:(JMXOpenGLView *)view
+{
+    if (ctx) {
+        JMXMouseEvent *mouseEvent = [[[JMXMouseEvent alloc] initWithType:@"mouseout"
+                                                                  target:nil
+                                                                listener:nil
+                                                                 capture:NO] autorelease];
+        NSPoint location = event.locationInWindow;
+        mouseEvent.screenX = location.x;
+        mouseEvent.screenY = self.size.height - location.y;
+        [ctx dispatchEvent:mouseEvent];
+    }
+}
+
+- (void)mouseDragged:(NSEvent *)event inView:(JMXOpenGLView *)view
+{
+    if (ctx) {
+        JMXMouseEvent *mouseEvent = [[[JMXMouseEvent alloc] initWithType:@"mousedragged"
+                                                                  target:nil
+                                                                listener:nil
+                                                                 capture:NO] autorelease];
+        NSPoint location = event.locationInWindow;
+        mouseEvent.screenX = location.x;
+        mouseEvent.screenY = self.size.height - location.y;
+        [ctx dispatchEvent:mouseEvent];
+    }
 }
 
 + (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate

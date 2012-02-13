@@ -119,7 +119,7 @@ using namespace v8;
 {
     if ([aPin isKindOfClass:[JMXScriptOutputPin class]]) {
         JMXScriptOutputPin *pin = (JMXScriptOutputPin *)aPin;
-        if (pin.function == Undefined() || pin.function.IsEmpty())
+        if (pin.function.IsEmpty())
             return nil;
         Locker locker;
         HandleScope handleScope;
@@ -127,7 +127,9 @@ using namespace v8;
         v8::Context::Scope context_scope(jsContext.ctx);
         args[0] = [pin jsObj];
         Handle<Value> ret = [jsContext execFunction:pin.function withArguments:args count:1];
-        if (ret->IsNumber()) {
+        if (ret.IsEmpty()) {
+            return nil;
+        } else if (ret->IsNumber()) {
             return [NSNumber numberWithDouble:ret->ToNumber()->NumberValue()];
         } else if (ret->IsString()) {
             String::Utf8Value str(ret->ToString());
@@ -145,7 +147,7 @@ using namespace v8;
 {
     if ([aPin isKindOfClass:[JMXScriptInputPin class]]) {
         JMXScriptOutputPin *pin = (JMXScriptOutputPin *)aPin;
-        if (pin.function == Undefined() || pin.function.IsEmpty())
+        if (pin.function.IsEmpty())
             return;
         Locker locker;
         HandleScope handleScope;

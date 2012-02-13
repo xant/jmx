@@ -310,6 +310,10 @@ using namespace v8;
             if (![data isKindOfClass:[NSColor class]])
                 return NO;
             break;
+        case kJMXVoidPin:
+            if ((id)data != [NSNull null])
+                return NO;
+            break;
         default:
             NSLog(@"Unknown pin type!\n");
             return NO;
@@ -739,8 +743,12 @@ static void SetData(Local<String> name, Local<Value> value, const AccessorInfo& 
     HandleScope handleScope;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     String::Utf8Value nameStr(name);
+    JMXPin *obj = (JMXPin *)info.Holder()->GetPointerFromInternalField(0);
+
     id val = nil;
-    if (value->IsNumber()) {
+    if (obj.type == kJMXVoidPin) {
+        val = [NSNull null];
+    } else if (value->IsNumber()) {
         val = [NSNumber numberWithDouble:value->ToNumber()->NumberValue()];
     } else if (value->IsString()) {
         String::Utf8Value str(value->ToString());
@@ -752,7 +760,7 @@ static void SetData(Local<String> name, Local<Value> value, const AccessorInfo& 
         [pool release];
         return;
     }
-    JMXPin *obj = (JMXPin *)info.Holder()->GetPointerFromInternalField(0);
+    
     if (val) {
         [obj setData:val];
     } else {

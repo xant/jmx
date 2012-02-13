@@ -56,7 +56,7 @@ v8::Handle<v8::Value> JMXInputPinJSConstructor(const v8::Arguments& args)
     //v8::Locker locker;
     v8::Persistent<FunctionTemplate> objectTemplate = [JMXScriptInputPin jsObjectTemplate];
     NSString *label = @"inputPin";
-    NSString *typeName = @"Void";
+    NSString *typeName = @"void";
     int argsCount = args.Length();
     if (argsCount >= 1) {
         String::Utf8Value str(args[0]->ToString());
@@ -64,28 +64,30 @@ v8::Handle<v8::Value> JMXInputPinJSConstructor(const v8::Arguments& args)
     }
     if (argsCount >= 2) {
         String::Utf8Value str(args[1]->ToString());
-        typeName = [NSString stringWithUTF8String:*str];
+        typeName = [[NSString stringWithUTF8String:*str] lowercaseString];
     }
     Persistent<Object>jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     JMXPinType type = kJMXVoidPin;
-    if ([typeName isEqualToString:@"String"]) {
+    if ([typeName isEqualToString:@"string"]) {
         type = kJMXStringPin;
-    } else if ([typeName isEqualToString:@"Text"]) {
+    } else if ([typeName isEqualToString:@"text"]) {
         type = kJMXTextPin;
-    } else if ([typeName isEqualToString:@"Code"]) {
+    } else if ([typeName isEqualToString:@"code"]) {
         type = kJMXCodePin;
-    } else if ([typeName isEqualToString:@"Number"]) {
+    } else if ([typeName isEqualToString:@"number"]) {
         type = kJMXNumberPin;
-    } else if ([typeName isEqualToString:@"Point"]) {
+    } else if ([typeName isEqualToString:@"point"]) {
         type = kJMXPointPin;
-    } else if ([typeName isEqualToString:@"Color"]) {
+    } else if ([typeName isEqualToString:@"size"]) {
+        type = kJMXSizePin;
+    } else if ([typeName isEqualToString:@"color"]) {
         type = kJMXColorPin;
-    } else if ([typeName isEqualToString:@"Image"]) {
+    } else if ([typeName isEqualToString:@"image"]) {
         type = kJMXImagePin;
-    } else if ([typeName isEqualToString:@"Boolean"]) {
+    } else if ([typeName isEqualToString:@"boolean"]) {
         type = kJMXBooleanPin;
-    } else if ([typeName isEqualToString:@"Void"]) {
+    } else if ([typeName isEqualToString:@"void"]) {
         type = kJMXVoidPin;
     } else {
         NSLog(@"Invalid pin type %@", typeName);

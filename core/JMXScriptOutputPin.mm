@@ -68,7 +68,7 @@ v8::Handle<v8::Value> JMXOutputPinJSConstructor(const v8::Arguments& args)
     }
     if (argsCount >= 2) {
         String::Utf8Value str(args[1]->ToString());
-        typeName = [NSString stringWithUTF8String:*str];
+        typeName = [[NSString stringWithUTF8String:*str] lowercaseString];
     }
     
     if ([typeName isEqualToString:@"string"]) {

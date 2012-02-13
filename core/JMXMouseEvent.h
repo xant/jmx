@@ -47,7 +47,6 @@
     BOOL      altKey;
     BOOL      metaKey;
     unsigned short button;
-    NSXMLNode *relatedTarget;
 }
 
 @property (assign) NSInteger screenX;
@@ -57,6 +56,5 @@
 @property (assign) BOOL      altKey;
 @property (assign) BOOL      metaKey;
 @property (assign) unsigned short button;
-@property (assign) NSXMLNode *relatedTarget;
 
 @end

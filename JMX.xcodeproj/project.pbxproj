@@ -130,6 +130,7 @@
 		AAD13C4A128EF2AB00ECB03A /* NSColor+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD13C49128EF2AB00ECB03A /* NSColor+V8.mm */; };
 		AAD751D214E913FA008B1085 /* JMXScreenController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAD751D114E913FA008B1085 /* JMXScreenController.m */; };
 		AAD751D514E94631008B1085 /* JMXMouseEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD751D414E9462F008B1085 /* JMXMouseEvent.mm */; };
+		AAD751D814E98DD4008B1085 /* JMXKeyboardEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD751D714E98DD2008B1085 /* JMXKeyboardEvent.mm */; };
 		AADEBFC812414F7E00A6A06D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */; };
 		AAEA251914D4D2B800533049 /* processing.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AAEA251714D4D29A00533049 /* processing.js */; };
 		AAEA251C14D4D5A200533049 /* JMXEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEA251B14D4D5A000533049 /* JMXEvent.mm */; };
@@ -562,6 +563,8 @@
 		AAD751D114E913FA008B1085 /* JMXScreenController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXScreenController.m; sourceTree = "<group>"; };
 		AAD751D314E9462F008B1085 /* JMXMouseEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXMouseEvent.h; sourceTree = "<group>"; };
 		AAD751D414E9462F008B1085 /* JMXMouseEvent.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXMouseEvent.mm; sourceTree = "<group>"; };
+		AAD751D614E98DD1008B1085 /* JMXKeyboardEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXKeyboardEvent.h; sourceTree = "<group>"; };
+		AAD751D714E98DD2008B1085 /* JMXKeyboardEvent.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXKeyboardEvent.mm; sourceTree = "<group>"; };
 		AADB066914CE0FCA007A175D /* node.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = node.js; sourceTree = "<group>"; };
 		AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		AAEA251314D4AC4800533049 /* JMXPinOwner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXPinOwner.h; sourceTree = "<group>"; };
@@ -1115,6 +1118,8 @@
 				AAB71A0C14D7585400BE8C35 /* JMXEventListener.mm */,
 				AAD751D314E9462F008B1085 /* JMXMouseEvent.h */,
 				AAD751D414E9462F008B1085 /* JMXMouseEvent.mm */,
+				AAD751D614E98DD1008B1085 /* JMXKeyboardEvent.h */,
+				AAD751D714E98DD2008B1085 /* JMXKeyboardEvent.mm */,
 			);
 			name = "V8+DOM";
 			path = core;
@@ -1786,6 +1791,7 @@
 				AA004D8214E7148600009CF9 /* JMXPhidgetEncoderEntity.mm in Sources */,
 				AAD751D214E913FA008B1085 /* JMXScreenController.m in Sources */,
 				AAD751D514E94631008B1085 /* JMXMouseEvent.mm in Sources */,
+				AAD751D814E98DD4008B1085 /* JMXKeyboardEvent.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -46,6 +46,7 @@
 }
 
 @property (atomic, retain) CIImage *currentFrame;
+@property (atomic, readonly) JMXSize *frameSize;
 
 - (void)setSize:(NSSize)size;
 - (void)cleanup;

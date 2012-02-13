@@ -31,6 +31,7 @@
 #import "JMXOpenGLScreen.h"
 #import "JMXSize.h"
 #import "JMXMouseEvent.h"
+#import "JMXKeyboardEvent.h"
 
 #import <AppKit/AppKit.h>
 //#import <Carbon/Carbon.h>
@@ -83,7 +84,7 @@ static NSMutableDictionary *__openglOutputs = nil;
 
 @implementation JMXOpenGLView
 
-@synthesize currentFrame;
+@synthesize currentFrame, frameSize;
 
 - (id)initWithFrame:(NSRect)frameRect
 {
@@ -385,7 +386,7 @@ static NSMutableDictionary *__openglOutputs = nil;
     //@synchronized(self) {
     if (![newSize isEqual:size]) {
         [super setSize:newSize];
-        [view setSize:[newSize nsSize]];
+        [controller setSize:newSize];
     }
     //}
 }
@@ -434,91 +435,194 @@ static NSMutableDictionary *__openglOutputs = nil;
 
 #pragma mark -
 #pragma mark JMXScreenControllerDelegate
-- (void)mouseUp:(NSEvent *)event inView:(JMXOpenGLView *)view
+
+static void translateScreenCoordinates(CGSize screenSize, CGSize frameSize,
+                                       CGFloat screenX, CGFloat screenY,
+                                       CGFloat &frameX, CGFloat &frameY)
+{
+    
+    CGFloat width = screenSize.width;
+    CGFloat height = screenSize.height;
+    CGFloat scaledWidth = width;
+    CGFloat scaledHeight = height;
+    
+    if (width > height) {
+        scaledHeight = height;
+        scaledWidth = floor((scaledHeight*frameSize.width)/frameSize.height);
+    } else {
+        scaledWidth = width;
+        scaledHeight = floor((scaledWidth*frameSize.height)/frameSize.width);
+    }
+    
+    CGFloat xFactor = frameSize.width / scaledWidth;
+    CGFloat yFactor = frameSize.height / scaledHeight;
+    frameX = (screenX * xFactor) - ((screenSize.width - scaledWidth)/4);
+    frameY = frameSize.height - (screenY * yFactor);
+}
+
+- (void)mouseUp:(NSEvent *)event inView:(JMXOpenGLView *)aView
 {
     if (ctx) {
+        CGFloat x, y;
+
         JMXMouseEvent *mouseEvent = [[[JMXMouseEvent alloc] initWithType:@"mousereleased"
                                                                   target:nil
                                                                 listener:nil
                                                                  capture:NO] autorelease];
         NSPoint location = event.locationInWindow;
-        mouseEvent.screenX = location.x;
-        mouseEvent.screenY = self.size.height - location.y;
+        
+        translateScreenCoordinates(aView.frame.size, aView.frameSize.nsSize,
+                                   location.x, location.y, x, y);
+        mouseEvent.screenX = x;
+        mouseEvent.screenY = y;
         [ctx dispatchEvent:mouseEvent];
     }
 }
 
-- (void)mouseDown:(NSEvent *)event inView:(JMXOpenGLView *)view
+- (void)mouseDown:(NSEvent *)event inView:(JMXOpenGLView *)aView
 {
     if (ctx) {
+        CGFloat x, y;
+
         JMXMouseEvent *mouseEvent = [[[JMXMouseEvent alloc] initWithType:@"mousepressed"
                                                                   target:nil
                                                                 listener:nil
                                                                  capture:NO] autorelease];
         NSPoint location = event.locationInWindow;
-        mouseEvent.screenX = location.x;
-        mouseEvent.screenY = self.size.height - location.y;
+
+        translateScreenCoordinates(aView.frame.size, aView.frameSize.nsSize,
+                                   location.x, location.y, x, y);
+        mouseEvent.screenX = x;
+        mouseEvent.screenY = y;
+        
         [ctx dispatchEvent:mouseEvent];
     }
 }
 
-- (void)mouseMoved:(NSEvent *)event inView:(JMXOpenGLView *)view
+- (void)mouseMoved:(NSEvent *)event inView:(JMXOpenGLView *)aView
 {
     NSPoint location = event.locationInWindow;
     if (ctx) {
+        CGFloat x, y;
+
         JMXMouseEvent *mouseEvent = [[[JMXMouseEvent alloc] initWithType:@"mousemove"
                               target:nil
                             listener:nil
                              capture:NO] autorelease];
-        mouseEvent.screenX = location.x;
-        mouseEvent.screenY = self.size.height - location.y;
+        
+        translateScreenCoordinates(aView.frame.size, aView.frameSize.nsSize,
+                                   location.x, location.y, x, y);
+        mouseEvent.screenX = x;
+        mouseEvent.screenY = y;
+        
         [ctx dispatchEvent:mouseEvent];
     }
     mousePositionPin.data = [JMXPoint pointWithX:location.x Y:location.y];
 }
 
-- (void)mouseEntered:(NSEvent *)event inView:(JMXOpenGLView *)view
+- (void)mouseEntered:(NSEvent *)event inView:(JMXOpenGLView *)aView
 {
     if (ctx) {
+        CGFloat x, y;
+
         JMXMouseEvent *mouseEvent = [[[JMXMouseEvent alloc] initWithType:@"mouseover"
                                                                   target:nil
                                                                 listener:nil
                                                                  capture:NO] autorelease];
         NSPoint location = event.locationInWindow;
-        mouseEvent.screenX = location.x;
-        mouseEvent.screenY = self.size.height - location.y;
+        
+        translateScreenCoordinates(aView.frame.size, aView.frameSize.nsSize,
+                                   location.x, location.y, x, y);
+        mouseEvent.screenX = x;
+        mouseEvent.screenY = y;
         [ctx dispatchEvent:mouseEvent];
     }
 }
 
-- (void)mouseExited:(NSEvent *)event inView:(JMXOpenGLView *)view
+- (void)mouseExited:(NSEvent *)event inView:(JMXOpenGLView *)aView
 {
     if (ctx) {
+        CGFloat x, y;
+
         JMXMouseEvent *mouseEvent = [[[JMXMouseEvent alloc] initWithType:@"mouseout"
                                                                   target:nil
                                                                 listener:nil
                                                                  capture:NO] autorelease];
         NSPoint location = event.locationInWindow;
-        mouseEvent.screenX = location.x;
-        mouseEvent.screenY = self.size.height - location.y;
+        
+        translateScreenCoordinates(aView.frame.size, aView.frameSize.nsSize,
+                                   location.x, location.y, x, y);
+        mouseEvent.screenX = x;
+        mouseEvent.screenY = y;
         [ctx dispatchEvent:mouseEvent];
     }
 }
 
-- (void)mouseDragged:(NSEvent *)event inView:(JMXOpenGLView *)view
+- (void)mouseDragged:(NSEvent *)event inView:(JMXOpenGLView *)aView
 {
     if (ctx) {
+        CGFloat x, y;
+
         JMXMouseEvent *mouseEvent = [[[JMXMouseEvent alloc] initWithType:@"mousedragged"
                                                                   target:nil
                                                                 listener:nil
                                                                  capture:NO] autorelease];
         NSPoint location = event.locationInWindow;
-        mouseEvent.screenX = location.x;
-        mouseEvent.screenY = self.size.height - location.y;
+        
+        translateScreenCoordinates(aView.frame.size, aView.frameSize.nsSize,
+                                   location.x, location.y, x, y);
+        mouseEvent.screenX = x;
+        mouseEvent.screenY = y;
         [ctx dispatchEvent:mouseEvent];
     }
 }
 
+- (void)keyUp:(NSEvent *)event inView:(JMXOpenGLView *)view
+{
+    if (ctx) {
+        JMXKeyboardEvent *kbdEvent = [[[JMXKeyboardEvent alloc] initWithType:@"keyup"
+                                                                      target:nil
+                                                                    listener:nil
+                                                                     capture:NO] autorelease];
+        kbdEvent.str = [event characters];
+        kbdEvent.key = [event charactersIgnoringModifiers];
+        NSUInteger modifierFlags = event.modifierFlags;
+        kbdEvent.shiftKey = modifierFlags&NSShiftKeyMask;
+        kbdEvent.altKey = modifierFlags&NSAlternateKeyMask;
+        kbdEvent.ctrlKey = modifierFlags&NSControlKeyMask;
+        kbdEvent.metaKey = modifierFlags&NSCommandKeyMask;
+        [ctx dispatchEvent:kbdEvent];
+    }
+}
+
+- (void)keyDown:(NSEvent *)event inView:(JMXOpenGLView *)glView
+{
+    if ([event keyCode] == 3 && [event modifierFlags]&NSCommandKeyMask) { // %-f to switch fullscreen
+        [glView toggleFullScreen:self];
+        [controller setWindow:[glView window]];
+    }
+    if (ctx) {
+        JMXKeyboardEvent *kbdEvent = [[[JMXKeyboardEvent alloc] initWithType:@"keydown"
+                                                                   target:nil
+                                                                 listener:nil
+                                                                  capture:NO] autorelease];
+        kbdEvent.str = [event characters];
+        kbdEvent.key = [event charactersIgnoringModifiers];
+        NSUInteger modifierFlags = event.modifierFlags;
+        kbdEvent.shiftKey = modifierFlags&NSShiftKeyMask;
+        kbdEvent.altKey = modifierFlags&NSAlternateKeyMask;
+        kbdEvent.ctrlKey = modifierFlags&NSControlKeyMask;
+        kbdEvent.metaKey = modifierFlags&NSCommandKeyMask;
+        [ctx dispatchEvent:kbdEvent];
+        if (kbdEvent.str.length) {
+            kbdEvent.type = @"keypress";
+            [ctx dispatchEvent:kbdEvent];
+        }
+    }
+}
+
+#pragma mark -
+#pragma mark V8
 + (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate
 {
     //v8::Locker lock;

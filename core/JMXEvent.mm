@@ -14,7 +14,7 @@ using namespace v8;
 
 @implementation JMXEvent
 
-@synthesize type, target, listener;
+@synthesize type, target, listener, relatedTarget;
 
 + (id)eventWithType:(NSString *)type
              target:(NSXMLNode *)target

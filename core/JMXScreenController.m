@@ -15,7 +15,6 @@
 {
     self = [super initWithWindow:[view window]];
     if (self) {
-        _keyEvents = [[NSMutableArray arrayWithCapacity:100] retain];
         _view = view;
         self.window.acceptsMouseMovedEvents = NO;
         trackingRect = [_view addTrackingRect:_view.frame owner:self userData:nil assumeInside:YES];
@@ -24,19 +23,7 @@
     return self;
 }
 
-- (NSDictionary *)getEvent
-{
-    NSDictionary *event = NULL;
-    @synchronized(self) {
-        if ([_keyEvents count]) {
-            event = [_keyEvents objectAtIndex:0];
-            [_keyEvents removeObjectAtIndex:0];
-        }
-    }
-    return event;
-}
-
-
+/*
 - (void)insertEvent:(NSEvent *)event OfType:(NSString *)type WithState:(NSString *)state
 {
     NSDictionary *entry;
@@ -55,22 +42,21 @@
         [_keyEvents addObject:entry];
     }
 }
+*/
 
 - (void)keyUp:(NSEvent *)event
 {
     //NSLog(@"Keyrelease (%hu, modifier flags: 0x%x) %@\n", [event keyCode], [event modifierFlags], [event charactersIgnoringModifiers]);
-    [self insertEvent:[event retain] OfType:@"kbd" WithState:@"released"];
+    if (_delegate)
+        [_delegate keyUp:event inView:_view];
 }
 
 // handle keystrokes
 - (void)keyDown:(NSEvent *)event
 {
     ///NSLog(@"Keypress (%hu, modifier flags: 0x%x) %@\n", [event keyCode], [event modifierFlags], [event charactersIgnoringModifiers]);
-    [self insertEvent:event OfType:@"kbd" WithState:@"pressed"]; 
-    if ([event keyCode] == 3 && [event modifierFlags]&NSCommandKeyMask) { // %-f to switch fullscreen
-        [_view toggleFullScreen:self];
-        [self setWindow:[_view window]];
-    }
+    if (_delegate)
+        [_delegate keyDown:event inView:_view];
 }
 
 - (void)mouseDown:(NSEvent *)event {
@@ -108,8 +94,25 @@
 - (void)dealloc
 {
     [_view removeTrackingRect:trackingRect];
-    [_keyEvents release];
     [super dealloc];
+}
+
+- (void)setWindow:(NSWindow *)window
+{
+    [super setWindow:window];
+    if (_view) {
+        [_view removeTrackingRect:trackingRect];
+        trackingRect = [_view addTrackingRect:_view.frame owner:self userData:nil assumeInside:YES];
+    }
+}
+
+- (void)setSize:(id)size
+{
+    if (_view) {
+        [_view setSize:[size nsSize]];
+        [_view removeTrackingRect:trackingRect];
+        trackingRect = [_view addTrackingRect:_view.frame owner:self userData:nil assumeInside:YES];
+    }
 }
 
 /*

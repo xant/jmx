@@ -51,10 +51,13 @@ typedef enum {
     NSDate *timeStamp;
     JMXEventListener *listener;
     BOOL capture;
+    NSXMLNode *relatedTarget;
+
 }
 
-@property (readonly) NSString *type;
+@property (copy) NSString *type;
 @property (readonly) NSXMLNode *target;
+@property (assign) NSXMLNode *relatedTarget;
 @property (readonly) JMXEventListener *listener;
 
 + (id)eventWithType:(NSString *)type

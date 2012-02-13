@@ -371,6 +371,7 @@ static NSMutableDictionary *__openglOutputs = nil;
         [window setReleasedWhenClosed:NO];
         [window setIsVisible:YES];
         [[window contentView] addSubview:view];
+        mousePositionPin = [self registerOutputPin:@"mousePosition" withType:kJMXPointPin];
         controller = [[JMXScreenController alloc] initWithView:view delegate:self];
         self.label = @"OpenGLScreen";
         //[window orderBack:self];
@@ -463,16 +464,17 @@ static NSMutableDictionary *__openglOutputs = nil;
 
 - (void)mouseMoved:(NSEvent *)event inView:(JMXOpenGLView *)view
 {
+    NSPoint location = event.locationInWindow;
     if (ctx) {
         JMXMouseEvent *mouseEvent = [[[JMXMouseEvent alloc] initWithType:@"mousemove"
                               target:nil
                             listener:nil
                              capture:NO] autorelease];
-        NSPoint location = event.locationInWindow;
         mouseEvent.screenX = location.x;
         mouseEvent.screenY = self.size.height - location.y;
         [ctx dispatchEvent:mouseEvent];
     }
+    mousePositionPin.data = [JMXPoint pointWithX:location.x Y:location.y];
 }
 
 - (void)mouseEntered:(NSEvent *)event inView:(JMXOpenGLView *)view

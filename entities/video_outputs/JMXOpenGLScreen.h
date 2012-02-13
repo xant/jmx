@@ -67,6 +67,7 @@
     JMXScreenController *controller;
     BOOL fullScreen;
     JMXScript *ctx; // weak reference
+    JMXOutputPin *mousePositionPin;
 }
 
 @property (readonly) NSWindow *window;

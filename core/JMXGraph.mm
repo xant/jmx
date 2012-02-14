@@ -195,13 +195,28 @@ static v8::Handle<Value> DefaultView(Local<String> name, const AccessorInfo &inf
     return handleScope.Close(obj->NewInstance());
 }
 
+static void JMXGraphJSDestructor(Persistent<Value> object, void *parameter)
+{
+    HandleScope handle_scope;
+    v8::Locker lock;
+    JMXGraph *obj = static_cast<JMXGraph *>(parameter);
+    //NSLog(@"V8 WeakCallback (Point) called %@", obj);
+    [obj release];
+    if (!object.IsEmpty()) {
+        object.ClearWeak();
+        object.Dispose();
+        object.Clear();
+    }
+}
+
 - (v8::Handle<v8::Object>)jsObj
 {
     //v8::Locker lock;
     HandleScope handle_scope;
     v8::Persistent<FunctionTemplate> objectTemplate = [JMXGraph jsObjectTemplate];
-    v8::Handle<Object> jsInstance = objectTemplate->InstanceTemplate()->NewInstance();
+    Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
     jsInstance->SetPointerInInternalField(0, self);
+    jsInstance.MakeWeak([self retain], JMXGraphJSDestructor);
     //jsInstance->SetHiddenValue(String::NewSymbol("map"), Object::New());
     return handle_scope.Close(jsInstance);
 }

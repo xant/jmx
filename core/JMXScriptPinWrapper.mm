@@ -42,7 +42,7 @@
     self = [super initWithName:name];
     if (self) {
         function = aFunction;
-        scriptEntity = [entity retain];
+        scriptEntity = entity; // weak
     }
     return self;
 }
@@ -54,7 +54,7 @@
     self = [super initWithName:name];
     if (self) {
         statements = [jsStatements copy];
-        scriptEntity = [entity retain];
+        scriptEntity = entity; // weak
     }
     return self;
 }
@@ -62,6 +62,7 @@
 - (void)dealloc
 {
     [statements release];
+    [virtualPin dealloc];
     [super dealloc];
 }
 
@@ -152,4 +153,8 @@
 }
 
 
+- (void)disconnect
+{
+    [virtualPin disconnectAllPins];
+}
 @end

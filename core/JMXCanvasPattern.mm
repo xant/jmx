@@ -118,7 +118,8 @@ using namespace v8;
     //v8::Locker lock;
     HandleScope handle_scope;
     v8::Handle<FunctionTemplate> objectTemplate = [JMXCanvasPattern jsObjectTemplate];
-    v8::Handle<Object> jsInstance = objectTemplate->InstanceTemplate()->NewInstance();
+    v8::Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
+    jsInstance.MakeWeak([self retain], JMXCanvasPatternJSDestructor);
     jsInstance->SetPointerInInternalField(0, self);
     return handle_scope.Close(jsInstance);
 }

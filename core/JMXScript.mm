@@ -83,7 +83,7 @@ static JMXV8ClassDescriptor mappedClasses[] = {
     { "JMXAudioSpectrumAnalyzer", "AudioSpectrum",    JMXAudioSpectrumAnalyzerJSConstructor },
     { "JMXDrawEntity",            "DrawPath",         JMXDrawEntityJSConstructor            },
     { "JMXPoint",                 "Point",            JMXPointJSConstructor                 },
-    { "JMXColor",                 "Color",            JMXColorJSConstructor                 },
+    { "NSColor",                  "Color",            JMXColorJSConstructor                 },
     { "JMXSize",                  "Size",             JMXSizeJSConstructor                  },
     { "NSXMLNode",                "Node",             NSXMLNodeJSConstructor                },
     { "JMXElement",               "Element",          JMXElementJSConstructor               },

@@ -6,7 +6,10 @@
 //  Copyright (c) 2012 Dyne.org. All rights reserved.
 //
 
+#ifndef __JMXV8__
 #define __JMXV8__
+#endif
+
 #import "JMXElement.h"
 #import "JMXV8.h"
 
@@ -19,7 +22,7 @@ using namespace v8;
 {
     v8::Persistent<v8::Function> function;
     NSString *statements;
-    JMXScriptEntity *scriptEntity;
+    JMXScriptEntity *scriptEntity; // weak
     JMXPin *virtualPin;
 }
 
@@ -43,5 +46,7 @@ using namespace v8;
       scriptEntity:(JMXScriptEntity *)entity;
 
 - (void)connectToPin:(JMXPin *)pin;
+
+- (void)disconnect;
 
 @end

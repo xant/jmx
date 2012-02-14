@@ -103,7 +103,8 @@ void SetValue(Local<String> name, Local<Value> value, const AccessorInfo& info)
     //v8::Locker lock;
     HandleScope handle_scope;
     v8::Handle<FunctionTemplate> objectTemplate = [JMXAttribute jsObjectTemplate];
-    v8::Handle<Object> jsInstance = objectTemplate->InstanceTemplate()->NewInstance();
+    v8::Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
+    jsInstance.MakeWeak([self retain], JMXAttributeJSDestructor);
     jsInstance->SetPointerInInternalField(0, self);
     return handle_scope.Close(jsInstance);
 }

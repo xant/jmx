@@ -277,12 +277,27 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
 #pragma mark -
 #pragma mark V8
 
+static void JMXColorJSDestructor(Persistent<Value> object, void *parameter)
+{
+    HandleScope handle_scope;
+    v8::Locker lock;
+    NSColor *obj = static_cast<NSColor *>(parameter);
+    //NSLog(@"V8 WeakCallback (Color) called ");
+    [obj release];
+    if (!object.IsEmpty()) {
+        object.ClearWeak();
+        object.Dispose();
+        object.Clear();
+    }
+}
+
 - (v8::Handle<v8::Object>)jsObj
 {
     //v8::Locker lock;
     HandleScope handle_scope;
     v8::Handle<FunctionTemplate> objectTemplate = [NSColor jsObjectTemplate];
-    v8::Handle<Object> jsInstance = objectTemplate->InstanceTemplate()->NewInstance();
+    v8::Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
+    jsInstance.MakeWeak([self retain], JMXColorJSDestructor);
     jsInstance->SetPointerInInternalField(0, self);
     return handle_scope.Close(jsInstance);
 }
@@ -298,23 +313,6 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
 }
 
 @end
-
-static void JMXColorJSDestructor(Persistent<Value> object, void *parameter)
-{
-    HandleScope handle_scope;
-    v8::Locker lock;
-    NSColor *obj = static_cast<NSColor *>(parameter);
-    //NSLog(@"V8 WeakCallback (Color) called ");
-    [obj release];
-    //Persistent<Object> instance = v8::Persistent<Object>::Cast(object);
-    //instance.ClearWeak();
-    if (!object.IsEmpty()) {
-        object.ClearWeak();
-        object.Dispose();
-        object.Clear();
-    }
-    //object.Clear();
-}
 
 v8::Handle<v8::Value> JMXColorJSConstructor(const v8::Arguments& args)
 {

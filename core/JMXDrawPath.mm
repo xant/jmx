@@ -1587,13 +1587,28 @@ static void SetLineWidth(Local<String> name, Local<Value> value, const AccessorI
     }
 }
 
+static void JMXDrawPathJSDestructor(Persistent<Value> object, void *parameter)
+{
+    HandleScope handle_scope;
+    v8::Locker lock;
+    JMXDrawPath *obj = static_cast<JMXDrawPath *>(parameter);
+    //NSLog(@"V8 WeakCallback (Color) called ");
+    [obj release];
+    if (!object.IsEmpty()) {
+        object.ClearWeak();
+        object.Dispose();
+        object.Clear();
+    }
+}
+
 - (v8::Handle<v8::Object>)jsObj
 {
     //v8::Locker lock;
     HandleScope handle_scope;
     v8::Handle<FunctionTemplate> objectTemplate = [[self class] jsObjectTemplate];
-    v8::Handle<Object> jsInstance = objectTemplate->InstanceTemplate()->NewInstance();
+    Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
     jsInstance->SetPointerInInternalField(0, self);
+    jsInstance.MakeWeak([self retain], JMXDrawPathJSDestructor);
     return handle_scope.Close(jsInstance);
 }
 

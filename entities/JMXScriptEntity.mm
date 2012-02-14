@@ -15,6 +15,7 @@
 #import "JMXScriptOutputPin.h"
 #import "JMXImageData.h"
 #import "NSColor+V8.h"
+#import "JMXScriptPinWrapper.h"
 
 using namespace v8;
 
@@ -36,6 +37,7 @@ using namespace v8;
     self = [super init];
     if (self) {
         self.label = @"ScriptEntity";
+        pinWrappers = [[NSMutableSet alloc] initWithCapacity:25];
     }
     return self;
 }
@@ -44,8 +46,21 @@ using namespace v8;
 {
     [jsContext clearTimers];
     [jsContext release];
-    [executionThread release];;
+    [executionThread release];
+    for (JMXScriptPinWrapper *wrapper in pinWrappers)
+        [wrapper disconnect];
+    [pinWrappers release];
     [super dealloc];
+}
+
+- (BOOL)wrapPin:(JMXPin *)pin withFunction:(v8::Persistent<v8::Function>)function
+{
+    JMXScriptPinWrapper *wrapper = [JMXScriptPinWrapper pinWrapperWithName:@"jsFunction"
+                                                            function:function
+                                                              scriptEntity:self];
+    [wrapper connectToPin:pin];
+    [pinWrappers addObject:wrapper];
+    return YES; // XXX
 }
 
 - (void)resetContext

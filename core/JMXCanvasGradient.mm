@@ -153,7 +153,8 @@ static v8::Handle<Value> AddColorStop(const Arguments& args)
     //v8::Locker lock;
     HandleScope handle_scope;
     v8::Handle<FunctionTemplate> objectTemplate = [JMXCanvasGradient jsObjectTemplate];
-    v8::Handle<Object> jsInstance = objectTemplate->InstanceTemplate()->NewInstance();
+    v8::Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
+    jsInstance.MakeWeak([self retain], JMXCanvasGradientJSDestructor);
     jsInstance->SetPointerInInternalField(0, self);
     return handle_scope.Close(jsInstance);
 }

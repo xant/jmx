@@ -81,12 +81,26 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
     [super dealloc];
 }
 
+static void JMXScriptTimerJSDestructor(Persistent<Value> object, void *parameter)
+{
+    HandleScope handle_scope;
+    v8::Locker lock;
+    JMXScriptTimer *obj = static_cast<JMXScriptTimer *>(parameter);
+    [obj release];
+    if (!object.IsEmpty()) {
+        object.ClearWeak();
+        object.Dispose();
+        object.Clear();
+    }
+}
+
 - (v8::Handle<v8::Object>)jsObj
 {
     //v8::Locker lock;
     HandleScope handle_scope;
     v8::Handle<FunctionTemplate> objectTemplate = [JMXScriptTimer jsObjectTemplate];
-    v8::Handle<Object> jsInstance = objectTemplate->InstanceTemplate()->NewInstance();
+    v8::Persistent<Object> jsInstance = v8::Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
+    jsInstance.MakeWeak([self retain], JMXScriptTimerJSDestructor);
     jsInstance->SetPointerInInternalField(0, self);
     return handle_scope.Close(jsInstance);
 }

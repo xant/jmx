@@ -18,6 +18,7 @@
     NSString *code;
     JMXScript *jsContext;
     NSThread *executionThread;
+    NSMutableSet *pinWrappers;
 }
 
 @property (copy) NSString *code;
@@ -29,6 +30,8 @@
 - (void)hookEntity:(JMXEntity *)entity;
 
 #ifdef __JMXV8__
+- (BOOL)wrapPin:(JMXPin *)pin withFunction:(v8::Persistent<v8::Function>)function;
+
 - (JMXScriptInputPin *)registerJSInputPinWithLabel:(NSString *)label
                                         type:(JMXPinType)type
                                     function:(v8::Persistent<v8::Function>)function;

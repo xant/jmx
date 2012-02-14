@@ -132,23 +132,7 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
     return objectTemplate;
 }
 
-- (v8::Handle<v8::Object>)jsObj
-{
-    //v8::Locker lock;
-    HandleScope handle_scope;
-    v8::Handle<FunctionTemplate> objectTemplate = [JMXPoint jsObjectTemplate];
-    v8::Handle<Object> jsInstance = objectTemplate->InstanceTemplate()->NewInstance();
-    jsInstance->SetPointerInInternalField(0, self);
-    return handle_scope.Close(jsInstance);
-}
-
-+ (void)jsRegisterClassMethods:(v8::Handle<v8::FunctionTemplate>)constructor
-{
-}
-
-@end
-
-void JMXPointJSDestructor(Persistent<Value> object, void *parameter)
+static void JMXPointJSDestructor(Persistent<Value> object, void *parameter)
 {
     HandleScope handle_scope;
     v8::Locker lock;
@@ -161,6 +145,23 @@ void JMXPointJSDestructor(Persistent<Value> object, void *parameter)
         object.Clear();
     }
 }
+
+- (v8::Handle<v8::Object>)jsObj
+{
+    //v8::Locker lock;
+    HandleScope handle_scope;
+    v8::Handle<FunctionTemplate> objectTemplate = [JMXPoint jsObjectTemplate];
+    v8::Persistent<Object> jsInstance = v8::Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
+    jsInstance.MakeWeak([self retain], JMXPointJSDestructor);
+    jsInstance->SetPointerInInternalField(0, self);
+    return handle_scope.Close(jsInstance);
+}
+
++ (void)jsRegisterClassMethods:(v8::Handle<v8::FunctionTemplate>)constructor
+{
+}
+
+@end
 
 v8::Handle<v8::Value> JMXPointJSConstructor(const v8::Arguments& args)
 {

@@ -28,7 +28,7 @@
 #import "JMXInputPin.h"
 #import "JMXScript.h"
 #import "JMXEntity.h"
-#import "JMXScriptPinWrapper.h"
+#import "JMXScriptEntity.h"
 
 using namespace v8;
 
@@ -684,23 +684,18 @@ static v8::Handle<Value>connect(const Arguments& args)
     BOOL ret = NO;
     HandleScope handleScope;
     JMXPin *pin = (JMXPin *)args.Holder()->GetPointerFromInternalField(0);
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     if (args[0]->IsFunction()) {
         v8::Local<Context> globalContext = v8::Context::GetCalling();
         JMXScript *ctx = [JMXScript getContext:globalContext];
-        JMXScriptPinWrapper *wrapper = [JMXScriptPinWrapper pinWrapperWithName:@"jsFunction"
-                                                                      function:Persistent<Function>::New(Handle<Function>::Cast(args[0]))
-                                                                  scriptEntity:ctx.scriptEntity];
-        [wrapper connectToPin:pin];
-        [wrapper retain];
+        ret = [ctx.scriptEntity wrapPin:pin withFunction:Persistent<Function>::New(Handle<Function>::Cast(args[0]))];
     } else if (args[0]->IsObject()) {
         String::Utf8Value str(args[0]->ToString());
         if (strcmp(*str, "[object Pin]") == 0) {
             v8::Handle<Object> object = args[0]->ToObject();
             JMXPin *dest = (JMXPin *)object->GetPointerFromInternalField(0);
             if (dest) {
-                NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
                 ret = [pin connectToPin:dest];
-                [pool release];
             }
         } else {
             NSLog(@"Pin::connect(): Bad param %s (should have been a Pin object)", *str);
@@ -708,7 +703,18 @@ static v8::Handle<Value>connect(const Arguments& args)
     } else {
         NSLog(@"Pin::connect(): argument is not an object");
     }
+    [pool release];
     return handleScope.Close(v8::Boolean::New(ret));
+}
+
+static v8::Handle<Value>disconnectAll(const Arguments& args)
+{
+    
+}
+
+static v8::Handle<Value>disconnect(const Arguments& args)
+{
+
 }
 
 static v8::Handle<Value>exportToBoard(const Arguments& args)
@@ -781,6 +787,8 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
     objectTemplate->SetClassName(String::New("Pin"));
     v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     classProto->Set("connect", FunctionTemplate::New(connect));
+    classProto->Set("disconnect", FunctionTemplate::New(disconnect));
+    classProto->Set("disconnectAll", FunctionTemplate::New(disconnectAll));
     classProto->Set("export", FunctionTemplate::New(exportToBoard));
     // set instance methods
     v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
@@ -803,12 +811,27 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
     return objectTemplate;
 }
 
+static void JMXPinJSDestructor(Persistent<Value> object, void *parameter)
+{
+    HandleScope handle_scope;
+    v8::Locker lock;
+    JMXPin *obj = static_cast<JMXPin *>(parameter);
+    //NSLog(@"V8 WeakCallback (Point) called %@", obj);
+    [obj release];
+    if (!object.IsEmpty()) {
+        object.ClearWeak();
+        object.Dispose();
+        object.Clear();
+    }
+}
+
 - (v8::Handle<v8::Object>)jsObj
 {
     //v8::Locker lock;
     HandleScope handleScope;
     v8::Persistent<FunctionTemplate> objectTemplate = [[self class] jsObjectTemplate];
-    v8::Handle<Object> jsInstance = objectTemplate->InstanceTemplate()->NewInstance();
+    v8::Persistent<Object> jsInstance = v8::Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
+    jsInstance.MakeWeak([self retain], JMXPinJSDestructor);
     jsInstance->SetPointerInInternalField(0, self);
     return handleScope.Close(jsInstance);
 }

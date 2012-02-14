@@ -360,7 +360,11 @@ static v8::Handle<Value> Run(const Arguments& args)
             if (globalObject->GetHiddenValue(String::New("quit"))->BooleanValue())
                 break;
             
-            v8::Local<v8::Object> obj = globalObject->Get(String::New("scriptEntity"))->ToObject();
+            Local<Value> global = globalObject->Get(String::New("scriptEntity"));
+            if (global.IsEmpty() || global->IsUndefined() || global->IsNull())
+                break;                                     
+            v8::Local<v8::Object> obj = global->ToObject();
+
             JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetPointerFromInternalField(0);
             //ctx->Global()->Set(String::New("scriptEntity"), [scriptEntity jsObj]);
 
@@ -774,14 +778,23 @@ static char *argv[2] = { (char *)"JMX", NULL };
 {
     v8::Locker locker;
     v8::HandleScope handle_scope;
-    if (scriptEntity && [scriptEntity conformsToProtocol:@protocol(JMXRunLoop)])
-        [scriptEntity performSelector:@selector(stop)];
+    v8::Context::Scope context_scope(ctx);
+
+    if (scriptEntity) {
+        if ([scriptEntity conformsToProtocol:@protocol(JMXRunLoop)])
+            [scriptEntity performSelector:@selector(stop)];
+        ctx->Global()->Set(String::New("scriptEntity"), Undefined());
+        scriptEntity = nil;
+    }
     [self clearPersistentInstances];
-    
-    while( V8::IdleNotification() )
+    while( !V8::IdleNotification() )
         ;
     contextes.erase(self);
     ctx.Dispose();
+    // notify that we have disposed the context
+    V8::ContextDisposedNotification();
+    // and tell V8 we want to release anything possible (by notifying a low memory condition
+    V8::LowMemoryNotification();
     [persistentInstances release];
     [runloopTimers release];
     [eventListeners release];

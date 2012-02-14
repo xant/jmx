@@ -58,7 +58,8 @@
     if (entity) {
         worker = nil;
         timer = nil;
-        realEntity = [entity retain];
+        // TODO - explain why we need to release the hooked entity here
+        realEntity = [[entity retain] autorelease];
         [realEntity addPrivateData:self forKey:@"threadedEntity"];
         NSBlockOperation *registerObservers = [NSBlockOperation blockOperationWithBlock:^{
             [[NSNotificationCenter defaultCenter] addObserver:self

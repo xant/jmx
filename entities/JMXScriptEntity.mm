@@ -42,10 +42,13 @@ using namespace v8;
     return self;
 }
 
+- (id)retain
+{
+    return [super retain];
+}
 - (void)dealloc
 {
-    [jsContext clearTimers];
-    [jsContext release];
+    [self resetContext];
     [executionThread release];
     for (JMXScriptPinWrapper *wrapper in pinWrappers)
         [wrapper disconnect];
@@ -75,7 +78,7 @@ using namespace v8;
     // we want to release our context.
     // first thing ... let's detach all entities we have created
     for (NSXMLNode *node in [self children]) {
-        if ([node isKindOfClass:[JMXProxyPin class]]) {
+        if ([node isProxy]) {
             [self unregisterPin:(JMXPin *)node]; // XXX - this cast is only to avoid a warning
         } else if ([node isKindOfClass:[JMXGraphFragment class]]) {
             for (JMXEntity *entity in [node children]) {
@@ -199,6 +202,19 @@ using namespace v8;
         [super receiveData:data fromPin:aPin];
     }
     // XXX - base implementation doesn't do anything
+}
+
+
+// WEAK ... because referenced by the script context itself ... would create a circular reference if retained
+// and would end up in leaking memory
+- (v8::Handle<v8::Object>)jsObj
+{
+    //v8::Locker lock;
+    HandleScope handle_scope;
+    v8::Handle<FunctionTemplate> objectTemplate = [[self class] jsObjectTemplate];
+    v8::Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
+    jsInstance->SetPointerInInternalField(0, self);
+    return handle_scope.Close(jsInstance);
 }
 
 static Persistent<FunctionTemplate> objectTemplate;

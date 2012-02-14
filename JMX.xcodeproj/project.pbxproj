@@ -133,6 +133,8 @@
 		AAD751D814E98DD4008B1085 /* JMXKeyboardEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD751D714E98DD2008B1085 /* JMXKeyboardEvent.mm */; };
 		AAD751DB14E9AFFB008B1085 /* JMXScriptInputPin.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD751DA14E9AFF8008B1085 /* JMXScriptInputPin.mm */; };
 		AAD751DE14E9B01A008B1085 /* JMXScriptOutputPin.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD751DD14E9B017008B1085 /* JMXScriptOutputPin.mm */; };
+		AAD751E114E9D9DE008B1085 /* counter.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AAD751DF14E9D9C9008B1085 /* counter.js */; };
+		AAD751E214E9D9DE008B1085 /* random_point.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AAD751E014E9D9C9008B1085 /* random_point.js */; };
 		AADEBFC812414F7E00A6A06D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */; };
 		AAEA251914D4D2B800533049 /* processing.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AAEA251714D4D29A00533049 /* processing.js */; };
 		AAEA251C14D4D5A200533049 /* JMXEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEA251B14D4D5A000533049 /* JMXEvent.mm */; };
@@ -241,6 +243,8 @@
 			dstPath = javascript_examples;
 			dstSubfolderSpec = 12;
 			files = (
+				AAD751E114E9D9DE008B1085 /* counter.js in Deploy JS examples */,
+				AAD751E214E9D9DE008B1085 /* random_point.js in Deploy JS examples */,
 				AACD67AE14DEEF66007C7B31 /* canvas_sample1.js in Deploy JS examples */,
 				AAB50B5F14DD4956002F385C /* processing_sample1.js in Deploy JS examples */,
 				AAB50B6014DD4956002F385C /* processing_sample2.js in Deploy JS examples */,
@@ -567,10 +571,12 @@
 		AAD751D414E9462F008B1085 /* JMXMouseEvent.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXMouseEvent.mm; sourceTree = "<group>"; };
 		AAD751D614E98DD1008B1085 /* JMXKeyboardEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXKeyboardEvent.h; sourceTree = "<group>"; };
 		AAD751D714E98DD2008B1085 /* JMXKeyboardEvent.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXKeyboardEvent.mm; sourceTree = "<group>"; };
-		AAD751D914E9AFF6008B1085 /* JMXScriptInputPin.h */ = {isa = PBXFileReference; fileEncoding = 4; path = JMXScriptInputPin.h; sourceTree = "<group>"; };
+		AAD751D914E9AFF6008B1085 /* JMXScriptInputPin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXScriptInputPin.h; sourceTree = "<group>"; };
 		AAD751DA14E9AFF8008B1085 /* JMXScriptInputPin.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScriptInputPin.mm; sourceTree = "<group>"; };
-		AAD751DC14E9B014008B1085 /* JMXScriptOutputPin.h */ = {isa = PBXFileReference; fileEncoding = 4; path = JMXScriptOutputPin.h; sourceTree = "<group>"; };
+		AAD751DC14E9B014008B1085 /* JMXScriptOutputPin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXScriptOutputPin.h; sourceTree = "<group>"; };
 		AAD751DD14E9B017008B1085 /* JMXScriptOutputPin.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScriptOutputPin.mm; sourceTree = "<group>"; };
+		AAD751DF14E9D9C9008B1085 /* counter.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = counter.js; path = javascript_examples/counter.js; sourceTree = "<group>"; };
+		AAD751E014E9D9C9008B1085 /* random_point.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = random_point.js; path = javascript_examples/random_point.js; sourceTree = "<group>"; };
 		AADB066914CE0FCA007A175D /* node.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = node.js; sourceTree = "<group>"; };
 		AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		AAEA251314D4AC4800533049 /* JMXPinOwner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXPinOwner.h; sourceTree = "<group>"; };
@@ -958,6 +964,8 @@
 		AA490DD914CC5F9C00407C0D /* Javascript Examples */ = {
 			isa = PBXGroup;
 			children = (
+				AAD751DF14E9D9C9008B1085 /* counter.js */,
+				AAD751E014E9D9C9008B1085 /* random_point.js */,
 				AACD67AC14DEEF52007C7B31 /* canvas_sample1.js */,
 				AAB50B5914DD493E002F385C /* processing_sample1.js */,
 				AAB50B5A14DD493E002F385C /* processing_sample2.js */,

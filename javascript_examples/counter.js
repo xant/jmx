@@ -1,6 +1,7 @@
 output = new OutputPin("count", "Number");
 
 frequencyPin = scriptEntity.inputPin('frequency');
+frequencyPin.data = 1; // default to 1 tick per second (fractions are allowed)
 
 count = 0;
 

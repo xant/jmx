@@ -49,14 +49,14 @@
     [proxyNode addAttribute:[JMXAttribute attributeWithName:@"pin" stringValue:pin.uid]];
     [proxyNode addAttribute:[JMXAttribute attributeWithName:@"label" stringValue:label]];
 
-    /*
+    
     NSBlockOperation *hookPin = [NSBlockOperation blockOperationWithBlock:^{
         [self hookPin:pin];
     }];
     [hookPin setQueuePriority:NSOperationQueuePriorityVeryHigh];
     [[NSOperationQueue mainQueue] addOperations:[NSArray arrayWithObject:hookPin]
                               waitUntilFinished:YES];
-    */
+    
     return self;
 }
 

@@ -89,6 +89,10 @@ using namespace v8;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXEntityPinRemoved" 
                                                         object:self
                                                       userInfo:userInfo];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXPinUnregistered"
+                                                        object:pin];
+    
 }
 /*
 - (id)jmxInit:(id)arg
@@ -324,14 +328,19 @@ using namespace v8;
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:@"JMXPinDestroyed"
                                                   object:pin];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:@"JMXPinUnregistered"
+                                                  object:pin];
+    
     for (id p in [self children]) {
-        if ([p isProxy] && ((JMXProxyPin *)p).realPin == pin) {
-            [self performSelectorOnMainThread:@selector(notifyPinRemoved:) withObject:p waitUntilDone:YES];
+        if ([p isKindOfClass:[JMXPin class]] && [p isProxy] && ((JMXProxyPin *)p).realPin == pin) {
             [p detach];
+            [self performSelectorOnMainThread:@selector(notifyPinRemoved:) withObject:p waitUntilDone:YES];
             break;
         }
     }
 }
+
 
 - (void)addProxyPin:(JMXProxyPin *)pin
 {
@@ -340,11 +349,17 @@ using namespace v8;
                                              selector:@selector(proxiedPinDestroyed:)
                                                  name:@"JMXPinDestroyed"
                                                object:pin.realPin];
+    if (pin.realPin.owner && [pin.realPin.owner isKindOfClass:[JMXEntity class]]) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(proxiedPinDestroyed:)
+                                                     name:@"JMXPinUnregistered"
+                                                   object:pin.realPin];
+    }
 }
 
 - (void)proxyInputPin:(JMXInputPin *)pin withLabel:(NSString *)pinLabel
 {
-    JMXProxyPin *pPin = [JMXProxyPin proxyPin:pin withLabel:pinLabel ? pinLabel : pin.label];
+    JMXProxyPin *pPin = [JMXProxyPin proxyPin:pin label:pinLabel ? pinLabel : pin.label owner:self];
     @synchronized(self) {
         [self addChild:(JMXPin *)pPin]; // XXX - this cast is just to avoid a warning
     }
@@ -360,7 +375,7 @@ using namespace v8;
 
 - (void)proxyOutputPin:(JMXOutputPin *)pin withLabel:(NSString *)pinLabel
 {
-    JMXProxyPin *pPin = [JMXProxyPin proxyPin:pin withLabel:pinLabel ? pinLabel : pin.label];
+    JMXProxyPin *pPin = [JMXProxyPin proxyPin:pin label:pinLabel ? pinLabel : pin.label owner:self];
     @synchronized(self) {
         [self addChild:(JMXPin *)pPin]; // XXX - this cast is just to avoid a warning
     }
@@ -440,7 +455,6 @@ using namespace v8;
 - (void)unregisterPin:(JMXPin *)pin
 {
     [pin disconnectAllPins];
-    [pin detach];
     if ([[NSThread currentThread] isMainThread]) {
         [self notifyPinRemoved:pin];
     } else {
@@ -448,6 +462,8 @@ using namespace v8;
         // and since the entity will persist the pin we can avoid waiting for the notification to be completely propagated
         [self performSelectorOnMainThread:@selector(notifyPinRemoved:) withObject:pin waitUntilDone:YES];
     }
+    [pin detach];
+
     // we can now release the pin
 }
 

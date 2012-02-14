@@ -13,35 +13,36 @@
 
 @implementation JMXProxyPin
 
-@synthesize parent, label, realPin, index;
+@synthesize parent, label, realPin, index, owner;
 
-+ (id)proxyPin:(JMXPin *)pin withLabel:(NSString *)label
++ (id)proxyPin:(JMXPin *)pin label:(NSString *)label owner:(JMXEntity *)anEntity
 {
-    return [[[self alloc] initWithPin:pin andLabel:label] autorelease];
+    return [[[self alloc] initWithPin:pin label:label owner:anEntity] autorelease];
 }
 
 - (void)pinDestroyed:(NSNotification *)info
 {
     @synchronized(self) {
         [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:@"JMXPinDestroyed"
-                                                      object:realPin];
+                                                        name:@"JMXEntityPinRemoved"
+                                                      object:owner];
         [realPin release];
         realPin = nil;
     }
 }
 
-- (void)hookPin:(JMXPin *)pin
+- (void)hookEntity
 {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(pinDestroyed:)
-                                                 name:@"JMXPinDestroyed"
-                                               object:pin];
+                                                 name:@"JMXEntityPinRemoved"
+                                               object:owner];
 }
 
-- (id)initWithPin:(JMXPin *)pin andLabel:(NSString *)pinLabel
+- (id)initWithPin:(JMXPin *)pin label:(NSString *)pinLabel owner:(JMXEntity *)anEntity
 {
     parent = nil;
+    owner = anEntity;
     realPin = [pin retain];
     label = (pinLabel && ![pinLabel isEqualTo:@"undefined"]) ? [pinLabel copy] : [pin.label copy];
     index = 0;
@@ -49,14 +50,12 @@
     [proxyNode addAttribute:[JMXAttribute attributeWithName:@"pin" stringValue:pin.uid]];
     [proxyNode addAttribute:[JMXAttribute attributeWithName:@"label" stringValue:label]];
 
-    
-    NSBlockOperation *hookPin = [NSBlockOperation blockOperationWithBlock:^{
-        [self hookPin:pin];
+    NSBlockOperation *hookEntity = [NSBlockOperation blockOperationWithBlock:^{
+        [self hookEntity];
     }];
-    [hookPin setQueuePriority:NSOperationQueuePriorityVeryHigh];
-    [[NSOperationQueue mainQueue] addOperations:[NSArray arrayWithObject:hookPin]
+    [hookEntity setQueuePriority:NSOperationQueuePriorityVeryHigh];
+    [[NSOperationQueue mainQueue] addOperations:[NSArray arrayWithObject:hookEntity]
                               waitUntilFinished:YES];
-    
     return self;
 }
 

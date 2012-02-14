@@ -12,18 +12,20 @@
 @class NSXMLNode;
 
 @interface JMXProxyPin : NSProxy <NSCopying> {
-    JMXPin *realPin;
     NSString *label;
 	NSXMLElement *parent;
     NSXMLElement *proxyNode;
     NSUInteger index;
+    JMXPin *realPin;
+    JMXEntity *owner; // weak
 }
 
 @property (readwrite, assign) NSXMLElement *parent;
 @property (readwrite, copy) NSString *label;
 @property (readonly) JMXPin *realPin;
+@property (readonly) JMXEntity *owner; // weak
 @property (assign) NSUInteger index;
 
-- (id)initWithPin:(JMXPin *)pin andLabel:(NSString *)label;
-+ (id)proxyPin:(JMXPin *)pin withLabel:(NSString *)label;
+- (id)initWithPin:(JMXPin *)pin label:(NSString *)label owner:(JMXEntity *)owner;
++ (id)proxyPin:(JMXPin *)pin label:(NSString *)label owner:(JMXEntity *)owner;
 @end

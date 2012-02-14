@@ -262,7 +262,7 @@ static NSMutableDictionary *__openglOutputs = nil;
     if (frameSize)
         [frameSize release];
     frameSize = nil;
-    //self.currentFrame = nil;
+    self.currentFrame = nil;
     //[lock unlock];  
 }
 

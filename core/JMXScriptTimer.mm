@@ -76,6 +76,7 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
 {
     if (!function.IsEmpty())
         function.Dispose();
+    [timer invalidate];
     [timer release];
     [statements release];
     [super dealloc];

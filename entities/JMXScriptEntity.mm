@@ -119,7 +119,7 @@ using namespace v8;
 {
     if ([aPin isKindOfClass:[JMXScriptOutputPin class]]) {
         JMXScriptOutputPin *pin = (JMXScriptOutputPin *)aPin;
-        if (pin.function.IsEmpty())
+        if (pin.function.IsEmpty() || pin.function->IsNull() || pin.function->IsUndefined())
             return nil;
         Locker locker;
         HandleScope handleScope;
@@ -147,7 +147,7 @@ using namespace v8;
 {
     if ([aPin isKindOfClass:[JMXScriptInputPin class]]) {
         JMXScriptOutputPin *pin = (JMXScriptOutputPin *)aPin;
-        if (pin.function.IsEmpty())
+        if (pin.function.IsEmpty() || pin.function->IsNull() || pin.function->IsUndefined())
             return;
         Locker locker;
         HandleScope handleScope;

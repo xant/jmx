@@ -92,6 +92,7 @@
     NSXMLElement *outputPins;
     JMXInputPin *activeIn;
     JMXOutputPin *activeOut;
+    NSMutableSet *proxyPins;
 @private
     NSMutableDictionary *privateData;
     JMXEntity *owner;

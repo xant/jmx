@@ -135,6 +135,7 @@ using namespace v8;
         privateData = [[[NSMutableDictionary alloc] init] retain];
         //NSLog(@"Class: %@ initialized", [self class]);
         self.active = YES;
+        proxyPins = [[NSMutableSet alloc] initWithCapacity:25];
     }
     return self;
 }
@@ -336,6 +337,7 @@ using namespace v8;
         if ([p isKindOfClass:[JMXPin class]] && [p isProxy] && ((JMXProxyPin *)p).realPin == pin) {
             [p detach];
             [self performSelectorOnMainThread:@selector(notifyPinRemoved:) withObject:p waitUntilDone:YES];
+            [proxyPins removeObject:p];
             break;
         }
     }
@@ -362,6 +364,7 @@ using namespace v8;
     JMXProxyPin *pPin = [JMXProxyPin proxyPin:pin label:pinLabel ? pinLabel : pin.label owner:self];
     @synchronized(self) {
         [self addChild:(JMXPin *)pPin]; // XXX - this cast is just to avoid a warning
+        [proxyPins addObject:pPin];
     }
     // We need notifications to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
     // and since the entity will persist the pin we can avoid waiting for the notification to be completely propagated
@@ -462,9 +465,8 @@ using namespace v8;
         // and since the entity will persist the pin we can avoid waiting for the notification to be completely propagated
         [self performSelectorOnMainThread:@selector(notifyPinRemoved:) withObject:pin waitUntilDone:YES];
     }
-    [pin detach];
-
     // we can now release the pin
+    [pin detach];
 }
 
 - (void)unregisterInputPin:(NSString *)pinLabel
@@ -512,7 +514,7 @@ using namespace v8;
 {
     [self disconnectAllPins];
     for (id child in [self children]) {
-        if ([child isProxy] && [child respondsToSelector:@selector(realPin)]) {
+        if ([child isProxy] && [child isKindOfClass:[JMXPin class]]) {
             NSBlockOperation *unregisterObserver = [NSBlockOperation blockOperationWithBlock:^{
                 [[NSNotificationCenter defaultCenter] removeObserver:self
                                                                 name:@"JMXPinDestroyed"
@@ -521,10 +523,9 @@ using namespace v8;
             [unregisterObserver setQueuePriority:NSOperationQueuePriorityVeryHigh];
             [[NSOperationQueue mainQueue] addOperations:[NSArray arrayWithObject:unregisterObserver]
                                       waitUntilFinished:YES];
-            JMXPin *pin = (JMXPin *)child;
-            [self unregisterPin:pin];
-        }
-        if ([child isKindOfClass:[JMXPin class]]) {
+            //JMXPin *pin = (JMXPin *)child;
+            //[self unregisterPin:pin];
+        } else if ([child isKindOfClass:[JMXPin class]]) {
             JMXPin *pin = (JMXPin *)child;
             [self unregisterPin:pin];
         }
@@ -557,8 +558,8 @@ using namespace v8;
 - (void)disconnectAllPins
 {
     for (id child in [self children]) {
-        if ([child respondsToSelector:@selector(disconnectAllPins)]) {
-            if (![child isKindOfClass:[JMXEntity class]])
+        if (![child isProxy] && [child respondsToSelector:@selector(disconnectAllPins)]) {
+            if ([child isKindOfClass:[JMXPin class]])
                 [child performSelector:@selector(disconnectAllPins)];
         }
     }
@@ -713,13 +714,13 @@ static v8::Handle<Value>InputPins(Local<String> name, const AccessorInfo& info)
     JMXEntity *entity = (JMXEntity *)info.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSArray *inputPins = [entity inputPins];
-    v8::Handle<Array> list = v8::Array::New([inputPins count]);
-    int cnt = 0;
+    Handle<ObjectTemplate> objTemplate = ObjectTemplate::New();
+    Handle<Object> obj = (objTemplate->NewInstance());
     for (JMXPin *pin in inputPins) {
-        list->Set(v8::Number::New(cnt++), [pin jsObj]);
+        obj->Set(v8::String::New(pin.label.UTF8String), [pin jsObj]);
     }
     [pool drain];
-    return handleScope.Close(list);
+    return handleScope.Close(obj);
 }
 
 static v8::Handle<Value>OutputPins(Local<String> name, const AccessorInfo& info)
@@ -729,13 +730,13 @@ static v8::Handle<Value>OutputPins(Local<String> name, const AccessorInfo& info)
     JMXEntity *entity = (JMXEntity *)info.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSArray *outputPins = [entity outputPins];
-    v8::Handle<Array> list = v8::Array::New([outputPins count]);
-    int cnt = 0;
+    Handle<ObjectTemplate> objTemplate = ObjectTemplate::New();
+    Handle<Object> obj = (objTemplate->NewInstance());
     for (JMXPin *pin in outputPins) {
-        list->Set(v8::Number::New(cnt++), [pin jsObj]);
+        obj->Set(v8::String::New(pin.label.UTF8String), [pin jsObj]);
     }
     [pool drain];
-    return handleScope.Close(list);
+    return handleScope.Close(obj);
 }
 
 
@@ -780,6 +781,23 @@ static v8::Handle<Value> OutputPin(const Arguments& args)
     return handleScope.Close(Undefined());
 }
 
+static v8::Handle<Value> MapSet(Local<String> name, Local<Value> value, const AccessorInfo &info)
+{
+    v8::Locker lock;
+    HandleScope handleScope;
+    Local<Object> obj = Local<Object>::Cast(info.Holder()->GetHiddenValue(String::NewSymbol("map")));
+    obj->Set(name, value);
+    return Undefined();
+}
+
+static v8::Handle<Value> MapGet(Local<String> name, const AccessorInfo &info)
+{
+    v8::Locker lock;
+    HandleScope handleScope;
+    Local<Object> obj = Local<Object>::Cast(info.Holder()->GetHiddenValue(String::NewSymbol("map")));
+    return handleScope.Close(obj->Get(name));
+}
+
 #pragma mark Class Template
 
 + (v8::Persistent<FunctionTemplate>)jsObjectTemplate
@@ -799,13 +817,18 @@ static v8::Handle<Value> OutputPin(const Arguments& args)
     
     // Add accessors for each of the fields of the entity.
     instanceTemplate->SetAccessor(String::NewSymbol("description"), GetStringProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("input"), InputPins);
+    instanceTemplate->SetAccessor(String::NewSymbol("output"), OutputPins);
+    instanceTemplate->SetAccessor(String::NewSymbol("active"), GetBoolProperty, SetBoolProperty);
+    // XXX - deprecated
     instanceTemplate->SetAccessor(String::NewSymbol("inputPins"), InputPins);
     instanceTemplate->SetAccessor(String::NewSymbol("outputPins"), OutputPins);
-    instanceTemplate->SetAccessor(String::NewSymbol("active"), GetBoolProperty, SetBoolProperty);
     
+    //instanceTemplate->SetNamedPropertyHandler(MapGet, MapSet);
+
     if ([self respondsToSelector:@selector(jsObjectTemplateAddons:)])
         [self jsObjectTemplateAddons:objectTemplate];
-    NSLog(@"JMXEntity objectTemplate created");
+    NSDebug(@"JMXEntity objectTemplate created");
     return objectTemplate;
 }
 

@@ -29,6 +29,7 @@
 #import "JMXScript.h"
 #import "JMXEntity.h"
 #import "JMXScriptEntity.h"
+#import "JMXScriptPinWrapper.h"
 
 using namespace v8;
 
@@ -681,21 +682,66 @@ static v8::Handle<Value>mode(Local<String> name, const AccessorInfo& info)
 static v8::Handle<Value>connect(const Arguments& args)
 {
     //v8::Locker lock;
-    BOOL ret = NO;
     HandleScope handleScope;
     JMXPin *pin = (JMXPin *)args.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     if (args[0]->IsFunction()) {
         v8::Local<Context> globalContext = v8::Context::GetCalling();
         JMXScript *ctx = [JMXScript getContext:globalContext];
-        ret = [ctx.scriptEntity wrapPin:pin withFunction:Persistent<Function>::New(Handle<Function>::Cast(args[0]))];
+        JMXScriptPinWrapper *wrapper = [ctx.scriptEntity wrapPin:pin withFunction:Persistent<Function>::New(Handle<Function>::Cast(args[0]))];
+        [pool release];
+        return  handleScope.Close([wrapper jsObj]);
     } else if (args[0]->IsObject()) {
         String::Utf8Value str(args[0]->ToString());
         if (strcmp(*str, "[object Pin]") == 0) {
             v8::Handle<Object> object = args[0]->ToObject();
             JMXPin *dest = (JMXPin *)object->GetPointerFromInternalField(0);
             if (dest) {
-                ret = [pin connectToPin:dest];
+                BOOL ret = [pin connectToPin:dest];
+                return handleScope.Close([dest jsObj]);
+            }
+        } else {
+            NSLog(@"Pin::connect(): Bad param %s (should have been a Pin object)", *str);
+        }
+    } else {
+        NSLog(@"Pin::connect(): argument is not an object");
+    }
+    [pool release];
+    return handleScope.Close(Undefined());
+}
+
+static v8::Handle<Value>disconnectAll(const Arguments& args)
+{   
+    //v8::Locker lock;
+    BOOL ret = NO;
+    HandleScope handleScope;
+    JMXPin *pin = (JMXPin *)args.Holder()->GetPointerFromInternalField(0);
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    [pin disconnectAllPins];
+    [pool release];
+    return Undefined();
+}
+
+static v8::Handle<Value>disconnect(const Arguments& args)
+{
+    //v8::Locker lock;
+    BOOL ret = NO;
+    HandleScope handleScope;
+    JMXPin *pin = (JMXPin *)args.Holder()->GetPointerFromInternalField(0);
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    if (args[0]->IsObject()) {
+        String::Utf8Value str(args[0]->ToString());
+        if (strcmp(*str, "[object Pin]") == 0) {
+            v8::Handle<Object> object = args[0]->ToObject();
+            id dest = (id)object->GetPointerFromInternalField(0);
+            if (dest) {
+                ret = YES;
+                if ([dest isKindOfClass:[JMXPin class]])
+                    [pin disconnectFromPin:dest];
+                else if ([dest isKindOfClass:[JMXScriptPinWrapper class]])
+                    [dest disconnect];
+                else
+                    ret = NO;
             }
         } else {
             NSLog(@"Pin::connect(): Bad param %s (should have been a Pin object)", *str);
@@ -705,15 +751,6 @@ static v8::Handle<Value>connect(const Arguments& args)
     }
     [pool release];
     return handleScope.Close(v8::Boolean::New(ret));
-}
-
-static v8::Handle<Value>disconnectAll(const Arguments& args)
-{
-    
-}
-
-static v8::Handle<Value>disconnect(const Arguments& args)
-{
 
 }
 
@@ -807,7 +844,7 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
     instanceTemplate->SetAccessor(String::NewSymbol("sendNotifications"), GetBoolProperty, SetBoolProperty);
     //instanceTemplate->SetAccessor(String::NewSymbol("owner"), accessObjectProperty);
     //instanceTemplate->SetAccessor(String::NewSymbol("allowedValues"), allowedValues);
-    NSLog(@"JMXPin objectTemplate created");
+    NSDebug(@"JMXPin objectTemplate created");
     return objectTemplate;
 }
 

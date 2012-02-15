@@ -124,8 +124,8 @@
 {
     [destinationPin retain];
     @synchronized(producers) {
-        [destinationPin detachObject:self];
         [producers removeObjectIdenticalTo:destinationPin];
+        [destinationPin detachObject:self];
         if (destinationPin.mode == kJMXPinModePassive)
             passiveProducersCount--;
         if ([producers count] == 0) {

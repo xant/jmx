@@ -20,25 +20,6 @@
     return [[[self alloc] initWithPin:pin label:label owner:anEntity] autorelease];
 }
 
-- (void)pinDestroyed:(NSNotification *)info
-{
-    @synchronized(self) {
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:@"JMXEntityPinRemoved"
-                                                      object:owner];
-        [realPin release];
-        realPin = nil;
-    }
-}
-
-- (void)hookEntity
-{
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(pinDestroyed:)
-                                                 name:@"JMXEntityPinRemoved"
-                                               object:owner];
-}
-
 - (id)initWithPin:(JMXPin *)pin label:(NSString *)pinLabel owner:(JMXEntity *)anEntity
 {
     parent = nil;
@@ -50,21 +31,15 @@
     [proxyNode addAttribute:[JMXAttribute attributeWithName:@"pin" stringValue:pin.uid]];
     [proxyNode addAttribute:[JMXAttribute attributeWithName:@"label" stringValue:label]];
 
-    NSBlockOperation *hookEntity = [NSBlockOperation blockOperationWithBlock:^{
-        [self hookEntity];
-    }];
-    [hookEntity setQueuePriority:NSOperationQueuePriorityVeryHigh];
-    [[NSOperationQueue mainQueue] addOperations:[NSArray arrayWithObject:hookEntity]
-                              waitUntilFinished:YES];
     return self;
 }
 
 - (void)dealloc
 {
-    if (label)
-        [label release];
-    if (realPin)
-        [realPin release];
+    [label release];
+    [realPin release];
+    [proxyNode detach];
+    [proxyNode release];
     [super dealloc];
 }
 
@@ -97,24 +72,13 @@
         if (!realPin)
             return;
     }
-    // XXX - in case of retain/release/dealloc operations we need to 
-    // propagate the message to both the underlying pin and fake xml node
-    // so that both are retained/released symmetrically
-    if ([anInvocation selector] == @selector(retain) ||
-        [anInvocation selector] == @selector(release) ||
-        [anInvocation selector] == @selector(dealloc)) 
-    {
+
+    // otherwise we need to determine if we want to forward the invocation
+    // to either the underlying pin or the fake xml node
+    if ([proxyNode respondsToSelector:[anInvocation selector]])
         [anInvocation setTarget:proxyNode];
-        [anInvocation invoke];
+    else
         [anInvocation setTarget:realPin];
-    } else {
-        // otherwise we need to determine if we want to forward the invocation
-        // to either the underlying pin or the fake xml node
-        if ([proxyNode respondsToSelector:[anInvocation selector]])
-            [anInvocation setTarget:proxyNode];
-        else
-            [anInvocation setTarget:realPin];
-    }
     [anInvocation invoke];
     // if the proxied pin is being connected, let's register for disconnect notifications 
     // so that we can propagate them for connections made through the proxy-pin

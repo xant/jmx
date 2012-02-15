@@ -698,6 +698,7 @@ static v8::Handle<Value>connect(const Arguments& args)
             JMXPin *dest = (JMXPin *)object->GetPointerFromInternalField(0);
             if (dest) {
                 BOOL ret = [pin connectToPin:dest];
+                [pool release];
                 return handleScope.Close([dest jsObj]);
             }
         } else {

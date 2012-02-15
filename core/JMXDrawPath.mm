@@ -668,7 +668,9 @@ using namespace v8;
         NSColor *calibratedColor = [shadowColor colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
         [calibratedColor getRed:&components[0] green:&components[1] blue:&components[2] alpha:&components[3]];
         
-        CGContextSetShadowWithColor(context, shadowSize, shadowBlur, CGColorCreate([[shadowColor colorSpace] CGColorSpace], components));
+        CGColorRef color = CGColorCreate([[shadowColor colorSpace] CGColorSpace], components);
+        CGContextSetShadowWithColor(context, shadowSize, shadowBlur, color);
+        CFRelease(color);
     }
     CGContextDrawPath(context, _didFill ? kCGPathFillStroke : kCGPathStroke);
     

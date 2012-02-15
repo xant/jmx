@@ -35,4 +35,10 @@
     }
 }
 
+- (void)dealloc
+{
+    [history release];
+    [super dealloc];
+}
+
 @end

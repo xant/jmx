@@ -132,7 +132,7 @@ using namespace v8;
         [self registerInputPin:@"name" withType:kJMXStringPin andSelector:@"setEntityName:"];
         [[JMXContext sharedContext] addEntity:self];
         [self performSelectorOnMainThread:@selector(notifyCreation) withObject:nil waitUntilDone:NO];
-        privateData = [[[NSMutableDictionary alloc] init] retain];
+        privateData = [[NSMutableDictionary alloc] init];
         //NSLog(@"Class: %@ initialized", [self class]);
         self.active = YES;
         proxyPins = [[NSMutableSet alloc] initWithCapacity:25];
@@ -164,7 +164,8 @@ using namespace v8;
         [privateData release];
         privateData = nil;
     }
-    NSLog(@"Released %@", self);
+    [proxyPins release];
+    NSDebug(@"Released %@", self);
     [super dealloc];
 }
 

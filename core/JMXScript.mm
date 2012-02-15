@@ -885,6 +885,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
             p->jsObj.Clear();
         }
         [persistentInstances removeObjectForKey:key];
+        free(p);
     }
 }
 

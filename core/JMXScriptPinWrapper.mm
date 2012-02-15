@@ -62,7 +62,7 @@
 - (void)dealloc
 {
     [statements release];
-    [virtualPin dealloc];
+    [virtualPin release];
     [super dealloc];
 }
 
@@ -136,18 +136,18 @@
     [virtualPin release];
     
     if (pin.direction == kJMXOutputPin) {
-        virtualPin = [JMXPin pinWithLabel:@"jsReceiver"
+        virtualPin = [[JMXPin pinWithLabel:@"jsReceiver"
                                        andType:pin.type
                                   forDirection:kJMXInputPin
                                        ownedBy:self
-                                    withSignal:@"receivedSignal:"];
+                                    withSignal:@"receivedSignal:"] retain];
         [pin connectToPin:virtualPin];
     } else {
-        virtualPin = [JMXPin pinWithLabel:@"jsProducer"
+        virtualPin = [[JMXPin pinWithLabel:@"jsProducer"
                                   andType:pin.type
                              forDirection:kJMXOutputPin
                                   ownedBy:self
-                               withSignal:@"performSignal:"];
+                               withSignal:@"performSignal:"] retain];
     }
     [pin connectToPin:virtualPin];
 }
@@ -157,4 +157,64 @@
 {
     [virtualPin disconnectAllPins];
 }
+
+static v8::Handle<Value>disconnect(const Arguments& args)
+{
+    //v8::Locker lock;
+    BOOL ret = NO;
+    HandleScope handleScope;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    JMXScriptPinWrapper *wrapper = (JMXScriptPinWrapper *)args.Holder()->GetPointerFromInternalField(0);
+    [wrapper disconnect];
+    [pool release];
+    return Undefined();
+}
+
+static v8::Persistent<FunctionTemplate> objectTemplate;
+
++ (v8::Persistent<FunctionTemplate>)jsObjectTemplate
+{
+    //v8::Locker lock;
+    if (!objectTemplate.IsEmpty())
+        return objectTemplate;
+    objectTemplate = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+    objectTemplate->Inherit([super jsObjectTemplate]);
+    objectTemplate->SetClassName(String::New("PinWrapper"));
+    v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
+    classProto->Set("disconnect", FunctionTemplate::New(disconnect));
+    // set instance methods
+    v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
+    instanceTemplate->SetInternalFieldCount(1);
+
+    //instanceTemplate->SetAccessor(String::NewSymbol("owner"), accessObjectProperty);
+    //instanceTemplate->SetAccessor(String::NewSymbol("allowedValues"), allowedValues);
+    NSDebug(@"JMXScriptPinWrapper objectTemplate created");
+    return objectTemplate;
+}
+
+static void JMXScriptPinWrapperJSDestructor(Persistent<Value> object, void *parameter)
+{
+    HandleScope handle_scope;
+    v8::Locker lock;
+    JMXScriptPinWrapper *obj = static_cast<JMXScriptPinWrapper *>(parameter);
+    //NSLog(@"V8 WeakCallback (Point) called %@", obj);
+    [obj release];
+    if (!object.IsEmpty()) {
+        object.ClearWeak();
+        object.Dispose();
+        object.Clear();
+    }
+}
+
+- (v8::Handle<v8::Object>)jsObj
+{
+    //v8::Locker lock;
+    HandleScope handleScope;
+    v8::Persistent<FunctionTemplate> objectTemplate = [[self class] jsObjectTemplate];
+    v8::Persistent<Object> jsInstance = v8::Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
+    jsInstance.MakeWeak([self retain], JMXScriptPinWrapperJSDestructor);
+    jsInstance->SetPointerInInternalField(0, self);
+    return handleScope.Close(jsInstance);
+}
+
 @end

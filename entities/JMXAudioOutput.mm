@@ -202,7 +202,7 @@ static Persistent<FunctionTemplate> objectTemplate;
     objectTemplate->Inherit([super jsObjectTemplate]);  
     objectTemplate->SetClassName(String::New("AudioOutput"));
     objectTemplate->InstanceTemplate()->SetInternalFieldCount(1);
-    NSLog(@"JMXAudioOutput objectTemplate created");
+    NSDebug(@"JMXAudioOutput objectTemplate created");
     return objectTemplate;
 }
 

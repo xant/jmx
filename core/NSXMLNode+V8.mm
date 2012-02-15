@@ -692,7 +692,7 @@ static v8::Handle<Value> DispatchEvent(const Arguments& args)
     // XXX - JMX addition : the 'value' accessor is not defined by the DOM spec
     instanceTemplate->SetAccessor(String::NewSymbol("value"), GetTextContent);    
 
-    NSLog(@"JMXNode objectTemplate created");
+    NSDebug(@"JMXNode objectTemplate created");
     return objectTemplate;
 }
 

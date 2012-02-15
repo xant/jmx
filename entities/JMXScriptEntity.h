@@ -12,6 +12,7 @@
 @class JMXScript;
 @class JMXScriptInputPin;
 @class JMXScriptOutputPin;
+@class JMXScriptPinWrapper;
 
 @interface JMXScriptEntity : JMXEntity {
 @protected
@@ -30,7 +31,7 @@
 - (void)hookEntity:(JMXEntity *)entity;
 
 #ifdef __JMXV8__
-- (BOOL)wrapPin:(JMXPin *)pin withFunction:(v8::Persistent<v8::Function>)function;
+- (JMXScriptPinWrapper *)wrapPin:(JMXPin *)pin withFunction:(v8::Persistent<v8::Function>)function;
 
 - (JMXScriptInputPin *)registerJSInputPinWithLabel:(NSString *)label
                                         type:(JMXPinType)type

@@ -150,7 +150,7 @@
 - (void)startThread
 {
     if (!worker) {
-        NSLog(@"Thread %@ starting", self);
+        NSDebug(@"Thread %@ starting", self);
         worker = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
         [worker setThreadPriority:1.0];
         [worker start];
@@ -160,7 +160,7 @@
 
 - (void)stopThread {
     if (worker) {
-        NSLog(@"Thread %@ exiting", self);
+        NSDebug(@"Thread %@ exiting", self);
         quit = YES;
         [worker cancel];
         // wait for the thread to really finish otherwise it could
@@ -417,7 +417,7 @@ static v8::Handle<Value>Stop(const Arguments& args)
     classProto->Set("stop", FunctionTemplate::New(Stop));
     objectTemplate->InstanceTemplate()->SetInternalFieldCount(1);
     objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("frequency"), GetNumberProperty, SetNumberProperty);
-    NSLog(@"Installed accessors for 'Threaded' entities");
+    NSDebug(@"Installed accessors for 'Threaded' entities");
 }
 
 @end

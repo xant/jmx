@@ -94,7 +94,7 @@ void SetValue(Local<String> name, Local<Value> value, const AccessorInfo& info)
     
     if ([self respondsToSelector:@selector(jsObjectTemplateAddons:)])
         [self jsObjectTemplateAddons:objectTemplate];
-    NSLog(@"JMXAttribute objectTemplate created");
+    NSDebug(@"JMXAttribute objectTemplate created");
     return objectTemplate;
 }
 

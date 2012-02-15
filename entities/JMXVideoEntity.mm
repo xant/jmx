@@ -277,7 +277,7 @@ static v8::Persistent<v8::FunctionTemplate> objectTemplate;
 {
     if (!objectTemplate.IsEmpty())
         return objectTemplate;
-    NSLog(@"JMXVideoEntity objectTemplate created");
+    NSDebug(@"JMXVideoEntity objectTemplate created");
     v8::Persistent<v8::FunctionTemplate> objectTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
     objectTemplate->Inherit([super jsObjectTemplate]);
     // accessors to image parameters

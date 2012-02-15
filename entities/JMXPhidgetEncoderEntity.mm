@@ -219,7 +219,7 @@ int errorCounter = 0;
     // set instance methods
     v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
     instanceTemplate->SetInternalFieldCount(1);
-    NSLog(@"JMXPhidgetEncoderEntity objectTemplate created");
+    NSDebug(@"JMXPhidgetEncoderEntity objectTemplate created");
     return objectTemplate;
 }
  

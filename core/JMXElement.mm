@@ -166,7 +166,7 @@ static void SetStyle(Local<String> name, Local<Value> value, const AccessorInfo&
     instanceTemplate->SetAccessor(String::NewSymbol("id"), GetId, SetId);
     instanceTemplate->SetAccessor(String::NewSymbol("style"), GetStyle, SetStyle);
 
-    NSLog(@"JMXElement objectTemplate created");
+    NSDebug(@"JMXElement objectTemplate created");
     return objectTemplate;
 }
 

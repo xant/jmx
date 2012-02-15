@@ -131,7 +131,7 @@ static v8::Handle<Value>Stop(const Arguments& args)
 {
     if (!objectTemplate.IsEmpty())
         return objectTemplate;
-    NSLog(@"JMXVideoCapture objectTemplate created");
+    NSDebug(@"JMXVideoCapture objectTemplate created");
     v8::Persistent<v8::FunctionTemplate> objectTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
     objectTemplate->Inherit([super jsObjectTemplate]);
     objectTemplate->SetClassName(String::New("VideoCapture"));

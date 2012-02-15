@@ -170,7 +170,7 @@ using namespace v8;
     instanceTemplate->SetAccessor(String::NewSymbol("height"), GetIntProperty, SetIntProperty);
 
     
-    NSLog(@"JMXImageElement objectTemplate created");
+    NSDebug(@"JMXImageElement objectTemplate created");
     return objectTemplate;
 }
 

@@ -182,7 +182,7 @@ static v8::Handle<Value> ReplaceData(const Arguments& args)
     
     if ([self respondsToSelector:@selector(jsObjectTemplateAddons:)])
         [self jsObjectTemplateAddons:objectTemplate];
-    NSLog(@"JMXCDATA objectTemplate created");
+    NSDebug(@"JMXCDATA objectTemplate created");
     return objectTemplate;
 }
 

@@ -34,4 +34,11 @@
                                                           logMessage:__format, ## args ];\
                                     } while (0)
 
+#define NSDebug(__format, args...) do {\
+                                        if (verbose >= LOG_DEBUG) {\
+                                            [(JMXAppDelegate *)[[NSApplication sharedApplication] delegate]\
+                                                                logMessage:__format, ## args ];\
+                                        }\
+                                      } while (0)
+
 extern int verbose;

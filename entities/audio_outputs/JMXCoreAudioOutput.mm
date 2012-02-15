@@ -149,7 +149,7 @@ static v8::Handle<Value>availableFilters(const Arguments& args)
     objectTemplate->InstanceTemplate()->SetInternalFieldCount(1);
     v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     classProto->Set("availableFilters", FunctionTemplate::New(availableFilters));
-    NSLog(@"JMXCoreAudioOutput objectTemplate created");
+    NSDebug(@"JMXCoreAudioOutput objectTemplate created");
     return objectTemplate;
 }
 

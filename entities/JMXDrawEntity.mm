@@ -256,7 +256,7 @@ static v8::Handle<Value>GetCanvas(Local<String> name, const AccessorInfo& info)
     classProto->Set("drawPixel", FunctionTemplate::New(DrawPixel));
     classProto->Set("clear", FunctionTemplate::New(Clear));
     //classProto->Set("close", FunctionTemplate::New(close));
-    NSLog(@"JMXDrawEntity objectTemplate created");
+    NSDebug(@"JMXDrawEntity objectTemplate created");
 
     return objectTemplate;
 }

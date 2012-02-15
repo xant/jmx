@@ -30,7 +30,7 @@ using namespace v8;
     v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
     instanceTemplate->SetInternalFieldCount(1);
     
-    NSLog(@"JMXGraphFragment objectTemplate created");
+    NSDebug(@"JMXGraphFragment objectTemplate created");
     return objectTemplate;
 }
 @end

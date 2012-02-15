@@ -56,14 +56,14 @@ using namespace v8;
     [super dealloc];
 }
 
-- (BOOL)wrapPin:(JMXPin *)pin withFunction:(v8::Persistent<v8::Function>)function
+- (JMXScriptPinWrapper *)wrapPin:(JMXPin *)pin withFunction:(v8::Persistent<v8::Function>)function
 {
     JMXScriptPinWrapper *wrapper = [JMXScriptPinWrapper pinWrapperWithName:@"jsFunction"
                                                             function:function
                                                               scriptEntity:self];
     [wrapper connectToPin:pin];
     [pinWrappers addObject:wrapper];
-    return YES; // XXX
+    return wrapper; // XXX
 }
 
 - (void)resetContext
@@ -78,9 +78,7 @@ using namespace v8;
     // we want to release our context.
     // first thing ... let's detach all entities we have created
     for (NSXMLNode *node in [self children]) {
-        if ([node isProxy]) {
-            [self unregisterPin:(JMXPin *)node]; // XXX - this cast is only to avoid a warning
-        } else if ([node isKindOfClass:[JMXGraphFragment class]]) {
+        if ([node isKindOfClass:[JMXGraphFragment class]]) {
             for (JMXEntity *entity in [node children]) {
                 [entity detach];
             }
@@ -223,14 +221,13 @@ static Persistent<FunctionTemplate> objectTemplate;
 {
     if (!objectTemplate.IsEmpty())
         return objectTemplate;
-    NSLog(@"JMXScriptEntity objectTemplate created");
+    NSDebug(@"JMXScriptEntity objectTemplate created");
     objectTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
     objectTemplate->Inherit([super jsObjectTemplate]);
     objectTemplate->SetClassName(String::New("ScriptEntity"));
     v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
-
-   instanceTemplate->SetAccessor(String::NewSymbol("frequency"), GetNumberProperty, SetNumberProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("frequency"), GetNumberProperty, SetNumberProperty);
     instanceTemplate->SetInternalFieldCount(1);
     return objectTemplate;
 }

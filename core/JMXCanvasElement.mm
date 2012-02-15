@@ -91,7 +91,7 @@ static v8::Handle<Value> ToDataURL(const Arguments& args)
     instanceTemplate->SetAccessor(String::NewSymbol("width"), GetDoubleProperty, SetDoubleProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("height"), GetDoubleProperty, SetDoubleProperty);
     
-    NSLog(@"JMXElement objectTemplate created");
+    NSDebug(@"JMXElement objectTemplate created");
     return objectTemplate;
 }
 

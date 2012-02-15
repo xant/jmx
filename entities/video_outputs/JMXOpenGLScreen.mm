@@ -634,7 +634,7 @@ static void translateScreenCoordinates(CGSize screenSize, CGSize frameSize,
     objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("fullScreen"), GetBoolProperty, SetBoolProperty);
 
     objectTemplate->InstanceTemplate()->SetInternalFieldCount(1);
-    NSLog(@"JMXOpenGLScreen objectTemplate created");
+    NSDebug(@"JMXOpenGLScreen objectTemplate created");
     return objectTemplate;
 }
 

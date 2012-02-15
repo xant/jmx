@@ -185,7 +185,7 @@ static v8::Handle<Value> SelectDevice(const Arguments& args)
     HandleScope handleScope;
     if (!objectTemplate.IsEmpty())
         return objectTemplate;
-    NSLog(@"JMXAudioCapture objectTemplate created");
+    NSDebug(@"JMXAudioCapture objectTemplate created");
     objectTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
     objectTemplate->Inherit([super jsObjectTemplate]);
     objectTemplate->SetClassName(String::New("QtAudioCapture"));

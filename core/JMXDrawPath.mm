@@ -1685,7 +1685,7 @@ static void JMXDrawPathJSDestructor(Persistent<Value> object, void *parameter)
     instanceTemplate->SetAccessor(String::NewSymbol("textAlign"), , );
     instanceTemplate->SetAccessor(String::NewSymbol("textBaseline"), , );
     */
-    NSLog(@"CanvasRenderingContext2D objectTemplate created");
+    NSDebug(@"CanvasRenderingContext2D objectTemplate created");
     return objectTemplate;
 }
 

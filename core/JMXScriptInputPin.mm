@@ -32,7 +32,7 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
     v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
     instanceTemplate->SetInternalFieldCount(1);
     // Add accessors for each of the fields of the entity.
-    NSLog(@"JMXInputPin objectTemplate created");
+    NSDebug(@"JMXInputPin objectTemplate created");
     return objectTemplate;
 }
 

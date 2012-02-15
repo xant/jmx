@@ -42,6 +42,7 @@
 #import "JMXEventListener.h"
 #import "JMXCanvasElement.h"
 #import "JMXPhidgetEncoderEntity.h"
+#import "JMXTextEntity.h"
 #import "JMXScriptInputPin.h"
 #import "JMXScriptOutputPin.h"
 #import "node.h"
@@ -94,6 +95,7 @@ static JMXV8ClassDescriptor mappedClasses[] = {
     { "JMXPhidgetEncoderEntity",  "PhidgetEncoder",   JMXPhidgetEncoderEntityJSConstructor  },
     { "JMXScriptInputPin",        "InputPin",         JMXInputPinJSConstructor              },
     { "JMXScriptOutputPin",       "OutputPin",        JMXOutputPinJSConstructor             },
+    { "JMXTextEntity",            "TextEntity",       JMXTextEntityJSConstructor            },
     { NULL,                       NULL,               NULL                                  }
 };
 
@@ -664,7 +666,13 @@ static char *argv[2] = { (char *)"JMX", NULL };
 {
     v8::Locker locker;
     HandleScope handleScope;
-    return handleScope.Close(function->Call(function, count, argv)); 
+    v8::TryCatch try_catch;
+    v8::Handle<Value> ret = function->Call(function, count, argv);
+    if (ret.IsEmpty()) {
+        ReportException(&try_catch);
+        return Undefined();
+    }
+    return handleScope.Close(ret); 
 }
 
 - (void)execFunction:(v8::Handle<v8::Function>)function
@@ -866,7 +874,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
     else
         key = obj;
     p = (JMXPersistentInstance *)[[persistentInstances objectForKey:key] pointerValue];
-    NSLog(@"Releasing Persistent Instance: %@ (%lu)", p->obj, (unsigned long)[p->obj retainCount]);
+    NSDebug(@"Releasing Persistent Instance: %@ (%lu)", p->obj, (unsigned long)[p->obj retainCount]);
     if (p) {
         if ([p->obj conformsToProtocol:@protocol(JMXRunLoop)])
             [p->obj performSelector:@selector(stop)];

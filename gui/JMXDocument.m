@@ -48,6 +48,7 @@
                                                  selector:@selector(anEntityWasMoved:)
                                                      name:@"JMXBoardEntityWasMoved"
                                                    object:nil];
+        
     }
     return self;
 }
@@ -60,6 +61,7 @@
     [entitiesPosition release];
     [super dealloc];
 }
+
 
 #pragma mark -
 #pragma mark NSDocument

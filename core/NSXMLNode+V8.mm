@@ -701,7 +701,7 @@ static void JMXNodeJSDestructor(Persistent<Value> object, void *parameter)
     HandleScope handle_scope;
     v8::Locker lock;
     id obj = static_cast<id>(parameter);
-    NSLog(@"V8 WeakCallback (%@) called ", obj);
+    //NSLog(@"V8 WeakCallback (%@) called ", obj);
     [obj release];
     if (!object.IsEmpty()) {
         object.ClearWeak();

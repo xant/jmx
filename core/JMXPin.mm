@@ -861,7 +861,7 @@ static void JMXPinJSDestructor(Persistent<Value> object, void *parameter)
     HandleScope handle_scope;
     v8::Locker lock;
     JMXPin *obj = static_cast<JMXPin *>(parameter);
-    NSLog(@"V8 WeakCallback (Pin) called %@", obj);
+    //NSLog(@"V8 WeakCallback (Pin) called %@", obj);
     [obj release];
     if (!object.IsEmpty()) {
         object.ClearWeak();

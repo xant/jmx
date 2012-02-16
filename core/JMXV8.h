@@ -101,7 +101,7 @@ static Persistent<FunctionTemplate> objectTemplate;\
 JMXV8_EXPORT_BASE(__class)\
 void __class##JSDestructor(Persistent<Value> object, void *parameter)\
 {\
-    NSLog(@"V8 WeakCallback called");\
+    /*NSLog(@"V8 WeakCallback called");*/\
     __class *obj = static_cast<__class *>(parameter);\
     Local<Context> currentContext  = v8::Context::GetCurrent();\
     JMXScript *ctx = [JMXScript getContext];\

@@ -97,21 +97,15 @@
     [super dealloc];
 }
 
-- (void)setWindow:(NSWindow *)window
-{
-    [super setWindow:window];
-    if (_view) {
-        [_view removeTrackingRect:trackingRect];
-        trackingRect = [_view addTrackingRect:_view.frame owner:self userData:nil assumeInside:YES];
-    }
-}
-
-- (void)setSize:(id)size
+- (void)setSize:(JMXSize *)size
 {
     if (_view) {
         [_view setSize:[size nsSize]];
         [_view removeTrackingRect:trackingRect];
-        trackingRect = [_view addTrackingRect:_view.frame owner:self userData:nil assumeInside:YES];
+        trackingRect = [_view addTrackingRect:CGRectMake(0, 0, size.width, size.height)
+                                        owner:self
+                                     userData:nil
+                                 assumeInside:YES];
     }
 }
 

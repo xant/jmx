@@ -172,14 +172,14 @@ using namespace v8;
 - (void)receiveData:(id)data fromPin:(JMXInputPin *)aPin
 {
     if ([aPin isKindOfClass:[JMXScriptInputPin class]]) {
-        JMXScriptOutputPin *pin = (JMXScriptOutputPin *)aPin;
-        if (pin.function.IsEmpty() || pin.function->IsNull() || pin.function->IsUndefined())
-            return;
         Locker locker;
         HandleScope handleScope;
         Handle<Value> args[1];
         args[0] = Undefined();
         v8::Context::Scope context_scope(jsContext.ctx);
+        JMXScriptOutputPin *pin = (JMXScriptOutputPin *)aPin;
+        if (pin.function.IsEmpty() || pin.function->IsNull() || pin.function->IsUndefined())
+            return;
         switch (pin.type) {
             case kJMXStringPin:
             case kJMXTextPin:

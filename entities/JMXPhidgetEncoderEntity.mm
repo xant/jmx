@@ -88,6 +88,8 @@ static int gotPositionChange(CPhidgetEncoderHandle phid, void *context, int ind,
 - (void)dealloc
 {
     [encoders release];
+    CPhidget_close((CPhidgetHandle)encoder);
+    CPhidget_delete((CPhidgetHandle)encoder);
     [super dealloc];
 }
 

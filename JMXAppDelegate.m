@@ -110,15 +110,20 @@
 
 - (void)logMessage:(NSString *)message, ...
 {
-    if (consoleView && message) {
+    va_list args;
+    va_start(args, message);
+    if (!batchMode) {
         //NSString *msg = [[NSString alloc] initWithCString:buf encoding:NSASCIIStringEncoding];
-        va_list args;
-        va_start(args, message);
+
         NSString *msg = [[[NSString alloc] initWithFormat:message arguments:args] autorelease];
         // same as above... we really need to avoid updating the textview in a different thread
         [self performSelectorOnMainThread:@selector(updateOutput:)
                                withObject:msg waitUntilDone:NO];
+    } else if (message) {
+        vprintf([message UTF8String], args);
+        printf("\n");
     }
+    va_end(args);
 }
 
 @end

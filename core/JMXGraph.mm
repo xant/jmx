@@ -79,16 +79,16 @@ static v8::Handle<Value> CreateElement(const Arguments& args)
         name = [NSString stringWithUTF8String:*value];
     }
     Local<Context> currentContext  = v8::Context::GetCurrent();
-    JMXScript *ctx = [JMXScript getContext:currentContext];
+    JMXScript *ctx = [JMXScript getContext];
     if (ctx) {
         JMXElement *element = [name isEqualToString:@"canvas"]
-                            ? [[JMXCanvasElement alloc] init]
-                            : [[JMXElement alloc] initWithName:name];
-        Persistent<Object> jsInstance = Persistent<Object>::New([element jsObj]);
-        jsInstance->SetPointerInInternalField(0, element);
-        [ctx addPersistentInstance:jsInstance obj:element];
-        [element release];
-        return handleScope.Close(jsInstance);
+                            ? [[[JMXCanvasElement alloc] init] autorelease]
+                            : [[[JMXElement alloc] initWithName:name] autorelease];
+        //ersistent<Object> jsInstance = Persistent<Object>::New([element jsObj]);
+        //jsInstance->SetPointerInInternalField(0, element);
+        //[ctx addPersistentInstance:jsInstance obj:element];
+        //[element release];
+        return handleScope.Close([element jsObj]);
     }
     return handleScope.Close(Undefined());
 }  
@@ -103,13 +103,14 @@ static v8::Handle<Value> CreateComment(const Arguments& args)
         name = [NSString stringWithUTF8String:*value];
     }
     Local<Context> currentContext  = v8::Context::GetCurrent();
-    JMXScript *ctx = [JMXScript getContext:currentContext];
+    JMXScript *ctx = [JMXScript getContext];
     if (ctx) {
         JMXElement *element = [NSXMLNode commentWithStringValue:name];
+        /*
         Persistent<Object> jsInstance = Persistent<Object>::New([element jsObj]);
         jsInstance->SetPointerInInternalField(0, element);
-        [ctx addPersistentInstance:jsInstance obj:element];
-        return handleScope.Close(jsInstance);
+        [ctx addPersistentInstance:jsInstance obj:element];*/
+        return handleScope.Close([element jsObj]);
     }
     return handleScope.Close(Undefined());
 } 

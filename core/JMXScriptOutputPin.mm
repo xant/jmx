@@ -98,7 +98,7 @@ v8::Handle<v8::Value> JMXOutputPinJSConstructor(const v8::Arguments& args)
     }
     Persistent<Object>jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
     v8::Local<Context> globalContext = v8::Context::GetCalling();
-    JMXScript *ctx = [JMXScript getContext:globalContext];
+    JMXScript *ctx = [JMXScript getContext];
     if (ctx && ctx.scriptEntity) {
         JMXScriptOutputPin *pin = [ctx.scriptEntity registerJSOutputPinWithLabel:label
                                                                     type:type

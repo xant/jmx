@@ -46,6 +46,20 @@ JMXV8_EXPORT_NODE_CLASS(JMXCanvasElement);
     return self;
 }
 
+- (oneway void) release
+{
+    return [super release];
+}
+- (id)retain
+{
+    return [super retain];
+}
+- (void)dealloc
+{
+    [drawPath release];
+    [super dealloc];
+}
+
 #pragma mark V8
 
 using namespace v8;
@@ -91,7 +105,7 @@ static v8::Handle<Value> ToDataURL(const Arguments& args)
     instanceTemplate->SetAccessor(String::NewSymbol("width"), GetDoubleProperty, SetDoubleProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("height"), GetDoubleProperty, SetDoubleProperty);
     
-    NSDebug(@"JMXElement objectTemplate created");
+    NSDebug(@"JMXCanvas objectTemplate created");
     return objectTemplate;
 }
 

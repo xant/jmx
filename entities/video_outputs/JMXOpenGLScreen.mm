@@ -355,8 +355,7 @@ static NSMutableDictionary *__openglOutputs = nil;
 - (void)jsInit:(NSValue *)argsValue
 {
     [super jsInit:argsValue];
-    v8::Local<Context> currentContext = v8::Context::GetCalling();
-    ctx = [JMXScript getContext:currentContext];
+    ctx = [JMXScript getContext];
 }
 
 - (id)initWithSize:(NSSize)screenSize

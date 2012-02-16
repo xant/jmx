@@ -159,7 +159,16 @@
         [colorFilter release];
     if (alphaFilter)
         [alphaFilter release];
+    self.alpha = nil;
+    self.saturation = nil;
+    self.brightness = nil;
+    self.contrast = nil;
+    self.rotation = nil;
+    self.scaleRatio = nil;
+    self.fps = nil;
+    self.origin = nil;
     self.size = nil;
+    
     [super dealloc];
 }
 

@@ -96,13 +96,13 @@
 		AA54B28B12A1215000EC60B2 /* jmx-icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = AA54B28A12A1215000EC60B2 /* jmx-icon.icns */; };
 		AA55601412AEF7CC00C882FF /* CIAlphaFade.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AA555FC912AEF39600C882FF /* CIAlphaFade.cikernel */; };
 		AA5563C412B188EB00C882FF /* CIAlphaFade.m in Sources */ = {isa = PBXBuildFile; fileRef = AA555FC712AEF39600C882FF /* CIAlphaFade.m */; };
-		AA7F247212907AA500BE432F /* libv8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA7F247112907AA500BE432F /* libv8.dylib */; };
 		AA8CB78E1282BB9900A17115 /* JMXScriptFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8CB78D1282BB9900A17115 /* JMXScriptFile.mm */; };
 		AA8F785812C5880100EA8543 /* VideoCapture.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA4B039812C06C3000775B88 /* VideoCapture.js */; };
 		AA8F785912C5880100EA8543 /* MovieFile.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA8F770712C5718600EA8543 /* MovieFile.js */; };
 		AA8F785A12C5880100EA8543 /* AudioFile.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA8F770812C571A200EA8543 /* AudioFile.js */; };
 		AA8F806112C9D3FA00EA8543 /* JMXScriptLive.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8F806012C9D3FA00EA8543 /* JMXScriptLive.mm */; };
 		AA8F817612CB236700EA8543 /* JMXTextPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8F817512CB236700EA8543 /* JMXTextPanel.m */; };
+		AA90043F14ECFB6100952BC8 /* libv8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA90043E14ECFB6100952BC8 /* libv8.dylib */; };
 		AA93701D14CC2FFB001D9BB3 /* JMXScriptTimer.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA93701C14CC2FFA001D9BB3 /* JMXScriptTimer.mm */; };
 		AA9C17FC12E200C400329158 /* JMXCanvasElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C17FB12E200C400329158 /* JMXCanvasElement.mm */; };
 		AA9C18DA12E2FC1000329158 /* JMXCanvasGradient.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C18D912E2FC1000329158 /* JMXCanvasGradient.mm */; };
@@ -498,7 +498,6 @@
 		AA70A03314CDE389000A7FA1 /* vm.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = vm.js; sourceTree = "<group>"; };
 		AA70A03414CDE389000A7FA1 /* zlib.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = zlib.js; sourceTree = "<group>"; };
 		AA7400C6130E56EA005A205C /* JMXGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXGlobals.h; sourceTree = "<group>"; };
-		AA7F247112907AA500BE432F /* libv8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libv8.dylib; path = "../v8-read-only/libv8.dylib"; sourceTree = SOURCE_ROOT; };
 		AA8CB78C1282BB9800A17115 /* JMXScriptFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXScriptFile.h; sourceTree = "<group>"; };
 		AA8CB78D1282BB9900A17115 /* JMXScriptFile.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScriptFile.mm; sourceTree = "<group>"; };
 		AA8F768C12C40D2700EA8543 /* QtVideoCapture.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = QtVideoCapture.js; sourceTree = "<group>"; };
@@ -509,6 +508,7 @@
 		AA8F806012C9D3FA00EA8543 /* JMXScriptLive.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScriptLive.mm; sourceTree = "<group>"; };
 		AA8F817412CB236700EA8543 /* JMXTextPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXTextPanel.h; sourceTree = "<group>"; };
 		AA8F817512CB236700EA8543 /* JMXTextPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXTextPanel.m; sourceTree = "<group>"; };
+		AA90043E14ECFB6100952BC8 /* libv8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libv8.dylib; path = "../v8-read-only/libv8.dylib"; sourceTree = "<group>"; };
 		AA93701B14CC2FF9001D9BB3 /* JMXScriptTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXScriptTimer.h; sourceTree = "<group>"; };
 		AA93701C14CC2FFA001D9BB3 /* JMXScriptTimer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScriptTimer.mm; sourceTree = "<group>"; };
 		AA9C17FA12E200C400329158 /* JMXCanvasElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXCanvasElement.h; sourceTree = "<group>"; };
@@ -760,7 +760,7 @@
 				AA2BE3F312353BA6006087E7 /* CoreAudio.framework in Frameworks */,
 				AA2BE40B12353D5C006087E7 /* Accelerate.framework in Frameworks */,
 				AADEBFC812414F7E00A6A06D /* AudioToolbox.framework in Frameworks */,
-				AA7F247212907AA500BE432F /* libv8.dylib in Frameworks */,
+				AA90043F14ECFB6100952BC8 /* libv8.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -847,7 +847,7 @@
 				AAF376A214CCCE5E00347F40 /* libcrypto.dylib */,
 				AAF376A014CCCE5000347F40 /* libz.dylib */,
 				AAF3769E14CCCE2C00347F40 /* libssl.dylib */,
-				AA7F247112907AA500BE432F /* libv8.dylib */,
+				AA90043E14ECFB6100952BC8 /* libv8.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

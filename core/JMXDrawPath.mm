@@ -102,10 +102,10 @@ using namespace v8;
                 return nil;
             }
             CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-            CIContext *ciContext = [[CIContext contextWithCGLContext:(CGLContextObj)[openGLContext CGLContextObj]
+            CIContext *ciContext = [CIContext contextWithCGLContext:(CGLContextObj)[openGLContext CGLContextObj]
                                              pixelFormat:(CGLPixelFormatObj)[format CGLPixelFormatObj]
                                               colorSpace:colorSpace
-                                                 options:nil] retain];
+                                                 options:nil];
             CGColorSpaceRelease(colorSpace);
             
             CGSize layerSize = { aFrameSize.width, aFrameSize.height };
@@ -1472,9 +1472,9 @@ v8::Handle<Value>GetStyle(Local<String> name, const AccessorInfo& info)
     String::Utf8Value nameStr(name);
     JMXDrawPath *drawPath = (JMXDrawPath *)info.Holder()->GetPointerFromInternalField(0);
     if (strcmp(*nameStr, "fillStyle") == 0) {
-        return [[drawPath fillStyle] jsObj];
+        return handleScope.Close([[drawPath fillStyle] jsObj]);
     } else if (strcmp(*nameStr, "strokeStyle") == 0) {
-        return [[drawPath strokeStyle] jsObj];
+        return handleScope.Close([[drawPath strokeStyle] jsObj]);
     }
     return handleScope.Close(Undefined());
 }
@@ -1589,31 +1589,6 @@ static void SetLineWidth(Local<String> name, Local<Value> value, const AccessorI
     }
 }
 
-static void JMXDrawPathJSDestructor(Persistent<Value> object, void *parameter)
-{
-    HandleScope handle_scope;
-    v8::Locker lock;
-    JMXDrawPath *obj = static_cast<JMXDrawPath *>(parameter);
-    //NSLog(@"V8 WeakCallback (Color) called ");
-    [obj release];
-    if (!object.IsEmpty()) {
-        object.ClearWeak();
-        object.Dispose();
-        object.Clear();
-    }
-}
-
-- (v8::Handle<v8::Object>)jsObj
-{
-    //v8::Locker lock;
-    HandleScope handle_scope;
-    v8::Handle<FunctionTemplate> objectTemplate = [[self class] jsObjectTemplate];
-    Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
-    jsInstance->SetPointerInInternalField(0, self);
-    jsInstance.MakeWeak([self retain], JMXDrawPathJSDestructor);
-    return handle_scope.Close(jsInstance);
-}
-
 + (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate
 {
     //v8::Locker lock;
@@ -1691,4 +1666,15 @@ static void JMXDrawPathJSDestructor(Persistent<Value> object, void *parameter)
     return objectTemplate;
 }
 
+- (v8::Handle<v8::Object>)jsObj
+{
+    //v8::Locker lock;
+    HandleScope handle_scope;
+    v8::Handle<FunctionTemplate> objectTemplate = [[self class] jsObjectTemplate];
+    v8::Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
+    //jsInstance.MakeWeak([self retain], JMXNodeJSDestructor);
+    jsInstance->SetPointerInInternalField(0, self);
+    //[ctx addPersistentInstance:jsInstance obj:self];
+    return handle_scope.Close(jsInstance);
+}
 @end

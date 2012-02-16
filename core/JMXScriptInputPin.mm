@@ -95,7 +95,7 @@ v8::Handle<v8::Value> JMXInputPinJSConstructor(const v8::Arguments& args)
         return Undefined();
     }
     v8::Local<Context> globalContext = v8::Context::GetCalling();
-    JMXScript *ctx = [JMXScript getContext:globalContext];
+    JMXScript *ctx = [JMXScript getContext];
     if (ctx && ctx.scriptEntity) {
         JMXInputPin *pin = [ctx.scriptEntity registerJSInputPinWithLabel:label
                                                                     type:type

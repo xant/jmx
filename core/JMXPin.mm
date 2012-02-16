@@ -687,7 +687,7 @@ static v8::Handle<Value>connect(const Arguments& args)
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     if (args[0]->IsFunction()) {
         v8::Local<Context> globalContext = v8::Context::GetCalling();
-        JMXScript *ctx = [JMXScript getContext:globalContext];
+        JMXScript *ctx = [JMXScript getContext];
         JMXScriptPinWrapper *wrapper = [ctx.scriptEntity wrapPin:pin withFunction:Persistent<Function>::New(Handle<Function>::Cast(args[0]))];
         [pool release];
         return  handleScope.Close([wrapper jsObj]);
@@ -697,7 +697,10 @@ static v8::Handle<Value>connect(const Arguments& args)
             v8::Handle<Object> object = args[0]->ToObject();
             JMXPin *dest = (JMXPin *)object->GetPointerFromInternalField(0);
             if (dest) {
-                BOOL ret = [pin connectToPin:dest];
+                {
+                    v8::Unlocker unlocker;
+                    BOOL ret = [pin connectToPin:dest];
+                }
                 [pool release];
                 return handleScope.Close([dest jsObj]);
             }
@@ -718,7 +721,10 @@ static v8::Handle<Value>disconnectAll(const Arguments& args)
     HandleScope handleScope;
     JMXPin *pin = (JMXPin *)args.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    [pin disconnectAllPins];
+    {
+        Unlocker unlocker;
+        [pin disconnectAllPins];
+    }
     [pool release];
     return Undefined();
 }
@@ -736,6 +742,7 @@ static v8::Handle<Value>disconnect(const Arguments& args)
             v8::Handle<Object> object = args[0]->ToObject();
             id dest = (id)object->GetPointerFromInternalField(0);
             if (dest) {
+                Unlocker unlocker;
                 ret = YES;
                 if ([dest isKindOfClass:[JMXPin class]])
                     [pin disconnectFromPin:dest];
@@ -769,7 +776,7 @@ static v8::Handle<Value>exportToBoard(const Arguments& args)
         label = [NSString stringWithUTF8String:*value];
     }
     v8::Local<Context> globalContext = v8::Context::GetCalling();
-    JMXScript *ctx = [JMXScript getContext:globalContext];
+    JMXScript *ctx = [JMXScript getContext];
     if (ctx && ctx.scriptEntity) {        
         if (pin.direction == kJMXInputPin)
             [ctx.scriptEntity proxyInputPin:(JMXInputPin *)pin withLabel:label];
@@ -854,7 +861,7 @@ static void JMXPinJSDestructor(Persistent<Value> object, void *parameter)
     HandleScope handle_scope;
     v8::Locker lock;
     JMXPin *obj = static_cast<JMXPin *>(parameter);
-    //NSLog(@"V8 WeakCallback (Point) called %@", obj);
+    NSLog(@"V8 WeakCallback (Pin) called %@", obj);
     [obj release];
     if (!object.IsEmpty()) {
         object.ClearWeak();
@@ -868,8 +875,9 @@ static void JMXPinJSDestructor(Persistent<Value> object, void *parameter)
     //v8::Locker lock;
     HandleScope handleScope;
     v8::Persistent<FunctionTemplate> objectTemplate = [[self class] jsObjectTemplate];
-    v8::Persistent<Object> jsInstance = v8::Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
-    jsInstance.MakeWeak([self retain], JMXPinJSDestructor);
+    v8::Handle<Object> jsInstance = objectTemplate->InstanceTemplate()->NewInstance();
+    //v8::Persistent<Object> jsInstance = v8::Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
+    //jsInstance.MakeWeak([self retain], JMXPinJSDestructor);
     jsInstance->SetPointerInInternalField(0, self);
     return handleScope.Close(jsInstance);
 }

@@ -55,8 +55,8 @@ using namespace node;
 typedef std::map<id, v8::Persistent<v8::Object> > InstMap;
 */
 
-typedef std::pair< JMXScript *, Persistent<Context> >CtxPair;
-typedef std::map< JMXScript *, Persistent<Context> > CtxMap;
+typedef std::pair< JMXScript *, Handle<Context> >CtxPair;
+typedef std::map< JMXScript *, Handle<Context> > CtxMap;
 
 CtxMap contextes;
 
@@ -539,19 +539,6 @@ static v8::Handle<Value> ClearTimeout(const Arguments& args)
     return handleScope.Close(v8::Boolean::New(0));
 }
 
-
-@interface DispatchArg : NSObject
-{
-    NSString *source;
-    JMXScriptEntity *entity;
-}
-@property (retain) NSString *source;
-@property (retain) JMXScriptEntity *entity;
-@end
-@implementation DispatchArg
-@synthesize source, entity;
-@end
-
 @implementation JMXScript
 
 @synthesize scriptEntity, runloopTimers, eventListeners, ctx;
@@ -567,36 +554,23 @@ static char *argv[2] = { (char *)"JMX", NULL };
 
 + (BOOL)runScript:(NSString *)source
 {
-    return [self runScript:source withEntity:nil];
-}
-
-+ (BOOL)runScript:(NSString *)source withEntity:(JMXScriptEntity *)entity
-{
     JMXScript *jsContext = [[self alloc] init];
-    BOOL ret = [jsContext runScript:source withEntity:entity];
+    BOOL ret = [jsContext runScript:source];
     [jsContext release];
-    return ret;
-}
+    return ret;}
 
-+ (void)dispatchScript:(DispatchArg *)arg
+
++ (void)dispatchScript:(NSString *)source
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    [self runScript:arg.source withEntity:arg.entity];
+    [self runScript:source];
     [pool drain];
 }
 
 // TODO - use a NSOperationQueue
-+ (void)runScriptInBackground:(NSString *)source withEntity:(JMXScriptEntity *)entity {
-    DispatchArg *arg = [[DispatchArg alloc] init];
-    arg.source = source;
-    arg.entity = entity;
++ (void)runScriptInBackground:(NSString *)source
+{
     //[self performSelector:@selector(dispatchScript:) onThread:[JMXContext scriptThread] withObject:arg waitUntilDone:NO];
-    [self performSelectorInBackground:@selector(dispatchScript:) withObject:arg];
-    [arg release];
-}
-
-+ (void)runScriptInBackground:(NSString *)source {
-    //[self performSelector:@selector(runScript:) onThread:[JMXContext scriptThread] withObject:source waitUntilDone:NO];
     [self performSelectorInBackground:@selector(dispatchScript:) withObject:source];
 }
 
@@ -695,73 +669,71 @@ static char *argv[2] = { (char *)"JMX", NULL };
     }
 }
 
-- (id)init
+- (void)startWithEntity:(JMXScriptEntity *)entity
 {
-    self = [super init];
-    if (self) {
-        v8::Locker locker;
-        v8::HandleScope handle_scope;
-        
-        persistentInstances = [[NSMutableDictionary alloc] init];
-        Local<ObjectTemplate>ctxTemplate = ObjectTemplate::New();
-
-        ctxTemplate->Set(String::New("rand"), FunctionTemplate::New(Rand));
-        ctxTemplate->Set(String::New("frand"), FunctionTemplate::New(FRand));
-        ctxTemplate->Set(String::New("echo"), FunctionTemplate::New(Echo));
-        ctxTemplate->Set(String::New("print"), FunctionTemplate::New(Echo));
-        ctxTemplate->Set(String::New("include"), FunctionTemplate::New(Include));
-        ctxTemplate->Set(String::New("sleep"), FunctionTemplate::New(Sleep));
-        ctxTemplate->Set(String::New("lsdir"), FunctionTemplate::New(ListDir));
-        ctxTemplate->Set(String::New("isdir"), FunctionTemplate::New(IsDir));
-        ctxTemplate->Set(String::New("exportPin"), FunctionTemplate::New(ExportPin));
-        ctxTemplate->Set(String::New("dumpDOM"), FunctionTemplate::New(DumpDOM));
-        ctxTemplate->Set(String::New("run"), FunctionTemplate::New(Run));
-        ctxTemplate->Set(String::New("quit"), FunctionTemplate::New(Quit));
-        ctxTemplate->Set(String::New("addToRunLoop"), FunctionTemplate::New(AddToRunLoop));
-        ctxTemplate->Set(String::New("removeFromRunLoop"), FunctionTemplate::New(RemoveFromRunLoop));
-
-        ctxTemplate->Set(String::New("setTimeout"), FunctionTemplate::New(SetTimeout));
-        ctxTemplate->Set(String::New("clearTimeout"), FunctionTemplate::New(ClearTimeout));
-
-        ctxTemplate->Set(String::New("setInterval"), FunctionTemplate::New(SetInterval));
-        ctxTemplate->Set(String::New("clearInterval"), FunctionTemplate::New(ClearTimeout)); // alias for ClearTimeout
-        
-        ctxTemplate->SetInternalFieldCount(1);
-        
-        /* TODO - think if worth exposing such global functions
-        ctxTemplate->Set(String::New("AvailableEntities"), FunctionTemplate::New(AvailableEntities));
-        ctxTemplate->Set(String::New("ListEntities"), FunctionTemplate::New(ListEntities));
-        */
-        [self registerClasses:ctxTemplate];
-        ctx = Persistent<Context>::New(Context::New(NULL, ctxTemplate));
-        // Create a new execution environment containing the built-in
-        // functions
-        contextes[self] = ctx;
-        scriptEntity = nil;
-        v8::Context::Scope context_scope(ctx);
-        ctx->Global()->SetAccessor(String::New("document"), GetDocument);
-        //ctx->Global()->SetPointerInInternalField(0, self);
-        runloopTimers = [[NSMutableSet alloc] initWithCapacity:100];
-        eventListeners = [[NSMutableDictionary alloc] initWithCapacity:50];
-        
-        operationQueue = [[NSOperationQueue alloc] init];
-        
-        // second part of node initialization
-        Handle<Object> process = node::SetupProcessObject(1, argv);
-        v8_typed_array::AttachBindings(ctx->Global());
-        
-        // Create all the objects, load modules, do everything.
-        // so your next reading stop should be node::Load()!
-        node::Load(process);
-        
-        char baseInclude[] = "include('JMX.js');";
-        // Enter the newly created execution environment.
-        ExecJSCode(baseInclude, strlen(baseInclude), "JMX");
-
-        nodejsRunTimer = [[NSTimer timerWithTimeInterval:0.25 target:self selector:@selector(nodejsRun) userInfo:nil repeats:YES] retain];
-        [[NSRunLoop currentRunLoop] addTimer:nodejsRunTimer forMode:NSRunLoopCommonModes];
-    }
-    return self;
+    v8::Locker locker;
+    v8::HandleScope handle_scope;
+    
+    persistentInstances = [[NSMutableDictionary alloc] init];
+    Local<ObjectTemplate>ctxTemplate = ObjectTemplate::New();
+    
+    ctxTemplate->Set(String::New("rand"), FunctionTemplate::New(Rand));
+    ctxTemplate->Set(String::New("frand"), FunctionTemplate::New(FRand));
+    ctxTemplate->Set(String::New("echo"), FunctionTemplate::New(Echo));
+    ctxTemplate->Set(String::New("print"), FunctionTemplate::New(Echo));
+    ctxTemplate->Set(String::New("include"), FunctionTemplate::New(Include));
+    ctxTemplate->Set(String::New("sleep"), FunctionTemplate::New(Sleep));
+    ctxTemplate->Set(String::New("lsdir"), FunctionTemplate::New(ListDir));
+    ctxTemplate->Set(String::New("isdir"), FunctionTemplate::New(IsDir));
+    ctxTemplate->Set(String::New("exportPin"), FunctionTemplate::New(ExportPin));
+    ctxTemplate->Set(String::New("dumpDOM"), FunctionTemplate::New(DumpDOM));
+    ctxTemplate->Set(String::New("run"), FunctionTemplate::New(Run));
+    ctxTemplate->Set(String::New("quit"), FunctionTemplate::New(Quit));
+    ctxTemplate->Set(String::New("addToRunLoop"), FunctionTemplate::New(AddToRunLoop));
+    ctxTemplate->Set(String::New("removeFromRunLoop"), FunctionTemplate::New(RemoveFromRunLoop));
+    
+    ctxTemplate->Set(String::New("setTimeout"), FunctionTemplate::New(SetTimeout));
+    ctxTemplate->Set(String::New("clearTimeout"), FunctionTemplate::New(ClearTimeout));
+    
+    ctxTemplate->Set(String::New("setInterval"), FunctionTemplate::New(SetInterval));
+    ctxTemplate->Set(String::New("clearInterval"), FunctionTemplate::New(ClearTimeout)); // alias for ClearTimeout
+    
+    ctxTemplate->SetInternalFieldCount(1);
+    
+    /* TODO - think if worth exposing such global functions
+     ctxTemplate->Set(String::New("AvailableEntities"), FunctionTemplate::New(AvailableEntities));
+     ctxTemplate->Set(String::New("ListEntities"), FunctionTemplate::New(ListEntities));
+     */
+    [self registerClasses:ctxTemplate];
+    ctx = Persistent<Context>::New(Context::New(NULL, ctxTemplate));
+    v8::Context::Scope context_scope(ctx);
+    
+    // Create a new execution environment containing the built-in
+    // functions
+    scriptEntity = entity;
+    ctx->Global()->Set(String::New("scriptEntity"), [scriptEntity jsObj]);
+    
+    ctx->Global()->SetAccessor(String::New("document"), GetDocument);
+    //ctx->Global()->SetPointerInInternalField(0, self);
+    runloopTimers = [[NSMutableSet alloc] initWithCapacity:100];
+    eventListeners = [[NSMutableDictionary alloc] initWithCapacity:50];
+    
+    operationQueue = [[NSOperationQueue alloc] init];
+    
+    // second part of node initialization
+    Handle<Object> process = node::SetupProcessObject(1, argv);
+    v8_typed_array::AttachBindings(ctx->Global());
+    
+    // Create all the objects, load modules, do everything.
+    // so your next reading stop should be node::Load()!
+    node::Load(process);
+    
+    char baseInclude[] = "include('JMX.js');";
+    // Enter the newly created execution environment.
+    ExecJSCode(baseInclude, strlen(baseInclude), "JMX");
+    
+    nodejsRunTimer = [[NSTimer timerWithTimeInterval:0.25 target:self selector:@selector(nodejsRun) userInfo:nil repeats:YES] retain];
+    [[NSRunLoop currentRunLoop] addTimer:nodejsRunTimer forMode:NSRunLoopCommonModes];
 }
 
 - (void)clearPersistentInstances
@@ -791,18 +763,23 @@ static char *argv[2] = { (char *)"JMX", NULL };
     if (scriptEntity) {
         if ([scriptEntity conformsToProtocol:@protocol(JMXRunLoop)])
             [scriptEntity performSelector:@selector(stop)];
-        ctx->Global()->Set(String::New("scriptEntity"), Undefined());
-        scriptEntity = nil;
     }
     [self clearPersistentInstances];
-    while( !V8::IdleNotification() )
-        ;
-    contextes.erase(self);
+
+    ctx->Global()->Delete(String::New("scriptEntity"));
+    scriptEntity = nil;
+    ctx->Global().Clear();
+    //contextes.erase(self);
     ctx.Dispose();
+    ctx.Clear();
     // notify that we have disposed the context
     V8::ContextDisposedNotification();
     // and tell V8 we want to release anything possible (by notifying a low memory condition
     V8::LowMemoryNotification();
+    
+    while( !V8::IdleNotification() )
+        ;
+    
     [persistentInstances release];
     [runloopTimers release];
     [eventListeners release];
@@ -818,42 +795,50 @@ static char *argv[2] = { (char *)"JMX", NULL };
     }
 }
 
-- (BOOL)runScript:(NSString *)source
-{
-    return [self runScript:source withEntity:nil];
-}
-
-- (BOOL)runScript:(NSString *)script withEntity:(JMXScriptEntity *)entity
+- (BOOL)runScript:(NSString *)script
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     v8::Locker locker;
     v8::HandleScope handle_scope;
-   
+    
     v8::Context::Scope context_scope(ctx);
-    if (entity) {
-        scriptEntity = entity;
-        ctx->Global()->Set(String::New("scriptEntity"), [scriptEntity jsObj]);
-    }
+    
     //NSLog(@"%@", [self exportGraph:[[JMXContext sharedContext] allEntities] andPins:nil]);
     ctx->Global()->SetHiddenValue(String::New("quit"), v8::Boolean::New(0));
     BOOL ret = ExecJSCode([script UTF8String], [script length],
-                          entity ? [entity.label UTF8String] : [[NSString stringWithFormat:@"%@", self] UTF8String]);
+                          scriptEntity ? [scriptEntity.label UTF8String] : [[NSString stringWithFormat:@"%@", self] UTF8String]);
     
     [pool drain];
     return ret;
 }
 
-+ (JMXScript *)getContext:(Local<Context>&)currentContext
++ (JMXScript *)getContext
 {
-    JMXScript *context;
-    CtxMap::const_iterator end = contextes.end(); 
-    for (CtxMap::const_iterator it = contextes.begin(); it != end; ++it)
-    {
-        if (currentContext == it->second) {
-            context = it->first;
-        }
-    }
+    JMXScript *context = nil;
+    HandleScope handleScope;
+    Local<Context> c = v8::Context::GetCurrent();
+    Local<Object> globalObject  = c->Global();
+    v8::Local<v8::Object> obj = globalObject->Get(v8::String::New("scriptEntity"))->ToObject();
+    JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetPointerFromInternalField(0);
+
+    context = entity.jsContext;
     return context;
+}
+
+- (v8::Handle<v8::Value>)getPersistentInstance:(id)obj
+{
+    HandleScope handleScope;
+    JMXPersistentInstance *p = nil;
+    id key;
+    if ([obj respondsToSelector:@selector(hashString)])
+        key = [obj hashString];
+    else
+        key = obj;
+    p = (JMXPersistentInstance *)[[persistentInstances objectForKey:key] pointerValue];
+    if (p) {
+        return handleScope.Close(p->jsObj);
+    }
+    return handleScope.Close(Undefined());
 }
 
 - (void)addPersistentInstance:(Persistent<Object>)persistent obj:(id)obj
@@ -874,7 +859,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
     else
         key = obj;
     p = (JMXPersistentInstance *)[[persistentInstances objectForKey:key] pointerValue];
-    NSDebug(@"Releasing Persistent Instance: %@ (%lu)", p->obj, (unsigned long)[p->obj retainCount]);
+    NSLog(@"Releasing Persistent Instance: %@ (%lu)", p->obj, (unsigned long)[p->obj retainCount]);
     if (p) {
         if ([p->obj conformsToProtocol:@protocol(JMXRunLoop)])
             [p->obj performSelector:@selector(stop)];
@@ -935,12 +920,13 @@ static char *argv[2] = { (char *)"JMX", NULL };
 - (BOOL)dispatchEvent:(JMXEvent *)anEvent
 {
     NSMutableSet *listeners = [eventListeners objectForKey:anEvent.type];
+    Locker locker;
+    HandleScope handleScope;
+    v8::Context::Scope context_scope(ctx);
+    Handle<Value> args[1];
+    args[0] = [anEvent jsObj];
     for (JMXEventListener *listener in listeners) {
-        Locker locker;
-        HandleScope handleScope;
-        v8::Context::Scope context_scope(ctx);
-        Handle<Value> args[1];
-        args[0] = [anEvent jsObj];
+        Unlocker unlocker;
         [self execFunction:listener.function withArguments:args count:1];
     }
     return NO;

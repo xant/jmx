@@ -48,6 +48,7 @@ using namespace v8;
     [listener release];
     [target release];
     [timeStamp release];
+    [super dealloc];
 }
 
 - (BOOL)isEqual:(JMXEvent *)anObject
@@ -87,7 +88,6 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
     return objectTemplate;
 }
 
-/*
 static void JMXEventJSDestructor(Persistent<Value> object, void *parameter)
 {
     HandleScope handle_scope;
@@ -101,7 +101,7 @@ static void JMXEventJSDestructor(Persistent<Value> object, void *parameter)
         object.Clear();
     }
 }
-*/
+
 - (Handle<Object>)jsObj
 {
     //v8::Locker lock;
@@ -109,7 +109,7 @@ static void JMXEventJSDestructor(Persistent<Value> object, void *parameter)
     Handle<FunctionTemplate> objectTemplate = [[self class] jsObjectTemplate];
     Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
     jsInstance->SetPointerInInternalField(0, self);
-    //jsInstance.MakeWeak([self retain], JMXEventJSDestructor);
+    jsInstance.MakeWeak([self retain], JMXEventJSDestructor);
     return handle_scope.Close(jsInstance);
 }
 

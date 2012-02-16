@@ -151,7 +151,7 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
         @synchronized(self) {
             if (movie)
                 [movie release];
-            
+
             // Setter already releases and retains where appropriate.
             movie = [[QTMovie movieWithFile:file error:&error] retain];
             

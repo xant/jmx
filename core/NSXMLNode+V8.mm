@@ -700,8 +700,8 @@ static void JMXNodeJSDestructor(Persistent<Value> object, void *parameter)
 {
     HandleScope handle_scope;
     v8::Locker lock;
-    NSXMLNode *obj = static_cast<NSXMLNode *>(parameter);
-    //NSLog(@"V8 WeakCallback (Color) called ");
+    id obj = static_cast<id>(parameter);
+    NSLog(@"V8 WeakCallback (%@) called ", obj);
     [obj release];
     if (!object.IsEmpty()) {
         object.ClearWeak();
@@ -714,10 +714,18 @@ static void JMXNodeJSDestructor(Persistent<Value> object, void *parameter)
 {
     //v8::Locker lock;
     HandleScope handle_scope;
+    /*JMXScript *ctx = [JMXScript getContext];
+    v8::Handle<Value> ret = [ctx getPersistentInstance:self];
+    if (!ret.IsEmpty() && !ret->IsUndefined()) {    
+        v8::Handle<Object> obj = ret->ToObject();
+        if (!obj.IsEmpty() && !obj->IsUndefined() && !obj->IsNull())
+            return handle_scope.Close(obj);
+    }*/
     v8::Handle<FunctionTemplate> objectTemplate = [[self class] jsObjectTemplate];
     v8::Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
-    jsInstance.MakeWeak(self, JMXNodeJSDestructor);
-    jsInstance->SetPointerInInternalField(0, [self retain]);
+    jsInstance.MakeWeak([self retain], JMXNodeJSDestructor);
+    jsInstance->SetPointerInInternalField(0, self);
+    //[ctx addPersistentInstance:jsInstance obj:self];
     return handle_scope.Close(jsInstance);
 }
 

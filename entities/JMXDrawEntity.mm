@@ -36,6 +36,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXDrawEntity);
 
 - (void)dealloc
 {
+    [canvas detach];
     [canvas release];
     [super dealloc];
 }

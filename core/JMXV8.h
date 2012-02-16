@@ -104,12 +104,18 @@ void __class##JSDestructor(Persistent<Value> object, void *parameter)\
     NSLog(@"V8 WeakCallback called");\
     __class *obj = static_cast<__class *>(parameter);\
     Local<Context> currentContext  = v8::Context::GetCurrent();\
-    JMXScript *ctx = [JMXScript getContext:currentContext];\
+    JMXScript *ctx = [JMXScript getContext];\
     if (ctx) {\
         /* this will destroy the javascript object as well */\
         [ctx removePersistentInstance:obj];\
     } else {\
-        NSLog(@"Can't find context to attach persistent instance (just leaking)");\
+        NSXMLNode *obj = static_cast<NSXMLNode *>(parameter);\
+        [obj release];\
+        if (!object.IsEmpty()) {\
+            object.ClearWeak();\
+            object.Dispose();\
+            object.Clear();\
+        }\
     }\
 }\
 \
@@ -121,8 +127,8 @@ v8::Handle<Value> __class##JSConstructor(const Arguments& args)\
         objectTemplate = [__class jsObjectTemplate];\
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];\
     __class *instance = nil;\
-    v8::Local<Context> currentContext = v8::Context::GetCalling();\
-    JMXScript *ctx = [JMXScript getContext:currentContext];\
+    v8::Local<Context> currentContext = v8::Context::GetCurrent();\
+    JMXScript *ctx = [JMXScript getContext];\
     if (ctx) {\
         instance = [[__class alloc] jmxInit];\
         /* connect the entity to our scriptEntity */\
@@ -135,7 +141,7 @@ v8::Handle<Value> __class##JSConstructor(const Arguments& args)\
         }\
         jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());\
         /* make the handle weak, with a callback */\
-        jsInstance.MakeWeak(instance, &__class##JSDestructor);\
+        jsInstance.MakeWeak(instance, __class##JSDestructor);\
         /*instancesMap[instance] = jsInstance;*/\
         jsInstance->SetPointerInInternalField(0, instance);\
         [ctx addPersistentInstance:jsInstance obj:instance];\

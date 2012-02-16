@@ -68,6 +68,7 @@ using namespace v8;
 - (void)dealloc
 {
     [data release];
+    [super dealloc];
 }
 
 - (CGFloat)width

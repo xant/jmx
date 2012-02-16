@@ -852,5 +852,18 @@ static v8::Handle<Value> NativeClassName(const Arguments& args)
     constructor->Set("nativeClassName", FunctionTemplate::New(NativeClassName));
 }
 
+
+- (v8::Handle<v8::Object>)jsObj
+{
+    //v8::Locker lock;
+    HandleScope handle_scope;
+    v8::Handle<FunctionTemplate> objectTemplate = [[self class] jsObjectTemplate];
+    v8::Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
+    //jsInstance.MakeWeak([self retain], JMXNodeJSDestructor);
+    jsInstance->SetPointerInInternalField(0, self);
+    //[ctx addPersistentInstance:jsInstance obj:self];
+    return handle_scope.Close(jsInstance);
+}
+
 @end
 

@@ -24,6 +24,7 @@
 #import "JMXBoardView.h"
 #import "JMXQtMovieEntity.h"
 #import "JMXAudioFileEntity.h"
+#import "JMXScriptFile.h"
 #import "JMXFileRead.h"
 #import "JMXRunLoop.h"
 
@@ -87,7 +88,7 @@
         if ([[JMXQtMovieEntity supportedFileTypes] containsObject:[components lastObject]]) {
             JMXQtMovieEntity *entity = [[JMXQtMovieEntity alloc] init];
             if (fileName && [entity conformsToProtocol:@protocol(JMXFileRead)]) {
-                [entity performSelector:@selector(open:) withObject:[fileURL absoluteString]];
+                [entity performSelector:@selector(open:) withObject:[fileURL path]];
             }
             /*if ([entity conformsToProtocol:@protocol(JMXRunLoop)])
                 [entity performSelector:@selector(start)];*/
@@ -98,14 +99,24 @@
         } else if ([[JMXAudioFileEntity supportedFileTypes] containsObject:[components lastObject]]) {
             JMXAudioFileEntity *entity = [[JMXAudioFileEntity alloc] init];
             if (fileName && [entity conformsToProtocol:@protocol(JMXFileRead)]) {
-                [entity performSelector:@selector(open:) withObject:[fileURL absoluteString]];
+                [entity performSelector:@selector(open:) withObject:[fileURL path]];
             }
             /*if ([entity conformsToProtocol:@protocol(JMXRunLoop)])
                 [entity performSelector:@selector(start)];*/
             [document.entities addObject:entity];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasCreated" object:entity];
             [entity release];
-        } // TODO - add support for script files (and generalize)
+        } else if ([[components lastObject] isEqualToString:@"js"]) {
+            JMXScriptFile *entity = [[JMXScriptFile alloc] init];
+            if (fileName && [entity conformsToProtocol:@protocol(JMXFileRead)]) {
+                [entity performSelector:@selector(open:) withObject:[fileURL path]];
+            }
+            /*if ([entity conformsToProtocol:@protocol(JMXRunLoop)])
+             [entity performSelector:@selector(start)];*/
+            [document.entities addObject:entity];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasCreated" object:entity];
+            [entity release];
+        } // TODO - generalize
     }
 	else {
 		NSPasteboard *pboard = [sender draggingPasteboard];

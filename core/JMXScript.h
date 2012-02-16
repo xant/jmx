@@ -31,6 +31,7 @@
     NSOperationQueue *operationQueue;
     NSTimer *nodejsRunTimer;
     NSMutableDictionary *eventListeners;
+    BOOL started;
 }
 
 /*!
@@ -51,46 +52,31 @@
  @param currentContext reference to a Local<Context> where to store the pointer to the current context
  @return the JMXScript instance holding currentContext
  */
-+ (JMXScript *)getContext:(v8::Local<v8::Context>&)currentContext;
++ (JMXScript *)getContext;
+
+- (void)startWithEntity:(JMXScriptEntity *)entity;
+
 /*!
  @method runScriptInBackground:
  @abstract run a script in a detached thread using a new (autoreleased) JMXScript instace
  @param source an NSString holding the javascript sourcecode
  */
 + (void)runScriptInBackground:(NSString *)source;
-/*!
- @method runScriptInBackground:
- @abstract run a script in a detached thread using a new (autoreleased) JMXScript instace
- @param source an NSString holding the javascript sourcecode
- @param entity the script entity to be bound to the execution context
- */
-+ (void)runScriptInBackground:(NSString *)source withEntity:(JMXScriptEntity *)entity;
+
 /*!
  @method runScript:
  @abstract run a script in the current thread using a new (autoreleased) JMXScript instace 
  @param source an NSString holding the javascript sourcecode
  */
 + (BOOL)runScript:(NSString *)source;
-/*!
- @method runScript:withEntity:
- @abstract run a script in the current thread using a new (autoreleased) JMXScript instace
- @param source an NSString holding the javascript sourcecode
- @param entity the script entity to be bound to the execution context
- */
-+ (BOOL)runScript:(NSString *)source withEntity:(JMXScriptEntity *)entity;
+
 /*!
  @method runScript:
  @abstract run a script in the current thread
  @param source an NSString holding the javascript sourcecode
  */
 - (BOOL)runScript:(NSString *)source;
-/*!
- @method runScript:withEntity:
- @abstract run a script in the current thread
- @param source an NSString holding the javascript sourcecode
- @param entity the script entity to be bound to the execution context
- */
-- (BOOL)runScript:(NSString *)source withEntity:(JMXScriptEntity *)entity;
+
 /*!
  @method addPersistentInstance:obj
  @abstract add a new persistent instance to the internal map
@@ -112,7 +98,7 @@
  @discussion * TODO *
  */
 - (void)removePersistentInstance:(id)obj;
-
+- (v8::Handle<v8::Value>)getPersistentInstance:(id)obj;
 - (void)clearTimers;
 
 - (void)addRunloopTimer:(JMXScriptTimer *)timer;

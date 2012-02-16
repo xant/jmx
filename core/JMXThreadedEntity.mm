@@ -40,7 +40,7 @@
 
 + (id)threadedEntity:(JMXEntity *)entity
 {
-    return [[[self alloc] initWithEntity:entity] autorelease];
+    return [[[JMXThreadedEntity alloc] initWithEntity:entity] autorelease];
 }
 
 // we need to propagate notifications sent by the object we encapsulate
@@ -125,6 +125,8 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     //[realEntity removePrivateDataForKey:@"threadedEntity"];
     [realEntity release];
+    self.frequency = nil;
+    
     [super dealloc];
 }
 
@@ -132,6 +134,8 @@
 {
     if ([NSStringFromProtocol(aProtocol) isEqualTo:@"JMXRunLoop"])
         return YES;
+    if (realEntity)
+        return [realEntity conformsToProtocol:aProtocol];
     return NO;
 }
 

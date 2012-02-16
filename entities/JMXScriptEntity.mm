@@ -85,16 +85,26 @@ using namespace v8;
             [node detach];
         } 
     }
+    
+    NSArray *elements = [self elementsForName:@"Entities"];
+    JMXElement *holder = [elements count] ? [elements objectAtIndex:0] : nil;
+    if (holder) {
+        for (NSXMLNode *node in [holder children])
+            [node detach];
+        [holder detach];
+    }
     [pool drain];
 }
 
 - (BOOL)exec
 {
-    if (!jsContext)
+    if (!jsContext) {
         jsContext = [[JMXScript alloc] init];
+        [jsContext startWithEntity:self];
+    }
     [executionThread release];
     executionThread = [[NSThread currentThread] retain];
-    return [jsContext runScript:self.code withEntity:self];
+    return [jsContext runScript:self.code];
 }
 
 - (void)hookEntity:(JMXEntity *)entity

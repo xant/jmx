@@ -93,7 +93,7 @@
 
 - (void)createEntityWithClass:(Class)aClass atPoint:(NSPoint)aPoint
 {
-    NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary *userInfo = [[[NSMutableDictionary alloc] init] autorelease];
     [userInfo setObject:[NSValue valueWithPoint:aPoint] forKey:@"origin"];
 
     if ([aClass conformsToProtocol:@protocol(JMXFileRead)]) {
@@ -107,14 +107,12 @@
                       }];
     }
     else {
-        JMXEntity *anEntity = [[aClass alloc] init];
+        JMXEntity *anEntity = [[[aClass alloc] init] autorelease];
         [entities addObject:anEntity];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasCreated"
                                                             object:anEntity
                                                           userInfo:userInfo];
-        [anEntity release];
     }
-    [userInfo release];
 }
 
 #pragma mark -

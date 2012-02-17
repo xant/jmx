@@ -605,16 +605,16 @@ static char *argv[2] = { (char *)"JMX", NULL };
 {
     v8::Locker locker;
     HandleScope handleScope;
+    v8::Context::Scope context_scope(ctx);
     JMXScriptTimer *foo = timer.userInfo;
     if (foo.statements && [foo.statements length]) {
-        v8::Context::Scope context_scope(ctx);
         ExecJSCode([foo.statements UTF8String], [foo.statements length], "JMXScriptTimeout");
         if (!foo.repeats) {
             [foo.timer invalidate];
             [runloopTimers removeObject:foo];
         }
     } else {
-        @try {
+        //@try {
             v8::TryCatch try_catch;
             v8::Handle<Value> ret = foo.function->Call(foo.function, 0, nil);
             if (ret.IsEmpty()) {
@@ -628,9 +628,9 @@ static char *argv[2] = { (char *)"JMX", NULL };
                 [foo.timer invalidate];
                 [runloopTimers removeObject:foo];
             }
-        } @catch (NSException *e) {
+        /*} @catch (NSException *e) {
             NSLog(@"%@", e);
-        }
+        }*/
     }
 }
 

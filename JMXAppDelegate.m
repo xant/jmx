@@ -120,8 +120,7 @@
         [self performSelectorOnMainThread:@selector(updateOutput:)
                                withObject:msg waitUntilDone:NO];
     } else if (message) {
-        vprintf([message UTF8String], args);
-        printf("\n");
+        NSLogv(message, args);
     }
     va_end(args);
 }

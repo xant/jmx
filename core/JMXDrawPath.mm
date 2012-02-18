@@ -161,7 +161,7 @@ using namespace v8;
     //CGContextDrawPath(context, kCGPathFillStroke);
     //CGContextRestoreGState(context);
     [lock unlock];
-    [self render];
+    //[self render];
 }
 
 - (void)drawRect:(JMXPoint *)origin size:(JMXSize *)size strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
@@ -470,12 +470,10 @@ using namespace v8;
     [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
-    if (fillStyle == aFillStyle) {
-        [lock unlock];
-        return;
+    if (fillStyle != aFillStyle) {
+        [fillStyle release];
+        fillStyle = [aFillStyle retain];
     }
-    [fillStyle release];
-    fillStyle = [aFillStyle retain];
     if (!fillStyle) {
         CGContextSetRGBFillColor(context, 0, 0, 0, 0);
     } else if ([fillStyle isKindOfClass:[NSColor class]]) {
@@ -505,12 +503,11 @@ using namespace v8;
     [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
-    if (strokeStyle == aStrokeStyle) {
-        [lock unlock];
-        return;
+    if (strokeStyle != aStrokeStyle) {
+        [strokeStyle release];
+        strokeStyle = [aStrokeStyle retain];
     }
-    [strokeStyle release];
-    strokeStyle = [aStrokeStyle retain];
+
     if (!strokeStyle) {
         CGContextSetRGBStrokeColor(context, 0, 0, 0, 0);
     } else if ([strokeStyle isKindOfClass:[NSColor class]]) {
@@ -536,7 +533,8 @@ using namespace v8;
 
     CGContextFillRect(context, fullFrame);
 
-    [self render];
+    _didFill = YES;
+    //[self render];
     [lock unlock];
 }
 
@@ -548,8 +546,8 @@ using namespace v8;
 
     CGRect rect = CGRectMake(origin.nsPoint.x, origin.nsPoint.y,
                                   size.nsSize.width, size.nsSize.height);
-    CGContextStrokeRect(context, rect);
-    [self render];
+    CGContextAddRect(context, rect);
+    //[self render];
     [lock unlock];
 }
 
@@ -560,8 +558,6 @@ using namespace v8;
     //CGContextSaveGState(CGLayerGetContext(pathLayers[pathIndex]));
     CGContextBeginPath(CGLayerGetContext(pathLayers[pathIndex]));
     subPaths++;
-    _didFill = NO;
-    _didStroke = NO;
     [lock unlock];
 }
 
@@ -859,6 +855,8 @@ using namespace v8;
             [currentFrame release];
         currentFrame = [[CIImage imageWithCGLayer:pathLayers[pathIndex]] retain];
         _needsRender = NO;
+        _didStroke = NO;
+        _didFill = NO;
     }
     [lock unlock];
 }
@@ -1062,7 +1060,7 @@ static v8::Handle<Value> FillRect(const Arguments& args)
     JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() > 3) {
         [drawPath fillRect:[JMXPoint pointWithNSPoint:NSMakePoint(args[0]->NumberValue(), args[1]->NumberValue())]
-                       size:[JMXSize sizeWithNSSize:NSMakeSize(args[2]->NumberValue(), args[3]->NumberValue())]];
+                      size:[JMXSize sizeWithNSSize:NSMakeSize(args[2]->NumberValue(), args[3]->NumberValue())]];
     }
     return Undefined();
 }
@@ -1181,7 +1179,7 @@ static v8::Handle<Value> AddRect(const Arguments& args)
     //v8::Locker lock;
     HandleScope handleScope;
     JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
-    if (args.Length() > 4) {
+    if (args.Length() > 3) {
         [drawPath drawRect:[JMXPoint pointWithNSPoint:NSMakePoint(args[0]->NumberValue(), args[1]->NumberValue())] 
                       size:[JMXSize sizeWithNSSize:NSMakeSize(args[2]->NumberValue(), args[3]->NumberValue())]];
 

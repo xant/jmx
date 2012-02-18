@@ -1,4 +1,4 @@
-output = new OutputPin("count", "Point");
+output = new OutputPin("point", "Point");
 
 frequencyPin = scriptEntity.inputPin('frequency');
 frequencyPin.data = 25; // default to 25 points per seconds

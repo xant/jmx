@@ -160,9 +160,9 @@
     NSArray *receiverObjects;
     @synchronized(receivers) {
         receiverObjects = [receivers allKeys];
-        for (JMXPin *receiver in receiverObjects)
-            [receiver disconnectFromPin:self];
     }
+    for (JMXPin *receiver in receiverObjects)
+        [receiver disconnectFromPin:self];
 }
 
 @end

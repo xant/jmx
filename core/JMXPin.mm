@@ -477,13 +477,27 @@ using namespace v8;
     // we will send it a message to get the actual value
     id ret = nil;
     
-    if (direction == kJMXOutputPin && owner) {
-        SEL signal = NSSelectorFromString(ownerSignal);
-        if (ownerSignal && [owner respondsToSelector:signal])
-            ret = [owner performSelector:signal];
-        else if ([owner conformsToProtocol:@protocol(JMXPinOwner)])
+    if (owner) {
+        SEL signal = NSSelectorFromString(self.label);
+        if ([owner respondsToSelector:signal]) {
+            if (self.type == kJMXBooleanPin) {
+                BOOL raw;
+                // edge case for boolean type
+                NSInvocation *invocation = [NSInvocation 
+                                           invocationWithMethodSignature:[owner methodSignatureForSelector:signal]];
+                [invocation setTarget:owner];
+                [invocation setSelector:signal];
+                [invocation invokeWithTarget:owner];
+                [invocation getReturnValue:(void *)&raw];
+                ret = [NSNumber numberWithBool:raw];
+            } else {
+                ret = [owner performSelector:signal];
+            }
+        } else if ([owner conformsToProtocol:@protocol(JMXPinOwner)]) {
             ret = [owner provideDataToPin:self];
+        }
     }
+
     if (!ret) {
         // otherwise we will return the last signaled data
         [dataLock lock];
@@ -580,7 +594,10 @@ using namespace v8;
         //[signalDelivery setThreadPriority:1.0];
         [[JMXContext operationQueue] addOperation:signalDelivery];
 #else
-        [self performSelector:@selector(performSignal:) onThread:[JMXContext signalThread] withObject:signal waitUntilDone:NO];
+        [self performSelector:@selector(performSignal:)
+                     onThread:[JMXContext signalThread]
+                   withObject:signal
+                waitUntilDone:NO];
 #endif
     }
 }
@@ -861,7 +878,7 @@ static void JMXPinJSDestructor(Persistent<Value> object, void *parameter)
     HandleScope handle_scope;
     v8::Locker lock;
     JMXPin *obj = static_cast<JMXPin *>(parameter);
-    //NSLog(@"V8 WeakCallback (Pin) called %@", obj);
+    NSDebug(@"V8 WeakCallback (Pin) called %@", obj);
     [obj release];
     if (!object.IsEmpty()) {
         object.ClearWeak();

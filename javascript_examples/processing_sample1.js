@@ -8,7 +8,6 @@ drawer = new DrawPath(width, height);
 output = new VideoOutput(width, height);
 drawer.outputPin('frame').connect(output.inputPin('frame'));
 
-
 // uncomment the following line if you want the outputframe exported on the board
 //drawer.outputPin('frame').export();
 

@@ -2,6 +2,7 @@ width = 640;
 height = 480;
 
 drawer = new DrawPath(width, height);
+drawer.frquency = 25;
 
 // UNCOMMENT TO ACTIVATE A VIDEO FILTER
 filter = new VideoFilter("CIZoomBlur");
@@ -32,7 +33,7 @@ ctx = canvas.getContext("2d");
 
 entities = $('Entities').get(0);
 
-mainloop = function() {
+f = function() {
     //drawer.clear();
  
     ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
@@ -73,7 +74,8 @@ mainloop = function() {
     //drawer.size = new Size(rand()%width, rand()%height);
     //drawer.origin = new Point(rand()%width, rand()%height);
 
-    sleep(1/drawer.frequency);
 };
 
-run(mainloop);
+t = setInterval(f, 1000/drawer.frequency);
+    sleep(1/drawer.frequency);
+//run(mainloop);

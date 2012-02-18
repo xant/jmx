@@ -123,7 +123,7 @@
     [self stopThread];
     // TODO - ensure executing the following statement on the main thread
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    //[realEntity removePrivateDataForKey:@"threadedEntity"];
+    [realEntity removePrivateDataForKey:@"threadedEntity"];
     [realEntity release];
     self.frequency = nil;
     
@@ -177,12 +177,6 @@
     }
 }
 
-- (void)tick:(uint64_t)timeStamp
-{
-    // propagate the tick to the underlying entity
-    [realEntity tick:timeStamp];
-}
-
 - (void)outputDefaultSignals:(uint64_t)timeStamp
 {
     int i = 0;
@@ -193,12 +187,21 @@
         stampCount = kJMXFpsMaxStamps;  
     }
     stamps[stampCount++] = timeStamp;
-    
-    double rate = 1e9/((stamps[stampCount - 1] - stamps[0])/stampCount);
-    [frequencyPin deliverData:[NSNumber numberWithDouble:rate]
-                   fromSender:self];
+    /*
+     double rate = 1e9/((stamps[stampCount - 1] - stamps[0])/stampCount);
+     [frequencyPin deliverData:[NSNumber numberWithDouble:rate]
+     fromSender:self];
+     */
     //NSLog(@"%@\n", [NSNumber numberWithDouble:rate]);
     [realEntity outputDefaultSignals:timeStamp];
+}
+
+- (void)tick:(uint64_t)timeStamp
+{
+    // propagate the tick to the underlying entity
+    [realEntity tick:timeStamp];
+    [self outputDefaultSignals:timeStamp]; // ensure sending all default signals
+
 }
 
 - (void)signalTick:(NSTimer*)theTimer
@@ -227,7 +230,7 @@
 
 - (void)run
 {
-#if 1
+#if 0
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     double maxDelta = 1.0/[self.frequency doubleValue];
     timer = [NSTimer timerWithTimeInterval:maxDelta target:self selector:@selector(signalTick:) userInfo:nil repeats:YES];
@@ -238,17 +241,13 @@
     realEntity.active = NO;
     [pool drain];
 #else
-    uint64_t maxDelta = 1e9 / [frequency doubleValue];
-    
     NSThread *currentThread = [NSThread currentThread];
-    
-    active = YES;
+    realEntity.active = YES;
     while (![currentThread isCancelled]) {
+        uint64_t maxDelta = 1e9 / [self.frequency doubleValue];
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         uint64_t timeStamp = CVGetCurrentHostTime();
-        if ([self respondsToSelector:@selector(tick:)])
-            [self tick:timeStamp];
-        [self outputDefaultSignals:timeStamp]; // ensure sending all default signals
+        [self tick:timeStamp];
         previousTimeStamp = timeStamp;
         uint64_t now = CVGetCurrentHostTime();
         // Check if tick() has returned earlier and we still have time before next tick. 
@@ -285,7 +284,7 @@
         }
         [pool drain];
     }
-    active = NO;
+    realEntity.active = NO;
 #endif
 }
 

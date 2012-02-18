@@ -28,7 +28,7 @@ extern void JSExit(int code);
     if (self) {
         path = nil;
         self.label = @"JMXScriptFile";
-        self.frequency = [NSNumber numberWithDouble:1.0];
+        //self.frequency = [NSNumber numberWithDouble:1.0];
         JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
         if (threadedEntity)
             return (JMXScriptFile *)threadedEntity;
@@ -103,15 +103,12 @@ extern void JSExit(int code);
         if (self.code) {
             isRunning = YES;
             [self exec];
-        } else {
-            NSLog(@"JMXScriptEntity::tick(): No script to run");
         }
         //[self resetContext];
         //JMXAppDelegate *appDelegate = [[NSApplication sharedApplication] delegate];
         //if (appDelegate.batchMode)
         //    exit(0);
     }
-    
 }
 
 @end

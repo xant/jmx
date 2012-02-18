@@ -24,7 +24,7 @@
 {
     parent = nil;
     owner = anEntity;
-    realPin = [pin retain];
+    realPin = pin;//[pin retain];
     label = (pinLabel && ![pinLabel isEqualTo:@"undefined"]) ? [pinLabel copy] : [pin.label copy];
     index = 0;
     proxyNode = [[JMXElement alloc] initWithName:@"JMXProxyPin"];
@@ -36,8 +36,9 @@
 
 - (void)dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"JMXPinDisconnected" object:realPin];
     [label release];
-    [realPin release];
+    //[realPin release];
     [proxyNode detach];
     [proxyNode release];
     [super dealloc];

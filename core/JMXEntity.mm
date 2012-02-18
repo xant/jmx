@@ -142,24 +142,21 @@ using namespace v8;
 
 - (void)dealloc
 {
-    // We need notifications to be delivered on the thread where
-    // the GUI runs (otherwise it won't catch the notification)
-    // but we also need to wait until all notifications have been
-    // sent to observers otherwise we would release ourselves before
-    // their execution (which will happen in the main thread) 
-    // so an invalid object will be accessed and a crash will occur
-    [self disconnectAllPins];
-    [self unregisterAllPins];
+    [self unregisterAllPins]; // NOTE: this must be done before detaching our children
     // TODO - append operations to a queue and run them all at once
     // on the main thread
     @synchronized(self) {
+        // We need notifications to be delivered on the thread where
+        // the GUI runs (otherwise it won't catch the notification)
+        // but we also need to wait until all notifications have been
+        // sent to observers otherwise we would release ourselves before
+        // their execution (which will happen in the main thread) 
+        // so an invalid object will be accessed and a crash will occur
+        [self performSelectorOnMainThread:@selector(notifyRelease) withObject:nil waitUntilDone:YES];
         for (NSXMLNode *node in [self children]) {
             [node detach];
         }
-        // as explained above ... we need to wait until done
-        [self performSelectorOnMainThread:@selector(notifyRelease) withObject:nil waitUntilDone:YES];
     }
-
     @synchronized(privateData) {
         [privateData release];
         privateData = nil;
@@ -337,7 +334,7 @@ using namespace v8;
     for (id p in [self children]) {
         if ([p isKindOfClass:[JMXPin class]] && [p isProxy] && ((JMXProxyPin *)p).realPin == pin) {
             [p detach];
-            [self performSelectorOnMainThread:@selector(notifyPinRemoved:) withObject:p waitUntilDone:YES];
+            [self notifyPinRemoved:p];
             [proxyPins removeObject:p];
             break;
         }
@@ -458,13 +455,18 @@ using namespace v8;
 
 - (void)unregisterPin:(JMXPin *)pin
 {
-    [pin disconnectAllPins];
+    if (![pin isProxy])
+        [pin disconnectAllPins];
     if ([[NSThread currentThread] isMainThread]) {
         [self notifyPinRemoved:pin];
     } else {
         // notifications needs to be delivered on the thread where the GUI runs (otherwise it won't catch the notification)
         // and since the entity will persist the pin we can avoid waiting for the notification to be completely propagated
         [self performSelectorOnMainThread:@selector(notifyPinRemoved:) withObject:pin waitUntilDone:YES];
+    }
+    if ([pin isProxy]) {
+        [self performSelectorOnMainThread:@selector(removeObservers:) withObject:pin waitUntilDone:YES];
+        [proxyPins removeObject:pin];
     }
     // we can now release the pin
     [pin detach];
@@ -511,26 +513,26 @@ using namespace v8;
     }
 }
 
+- (void)removeObservers:(JMXProxyPin *)pin
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:@"JMXPinDestroyed"
+                                                  object:pin.realPin];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:@"JMXPinUnregistered"
+                                                  object:pin.realPin];
+}
+
 - (void)unregisterAllPins
 {
     [self disconnectAllPins];
     for (id child in [self children]) {
-        if ([child isProxy] && [child isKindOfClass:[JMXPin class]]) {
-            NSBlockOperation *unregisterObserver = [NSBlockOperation blockOperationWithBlock:^{
-                [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                                name:@"JMXPinDestroyed"
-                                                              object:((JMXProxyPin *)child).realPin];
-            }];
-            [unregisterObserver setQueuePriority:NSOperationQueuePriorityVeryHigh];
-            [[NSOperationQueue mainQueue] addOperations:[NSArray arrayWithObject:unregisterObserver]
-                                      waitUntilFinished:YES];
-            //JMXPin *pin = (JMXPin *)child;
-            //[self unregisterPin:pin];
-        } else if ([child isKindOfClass:[JMXPin class]]) {
+        if ([child isKindOfClass:[JMXPin class]]) {
             JMXPin *pin = (JMXPin *)child;
             [self unregisterPin:pin];
         }
     }
+    [proxyPins removeAllObjects];
 }
 
 - (void)outputDefaultSignals:(uint64_t)timeStamp

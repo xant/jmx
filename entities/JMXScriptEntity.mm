@@ -71,7 +71,7 @@ using namespace v8;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
     if (jsContext) {
-        [jsContext clearTimers];
+        [jsContext stop];
         [jsContext release];
         jsContext = nil;
     }

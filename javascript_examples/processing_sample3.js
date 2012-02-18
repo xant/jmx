@@ -1,5 +1,3 @@
-#!/Users/xant/Library//Developer/Xcode/DerivedData/JMX-glyoszcgeavhstbmvlwvnpwrekiu/Build/Products/Release/JMX.app/Contents/MacOS/JMX
-
 width = 640;
 height = 480;
 

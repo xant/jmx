@@ -38,17 +38,21 @@
     if (self) {
         currentFrame = nil;
         self.label = @"VideoEntity";
-        colorFilter = [[CIFilter filterWithName:@"CIColorControls"] retain];
-        [colorFilter setDefaults];
-        alphaFilter = [[CIFilter filterWithName:@"CIAlphaFade"] retain];
-        [alphaFilter setDefaults]; // XXX - setDefaults doesn't work properly
-        NSDictionary *filterAttributes = [colorFilter attributes];
+        _colorFilter = [[CIFilter filterWithName:@"CIColorControls"] retain];
+        [_colorFilter setDefaults];
+        _alphaFilter = [[CIFilter filterWithName:@"CIAlphaFade"] retain];
+        [_alphaFilter setDefaults]; // XXX - setDefaults doesn't work properly
+        _blendFilter = [[CIFilter filterWithName:@"CIScreenBlendMode"] retain];
+        [_blendFilter setDefaults];
+        _transformFilter = [[CIFilter filterWithName:@"CIAffineTransform"] retain];
+        [_transformFilter setDefaults];
+        NSDictionary *filterAttributes = [_colorFilter attributes];
         NSSize defaultLayerSize = { 640, 480 };
         self.fps = [NSNumber numberWithDouble:25.0];
         self.size = [JMXSize sizeWithNSSize:defaultLayerSize];
-        self.saturation = [colorFilter valueForKey:@"inputSaturation"];
-        self.brightness = [colorFilter valueForKey:@"inputBrightness"];
-        self.contrast = [colorFilter valueForKey:@"inputContrast"];
+        self.saturation = [_colorFilter valueForKey:@"inputSaturation"];
+        self.brightness = [_colorFilter valueForKey:@"inputBrightness"];
+        self.contrast = [_colorFilter valueForKey:@"inputContrast"];
         self.alpha = [NSNumber numberWithFloat:1.0];
         self.rotation = [NSNumber numberWithFloat:0.0];
         self.scaleRatio = [NSNumber numberWithFloat:1.0];
@@ -153,12 +157,11 @@
 
 - (void)dealloc
 {
-    if (currentFrame)
-        [currentFrame release];
-    if (colorFilter)
-        [colorFilter release];
-    if (alphaFilter)
-        [alphaFilter release];
+    [currentFrame release];
+    [_colorFilter release];
+    [_alphaFilter release];
+    [_transformFilter release];
+    [_blendFilter release];
     self.alpha = nil;
     self.saturation = nil;
     self.brightness = nil;
@@ -178,19 +181,18 @@
     if (outputFrame) {
         // Apply image parameters
         // ensure using accessors (by calling self.property) since they will take care of locking
-        [colorFilter setValue:self.saturation forKey:@"inputSaturation"];
-        [colorFilter setValue:self.brightness forKey:@"inputBrightness"];
-        [colorFilter setValue:self.contrast forKey:@"inputContrast"];
-        [colorFilter setValue:outputFrame forKey:@"inputImage"];
+        [_colorFilter setValue:self.saturation forKey:@"inputSaturation"];
+        [_colorFilter setValue:self.brightness forKey:@"inputBrightness"];
+        [_colorFilter setValue:self.contrast forKey:@"inputContrast"];
+        [_colorFilter setValue:outputFrame forKey:@"inputImage"];
         // scale the image to fit the configured layer size
-        CIImage *frame = [colorFilter valueForKey:@"outputImage"];
+        CIImage *frame = [_colorFilter valueForKey:@"outputImage"];
        
         // frame should be produced with the correct size already by the layer implementation
         // but if the user requested a size impossible to be produced by the source, 
         // we scale it here to honor user request for a specific size
         BOOL applyTransforms = NO;
         // and apply affine transforms if necessary (scale, rotation and displace
-        CIFilter *transformFilter = [CIFilter filterWithName:@"CIAffineTransform"];
         NSAffineTransform *transform = [NSAffineTransform transform];
         CGRect imageRect = [frame extent];
         if (size.width != imageRect.size.width || size.height != imageRect.size.height) {
@@ -216,9 +218,8 @@
             [rotoTransform appendTransform:rotoTranslate];
             [transform appendTransform:rotoTransform];
         }
-        [transformFilter setDefaults];
-        [transformFilter setValue:transform forKey:@"inputTransform"];
-        [transformFilter setValue:frame forKey:@"inputImage"];
+        [_transformFilter setValue:transform forKey:@"inputTransform"];
+        [_transformFilter setValue:frame forKey:@"inputImage"];
         if (origin.x || origin.y) {
             applyTransforms = YES;
             NSAffineTransform *originTransform = [NSAffineTransform transform];
@@ -228,34 +229,32 @@
 
             [originTransform translateXBy:x yBy:y];
             [transform appendTransform:originTransform];
-            CIFilter *originFilter = transformFilter;
+            CIFilter *originFilter = _transformFilter;
             if (tileFrame)
             {
-                CIImage *firstFrame = [transformFilter valueForKey:@"outputImage"];
+                CIImage *firstFrame = [_transformFilter valueForKey:@"outputImage"];
                
                 NSAffineTransform *loopTransform = [NSAffineTransform transform];
                 [loopTransform translateXBy:(x > 0 ? -size.width : size.width) yBy:y];
                 [transform appendTransform:loopTransform];
-                [transformFilter setValue:frame forKey:@"inputImage"];
+                [_transformFilter setValue:frame forKey:@"inputImage"];
                 
-                CIImage *secondFrame = [transformFilter valueForKey:@"outputImage"];
-                
-                CIFilter *blendFilter = [CIFilter filterWithName:@"CIScreenBlendMode"];
-                [blendFilter setDefaults];
-                [blendFilter setValue:firstFrame forKey:@"inputImage"];
-                [blendFilter setValue:secondFrame forKey:@"inputBackgroundImage"];
-                originFilter = blendFilter;
+                CIImage *secondFrame = [_transformFilter valueForKey:@"outputImage"];
+
+                [_blendFilter setValue:firstFrame forKey:@"inputImage"];
+                [_blendFilter setValue:secondFrame forKey:@"inputBackgroundImage"];
+                originFilter = _blendFilter;
             }
             frame = [originFilter valueForKey:@"outputImage"];
         } else if (applyTransforms) {
-            frame = [transformFilter valueForKey:@"outputImage"];
+            frame = [_transformFilter valueForKey:@"outputImage"];
         }
         
         if (frame) {
             // apply alpha
-            [alphaFilter setValue:alpha forKey:@"outputOpacity"];
-            [alphaFilter setValue:frame forKey:@"inputImage"];
-            frame = [alphaFilter valueForKey:@"outputImage"];
+            [_alphaFilter setValue:alpha forKey:@"outputOpacity"];
+            [_alphaFilter setValue:frame forKey:@"inputImage"];
+            frame = [_alphaFilter valueForKey:@"outputImage"];
             outputFrame = frame;
         }
         // TODO - compute the effective fps and send it to an output pin 

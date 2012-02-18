@@ -43,8 +43,10 @@
     BOOL tileFrame;
     
 @private
-    CIFilter *colorFilter;
-    CIFilter *alphaFilter;
+    CIFilter *_colorFilter;
+    CIFilter *_alphaFilter;
+    CIFilter *_transformFilter;
+    CIFilter *_blendFilter;
 }
 
 

@@ -10,7 +10,11 @@
 #import "NSColor+V8.h"
 #import "JMXScript.h"
 
+#define kNSColorV8MaxCache 100
+
 using namespace v8;
+
+static NSMutableDictionary *colorCache = nil;
 
 @implementation NSColor (JMXColor)
 
@@ -65,6 +69,15 @@ void ConvertHSLToRGB (const CGFloat *hslComponents, CGFloat *rgbComponents) {
 
 + (id)colorFromCSSString:(NSString *)cssString
 {
+    NSColor *color = nil;
+    if (!colorCache) {
+        colorCache = [[NSMutableDictionary alloc] initWithCapacity:kNSColorV8MaxCache];
+    } else {
+        color = [colorCache objectForKey:cssString];
+        if (color)
+            return color;
+    }
+    
     // TODO - handle them all
     if ([cssString isEqualToString:@"white"]  ||
         [cssString isEqualToString:@"black"]  ||
@@ -78,14 +91,18 @@ void ConvertHSLToRGB (const CGFloat *hslComponents, CGFloat *rgbComponents) {
     {
         NSString *selectorString = [NSString stringWithFormat:@"%@Color", cssString];
 
-        return [[NSColor class] performSelector:NSSelectorFromString(selectorString)];
+        color = [[NSColor class] performSelector:NSSelectorFromString(selectorString)];
+        if (color)
+            [colorCache setObject:color forKey:cssString];
+        return color;
     }
     
     /* TODO - Implement */
     // XXX - requires OSX 10.7
     CGFloat r = 0.0, g = 0.0, b = 0.0, a = 1.0;
     NSString *colorStringRegExp = @"(#[0-9a-f]+|"
-                                  @"rgba\\(\\s*\\d+\\%?\\s*,\\s*\\d+\\%?\\s*,\\s*\\d+\\%?\\s*\\,\\s*[0-9\\.]+\\s*\\)|"
+                                  @"rgba\\(\\s*\\d+\\%?\\s*,\\s*\\d+\\%?\\s*,\\s*\\d+\\%?\\s*,\\s*[0-9\\.]+\\s*\\)|"
+                                  @"rgb\\(\\s*\\d+\\%?\\s*,\\s*\\d+\\%?\\s*,\\s*\\d+\\%?\\s*\\)|"
                                   @"hsl\\(\\s*[0-9\\.]+\\%?\\s*,\\s*[0-9\\.]+\\%?\\s*,\\s*[0-9\\.]+\\%?\\s*\\))";
     NSError *error = NULL;
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:colorStringRegExp
@@ -141,7 +158,8 @@ void ConvertHSLToRGB (const CGFloat *hslComponents, CGFloat *rgbComponents) {
                         }
                     }
                 } else if ([substringForFirstMatch characterAtIndex:0] == 'r') {
-                    NSString *pattern = @"rgba\\(\\s*(\\d+\\%?)\\s*,\\s*(\\d+\\%?)\\s*,\\s*(\\d+\\%?)\\s*,\\s*([0-9\\.]+)\\s*\\)";
+                    NSString *pattern = @"(rgba\\(\\s*(\\d+\\%?)\\s*,\\s*(\\d+\\%?)\\s*,\\s*(\\d+\\%?)\\s*,\\s*([0-9\\.]+)\\s*\\)|"
+                                        @"rgba\\(\\s*(\\d+\\%?)\\s*,\\s*(\\d+\\%?)\\s*,\\s*(\\d+\\%?)\\s*\\))";
                     NSRegularExpression *subRegex = [NSRegularExpression regularExpressionWithPattern:pattern
                                                                                              options:NSRegularExpressionCaseInsensitive
                                                                                                error:&error];
@@ -156,14 +174,21 @@ void ConvertHSLToRGB (const CGFloat *hslComponents, CGFloat *rgbComponents) {
                                                             range:NSMakeRange(0, [substringForFirstMatch length])];
                         NSTextCheckingResult *match = [matches objectAtIndex:0];
                         //NSRange rgbRange = [match range];
-                        NSRange redStringRange = [match rangeAtIndex:1];
+                        // NOTE range 1 is the whole rgb()|rgba() pattern ... so single components' values start from range 2
+                        NSRange redStringRange = [match rangeAtIndex:2];
                         NSString *redString = [substringForFirstMatch substringWithRange:redStringRange];
-                        NSRange greenStringRange = [match rangeAtIndex:2];
+                        NSRange greenStringRange = [match rangeAtIndex:3];
                         NSString *greenString = [substringForFirstMatch substringWithRange:greenStringRange];
-                        NSRange blueStringRange = [match rangeAtIndex:3];
+                        NSRange blueStringRange = [match rangeAtIndex:4];
                         NSString *blueString = [substringForFirstMatch substringWithRange:blueStringRange];
-                        NSRange alphaStringRange = [match rangeAtIndex:4];
-                        NSString *alphaString = [substringForFirstMatch substringWithRange:alphaStringRange];
+                        if (match.numberOfRanges >= 5) {
+                            NSRange alphaStringRange = [match rangeAtIndex:5];
+                            NSString *alphaString = [substringForFirstMatch substringWithRange:alphaStringRange];
+                            if (alphaString)
+                                a = (CGFloat)[alphaString floatValue];
+                            if (a > 1)
+                                a /= 255;
+                        }
                         // TODO - handle %
                         if (redString)
                             r = (CGFloat )[redString intValue]/255;
@@ -171,8 +196,6 @@ void ConvertHSLToRGB (const CGFloat *hslComponents, CGFloat *rgbComponents) {
                             g = (CGFloat)[greenString intValue]/255;
                         if (blueString)
                             b = (CGFloat)[blueString intValue]/255;
-                        if (alphaString)
-                            a = (CGFloat)[alphaString floatValue];
                     }
                     
                 } else if ([substringForFirstMatch characterAtIndex:0] == 'h') {
@@ -222,7 +245,14 @@ void ConvertHSLToRGB (const CGFloat *hslComponents, CGFloat *rgbComponents) {
             }
         }
     }
-    return [NSColor colorWithDeviceRed:r green:g blue:b alpha:a];
+    color = [NSColor colorWithDeviceRed:r green:g blue:b alpha:a];
+    if (color) {
+        if (colorCache.count >= kNSColorV8MaxCache) {
+            [colorCache removeObjectsForKeys:[[colorCache allKeys] objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, colorCache.count/2)]]];
+        }
+        [colorCache setObject:color forKey:cssString];
+    }
+    return color;
 }
 
 static v8::Persistent<FunctionTemplate> objectTemplate;

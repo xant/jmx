@@ -38,6 +38,10 @@
 
 JMXV8_EXPORT_NODE_CLASS(JMXOpenGLScreen);
 
+#define kMaxEventsPerSecond 90
+static NSString *kEventTypeMouseMove = @"mousemove";
+static NSString *kEventTypeMouseDragged = @"mousedragged";
+
 @interface JMXOpenGLViewWrapper : NSObject
 {
     JMXOpenGLView *openglView;
@@ -502,8 +506,18 @@ static void translateScreenCoordinates(CGSize screenSize, CGSize frameSize,
 {
     NSPoint location = event.locationInWindow;
     if (ctx) {
+        JMXScriptEntity *scriptEntity = ctx.scriptEntity;
+        uint64_t currentEventTime =  CVGetCurrentHostTime();
+        if (lastEventType == kEventTypeMouseMove &&
+            currentEventTime - lastEventTime < 1e9/kMaxEventsPerSecond)
+        {
+            return;
+        }
         CGFloat x, y;
 
+        [lastEventType release];
+        lastEventType = kEventTypeMouseMove;
+        lastEventTime = currentEventTime;
         JMXMouseEvent *mouseEvent = [[[JMXMouseEvent alloc] initWithType:@"mousemove"
                               target:nil
                             listener:nil
@@ -560,9 +574,19 @@ static void translateScreenCoordinates(CGSize screenSize, CGSize frameSize,
 - (void)mouseDragged:(NSEvent *)event inView:(JMXOpenGLView *)aView
 {
     if (ctx) {
+        JMXScriptEntity *scriptEntity = ctx.scriptEntity;
+        uint64_t currentEventTime =  CVGetCurrentHostTime();
+        if (lastEventType == kEventTypeMouseDragged &&
+            currentEventTime - lastEventTime < 1e9/kMaxEventsPerSecond)
+        {
+            return;
+        }
+        lastEventType = kEventTypeMouseDragged;
+        lastEventTime = currentEventTime;
+        
         CGFloat x, y;
 
-        JMXMouseEvent *mouseEvent = [[[JMXMouseEvent alloc] initWithType:@"mousedragged"
+        JMXMouseEvent *mouseEvent = [[[JMXMouseEvent alloc] initWithType:kEventTypeMouseDragged
                                                                   target:nil
                                                                 listener:nil
                                                                  capture:NO] autorelease];

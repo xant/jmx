@@ -69,6 +69,8 @@
     BOOL fullScreen;
     JMXScript *ctx; // weak reference
     JMXOutputPin *mousePositionPin;
+    NSString *lastEventType;
+    uint64_t lastEventTime;
 }
 
 @property (readonly) NSWindow *window;

@@ -47,6 +47,7 @@
 #import "JMXScriptOutputPin.h"
 #import "node.h"
 #import "v8_typed_array.h"
+#import <QuartzCore/QuartzCore.h>
 
 using namespace v8;
 using namespace std;
@@ -658,11 +659,27 @@ static char *argv[2] = { (char *)"JMX", NULL };
 
 - (void)nodejsRun
 {
+    uint64_t maxDelta = 1e9 / 90; // max 90 ticks per seconds
     @try {
-        v8::Locker locker;
-        v8::HandleScope handle_scope;
-        v8::Context::Scope context_scope(ctx);
-        uv_next(uv_default_loop());
+        NSThread *currentThread = [NSThread currentThread];
+        while (![currentThread isCancelled]) {
+            v8::Locker locker;
+            v8::HandleScope handle_scope;
+            v8::Context::Scope context_scope(ctx);
+            uint64_t timeStamp = CVGetCurrentHostTime();
+            NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+            //uv_run(uv_default_loop());
+            uv_next(uv_default_loop());
+            [pool release];
+            {
+                v8::Unlocker unlocker;
+                uint64_t now = CVGetCurrentHostTime();
+                uint64_t delta = now - timeStamp;
+                uint64_t sleepTime = (delta && delta < maxDelta) ? maxDelta - delta : 0;
+                if (sleepTime)
+                    [NSThread sleepForTimeInterval:sleepTime/1e9];
+            }
+        }
     }
     @catch (NSException *exception) {
         NSLog(@"%@", exception);
@@ -691,13 +708,13 @@ static char *argv[2] = { (char *)"JMX", NULL };
     ctxTemplate->Set(String::New("quit"), FunctionTemplate::New(Quit));
     ctxTemplate->Set(String::New("addToRunLoop"), FunctionTemplate::New(AddToRunLoop));
     ctxTemplate->Set(String::New("removeFromRunLoop"), FunctionTemplate::New(RemoveFromRunLoop));
-    
+#if 0
     ctxTemplate->Set(String::New("setTimeout"), FunctionTemplate::New(SetTimeout));
     ctxTemplate->Set(String::New("clearTimeout"), FunctionTemplate::New(ClearTimeout));
     
     ctxTemplate->Set(String::New("setInterval"), FunctionTemplate::New(SetInterval));
     ctxTemplate->Set(String::New("clearInterval"), FunctionTemplate::New(ClearTimeout)); // alias for ClearTimeout
-    
+#endif
     ctxTemplate->SetInternalFieldCount(1);
     
     /* TODO - think if worth exposing such global functions
@@ -731,9 +748,14 @@ static char *argv[2] = { (char *)"JMX", NULL };
     char baseInclude[] = "include('JMX.js');";
     // Enter the newly created execution environment.
     ExecJSCode(baseInclude, strlen(baseInclude), "JMX");
-    
+
+#if 0
     nodejsRunTimer = [[NSTimer timerWithTimeInterval:0.25 target:self selector:@selector(nodejsRun) userInfo:nil repeats:YES] retain];
     [[NSRunLoop currentRunLoop] addTimer:nodejsRunTimer forMode:NSRunLoopCommonModes];
+#else
+    nodejsThread = [[NSThread alloc] initWithTarget:self selector:@selector(nodejsRun) object:nil];
+    [nodejsThread start];
+#endif
 }
 
 - (void)clearPersistentInstances
@@ -747,11 +769,34 @@ static char *argv[2] = { (char *)"JMX", NULL };
 
 - (void)clearTimers
 {
+    [nodejsThread cancel];
+    [nodejsThread release];
+   
+#if 0
     for (JMXScriptTimer *scriptTimer in runloopTimers)
         [scriptTimer.timer invalidate];
     [runloopTimers removeAllObjects];
     [nodejsRunTimer invalidate];
     [nodejsRunTimer release];
+#endif
+}
+
+- (void)stop
+{
+    v8::Locker locker;
+    v8::HandleScope handle_scope;
+    v8::Context::Scope context_scope(ctx);
+    
+    [self clearTimers];
+    // and tell V8 we want to release anything possible (by notifying a low memory condition
+    V8::LowMemoryNotification();
+    
+    if (scriptEntity) {
+        if ([scriptEntity conformsToProtocol:@protocol(JMXRunLoop)])
+            [scriptEntity performSelector:@selector(stop)];
+        scriptEntity = nil;
+    }
+    [self clearPersistentInstances];
 }
 
 - (void)dealloc
@@ -760,23 +805,16 @@ static char *argv[2] = { (char *)"JMX", NULL };
     v8::HandleScope handle_scope;
     v8::Context::Scope context_scope(ctx);
 
-    if (scriptEntity) {
-        if ([scriptEntity conformsToProtocol:@protocol(JMXRunLoop)])
-            [scriptEntity performSelector:@selector(stop)];
-    }
-    [self clearPersistentInstances];
+    // and tell V8 we want to release anything possible (by notifying a low memory condition
+    V8::LowMemoryNotification();
 
     ctx->Global()->Delete(String::New("scriptEntity"));
-    scriptEntity = nil;
     ctx->Global().Clear();
     //contextes.erase(self);
     ctx.Dispose();
     ctx.Clear();
     // notify that we have disposed the context
-    V8::ContextDisposedNotification();
-    // and tell V8 we want to release anything possible (by notifying a low memory condition
-    V8::LowMemoryNotification();
-    
+    V8::ContextDisposedNotification();    
     while( !V8::IdleNotification() )
         ;
     
@@ -859,7 +897,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
     else
         key = obj;
     p = (JMXPersistentInstance *)[[persistentInstances objectForKey:key] pointerValue];
-    NSLog(@"Releasing Persistent Instance: %@ (%lu)", p->obj, (unsigned long)[p->obj retainCount]);
+    NSDebug(@"Releasing Persistent Instance: %@ (%lu)", p->obj, (unsigned long)[p->obj retainCount]);
     if (p) {
         if ([p->obj conformsToProtocol:@protocol(JMXRunLoop)])
             [p->obj performSelector:@selector(stop)];
@@ -932,7 +970,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
     return NO;
 }
 
-#if 0
+#ifdef EXPORT_GRAPH_ENABLED
 - (NSString *)exportGraph:(NSArray *)entities andPins:(NSArray *)pins
 {
     NSString *output = [[[NSString alloc] init] autorelease];

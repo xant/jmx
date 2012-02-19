@@ -102,7 +102,8 @@
     if (_view) {
         [_view setSize:[size nsSize]];
         [_view removeTrackingRect:trackingRect];
-        trackingRect = [_view addTrackingRect:CGRectMake(0, 0, size.width, size.height)
+        NSRect rect = { { 0, 0 }, { size.width, size.height } };
+        trackingRect = [_view addTrackingRect:rect
                                         owner:self
                                      userData:nil
                                  assumeInside:YES];

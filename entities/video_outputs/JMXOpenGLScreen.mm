@@ -438,7 +438,7 @@ static NSMutableDictionary *__openglOutputs = nil;
 #pragma mark -
 #pragma mark JMXScreenControllerDelegate
 
-static void translateScreenCoordinates(CGSize screenSize, CGSize frameSize,
+static void translateScreenCoordinates(NSSize screenSize, NSSize frameSize,
                                        CGFloat screenX, CGFloat screenY,
                                        CGFloat &frameX, CGFloat &frameY)
 {

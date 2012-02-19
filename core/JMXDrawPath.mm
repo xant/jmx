@@ -129,6 +129,9 @@ using namespace v8;
 
 - (void)dealloc
 {
+    if (lastPath)
+        CGPathRelease(lastPath);
+    
     for (int i = 0; i < kJMXDrawPathBufferCount; i++) {
         CGLayerRelease(pathLayers[i]);
     }
@@ -533,7 +536,7 @@ using namespace v8;
     CGContextSaveGState(context);
     CGContextFillRect(context, fullFrame);
     CGContextRestoreGState(context);
-    _didFill = YES;
+    //_didFill = YES;
     //[self render];
     [lock unlock];
 }
@@ -549,7 +552,7 @@ using namespace v8;
     CGContextSaveGState(context);
     CGContextStrokeRect(context, rect);
     CGContextRestoreGState(context);
-    _didStroke = YES;
+    //_didStroke = YES;
     //[self render];
     [lock unlock];
 }
@@ -583,16 +586,36 @@ using namespace v8;
     [lock unlock];
 }
 
+#define JMXDrawPathGetCurrentContext(context) \
+    CGContextRef context = nil;\
+    {\
+    UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;\
+    context = CGLayerGetContext(pathLayers[pathIndex]);\
+    if (CGContextIsPathEmpty(context)) {\
+        if (lastPath)  {\
+            CGContextAddPath(context, lastPath);\
+            CGPathRelease(lastPath);\
+            lastPath = NULL;\
+        }\
+    }\
+}
+
 - (void)lineTo:(JMXPoint *)point
 {
     [lock lock];
-    UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
-    CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
+    JMXDrawPathGetCurrentContext(context);
     //NSLog(@"Line to point: %@", point);
 
     //CGContextSaveGState(context);
     //CGContextSetLineWidth(context, 1);
-    CGContextAddLineToPoint(CGLayerGetContext(pathLayers[pathIndex]), point.x, point.y);
+    if (CGContextIsPathEmpty(context)) {
+        if (lastPath)  {
+            CGContextAddPath(context, lastPath);
+            CGPathRelease(lastPath);
+            lastPath = NULL;
+        }
+    }
+    CGContextAddLineToPoint(context, point.x, point.y);
     //CGContextRestoreGState(context);
 
     [lock unlock];
@@ -601,35 +624,32 @@ using namespace v8;
 - (void)quadraticCurveTo:(JMXPoint *)point controlPoint:(JMXPoint *)controlPoint
 {
     [lock lock];
-    UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
-    CGContextAddQuadCurveToPoint(CGLayerGetContext(pathLayers[pathIndex]), controlPoint.x, controlPoint.y, point.x, point.y);
+    JMXDrawPathGetCurrentContext(context);
+    CGContextAddQuadCurveToPoint(context, controlPoint.x, controlPoint.y, point.x, point.y);
     [lock unlock];
 }
 
 - (void)bezierCurveTo:(JMXPoint *)point controlPoint1:(JMXPoint *)controlPoint1 controlPoint2:(JMXPoint *)controlPoint2
 {
     [lock lock];
-    UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
-    CGContextAddCurveToPoint(CGLayerGetContext(pathLayers[pathIndex]), controlPoint1.x, controlPoint1.y, controlPoint2.x, controlPoint2.y, point.x, point.y);
+    JMXDrawPathGetCurrentContext(context);
+    CGContextAddCurveToPoint(context, controlPoint1.x, controlPoint1.y, controlPoint2.x, controlPoint2.y, point.x, point.y);
     [lock unlock];
 }
 
 - (void)arcTo:(JMXPoint *)point endPoint:(JMXPoint *)endPoint radius:(CGFloat)radius
 {
     [lock lock];
-    UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
-    CGContextAddArcToPoint(CGLayerGetContext(pathLayers[pathIndex]), point.x, point.y, endPoint.x, endPoint.y, radius);
+    JMXDrawPathGetCurrentContext(context);
+    CGContextAddArcToPoint(context, point.x, point.y, endPoint.x, endPoint.y, radius);
     [lock unlock];
 }
 
 - (void)fill
 {
     [lock lock];
-    UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
-    CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
-#if 1
-    CGContextSaveGState(context);
-    CGPathRef path = CGContextCopyPath(context);
+    JMXDrawPathGetCurrentContext(context);
+    lastPath = CGContextCopyPath(context);
     CGContextDrawPath(context, kCGPathFill);
 
     if ([fillStyle isKindOfClass:[JMXCanvasGradient class]]) {
@@ -644,10 +664,6 @@ using namespace v8;
         }
     }
     
-    CGContextAddPath(context, path);
-    CGPathRelease(path);
-    CGContextRestoreGState(context);
-#endif
     _didFill = YES;
     [lock unlock];
     [self render];
@@ -656,10 +672,7 @@ using namespace v8;
 - (void)stroke
 {
     [lock lock];
-    UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
-    CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
-#if 1
-    CGContextSaveGState(context);
+    JMXDrawPathGetCurrentContext(context);    
     if (shadowColor && shadowColor.alphaComponent > 0.0) {
         CGSize shadowSize = CGSizeMake(shadowOffsetX, shadowOffsetY);
         CGFloat components[4];
@@ -670,8 +683,7 @@ using namespace v8;
         CGContextSetShadowWithColor(context, shadowSize, shadowBlur, color);
         CFRelease(color);
     }
-    CGPathRef path = CGContextCopyPath(context);
-
+    lastPath = CGContextCopyPath(context);
     CGContextDrawPath(context, kCGPathStroke);
     
     if ([strokeStyle isKindOfClass:[JMXCanvasGradient class]]) {
@@ -686,10 +698,6 @@ using namespace v8;
         }
     }
     
-    CGContextAddPath(context, path);
-    CGPathRelease(path);
-    CGContextRestoreGState(context);
-#endif
     _didStroke = YES;
     [lock unlock];
     [self render];
@@ -698,16 +706,16 @@ using namespace v8;
 - (void)clip
 {
     [lock lock];
-    UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
-    CGContextClip(CGLayerGetContext(pathLayers[pathIndex]));
+    JMXDrawPathGetCurrentContext(context);
+    CGContextClip(context);
     [lock unlock];
 }
 
 - (bool)isPointInPath:(JMXPoint *)point
 {
     [lock lock];
-    UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
-    return CGContextPathContainsPoint(CGLayerGetContext(pathLayers[pathIndex]),
+    JMXDrawPathGetCurrentContext(context);
+    return CGContextPathContainsPoint(context,
                                       CGPointMake(point.x, point.y),
                                       kCGPathFillStroke);
     [lock unlock];

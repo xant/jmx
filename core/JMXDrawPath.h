@@ -54,6 +54,7 @@
     CGFloat shadowOffsetX;
     CGFloat shadowOffsetY;
     CGFloat shadowBlur;
+    CGPathRef lastPath;
 }
 
 /*!

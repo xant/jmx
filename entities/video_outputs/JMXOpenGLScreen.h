@@ -33,7 +33,6 @@
     CIContext *ciContext;
     BOOL fullScreen;
     NSWindow *myWindow;
-    BOOL needsResize;
     NSRecursiveLock *lock;
     uint64_t lastTime;
     

@@ -148,23 +148,6 @@ static NSMutableDictionary *__openglOutputs = nil;
 
 - (void)drawRect:(NSRect)dirtyRect
 {
-
-    if (needsResize) {
-        NSRect actualRect = [[self window] contentRectForFrameRect:[self frame]];
-        NSRect newRect = NSMakeRect(0, 0, frameSize.width, frameSize.height);
-        //[self setBounds:newRect];
-        newRect.origin.x = actualRect.origin.x;
-        newRect.origin.y = actualRect.origin.y;
-        NSRect frameRect;
-        frameRect = [[self window] frameRectForContentRect:newRect];
-        
-        
-        [[self window] setFrame:frameRect display:NO];
-        [self setFrame:frameRect];
-        [[self window] setMovable:YES]; // XXX - this shouldn't be necessary
-        needsResize = NO;
-    }
-
     CIImage *image = [self.currentFrame retain];
     if (image && ciContext) {
         CGRect sourceRect = { { 0, 0, }, { frameSize.width, frameSize.height } };
@@ -231,9 +214,6 @@ static NSMutableDictionary *__openglOutputs = nil;
     glClearColor(1.0, 1.0, 1.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
     [[self openGLContext] flushBuffer];
-#ifdef NO_CVDISPLAYLINK
-    self.needsRedraw = YES;
-#endif
     //[lock unlock];
     CGLUnlockContext((CGLContextObj)[[self openGLContext] CGLContextObj]);
 }
@@ -282,7 +262,18 @@ static NSMutableDictionary *__openglOutputs = nil;
         if (frameSize)
             [frameSize release];
         frameSize = [[JMXSize sizeWithNSSize:size] retain];
-        needsResize = YES;
+        NSRect actualRect = [[self window] contentRectForFrameRect:[self frame]];
+        NSRect newRect = NSMakeRect(0, 0, frameSize.width, frameSize.height);
+        //[self setBounds:newRect];
+        newRect.origin.x = actualRect.origin.x;
+        newRect.origin.y = actualRect.origin.y;
+        NSRect frameRect;
+        frameRect = [[self window] frameRectForContentRect:newRect];
+        
+        
+        [[self window] setFrame:frameRect display:NO];
+        [self setFrame:frameRect];
+        [[self window] setMovable:YES]; // XXX - this shouldn't be necessary
     }
     //[lock unlock];
 }

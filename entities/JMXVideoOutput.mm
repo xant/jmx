@@ -141,6 +141,7 @@ static v8::Handle<Value>GetHeight(Local<String> name, const AccessorInfo& info)
     objectTemplate->InstanceTemplate()->SetInternalFieldCount(1);
     objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("width"), GetWidth, SetWidth);
     objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("height"), GetHeight, SetHeight);
+    objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("size"), GetSizeProperty, SetSizeProperty);
     NSDebug(@"JMXVideoOutput objectTemplate created");
     return objectTemplate;
 }

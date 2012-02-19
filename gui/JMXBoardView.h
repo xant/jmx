@@ -28,22 +28,18 @@
 #import "JMXEntityInspectorPanel.h"
 #import "JMXBoardSelection.h"
 #import "JMXBoardViewController.h"
-#import "JMXDocument.h"
 
-@class JMXDocument;
 @class JMXPinLayer;
 @class JMXConnectorLayer;
 @class JMXBoardViewController;
 
 @interface JMXBoardView : NSView {
     CGPoint lastDragLocation;
-    JMXDocument *document;
     IBOutlet JMXEntityInspectorPanel *inspectorPanel;
 	JMXBoardViewController *boardViewController;
 }
 
 @property (nonatomic,retain) IBOutlet JMXBoardViewController *boardViewController;
-@property (nonatomic,assign) JMXDocument *document;
 
 #pragma mark -
 #pragma mark Helpers

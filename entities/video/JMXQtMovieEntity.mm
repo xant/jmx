@@ -30,6 +30,7 @@
 #import "JMXQtMovieEntity.h"
 #import "JMXScript.h"
 #import "JMXThreadedEntity.h"
+#import "JMXAttribute.h"
 
 JMXV8_EXPORT_NODE_CLASS(JMXQtMovieEntity);
 
@@ -70,6 +71,7 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
         [self registerInputPin:@"path" withType:kJMXStringPin andSelector:@"setMoviePath:"];
         [self registerInputPin:@"repeat" withType:kJMXBooleanPin andSelector:@"setRepeatPin:"];
         [self registerInputPin:@"paused" withType:kJMXBooleanPin andSelector:@"setPausedPin:"];
+        [self addAttribute:[JMXAttribute attributeWithName:@"url" stringValue:@""]];
         JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
         if (threadedEntity)
             return (JMXQtMovieEntity *)threadedEntity;
@@ -224,8 +226,11 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
             [moviePath release];
         moviePath = [file copy];
         self.active = YES;
+        NSXMLNode *attr = [self attributeForName:@"url"];
+        [attr setStringValue:moviePath];
         return YES;
     }
+    self.active = NO;
     return NO;
 }
 
@@ -380,7 +385,7 @@ using namespace v8;
         v8::Handle<Value> arg = (*args)[0];
         v8::String::Utf8Value value(arg);
         if (*value)
-            [self open:[NSString stringWithUTF8String:*value]];
+            [self setMoviePath:[NSString stringWithUTF8String:*value]];
     }
 }
 
@@ -390,8 +395,8 @@ static v8::Handle<Value>Open(const Arguments& args)
     JMXQtMovieEntity *entity = (JMXQtMovieEntity *)args.Holder()->GetPointerFromInternalField(0);
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
-    BOOL ret = [entity open:[NSString stringWithUTF8String:*value]];
-    return v8::Boolean::New(ret);
+    [entity setMoviePath:[NSString stringWithUTF8String:*value]];
+    return v8::Boolean::New(entity.active);
 }
 
 static v8::Handle<Value>Close(const Arguments& args)

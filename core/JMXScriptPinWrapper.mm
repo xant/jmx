@@ -124,10 +124,7 @@
 
 - (void)receivedSignal:(id)data
 {
-    [self performSelector:@selector(propagateSignal:)
-                 onThread:scriptEntity.executionThread
-               withObject:(id)data
-            waitUntilDone:(BOOL)NO];
+    [self propagateSignal:data];
 }
 
 - (void)connectToPin:(JMXPin *)pin

@@ -31,7 +31,6 @@
 @implementation JMXBoardView
 
 @synthesize boardViewController;
-@synthesize document;
 
 #pragma mark -
 #pragma mark Initialization
@@ -56,6 +55,26 @@
 }
 
 #pragma mark -
+#pragma mark Open file
+
+- (void)openPanelDidEnd:(NSOpenPanel *)panel returnCode:(int)returnCode userInfo:(NSDictionary *)userInfo
+{
+    if (returnCode == NSCancelButton)
+        return;
+    
+    NSString *filename = [[panel URL] path];
+    
+    if (filename) {
+        JMXEntity *anEntity = [[[userInfo objectForKey:@"class"] alloc] init];
+        [(id<JMXFileRead>)anEntity open:filename];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasCreated"
+                                                            object:anEntity
+                                                          userInfo:userInfo];
+        [anEntity release];
+    }
+}
+
+#pragma mark -
 #pragma mark Dragging operations
 
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender
@@ -66,6 +85,29 @@
 - (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender
 {
     return YES; //[NSURL URLFromPasteboard: [sender draggingPasteboard]];
+}
+
+- (void)createEntityWithClass:(Class)aClass atPoint:(NSPoint)aPoint
+{
+    NSMutableDictionary *userInfo = [[[NSMutableDictionary alloc] init] autorelease];
+    [userInfo setObject:[NSValue valueWithPoint:aPoint] forKey:@"origin"];
+    
+    if ([aClass conformsToProtocol:@protocol(JMXFileRead)]) {
+        [userInfo setObject:aClass forKey:@"class"];
+        
+        NSOpenPanel *panel = [NSOpenPanel openPanel];
+        panel.allowedFileTypes = [aClass performSelector:@selector(supportedFileTypes)];
+        [panel beginSheetModalForWindow:[self window]
+                      completionHandler:^(NSInteger returnCode) {
+                          [self openPanelDidEnd:panel returnCode:returnCode userInfo:userInfo];
+                      }];
+    }
+    else {
+        JMXEntity *anEntity = [[[aClass alloc] init] autorelease];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasCreated"
+                                                            object:anEntity
+                                                          userInfo:userInfo];
+    }
 }
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
@@ -92,7 +134,6 @@
             }
             /*if ([entity conformsToProtocol:@protocol(JMXRunLoop)])
                 [entity performSelector:@selector(start)];*/
-            [document.entities addObject:entity];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasCreated" object:entity];
 
             [entity release];
@@ -103,7 +144,6 @@
             }
             /*if ([entity conformsToProtocol:@protocol(JMXRunLoop)])
                 [entity performSelector:@selector(start)];*/
-            [document.entities addObject:entity];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasCreated" object:entity];
             [entity release];
         } else if ([[components lastObject] isEqualToString:@"js"]) {
@@ -113,7 +153,6 @@
             }
             /*if ([entity conformsToProtocol:@protocol(JMXRunLoop)])
              [entity performSelector:@selector(start)];*/
-            [document.entities addObject:entity];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"JMXBoardEntityWasCreated" object:entity];
             [entity release];
         } // TODO - generalize
@@ -122,7 +161,7 @@
 		NSPasteboard *pboard = [sender draggingPasteboard];
 		NSData *data = [pboard dataForType:@"JMXLibraryTableViewDataType"];
 		NSString *className = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-        [document createEntityWithClass:NSClassFromString(className) atPoint:[sender draggingLocation]];
+        [self createEntityWithClass:NSClassFromString(className) atPoint:[sender draggingLocation]];
 	}
 
     return YES;

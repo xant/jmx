@@ -24,21 +24,19 @@
 #import <Cocoa/Cocoa.h>
 
 #ifndef __JMXAppDelegate_H__
-#define __JMXAppDelgate_H__
+#define __JMXAppDelegate_H__
 
-#if MAC_OS_X_VERSION_10_6
+@class JMXLibraryTableView;
+
 @interface JMXAppDelegate : NSObject <NSApplicationDelegate> {
-#else
-@interface JMXAppDelegate : NSObject {
-#endif
     NSWindow *window;
-    NSTableView *layersTableView;
     BOOL batchMode;
     NSTextView *consoleView;
+    JMXLibraryTableView *libraryTableView;
 }
 
 @property (assign) IBOutlet NSWindow *window;
-@property (assign) IBOutlet NSTableView *layersTableView;
+@property (assign) IBOutlet JMXLibraryTableView *libraryTableView;
 @property (readonly) BOOL batchMode;
 @property (assign) NSTextView *consoleView;
 

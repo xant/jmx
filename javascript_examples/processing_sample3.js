@@ -13,9 +13,10 @@ drawer.outputPin('frame').export();
 drawer.outputPin('frameSize').export();
 drawer.inputPin('saturation').export();
 
-audio = new AudioCapture;
+audio = new AudioCapture();
+echo(audio);
 
-spectrum = new AudioSpectrum;
+spectrum = new AudioSpectrum();
 audio.outputPin('audio').connect(spectrum.inputPin('audio'));
 
 output = new VideoOutput(width, height);
@@ -59,13 +60,14 @@ function sketchProc(processing) {
 
 //var canvas = $('canvas:first', drawer).get(0);
 // attaching the sketchProc function to the canvas
-var processingInstance = new Processing(drawer.canvas, sketchProc);
 
 old250 = 0;
 pin = filter.inputPin('inputAmount');
 pin.data = 0;
-spectrum.outputPin('250Hz').connect(function(f) {
-    diff = f - old250;
+echo(spectrum.outputPin('250Hz'));
+//echo(spectrum.output.250Hz);
+spectrum.outputPin('250Hz').connect(function(v) {
+    diff = v - old250;
     if (diff > 0.5)
         radius += 10;
     if (diff < 0)
@@ -75,7 +77,8 @@ spectrum.outputPin('250Hz').connect(function(f) {
         radius = 15;
     if (radius > 400)
         radius = 400;
-    old250 = f;
-    drawer.saturation = f;
-    pin.data = f;
+    old250 = v;
+    drawer.saturation = v;
+    pin.data = v;
 });
+var processingInstance = new Processing(drawer.canvas, sketchProc);

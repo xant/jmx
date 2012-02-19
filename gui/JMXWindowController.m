@@ -15,8 +15,9 @@
 
 @synthesize documentSplitView;
 @synthesize boardViewController;
+@synthesize libraryView;
 
-#pragma mark-
+#pragma mark -
 #pragma Console Output Grabber
 // bridge stdout and stderr with the NSTextView outlet (if any)
 - (void)updateOutput:(NSString*)msg
@@ -109,6 +110,7 @@
          */
         JMXAppDelegate *appDelegate = [[NSApplication sharedApplication] delegate];
         appDelegate.consoleView = outputPanel;
+        [self.window becomeMainWindow];
     }
 }
 
@@ -164,10 +166,7 @@
 		[boardViewController release];
 	
 	boardViewController = [vc retain];
-	
-	if (boardViewController) {
-		[(JMXBoardViewController *)boardViewController setDocument:[self document]];
-	}	
+
 }
 
 

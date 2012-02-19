@@ -39,10 +39,11 @@
 #import "JMXScriptLive.h"
 #import "JMXPhidgetEncoderEntity.h"
 #import "JMXGlobals.h"
+#import "JMXLibraryTableView.h"
 
 @implementation JMXAppDelegate
 
-@synthesize window, layersTableView, batchMode, consoleView;
+@synthesize window, batchMode, consoleView, libraryTableView;
 
 - (void)applicationWillFinishLaunching:(NSNotification *)notification {
 	JMXContext *sharedContext = [JMXContext sharedContext];
@@ -67,11 +68,13 @@
         [sharedContext registerClass:[JMXPhidgetEncoderEntity class]];
     }
 	INFO("Registered %ul entities", (unsigned int)[[sharedContext registeredClasses] count]);
+    [libraryTableView reloadData];
+    
 }
 
 - (void)awakeFromNib
 {
-    [layersTableView registerForDraggedTypes:[NSArray arrayWithObject:@"LayerTableViewDataType"]];
+    [super awakeFromNib];
 }
 
 

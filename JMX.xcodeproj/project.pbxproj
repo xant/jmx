@@ -17,7 +17,6 @@
 		825C30DD1275AD32006376B8 /* JMXBoardSelection.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30CB1275AD32006376B8 /* JMXBoardSelection.m */; };
 		825C30DE1275AD32006376B8 /* JMXBoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30CD1275AD32006376B8 /* JMXBoardView.m */; };
 		825C30DF1275AD32006376B8 /* JMXConnectorLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30CF1275AD32006376B8 /* JMXConnectorLayer.m */; };
-		825C30E01275AD32006376B8 /* JMXDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30D11275AD32006376B8 /* JMXDocument.m */; };
 		825C30E21275AD32006376B8 /* JMXEntityInspectorPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30D51275AD32006376B8 /* JMXEntityInspectorPanel.m */; };
 		825C30E31275AD32006376B8 /* JMXEntityLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30D71275AD32006376B8 /* JMXEntityLayer.m */; };
 		825C30E41275AD32006376B8 /* JMXOutletLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30D91275AD32006376B8 /* JMXOutletLayer.m */; };
@@ -62,7 +61,6 @@
 		82A2206D129091910002738B /* JMXBoardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A2206C129091910002738B /* JMXBoardViewController.m */; };
 		82A220CA129098A60002738B /* JMXWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A220C9129098A60002738B /* JMXWindowController.m */; };
 		82AD7F701289F3C300C85EB1 /* JMXOpenGLDraw.mm in Sources */ = {isa = PBXBuildFile; fileRef = 82AD7F6F1289F3C300C85EB1 /* JMXOpenGLDraw.mm */; };
-		82EA042F1240BE4A00E28B72 /* JMXWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 82EA042E1240BE4A00E28B72 /* JMXWindow.xib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -305,8 +303,6 @@
 		825C30CD1275AD32006376B8 /* JMXBoardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXBoardView.m; sourceTree = "<group>"; };
 		825C30CE1275AD32006376B8 /* JMXConnectorLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXConnectorLayer.h; sourceTree = "<group>"; };
 		825C30CF1275AD32006376B8 /* JMXConnectorLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXConnectorLayer.m; sourceTree = "<group>"; };
-		825C30D01275AD32006376B8 /* JMXDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXDocument.h; sourceTree = "<group>"; };
-		825C30D11275AD32006376B8 /* JMXDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXDocument.m; sourceTree = "<group>"; };
 		825C30D41275AD32006376B8 /* JMXEntityInspectorPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXEntityInspectorPanel.h; sourceTree = "<group>"; };
 		825C30D51275AD32006376B8 /* JMXEntityInspectorPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXEntityInspectorPanel.m; sourceTree = "<group>"; };
 		825C30D61275AD32006376B8 /* JMXEntityLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXEntityLayer.h; sourceTree = "<group>"; };
@@ -400,7 +396,6 @@
 		82A220C9129098A60002738B /* JMXWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXWindowController.m; sourceTree = "<group>"; };
 		82AD7F6E1289F3C300C85EB1 /* JMXOpenGLDraw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXOpenGLDraw.h; sourceTree = "<group>"; };
 		82AD7F6F1289F3C300C85EB1 /* JMXOpenGLDraw.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXOpenGLDraw.mm; sourceTree = "<group>"; };
-		82EA042E1240BE4A00E28B72 /* JMXWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = JMXWindow.xib; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* JMX-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "JMX-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* JMX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JMX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA004D8014E7148600009CF9 /* JMXPhidgetEncoderEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXPhidgetEncoderEntity.h; sourceTree = "<group>"; };
@@ -795,7 +790,6 @@
 		29B97314FDCFA39411CA2CEA /* MoviePlayerD */ = {
 			isa = PBXGroup;
 			children = (
-				AA004D8314E714B200009CF9 /* Phidget21.framework */,
 				AAB50B6514DDA472002F385C /* JMX.entitlements */,
 				080E96DDFE201D6D7F000001 /* Sources */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -826,7 +820,6 @@
 				8D1107310486CEB800E47090 /* JMX-Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				1DDD58140DA1D0A300B32029 /* MainMenu.xib */,
-				82EA042E1240BE4A00E28B72 /* JMXWindow.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -834,6 +827,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AA004D8314E714B200009CF9 /* Phidget21.framework */,
 				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
 				13E42FB307B3F0F600E4EEF1 /* CoreData.framework */,
 				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
@@ -892,8 +886,6 @@
 				AA8F817512CB236700EA8543 /* JMXTextPanel.m */,
 				AA08D33914B5AA4400D19015 /* JMXCodePanel.h */,
 				AA08D33A14B5AA4400D19015 /* JMXCodePanel.m */,
-				825C30D01275AD32006376B8 /* JMXDocument.h */,
-				825C30D11275AD32006376B8 /* JMXDocument.m */,
 			);
 			name = GUI;
 			path = gui;
@@ -1583,7 +1575,6 @@
 				AA55601412AEF7CC00C882FF /* CIAlphaFade.cikernel in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
-				82EA042F1240BE4A00E28B72 /* JMXWindow.xib in Resources */,
 				AA54B28B12A1215000EC60B2 /* jmx-icon.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1633,7 +1624,6 @@
 				825C30DD1275AD32006376B8 /* JMXBoardSelection.m in Sources */,
 				825C30DE1275AD32006376B8 /* JMXBoardView.m in Sources */,
 				825C30DF1275AD32006376B8 /* JMXConnectorLayer.m in Sources */,
-				825C30E01275AD32006376B8 /* JMXDocument.m in Sources */,
 				825C30E21275AD32006376B8 /* JMXEntityInspectorPanel.m in Sources */,
 				825C30E31275AD32006376B8 /* JMXEntityLayer.m in Sources */,
 				825C30E41275AD32006376B8 /* JMXOutletLayer.m in Sources */,

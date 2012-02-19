@@ -21,7 +21,8 @@
 }
 
 @property (nonatomic, assign) IBOutlet NSSplitView *documentSplitView;
-@property (nonatomic, retain) IBOutlet NSViewController *boardViewController;
+@property (nonatomic, assign) IBOutlet NSViewController *boardViewController;
+@property (nonatomic, assign) IBOutlet NSView *libraryView;
 
 #pragma mark -
 #pragma mark Interface Builder actions

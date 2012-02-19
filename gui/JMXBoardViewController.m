@@ -29,7 +29,6 @@
 
 @implementation JMXBoardViewController
 
-@synthesize document;
 @synthesize selectedLayer;
 @synthesize selectedConnectorLayer;
 @synthesize entities;
@@ -90,7 +89,6 @@
 {
     [super setView:aView];
     if (aView) {
-        [(JMXBoardView *)aView setDocument:[self document]];
         [aView setNextResponder:self];
     }
 

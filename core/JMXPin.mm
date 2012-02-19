@@ -705,9 +705,15 @@ static v8::Handle<Value>connect(const Arguments& args)
     if (args[0]->IsFunction()) {
         v8::Local<Context> globalContext = v8::Context::GetCalling();
         JMXScript *ctx = [JMXScript getContext];
-        JMXScriptPinWrapper *wrapper = [ctx.scriptEntity wrapPin:pin withFunction:Persistent<Function>::New(Handle<Function>::Cast(args[0]))];
-        [pool release];
-        return  handleScope.Close([wrapper jsObj]);
+        JMXScriptPinWrapper *wrapper = nil;
+        {
+            v8::Unlocker unlocker;
+            wrapper = [ctx.scriptEntity wrapPin:pin
+                                                        withFunction:Persistent<Function>::New(Handle<Function>::Cast(args[0]))];
+            [pool release];
+        }
+        if (wrapper)
+            return  handleScope.Close([wrapper jsObj]);
     } else if (args[0]->IsObject()) {
         String::Utf8Value str(args[0]->ToString());
         if (strcmp(*str, "[object Pin]") == 0) {

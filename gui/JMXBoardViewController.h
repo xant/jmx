@@ -7,7 +7,6 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "JMXDocument.h"
 #import "JMXConnectorLayer.h"
 #import "JMXPinLayer.h"
 
@@ -17,7 +16,6 @@
 @class JMXEntitiesController;
 
 @interface JMXBoardViewController : NSViewController {
-	JMXDocument *document;
     JMXEntityLayer *selectedLayer;
 	JMXConnectorLayer *selectedConnectorLayer;
 	JMXConnectorLayer *fakeConnectorLayer;
@@ -28,7 +26,6 @@
     NSPoint lastDragLocation;
 }
 
-@property (nonatomic, assign) JMXDocument *document;
 @property (nonatomic, assign) JMXEntityLayer *selectedLayer;
 @property (nonatomic, assign) JMXConnectorLayer *selectedConnectorLayer;
 @property (nonatomic, retain) NSMutableArray *entities;

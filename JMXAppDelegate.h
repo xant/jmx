@@ -38,7 +38,7 @@
 @property (assign) IBOutlet NSWindow *window;
 @property (assign) IBOutlet JMXLibraryTableView *libraryTableView;
 @property (readonly) BOOL batchMode;
-@property (assign) NSTextView *consoleView;
+@property (assign) IBOutlet NSTextView *consoleView;
 
 - (void)logMessage:(NSString *)message, ...;
 

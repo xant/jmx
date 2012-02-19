@@ -108,8 +108,6 @@
         [NSThread detachNewThreadSelector:@selector(consoleOutput:) 
                                  toTarget:self withObject:nil];
          */
-        JMXAppDelegate *appDelegate = [[NSApplication sharedApplication] delegate];
-        appDelegate.consoleView = outputPanel;
         [self.window becomeMainWindow];
     }
 }
@@ -178,5 +176,12 @@
 {
     [((JMXBoardViewController *)boardViewController).entitiesController unselectAll];
     [super mouseDragged:theEvent];
+}
+
+- (void)dealloc
+{
+    [inspectorPanel release];
+    [outputPanel release];
+    [super dealloc];
 }
 @end

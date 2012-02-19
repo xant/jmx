@@ -155,14 +155,14 @@ using namespace v8;
     [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
-    //CGContextSaveGState(context);
+    CGContextSaveGState(context);
 
     /*  if (!CGContextIsPathEmpty(context)) {
      CGContextAddLineToPoint(context, origin.x, origin.y); // calculate start point properly
      }*/
     CGContextAddArc(context, origin.x, origin.y, radius, startAngle, endAngle, antiClockwise);
     //CGContextDrawPath(context, kCGPathFillStroke);
-    //CGContextRestoreGState(context);
+    CGContextRestoreGState(context);
     [lock unlock];
     //[self render];
 }
@@ -533,6 +533,11 @@ using namespace v8;
     [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
+    if (!CGContextIsPathEmpty(context)) {
+        if (lastPath)
+            CFRelease(lastPath);
+        lastPath = CGContextCopyPath(context);
+    }
     CGContextSaveGState(context);
     CGContextFillRect(context, fullFrame);
     CGContextRestoreGState(context);
@@ -546,7 +551,11 @@ using namespace v8;
     [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
-
+    if (!CGContextIsPathEmpty(context)) {
+        if (lastPath)
+            CFRelease(lastPath);
+        lastPath = CGContextCopyPath(context);
+    }
     CGRect rect = CGRectMake(origin.nsPoint.x, origin.nsPoint.y,
                                   size.nsSize.width, size.nsSize.height);
     CGContextSaveGState(context);
@@ -556,6 +565,20 @@ using namespace v8;
     //[self render];
     [lock unlock];
 }
+
+#define JMXDrawPathGetCurrentContext(context) \
+    CGContextRef context = nil;\
+    {\
+        UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;\
+        context = CGLayerGetContext(pathLayers[pathIndex]);\
+        if (CGContextIsPathEmpty(context)) {\
+            if (lastPath)  {\
+                CGContextAddPath(context, lastPath);\
+                CGPathRelease(lastPath);\
+                lastPath = NULL;\
+            }\
+        }\
+    }
 
 - (void)beginPath
 {
@@ -570,8 +593,8 @@ using namespace v8;
 - (void)closePath
 {
     [lock lock];
-    UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
-    CGContextClosePath(CGLayerGetContext(pathLayers[pathIndex]));
+    JMXDrawPathGetCurrentContext(context);
+    CGContextClosePath(context);
     //CGContextRestoreGState(CGLayerGetContext(pathLayers[pathIndex]));
     subPaths--;
     [lock unlock];
@@ -581,43 +604,17 @@ using namespace v8;
 {
     [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
+    CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
     //NSLog(@"Moving to point: %@", point);
-    CGContextMoveToPoint(CGLayerGetContext(pathLayers[pathIndex]), point.x, point.y);
+    CGContextMoveToPoint(context, point.x, point.y);
     [lock unlock];
-}
-
-#define JMXDrawPathGetCurrentContext(context) \
-    CGContextRef context = nil;\
-    {\
-    UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;\
-    context = CGLayerGetContext(pathLayers[pathIndex]);\
-    if (CGContextIsPathEmpty(context)) {\
-        if (lastPath)  {\
-            CGContextAddPath(context, lastPath);\
-            CGPathRelease(lastPath);\
-            lastPath = NULL;\
-        }\
-    }\
 }
 
 - (void)lineTo:(JMXPoint *)point
 {
     [lock lock];
     JMXDrawPathGetCurrentContext(context);
-    //NSLog(@"Line to point: %@", point);
-
-    //CGContextSaveGState(context);
-    //CGContextSetLineWidth(context, 1);
-    if (CGContextIsPathEmpty(context)) {
-        if (lastPath)  {
-            CGContextAddPath(context, lastPath);
-            CGPathRelease(lastPath);
-            lastPath = NULL;
-        }
-    }
     CGContextAddLineToPoint(context, point.x, point.y);
-    //CGContextRestoreGState(context);
-
     [lock unlock];
 }
 

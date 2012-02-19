@@ -677,6 +677,14 @@ using namespace v8;
     }
 }
 
+- (BOOL)isEqual:(id)object
+{
+    if ([object isProxy]) {
+        return [super isEqual:[object realEntity]];
+    }
+    return [super isEqual:object];
+}
+
 #pragma mark <JMXPinOwner>
 
 - (id)provideDataToPin:(JMXPin *)aPin

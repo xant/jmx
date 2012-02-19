@@ -308,6 +308,13 @@
     return [realEntity methodSignatureForSelector:aSelector];
 }
 
+- (BOOL)isEqual:(id)object
+{
+    if ([object isProxy] && [object isKindOfClass:[JMXEntity class]]) {
+        return [realEntity isEqual:[object realEntity]];
+    }
+    return [realEntity isEqual:object];
+}
 @end
 
 #pragma mark JMXEntity (Threaded)

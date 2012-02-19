@@ -262,18 +262,16 @@ static NSMutableDictionary *__openglOutputs = nil;
         if (frameSize)
             [frameSize release];
         frameSize = [[JMXSize sizeWithNSSize:size] retain];
-        NSRect actualRect = [[self window] contentRectForFrameRect:[self frame]];
-        NSRect newRect = NSMakeRect(0, 0, frameSize.width, frameSize.height);
-        //[self setBounds:newRect];
-        newRect.origin.x = actualRect.origin.x;
-        newRect.origin.y = actualRect.origin.y;
+        NSRect newRect = NSMakeRect(actualRect.origin.x, actualRect.origin.y,
+                                    frameSize.width, frameSize.height);
         NSRect frameRect;
-        frameRect = [[self window] frameRectForContentRect:newRect];
-        
-        
-        [[self window] setFrame:frameRect display:NO];
-        [self setFrame:frameRect];
-        [[self window] setMovable:YES]; // XXX - this shouldn't be necessary
+        NSWindow *window = self.window;
+        if (window) {
+            frameRect = [window frameRectForContentRect:newRect];
+            [window setFrame:frameRect display:NO];
+            [self setFrame:frameRect];
+            [window setMovable:YES]; // XXX - this shouldn't be necessary
+        }
     }
     //[lock unlock];
 }
@@ -366,6 +364,16 @@ static NSMutableDictionary *__openglOutputs = nil;
         [window setReleasedWhenClosed:NO];
         [window setIsVisible:YES];
         [[window contentView] addSubview:view];
+        
+        NSRect actualRect = [window contentRectForFrameRect:frame];
+        NSRect newRect = NSMakeRect(actualRect.origin.x, actualRect.origin.y,
+                                    size.width, size.height);
+        
+        NSRect frameRect = [window frameRectForContentRect:newRect];
+        [window setFrame:frameRect display:NO];
+        [view setFrame:frameRect];
+        [window setMovable:YES]; // XXX - this shouldn't be necessary
+        
         mousePositionPin = [self registerOutputPin:@"mousePosition" withType:kJMXPointPin];
         controller = [[JMXScreenController alloc] initWithView:view delegate:self];
         self.label = @"OpenGLScreen";

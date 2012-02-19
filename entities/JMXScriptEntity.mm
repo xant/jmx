@@ -229,6 +229,27 @@ using namespace v8;
 
 static Persistent<FunctionTemplate> objectTemplate;
 
+static v8::Handle<Value>GetEntities(Local<String> name, const AccessorInfo& info)
+{
+    //v8::Locker lock;
+    HandleScope handleScope;
+    JMXScriptEntity *entity = (JMXScriptEntity *)info.Holder()->GetPointerFromInternalField(0);
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSArray *entities = [entity elementsForName:@"Entities"];
+    v8::Handle<Array> list = Array::New(entities.count);
+    if (entities.count) {
+        JMXElement *holder = [entities objectAtIndex:0];
+        int cnt = 0;
+        for (NSXMLNode *node in [holder children]) {
+            if ([node isKindOfClass:[JMXEntity class]]) {
+                list->Set(cnt++, [(JMXEntity *)node jsObj]);
+            }
+        }
+    }
+    [pool release];
+    return handleScope.Close(list);
+}
+
 + (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate
 {
     if (!objectTemplate.IsEmpty())
@@ -240,6 +261,7 @@ static Persistent<FunctionTemplate> objectTemplate;
     v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
     instanceTemplate->SetAccessor(String::NewSymbol("frequency"), GetNumberProperty, SetNumberProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("entities"), GetEntities);
     instanceTemplate->SetInternalFieldCount(1);
     return objectTemplate;
 }

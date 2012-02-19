@@ -633,6 +633,15 @@ static v8::Handle<Value> DispatchEvent(const Arguments& args)
     return handleScope.Close(v8::Boolean::New(ret)); // XXX
 }
 
+- (void)jsInit:(NSValue *)argsValue
+{
+    v8::Arguments *args = (v8::Arguments *)[argsValue pointerValue];
+    if (args->Length() >= 1) {
+        v8::String::Utf8Value name((*args)[0]->ToString());
+        self.name = [NSString stringWithUTF8String:*name];
+    }
+}
+
 + (v8::Persistent<FunctionTemplate>)jsObjectTemplate
 {
     if (!objectTemplate.IsEmpty())
@@ -656,17 +665,16 @@ static v8::Handle<Value> DispatchEvent(const Arguments& args)
     classProto->Set("getUserData", FunctionTemplate::New(GetUserData));
     classProto->Set("getFeature", FunctionTemplate::New(GetFeature));
     classProto->Set("lookupPrefix", FunctionTemplate::New(LookupPrefix));
-    classProto->Set("isDefaultNamespace", FunctionTemplate::New(IsDefaultNamespace));
-    classProto->Set("lookupNamespaceURI", FunctionTemplate::New(LookupNamespaceURI));
-    classProto->Set("compareDocumentPosition", FunctionTemplate::New(CompareDocumentPosition));
     classProto->Set("getElementsByTagName", FunctionTemplate::New(GetElementsByTagName));
     classProto->Set("getAttribute", FunctionTemplate::New(GetAttribute));
-    classProto->Set("setAttribute", FunctionTemplate::New(SetAttribute));
     classProto->Set("setAttribute", FunctionTemplate::New(SetAttribute));
     classProto->Set("addEventListener", FunctionTemplate::New(AddEventListener));
     classProto->Set("removeEventListener", FunctionTemplate::New(RemoveEventListener));
     classProto->Set("dispatchEvent", FunctionTemplate::New(DispatchEvent));
-
+    classProto->Set("isDefaultNamespace", FunctionTemplate::New(IsDefaultNamespace));
+    classProto->Set("lookupNamespaceURI", FunctionTemplate::New(LookupNamespaceURI));
+    classProto->Set("compareDocumentPosition", FunctionTemplate::New(CompareDocumentPosition));
+    
     v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
     instanceTemplate->SetInternalFieldCount(1);
     

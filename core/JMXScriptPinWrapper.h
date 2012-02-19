@@ -48,5 +48,6 @@ using namespace v8;
 - (void)connectToPin:(JMXPin *)pin;
 
 - (void)disconnect;
+- (void)disconnectAllPins;
 
 @end

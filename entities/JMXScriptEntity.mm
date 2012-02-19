@@ -50,8 +50,6 @@ using namespace v8;
 {
     [self resetContext];
     [executionThread release];
-    for (JMXScriptPinWrapper *wrapper in pinWrappers)
-        [wrapper disconnect];
     [pinWrappers release];
     [super dealloc];
 }
@@ -70,6 +68,10 @@ using namespace v8;
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
+    for (JMXScriptPinWrapper *wrapper in pinWrappers)
+        [wrapper disconnect];
+    [pinWrappers removeAllObjects];
+    
     if (jsContext) {
         [jsContext stop];
         [jsContext release];

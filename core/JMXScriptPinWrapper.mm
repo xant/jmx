@@ -89,37 +89,38 @@
     */
     Locker locker;
     HandleScope handleScope;
-    v8::Context::Scope context_scope(scriptEntity.jsContext.ctx);
-
-    Handle<Value> args[1];
-    switch (virtualPin.type) {
-        case kJMXStringPin:
-        case kJMXTextPin:
-        case kJMXCodePin:
-            args[0] = v8::String::New([(NSString *)data UTF8String]);
-            break;
-        case kJMXNumberPin:
-            args[0] = v8::Number::New([(NSNumber *)data doubleValue]);
-            break;
-        case kJMXImagePin:
-            args[0] = [[JMXImageData imageDataWithImage:(CIImage *)data rect:[(CIImage *)data extent]] jsObj];
-            break;
-        case kJMXColorPin:
-            args[0] = [(NSColor *)data jsObj];
-            break;
-        case kJMXSizePin:
-            args[0] = [(JMXSize *)data jsObj];
-            break;
-        case kJMXPointPin:
-            args[0] = [(JMXPoint *)data jsObj];
-            break;
-        default:
-            break;
+    if (scriptEntity && scriptEntity.jsContext) {
+        v8::Context::Scope context_scope(scriptEntity.jsContext.ctx);
+        Handle<Value> args[1];
+        switch (virtualPin.type) {
+            case kJMXStringPin:
+            case kJMXTextPin:
+            case kJMXCodePin:
+                args[0] = v8::String::New([(NSString *)data UTF8String]);
+                break;
+            case kJMXNumberPin:
+                args[0] = v8::Number::New([(NSNumber *)data doubleValue]);
+                break;
+            case kJMXImagePin:
+                args[0] = [[JMXImageData imageDataWithImage:(CIImage *)data rect:[(CIImage *)data extent]] jsObj];
+                break;
+            case kJMXColorPin:
+                args[0] = [(NSColor *)data jsObj];
+                break;
+            case kJMXSizePin:
+                args[0] = [(JMXSize *)data jsObj];
+                break;
+            case kJMXPointPin:
+                args[0] = [(JMXPoint *)data jsObj];
+                break;
+            default:
+                break;
+        }
+        if (!function.IsEmpty() && !function->IsNull())
+            [scriptEntity.jsContext execFunction:function withArguments:args count:1];
+        else if (statements)
+            [scriptEntity.jsContext execCode:statements];
     }
-    if (!function.IsEmpty() && !function->IsNull())
-        [scriptEntity.jsContext execFunction:function withArguments:args count:1];
-    else if (statements)
-        [scriptEntity.jsContext execCode:statements];
 }
 
 - (void)receivedSignal:(id)data
@@ -151,6 +152,11 @@
 
 
 - (void)disconnect
+{
+    [virtualPin disconnectAllPins];
+}
+
+- (void)disconnectAllPins
 {
     [virtualPin disconnectAllPins];
 }

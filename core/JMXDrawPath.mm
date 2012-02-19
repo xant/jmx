@@ -530,9 +530,9 @@ using namespace v8;
     [lock lock];
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
-
+    CGContextSaveGState(context);
     CGContextFillRect(context, fullFrame);
-
+    CGContextRestoreGState(context);
     _didFill = YES;
     //[self render];
     [lock unlock];
@@ -546,7 +546,10 @@ using namespace v8;
 
     CGRect rect = CGRectMake(origin.nsPoint.x, origin.nsPoint.y,
                                   size.nsSize.width, size.nsSize.height);
-    CGContextAddRect(context, rect);
+    CGContextSaveGState(context);
+    CGContextStrokeRect(context, rect);
+    CGContextRestoreGState(context);
+    _didStroke = YES;
     //[self render];
     [lock unlock];
 }

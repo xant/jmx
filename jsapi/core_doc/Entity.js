@@ -36,7 +36,7 @@ function Entity()
      * List containing names of all registered input pins
      * @type array
      */
-    this.outputPins = Array();
+    this.inputPins = Array();
     /**
      * List containing names of all registered output pins
      * @type array
@@ -48,6 +48,18 @@ function Entity()
      */
     this.active = false;
     
+    /**
+     * Container object for all input pins where named keys are the pin labels and values are the pin objects
+     * @type Object
+     */
+    this.input = Object();
+
+    /**
+     * Container object for all output pins where named keys are the pin labels and values are the pin objects
+     * @type Object
+     */
+    this.output = Object();
+
     /**
      * Get the input Pin object registered with the provided name
      * @param {String} pinName the name of the input pin
@@ -63,5 +75,6 @@ function Entity()
     this.outputPin = function(pinName) {
         // ...
     }
+
 }
 

@@ -50,11 +50,26 @@ function Pin()
     this.connected = false;
 
     /**
-     * Connect this pin the destination pin
-     * @param {Pin} pin The pin we want to connect to
+     * Connect this pin to a destination pin or function
+     * @param {Pin|Function} destination Pin Object or a Function reference to try connecting to this pin
      */
-    this.connect = function(pin) {
+    this.connect = function(destination) {
         // ...
+    }
+
+    /**
+     * Disconnect this pin to a destination pin
+     * @param {Pin} destination Pin Object to disconnect from (if connected)
+     */
+    this.disconnect = function(destination) {
+        // ...
+    }
+
+    /**
+     * Disconnect all connected pins
+     */
+    this.disconnectAll = function() {
+        //...
     }
 
     /**

@@ -62,3 +62,4 @@ function Global() {
 
     this.addRunLoop = function(callback) {
     }
+}

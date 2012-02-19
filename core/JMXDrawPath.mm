@@ -625,9 +625,9 @@ using namespace v8;
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
 #if 1
-    //CGContextSaveGState(context);
+    CGContextSaveGState(context);
     CGPathRef path = CGContextCopyPath(context);
-    CGContextDrawPath(context, _didStroke ? kCGPathFillStroke : kCGPathFill);
+    CGContextDrawPath(context, kCGPathFill);
 
     if ([fillStyle isKindOfClass:[JMXCanvasGradient class]]) {
         JMXCanvasGradient *gradient = (JMXCanvasGradient *)fillStyle;
@@ -643,7 +643,7 @@ using namespace v8;
     
     CGContextAddPath(context, path);
     CGPathRelease(path);
-    //CGContextRestoreGState(context);
+    CGContextRestoreGState(context);
 #endif
     _didFill = YES;
     [lock unlock];
@@ -656,8 +656,7 @@ using namespace v8;
     UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
     CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
 #if 1
-    //CGContextSaveGState(context);
-    CGPathRef path = CGContextCopyPath(context);
+    CGContextSaveGState(context);
     if (shadowColor && shadowColor.alphaComponent > 0.0) {
         CGSize shadowSize = CGSizeMake(shadowOffsetX, shadowOffsetY);
         CGFloat components[4];
@@ -668,7 +667,9 @@ using namespace v8;
         CGContextSetShadowWithColor(context, shadowSize, shadowBlur, color);
         CFRelease(color);
     }
-    CGContextDrawPath(context, _didFill ? kCGPathFillStroke : kCGPathStroke);
+    CGPathRef path = CGContextCopyPath(context);
+
+    CGContextDrawPath(context, kCGPathStroke);
     
     if ([strokeStyle isKindOfClass:[JMXCanvasGradient class]]) {
         JMXCanvasGradient *gradient = (JMXCanvasGradient *)strokeStyle;
@@ -684,7 +685,7 @@ using namespace v8;
     
     CGContextAddPath(context, path);
     CGPathRelease(path);
-    //CGContextRestoreGState(context);
+    CGContextRestoreGState(context);
 #endif
     _didStroke = YES;
     [lock unlock];

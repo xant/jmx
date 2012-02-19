@@ -1,5 +1,5 @@
-output = new VideoOutput();
-var drawer = new DrawPath();
+output = new VideoOutput(800, 450);
+var drawer = new DrawPath(800, 450);
 
 drawer.outputPin('frame').connect(output.inputPin('frame'));
 var canvas = drawer.canvas;

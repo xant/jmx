@@ -60,7 +60,6 @@
         timer = nil;
         // TODO - explain why we need to release the hooked entity here
         realEntity = [[entity retain] autorelease];
-        [realEntity addPrivateData:self forKey:@"threadedEntity"];
         NSBlockOperation *registerObservers = [NSBlockOperation blockOperationWithBlock:^{
             [[NSNotificationCenter defaultCenter] addObserver:self
                                                      selector:@selector(hookNotification:)
@@ -125,7 +124,6 @@
     [self stopThread];
     // TODO - ensure executing the following statement on the main thread
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [realEntity removePrivateDataForKey:@"threadedEntity"];
     [realEntity release];
     self.frequency = nil;
     
@@ -156,6 +154,7 @@
 - (void)startThread
 {
     if (!worker) {
+        [realEntity addPrivateData:self forKey:@"threadedEntity"];
         NSDebug(@"Thread %@ starting", self);
         worker = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
         [worker setThreadPriority:1.0];
@@ -176,6 +175,7 @@
           //  [NSThread sleepForTimeInterval:0.1];
         [worker release];
         worker = nil;
+        [realEntity removePrivateDataForKey:@"threadedEntity"];
     }
 }
 

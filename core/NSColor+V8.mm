@@ -172,7 +172,7 @@ void ConvertHSLToRGB (const CGFloat *hslComponents, CGFloat *rgbComponents) {
                                     char *substring = (char *)malloc(sublength + 1);
                                     strncpy(substring, string + submatches[i].rm_so, sublength);
                                     substring[sublength] = 0;
-                                    CGFloat floatValue = 0;
+                                    double floatValue = 0;
                                     int integerValue = 0;
                                     BOOL isFloat = strchr(substring, '.') ? YES : NO;
                                     int ret = (isFloat || i == 5) ? sscanf(substring, "%lf", &floatValue) : sscanf(substring, "%d", &integerValue);

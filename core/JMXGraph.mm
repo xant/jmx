@@ -84,6 +84,8 @@ static v8::Handle<Value> CreateElement(const Arguments& args)
         JMXElement *element = [name isEqualToString:@"canvas"]
                             ? [[[JMXCanvasElement alloc] init] autorelease]
                             : [[[JMXElement alloc] initWithName:name] autorelease];
+        JMXGraph *document = (JMXGraph *)args.Holder()->GetPointerFromInternalField(0);
+        [[document rootElement] addChild:element];
         //ersistent<Object> jsInstance = Persistent<Object>::New([element jsObj]);
         //jsInstance->SetPointerInInternalField(0, element);
         //[ctx addPersistentInstance:jsInstance obj:element];

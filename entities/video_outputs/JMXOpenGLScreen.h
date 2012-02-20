@@ -42,15 +42,16 @@
     CFDictionaryRef      savedMode;
 #endif
     JMXSize *frameSize;
+    BOOL needsRedraw;
 }
 
 @property (atomic, retain) CIImage *currentFrame;
 @property (atomic, readonly) JMXSize *frameSize;
-
+@property (atomic, assign) BOOL needsRedraw;
 - (void)setSize:(NSSize)size;
 - (void)cleanup;
 - (IBAction)toggleFullScreen:(id)sender;
-//- (void)renderFrame:(uint64_t)timeStamp;
+- (void)renderFrame:(uint64_t)timeStamp;
 
 @end
 

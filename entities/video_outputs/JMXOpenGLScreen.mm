@@ -85,10 +85,42 @@ static NSString *kEventTypeMouseDragged = @"mousedragged";
 @end
 
 static NSMutableDictionary *__openglOutputs = nil;
+static CVDisplayLinkRef    displayLink; // the displayLink that runs the show
+static CGDirectDisplayID   viewDisplayID;
+static CVReturn renderCallback(CVDisplayLinkRef displayLink, 
+                               const CVTimeStamp *inNow, 
+                               const CVTimeStamp *inOutputTime, 
+                               CVOptionFlags flagsIn, 
+                               CVOptionFlags *flagsOut, 
+                               void *displayLinkContext)
+{    
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    for (JMXOpenGLViewWrapper *wrapper in [__openglOutputs allValues]) {
+        [wrapper.openglView renderFrame:inNow->hostTime];
+    }
+    [pool drain];
+    return noErr;
+}
 
 @implementation JMXOpenGLView
 
-@synthesize currentFrame, frameSize;
+@synthesize currentFrame, frameSize, needsRedraw;
+
++ (void)initialize
+{
+    [super initialize];
+    viewDisplayID = CGMainDisplayID();
+    //viewDisplayID = (CGDirectDisplayID)[[[[[self window] screen] deviceDescription] objectForKey:@"NSScreenNumber"] intValue];
+
+    CVReturn ret = CVDisplayLinkCreateWithCGDisplay(viewDisplayID, &displayLink);
+    if (ret != noErr) {
+        // TODO - Error Messages
+    }
+    // Set up display link callbacks
+    NSLog(@"Creating CVDisplayLink");
+    CVDisplayLinkSetOutputCallback(displayLink, renderCallback, nil);
+    CVDisplayLinkStart(displayLink);
+}
 
 - (id)initWithFrame:(NSRect)frameRect
 {
@@ -146,38 +178,48 @@ static NSMutableDictionary *__openglOutputs = nil;
     [super dealloc];
 }
 
-- (void)drawRect:(NSRect)dirtyRect
+- (void)renderFrame:(uint64_t)timeStamp
 {
-    CIImage *image = [self.currentFrame retain];
-    if (image && ciContext) {
-        CGRect sourceRect = { { 0, 0, }, { frameSize.width, frameSize.height } };
-        CGRect screenFrame = NSRectToCGRect([[self window] contentRectForFrameRect:[self frame]]);
-        CGFloat width = screenFrame.size.width;
-        CGFloat height = screenFrame.size.height;
-        CGFloat scaledWidth = width;
-        CGFloat scaledHeight = height;
-        if (width > height) {
-            scaledHeight = height;
-            scaledWidth = floor((scaledHeight*frameSize.width)/frameSize.height);
-        } else {
-            scaledWidth = width;
-            scaledHeight = floor((scaledWidth*frameSize.height)/frameSize.width);
+    if (timeStamp-lastTime < 1e9/30) //HC
+        return;
+    lastTime = timeStamp;
+    if (!self.window) {
+        return;
+    }
+    
+    if (self.needsRedraw) {
+        CIImage *image = [self.currentFrame retain];
+        if (image && ciContext) {
+            CGRect sourceRect = { { 0, 0, }, { frameSize.width, frameSize.height } };
+            CGRect screenFrame = NSRectToCGRect([[self window] contentRectForFrameRect:[self frame]]);
+            CGFloat width = screenFrame.size.width;
+            CGFloat height = screenFrame.size.height;
+            CGFloat scaledWidth = width;
+            CGFloat scaledHeight = height;
+            if (width > height) {
+                scaledHeight = height;
+                scaledWidth = floor((scaledHeight*frameSize.width)/frameSize.height);
+            } else {
+                scaledWidth = width;
+                scaledHeight = floor((scaledWidth*frameSize.height)/frameSize.width);
+            }
+            CGRect  destinationRect = CGRectMake(screenFrame.origin.x, screenFrame.origin.y,
+                                                 scaledWidth, scaledHeight);
+            
+            
+            if (fullScreen)
+            {   
+                destinationRect.origin.x = (width-scaledWidth)/2;
+                destinationRect.origin.y = (height-scaledHeight)/2;
+            }
+            [[self openGLContext] makeCurrentContext];
+            glClearColor(0,0,0,0);
+            glClear(GL_COLOR_BUFFER_BIT);
+            [ciContext drawImage:[image imageByCroppingToRect:sourceRect] inRect:destinationRect fromRect:sourceRect];
+            [image release];
+            [[self openGLContext] flushBuffer];
         }
-        CGRect  destinationRect = CGRectMake(screenFrame.origin.x, screenFrame.origin.y,
-                                             scaledWidth, scaledHeight);
-        
-        
-        if (fullScreen)
-        {   
-            destinationRect.origin.x = (width-scaledWidth)/2;
-            destinationRect.origin.y = (height-scaledHeight)/2;
-        }
-        [[self openGLContext] makeCurrentContext];
-        glClearColor(0,0,0,0);
-        glClear(GL_COLOR_BUFFER_BIT);
-        [ciContext drawImage:[image imageByCroppingToRect:sourceRect] inRect:destinationRect fromRect:sourceRect];
-        [image release];
-        [[self openGLContext] flushBuffer];
+        self.needsRedraw = NO;
     }
     [self setNeedsDisplay:NO];
 }
@@ -231,7 +273,8 @@ static NSMutableDictionary *__openglOutputs = nil;
     [lock lock];
     [currentFrame release];
     currentFrame = [frame retain];
-    [self setNeedsDisplay:YES];
+    //[self setNeedsDisplay:YES];
+    self.needsRedraw = YES;
     //[self renderFrame:0];
     [lock unlock];
 }

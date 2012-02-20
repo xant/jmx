@@ -234,6 +234,8 @@ static v8::Handle<Value> InsertBefore(const Arguments& args)
                 if (refChild)
                     index = [refChild index];
             }
+            if (newChild.parent)
+                [newChild detach];
             [node insertChild:newChild atIndex:index];
             return handleScope.Close(args[0]->ToObject());
         } else {
@@ -289,6 +291,8 @@ static v8::Handle<Value> AppendChild(const Arguments& args)
         NSXMLElement *node = (NSXMLElement *)holder;
         NSXMLNode *newChild = (NSXMLNode *)args[0]->ToObject()->GetPointerFromInternalField(0);
         if (newChild) {
+            if (newChild.parent)
+                [newChild detach];
             [node addChild:newChild];
             return handleScope.Close(args[0]->ToObject());
         } else {

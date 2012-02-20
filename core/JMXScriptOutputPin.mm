@@ -52,10 +52,10 @@ void JMXOutputPinJSDestructor(v8::Persistent<Value> object, void *parameter)
 
 v8::Handle<v8::Value> JMXOutputPinJSConstructor(const v8::Arguments& args)
 {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     HandleScope handleScope;
     //v8::Locker locker;
     v8::Persistent<FunctionTemplate> objectTemplate = [JMXOutputPin jsObjectTemplate];
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
     NSString *label = @"inputPin";
     JMXPinType type = kJMXVoidPin;

@@ -104,10 +104,12 @@
         self.frequency = [NSNumber numberWithDouble:25.0];
         JMXInputPin *inputFrequency = [entity registerInputPin:@"frequency"
                                                       withType:kJMXNumberPin
-                                                   andSelector:@"setFrequency:"];
+                                                   andSelector:@"setFrequency:"
+                                                      userData:nil
+                                                 allowedValues:nil
+                                                  initialValue:self.frequency];
         [inputFrequency setMinLimit:[NSNumber numberWithFloat:1.0]];
         [inputFrequency setMaxLimit:[NSNumber numberWithFloat:100.0]];
-        inputFrequency.data = self.frequency; // set initial value
         frequencyPin = [entity registerOutputPin:@"frequency" withType:kJMXNumberPin];
         stampCount = 0;
         previousTimeStamp = 0;
@@ -198,10 +200,11 @@
 
 - (void)tick:(uint64_t)timeStamp
 {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     // propagate the tick to the underlying entity
     [realEntity tick:timeStamp];
     [self outputDefaultSignals:timeStamp]; // ensure sending all default signals
-
+    [pool release];
 }
 
 - (void)signalTick:(NSTimer*)theTimer
@@ -244,8 +247,8 @@
     NSThread *currentThread = [NSThread currentThread];
     realEntity.active = YES;
     while (![currentThread isCancelled]) {
-        uint64_t maxDelta = 1e9 / [self.frequency doubleValue];
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        uint64_t maxDelta = 1e9 / [self.frequency doubleValue];
         uint64_t timeStamp = CVGetCurrentHostTime();
         [self tick:timeStamp];
         previousTimeStamp = timeStamp;

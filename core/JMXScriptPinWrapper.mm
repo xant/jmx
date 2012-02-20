@@ -66,6 +66,7 @@
     [super dealloc];
 }
 
+
 - (void)performSignal:(JMXPinSignal *)signal
 {
     

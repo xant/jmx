@@ -72,7 +72,9 @@
     @synchronized (receivers) {
         for (id receiver in [receivers allKeys]) {
             signal.receiver = receiver;
-            [self sendData:signal.data toReceiver:receiver withSelector:[receivers objectForKey:receiver] fromSender:signal.sender];
+            [self sendData:signal.data toReceiver:receiver
+              withSelector:[receivers objectForKey:receiver]
+                fromSender:signal.sender];
         }
     }
     [pool drain];

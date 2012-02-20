@@ -52,6 +52,7 @@ void JMXInputPinJSDestructor(v8::Persistent<Value> object, void *parameter)
 
 v8::Handle<v8::Value> JMXInputPinJSConstructor(const v8::Arguments& args)
 {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     HandleScope handleScope;
     //v8::Locker locker;
     v8::Persistent<FunctionTemplate> objectTemplate = [JMXScriptInputPin jsObjectTemplate];
@@ -67,7 +68,6 @@ v8::Handle<v8::Value> JMXInputPinJSConstructor(const v8::Arguments& args)
         typeName = [[NSString stringWithUTF8String:*str] lowercaseString];
     }
     Persistent<Object>jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     JMXPinType type = kJMXVoidPin;
     if ([typeName isEqualToString:@"string"]) {
         type = kJMXStringPin;

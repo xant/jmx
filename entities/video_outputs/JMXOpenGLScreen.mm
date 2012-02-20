@@ -227,11 +227,12 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 // Called by Cocoa when the view's visible rectangle or bounds change.
 - (void)reshape
 {
-    if (CGLLockContext((CGLContextObj)[[self openGLContext] CGLContextObj]) != kCGLNoError)
-         NSLog(@"Could not lock CGLContext");
     if (!self.window)
         return;
-    
+
+    if (CGLLockContext((CGLContextObj)[[self openGLContext] CGLContextObj]) != kCGLNoError)
+         NSLog(@"Could not lock CGLContext");
+
     //[lock lock];
     NSRect bounds = [self frame];
     GLfloat minX, minY, maxX, maxY;

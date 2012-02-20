@@ -40,7 +40,7 @@
     self = [super init];
     if (self) {
         self.image = nil;
-        JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
+        JMXThreadedEntity *threadedEntity = [[JMXThreadedEntity threadedEntity:self] retain];
         if (threadedEntity) {
             self.frequency = [NSNumber numberWithDouble:0.5]; // override frequency
             return (JMXImageEntity *)threadedEntity;

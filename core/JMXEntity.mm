@@ -30,6 +30,42 @@
 #import "JMXContext.h"
 #import "JMXThreadedEntity.h"
 
+#pragma mark JMXEntityPrivateData
+
+@interface JMXEntityPrivateData : NSObject {
+@private
+    id data; // weak reference
+}
+@property (readonly) id data;
+
++ (id)entityPrivateDataWithData:(id)someData;
+
+- (id)initWithPrivateData:(id)someData;
+@end
+
+
+@implementation JMXEntityPrivateData
+@synthesize data;
+
++ (id)entityPrivateDataWithData:(id)someData
+{
+    return [[[self alloc] initWithPrivateData:someData] autorelease];
+}
+
+- (id)initWithPrivateData:(id)someData
+{
+    self = [super init];
+    if (self) {
+        data = someData; // weak reference
+    }
+    return self;
+}
+
+@end
+
+#pragma mark -
+#pragma mark JMXEntity
+
 JMXV8_EXPORT_NODE_CLASS(JMXEntity);
 
 using namespace v8;
@@ -597,7 +633,7 @@ using namespace v8;
 {
     @synchronized(privateData) {
         if (privateData)
-            return [[[privateData objectForKey:key] retain] autorelease];
+            return [[((JMXEntityPrivateData *)[privateData objectForKey:key]).data retain] autorelease];
     }
     return nil;
 }
@@ -606,7 +642,7 @@ using namespace v8;
 {
     @synchronized(privateData) {
         if (privateData)
-            [privateData setObject:data forKey:key];
+            [privateData setObject:[JMXEntityPrivateData entityPrivateDataWithData:data] forKey:key];
     }
 }
 

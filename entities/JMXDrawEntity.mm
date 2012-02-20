@@ -24,7 +24,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXDrawEntity);
     self = [super init];
     if (self) {
         canvas = [[JMXCanvasElement alloc] init];
-        JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
+        JMXThreadedEntity *threadedEntity = [[JMXThreadedEntity threadedEntity:self] retain];
         self.label = @"DrawPath";
         drawPath = canvas.drawPath; // NOTE : weak reference (it's owned by the canvas)
         [self addChild:canvas];

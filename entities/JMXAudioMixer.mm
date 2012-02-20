@@ -31,7 +31,7 @@
         format = nil;
         rOffset = wOffset = 0;
         // TODO - if using aggregate device we don't need to be threaded
-        JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
+        JMXThreadedEntity *threadedEntity = [[JMXThreadedEntity threadedEntity:self] retain];
         if (threadedEntity)
             return (JMXAudioMixer *)threadedEntity;
         [self dealloc];

@@ -51,7 +51,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXVideoMixer);
         self.size = [JMXSize sizeWithNSSize:defaultSize];
         self.label = @"VideoMixer";
         currentFrame = nil;
-        JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
+        JMXThreadedEntity *threadedEntity = [[JMXThreadedEntity threadedEntity:self] retain];
         if (threadedEntity)
             return (JMXVideoMixer *)threadedEntity;
         [self dealloc];

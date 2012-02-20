@@ -51,7 +51,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXTextEntity);
          ];
         renderer = [[JMXTextRenderer alloc] init];
         renderedText = nil;
-        JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
+        JMXThreadedEntity *threadedEntity = [[JMXThreadedEntity threadedEntity:self] retain];
         if (threadedEntity)
             return (JMXTextEntity *)threadedEntity;
         [self dealloc];

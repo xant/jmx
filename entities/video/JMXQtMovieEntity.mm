@@ -72,7 +72,7 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
         [self registerInputPin:@"repeat" withType:kJMXBooleanPin andSelector:@"setRepeatPin:"];
         [self registerInputPin:@"paused" withType:kJMXBooleanPin andSelector:@"setPausedPin:"];
         [self addAttribute:[JMXAttribute attributeWithName:@"url" stringValue:@""]];
-        JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
+        JMXThreadedEntity *threadedEntity = [[JMXThreadedEntity threadedEntity:self] retain];
         if (threadedEntity)
             return (JMXQtMovieEntity *)threadedEntity;
         // TODO - Error Messages

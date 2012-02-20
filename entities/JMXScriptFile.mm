@@ -29,7 +29,7 @@ extern void JSExit(int code);
         path = nil;
         self.label = @"JMXScriptFile";
         //self.frequency = [NSNumber numberWithDouble:1.0];
-        JMXThreadedEntity *threadedEntity = [JMXThreadedEntity threadedEntity:self];
+        JMXThreadedEntity *threadedEntity = [[JMXThreadedEntity threadedEntity:self] retain];
         if (threadedEntity)
             return (JMXScriptFile *)threadedEntity;
     }

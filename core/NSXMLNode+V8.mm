@@ -623,8 +623,8 @@ static v8::Handle<Value> DispatchEvent(const Arguments& args)
     NSXMLNode *node = (NSXMLNode *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() && args[0]->IsObject())
     {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         v8::String::Utf8Value type(args[0]);
-        
         Handle<Object> obj = args[0]->ToObject();
         JMXEvent *event = (JMXEvent *)obj->GetPointerFromInternalField(0);
         Local<Context> context = v8::Context::GetCalling();
@@ -633,6 +633,7 @@ static v8::Handle<Value> DispatchEvent(const Arguments& args)
         JMXScriptEntity *entity = (JMXScriptEntity *)entityObj->GetPointerFromInternalField(0);
         JMXScript *scriptContext = entity.jsContext;
         ret = [scriptContext dispatchEvent:event];
+        [pool release];
     }
     return handleScope.Close(v8::Boolean::New(ret)); // XXX
 }

@@ -940,6 +940,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
 - (BOOL)dispatchEvent:(JMXEvent *)anEvent toTarget:(NSXMLNode *)aTarget
 {
     // TODO - support capturing
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSMutableSet *listeners = [eventListeners objectForKey:anEvent.type];
     for (JMXEventListener *listener in listeners) {
         if ([listener.target isEqual:aTarget]) {
@@ -952,11 +953,13 @@ static char *argv[2] = { (char *)"JMX", NULL };
             //[listener dispatch];
         }
     }
+    [pool release];
     return NO;
 }
 
 - (BOOL)dispatchEvent:(JMXEvent *)anEvent
 {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSMutableSet *listeners = [eventListeners objectForKey:anEvent.type];
     Locker locker;
     HandleScope handleScope;
@@ -967,6 +970,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
         Unlocker unlocker;
         [self execFunction:listener.function withArguments:args count:1];
     }
+    [pool release];
     return NO;
 }
 

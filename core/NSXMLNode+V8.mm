@@ -488,7 +488,7 @@ static v8::Handle<Value> CompareDocumentPosition(const Arguments& args)
 static void GatherElementsByName(NSXMLNode *node, char *name, NSMutableArray *elements)
 {
     for (NSXMLNode *n in [node children]) {
-        if (strcmp(name, "*") == 0 || strcmp([n.name UTF8String], name) == 0)
+        if (strcmp(name, "*") == 0 || (n.name && (strcmp([n.name UTF8String], name) == 0)))
             [elements addObject:n];
         GatherElementsByName(n, name, elements);
     }

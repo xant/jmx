@@ -139,7 +139,7 @@ v8::Handle<Value> __class##JSConstructor(const Arguments& args)\
             NSValue *argsValue = [NSValue valueWithPointer:(void *)&args];\
             [instance performSelector:@selector(jsInit:) withObject:argsValue];\
         }\
-        jsInstance = Persistent<Object>::Persistent([instance jsObj]);\
+        jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());\
         /* make the handle weak, with a callback */\
         jsInstance.MakeWeak(instance, __class##JSDestructor);\
         /*instancesMap[instance] = jsInstance;*/\
@@ -185,7 +185,7 @@ v8::Handle<Value> __class##JSConstructor(const Arguments& args)\
         NSValue *argsValue = [NSValue valueWithPointer:(void *)&args];\
         [instance performSelector:@selector(jsInit:) withObject:argsValue];\
     }\
-    jsInstance = Persistent<Object>::Persistent([instance jsObj]);\
+    jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());\
     /* make the handle weak, with a callback */\
     jsInstance.MakeWeak([instance retain], &__class##JSDestructor);\
     /*instancesMap[instance] = jsInstance;*/\

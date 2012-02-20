@@ -44,6 +44,8 @@
  */
 @property (readonly) CGFloat a;
 
+@property (readonly) CGFloat w;
+
 + (id)colorFromCSSString:(NSString *)cssString;
 
 #ifdef __JMXV8__

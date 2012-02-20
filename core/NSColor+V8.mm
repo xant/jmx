@@ -9,6 +9,7 @@
 #define __JMXV8__ 1
 #import "NSColor+V8.h"
 #import "JMXScript.h"
+#include <regex.h>
 
 #define kNSColorV8MaxCache 100
 
@@ -97,154 +98,168 @@ void ConvertHSLToRGB (const CGFloat *hslComponents, CGFloat *rgbComponents) {
         return color;
     }
     
-    /* TODO - Implement */
-    // XXX - requires OSX 10.7
     CGFloat r = 0.0, g = 0.0, b = 0.0, a = 1.0;
     NSString *colorStringRegExp = @"(#[0-9a-f]+|"
-                                  @"rgba\\(\\s*\\d+\\%?\\s*,\\s*\\d+\\%?\\s*,\\s*\\d+\\%?\\s*,\\s*[0-9\\.]+\\s*\\)|"
-                                  @"rgb\\(\\s*\\d+\\%?\\s*,\\s*\\d+\\%?\\s*,\\s*\\d+\\%?\\s*\\)|"
-                                  @"hsl\\(\\s*[0-9\\.]+\\%?\\s*,\\s*[0-9\\.]+\\%?\\s*,\\s*[0-9\\.]+\\%?\\s*\\))";
+                                  @"rgba\\([[:space:]]*[0-9]+\\%?[[:space:]]*,[[:space:]]*[0-9]+\\%?[[:space:]]*,[[:space:]]*[0-9]+\\%?[[:space:]]*,[[:space:]]*[0-9\\.]+[[:space:]]*\\)|"
+                                  @"rgb\\([[:space:]]*[0-9]+\\%?[[:space:]]*,[[:space:]]*[0-9]+\\%?[[:space:]]*,[[:space:]]*[0-9]+\\%?[[:space:]]*\\)|"
+                                  @"hsl\\([[:space:]]*[0-9\\.]+\\%?[[:space:]]*,[[:space:]]*[0-9\\.]+\\%?[[:space:]]*,[[:space:]]*[0-9\\.]+\\%?[[:space:]]*\\))";
     NSError *error = NULL;
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:colorStringRegExp
-                                                                           options:NSRegularExpressionCaseInsensitive
-                                                                             error:&error];
-    NSUInteger numberOfMatches = [regex numberOfMatchesInString:cssString
-                                                        options:0
-                                                          range:NSMakeRange(0, [cssString length])];
     
-    if (numberOfMatches) {
-        NSArray *matches = [regex matchesInString:cssString
-                                          options:0
-                                            range:NSMakeRange(0, [cssString length])];
-        for (NSTextCheckingResult *match in matches) {
-            NSRange rangeOfFirstCapture = [match rangeAtIndex:1];
-            if (rangeOfFirstCapture.location + rangeOfFirstCapture.length <= [cssString length]) {
-                NSString *substringForFirstMatch = [cssString substringWithRange:rangeOfFirstCapture];
-                if ([substringForFirstMatch characterAtIndex:0] == '#') {
-                    if (rangeOfFirstCapture.location + rangeOfFirstCapture.length <= [cssString length]) {
-                        NSString *substringForFirstMatch = [cssString substringWithRange:rangeOfFirstCapture];
-                        if ([substringForFirstMatch length] == 3) {
-                            NSMutableString *fullColorString = [NSMutableString stringWithCapacity:6];
-                            for (int i = 1; i < [substringForFirstMatch length]; i++) {
-                                unichar hexchar = [substringForFirstMatch characterAtIndex:i];
-                                NSString *component = [NSString stringWithFormat:@"%c%c", hexchar, hexchar];
-                                [fullColorString appendString:component];
-                            }
-                            substringForFirstMatch = fullColorString;
+    
+    regex_t exp;
+    regmatch_t matches[1] = { { 0, 0 } };
+    // normal normal normal 12px/14.399999999999999px "Arial", sans-serif
+    if (regcomp(&exp, [colorStringRegExp UTF8String], REG_EXTENDED|REG_ICASE) == 0) {
+        int code = regexec(&exp, [cssString UTF8String], 1, matches, 0);
+        if (code == 0) {
+            int length = matches[0].rm_eo-matches[0].rm_so;
+            if (length) {
+                char *string = (char *)malloc(length + 1);
+                strncpy(string, [cssString UTF8String] + matches[0].rm_so, length);
+                string[length] = 0;
+                if (*string == '#') {
+                    NSMutableString *fullColorString = [NSMutableString stringWithUTF8String:string+1];
+                    if (length == 4) {
+                        fullColorString = [NSMutableString stringWithCapacity:6];
+                        for (int i = 1; i < length; i++) {
+                            unichar hexchar = string[i];
+                            NSString *component = [NSString stringWithFormat:@"%c%c", hexchar, hexchar];
+                            [fullColorString appendString:component];
                         }
-                        if ([substringForFirstMatch length] == 6) {
-                            NSRange range = { 1, 2 };
-                            for (int i = 0; i < 6; i+=2) {
-                                NSString *hex = [substringForFirstMatch substringWithRange:range];
-                                range.location += 2;
-                                int numericalValue = 0;
-                                if (sscanf([hex UTF8String], "%02x", &numericalValue) == 0) {
-                                    switch (i) {
-                                        case 0:
-                                            r = numericalValue/255;
-                                            break;
-                                        case 1:
-                                            g = numericalValue/255;
-                                            break;
-                                        case 2:
-                                            b = numericalValue/255;
-                                            break;
-                                        default:
-                                            // TODO - Error Messages
-                                            break;
-                                    }
+                        [fullColorString appendString:@"ff"];
+                    } else if (length == 7) {
+                        [fullColorString appendString:@"ff"];
+                    }
+                    if (fullColorString && fullColorString.length == 8) {
+                        NSRange range = { 0, 2 };
+                        for (int i = 0; i < 8; i+=2) {
+                            NSString *hex = [fullColorString substringWithRange:range];
+                            range.location += 2;
+                            CGFloat numericalValue = 0;
+                            if (sscanf([hex UTF8String], "%02x", &numericalValue) == 1) {
+                                switch (i) {
+                                    case 0:
+                                        r = numericalValue/255.0;
+                                        break;
+                                    case 2:
+                                        g = numericalValue/255.0;
+                                        break;
+                                    case 4:
+                                        b = numericalValue/255.0;
+                                        break;
+                                    case 6:
+                                        a =  numericalValue/255.0;
+                                    default:
+                                        // TODO - Error Messages
+                                        break;
                                 }
                             }
                         }
                     }
-                } else if ([substringForFirstMatch characterAtIndex:0] == 'r') {
-                    NSString *pattern = @"(rgba\\(\\s*(\\d+\\%?)\\s*,\\s*(\\d+\\%?)\\s*,\\s*(\\d+\\%?)\\s*,\\s*([0-9\\.]+)\\s*\\)|"
-                                        @"rgba\\(\\s*(\\d+\\%?)\\s*,\\s*(\\d+\\%?)\\s*,\\s*(\\d+\\%?)\\s*\\))";
-                    NSRegularExpression *subRegex = [NSRegularExpression regularExpressionWithPattern:pattern
-                                                                                             options:NSRegularExpressionCaseInsensitive
-                                                                                               error:&error];
+                } else if (*string == 'r') {
+                    NSString *pattern =  @"(rgba\\([[:space:]]*([0-9]+\\%?)[[:space:]]*,[[:space:]]*([0-9]+\\%?)[[:space:]]*,[[:space:]]*([0-9]+\\%?)[[:space:]]*,[[:space:]]*([0-9\\.]+)[[:space:]]*\\)|"
+                                         @"rgb\\([[:space:]]*([0-9]+\\%?)[[:space:]]*,[[:space:]]*([0-9]+\\%?)[[:space:]]*,[[:space:]]*([0-9]+\\%?)[[:space:]]*\\))";                   
                     
-                    
-                    NSUInteger numberOfMatches = [subRegex numberOfMatchesInString:substringForFirstMatch
-                                                                        options:0
-                                                                          range:NSMakeRange(0, [substringForFirstMatch length])];
-                    if (numberOfMatches) {
-                        NSArray *matches = [subRegex matchesInString:substringForFirstMatch
-                                                          options:0
-                                                            range:NSMakeRange(0, [substringForFirstMatch length])];
-                        NSTextCheckingResult *match = [matches objectAtIndex:0];
-                        //NSRange rgbRange = [match range];
-                        // NOTE range 1 is the whole rgb()|rgba() pattern ... so single components' values start from range 2
-                        NSRange redStringRange = [match rangeAtIndex:2];
-                        NSString *redString = [substringForFirstMatch substringWithRange:redStringRange];
-                        NSRange greenStringRange = [match rangeAtIndex:3];
-                        NSString *greenString = [substringForFirstMatch substringWithRange:greenStringRange];
-                        NSRange blueStringRange = [match rangeAtIndex:4];
-                        NSString *blueString = [substringForFirstMatch substringWithRange:blueStringRange];
-                        if (match.numberOfRanges >= 5) {
-                            NSRange alphaStringRange = [match rangeAtIndex:5];
-                            NSString *alphaString = [substringForFirstMatch substringWithRange:alphaStringRange];
-                            if (alphaString)
-                                a = (CGFloat)[alphaString floatValue];
-                            if (a > 1)
-                                a /= 255;
-                        }
-                        // TODO - handle %
-                        if (redString)
-                            r = (CGFloat )[redString intValue]/255;
-                        if (greenString)
-                            g = (CGFloat)[greenString intValue]/255;
-                        if (blueString)
-                            b = (CGFloat)[blueString intValue]/255;
-                    }
-                    
-                } else if ([substringForFirstMatch characterAtIndex:0] == 'h') {
-                    NSString *pattern = @"hsl\\(\\s*([0-9\\.]+\\%?)\\s*,\\s*([0-9\\.]+\\%?)\\s*,\\s*([0-9\\.]+\\%?)\\s*\\)";
-                    NSRegularExpression *subRegex = [NSRegularExpression regularExpressionWithPattern:pattern
-                                                                                              options:NSRegularExpressionCaseInsensitive
-                                                                                                error:&error];
-                    
-                    
-                    NSUInteger numberOfMatches = [subRegex numberOfMatchesInString:substringForFirstMatch
-                                                                           options:0
-                                                                             range:NSMakeRange(0, [substringForFirstMatch length])];
-                    if (numberOfMatches) {
-                        NSArray *matches = [subRegex matchesInString:substringForFirstMatch
-                                                             options:0
-                                                               range:NSMakeRange(0, [substringForFirstMatch length])];
-                        NSTextCheckingResult *match = [matches objectAtIndex:0];
-                        //NSRange rgbRange = [match range];
-                        NSRange redStringRange = [match rangeAtIndex:1];
-                        NSString *redString = [substringForFirstMatch substringWithRange:redStringRange];
-                        NSRange greenStringRange = [match rangeAtIndex:2];
-                        NSString *greenString = [substringForFirstMatch substringWithRange:greenStringRange];
-                        NSRange blueStringRange = [match rangeAtIndex:3];
-                        NSString *blueString = [substringForFirstMatch substringWithRange:blueStringRange];
-                        // TODO - handle %
-                        if (redString)
-                            r = (CGFloat )[redString floatValue];
-                        if (greenString)
-                            if ([greenString rangeOfString:@"%"].location != NSNotFound) {
-                                g = [greenString floatValue]/100.0;
-                            } else {
-                                g = (CGFloat)[greenString floatValue];
+                    regex_t subexp;
+                    regmatch_t submatches[6];
+                    memset(submatches, 0, sizeof(submatches));
+                    if (regcomp(&subexp, [pattern UTF8String], REG_EXTENDED|REG_ICASE) == 0) {
+                        int subcode = regexec(&subexp, string, 6, submatches, 0);
+                        if (subcode == 0) {
+                            for (int i = 2; i < 6; i++) { // NOTE: the first two matches are the whole string
+                                if (submatches[i].rm_so && submatches[i].rm_eo) {
+                                    int sublength = submatches[i].rm_eo - submatches[i].rm_so;
+                                    char *substring = (char *)malloc(sublength + 1);
+                                    strncpy(substring, string + submatches[i].rm_so, sublength);
+                                    substring[sublength] = 0;
+                                    CGFloat floatValue = 0;
+                                    int integerValue = 0;
+                                    BOOL isFloat = strchr(substring, '.') ? YES : NO;
+                                    int ret = (isFloat || i == 5) ? sscanf(substring, "%lf", &floatValue) : sscanf(substring, "%d", &integerValue);
+                                    if (ret == 1) {
+                                        switch (i) {
+                                            case 2:
+                                                r = (isFloat ? floatValue : integerValue)/255.0;
+                                                break;
+                                            case 3:
+                                                g = (isFloat ? floatValue : integerValue)/255.0;
+                                                break;
+                                            case 4:
+                                                b = (isFloat ? floatValue : integerValue)/255.0;
+                                                break;
+                                            case 5:
+                                                a = floatValue;
+                                                if (a > 1)
+                                                    a /= 255;
+                                                break;
+                                            default:
+                                                // TODO - Error Messages
+                                                break;
+                                        }
+                                    }
+                                    free(substring);
+                                }
                             }
-                        if (blueString)
-                            b = (CGFloat)[blueString floatValue];
 
-                        CGFloat rgb[3];
-                        CGFloat hsl[3] = { r, g, b };
-                        ConvertHSLToRGB(hsl, rgb);
-                        r = rgb[0];
-                        g = rgb[1];
-                        b = rgb[2];
-                        a = 1.0;
+                        } else {
+                            char error[1024];
+                            regerror(subcode, &exp, error, 1024);
+                            NSLog(@"Error parsing css color string: %d - %s", subcode, error);
+                        }
+                        regfree(&subexp);
                     }
-                    
+                } else if (*string == 'h') {
+                    NSString *pattern = @"hsl\\([[:space:]]*([0-9\\.]+\\%?)[[:space:]]*,[[:space:]]*([0-9\\.]+\\%?)[[:space:]]*,[[:space:]]*([0-9\\.]+\\%?)[[:space:]]*\\)";
+                    regex_t subexp;
+                    regmatch_t submatches[4];
+                    memset(submatches, 0, sizeof(submatches));
+                    if (regcomp(&subexp, [pattern UTF8String], REG_EXTENDED|REG_ICASE) == 0) {
+                        int subcode = regexec(&subexp, string, 5, submatches, 0);
+                        if (subcode == 0) {
+                            for (int i = 1; i < 5; i++) { // NOTE: the first two matches are the whole string
+                                if (submatches[i].rm_so && submatches[i].rm_eo) {
+                                    int sublength = submatches[i].rm_eo - submatches[i].rm_so;
+                                    char *substring = (char *)malloc(sublength + 1);
+                                    strncpy(substring, string + submatches[i].rm_so, sublength);
+                                    substring[sublength] = 0;
+                                    CGFloat numericalValue = 0;
+                                    // TODO - handle %
+                                    if (sscanf(substring, "%lf", &numericalValue) == 1) {
+                                        switch (i) {
+                                            case 1:
+                                                r = numericalValue;
+                                                break;
+                                            case 2:
+                                                g = numericalValue;
+                                                break;
+                                            case 3:
+                                                b = numericalValue;
+                                                break;
+                                        }
+                                    }
+                                    free(substring);
+                                }
+                            }
+                            CGFloat rgb[3];
+                            CGFloat hsl[3] = { r, g, b };
+                            ConvertHSLToRGB(hsl, rgb);
+                            r = rgb[0];
+                            g = rgb[1];
+                            b = rgb[2];
+                            a = 1.0;
+                        }
+                    }
                 }
+                free(string);
             }
+        } else {
+            char error[1024];
+            regerror(code, &exp, error, 1024);
+            NSLog(@"Error parsing css color string: %d - %s", code, error);
         }
+        regfree(&exp);
     }
+    
     color = [NSColor colorWithDeviceRed:r green:g blue:b alpha:a];
     if (color) {
         if (colorCache.count >= kNSColorV8MaxCache) {
@@ -275,12 +290,21 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
     v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
     instanceTemplate->SetInternalFieldCount(1);
     // Add accessors for each of the fields of the entity.
+    
     instanceTemplate->SetAccessor(String::NewSymbol("redComponent"), GetDoubleProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("blueComponent"), GetDoubleProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("greenComponent"), GetDoubleProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("whiteComponent"), GetDoubleProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("blackComponent"), GetDoubleProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("alphaComponent"), GetDoubleProperty);
+    
+    // ad shortcuts (just aliases)
+    instanceTemplate->SetAccessor(String::NewSymbol("r"), GetDoubleProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("b"), GetDoubleProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("g"), GetDoubleProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("w"), GetDoubleProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("b"), GetDoubleProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("a"), GetDoubleProperty);
     return objectTemplate;
 }
 
@@ -302,6 +326,11 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
 - (CGFloat)a
 {
     return [self alphaComponent];
+}
+
+- (CGFloat)w
+{
+    return [self whiteComponent];
 }
 
 #pragma mark -

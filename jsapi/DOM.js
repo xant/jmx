@@ -5,7 +5,7 @@
  */
 
 /** 
- * Addon function to allow inheritance when defining new classes directly from javascript
+ * Addon method to allow inheritance when defining new classes directly from javascript
  * @addon
  */
 Function.prototype.inherits = function inherit(parent) {

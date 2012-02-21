@@ -38,7 +38,7 @@
 
 JMXV8_EXPORT_NODE_CLASS(JMXOpenGLScreen);
 
-#define kMaxEventsPerSecond 90
+#define kMaxEventsPerSecond 120
 static NSString *kEventTypeMouseMove = @"mousemove";
 static NSString *kEventTypeMouseDragged = @"mousedragged";
 
@@ -185,7 +185,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 
 - (void)renderFrame:(uint64_t)timeStamp
 {
-    if (timeStamp-lastTime < 1e9/30) //HC
+    if (timeStamp-lastTime < 1e9/60) //HC
         return;
     lastTime = timeStamp;
     if (!self.window) {
@@ -223,10 +223,10 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
             glClearColor(0,0,0,0);
             glClear(GL_COLOR_BUFFER_BIT);
             [ciContext drawImage:[image imageByCroppingToRect:sourceRect] inRect:destinationRect fromRect:sourceRect];
-            [image release];
             [[self openGLContext] flushBuffer];
             CGLUnlockContext((CGLContextObj)[[self openGLContext] CGLContextObj]);
         }
+        [image release];
         self.needsRedraw = NO;
     }
     [self setNeedsDisplay:NO];
@@ -510,7 +510,7 @@ static void translateScreenCoordinates(JMXOpenGLView *view, NSSize screenSize, N
     
 
     if (![view isInFullScreenMode]) { // XXX - WTF
-        NSRect frameRect = [view.window frameRectForContentRect:CGRectMake(0, 0, frameSize.width, frameSize.height)];
+        NSRect frameRect = [view.window frameRectForContentRect:NSRectFromCGRect(CGRectMake(0, 0, frameSize.width, frameSize.height))];
         screenY += (frameRect.size.height - frameSize.height)/2;
     }
 

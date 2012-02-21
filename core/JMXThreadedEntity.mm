@@ -94,13 +94,13 @@
         [registerObservers setQueuePriority:NSOperationQueuePriorityVeryHigh];
         if (![[NSThread currentThread] isMainThread]) {
             [[NSOperationQueue mainQueue] addOperations:[NSArray arrayWithObject:registerObservers]
-                                      waitUntilFinished:YES];
+                                      waitUntilFinished:NO];
         } else {
             [registerObservers start];
             [registerObservers waitUntilFinished];
         }
         // and 'effective' frequency , only for debugging purposes
-        self.frequency = [NSNumber numberWithDouble:25.0];
+        self.frequency = [NSNumber numberWithDouble:30.0];
         JMXInputPin *inputFrequency = [entity registerInputPin:@"frequency"
                                                       withType:kJMXNumberPin
                                                    andSelector:@"setFrequency:"

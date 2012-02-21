@@ -11,7 +11,17 @@
 #import "JMXScript.h"
 #include <regex.h>
 
-#define kNSColorV8MaxCache 100
+#define kNSColorV8MaxCache 4096
+
+static char colorStringRegExp[] = "(#[0-9a-f]+|"
+                                  "rgba\\([[:space:]]*[0-9]+\\%?[[:space:]]*,[[:space:]]*[0-9]+\\%?[[:space:]]*,[[:space:]]*[0-9]+\\%?[[:space:]]*,[[:space:]]*[0-9\\.]+[[:space:]]*\\)|"
+                                  "rgb\\([[:space:]]*[0-9]+\\%?[[:space:]]*,[[:space:]]*[0-9]+\\%?[[:space:]]*,[[:space:]]*[0-9]+\\%?[[:space:]]*\\)|"
+                                  "hsl\\([[:space:]]*[0-9\\.]+\\%?[[:space:]]*,[[:space:]]*[0-9\\.]+\\%?[[:space:]]*,[[:space:]]*[0-9\\.]+\\%?[[:space:]]*\\))";
+
+static char rgbaRegExp[] =  "(rgba\\([[:space:]]*([0-9]+\\%?)[[:space:]]*,[[:space:]]*([0-9]+\\%?)[[:space:]]*,[[:space:]]*([0-9]+\\%?)[[:space:]]*,[[:space:]]*([0-9\\.]+)[[:space:]]*\\)|"
+"rgb\\([[:space:]]*([0-9]+\\%?)[[:space:]]*,[[:space:]]*([0-9]+\\%?)[[:space:]]*,[[:space:]]*([0-9]+\\%?)[[:space:]]*\\))";
+
+static char hslRegExp[] = "hsl\\([[:space:]]*([0-9\\.]+\\%?)[[:space:]]*,[[:space:]]*([0-9\\.]+\\%?)[[:space:]]*,[[:space:]]*([0-9\\.]+\\%?)[[:space:]]*\\)";
 
 using namespace v8;
 
@@ -99,17 +109,21 @@ void ConvertHSLToRGB (const CGFloat *hslComponents, CGFloat *rgbComponents) {
     }
     
     CGFloat r = 0.0, g = 0.0, b = 0.0, a = 1.0;
-    NSString *colorStringRegExp = @"(#[0-9a-f]+|"
-                                  @"rgba\\([[:space:]]*[0-9]+\\%?[[:space:]]*,[[:space:]]*[0-9]+\\%?[[:space:]]*,[[:space:]]*[0-9]+\\%?[[:space:]]*,[[:space:]]*[0-9\\.]+[[:space:]]*\\)|"
-                                  @"rgb\\([[:space:]]*[0-9]+\\%?[[:space:]]*,[[:space:]]*[0-9]+\\%?[[:space:]]*,[[:space:]]*[0-9]+\\%?[[:space:]]*\\)|"
-                                  @"hsl\\([[:space:]]*[0-9\\.]+\\%?[[:space:]]*,[[:space:]]*[0-9\\.]+\\%?[[:space:]]*,[[:space:]]*[0-9\\.]+\\%?[[:space:]]*\\))";
     NSError *error = NULL;
     
     
-    regex_t exp;
+    static regex_t exp;
+    static bool mainExpInitialized = false;
+    if (!mainExpInitialized) {
+        if ((regcomp(&exp, colorStringRegExp, REG_EXTENDED|REG_ICASE) == 0)) {
+            mainExpInitialized = true;
+        } else {
+            
+        }
+    }
     regmatch_t matches[1] = { { 0, 0 } };
     // normal normal normal 12px/14.399999999999999px "Arial", sans-serif
-    if (regcomp(&exp, [colorStringRegExp UTF8String], REG_EXTENDED|REG_ICASE) == 0) {
+    if (mainExpInitialized) {
         int code = regexec(&exp, [cssString UTF8String], 1, matches, 0);
         if (code == 0) {
             int length = matches[0].rm_eo-matches[0].rm_so;
@@ -156,15 +170,18 @@ void ConvertHSLToRGB (const CGFloat *hslComponents, CGFloat *rgbComponents) {
                             }
                         }
                     }
-                } else if (*string == 'r') {
-                    NSString *pattern =  @"(rgba\\([[:space:]]*([0-9]+\\%?)[[:space:]]*,[[:space:]]*([0-9]+\\%?)[[:space:]]*,[[:space:]]*([0-9]+\\%?)[[:space:]]*,[[:space:]]*([0-9\\.]+)[[:space:]]*\\)|"
-                                         @"rgb\\([[:space:]]*([0-9]+\\%?)[[:space:]]*,[[:space:]]*([0-9]+\\%?)[[:space:]]*,[[:space:]]*([0-9]+\\%?)[[:space:]]*\\))";                   
-                    
-                    regex_t subexp;
+                } else if (*string == 'r') {                  
+                    static regex_t rgbaexp;
+                    static bool rgbaExpInitialized = false;
+                    if (!rgbaExpInitialized) {
+                        if ((regcomp(&rgbaexp, rgbaRegExp,  REG_EXTENDED|REG_ICASE) == 0)) {
+                            rgbaExpInitialized = true;
+                        }
+                    }
                     regmatch_t submatches[6];
                     memset(submatches, 0, sizeof(submatches));
-                    if (regcomp(&subexp, [pattern UTF8String], REG_EXTENDED|REG_ICASE) == 0) {
-                        int subcode = regexec(&subexp, string, 6, submatches, 0);
+                    if (rgbaExpInitialized) {
+                        int subcode = regexec(&rgbaexp, string, 6, submatches, 0);
                         if (subcode == 0) {
                             for (int i = 2; i < 6; i++) { // NOTE: the first two matches are the whole string
                                 if (submatches[i].rm_so && submatches[i].rm_eo) {
@@ -206,15 +223,19 @@ void ConvertHSLToRGB (const CGFloat *hslComponents, CGFloat *rgbComponents) {
                             regerror(subcode, &exp, error, 1024);
                             NSLog(@"Error parsing css color string: %d - %s", subcode, error);
                         }
-                        regfree(&subexp);
                     }
                 } else if (*string == 'h') {
-                    NSString *pattern = @"hsl\\([[:space:]]*([0-9\\.]+\\%?)[[:space:]]*,[[:space:]]*([0-9\\.]+\\%?)[[:space:]]*,[[:space:]]*([0-9\\.]+\\%?)[[:space:]]*\\)";
-                    regex_t subexp;
+                    static regex_t hslexp;
+                    static bool hslExpInitialized = false;
+                    if (!hslExpInitialized) {
+                        if ((regcomp(&hslexp, hslRegExp, REG_EXTENDED|REG_ICASE) == 0)) {
+                            hslExpInitialized = true;
+                        }
+                    }
                     regmatch_t submatches[4];
                     memset(submatches, 0, sizeof(submatches));
-                    if (regcomp(&subexp, [pattern UTF8String], REG_EXTENDED|REG_ICASE) == 0) {
-                        int subcode = regexec(&subexp, string, 5, submatches, 0);
+                    if (hslExpInitialized) {
+                        int subcode = regexec(&hslexp, string, 5, submatches, 0);
                         if (subcode == 0) {
                             for (int i = 1; i < 5; i++) { // NOTE: the first two matches are the whole string
                                 if (submatches[i].rm_so && submatches[i].rm_eo) {
@@ -257,7 +278,7 @@ void ConvertHSLToRGB (const CGFloat *hslComponents, CGFloat *rgbComponents) {
             regerror(code, &exp, error, 1024);
             NSLog(@"Error parsing css color string: %d - %s", code, error);
         }
-        regfree(&exp);
+        //regfree(&exp);
     }
     
     color = [NSColor colorWithDeviceRed:r green:g blue:b alpha:a];

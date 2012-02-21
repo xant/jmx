@@ -659,7 +659,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
 
 - (void)nodejsRun
 {
-    uint64_t maxDelta = 1e9 / 90; // max 90 ticks per seconds
+    uint64_t maxDelta = 1e9 / 60; // max 60 ticks per seconds
     @try {
         NSThread *currentThread = [NSThread currentThread];
         while (![currentThread isCancelled]) {

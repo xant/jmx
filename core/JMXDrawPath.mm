@@ -577,6 +577,9 @@ using namespace v8;
                 CGPathRelease(lastPath);\
                 lastPath = NULL;\
             }\
+        } else if (lastPath) {\
+            CGPathRelease(lastPath);\
+            lastPath = NULL;\
         }\
     }
 
@@ -646,10 +649,8 @@ using namespace v8;
 {
     [lock lock];
     JMXDrawPathGetCurrentContext(context);
-    CGContextDrawPath(context, kCGPathFill);
-    if (lastPath)
-        CFRelease(lastPath);
     lastPath = CGContextCopyPath(context);
+    CGContextDrawPath(context, kCGPathFill);;
 
     if ([fillStyle isKindOfClass:[JMXCanvasGradient class]]) {
         JMXCanvasGradient *gradient = (JMXCanvasGradient *)fillStyle;
@@ -682,11 +683,9 @@ using namespace v8;
         CGContextSetShadowWithColor(context, shadowSize, shadowBlur, color);
         CFRelease(color);
     }
-    if (lastPath)
-        CFRelease(lastPath);
-    lastPath = CGContextCopyPath(context);
     CGContextDrawPath(context, kCGPathStroke);
-    
+    lastPath = CGContextCopyPath(context);
+
     if ([strokeStyle isKindOfClass:[JMXCanvasGradient class]]) {
         JMXCanvasGradient *gradient = (JMXCanvasGradient *)strokeStyle;
         if (gradient.mode == kJMXCanvasGradientLinear) {
@@ -1662,7 +1661,7 @@ static void SetLineWidth(Local<String> name, Local<Value> value, const AccessorI
     instanceTemplate->SetAccessor(String::NewSymbol("shadowOffsetX"), GetDoubleProperty, SetDoubleProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("shadowOffsetY"), GetDoubleProperty, SetDoubleProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("shadowBlur"), GetDoubleProperty, SetDoubleProperty);
-
+    instanceTemplate->SetAccessor(String::NewSymbol("invertYCoordinates"), GetBoolProperty, SetBoolProperty);
     
     /*
     instanceTemplate->SetAccessor(String::NewSymbol("lineCap"), , );

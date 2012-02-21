@@ -85,8 +85,14 @@ using namespace v8;
         // initialize the storage for the spectrum images
         NSOpenGLPixelFormatAttribute    attributes[] = {
             NSOpenGLPFAAccelerated,
+            NSOpenGLPFANoRecovery,
+            NSOpenGLPFAColorSize, 24,
+            NSOpenGLPFAAlphaSize,  8,
             NSOpenGLPFADoubleBuffer,
-            NSOpenGLPFADepthSize, 32,
+            NSOpenGLPFADepthSize, 16,
+            NSOpenGLPFAMultisample,
+            NSOpenGLPFASampleBuffers, 1,
+            NSOpenGLPFASamples, 4,
             (NSOpenGLPixelFormatAttribute) 0
         };
         NSOpenGLPixelFormat *format = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attributes] autorelease];
@@ -650,7 +656,7 @@ using namespace v8;
     [lock lock];
     JMXDrawPathGetCurrentContext(context);
     lastPath = CGContextCopyPath(context);
-    CGContextDrawPath(context, kCGPathFill);;
+    CGContextDrawPath(context, kCGPathFill);
 
     if ([fillStyle isKindOfClass:[JMXCanvasGradient class]]) {
         JMXCanvasGradient *gradient = (JMXCanvasGradient *)fillStyle;
@@ -683,8 +689,8 @@ using namespace v8;
         CGContextSetShadowWithColor(context, shadowSize, shadowBlur, color);
         CFRelease(color);
     }
-    CGContextDrawPath(context, kCGPathStroke);
     lastPath = CGContextCopyPath(context);
+    CGContextDrawPath(context, kCGPathStroke);
 
     if ([strokeStyle isKindOfClass:[JMXCanvasGradient class]]) {
         JMXCanvasGradient *gradient = (JMXCanvasGradient *)strokeStyle;

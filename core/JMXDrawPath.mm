@@ -646,8 +646,10 @@ using namespace v8;
 {
     [lock lock];
     JMXDrawPathGetCurrentContext(context);
-    lastPath = CGContextCopyPath(context);
     CGContextDrawPath(context, kCGPathFill);
+    if (lastPath)
+        CFRelease(lastPath);
+    lastPath = CGContextCopyPath(context);
 
     if ([fillStyle isKindOfClass:[JMXCanvasGradient class]]) {
         JMXCanvasGradient *gradient = (JMXCanvasGradient *)fillStyle;
@@ -680,6 +682,8 @@ using namespace v8;
         CGContextSetShadowWithColor(context, shadowSize, shadowBlur, color);
         CFRelease(color);
     }
+    if (lastPath)
+        CFRelease(lastPath);
     lastPath = CGContextCopyPath(context);
     CGContextDrawPath(context, kCGPathStroke);
     

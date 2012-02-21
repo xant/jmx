@@ -43,11 +43,14 @@
 #endif
     JMXSize *frameSize;
     BOOL needsRedraw;
+    BOOL invertYCoordinates;
 }
 
 @property (atomic, retain) CIImage *currentFrame;
 @property (atomic, readonly) JMXSize *frameSize;
 @property (atomic, assign) BOOL needsRedraw;
+@property (atomic, assign) BOOL invertYCoordinates;
+
 - (void)setSize:(NSSize)size;
 - (void)cleanup;
 - (IBAction)toggleFullScreen:(id)sender;
@@ -76,7 +79,7 @@
 @property (readonly) NSWindow *window;
 @property (readonly) JMXOpenGLView *view;
 @property (assign) BOOL fullScreen;
-
+@property (atomic, assign) BOOL invertYCoordinates;
 @end
 
 JMXV8_DECLARE_NODE_CONSTRUCTOR(JMXOpenGLScreen);

@@ -104,7 +104,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 
 @implementation JMXOpenGLView
 
-@synthesize currentFrame, frameSize, needsRedraw;
+@synthesize currentFrame, frameSize, needsRedraw, invertYCoordinates;
 
 + (void)initialize
 {
@@ -153,6 +153,11 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         [__openglOutputs setObject:wrapper forKey:[wrapper hashString]];
     }
     return self;
+}
+
+- (void)drawRect:(NSRect)dirtyRect
+{
+    [self setNeedsDisplay:NO];    
 }
 
 - (void)prepareOpenGL
@@ -212,12 +217,15 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
                 destinationRect.origin.x = (width-scaledWidth)/2;
                 destinationRect.origin.y = (height-scaledHeight)/2;
             }
+            if (CGLLockContext((CGLContextObj)[[self openGLContext] CGLContextObj]) != kCGLNoError)
+                NSLog(@"Could not lock CGLContext");
             [[self openGLContext] makeCurrentContext];
             glClearColor(0,0,0,0);
             glClear(GL_COLOR_BUFFER_BIT);
             [ciContext drawImage:[image imageByCroppingToRect:sourceRect] inRect:destinationRect fromRect:sourceRect];
             [image release];
             [[self openGLContext] flushBuffer];
+            CGLUnlockContext((CGLContextObj)[[self openGLContext] CGLContextObj]);
         }
         self.needsRedraw = NO;
     }
@@ -479,19 +487,38 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     
 }
 
+- (BOOL)invertYCoordinates
+{
+    if (view)
+        return view.invertYCoordinates;
+    return NO;
+}
+
+- (void)setInvertYCoordinates:(BOOL)yesOrNo
+{
+    if (view)
+        view.invertYCoordinates = yesOrNo;
+}
+
 #pragma mark -
 #pragma mark JMXScreenControllerDelegate
 
-static void translateScreenCoordinates(NSSize screenSize, NSSize frameSize,
+static void translateScreenCoordinates(JMXOpenGLView *view, NSSize screenSize, NSSize frameSize,
                                        CGFloat screenX, CGFloat screenY,
                                        CGFloat &frameX, CGFloat &frameY)
 {
+    
+
+    if (![view isInFullScreenMode]) { // XXX - WTF
+        NSRect frameRect = [view.window frameRectForContentRect:CGRectMake(0, 0, frameSize.width, frameSize.height)];
+        screenY += (frameRect.size.height - frameSize.height)/2;
+    }
+
     
     CGFloat width = screenSize.width;
     CGFloat height = screenSize.height;
     CGFloat scaledWidth = width;
     CGFloat scaledHeight = height;
-    
     if (width > height) {
         scaledHeight = height;
         scaledWidth = floor((scaledHeight*frameSize.width)/frameSize.height);
@@ -503,7 +530,10 @@ static void translateScreenCoordinates(NSSize screenSize, NSSize frameSize,
     CGFloat xFactor = frameSize.width / scaledWidth;
     CGFloat yFactor = frameSize.height / scaledHeight;
     frameX = (screenX * xFactor) - ((screenSize.width - scaledWidth)/4);
-    frameY = frameSize.height - (screenY * yFactor);
+    if (view.invertYCoordinates)
+        frameY = frameSize.height - (screenY * yFactor);
+    else
+        frameY = (screenY * yFactor);
 }
 
 - (void)mouseUp:(NSEvent *)event inView:(JMXOpenGLView *)aView
@@ -517,7 +547,7 @@ static void translateScreenCoordinates(NSSize screenSize, NSSize frameSize,
                                                                  capture:NO] autorelease];
         NSPoint location = event.locationInWindow;
         
-        translateScreenCoordinates(aView.frame.size, aView.frameSize.nsSize,
+        translateScreenCoordinates(aView, aView.frame.size, aView.frameSize.nsSize,
                                    location.x, location.y, x, y);
         mouseEvent.screenX = x;
         mouseEvent.screenY = y;
@@ -536,7 +566,7 @@ static void translateScreenCoordinates(NSSize screenSize, NSSize frameSize,
                                                                  capture:NO] autorelease];
         NSPoint location = event.locationInWindow;
 
-        translateScreenCoordinates(aView.frame.size, aView.frameSize.nsSize,
+        translateScreenCoordinates(aView, aView.frame.size, aView.frameSize.nsSize,
                                    location.x, location.y, x, y);
         mouseEvent.screenX = x;
         mouseEvent.screenY = y;
@@ -566,7 +596,7 @@ static void translateScreenCoordinates(NSSize screenSize, NSSize frameSize,
                             listener:nil
                              capture:NO] autorelease];
         
-        translateScreenCoordinates(aView.frame.size, aView.frameSize.nsSize,
+        translateScreenCoordinates(aView, aView.frame.size, aView.frameSize.nsSize,
                                    location.x, location.y, x, y);
         mouseEvent.screenX = x;
         mouseEvent.screenY = y;
@@ -587,7 +617,7 @@ static void translateScreenCoordinates(NSSize screenSize, NSSize frameSize,
                                                                  capture:NO] autorelease];
         NSPoint location = event.locationInWindow;
         
-        translateScreenCoordinates(aView.frame.size, aView.frameSize.nsSize,
+        translateScreenCoordinates(aView, aView.frame.size, aView.frameSize.nsSize,
                                    location.x, location.y, x, y);
         mouseEvent.screenX = x;
         mouseEvent.screenY = y;
@@ -606,7 +636,7 @@ static void translateScreenCoordinates(NSSize screenSize, NSSize frameSize,
                                                                  capture:NO] autorelease];
         NSPoint location = event.locationInWindow;
         
-        translateScreenCoordinates(aView.frame.size, aView.frameSize.nsSize,
+        translateScreenCoordinates(aView, aView.frame.size, aView.frameSize.nsSize,
                                    location.x, location.y, x, y);
         mouseEvent.screenX = x;
         mouseEvent.screenY = y;
@@ -635,7 +665,7 @@ static void translateScreenCoordinates(NSSize screenSize, NSSize frameSize,
                                                                  capture:NO] autorelease];
         NSPoint location = event.locationInWindow;
         
-        translateScreenCoordinates(aView.frame.size, aView.frameSize.nsSize,
+        translateScreenCoordinates(aView, aView.frame.size, aView.frameSize.nsSize,
                                    location.x, location.y, x, y);
         mouseEvent.screenX = x;
         mouseEvent.screenY = y;
@@ -698,6 +728,7 @@ static void translateScreenCoordinates(NSSize screenSize, NSSize frameSize,
     objectTemplate->Inherit([super jsObjectTemplate]);
     objectTemplate->SetClassName(String::New("OpenGLScreen"));
     objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("fullScreen"), GetBoolProperty, SetBoolProperty);
+    objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("invertYCoordinates"), GetBoolProperty, SetBoolProperty);
 
     objectTemplate->InstanceTemplate()->SetInternalFieldCount(1);
     NSDebug(@"JMXOpenGLScreen objectTemplate created");

@@ -40,6 +40,10 @@ typedef enum {
     kJMXEventPhaseBubbling  = 3,
 } JMXEventPhase;
 
+/*!
+ @class JMXEvent
+ @abstract native class which encapsulates javascript events
+ */
 @interface JMXEvent : NSObject <JMXV8>
 {
     NSString *type;
@@ -55,16 +59,49 @@ typedef enum {
 
 }
 
+/*!
+ @property type
+ @abstract the type of the event
+ */
 @property (copy) NSString *type;
+/*!
+ @property target
+ @abstract the target of the event
+ */
 @property (readonly) NSXMLNode *target;
+/*!
+ @property relatedTarget
+ @abstract TODO - document
+ */
 @property (assign) NSXMLNode *relatedTarget;
+/*!
+ @property listener
+ @abstract the listener of this event
+ */
 @property (readonly) JMXEventListener *listener;
 
+
+/*!
+ @method eventWithType:target:listener:capture:
+ @abstract create a new event of a specific type
+ @param type the type of the event
+ @param target the target of the event
+ @param listener the listener of this event
+ @param capture TODO - document
+ */
 + (id)eventWithType:(NSString *)type
              target:(NSXMLNode *)target
            listener:(JMXEventListener *)listener
             capture:(BOOL)capture;
 
+/*!
+ @method initWithType:target:listener:capture:
+ @abstract designated initializer for newly created events
+ @param type the type of the event
+ @param target the target of the event
+ @param listener the listener of this event
+ @param capture TODO - document
+ */
 - (id)initWithType:(NSString *)type
             target:(NSXMLNode *)target
           listener:(JMXEventListener *)listener

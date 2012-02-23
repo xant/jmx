@@ -266,7 +266,7 @@ static v8::Handle<Value>SetFontColor(const Arguments& args)
 {
     HandleScope handleScope;
     v8::Persistent<v8::FunctionTemplate> entityTemplate = [super jsObjectTemplate];
-    entityTemplate->SetClassName(String::New("TextRenderer"));
+    entityTemplate->SetClassName(String::New("TextEntity"));
     entityTemplate->InstanceTemplate()->SetInternalFieldCount(1);
     v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
     classProto->Set("setText", FunctionTemplate::New(SetText));

@@ -14,21 +14,21 @@ function Color(r, g, b, a)
      * The red component
      * @type float
      */
-    this.redComponent = r;
+    this.r = r;
     /**
      * The green component
      * @type float
      */
-    this.greenComponent = g;
+    this.g = g;
     /**
      * The blue component
      * @type float
      */
-    this.blueComponent = b;
+    this.b = b;
     /**
      * The alpha component
      * @type float
      */
-    this.alphaComponent = a;
+    this.a = a;
     // ... 
 }

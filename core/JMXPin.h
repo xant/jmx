@@ -137,8 +137,16 @@ typedef enum {
     JMXPinMode          mode;
 }
 
+/*!
+ @property connections
+ @abstract the node holding all connections to this pin
+ */
 @property (readonly) NSXMLElement *connections;
 
+/*!
+ @property mode
+ @abstract the pin mode (kJMXPinModeActive || kJMXPinModePassive || kJMXPinModeAuto) 
+ */
 @property (assign) JMXPinMode mode;
 
 /*!

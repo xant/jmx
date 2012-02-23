@@ -101,10 +101,22 @@
 
 #pragma mark Properties
 
+/*!
+ @property owner
+ @abstract the parent node in the DOM hierarchy
+ */
 @property (readonly) JMXEntity *owner;
 
+/*!
+ @property inputPins
+ @abstract array containing all input pins for this entity
+ */
 @property (readonly) NSArray *inputPins;
 
+/*!
+ @property outputPins
+ @abstract array containing all output pins for this entity
+ */
 @property (readonly) NSArray *outputPins;
 
 /*!
@@ -118,6 +130,10 @@
  */
 @property (readwrite, copy) NSString *label;
 
+/*!
+ @property description
+ @abstract text description of this entity
+ */
 @property (readonly) NSString *description;
 
 #pragma mark Pin API
@@ -384,8 +400,22 @@
  */
 - (void)notifyModifications;
 
+/*!
+ @method addPrivateData:forKey:
+ @abstract add new private data to this entity. Each entity can be used to store some kind of private data
+           in a dictionary using a key which can be used to retrieve the data later. The saved data will be
+           available as long as the entity exists. 
+ */
 - (void)addPrivateData:(id)data forKey:(NSString *)key;
+/*!
+ @method privateDataForKey:
+ @abstract get the privateData saved with the provided key
+ */
 - (id)privateDataForKey:(NSString *)key;
+/*!
+ @method removePrivateDataForKey:
+ @abstract permanently remove the private data saved with the provided key
+ */
 - (void)removePrivateDataForKey:(NSString *)key;
 
 @end

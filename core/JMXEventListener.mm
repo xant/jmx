@@ -67,7 +67,7 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
     
     objectTemplate = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
     
-    objectTemplate->SetClassName(String::New("Event"));
+    objectTemplate->SetClassName(String::New("EventListener"));
     v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     classProto->Set("handleEvent", FunctionTemplate::New(HandleEvent));
     // set instance methods

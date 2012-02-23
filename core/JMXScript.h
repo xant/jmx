@@ -46,9 +46,27 @@
              and the main graph managed through the board
  */
 @property (readonly, nonatomic) JMXScriptEntity *scriptEntity;
+
+/*!
+ @property runloopTimers
+ @abstract NSSet holding all timers registered in this script runloop.
+           Note: only timers added using the global.addToRunLoop() method are being listed here  
+ */
 @property (readonly, nonatomic) NSSet *runloopTimers;
+/*!
+ @property eventListeners
+ @abstract dictionary holding all registered eventListeners in this js context.
+           The key of the dictionary is the event type and the value for each key is a 
+           NSSet holding all the listeners for that specific event
+ */
 @property (readonly, nonatomic) NSDictionary *eventListeners;
+
+/*!
+ @property ctx
+ @abstract the global JS context
+ */
 @property (readonly) v8::Persistent<v8::Context> ctx;
+
 /*!
  @method getContext:
  @abstract get the JMXScript instance where the provided currentContext is being managed/executed
@@ -57,7 +75,16 @@
  */
 + (JMXScript *)getContext;
 
+/*!
+ @method startWithEntity:
+ @abstract start this javascript context binding it to the provided JMXScriptEntity
+ */
 - (void)startWithEntity:(JMXScriptEntity *)entity;
+
+/*!
+ @method stop
+ @abstract stop the execution of this JS context and reclaim all persistent instances created while the context running
+ */
 - (void)stop;
 
 /*!
@@ -82,19 +109,34 @@
 - (BOOL)runScript:(NSString *)source;
 
 /*!
+ @method execCode:
+ @abstract Interpret and exec the provided javascript code in this JS Context
+ */
+- (void)execCode:(NSString *)code;
+
+/*!
+ @method execFunction:
+ @abstract exec the provided javascript function in this JS context
+ */
+- (void)execFunction:(v8::Handle<v8::Function>)function;
+
+/*!
+ @method execFunction:WithArguments:count
+ @abstract exec the javascript function, passing the provided arguments, in this JS Context
+ */
+- (v8::Handle<v8::Value>)execFunction:(v8::Handle<v8::Function>)function
+       withArguments:(v8::Handle<v8::Value> *)argv
+               count:(NSUInteger)count;
+
+/*!
  @method addPersistentInstance:obj
  @abstract add a new persistent instance to the internal map
  @param persistent the new Persistent<Object> in the javascript context
  @param obj the native obj-c instance bound to the persistent object
  @discussion * TODO *
  */
-
-- (void)execCode:(NSString *)code;
-- (void)execFunction:(v8::Handle<v8::Function>)function;
-- (v8::Handle<v8::Value>)execFunction:(v8::Handle<v8::Function>)function
-       withArguments:(v8::Handle<v8::Value> *)argv
-               count:(NSUInteger)count;
 - (void)addPersistentInstance:(v8::Persistent<v8::Object>)persistent obj:(id)obj;
+
 /*!
  @method removePersistentInstance:
  @abstract remove a persistent instance from the internal map
@@ -102,14 +144,58 @@
  @discussion * TODO *
  */
 - (void)removePersistentInstance:(id)obj;
+
+/*!
+ @method getPersistentInstance:
+ @abstract get the v8 persistent instance bound to the provided objC object instance
+ @param obj the native obj-c instance for which we want to obtain the v8 persistent instance
+ */
 - (v8::Handle<v8::Value>)getPersistentInstance:(id)obj;
+
+/*!
+ @method clearTimers
+ @abstract clear all timers registered to this JS context
+ */
 - (void)clearTimers;
 
+/*!
+ @method addRunLoopTimer:
+ @abstract add a new timer to the current runloop for this JS context
+ @param timer the timer to add
+ */
 - (void)addRunloopTimer:(JMXScriptTimer *)timer;
+/*!
+ @method removeRunloopTimer:
+ @abstract remove the timer from the current runloop
+ @param timer the timer to remove
+ */
 - (void)removeRunloopTimer:(JMXScriptTimer *)timer;
+/*!
+ @method addListener:forEvent:
+ @abstract add a new listener for the specified event
+ @param listener the new listener
+ @param event the event to track
+ */
 - (void)addListener:(JMXEventListener *)listener forEvent:(NSString *)event;
+/*!
+ @method removeListener:forEvent:
+ @abstract remove an existing listener tracking a specific event
+ @param listener the listener to remove
+ @param event the event tracked by the listener we want to remove
+ */
 - (void)removeListener:(JMXEventListener *)listener forEvent:(NSString *)event;
+/*!
+ @method dispatchEvent:
+ @abstract dispatch an event to all registered listener
+ @param event the event to dispatch
+ */
 - (BOOL)dispatchEvent:(JMXEvent *)event;
-- (BOOL)dispatchEvent:(JMXEvent *)anEvent toTarget:(NSXMLNode *)aTarget;
+/*!
+ @method dispatchEvent:toTarget:
+ @abstract dispatch an event to a specific target
+ @param event the event to dispatch
+ @param target the target to send the event to
+ */
+- (BOOL)dispatchEvent:(JMXEvent *)event toTarget:(NSXMLNode *)target;
 
 @end

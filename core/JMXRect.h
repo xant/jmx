@@ -39,6 +39,9 @@
     NSRect nsRect;
 }
 
+/*!
+ @property neRect the underlying NSRect structure
+ */
 @property (assign) NSRect nsRect;
 
 /*!

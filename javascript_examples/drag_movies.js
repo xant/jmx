@@ -1,4 +1,3 @@
-include('/Users/xant/src/jmx/javascript_examples/canvas_sample1.js');
 m1 = new MovieFile('/Users/xant/test.mov');
 m2 = new MovieFile('/Users/xant/test.mov');
 
@@ -9,14 +8,11 @@ m2.scaleRatio = 0.25;
 
 movies = new Array(m1, m2);
 
-v = output;
-echo(v);
-echo(drawer);
+v = new VideoOutput(640, 480);;
 mixer = new VideoMixer();
 mixer.size = v.size;
 mixer.input.video.connect(m1.output.frame);
 mixer.input.video.connect(m2.output.frame);
-mixer.input.video.connect(drawer.output.frame);
 mixer.output.frame.connect(v.input.frame);
 
 selected_movie = null;

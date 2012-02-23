@@ -58,7 +58,7 @@ function VideoCapture(device, type)
 
 /**
  * Return an array containing UIDs for all available devices
- * @return and Array of strings
+ * @returns {Array} an array of UIDs {String} for each available device
  */
 VideoCapture.availableDevices = function()
 {
@@ -70,7 +70,7 @@ VideoCapture.availableDevices = function()
 
 /**
  * Return the UID of the default device
- * @return a String
+ * @returns {String} The UID for the default input device
  */
 VideoCapture.defaultDevice = function()
 {

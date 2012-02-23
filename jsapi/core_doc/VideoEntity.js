@@ -16,6 +16,9 @@
  *  <li>alpha {Number}</li>
  *  <li>rotation {Number}</li>
  *  <li>origin {Point}</li>
+ *  <li>scaleRatio {Number}</li>
+ *  <li>frameSize {Size}</li>
+ *  <li>tileFrame {Boolean}</li>
  *  <li>fps {Number}</li>
  *  </ul>
  * <h3>OutputPins:</h3>

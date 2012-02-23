@@ -13,7 +13,7 @@
 
 @implementation JMXProxyPin
 
-@synthesize parent, label, realPin, index, owner;
+@synthesize parent, label, realPin, owner;
 
 + (id)proxyPin:(JMXPin *)pin label:(NSString *)label owner:(JMXEntity *)anEntity
 {
@@ -26,7 +26,6 @@
     owner = anEntity;
     realPin = pin;//[pin retain];
     label = (pinLabel && ![pinLabel isEqualTo:@"undefined"]) ? [pinLabel copy] : [pin.label copy];
-    index = 0;
     proxyNode = [[JMXElement alloc] initWithName:@"JMXProxyPin"];
     [proxyNode addAttribute:[JMXAttribute attributeWithName:@"pin" stringValue:pin.uid]];
     [proxyNode addAttribute:[JMXAttribute attributeWithName:@"label" stringValue:label]];

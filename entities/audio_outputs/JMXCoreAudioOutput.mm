@@ -128,7 +128,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXCoreAudioOutput);
 using namespace v8;
 
 // class method to get a list with all available devices
-static v8::Handle<Value>availableFilters(const Arguments& args)
+static v8::Handle<Value>availableDevices(const Arguments& args)
 {
     HandleScope handleScope;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -148,7 +148,7 @@ static v8::Handle<Value>availableFilters(const Arguments& args)
     objectTemplate->SetClassName(String::New("CoreAudioOutput"));
     objectTemplate->InstanceTemplate()->SetInternalFieldCount(1);
     v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
-    classProto->Set("availableFilters", FunctionTemplate::New(availableFilters));
+    classProto->Set("availableDevices", FunctionTemplate::New(availableDevices));
     NSDebug(@"JMXCoreAudioOutput objectTemplate created");
     return objectTemplate;
 }

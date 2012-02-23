@@ -50,7 +50,7 @@ Array.prototype.toString = function() {
 }
 //Array.defineProperty(Array, "__className__", { value: "Array", writable: false, enumerable: false });
 
-/**
+/*
  * ExceptionCodes
  */
 INDEX_SIZE_ERR                 = 1;

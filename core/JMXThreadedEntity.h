@@ -33,6 +33,10 @@
 #import "JMXEntity.h"
 #import "JMXRunLoop.h"
 
+/*!
+ @category Threaded(JMXEntity)
+ @abstract category required to encapsulate any JMXEntity instance in a threaded entity
+ */
 @interface JMXEntity (Threaded)
 /*!
  @property frequency
@@ -40,12 +44,38 @@
  @discussion the frequency affects also how intensively is the runloop 
  */
 @property (readwrite, copy) NSNumber *frequency;
+
+/*!
+ @property quit
+ @abstract notify the thread needs to exit
+ */
 @property (readwrite, assign) BOOL quit;
+/*!
+ @property previousTimeStamp
+ @abstract the time in which last 'tick' was executed
+ */
 @property (readonly) uint64_t previousTimeStamp;
+
 // entities should implement this message to trigger 
 // delivering of signals to all their custom output pins
+
+/*!
+ @method tick:
+ @abstract execute the entity 'runcycle'. Any entity encapsulated in a threaded entity
+            will have its 'tick:' method called at their configured 'frequency
+ */
 - (void)tick:(uint64_t)timeStamp;
+
+/*!
+ @method start
+ @abstract start the thread (this is done automatically when a new threaded entity is created)
+ */
 - (void)start;
+
+/*!
+ @method stop
+ @abstract stop the thread
+ */
 - (void)stop;
 @end
 
@@ -82,16 +112,53 @@
     BOOL quit;
     JMXOutputPin  *frequencyPin;    
 }
+
+/*!
+ @property frequency
+ @abstract the frequency at which this threaded entity should run
+           Note: this determines how often the 'tick' method is being called
+ */
 @property (readwrite, retain) NSNumber *frequency;
+
+/*!
+ @property realEntity
+ @abstract the underlying real entity (which has been transformed in a threaded entity)
+ */
 @property (readonly) JMXEntity *realEntity;
+/*!
+ @property previousTimestamp
+ @abstract the time in which last 'tick' was executed
+ */
 @property (readwrite, assign) uint64_t previousTimeStamp;
+
+/*!
+ @property quit
+ @abstract notify the thread needs to exit
+ */
 @property (readwrite, assign) BOOL quit;
 
+/*!
+ @method threadedEntity:
+ @abstract convenience constructor for threaded entities
+ */
 + threadedEntity:(JMXEntity *)entity;
+
+/*!
+ @method initWithEntity:
+ @abstract designated initializer
+ */
 - initWithEntity:(JMXEntity *)entity;
 // entities should implement this message to trigger 
 // delivering of signals to all their custom output pins
+
+/*!
+ @method tick:
+ @abstract execute the entity 'runcycle'. Any entity encapsulated in a threaded entity
+ will have its 'tick:' method called at their configured 'frequency
+ */
 - (void)tick:(uint64_t)timeStamp;
+
+
 - (void)startThread;
 - (void)stopThread;
 

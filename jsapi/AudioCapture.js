@@ -58,7 +58,7 @@ function AudioCapture(device, type)
 
 /**
  * Return an array containing UIDs for all available devices
- * @return and Array of strings
+ * @returns {Array} Array of UDIDs {string} for each available device
  */
 AudioCapture.availableDevices = function()
 {
@@ -71,7 +71,7 @@ AudioCapture.availableDevices = function()
 
 /**
  * Return the UID of the default device
- * @return a String
+ * @returns {String} The UID for the default input device
  */
 AudioCapture.defaultDevice = function()
 {

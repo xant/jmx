@@ -291,6 +291,31 @@ void ConvertHSLToRGB (const CGFloat *hslComponents, CGFloat *rgbComponents) {
     return color;
 }
 
+- (CGFloat)r
+{
+    return [self redComponent];
+}
+
+- (CGFloat)g
+{
+    return [self greenComponent];
+}
+
+- (CGFloat)b
+{
+    return [self blueComponent];
+}
+
+- (CGFloat)a
+{
+    return [self alphaComponent];
+}
+
+- (CGFloat)w
+{
+    return [self whiteComponent];
+}
+
 static v8::Persistent<FunctionTemplate> objectTemplate;
 
 + (v8::Persistent<FunctionTemplate>)jsObjectTemplate
@@ -327,31 +352,6 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
     instanceTemplate->SetAccessor(String::NewSymbol("b"), GetDoubleProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("a"), GetDoubleProperty);
     return objectTemplate;
-}
-
-- (CGFloat)r
-{
-    return [self redComponent];
-}
-
-- (CGFloat)g
-{
-    return [self greenComponent];
-}
-
-- (CGFloat)b
-{
-    return [self blueComponent];
-}
-
-- (CGFloat)a
-{
-    return [self alphaComponent];
-}
-
-- (CGFloat)w
-{
-    return [self whiteComponent];
 }
 
 #pragma mark -

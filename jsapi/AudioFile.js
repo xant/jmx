@@ -4,12 +4,12 @@
  */
 
 /**
- * AudioFile
+ * AudioFile 
  * @constructor
  * @param {String} path The path of the Audio file.
- * @param {String} type The specific backend implementation (for instance: CoreAudioFile).
+ * @param {String} type The specific backend implementation (for instance: CoreAudioFile). If omitted the default limplementation will be used
  * @base Entity
- * @class Abstract class implementing basic functionalities for entities grabbing video frames from Audio files.
+ * @class Abstract class implementing basic functionalities for entities grabbing audio frames from Audio files.
  * Such objects will extract video frames from supported video file types and will provide images on their 'frame' output pin
  * Supported file types can be obtained calling the {@link AudioFile#supportedFileTypes} method
  * <h3>InputPins:</h3>

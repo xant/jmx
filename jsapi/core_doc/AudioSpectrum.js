@@ -15,7 +15,7 @@
  *  </ul>
  * <h3>OutputPins:</h3>
  *  <ul>
- *  <li> 1..N frequency pins {Number}</li>
+ *  <li> 1-N frequency pins {Number}</li>
  *  <li>image {Image}</li>
  *  <li>imageSize {Size}</li>
  *  </ul>

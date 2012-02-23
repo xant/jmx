@@ -59,7 +59,7 @@ function CoreAudioFile()
 
 /**
  * Returns a list of supported audio file types
- * @returns Array of strings
+ * @returns Array array of strings
  */
 CoreAudioFile.supportedFileTypes = function() {
     // ...

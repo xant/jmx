@@ -21,7 +21,7 @@ mixer.size = v.size; // let's have the videomixer output a frame as big as the o
 // connect the movies to to the mixer
 mixer.input.video.connect(m1.output.frame);
 mixer.input.video.connect(m2.output.frame);
-// and the mixer to the videou output
+// and the mixer to the video output
 mixer.output.frame.connect(v.input.frame);
 
 // initialize globals to null
@@ -33,6 +33,7 @@ mouse_pressed = null;
 // if it does, let's keep track of it
 document.addEventListener("mousepressed", function(e) {
     mouse_pressed = new Point(e.screenX, e.screenY);
+    // hit detection
     for (i in movies) {
         m = movies[i];
         mwidth = m.size.width*m.scaleRatio;

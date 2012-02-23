@@ -43,18 +43,35 @@
  @abstract The data
  */
 @property (retain) id data;
+
 /*!
  @property sender
  @abstract The sender
  */
 @property (retain) id sender;
+
 /*!
  @property receiver
  @abstract The receiver
  */
 @property (retain) id receiver;
 
+/*!
+ @method signalFromSender:receiver:data:
+ @abstract convenience constructor for JMXPinSignal instances
+ @param sender the sender of the signal
+ @param receiver the receiver of the signal
+ @param data the data to be signaled
+ */
 + signalFromSender:(id)sender receiver:(id)receiver data:(id)data;
+
+/*!
+ @method initWithSender:receiver:data
+ @abstract designated initializer for JMXPinSignal instances
+ @param sender the sender of the signal
+ @param receiver the receiver of the signal
+ @param data the data to be signaled
+ */
 - (id)initWithSender:(id)theSender receiver:(id)theReceiver data:(id)theData;
 
 @end

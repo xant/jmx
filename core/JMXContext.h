@@ -57,6 +57,10 @@
  */
 + (void)initialize;
 
+/*!
+ @property dom
+ @abstract reference to the document object (JMXGraph instance)
+ */
 @property (readonly) JMXGraph *dom;
 
 #if USE_NSOPERATIONS
@@ -76,6 +80,7 @@
  @return a valid context object
  */
 + (JMXContext *)sharedContext;
+
 /*!
  @method registerClass:
  @param  aClass A class object which will be registered to the global context
@@ -86,22 +91,42 @@
            in JMXAppDelegate.m
  @return the active context
  */
+
 - (void)registerClass:(Class)aClass;
 /*!
  @method registeredClasses:
  @abstract Allow to query the context for all registered classes
  */
+
 - (NSArray *)registeredClasses;
 /*!
  @method allEntities:
  @abstract Allow to access all existing entities
  @return An array containing all existing entity-instances 
  */
+
 - (NSArray *)allEntities;
+
+/*!
+ @method addEntity:
+ @abstract add a new entity to this context
+ @param entity the new entity
+ */
 
 - (void)addEntity:(JMXEntity *)entity;
 
+/*!
+ @method removeEntity:
+ @abstract remove an entity from this context
+ @param entity the entity to remove
+ */
+
 - (void)removeEntity:(JMXEntity *)entity;
 
+/*!
+ @method dumpDOM
+ @abstract return a string representation of the DOM describing the actual graph for this context
+ */
 - (NSString *)dumpDOM;
+
 @end

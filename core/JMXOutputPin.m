@@ -26,7 +26,6 @@
 #import "JMXContext.h"
 #import "JMXEntity.h"
 #import "JMXAttribute.h"
-//#import "JMXProxyPin.h"
 
 @interface JMXPin (Private)
 - (void)sendData:(id)data toReceiver:(id)receiver withSelector:(NSString *)selectorName fromSender:(id)sender;
@@ -102,11 +101,7 @@
         [destinationPin.connections addChild:newConnection];
     }
     @synchronized(receivers) {
-        /*if ([pinReceiver isProxy]) {
-            [receivers setObject:pinSignal forKey:((JMXProxyPin *)pinReceiver).realPin];
-        } else {*/
-            [receivers setObject:pinSignal forKey:pinReceiver];
-        //}
+        [receivers setObject:pinSignal forKey:pinReceiver];
     }
     rv = YES;
     // deliver the signal to the just connected receiver
@@ -132,11 +127,7 @@
 - (void)detachObject:(id)pinReceiver
 {
     @synchronized(receivers) {
-        /*if ([pinReceiver isProxy]) {
-            [receivers removeObjectForKey:((JMXProxyPin *)pinReceiver).realPin];
-        } else {*/
-            [receivers removeObjectForKey:pinReceiver];
-        //}
+        [receivers removeObjectForKey:pinReceiver];
         if ([receivers count] == 0) {
             connected = NO;
             NSXMLNode *connectedAttribute = [self attributeForName:@"connected"];

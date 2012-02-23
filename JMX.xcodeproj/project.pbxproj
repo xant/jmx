@@ -94,6 +94,7 @@
 		AA54B28B12A1215000EC60B2 /* jmx-icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = AA54B28A12A1215000EC60B2 /* jmx-icon.icns */; };
 		AA55601412AEF7CC00C882FF /* CIAlphaFade.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AA555FC912AEF39600C882FF /* CIAlphaFade.cikernel */; };
 		AA5563C412B188EB00C882FF /* CIAlphaFade.m in Sources */ = {isa = PBXBuildFile; fileRef = AA555FC712AEF39600C882FF /* CIAlphaFade.m */; };
+		AA75F38914F706FA00F1A214 /* drag_movies.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA75F38814F706E200F1A214 /* drag_movies.js */; };
 		AA8CB78E1282BB9900A17115 /* JMXScriptFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8CB78D1282BB9900A17115 /* JMXScriptFile.mm */; };
 		AA8F785812C5880100EA8543 /* VideoCapture.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA4B039812C06C3000775B88 /* VideoCapture.js */; };
 		AA8F785912C5880100EA8543 /* MovieFile.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA8F770712C5718600EA8543 /* MovieFile.js */; };
@@ -241,6 +242,7 @@
 			dstPath = javascript_examples;
 			dstSubfolderSpec = 12;
 			files = (
+				AA75F38914F706FA00F1A214 /* drag_movies.js in Deploy JS examples */,
 				AAD751E114E9D9DE008B1085 /* counter.js in Deploy JS examples */,
 				AAD751E214E9D9DE008B1085 /* random_point.js in Deploy JS examples */,
 				AACD67AE14DEEF66007C7B31 /* canvas_sample1.js in Deploy JS examples */,
@@ -493,6 +495,17 @@
 		AA70A03314CDE389000A7FA1 /* vm.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = vm.js; sourceTree = "<group>"; };
 		AA70A03414CDE389000A7FA1 /* zlib.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = zlib.js; sourceTree = "<group>"; };
 		AA7400C6130E56EA005A205C /* JMXGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXGlobals.h; sourceTree = "<group>"; };
+		AA75F37E14F706C100F1A214 /* CanvasRenderingContext2D.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = CanvasRenderingContext2D.js; sourceTree = "<group>"; };
+		AA75F37F14F706C100F1A214 /* Event.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Event.js; sourceTree = "<group>"; };
+		AA75F38014F706C100F1A214 /* EventListener.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = EventListener.js; sourceTree = "<group>"; };
+		AA75F38114F706C100F1A214 /* HTMLCanvasElement.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = HTMLCanvasElement.js; sourceTree = "<group>"; };
+		AA75F38214F706C100F1A214 /* InputPin.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = InputPin.js; sourceTree = "<group>"; };
+		AA75F38314F706C100F1A214 /* KeyboardEvent.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = KeyboardEvent.js; sourceTree = "<group>"; };
+		AA75F38414F706C100F1A214 /* MouseEvent.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = MouseEvent.js; sourceTree = "<group>"; };
+		AA75F38514F706C100F1A214 /* Node.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Node.js; sourceTree = "<group>"; };
+		AA75F38614F706C100F1A214 /* OutputPin.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = OutputPin.js; sourceTree = "<group>"; };
+		AA75F38714F706C100F1A214 /* TextEntity.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = TextEntity.js; sourceTree = "<group>"; };
+		AA75F38814F706E200F1A214 /* drag_movies.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = drag_movies.js; path = javascript_examples/drag_movies.js; sourceTree = "<group>"; };
 		AA8CB78C1282BB9800A17115 /* JMXScriptFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXScriptFile.h; sourceTree = "<group>"; };
 		AA8CB78D1282BB9900A17115 /* JMXScriptFile.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScriptFile.mm; sourceTree = "<group>"; };
 		AA8F768C12C40D2700EA8543 /* QtVideoCapture.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = QtVideoCapture.js; sourceTree = "<group>"; };
@@ -956,6 +969,7 @@
 		AA490DD914CC5F9C00407C0D /* Javascript Examples */ = {
 			isa = PBXGroup;
 			children = (
+				AA75F38814F706E200F1A214 /* drag_movies.js */,
 				AAD751DF14E9D9C9008B1085 /* counter.js */,
 				AAD751E014E9D9C9008B1085 /* random_point.js */,
 				AACD67AC14DEEF52007C7B31 /* canvas_sample1.js */,
@@ -996,6 +1010,16 @@
 		AA4BFDF212BE0CCE00775B88 /* core_doc */ = {
 			isa = PBXGroup;
 			children = (
+				AA75F37E14F706C100F1A214 /* CanvasRenderingContext2D.js */,
+				AA75F37F14F706C100F1A214 /* Event.js */,
+				AA75F38014F706C100F1A214 /* EventListener.js */,
+				AA75F38114F706C100F1A214 /* HTMLCanvasElement.js */,
+				AA75F38214F706C100F1A214 /* InputPin.js */,
+				AA75F38314F706C100F1A214 /* KeyboardEvent.js */,
+				AA75F38414F706C100F1A214 /* MouseEvent.js */,
+				AA75F38514F706C100F1A214 /* Node.js */,
+				AA75F38614F706C100F1A214 /* OutputPin.js */,
+				AA75F38714F706C100F1A214 /* TextEntity.js */,
 				AA4BFDF512BE0CF800775B88 /* VideoEntity.js */,
 				AA4BFDF712BE0CF800775B88 /* Size.js */,
 				AA4BFDF812BE0CF800775B88 /* Point.js */,

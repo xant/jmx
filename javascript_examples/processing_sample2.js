@@ -12,6 +12,8 @@ drawer.outputPin('frame').connect(output.inputPin('frame'));
 //drawer.outputPin('frame').export();
 
 
+// from here on the code is exactly what proposed as example on the processing.js website
+
 function sketchProc(processing) {
   // set canvas size known by processing
   processing.width = width;
@@ -49,6 +51,5 @@ function sketchProc(processing) {
   };
 }
 
-//var canvas = $('canvas:first', drawer).get(0);
 // attaching the sketchProc function to the canvas
 var processingInstance = new Processing(drawer.canvas, sketchProc);

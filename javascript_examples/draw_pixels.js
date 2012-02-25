@@ -1,3 +1,4 @@
+// example script to test drawing of single pixels
 width = 640;
 height = 480;
 

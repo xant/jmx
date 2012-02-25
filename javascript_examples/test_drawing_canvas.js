@@ -1,20 +1,25 @@
+// Example script to test canvas drawing functionalities
+// used together with a CIFilter.
+// This script also shows how to export pins from the internally-managed
+// entities to the board.
+
 width = 640;
 height = 480;
 
 drawer = new DrawPath(width, height);
 drawer.frquency = 25;
 
-// UNCOMMENT TO ACTIVATE A VIDEO FILTER
+// create a new video filter, connecti it to the drawer and export its output fram to the board
 filter = new VideoFilter("CIZoomBlur");
-drawer.outputPin('frame').connect(filter.inputPin('frame'));
-filter.outputPin('frame').export('filteredFrame');
+drawer.output.frame.connect(filter.input.frame);
+// the following statement will make the output pin available on the board with the name 'filteredFrame'
+filter.output.frame.export('filteredFrame'); 
 
-// COMMENT THE FOLLOWING TWO LINES IF FILTER HAS BEEN ACTIVATED
-drawer.outputPin('frame').export();
-drawer.outputPin('frameSize').export();
-drawer.inputPin('saturation').export();
+drawer.output.frame.export();
+drawer.output.frameSize.export();
+drawer.input.saturation.export();
 v = new VideoOutput(width, height);
-v.inputPin('frame').connect(filter.outputPin('frame'));
+v.input.frame.connect(filter.output.frame);
 
 cnt = 0;
 x = 0;
@@ -63,10 +68,10 @@ f = function() {
     bgColor = new Color(frand(), frand(), frand(), frand());
     ctx.strokeStyle = fgColor;
     ctx.fillStyle = bgColor;
-    //ctx.beginPath();
-    //ctx.moveTo(point1.x, point1.y);
+    ctx.beginPath();
+    ctx.moveTo(point1.x, point1.y);
     ctx.arc(point.x, point.y, radius, 0, 360, 0);
-    //canvas.closePath();
+    ctx.closePath();
     ctx.stroke();
     ctx.fill();
     
@@ -76,6 +81,4 @@ f = function() {
 
 };
 
-t = setInterval(f, 1000/drawer.frequency);
-    sleep(1/drawer.frequency);
-//run(mainloop);
+t = setInterval(f, 1000/drawer.frequency); // schedule execution at the current drawer frequency

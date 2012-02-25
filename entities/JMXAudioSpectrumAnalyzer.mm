@@ -89,8 +89,8 @@ static int _defaultFrequencies[kJMXAudioSpectrumNumFrequencies] =
         for (NSNumber *frequency in frequencies) {
             int freq = [frequency intValue];
             NSString *pinName = freq < 1000
-                              ? [NSString stringWithFormat:@"%dHz", freq]
-                              : [NSString stringWithFormat:@"%dKhz", freq/1000]; 
+                              ? [NSString stringWithFormat:@"f%dHz", freq]
+                              : [NSString stringWithFormat:@"f%dKhz", freq/1000]; 
             [frequencyPins addObject:[self registerOutputPin:pinName withType:kJMXNumberPin]];
         }
         

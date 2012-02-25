@@ -1,3 +1,7 @@
+//
+// evolved processing example which makes use of both 
+// audio-capture and video-filter functionalities
+//
 width = 640;
 height = 480;
 
@@ -64,9 +68,8 @@ function sketchProc(processing) {
 old250 = 0;
 pin = filter.inputPin('inputAmount');
 pin.data = 0;
-echo(spectrum.outputPin('250Hz'));
-//echo(spectrum.output.250Hz);
-spectrum.outputPin('250Hz').connect(function(v) {
+echo(spectrum.output.f250Hz);
+spectrum.output.f250Hz.connect(function(v) {
     diff = v - old250;
     if (diff > 0.5)
         radius += 10;

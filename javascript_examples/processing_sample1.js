@@ -13,6 +13,8 @@ drawer.outputPin('frame').connect(output.inputPin('frame'));
 // uncomment the following line if you want the outputframe exported on the board
 //drawer.outputPin('frame').export();
 
+// from here on the code is exactly the example proposed on the processing.js website
+
 // Global variables
 radius = 50.0;
 delay = 16;
@@ -55,6 +57,7 @@ function sketchProc(processing) {
   };
 }
 
+// NOTE: the canvas element could have been accessed also by using jquery selectors
 //var canvas = $('canvas:first', drawer).get(0);
 // attaching the sketchProc function to the canvas
 var processingInstance = new Processing(drawer.canvas, sketchProc);

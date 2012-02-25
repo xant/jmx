@@ -1,3 +1,4 @@
+// small example script to test the canvas 2d drawing interface
 out = new VideoOutput(640,480);
 drawer = new DrawPath(640, 480);
 drawer.outputPin('frame').export();
@@ -17,8 +18,8 @@ while (1) {
     drawer.canvas.getContext("2d").strokeStyle = new Color(frand(), frand(), frand());
     drawer.canvas.getContext("2d").fillStyle = b;
     drawer.canvas.getContext("2d").strokeText("TEST", p.x, p.y);
-    //drawer.canvas.getContext("2d").arc(rand()%drawer.size.width, rand()%drawer.size.height, 10, 0, 360, 0);
-    //drawer.canvas.getContext("2d").stroke();
-    //drawer.canvas.getContext("2d").fill();
+    drawer.canvas.getContext("2d").arc(rand()%drawer.size.width, rand()%drawer.size.height, 10, 0, 360, 0);
+    drawer.canvas.getContext("2d").stroke();
+    drawer.canvas.getContext("2d").fill();
     sleep(1/60);
 }

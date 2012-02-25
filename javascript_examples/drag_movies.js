@@ -2,7 +2,8 @@
 m1 = new MovieFile('/Users/xant/test.mov');
 m2 = new MovieFile('/Users/xant/test.mov');
 
-// set their initial origin
+// set their initial origin and scale them
+// (you could want to disable scaling if your movies are small enough)
 m1.origin = new Point(100, 100);
 m1.scaleRatio = 0.25;
 m2.origin = new Point(0, 0);
@@ -12,7 +13,7 @@ m2.scaleRatio = 0.25;
 movies = new Array(m1, m2);
 
 // create a video output (size doesn't really matter)
-v = new VideoOutput(640, 480);;
+v = new VideoOutput(640, 480);
 
 // and create a videomixer so that we can blend the movie files on the same video frame
 mixer = new VideoMixer();
@@ -21,7 +22,7 @@ mixer.size = v.size; // let's have the videomixer output a frame as big as the o
 // connect the movies to to the mixer
 mixer.input.video.connect(m1.output.frame);
 mixer.input.video.connect(m2.output.frame);
-// and the mixer to the video output
+// and the mixer to the video   output
 mixer.output.frame.connect(v.input.frame);
 
 // initialize globals to null
@@ -33,7 +34,6 @@ mouse_pressed = null;
 // if it does, let's keep track of it
 document.addEventListener("mousepressed", function(e) {
     mouse_pressed = new Point(e.screenX, e.screenY);
-    // hit detection
     for (i in movies) {
         m = movies[i];
         mwidth = m.size.width*m.scaleRatio;

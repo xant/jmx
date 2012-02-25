@@ -23,6 +23,7 @@
 
 #define __JMXV8__ 1
 #import "JMXVideoOutput.h"
+#import "JMXAttribute.h"
 
 @implementation JMXVideoOutput
 
@@ -36,7 +37,10 @@
         self.size = [JMXSize sizeWithNSSize:screenSize];
         [self registerInputPin:@"frame" withType:kJMXImagePin andSelector:@"drawFrame:"];
         [self registerInputPin:@"frameSize" withType:kJMXSizePin andSelector:@"setSize:"];
-
+        [self addAttribute:[JMXAttribute attributeWithName:@"width"
+                                               stringValue:[NSString stringWithFormat:@"%.0f", screenSize.width]]];
+        [self addAttribute:[JMXAttribute attributeWithName:@"height"
+                                               stringValue:[NSString stringWithFormat:@"%.0f", screenSize.height]]];
         // effective fps for debugging purposes
         [self registerOutputPin:@"fps" withType:kJMXNumberPin];
         self.label = @"VideoOutput";
@@ -65,6 +69,31 @@
         [currentFrame release];
     self.size = nil;
     [super dealloc];
+}
+
+- (JMXSize *)size
+{
+    @synchronized(self) {
+        return [[size retain] autorelease];
+    }
+}
+
+- (void)setSize:(JMXSize *)newSize
+{
+    @synchronized(self) {
+        if ([size isEqualTo:newSize])
+            return;
+        [size release];
+        if (newSize)
+            size = [newSize retain];
+        else
+            size = nil;
+        NSXMLNode *widthAttr = [self attributeForName:@"width"];
+        NSXMLNode *heightAttr = [self attributeForName:@"height"];
+
+        [widthAttr setStringValue:[NSString stringWithFormat:@"%.0f", size.width]];
+        [heightAttr setStringValue:[NSString stringWithFormat:@"%.0f", size.height]];
+    }
 }
 
 #pragma mark V8

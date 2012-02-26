@@ -30,9 +30,11 @@
  @discussion it exposes a single custom input attribute : "outputOpacity"
  */
 @interface CIAlphaFade: CIFilter
+
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_6
 <CIFilterConstructor>
 #endif
+
 {
     CIImage   *inputImage;
     NSNumber  *outputOpacity;

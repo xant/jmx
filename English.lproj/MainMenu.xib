@@ -3048,7 +3048,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 									<reference key="NSOnImage" ref="838346488"/>
 									<reference key="NSMixedImage" ref="910397774"/>
 								</object>
-								<object class="NSMenuItem" id="517621970">
+								<object class="NSMenuItem" id="264430561">
 									<reference key="NSMenu" ref="466310130"/>
 									<string key="NSTitle">Show DOM</string>
 									<string key="NSKeyEquiv">D</string>
@@ -3228,7 +3228,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<int key="NSWindowBacking">2</int>
 				<string key="NSWindowRect">{{120, 65}, {854, 487}}</string>
 				<int key="NSWTFlags">-461896704</int>
-				<string key="NSWindowTitle">Window</string>
+				<string key="NSWindowTitle">DOM Browser</string>
 				<string key="NSWindowClass">JMXDOMBrowser</string>
 				<nil key="NSViewClass"/>
 				<nil key="NSUserInterfaceItemIdentifier"/>
@@ -4407,7 +4407,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<object class="IBActionConnection" key="connection">
 						<string key="label">toggleDOMBrowser:</string>
 						<reference key="source" ref="726033768"/>
-						<reference key="destination" ref="517621970"/>
+						<reference key="destination" ref="264430561"/>
 					</object>
 					<int key="connectionID">1048</int>
 				</object>
@@ -4891,7 +4891,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<reference ref="367729696"/>
 							<reference ref="498610151"/>
 							<reference ref="665329570"/>
-							<reference ref="517621970"/>
+							<reference ref="264430561"/>
 						</object>
 						<reference key="parent" ref="586577488"/>
 					</object>
@@ -6282,7 +6282,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">1046</int>
-						<reference key="object" ref="517621970"/>
+						<reference key="object" ref="264430561"/>
 						<reference key="parent" ref="466310130"/>
 					</object>
 				</object>

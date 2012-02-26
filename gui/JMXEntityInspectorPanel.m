@@ -43,6 +43,7 @@
 
 - (void)awakeFromNib
 {
+    [super awakeFromNib];
     entityName = nil;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(anEntityWasSelected:)

@@ -99,7 +99,8 @@
         panel.allowedFileTypes = [aClass performSelector:@selector(supportedFileTypes)];
         [panel beginSheetModalForWindow:[self window]
                       completionHandler:^(NSInteger returnCode) {
-                          [self openPanelDidEnd:panel returnCode:returnCode userInfo:userInfo];
+                          if (returnCode == NSFileHandlingPanelOKButton) 
+                              [self openPanelDidEnd:panel returnCode:returnCode userInfo:userInfo];
                       }];
     }
     else {

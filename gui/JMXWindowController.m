@@ -115,6 +115,21 @@
 #pragma mark -
 #pragma mark Interface Builder actions
 
+- (IBAction)toggleDOMBrowser:(id)sender
+{
+	if ([domBrowser isVisible]) {
+        [domBrowser close];
+        if ([sender isKindOfClass:[NSMenuItem class]])
+            [(NSMenuItem *)sender setTitle:@"Show DOM Browser"];
+	}
+	else {
+        [domBrowser setIsVisible:YES];
+        [domBrowser makeKeyAndOrderFront:sender];
+        if ([sender isKindOfClass:[NSMenuItem class]])
+            [(NSMenuItem *)sender setTitle:@"Hide DOM Browser"];
+	}
+}
+
 - (IBAction)toggleInspector:(id)sender
 {
 	if ([inspectorPanel isVisible]) {
@@ -182,6 +197,7 @@
 {
     [inspectorPanel release];
     [outputPanel release];
+    [domBrowser release];
     [super dealloc];
 }
 @end

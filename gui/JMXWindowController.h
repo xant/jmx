@@ -15,6 +15,7 @@
 	NSViewController *boardViewController;
     IBOutlet NSPanel *inspectorPanel;
     IBOutlet NSTextView *outputPanel;
+    IBOutlet NSPanel *domBrowser;
     int stdout_pipe[2];
     int stderr_pipe[2];
     int output_filedes[2];
@@ -28,6 +29,7 @@
 #pragma mark Interface Builder actions
 
 - (IBAction)toggleInspector:(id)sender;
+- (IBAction)toggleDOMBrowser:(id)sender;
 - (IBAction)toggleLibrary:(id)sender;
 - (IBAction)showJavascriptExamples:(id)sender;
 

@@ -177,7 +177,7 @@ static void SetStyle(Local<String> name, Local<Value> value, const AccessorInfo&
 
 - (void)appendToNode:(NSXMLElement *)parentNode
 {
-    [parentNode addChild:[self retain]];
+    [parentNode addChild:self];
 }
 
 @end

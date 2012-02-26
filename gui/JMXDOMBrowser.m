@@ -71,9 +71,13 @@
 
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
-    if ([tableColumn.identifier isEqualToString:@"name"])
-        return [(NSXMLNode *)item name];
-    else {
+    if ([tableColumn.identifier isEqualToString:@"name"]) {
+        if ([item kind] == NSXMLCommentKind) {
+            return [item description];
+        } else {
+            return [(NSXMLNode *)item name];
+        }
+    } else {
         if ([item isKindOfClass:[JMXElement class]]) {
             NSMutableString *attrString = [NSMutableString stringWithCapacity:255];
             for (JMXAttribute *attr in [item attributes]) {

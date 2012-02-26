@@ -70,7 +70,6 @@
 /*!
  @method getContext:
  @abstract get the JMXScript instance where the provided currentContext is being managed/executed
- @param currentContext reference to a Local<Context> where to store the pointer to the current context
  @return the JMXScript instance holding currentContext
  */
 + (JMXScript *)getContext;

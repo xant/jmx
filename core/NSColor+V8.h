@@ -1,51 +1,64 @@
 //
-//  JMXColor.h
+//  NSColor+V8.h
 //  JMX
 //
 //  Created by xant on 11/13/10.
 //  Copyright 2010 Dyne.org. All rights reserved.
 //
+
 /*!
- @header JMXColor.h
+ @header NSColor+V8.h
  @abstract Encapsultaes an NSColor object
- @discussion Wrapper class for points inside the JMX engine
+ @discussion Wrapper class for colors inside the JMX engine
  */
 
 #import <Cocoa/Cocoa.h>
 #import "JMXV8.h"
 #import "JMXCanvasStyle.h"
 
-/* TODO - should be a category */
-
 /*!
- @class JMXColor
- @discussion conforms to protocols: JMXV8
+ @category NSColor (JMXColor)
+ @discussion conforms to protocol: JMXV8
  */
-@interface NSColor (JMXColor) < JMXV8, JMXCanvasStyle > 
+@interface NSColor (JMXColor)  <JMXV8, JMXCanvasStyle>
 
 /*!
- @property r
+ @method r
  @abstract red component
+ @return the red component
  */
-@property (readonly) CGFloat r;
+- (CGFloat) r;
+
 /*!
- @property g
+ @method g
+ @return the green component
  @abstract green component
  */
-@property (readonly) CGFloat g;
+- (CGFloat) g;
+
 /*!
- @property b
+ @method b
  @abstract blue component
  */
-@property (readonly) CGFloat b;
+- (CGFloat) b;
+
 /*!
- @property a
+ @method a
  @abstract alpha component
  */
-@property (readonly) CGFloat a;
+- (CGFloat) a;
 
-@property (readonly) CGFloat w;
+/*!
+ @method w
+ @abstract white component
+ */
+- (CGFloat) w;
 
+/*!
+ @method colorFromCSSString:
+ @abstract create a color object starting from a css color string
+ @param cssString the css color string
+ */
 + (id)colorFromCSSString:(NSString *)cssString;
 
 #ifdef __JMXV8__

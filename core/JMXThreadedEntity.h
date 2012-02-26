@@ -34,7 +34,7 @@
 #import "JMXRunLoop.h"
 
 /*!
- @category Threaded(JMXEntity)
+ @category JMXEntity (Threaded)
  @abstract category required to encapsulate any JMXEntity instance in a threaded entity
  */
 @interface JMXEntity (Threaded)
@@ -61,8 +61,9 @@
 
 /*!
  @method tick:
+ @param timeStamp the current timestamp
  @abstract execute the entity 'runcycle'. Any entity encapsulated in a threaded entity
-            will have its 'tick:' method called at their configured 'frequency
+            will have its 'tick:' method called at their configured 'frequency'
  */
 - (void)tick:(uint64_t)timeStamp;
 
@@ -139,12 +140,14 @@
 
 /*!
  @method threadedEntity:
+ @param entity The entity
  @abstract convenience constructor for threaded entities
  */
 + threadedEntity:(JMXEntity *)entity;
 
 /*!
  @method initWithEntity:
+ @param entity The entity
  @abstract designated initializer
  */
 - initWithEntity:(JMXEntity *)entity;
@@ -153,8 +156,9 @@
 
 /*!
  @method tick:
+ @param timeStamp the current timestamp
  @abstract execute the entity 'runcycle'. Any entity encapsulated in a threaded entity
- will have its 'tick:' method called at their configured 'frequency
+           will have its 'tick:' method called at their configured 'frequency'
  */
 - (void)tick:(uint64_t)timeStamp;
 

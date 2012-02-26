@@ -349,7 +349,6 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
     instanceTemplate->SetAccessor(String::NewSymbol("b"), GetDoubleProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("g"), GetDoubleProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("w"), GetDoubleProperty);
-    instanceTemplate->SetAccessor(String::NewSymbol("b"), GetDoubleProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("a"), GetDoubleProperty);
     return objectTemplate;
 }

@@ -40,7 +40,7 @@
 }
 
 /*!
- @property neRect the underlying NSRect structure
+ @property nsRect the underlying NSRect structure
  */
 @property (assign) NSRect nsRect;
 

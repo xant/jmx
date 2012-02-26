@@ -93,16 +93,24 @@ v8::Handle<v8::Value>GetPointProperty(v8::Local<v8::String> name, const v8::Acce
 v8::Handle<v8::Value>GetObjectProperty(v8::Local<v8::String> name, const v8::AccessorInfo& info);
 
 /*!
- @function SetNumberProperty
- @abstract setter for a NSNumber property
+ @function GetColorProperty
+ @abstract getter for a NSColor property
  @param name the name of the property
- @param value the new value
  @param info extra info related to the called accessor (for instance, any eventual 
         argument passed from javascript)
  @return a v8::Handle encapsulating the return value
  */
-
 v8::Handle<v8::Value>GetColorProperty(v8::Local<v8::String> name, const v8::AccessorInfo& info);
+
+/*!
+ @function SetColorProperty
+ @abstract setter for a NSColor property
+ @param name the name of the property
+ @param value the new value
+ @param info extra info related to the called accessor (for instance, any eventual 
+ argument passed from javascript)
+ @return a v8::Handle encapsulating the return value
+ */
 void SetColorProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::AccessorInfo& info);
 
 void SetNumberProperty(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::AccessorInfo& info);

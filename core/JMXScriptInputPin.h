@@ -17,7 +17,7 @@
 #import "JMXV8.h"
 
 /*!
- @class JMXInputPin
+ @class JMXScriptInputPin
  @abstract JS wrapper class allowing to create custom input pins
            from javascript.
  */

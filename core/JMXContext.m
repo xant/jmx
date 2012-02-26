@@ -24,6 +24,7 @@
 #import "JMXContext.h"
 #import "JMXEntity.h"
 #import "JMXGraph.h"
+#import "JMXAttribute.h"
 
 #define kJMXContextSignalNumWorkers 6
 
@@ -93,6 +94,9 @@ static BOOL initialized = NO;
         //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasCreated:) name:@"JMXEntityWasCreated" object:nil];
         //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(anEntityWasDestroyed:) name:@"JMXEntityWasDestroyed" object:nil];
         NSXMLElement *root = [[[JMXElement alloc] initWithName:@"JMX"] autorelease];
+        [root addAttribute:[JMXAttribute attributeWithName:@"label"
+                                               stringValue:@"jmx"]];
+        
         dom = [[JMXGraph alloc] initWithRootElement:root];
         [dom setName:@"JMXGraph"];
         NSXMLNode *ns = [[[NSXMLNode alloc] initWithKind:NSXMLNamespaceKind] autorelease];

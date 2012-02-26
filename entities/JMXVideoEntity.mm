@@ -65,7 +65,7 @@
                             allowedValues:nil
                             initialValue:self.alpha];
         [inputPin setMinLimit:[NSNumber numberWithFloat:0.0]];
-        [inputPin setMaxLimit:[NSNumber numberWithFloat:2.0]];
+        [inputPin setMaxLimit:[NSNumber numberWithFloat:1.0]];
         inputPin = [self registerInputPin:@"saturation"
                                   withType:kJMXNumberPin
                                andSelector:@"setSaturation:"

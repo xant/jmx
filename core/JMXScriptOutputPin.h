@@ -7,7 +7,7 @@
 //
 
 /*!
- @header JMXScriptInputPin.h
+ @header JMXScriptOutputPin.h
  @abstract JS wrapper class for input pins
  */
 
@@ -17,7 +17,7 @@
 #import "JMXV8.h"
 
 /*!
- @class JMXOutputPin
+ @class JMXScriptOutputPin
  @abstract JS wrapper class allowing to create custom output pins
            from javascript.
  */

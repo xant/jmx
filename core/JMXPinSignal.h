@@ -23,7 +23,8 @@
 // NOTE : You don't need to use this class directly,
 //        it's meant to be used internally by Pin implementations
 
-/*! @header JMXPinSignal.h
+/*! 
+    @header JMXPinSignal.h
     @abstract Signal flowing across pins
  */
 #import <Cocoa/Cocoa.h>
@@ -32,7 +33,8 @@
     @class JMXPinSignal
     @abstract Accessory class used to encapsulate signals flowing across pins
  */
-@interface JMXPinSignal : NSObject {
+@interface JMXPinSignal : NSObject 
+{
     id data;
     id sender;
     id receiver;
@@ -62,16 +64,18 @@
  @param sender the sender of the signal
  @param receiver the receiver of the signal
  @param data the data to be signaled
+ @return a new initialized signal instance
  */
 + signalFromSender:(id)sender receiver:(id)receiver data:(id)data;
 
 /*!
- @method initWithSender:receiver:data
+ @method initWithSender:receiver:data:
  @abstract designated initializer for JMXPinSignal instances
  @param sender the sender of the signal
  @param receiver the receiver of the signal
  @param data the data to be signaled
+ @return the initialized signal instance
  */
-- (id)initWithSender:(id)theSender receiver:(id)theReceiver data:(id)theData;
+- (id)initWithSender:(id)sender receiver:(id)receiver data:(id)data;
 
 @end

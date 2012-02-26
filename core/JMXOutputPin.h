@@ -22,8 +22,8 @@
 //
 
 /*!
- @header JMXInputPin.h
- @abstract Input Pin
+ @header JMXOutputPin.h
+ @abstract Output Pin
  */ 
 #import <Cocoa/Cocoa.h>
 #import "JMXPin.h"

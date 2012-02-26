@@ -5,7 +5,10 @@
 //  Created by xant on 12/19/10.
 //  Copyright 2010 Dyne.org. All rights reserved.
 //
-
+/*!
+ @header JMXProxyPin.h
+ @abstract Proxy Pin
+ */ 
 #import <Cocoa/Cocoa.h>
 #import "JMXPin.h"
 

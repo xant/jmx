@@ -52,7 +52,7 @@
  @param data the raw data of the image
  @param size the size of the image (width/height)
  */
-+ (id)imageDataWithData:(NSData *)data size:(CGSize)s;
++ (id)imageDataWithData:(NSData *)data size:(CGSize)size;
 /*!
  @method imageWithSize:
  @abstract convenience constructor for an empty image data, given a size

@@ -5,7 +5,10 @@
 //  Created by xant on 1/4/11.
 //  Copyright 2011 Dyne.org. All rights reserved.
 //
-
+/*!
+ @header NSXMLNode+V8.h
+ @abstract V8 extensions for NSXMLNode instances
+ */
 #import <Cocoa/Cocoa.h>
 
 #import "JMXV8.h"

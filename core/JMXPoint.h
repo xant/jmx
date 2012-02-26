@@ -39,8 +39,22 @@
     NSPoint nsPoint;
 }
 
+/*!
+ @property nsPoint
+ @abstract the encapsulated nsPoint
+ */
 @property (assign) NSPoint nsPoint;
+
+/*!
+ @property x
+ @abstract get the x coordinate
+ */
 @property (assign) CGFloat x;
+
+/*!
+ @property y
+ @abstract get the y coordinate
+ */
 @property (assign) CGFloat y;
 
 + (id)pointWithX:(CGFloat)x Y:(CGFloat)y;
@@ -56,20 +70,9 @@
  @method initWithNSPoint:
  @abstract initialize a  JMXPoint by wrapping an existing NSPoint
  @param point the pre-existing NSPoint instance
- @return the initialized point
+ @returns the initialized point
  */
 - (id)initWithNSPoint:(NSPoint)point;
-/*!
- @method x
- @abstract get the x coordinate
- @return the x coordinate
- */
-
-/*!
- @method y
- @abstract get the y coordinate
- @return the y coordinate
- */
 
 #ifdef __JMXV8__
 + (void)jsRegisterClassMethods:(v8::Handle<v8::FunctionTemplate>)constructor;

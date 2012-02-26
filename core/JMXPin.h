@@ -362,7 +362,7 @@ typedef enum {
 /*!
  @method nameforMode:
  @abstract returns an NSString with a printable name for a specific pin mode
- @param type the @link JMXPinMode @/link we want the printable name for
+ @param mode the @link JMXPinMode @/link we want the printable name for
  @return NSString with the printable name
  */
 + (NSString *)nameForMode:(JMXPinMode)mode;

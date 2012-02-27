@@ -21,9 +21,13 @@
 //  along with JMX.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#define __JMXV8__
 #import "JMXImageEntity.h"
 #import <QTKit/QTKit.h>
 #import "JMXThreadedEntity.h"
+#import "JMXScript.h"
+
+JMXV8_EXPORT_NODE_CLASS(JMXImageEntity);
 
 @implementation JMXImageEntity
 
@@ -111,6 +115,76 @@
 - (NSString *)displayName
 {
     return [NSString stringWithFormat:@"%@", self.imagePath];
+}
+
+#pragma mark V8
+using namespace v8;
+
+- (void)jsInit:(NSValue *)argsValue
+{
+    v8::Arguments *args = (v8::Arguments *)[argsValue pointerValue];
+    if (args->Length()) {
+        v8::Handle<Value> arg = (*args)[0];
+        v8::String::Utf8Value value(arg);
+        if (*value)
+            [self open:[NSString stringWithUTF8String:*value]];
+    }
+}
+
+static v8::Handle<Value>Open(const Arguments& args)
+{
+    HandleScope handleScope;
+    JMXImageEntity *entity = (JMXImageEntity *)args.Holder()->GetPointerFromInternalField(0);
+    v8::Handle<Value> arg = args[0];
+    v8::String::Utf8Value value(arg);
+    [entity open:[NSString stringWithUTF8String:*value]];
+    return v8::Boolean::New(entity.active);
+}
+
+static v8::Handle<Value>Close(const Arguments& args)
+{
+    HandleScope handleScope;
+    JMXImageEntity *entity = (JMXImageEntity *)args.Holder()->GetPointerFromInternalField(0);
+    [entity close];
+    return v8::Undefined();
+}
+
+static v8::Handle<Value>SupportedFileTypes(const Arguments& args)
+{
+    HandleScope handleScope;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSArray *supportedTypes = nil;
+    JMXImageEntity *imageFile = (JMXImageEntity *)args.Holder()->GetPointerFromInternalField(1);
+    if (imageFile) {
+        supportedTypes = [[imageFile class] supportedFileTypes];
+    } else {
+        Class<JMXFileRead> objcClass = (Class)External::Unwrap(args.Holder()->Get(String::NewSymbol("_objcClass")));
+        supportedTypes = [objcClass supportedFileTypes];
+    }
+    v8::Handle<Array> list = v8::Array::New([supportedTypes count]);
+    for (int i = 0; i < [supportedTypes count]; i++)
+        list->Set(Number::New(i), String::New([[supportedTypes objectAtIndex:i] UTF8String]));
+    [pool release];
+    return handleScope.Close(list);
+}
+
++ (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate
+{
+    HandleScope handleScope;
+    v8::Persistent<v8::FunctionTemplate> entityTemplate = [super jsObjectTemplate];
+    entityTemplate->SetClassName(String::New("ImageFile"));
+    entityTemplate->InstanceTemplate()->SetInternalFieldCount(1);
+    v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
+    classProto->Set("open", FunctionTemplate::New(Open));
+    classProto->Set("close", FunctionTemplate::New(Close));
+    classProto->Set("supportedFileTypes", FunctionTemplate::New(SupportedFileTypes));
+    return entityTemplate;
+}
+
++ (void)jsRegisterClassMethods:(v8::Handle<v8::FunctionTemplate>)constructor
+{
+    [super jsRegisterClassMethods:constructor]; // let our super register its methods (if any)
+    constructor->Set("supportedFileTypes", FunctionTemplate::New(SupportedFileTypes));
 }
 
 @end

@@ -41,6 +41,7 @@
 #import "JMXEvent.h"
 #import "JMXEventListener.h"
 #import "JMXCanvasElement.h"
+#import "JMXImageEntity.h"
 #import "JMXPhidgetEncoderEntity.h"
 #import "JMXTextEntity.h"
 #import "JMXScriptInputPin.h"
@@ -78,6 +79,7 @@ static JMXV8ClassDescriptor mappedClasses[] = {
     { "JMXOpenGLScreen",          "OpenGLScreen",     JMXOpenGLScreenJSConstructor          },
     { "JMXQtVideoCaptureEntity",  "QtVideoCapture",   JMXQtVideoCaptureEntityJSConstructor  },
     { "JMXQtMovieEntity",         "QtMovieFile",      JMXQtMovieEntityJSConstructor         },
+    { "JMXImageEntity",           "ImageFile",        JMXImageEntityJSConstructor           },
     { "JMXCoreImageFilter",       "CoreImageFilter",  JMXCoreImageFilterJSConstructor       },
     { "JMXVideoMixer",            "VideoMixer",       JMXVideoMixerJSConstructor            },
     { "JMXAudioFileEntity",       "CoreAudioFile",    JMXAudioFileEntityJSConstructor       },

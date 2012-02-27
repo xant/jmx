@@ -35,3 +35,5 @@
 @property (copy) NSString *imagePath;
 
 @end
+
+JMXV8_DECLARE_NODE_CONSTRUCTOR(JMXImageEntity);

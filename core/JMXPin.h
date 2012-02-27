@@ -55,18 +55,20 @@
  @constant kJMXBooleanPin NSNumber
  */
 typedef enum {
-    kJMXVoidPin =    (0),
-    kJMXStringPin =  (1),
-    kJMXTextPin =    (1<<1),
-    kJMXCodePin =    (1<<2),
-    kJMXNumberPin =  (1<<3),
-    kJMXImagePin =   (1<<4),
-    kJMXAudioPin =   (1<<5),
-    kJMXPointPin =   (1<<6),
-    kJMXSizePin =    (1<<7),
-    kJMXRectPin =    (1<<8),
-    kJMXColorPin =   (1<<9),
-    kJMXBooleanPin = (1<<10)
+    kJMXVoidPin       = (0),
+    kJMXStringPin     = (1),
+    kJMXTextPin       = (1<<1),
+    kJMXCodePin       = (1<<2),
+    kJMXNumberPin     = (1<<3),
+    kJMXImagePin      = (1<<4),
+    kJMXAudioPin      = (1<<5),
+    kJMXPointPin      = (1<<6),
+    kJMXSizePin       = (1<<7),
+    kJMXRectPin       = (1<<8),
+    kJMXColorPin      = (1<<9),
+    kJMXBooleanPin    = (1<<10),
+    kJMXByteArrayPin  = (1<<11),
+    kJMXDictionaryPin = (1<<12)
 } JMXPinType;
 
 /*!

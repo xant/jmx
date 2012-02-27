@@ -45,6 +45,7 @@
 #import "JMXTextEntity.h"
 #import "JMXScriptInputPin.h"
 #import "JMXScriptOutputPin.h"
+#import "JMXHIDInputEntity.h"
 #import "node.h"
 #import "v8_typed_array.h"
 #import <QuartzCore/QuartzCore.h>
@@ -97,6 +98,7 @@ static JMXV8ClassDescriptor mappedClasses[] = {
     { "JMXScriptInputPin",        "InputPin",         JMXInputPinJSConstructor              },
     { "JMXScriptOutputPin",       "OutputPin",        JMXOutputPinJSConstructor             },
     { "JMXTextEntity",            "TextEntity",       JMXTextEntityJSConstructor            },
+    { "JMXHIDInputEntity",        "HIDInput",         JMXHIDInputEntityJSConstructor        },
     { NULL,                       NULL,               NULL                                  }
 };
 

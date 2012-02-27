@@ -40,6 +40,7 @@
 #import "JMXPhidgetEncoderEntity.h"
 #import "JMXGlobals.h"
 #import "JMXLibraryTableView.h"
+#import "JMXHIDInputEntity.h"
 
 @implementation JMXAppDelegate
 
@@ -61,6 +62,7 @@
 	[sharedContext registerClass:[JMXTextEntity class]];
     [sharedContext registerClass:[JMXScriptFile class]];
     [sharedContext registerClass:[JMXScriptLive class]];
+    [sharedContext registerClass:[JMXHIDInputEntity class]];
     if (CPhidgetEncoder_create != NULL) {
         // XXX - exception case for weakly linked Phidget library
         //       if it's not available at runtime we don't want to register the phidget-related entities

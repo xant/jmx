@@ -15,8 +15,6 @@
 using namespace v8;
 @implementation JMXUint8ClampedArray
 
-@synthesize buffer;
-
 + (id)uint8ClampedArrayWithBytes:(uint8_t *)bytes length:(size_t)length
 {
     return [[[self alloc] initWithBytes:bytes length:length] autorelease];
@@ -31,44 +29,12 @@ using namespace v8;
                           freeOnRelease:freeOnRelease] autorelease];
 }
 
-
-- (id)initWithBytes:(uint8_t *)bytes length:(size_t)length
-{
-    self = [super init];
-    if (self) {
-        buffer = (uint8_t *)calloc(length, sizeof(uint8_t));
-        if (!buffer) {
-            // TODO - log an error
-            return nil;
-        }
-        mustFreeOnRelease = YES;
-    }
-    return self;
-}
-
-- (id)initWithBytesNoCopy:(uint8_t *)bytes
-             length:(size_t)length
-      freeOnRelease:(BOOL)freeOnRelease;
-{
-    self = [super init];
-    if (self) {
-        buffer = bytes;
-        if (!buffer) {
-            // TODO - log an error
-            return nil;
-        }
-        mustFreeOnRelease = freeOnRelease;
-    }
-    return self;
-}
-
 - (void)dealloc
 {
-    if (mustFreeOnRelease)
-        free(buffer);
     [super dealloc];
 }
 
+#pragma mark -
 #pragma mark V8
 
 static v8::Persistent<FunctionTemplate> objectTemplate;
@@ -82,7 +48,7 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
         return objectTemplate;
     
     objectTemplate = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
-    
+    objectTemplate->Inherit([super jsObjectTemplate]);
     objectTemplate->SetClassName(String::New("Uint8ClampedArray"));
     v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     // set instance methods
@@ -92,31 +58,6 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
     instanceTemplate->SetAccessor(String::NewSymbol("x"), GetDoubleProperty, SetDoubleProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("y"), GetDoubleProperty, SetDoubleProperty);
     return objectTemplate;
-}
-
-static void JMXUint8ClampedArrayJSDestructor(Persistent<Value> object, void *parameter)
-{
-    HandleScope handle_scope;
-    Locker lock;
-    JMXUint8ClampedArray *obj = static_cast<JMXUint8ClampedArray *>(parameter);
-    //NSLog(@"V8 WeakCallback (Rect) called %@", obj);
-    [obj release];
-    if (!object.IsEmpty()) {
-        object.ClearWeak();
-        object.Dispose();
-        object.Clear();
-    }
-}
-
-- (Handle<Object>)jsObj
-{
-    //v8::Locker lock;
-    HandleScope handle_scope;
-    Handle<FunctionTemplate> objectTemplate = [JMXUint8ClampedArray jsObjectTemplate];
-    Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
-    jsInstance->SetPointerInInternalField(0, self);
-    jsInstance.MakeWeak([self retain], JMXUint8ClampedArrayJSDestructor);
-    return handle_scope.Close(jsInstance);
 }
 
 @end

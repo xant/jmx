@@ -85,6 +85,8 @@ static BOOL initialized = NO;
 	return globalContext;
 }
 
+#import "JMXHIDDevice.h"
+
 - (id)init
 {
     self = [super init];

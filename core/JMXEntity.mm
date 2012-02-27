@@ -130,25 +130,6 @@ using namespace v8;
                                                         object:pin];
     
 }
-/*
-- (id)jmxInit:(id)arg
-{
-    self = [super jmxInit:arg];
-    if (self) {
-        if ([arg isKindOfClass:[JMXEntity class]]) {
-            // we have been created from javascript
-            owner = arg;
-            if (owner) {
-                [self detach];
-                @synchronized(owner) {
-                    [owner addChild:self];
-                }
-            }
-        }
-    }
-    return self;
-}
-*/
 
 - (id)init
 {

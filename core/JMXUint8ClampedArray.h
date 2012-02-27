@@ -7,29 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "JMXV8.h"
+#import "JMXByteArray.h"
 
-@interface JMXUint8ClampedArray : NSObject <JMXV8>
+@interface JMXUint8ClampedArray : JMXByteArray
 {
-    uint8_t *buffer;
-    size_t size;
-    BOOL copy;
-    BOOL mustFreeOnRelease;
 }
-
-@property (readonly) uint8_t *buffer;
 
 + (id)uint8ClampedArrayWithBytes:(uint8_t *)bytes length:(size_t)length;
 
 + (id)uint8ClampedArrayWithBytesNoCopy:(uint8_t *)bytes
                                 length:(size_t)length
                          freeOnRelease:(BOOL)freeOnRelease;
-
-
-- (id)initWithBytes:(uint8_t *)bytes length:(size_t)length;
-
-- (id)initWithBytesNoCopy:(uint8_t *)bytes
-                   length:(size_t)length
-            freeOnRelease:(BOOL)freeOnRelease;
 
 @end

@@ -16,6 +16,8 @@
 #import "JMXImageData.h"
 #import "NSColor+V8.h"
 #import "JMXScriptPinWrapper.h"
+#import "JMXByteArray.h"
+#import "NSDictionary+V8.h"
 
 using namespace v8;
 
@@ -199,6 +201,12 @@ using namespace v8;
                 break;
             case kJMXSizePin:
                 args[0] = [(JMXSize *)data jsObj];
+                break;
+            case kJMXByteArrayPin:
+                args[0] = [(JMXByteArray *)data jsObj];
+                break;
+            case kJMXDictionaryPin:
+                args[0] = [(NSDictionary *)data jsObj];
                 break;
             case kJMXPointPin:
                 args[0] = [(JMXPoint *)data jsObj];

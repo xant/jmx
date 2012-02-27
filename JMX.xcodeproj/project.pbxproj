@@ -138,6 +138,22 @@
 		AADEBFC812414F7E00A6A06D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */; };
 		AAEA251914D4D2B800533049 /* processing.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AAEA251714D4D29A00533049 /* processing.js */; };
 		AAEA251C14D4D5A200533049 /* JMXEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEA251B14D4D5A000533049 /* JMXEvent.mm */; };
+		AAEF980014FA5BF3006B9F8B /* HID_Utilities.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97F614FA5BF3006B9F8B /* HID_Utilities.c */; };
+		AAEF980114FA5BF3006B9F8B /* HID_Queue_Utilities.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97F914FA5BF3006B9F8B /* HID_Queue_Utilities.c */; };
+		AAEF980214FA5BF3006B9F8B /* HID_Name_Lookup.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97FB14FA5BF3006B9F8B /* HID_Name_Lookup.c */; };
+		AAEF980314FA5BF3006B9F8B /* HID_Error_Handler.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97FD14FA5BF3006B9F8B /* HID_Error_Handler.c */; };
+		AAEF980414FA5BF3006B9F8B /* HID_Config_Utilities.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97FF14FA5BF3006B9F8B /* HID_Config_Utilities.c */; };
+		AAEF980D14FA5BFD006B9F8B /* ImmrHIDUtilAddOn.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF980614FA5BFD006B9F8B /* ImmrHIDUtilAddOn.c */; };
+		AAEF980E14FA5BFD006B9F8B /* IOHIDDevice_.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF980814FA5BFD006B9F8B /* IOHIDDevice_.c */; };
+		AAEF980F14FA5BFD006B9F8B /* IOHIDElement_.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF980A14FA5BFD006B9F8B /* IOHIDElement_.c */; };
+		AAEF981114FA5C31006B9F8B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEF981014FA5C31006B9F8B /* IOKit.framework */; };
+		AAEF981314FA5C3C006B9F8B /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEF981214FA5C3C006B9F8B /* Carbon.framework */; };
+		AAEF981614FA5CFE006B9F8B /* JMXHIDDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF981514FA5CFE006B9F8B /* JMXHIDDevice.m */; };
+		AAEF981D14FAB4E2006B9F8B /* JMXHIDInputEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF981C14FAB4E2006B9F8B /* JMXHIDInputEntity.mm */; };
+		AAEF982014FAD2EE006B9F8B /* JMXByteArray.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF981F14FAD2ED006B9F8B /* JMXByteArray.mm */; };
+		AAEF982314FAE6B7006B9F8B /* NSDictionary+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF982214FAE6B7006B9F8B /* NSDictionary+V8.mm */; };
+		AAEF982614FAE811006B9F8B /* NSObject+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF982514FAE810006B9F8B /* NSObject+V8.mm */; };
+		AAEF982914FAF070006B9F8B /* NSMutableDictionary+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF982814FAF06F006B9F8B /* NSMutableDictionary+V8.mm */; };
 		AAF3757914CCBE8700347F40 /* cares_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3753614CCBE8700347F40 /* cares_wrap.cc */; };
 		AAF3757A14CCBE8700347F40 /* fs_event_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3753714CCBE8700347F40 /* fs_event_wrap.cc */; };
 		AAF3757B14CCBE8700347F40 /* handle_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3753814CCBE8700347F40 /* handle_wrap.cc */; };
@@ -594,6 +610,37 @@
 		AAEA251714D4D29A00533049 /* processing.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = processing.js; sourceTree = "<group>"; };
 		AAEA251A14D4D59F00533049 /* JMXEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXEvent.h; sourceTree = "<group>"; };
 		AAEA251B14D4D5A000533049 /* JMXEvent.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXEvent.mm; sourceTree = "<group>"; };
+		AAEF97F614FA5BF3006B9F8B /* HID_Utilities.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = HID_Utilities.c; path = "HID Utilities/HID_Utilities.c"; sourceTree = "<group>"; };
+		AAEF97F714FA5BF3006B9F8B /* HID_Utilities_External.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HID_Utilities_External.h; path = "HID Utilities/HID_Utilities_External.h"; sourceTree = "<group>"; };
+		AAEF97F814FA5BF3006B9F8B /* HID_Queue_Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HID_Queue_Utilities.h; path = "HID Utilities/HID_Queue_Utilities.h"; sourceTree = "<group>"; };
+		AAEF97F914FA5BF3006B9F8B /* HID_Queue_Utilities.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = HID_Queue_Utilities.c; path = "HID Utilities/HID_Queue_Utilities.c"; sourceTree = "<group>"; };
+		AAEF97FA14FA5BF3006B9F8B /* HID_Name_Lookup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HID_Name_Lookup.h; path = "HID Utilities/HID_Name_Lookup.h"; sourceTree = "<group>"; };
+		AAEF97FB14FA5BF3006B9F8B /* HID_Name_Lookup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = HID_Name_Lookup.c; path = "HID Utilities/HID_Name_Lookup.c"; sourceTree = "<group>"; };
+		AAEF97FC14FA5BF3006B9F8B /* HID_Error_Handler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HID_Error_Handler.h; path = "HID Utilities/HID_Error_Handler.h"; sourceTree = "<group>"; };
+		AAEF97FD14FA5BF3006B9F8B /* HID_Error_Handler.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = HID_Error_Handler.c; path = "HID Utilities/HID_Error_Handler.c"; sourceTree = "<group>"; };
+		AAEF97FE14FA5BF3006B9F8B /* HID_Config_Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HID_Config_Utilities.h; path = "HID Utilities/HID_Config_Utilities.h"; sourceTree = "<group>"; };
+		AAEF97FF14FA5BF3006B9F8B /* HID_Config_Utilities.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = HID_Config_Utilities.c; path = "HID Utilities/HID_Config_Utilities.c"; sourceTree = "<group>"; };
+		AAEF980614FA5BFD006B9F8B /* ImmrHIDUtilAddOn.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ImmrHIDUtilAddOn.c; sourceTree = "<group>"; };
+		AAEF980714FA5BFD006B9F8B /* ImmrHIDUtilAddOn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImmrHIDUtilAddOn.h; sourceTree = "<group>"; };
+		AAEF980814FA5BFD006B9F8B /* IOHIDDevice_.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = IOHIDDevice_.c; sourceTree = "<group>"; };
+		AAEF980914FA5BFD006B9F8B /* IOHIDDevice_.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOHIDDevice_.h; sourceTree = "<group>"; };
+		AAEF980A14FA5BFD006B9F8B /* IOHIDElement_.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = IOHIDElement_.c; sourceTree = "<group>"; };
+		AAEF980B14FA5BFD006B9F8B /* IOHIDElement_.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOHIDElement_.h; sourceTree = "<group>"; };
+		AAEF980C14FA5BFD006B9F8B /* IOHIDLib_.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOHIDLib_.h; sourceTree = "<group>"; };
+		AAEF981014FA5C31006B9F8B /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		AAEF981214FA5C3C006B9F8B /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		AAEF981414FA5CFE006B9F8B /* JMXHIDDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXHIDDevice.h; sourceTree = "<group>"; };
+		AAEF981514FA5CFE006B9F8B /* JMXHIDDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXHIDDevice.m; sourceTree = "<group>"; };
+		AAEF981B14FAB4E2006B9F8B /* JMXHIDInputEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXHIDInputEntity.h; sourceTree = "<group>"; };
+		AAEF981C14FAB4E2006B9F8B /* JMXHIDInputEntity.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXHIDInputEntity.mm; sourceTree = "<group>"; };
+		AAEF981E14FAD2ED006B9F8B /* JMXByteArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXByteArray.h; sourceTree = "<group>"; };
+		AAEF981F14FAD2ED006B9F8B /* JMXByteArray.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXByteArray.mm; sourceTree = "<group>"; };
+		AAEF982114FAE6B6006B9F8B /* NSDictionary+V8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+V8.h"; sourceTree = "<group>"; };
+		AAEF982214FAE6B7006B9F8B /* NSDictionary+V8.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSDictionary+V8.mm"; sourceTree = "<group>"; };
+		AAEF982414FAE810006B9F8B /* NSObject+V8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+V8.h"; sourceTree = "<group>"; };
+		AAEF982514FAE810006B9F8B /* NSObject+V8.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSObject+V8.mm"; sourceTree = "<group>"; };
+		AAEF982714FAF06E006B9F8B /* NSMutableDictionary+V8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary+V8.h"; sourceTree = "<group>"; };
+		AAEF982814FAF06F006B9F8B /* NSMutableDictionary+V8.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSMutableDictionary+V8.mm"; sourceTree = "<group>"; };
 		AAF3753614CCBE8700347F40 /* cares_wrap.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cares_wrap.cc; sourceTree = "<group>"; };
 		AAF3753714CCBE8700347F40 /* fs_event_wrap.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fs_event_wrap.cc; sourceTree = "<group>"; };
 		AAF3753814CCBE8700347F40 /* handle_wrap.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = handle_wrap.cc; sourceTree = "<group>"; };
@@ -760,6 +807,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AAEF981314FA5C3C006B9F8B /* Carbon.framework in Frameworks */,
+				AAEF981114FA5C31006B9F8B /* IOKit.framework in Frameworks */,
 				AA004D8414E714B200009CF9 /* Phidget21.framework in Frameworks */,
 				AAF376A314CCCE5E00347F40 /* libcrypto.dylib in Frameworks */,
 				AAF376A114CCCE5100347F40 /* libz.dylib in Frameworks */,
@@ -781,6 +830,7 @@
 		080E96DDFE201D6D7F000001 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				AAEF97F514FA5BD8006B9F8B /* HID Utilities */,
 				AAF3753514CCBE8700347F40 /* node.js */,
 				AA830A2614AB4CD900E7F544 /* V8+DOM */,
 				AA4BFDD712BE0C8600775B88 /* jsapi */,
@@ -843,6 +893,8 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AAEF981214FA5C3C006B9F8B /* Carbon.framework */,
+				AAEF981014FA5C31006B9F8B /* IOKit.framework */,
 				AA004D8314E714B200009CF9 /* Phidget21.framework */,
 				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
 				13E42FB307B3F0F600E4EEF1 /* CoreData.framework */,
@@ -1103,6 +1155,12 @@
 		AA830A2614AB4CD900E7F544 /* V8+DOM */ = {
 			isa = PBXGroup;
 			children = (
+				AAEF982414FAE810006B9F8B /* NSObject+V8.h */,
+				AAEF982514FAE810006B9F8B /* NSObject+V8.mm */,
+				AAEF982714FAF06E006B9F8B /* NSMutableDictionary+V8.h */,
+				AAEF982814FAF06F006B9F8B /* NSMutableDictionary+V8.mm */,
+				AAEF982114FAE6B6006B9F8B /* NSDictionary+V8.h */,
+				AAEF982214FAE6B7006B9F8B /* NSDictionary+V8.mm */,
 				AAC6334412D36DA900B69DFE /* NSXMLNode+V8.h */,
 				AAC6334512D36DA900B69DFE /* NSXMLNode+V8.mm */,
 				AACCC73D14A921B500D44D71 /* NSFont+V8.h */,
@@ -1147,6 +1205,8 @@
 				AAB71A0614D6BF0200BE8C35 /* JMXImageData.mm */,
 				AAB71A0814D6D89D00BE8C35 /* JMXUint8ClampedArray.h */,
 				AAB71A0914D6D89D00BE8C35 /* JMXUint8ClampedArray.mm */,
+				AAEF981E14FAD2ED006B9F8B /* JMXByteArray.h */,
+				AAEF981F14FAD2ED006B9F8B /* JMXByteArray.mm */,
 				AAB71A0B14D7585300BE8C35 /* JMXEventListener.h */,
 				AAB71A0C14D7585400BE8C35 /* JMXEventListener.mm */,
 				AAD751D314E9462F008B1085 /* JMXMouseEvent.h */,
@@ -1217,6 +1277,8 @@
 				825C312E1275ADD6006376B8 /* JMXContext.m */,
 				AAD751D014E913FA008B1085 /* JMXScreenController.h */,
 				AAD751D114E913FA008B1085 /* JMXScreenController.m */,
+				AAEF981414FA5CFE006B9F8B /* JMXHIDDevice.h */,
+				AAEF981514FA5CFE006B9F8B /* JMXHIDDevice.m */,
 			);
 			name = Core;
 			path = core;
@@ -1272,6 +1334,8 @@
 				825C31091275ADB6006376B8 /* JMXExporter.m */,
 				AA004D8014E7148600009CF9 /* JMXPhidgetEncoderEntity.h */,
 				AA004D8114E7148600009CF9 /* JMXPhidgetEncoderEntity.mm */,
+				AAEF981B14FAB4E2006B9F8B /* JMXHIDInputEntity.h */,
+				AAEF981C14FAB4E2006B9F8B /* JMXHIDInputEntity.mm */,
 			);
 			name = "Base Classes";
 			sourceTree = "<group>";
@@ -1313,6 +1377,39 @@
 				AAD27FD414CE15DD00D3A5FB /* uv-win.h */,
 			);
 			path = "uv-private";
+			sourceTree = "<group>";
+		};
+		AAEF97F514FA5BD8006B9F8B /* HID Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				AAEF980514FA5BFD006B9F8B /* IOHIDManager */,
+				AAEF97F614FA5BF3006B9F8B /* HID_Utilities.c */,
+				AAEF97F714FA5BF3006B9F8B /* HID_Utilities_External.h */,
+				AAEF97F814FA5BF3006B9F8B /* HID_Queue_Utilities.h */,
+				AAEF97F914FA5BF3006B9F8B /* HID_Queue_Utilities.c */,
+				AAEF97FA14FA5BF3006B9F8B /* HID_Name_Lookup.h */,
+				AAEF97FB14FA5BF3006B9F8B /* HID_Name_Lookup.c */,
+				AAEF97FC14FA5BF3006B9F8B /* HID_Error_Handler.h */,
+				AAEF97FD14FA5BF3006B9F8B /* HID_Error_Handler.c */,
+				AAEF97FE14FA5BF3006B9F8B /* HID_Config_Utilities.h */,
+				AAEF97FF14FA5BF3006B9F8B /* HID_Config_Utilities.c */,
+			);
+			name = "HID Utilities";
+			sourceTree = "<group>";
+		};
+		AAEF980514FA5BFD006B9F8B /* IOHIDManager */ = {
+			isa = PBXGroup;
+			children = (
+				AAEF980614FA5BFD006B9F8B /* ImmrHIDUtilAddOn.c */,
+				AAEF980714FA5BFD006B9F8B /* ImmrHIDUtilAddOn.h */,
+				AAEF980814FA5BFD006B9F8B /* IOHIDDevice_.c */,
+				AAEF980914FA5BFD006B9F8B /* IOHIDDevice_.h */,
+				AAEF980A14FA5BFD006B9F8B /* IOHIDElement_.c */,
+				AAEF980B14FA5BFD006B9F8B /* IOHIDElement_.h */,
+				AAEF980C14FA5BFD006B9F8B /* IOHIDLib_.h */,
+			);
+			name = IOHIDManager;
+			path = "HID Utilities/IOHIDManager";
 			sourceTree = "<group>";
 		};
 		AAF17A91123E4DFA001319BA /* Entities */ = {
@@ -1832,6 +1929,20 @@
 				AAD751DB14E9AFFB008B1085 /* JMXScriptInputPin.mm in Sources */,
 				AAD751DE14E9B01A008B1085 /* JMXScriptOutputPin.mm in Sources */,
 				AA37E05214FA318500CBA0AE /* JMXDOMBrowser.m in Sources */,
+				AAEF980014FA5BF3006B9F8B /* HID_Utilities.c in Sources */,
+				AAEF980114FA5BF3006B9F8B /* HID_Queue_Utilities.c in Sources */,
+				AAEF980214FA5BF3006B9F8B /* HID_Name_Lookup.c in Sources */,
+				AAEF980314FA5BF3006B9F8B /* HID_Error_Handler.c in Sources */,
+				AAEF980414FA5BF3006B9F8B /* HID_Config_Utilities.c in Sources */,
+				AAEF980D14FA5BFD006B9F8B /* ImmrHIDUtilAddOn.c in Sources */,
+				AAEF980E14FA5BFD006B9F8B /* IOHIDDevice_.c in Sources */,
+				AAEF980F14FA5BFD006B9F8B /* IOHIDElement_.c in Sources */,
+				AAEF981614FA5CFE006B9F8B /* JMXHIDDevice.m in Sources */,
+				AAEF981D14FAB4E2006B9F8B /* JMXHIDInputEntity.mm in Sources */,
+				AAEF982014FAD2EE006B9F8B /* JMXByteArray.mm in Sources */,
+				AAEF982314FAE6B7006B9F8B /* NSDictionary+V8.mm in Sources */,
+				AAEF982614FAE811006B9F8B /* NSObject+V8.mm in Sources */,
+				AAEF982914FAF070006B9F8B /* NSMutableDictionary+V8.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

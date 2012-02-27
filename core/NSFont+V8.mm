@@ -18,10 +18,6 @@
 #pragma mark -
 #pragma mark V8
 
-- (id)jmxInit:(id)arg
-{
-    return [self jmxInit];
-}
 
 - (id)jmxInit
 {

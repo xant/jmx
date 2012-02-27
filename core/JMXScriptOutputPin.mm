@@ -83,6 +83,10 @@ v8::Handle<v8::Value> JMXOutputPinJSConstructor(const v8::Arguments& args)
         type = kJMXPointPin;
     } else if ([typeName isEqualToString:@"size"]) {
         type = kJMXSizePin;
+    } else if ([typeName isEqualToString:@"bytearray"]) {
+        type = kJMXByteArrayPin;
+    } else if ([typeName isEqualToString:@"dictionary"]) {
+        type = kJMXDictionaryPin;
     } else if ([typeName isEqualToString:@"color"]) {
         type = kJMXColorPin;
     } else if ([typeName isEqualToString:@"image"]) {

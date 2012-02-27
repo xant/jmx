@@ -6,6 +6,8 @@
 //  Copyright (c) 2012 Dyne.org. All rights reserved.
 //
 
+#define __JMXV8__
+
 #import "JMXScriptPinWrapper.h"
 #import "JMXScriptEntity.h"
 #import "JMXPin.h"
@@ -14,6 +16,8 @@
 #import "JMXPoint.h"
 #import "NSColor+V8.h"
 #import "JMXImageData.h"
+#import "JMXByteArray.h"
+#import "NSDictionary+V8.h"
 
 @implementation JMXScriptPinWrapper
 
@@ -113,6 +117,12 @@
                 break;
             case kJMXPointPin:
                 args[0] = [(JMXPoint *)data jsObj];
+                break;
+            case kJMXByteArrayPin:
+                args[0] = [(JMXByteArray *)data jsObj];
+                break;
+            case kJMXDictionaryPin:
+                args[0] = [(NSDictionary *)data jsObj];
                 break;
             default:
                 break;

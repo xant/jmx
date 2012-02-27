@@ -30,6 +30,7 @@
 #import "JMXEntity.h"
 #import "JMXScriptEntity.h"
 #import "JMXScriptPinWrapper.h"
+#import "JMXByteArray.h"
 
 using namespace v8;
 
@@ -249,6 +250,10 @@ using namespace v8;
             return @"Color";
         case kJMXBooleanPin:
             return @"Boolean";
+        case kJMXByteArrayPin:
+            return @"ByteArray";
+        case kJMXDictionaryPin:
+            return @"Dictionary";
     }
     return nil;
 }
@@ -289,6 +294,14 @@ using namespace v8;
             break;
         case kJMXImagePin:
             if (![data isKindOfClass:[CIImage class]])
+                return NO;
+            break;
+        case kJMXByteArrayPin:
+            if (![data isKindOfClass:[JMXByteArray class]])
+                return NO;
+            break;
+        case kJMXDictionaryPin:
+            if (![data isKindOfClass:[NSDictionary class]])
                 return NO;
             break;
         case kJMXSizePin:
@@ -539,6 +552,10 @@ using namespace v8;
         case kJMXRectPin:
             break;
         case kJMXPointPin:
+            break;
+        case kJMXByteArrayPin:
+            break;
+        case kJMXDictionaryPin:
             break;
             
     }

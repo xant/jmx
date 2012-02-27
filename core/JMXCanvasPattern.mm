@@ -55,11 +55,6 @@ static const CGPatternCallbacks patternCallbacks = {
     return [self init];
 }
 
-- (id)jmxInit:(id)arg
-{
-    return [self init];
-}
- 
 - (id)init
 {
     self = [super init];

@@ -1,5 +1,5 @@
 /* 
-Blend to images honoring the alpha channel. 
+Additive Blur Filter. 
 */
   
 kernel vec4 additiveBlur(sampler image, sampler background, float Opacity)  

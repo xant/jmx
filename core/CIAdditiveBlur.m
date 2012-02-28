@@ -63,8 +63,6 @@ static CIKernel *additiveBlurKernel = nil;
 
 - (CIImage *)outputImage
 {
-    //CISampler *src = [CISampler samplerWithImage:inputImage];
-    //CGRect rect = [inputImage extent];
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
     CIImage *image = nil;
     for (CIImage *background in history) {
@@ -77,7 +75,6 @@ static CIKernel *additiveBlurKernel = nil;
     if (!image)
         image = inputImage;
 
-    //CISampler *bkg = [CISampler samplerWithImage:image];
     image = [self apply: additiveBlurKernel, inputImage, image, inputOpacity, nil];
 
     int inputHistoryLength = [inputOpacity floatValue] * kCIAdditiveBlurMaxHistory;   

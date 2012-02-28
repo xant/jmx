@@ -256,9 +256,9 @@
         
         if (frame) {
             // apply alpha
-            //[_alphaFilter setValue:alpha forKey:@"outputOpacity"];
-            //[_alphaFilter setValue:frame forKey:@"inputImage"];
-            //frame = [_alphaFilter valueForKey:@"outputImage"];
+            [_alphaFilter setValue:alpha forKey:@"outputOpacity"];
+            [_alphaFilter setValue:frame forKey:@"inputImage"];
+            frame = [_alphaFilter valueForKey:@"outputImage"];
             outputFrame = frame;
         }
         // TODO - compute the effective fps and send it to an output pin 

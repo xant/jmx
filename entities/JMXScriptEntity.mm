@@ -73,12 +73,7 @@ using namespace v8;
     for (JMXScriptPinWrapper *wrapper in pinWrappers)
         [wrapper disconnect];
     [pinWrappers removeAllObjects];
-    
-    if (jsContext) {
-        [jsContext stop];
-        [jsContext release];
-        jsContext = nil;
-    }
+
     // we want to release our context.
     // first thing ... let's detach all entities we have created
     for (NSXMLNode *node in [self children]) {
@@ -89,7 +84,11 @@ using namespace v8;
             [node detach];
         } 
     }
-    
+    if (jsContext) {
+        [jsContext stop];
+        [jsContext release];
+        jsContext = nil;
+    }
     NSArray *elements = [self elementsForName:@"Entities"];
     JMXElement *holder = [elements count] ? [elements objectAtIndex:0] : nil;
     if (holder) {
@@ -181,7 +180,7 @@ using namespace v8;
         Handle<Value> args[1];
         args[0] = Undefined();
         v8::Context::Scope context_scope(jsContext.ctx);
-        JMXScriptOutputPin *pin = (JMXScriptOutputPin *)aPin;
+        JMXScriptInputPin *pin = (JMXScriptInputPin *)aPin;
         if (pin.function.IsEmpty() || pin.function->IsNull() || pin.function->IsUndefined())
             return;
         switch (pin.type) {

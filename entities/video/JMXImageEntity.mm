@@ -104,7 +104,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXImageEntity);
                 self.image = [CIImage imageWithData:imageData];
                 NSArray *path = [file componentsSeparatedByString:@"/"];
                 self.label = [path lastObject];
-                self.size = [JMXSize sizeWithNSSize:self.image.extent.size];
+                self.size = [JMXSize sizeWithNSSize:NSSizeFromCGSize(self.image.extent.size)];
                 self.needsRender = YES;
                 return YES;
             }

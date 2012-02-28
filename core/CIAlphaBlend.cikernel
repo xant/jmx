@@ -1,0 +1,11 @@
+/* 
+Blend two images without doing any change. 
+*/  
+kernel vec4 blendAlpha(sampler image, sampler background)  
+{  
+    vec4 pix =  sample(image, samplerCoord(image)); 
+    vec4 bkg = sample(background, samplerCoord(background));
+    pix.rgb += bkg.rgb * (1.0-pix.a);
+    pix.a = bkg.a;
+	return pix;  
+}

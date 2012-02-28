@@ -138,6 +138,8 @@
 		AADEBFC812414F7E00A6A06D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */; };
 		AAEA251914D4D2B800533049 /* processing.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AAEA251714D4D29A00533049 /* processing.js */; };
 		AAEA251C14D4D5A200533049 /* JMXEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEA251B14D4D5A000533049 /* JMXEvent.mm */; };
+		AAEBB8AD14FC1839000DA6F9 /* CIAlphaBlend.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AAEBB8AC14FC1839000DA6F9 /* CIAlphaBlend.cikernel */; };
+		AAEBB9CD14FC6873000DA6F9 /* CIAlphaBlend.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEBB9CC14FC6872000DA6F9 /* CIAlphaBlend.m */; };
 		AAEF980014FA5BF3006B9F8B /* HID_Utilities.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97F614FA5BF3006B9F8B /* HID_Utilities.c */; };
 		AAEF980114FA5BF3006B9F8B /* HID_Queue_Utilities.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97F914FA5BF3006B9F8B /* HID_Queue_Utilities.c */; };
 		AAEF980214FA5BF3006B9F8B /* HID_Name_Lookup.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97FB14FA5BF3006B9F8B /* HID_Name_Lookup.c */; };
@@ -610,6 +612,9 @@
 		AAEA251714D4D29A00533049 /* processing.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = processing.js; sourceTree = "<group>"; };
 		AAEA251A14D4D59F00533049 /* JMXEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXEvent.h; sourceTree = "<group>"; };
 		AAEA251B14D4D5A000533049 /* JMXEvent.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXEvent.mm; sourceTree = "<group>"; };
+		AAEBB8AC14FC1839000DA6F9 /* CIAlphaBlend.cikernel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CIAlphaBlend.cikernel; sourceTree = "<group>"; };
+		AAEBB9CB14FC6872000DA6F9 /* CIAlphaBlend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CIAlphaBlend.h; sourceTree = "<group>"; };
+		AAEBB9CC14FC6872000DA6F9 /* CIAlphaBlend.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CIAlphaBlend.m; sourceTree = "<group>"; };
 		AAEF97F614FA5BF3006B9F8B /* HID_Utilities.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = HID_Utilities.c; path = "HID Utilities/HID_Utilities.c"; sourceTree = "<group>"; };
 		AAEF97F714FA5BF3006B9F8B /* HID_Utilities_External.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HID_Utilities_External.h; path = "HID Utilities/HID_Utilities_External.h"; sourceTree = "<group>"; };
 		AAEF97F814FA5BF3006B9F8B /* HID_Queue_Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HID_Queue_Utilities.h; path = "HID Utilities/HID_Queue_Utilities.h"; sourceTree = "<group>"; };
@@ -1301,6 +1306,9 @@
 		AA830A2C14AB4F7500E7F544 /* CoreImage Filters */ = {
 			isa = PBXGroup;
 			children = (
+				AAEBB8AC14FC1839000DA6F9 /* CIAlphaBlend.cikernel */,
+				AAEBB9CB14FC6872000DA6F9 /* CIAlphaBlend.h */,
+				AAEBB9CC14FC6872000DA6F9 /* CIAlphaBlend.m */,
 				AA555FC912AEF39600C882FF /* CIAlphaFade.cikernel */,
 				AA555FC712AEF39600C882FF /* CIAlphaFade.m */,
 				AA555FC812AEF39600C882FF /* CIAlphaFade.h */,
@@ -1702,6 +1710,7 @@
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
 				AA54B28B12A1215000EC60B2 /* jmx-icon.icns in Resources */,
+				AAEBB8AD14FC1839000DA6F9 /* CIAlphaBlend.cikernel in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1943,6 +1952,7 @@
 				AAEF982314FAE6B7006B9F8B /* NSDictionary+V8.mm in Sources */,
 				AAEF982614FAE811006B9F8B /* NSObject+V8.mm in Sources */,
 				AAEF982914FAF070006B9F8B /* NSMutableDictionary+V8.mm in Sources */,
+				AAEBB9CD14FC6873000DA6F9 /* CIAlphaBlend.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

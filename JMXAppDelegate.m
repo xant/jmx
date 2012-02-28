@@ -42,6 +42,8 @@
 #import "JMXLibraryTableView.h"
 #import "JMXHIDInputEntity.h"
 #import "CIAlphaBlend.h"
+#import "CIAdditiveBlur.h"
+
 @implementation JMXAppDelegate
 
 @synthesize window, batchMode, consoleView, libraryTableView;
@@ -64,6 +66,7 @@
     [sharedContext registerClass:[JMXScriptLive class]];
     [sharedContext registerClass:[JMXHIDInputEntity class]];
     [CIAlphaBlend class]; // trigger initialize to have the filter registered and available in the videomixer
+    [CIAdditiveBlur class];
     if (CPhidgetEncoder_create != NULL) {
         // XXX - exception case for weakly linked Phidget library
         //       if it's not available at runtime we don't want to register the phidget-related entities

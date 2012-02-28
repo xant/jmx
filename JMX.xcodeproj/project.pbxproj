@@ -140,6 +140,8 @@
 		AAEA251C14D4D5A200533049 /* JMXEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEA251B14D4D5A000533049 /* JMXEvent.mm */; };
 		AAEBB8AD14FC1839000DA6F9 /* CIAlphaBlend.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AAEBB8AC14FC1839000DA6F9 /* CIAlphaBlend.cikernel */; };
 		AAEBB9CD14FC6873000DA6F9 /* CIAlphaBlend.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEBB9CC14FC6872000DA6F9 /* CIAlphaBlend.m */; };
+		AAEBBA1514FD65CF000DA6F9 /* CIAdditiveBlur.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AAEBBA1214FD65CE000DA6F9 /* CIAdditiveBlur.cikernel */; };
+		AAEBBA1614FD65CF000DA6F9 /* CIAdditiveBlur.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEBBA1414FD65CF000DA6F9 /* CIAdditiveBlur.m */; };
 		AAEF980014FA5BF3006B9F8B /* HID_Utilities.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97F614FA5BF3006B9F8B /* HID_Utilities.c */; };
 		AAEF980114FA5BF3006B9F8B /* HID_Queue_Utilities.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97F914FA5BF3006B9F8B /* HID_Queue_Utilities.c */; };
 		AAEF980214FA5BF3006B9F8B /* HID_Name_Lookup.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97FB14FA5BF3006B9F8B /* HID_Name_Lookup.c */; };
@@ -615,6 +617,9 @@
 		AAEBB8AC14FC1839000DA6F9 /* CIAlphaBlend.cikernel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CIAlphaBlend.cikernel; sourceTree = "<group>"; };
 		AAEBB9CB14FC6872000DA6F9 /* CIAlphaBlend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CIAlphaBlend.h; sourceTree = "<group>"; };
 		AAEBB9CC14FC6872000DA6F9 /* CIAlphaBlend.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CIAlphaBlend.m; sourceTree = "<group>"; };
+		AAEBBA1214FD65CE000DA6F9 /* CIAdditiveBlur.cikernel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CIAdditiveBlur.cikernel; sourceTree = "<group>"; };
+		AAEBBA1314FD65CE000DA6F9 /* CIAdditiveBlur.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CIAdditiveBlur.h; sourceTree = "<group>"; };
+		AAEBBA1414FD65CF000DA6F9 /* CIAdditiveBlur.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CIAdditiveBlur.m; sourceTree = "<group>"; };
 		AAEF97F614FA5BF3006B9F8B /* HID_Utilities.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = HID_Utilities.c; path = "HID Utilities/HID_Utilities.c"; sourceTree = "<group>"; };
 		AAEF97F714FA5BF3006B9F8B /* HID_Utilities_External.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HID_Utilities_External.h; path = "HID Utilities/HID_Utilities_External.h"; sourceTree = "<group>"; };
 		AAEF97F814FA5BF3006B9F8B /* HID_Queue_Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HID_Queue_Utilities.h; path = "HID Utilities/HID_Queue_Utilities.h"; sourceTree = "<group>"; };
@@ -1306,6 +1311,9 @@
 		AA830A2C14AB4F7500E7F544 /* CoreImage Filters */ = {
 			isa = PBXGroup;
 			children = (
+				AAEBBA1214FD65CE000DA6F9 /* CIAdditiveBlur.cikernel */,
+				AAEBBA1314FD65CE000DA6F9 /* CIAdditiveBlur.h */,
+				AAEBBA1414FD65CF000DA6F9 /* CIAdditiveBlur.m */,
 				AAEBB8AC14FC1839000DA6F9 /* CIAlphaBlend.cikernel */,
 				AAEBB9CB14FC6872000DA6F9 /* CIAlphaBlend.h */,
 				AAEBB9CC14FC6872000DA6F9 /* CIAlphaBlend.m */,
@@ -1711,6 +1719,7 @@
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
 				AA54B28B12A1215000EC60B2 /* jmx-icon.icns in Resources */,
 				AAEBB8AD14FC1839000DA6F9 /* CIAlphaBlend.cikernel in Resources */,
+				AAEBBA1514FD65CF000DA6F9 /* CIAdditiveBlur.cikernel in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1953,6 +1962,7 @@
 				AAEF982614FAE811006B9F8B /* NSObject+V8.mm in Sources */,
 				AAEF982914FAF070006B9F8B /* NSMutableDictionary+V8.mm in Sources */,
 				AAEBB9CD14FC6873000DA6F9 /* CIAlphaBlend.m in Sources */,
+				AAEBBA1614FD65CF000DA6F9 /* CIAdditiveBlur.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

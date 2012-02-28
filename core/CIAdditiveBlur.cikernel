@@ -2,11 +2,11 @@
 Blend to images honoring the alpha channel. 
 */
   
-kernel vec4 blendAlpha(sampler image, sampler background)  
+kernel vec4 additiveBlur(sampler image, sampler background, float Opacity)  
 {  
     vec4 pix =  sample(image, samplerCoord(image)); 
     vec4 bkg = sample(background, samplerCoord(background));
-    pix.rgb += bkg.rgb * (1.0-pix.a);
+    pix.rgb += bkg.rgb * Opacity;
     pix.a = bkg.a;
 	return pix;  
 }

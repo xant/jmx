@@ -52,9 +52,9 @@ static CIKernel *alphaBlendKernel = nil;
 
 - (CIImage *)outputImage
 {
-    CISampler *src = [CISampler samplerWithImage: inputImage];
- 
-    return [self apply: alphaBlendKernel, src, inputBackgroundImage, nil];
+    CISampler *src = [CISampler samplerWithImage:inputImage];
+    CISampler *bkg = [CISampler samplerWithImage:inputBackgroundImage];
+    return [self apply: alphaBlendKernel, src, bkg, nil];
 }
 
 - (CIFilter *)filterWithName:(NSString *)name

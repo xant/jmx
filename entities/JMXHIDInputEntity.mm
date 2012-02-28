@@ -30,9 +30,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXHIDInputEntity);
                                   IOHIDDevice_GetVendorID(deviceRef),
                                   IOHIDDevice_GetProductID(deviceRef)];
 
-        [devices addObject:deviceString];/*[NSData dataWithBytesNoCopy:identifier
-                                                length:sizeof(JMXHIDDeviceIdentifier)
-                                          freeWhenDone:YES]];*/
+        [devices addObject:deviceString];
     }
     return devices;
 }

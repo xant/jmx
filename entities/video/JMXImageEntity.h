@@ -29,10 +29,12 @@
 @private
     CIImage *image;
     NSString *imagePath;
+    BOOL needsRender;
 }
 
 @property (retain) CIImage *image;
 @property (copy) NSString *imagePath;
+@property (assign) BOOL needsRender;
 
 @end
 

@@ -31,12 +31,20 @@ JMXV8_EXPORT_NODE_CLASS(JMXImageEntity);
 
 @implementation JMXImageEntity
 
-@synthesize imagePath, image;
+@synthesize imagePath, image, needsRender;
 
 + (NSArray *)supportedFileTypes
 {
     // TODO - find a better way to return supported image types
     return [NSArray arrayWithObjects:@"jpg", @"tiff", @"pdf", @"png", @"gif", @"bmp", nil];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object change:(NSDictionary *)change
+                       context:(void *)context
+{
+    
+    self.needsRender = YES;
 }
 
 - (id)init
@@ -46,7 +54,39 @@ JMXV8_EXPORT_NODE_CLASS(JMXImageEntity);
         self.image = nil;
         JMXThreadedEntity *threadedEntity = [[JMXThreadedEntity threadedEntity:self] retain];
         if (threadedEntity) {
-            self.frequency = [NSNumber numberWithDouble:0.5]; // override frequency
+            //self.frequency = [NSNumber numberWithDouble:0.5]; // override frequency
+            [self addObserver:self
+                   forKeyPath:@"alpha"
+                      options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld)
+                      context:nil];
+            [self addObserver:self
+                   forKeyPath:@"brightness"
+                      options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld)
+                      context:nil];
+            [self addObserver:self
+                   forKeyPath:@"contrast"
+                      options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld)
+                      context:nil];
+            [self addObserver:self
+                   forKeyPath:@"rotation"
+                      options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld)
+                      context:nil];
+            [self addObserver:self
+                   forKeyPath:@"scaleRatio"
+                      options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld)
+                      context:nil];
+            [self addObserver:self
+                   forKeyPath:@"origin"
+                      options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld)
+                      context:nil];
+            [self addObserver:self
+                   forKeyPath:@"size"
+                      options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld)
+                      context:nil];
+            [self addObserver:self
+                   forKeyPath:@"tileFrame"
+                      options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld)
+                      context:nil];
             return (JMXImageEntity *)threadedEntity;
         }
         [self dealloc];
@@ -64,6 +104,8 @@ JMXV8_EXPORT_NODE_CLASS(JMXImageEntity);
                 self.image = [CIImage imageWithData:imageData];
                 NSArray *path = [file componentsSeparatedByString:@"/"];
                 self.label = [path lastObject];
+                //self.size = [JMXSize sizeWithNSSize:self.image.extent.size];
+                self.needsRender = YES;
                 return YES;
             }
         }
@@ -82,10 +124,8 @@ JMXV8_EXPORT_NODE_CLASS(JMXImageEntity);
 
 - (void)tick:(uint64_t)timeStamp
 {
-    if (self.image) {
+    if (self.image && self.needsRender) {
         @synchronized(self) {
-            // XXX - it's useless to render the image each time ... 
-            //       it should be done only if image parameters have changed
             CIImage *frame = self.image;
             CGRect imageRect = [frame extent];
             // scale the image to fit the layer size, if necessary
@@ -105,11 +145,32 @@ JMXV8_EXPORT_NODE_CLASS(JMXImageEntity);
             if (currentFrame)
                 [currentFrame release];
             currentFrame = [frame retain];
+            self.needsRender = NO;
         }
     }
     [super tick:timeStamp];
 }
 
+- (void)dealloc
+{
+    [self removeObserver:self
+              forKeyPath:@"alpha"];
+    [self removeObserver:self
+              forKeyPath:@"brightness"];
+    [self removeObserver:self
+              forKeyPath:@"contrast"];
+    [self removeObserver:self
+              forKeyPath:@"rotation"];
+    [self removeObserver:self
+              forKeyPath:@"scaleRatio"];
+    [self removeObserver:self
+              forKeyPath:@"origin"];
+    [self removeObserver:self
+              forKeyPath:@"size"];
+    [self removeObserver:self
+              forKeyPath:@"tileFrame"];
+    [super dealloc];
+}
 #pragma mark -
 
 - (NSString *)displayName

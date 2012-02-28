@@ -538,7 +538,7 @@ static v8::Handle<Value> ClearTimeout(const Arguments& args)
     JMXScriptTimer *foo = (JMXScriptTimer *)Local<Object>::Cast(args[0])->GetPointerFromInternalField(0);
     if (foo && [scriptContext.runloopTimers containsObject:foo]) {
         [foo.timer invalidate];
-        [scriptContext addRunloopTimer:foo];
+        [scriptContext removeRunloopTimer:foo];
         return handleScope.Close(v8::Boolean::New(1));
     }
     return handleScope.Close(v8::Boolean::New(0));
@@ -773,9 +773,9 @@ static char *argv[2] = { (char *)"JMX", NULL };
 
 - (void)clearTimers
 {
+    [self execCode:@"clearAllTimers()"];
     [nodejsThread cancel];
     [nodejsThread release];
-   
 #if 0
     for (JMXScriptTimer *scriptTimer in runloopTimers)
         [scriptTimer.timer invalidate];

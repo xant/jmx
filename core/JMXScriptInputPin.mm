@@ -16,6 +16,11 @@ using namespace v8;
 
 @synthesize function;
 
+- (void)dealloc
+{
+    
+}
+
 static v8::Persistent<FunctionTemplate> objectTemplate;
 
 + (v8::Persistent<FunctionTemplate>)jsObjectTemplate
@@ -105,7 +110,7 @@ v8::Handle<v8::Value> JMXInputPinJSConstructor(const v8::Arguments& args)
                                                                     type:type
                                                                 function:Persistent<Function>::New(Handle<Function>::Cast(args[2]))];
 
-        jsInstance.MakeWeak([pin retain], JMXInputPinJSDestructor);
+        //jsInstance.MakeWeak([pin retain], JMXInputPinJSDestructor);
         jsInstance->SetPointerInInternalField(0, pin);
     }
     [pool drain];    

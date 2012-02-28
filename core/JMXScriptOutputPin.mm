@@ -108,7 +108,7 @@ v8::Handle<v8::Value> JMXOutputPinJSConstructor(const v8::Arguments& args)
                                                                     type:type
                                                                 function:Persistent<Function>::New(Handle<Function>::Cast(args[2]))];
         
-        jsInstance.MakeWeak([pin retain], JMXOutputPinJSDestructor);
+        //jsInstance.MakeWeak([pin retain], JMXOutputPinJSDestructor);
         jsInstance->SetPointerInInternalField(0, pin);
     }
 

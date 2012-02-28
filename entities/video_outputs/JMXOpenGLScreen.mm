@@ -541,7 +541,7 @@ static void translateScreenCoordinates(JMXOpenGLView *view, NSSize screenSize, N
     if (ctx) {
         CGFloat x, y;
 
-        JMXMouseEvent *mouseEvent = [[[JMXMouseEvent alloc] initWithType:@"mousereleased"
+        JMXMouseEvent *mouseEvent = [[[JMXMouseEvent alloc] initWithType:@"mouseup"
                                                                   target:nil
                                                                 listener:nil
                                                                  capture:NO] autorelease];
@@ -560,7 +560,7 @@ static void translateScreenCoordinates(JMXOpenGLView *view, NSSize screenSize, N
     if (ctx) {
         CGFloat x, y;
 
-        JMXMouseEvent *mouseEvent = [[[JMXMouseEvent alloc] initWithType:@"mousepressed"
+        JMXMouseEvent *mouseEvent = [[[JMXMouseEvent alloc] initWithType:@"mousedown"
                                                                   target:nil
                                                                 listener:nil
                                                                  capture:NO] autorelease];
@@ -611,7 +611,7 @@ static void translateScreenCoordinates(JMXOpenGLView *view, NSSize screenSize, N
     if (ctx) {
         CGFloat x, y;
 
-        JMXMouseEvent *mouseEvent = [[[JMXMouseEvent alloc] initWithType:@"mouseover"
+        JMXMouseEvent *mouseEvent = [[[JMXMouseEvent alloc] initWithType:@"mouseenter"
                                                                   target:nil
                                                                 listener:nil
                                                                  capture:NO] autorelease];
@@ -630,7 +630,7 @@ static void translateScreenCoordinates(JMXOpenGLView *view, NSSize screenSize, N
     if (ctx) {
         CGFloat x, y;
 
-        JMXMouseEvent *mouseEvent = [[[JMXMouseEvent alloc] initWithType:@"mouseout"
+        JMXMouseEvent *mouseEvent = [[[JMXMouseEvent alloc] initWithType:@"mouseleave"
                                                                   target:nil
                                                                 listener:nil
                                                                  capture:NO] autorelease];

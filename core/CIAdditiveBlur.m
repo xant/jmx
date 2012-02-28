@@ -65,6 +65,7 @@ static CIKernel *additiveBlurKernel = nil;
 {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
     CIImage *image = nil;
+    // rebuild last visible frame from the history
     for (CIImage *background in history) {
         if (!image) {
             image = background;
@@ -72,11 +73,13 @@ static CIKernel *additiveBlurKernel = nil;
             image = [self apply: additiveBlurKernel, background, image, inputOpacity, nil];
         }
     }
-    if (!image)
+    if (!image) // if we don't have any history let's just get the current frame
         image = inputImage;
 
+    // apply the current frame on top of the background
     image = [self apply: additiveBlurKernel, inputImage, image, inputOpacity, nil];
 
+    // keep the history
     int inputHistoryLength = [inputOpacity floatValue] * kCIAdditiveBlurMaxHistory;   
     while (history.count > inputHistoryLength)
         [history removeObjectAtIndex:0];
@@ -94,10 +97,10 @@ static CIKernel *additiveBlurKernel = nil;
 
 + (void)initialize
 {
-    [CIFilter registerFilterName: @"CIAdditiveBlurMode"
+    [CIFilter registerFilterName: @"CIAdditiveBlur"
         constructor:[[[self alloc] init] autorelease]
                  classAttributes: [NSDictionary dictionaryWithObjectsAndKeys:
-                                   @"Additive Blur", kCIAttributeFilterDisplayName,
+                                   @"Delayed alpha blit", kCIAttributeFilterDisplayName,
                                    [NSArray arrayWithObject:kCICategoryBlur], kCIAttributeFilterCategories,
 		nil]
 	];

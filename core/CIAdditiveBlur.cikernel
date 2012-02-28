@@ -1,5 +1,6 @@
 /* 
 Additive Blur Filter. 
+Delayed alpha blit
 */
   
 kernel vec4 additiveBlur(sampler image, sampler background, float Opacity)  

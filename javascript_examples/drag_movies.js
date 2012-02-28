@@ -32,7 +32,7 @@ mouse_pressed = null;
 
 // track mouseclicks and check if they hit a visible movie
 // if it does, let's keep track of it
-document.addEventListener("mousepressed", function(e) {
+document.addEventListener("mousedown", function(e) {
     mouse_pressed = new Point(e.screenX, e.screenY);
     for (i in movies) {
         m = movies[i];
@@ -53,7 +53,7 @@ document.addEventListener("mousepressed", function(e) {
 
 // if the mouse button is released we don't care about the selected 
 // movie anymore and we need to reset our globals
-document.addEventListener("mousereleased", function(e) {
+document.addEventListener("mouseup", function(e) {
     mouse_pressed = null;
     selected_movie = null;
     initial_origin = null;
@@ -62,7 +62,7 @@ document.addEventListener("mousereleased", function(e) {
 // if the mouse is being dragged while a movie is selected
 // (AKA: has been hit when the mouse button was pressed)
 // we can move the origin of the selected movie to follow the mouse pointer
-document.addEventListener("mousedragged", function(e) {
+document.addEventListener("mousemove", function(e) {
     if (selected_movie) {
         // sort out the scaled movie size 
         mwidth = selected_movie.size.width*selected_movie.scaleRatio;

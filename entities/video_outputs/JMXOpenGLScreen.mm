@@ -659,14 +659,25 @@ static void translateScreenCoordinates(JMXOpenGLView *view, NSSize screenSize, N
         
         CGFloat x, y;
 
+        NSPoint location = event.locationInWindow;
+        translateScreenCoordinates(aView, aView.frame.size, aView.frameSize.nsSize,
+                                   location.x, location.y, x, y);
         JMXMouseEvent *mouseEvent = [[[JMXMouseEvent alloc] initWithType:kEventTypeMouseDragged
                                                                   target:nil
                                                                 listener:nil
                                                                  capture:NO] autorelease];
-        NSPoint location = event.locationInWindow;
         
-        translateScreenCoordinates(aView, aView.frame.size, aView.frameSize.nsSize,
-                                   location.x, location.y, x, y);
+
+        mouseEvent.screenX = x;
+        mouseEvent.screenY = y;
+        [ctx dispatchEvent:mouseEvent];
+        // propagate a 'mousemove' event as well to be DOM compliant
+        mouseEvent = [[[JMXMouseEvent alloc] initWithType:kEventTypeMouseMove
+                                                   target:nil
+                                                 listener:nil
+                                                  capture:NO] autorelease];
+        
+        
         mouseEvent.screenX = x;
         mouseEvent.screenY = y;
         [ctx dispatchEvent:mouseEvent];

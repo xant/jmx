@@ -26,6 +26,10 @@
 #import "JMXThreadedEntity.h"
 #import "JMXScript.h"
 
+#define kJMXThreadedEntityMinFrequency 1
+#define kJMXThreadedEntityMaxFrequency 100.0
+#define kJMXThreadedEntityDefaultFrequency 30.0
+
 @interface JMXEntity (Private)
 - (void)run;
 @end
@@ -100,15 +104,15 @@
             [registerObservers waitUntilFinished];
         }
         // and 'effective' frequency , only for debugging purposes
-        self.frequency = [NSNumber numberWithDouble:30.0];
+        self.frequency = [NSNumber numberWithDouble:kJMXThreadedEntityDefaultFrequency];
         JMXInputPin *inputFrequency = [entity registerInputPin:@"frequency"
                                                       withType:kJMXNumberPin
                                                    andSelector:@"setFrequency:"
                                                       userData:nil
                                                  allowedValues:nil
                                                   initialValue:self.frequency];
-        [inputFrequency setMinLimit:[NSNumber numberWithFloat:1.0]];
-        [inputFrequency setMaxLimit:[NSNumber numberWithFloat:100.0]];
+        [inputFrequency setMinLimit:[NSNumber numberWithFloat:kJMXThreadedEntityMinFrequency]];
+        [inputFrequency setMaxLimit:[NSNumber numberWithFloat:kJMXThreadedEntityMaxFrequency]];
         frequencyPin = [entity registerOutputPin:@"frequency" withType:kJMXNumberPin];
         stampCount = 0;
         previousTimeStamp = 0;
@@ -334,8 +338,10 @@
 - (void)setFrequency:(NSNumber *)frequency
 {
     JMXThreadedEntity *th = [self privateDataForKey:@"threadedEntity"];
-    if (th)
-        th.frequency = frequency;
+    if (th) {
+        double freq = MIN([frequency doubleValue], kJMXThreadedEntityMaxFrequency);
+        th.frequency = [NSNumber numberWithDouble:freq];
+    }
 }
 
 - (BOOL)quit

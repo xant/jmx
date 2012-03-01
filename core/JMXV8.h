@@ -49,12 +49,19 @@
 @required
 
 /*!
+ @method jsObj
+ @return a javascript wrapper object instance
+ */
+- (v8::Handle<v8::Object>)jsObj;
+
+
+@optional
+
+/*!
  @method jsObjectTemplate
  @return a V8 Persistent<FunctionTemplate> which represents the prototype for the exported javascript class 
  */
 + (v8::Persistent<v8::FunctionTemplate>)jsObjectTemplate;
-
-@optional
 
 /*!
  @method jsObjectTemplateAddons:
@@ -73,12 +80,6 @@
              into the javascript global context. 
  */
 + (void)jsRegisterClassMethods:(v8::Handle<v8::FunctionTemplate>)constructor;
-
-/*!
- @method jsObj
- @return a javascript wrapper object instance
- */
-- (v8::Handle<v8::Object>)jsObj;
 
 /*!
  @method jsInit:

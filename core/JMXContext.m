@@ -169,9 +169,10 @@ static BOOL initialized = NO;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
     
-    int running = true;
     [[NSRunLoop currentRunLoop] addPort:[NSMachPort port] forMode:NSDefaultRunLoopMode];
-    while (running && [runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]){
+    while (![[NSThread currentThread] isCancelled] &&
+           [runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]])
+    {
         //run loop spinned ones
     }
     //[runLoop run];

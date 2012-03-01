@@ -48,6 +48,7 @@
 #import "JMXScriptOutputPin.h"
 #import "JMXHIDInputEntity.h"
 #import "node.h"
+#import "NSDictionary+V8.h"
 #import "v8_typed_array.h"
 #import <QuartzCore/QuartzCore.h>
 
@@ -245,9 +246,17 @@ static v8::Handle<Value> Echo(const Arguments& args) {
     if (args.Length() < 1) return v8::Undefined();
     //v8::Locker lock;
     HandleScope scope;
-    v8::Handle<Value> arg = args[0];
-    v8::String::Utf8Value value(arg);
-    {
+    id obj = nil;
+    
+    if (args[0]->IsObject())
+        obj = (id)args[0]->ToObject()->GetPointerFromInternalField(0);
+    
+    if (obj) {
+        v8::Unlocker unlocker;
+        NSLog(@"%@", obj);
+    } else {
+        v8::Handle<Value> arg = args[0];
+        v8::String::Utf8Value value(arg);
         v8::Unlocker unlocker;
         NSLog(@"%s", *value);
     }

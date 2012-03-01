@@ -53,7 +53,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXPhidgetEncoderEntity);
 
 @implementation JMXPhidgetEncoderEntity
 
-@synthesize frequency, lastPulseTime, limitPulse;
+@synthesize frequency, limitPulse;
 
 static int gotAttach(CPhidgetHandle phid, void *context) {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -197,7 +197,7 @@ static int gotPositionChange(CPhidgetEncoderHandle phid, void *context, int ind,
     uint64_t maxDelta = 1e9 / [self.frequency doubleValue];
     
     uint64_t timeStamp = CVGetCurrentHostTime();
-    if (!self.limitPulse || (timeStamp - self.lastPulseTime >= maxDelta)) {
+    if (!self.limitPulse || (timeStamp - lastPulseTime >= maxDelta)) {
         JMXOutputPin *pin = [[encoders objectAtIndex:[[inputChangeData objectAtIndex:0] intValue]] objectAtIndex:1];
     }
     /*
@@ -213,10 +213,10 @@ static int gotPositionChange(CPhidgetEncoderHandle phid, void *context, int ind,
     uint64_t maxDelta = 1e9 / [self.frequency doubleValue];
     
     uint64_t timeStamp = CVGetCurrentHostTime();
-    if (!self.limitPulse || (timeStamp - self.lastPulseTime >= maxDelta))
+    if (!self.limitPulse || (timeStamp - lastPulseTime >= maxDelta))
     {
         
-        self.lastPulseTime = timeStamp;
+        lastPulseTime = timeStamp;
 
         JMXOutputPin *pin = [[encoders objectAtIndex:[[positionChangeData objectAtIndex:0] intValue]] objectAtIndex:0];
         if (accumulatorObj) {
@@ -288,6 +288,8 @@ int errorCounter = 0;
     v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     // set instance methods
     v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
+    instanceTemplate->SetAccessor(String::NewSymbol("limitPulse"), GetBoolProperty, SetBoolProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("frequency"), GetNumberProperty, SetNumberProperty);
     instanceTemplate->SetInternalFieldCount(1);
     NSDebug(@"JMXPhidgetEncoderEntity objectTemplate created");
     return objectTemplate;

@@ -23,7 +23,6 @@
 }
 
 @property (retain) NSNumber *frequency;
-@property (assign) uint64_t lastPulseTime;
 @property (assign) BOOL limitPulse;
 
 JMXV8_DECLARE_NODE_CONSTRUCTOR(JMXPhidgetEncoderEntity);

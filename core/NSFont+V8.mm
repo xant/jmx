@@ -11,7 +11,7 @@
 #import "JMXScript.h"
 #import "JMXV8PropertyAccessors.h"
 
-//JMXV8_EXPORT_PERSISTENT_CLASS(NSFont);
+JMXV8_EXPORT_CLASS(NSFont);
 
 @implementation NSFont (JMXV8)
 
@@ -25,8 +25,6 @@
 }
 
 using namespace v8;
-
-static Persistent<FunctionTemplate> objectTemplate;
 
 + (Persistent<FunctionTemplate>)jsObjectTemplate
 {
@@ -49,50 +47,17 @@ static Persistent<FunctionTemplate> objectTemplate;
     return objectTemplate;
 }
 
+- (v8::Handle<v8::Object>)jsObj
+{
+    //v8::Locker lock;
+    HandleScope handle_scope;
+    v8::Handle<FunctionTemplate> objectTemplate = [[self class] jsObjectTemplate];
+    v8::Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
+    jsInstance.MakeWeak([self retain], NSFontJSDestructor);
+    jsInstance->SetPointerInInternalField(0, self);
+    //[ctx addPersistentInstance:jsInstance obj:self];
+    return handle_scope.Close(jsInstance);
+}
+
 @end
 
-static void NSFontJSDestructor(Persistent<Value> object, void *parameter)
-{
-    HandleScope handle_scope;
-    v8::Locker lock;
-    NSFont *obj = static_cast<NSFont *>(parameter);
-    //NSLog(@"V8 WeakCallback (Font) called ");
-    [obj release];
-
-    if (!object.IsEmpty()) {
-        object.ClearWeak();
-        object.Dispose();
-        object.Clear();
-    }
-    //object.Clear();
-}
-
-v8::Handle<v8::Value> NSFontJSConstructor(const v8::Arguments& args)
-{
-    HandleScope handleScope;
-    NSFont *font = nil;
-    //v8::Locker locker;
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    CGFloat fsize = 12;
-    
-    if (objectTemplate.IsEmpty()) {
-        objectTemplate = [NSFont jsObjectTemplate];
-    }
-    if (args.Length()) {
-        v8::String::Utf8Value fname(args[0]);
-        if (font) {
-            if (args.Length() > 1) {
-                fsize = args[1]->NumberValue();
-            }
-        }
-        font = [[NSFont fontWithName:[NSString stringWithUTF8String:*fname] size:fsize] retain];
-    }
-    [pool drain];
-    if (font) {
-        Persistent<Object>jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
-        jsInstance.MakeWeak(font, NSFontJSDestructor);
-        jsInstance->SetPointerInInternalField(0, font);
-        return handleScope.Close(jsInstance);
-    }
-    return handleScope.Close(Undefined());
-}

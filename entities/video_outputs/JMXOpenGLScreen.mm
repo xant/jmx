@@ -104,7 +104,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 
 @implementation JMXOpenGLView
 
-@synthesize currentFrame, frameSize, needsRedraw, invertYCoordinates;
+@synthesize currentFrame, frameSize, needsRedraw, invertYCoordinates, backgroundColor;
 
 + (void)initialize
 {
@@ -262,7 +262,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     glDisable(GL_FOG);
     glDisable(GL_DEPTH_TEST);
     glPixelZoom(1.0, 1.0);
-    glClearColor(1.0, 1.0, 1.0, 1.0);
+    glClearColor(backgroundColor.redComponent, backgroundColor.greenComponent, backgroundColor.blueComponent, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
     [[self openGLContext] flushBuffer];
     //[lock unlock];
@@ -409,6 +409,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     if (self) {
         NSRect frame = NSMakeRect(0, 0, size.width, size.height);
         view = [[JMXOpenGLView alloc] initWithFrame:frame];
+        view.backgroundColor = backgroundColor;
         window = [[NSWindow alloc] initWithContentRect:frame                                          
                                              styleMask:NSTitledWindowMask|NSMiniaturizableWindowMask
                                                backing:NSBackingStoreBuffered 
@@ -433,6 +434,25 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     }
     return self;
     
+}
+
+- (NSColor *)backgroundColor
+{
+    @synchronized(self) {
+        return [[backgroundColor retain] autorelease];
+    }
+}
+
+- (void)setBackgroundColor:(NSColor *)newBackgroundColor
+{
+    @synchronized(self) {
+        if (backgroundColor != newBackgroundColor) {
+            [backgroundColor release];
+            backgroundColor = [newBackgroundColor retain];
+            view.backgroundColor = backgroundColor;
+            [view reshape];
+        }
+    }
 }
 
 - (void)setSize:(JMXSize *)newSize

@@ -28,9 +28,11 @@
 @protected
     CIImage *currentFrame;
     JMXSize *size;
+    NSColor *backgroundColor;
 }
 
 @property (retain) JMXSize *size;
+@property (retain) NSColor *backgroundColor;
 
 - (id)initWithSize:(NSSize)screenSize;
 - (void)drawFrame:(CIImage *)frame;

@@ -44,12 +44,14 @@
     JMXSize *frameSize;
     BOOL needsRedraw;
     BOOL invertYCoordinates;
+    NSColor *backgroundColor;
 }
 
 @property (atomic, retain) CIImage *currentFrame;
 @property (atomic, readonly) JMXSize *frameSize;
 @property (atomic, assign) BOOL needsRedraw;
 @property (atomic, assign) BOOL invertYCoordinates;
+@property (atomic, retain) NSColor *backgroundColor;
 
 - (void)setSize:(NSSize)size;
 - (void)cleanup;

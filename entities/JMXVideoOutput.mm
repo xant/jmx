@@ -27,7 +27,7 @@
 
 @implementation JMXVideoOutput
 
-@synthesize size;
+@synthesize size, backgroundColor;
 
 - (id)initWithSize:(NSSize)screenSize
 {
@@ -44,6 +44,7 @@
         // effective fps for debugging purposes
         [self registerOutputPin:@"fps" withType:kJMXNumberPin];
         self.label = @"VideoOutput";
+        self.backgroundColor = [NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:1.0];
     }
     return self;
 }
@@ -171,6 +172,8 @@ static v8::Handle<Value>GetHeight(Local<String> name, const AccessorInfo& info)
     objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("width"), GetWidth, SetWidth);
     objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("height"), GetHeight, SetHeight);
     objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("size"), GetSizeProperty, SetSizeProperty);
+    objectTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("backgroundColor"), GetColorProperty, SetColorProperty);
+
     NSDebug(@"JMXVideoOutput objectTemplate created");
     return objectTemplate;
 }

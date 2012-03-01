@@ -102,8 +102,10 @@
 		AA8F785A12C5880100EA8543 /* AudioFile.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA8F770812C571A200EA8543 /* AudioFile.js */; };
 		AA8F806112C9D3FA00EA8543 /* JMXScriptLive.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8F806012C9D3FA00EA8543 /* JMXScriptLive.mm */; };
 		AA8F817612CB236700EA8543 /* JMXTextPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8F817512CB236700EA8543 /* JMXTextPanel.m */; };
-		AA90043F14ECFB6100952BC8 /* libv8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA90043E14ECFB6100952BC8 /* libv8.dylib */; };
 		AA93701D14CC2FFB001D9BB3 /* JMXScriptTimer.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA93701C14CC2FFA001D9BB3 /* JMXScriptTimer.mm */; };
+		AA9B58D914FE1E4F00F63C33 /* NSNumber+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9B58D614FE1E4F00F63C33 /* NSNumber+V8.mm */; };
+		AA9B58DA14FE1E4F00F63C33 /* NSString+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9B58D814FE1E4F00F63C33 /* NSString+V8.mm */; };
+		AA9B58FD14FED30700F63C33 /* libv8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9B58FC14FED30700F63C33 /* libv8.dylib */; };
 		AA9C17FC12E200C400329158 /* JMXCanvasElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C17FB12E200C400329158 /* JMXCanvasElement.mm */; };
 		AA9C18DA12E2FC1000329158 /* JMXCanvasGradient.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C18D912E2FC1000329158 /* JMXCanvasGradient.mm */; };
 		AA9C190F12E32B0600329158 /* JMXCanvasPattern.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C190E12E32B0600329158 /* JMXCanvasPattern.mm */; };
@@ -157,7 +159,6 @@
 		AAEF982014FAD2EE006B9F8B /* JMXByteArray.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF981F14FAD2ED006B9F8B /* JMXByteArray.mm */; };
 		AAEF982314FAE6B7006B9F8B /* NSDictionary+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF982214FAE6B7006B9F8B /* NSDictionary+V8.mm */; };
 		AAEF982614FAE811006B9F8B /* NSObject+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF982514FAE810006B9F8B /* NSObject+V8.mm */; };
-		AAEF982914FAF070006B9F8B /* NSMutableDictionary+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF982814FAF06F006B9F8B /* NSMutableDictionary+V8.mm */; };
 		AAF3757914CCBE8700347F40 /* cares_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3753614CCBE8700347F40 /* cares_wrap.cc */; };
 		AAF3757A14CCBE8700347F40 /* fs_event_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3753714CCBE8700347F40 /* fs_event_wrap.cc */; };
 		AAF3757B14CCBE8700347F40 /* handle_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3753814CCBE8700347F40 /* handle_wrap.cc */; };
@@ -539,9 +540,13 @@
 		AA8F806012C9D3FA00EA8543 /* JMXScriptLive.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScriptLive.mm; sourceTree = "<group>"; };
 		AA8F817412CB236700EA8543 /* JMXTextPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXTextPanel.h; sourceTree = "<group>"; };
 		AA8F817512CB236700EA8543 /* JMXTextPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXTextPanel.m; sourceTree = "<group>"; };
-		AA90043E14ECFB6100952BC8 /* libv8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libv8.dylib; path = "../v8-read-only/libv8.dylib"; sourceTree = "<group>"; };
 		AA93701B14CC2FF9001D9BB3 /* JMXScriptTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXScriptTimer.h; sourceTree = "<group>"; };
 		AA93701C14CC2FFA001D9BB3 /* JMXScriptTimer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScriptTimer.mm; sourceTree = "<group>"; };
+		AA9B58D514FE1E4F00F63C33 /* NSNumber+V8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNumber+V8.h"; sourceTree = "<group>"; };
+		AA9B58D614FE1E4F00F63C33 /* NSNumber+V8.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSNumber+V8.mm"; sourceTree = "<group>"; };
+		AA9B58D714FE1E4F00F63C33 /* NSString+V8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+V8.h"; sourceTree = "<group>"; };
+		AA9B58D814FE1E4F00F63C33 /* NSString+V8.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSString+V8.mm"; sourceTree = "<group>"; };
+		AA9B58FC14FED30700F63C33 /* libv8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libv8.dylib; path = "../v8-read-only/libv8.dylib"; sourceTree = "<group>"; };
 		AA9C17FA12E200C400329158 /* JMXCanvasElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXCanvasElement.h; sourceTree = "<group>"; };
 		AA9C17FB12E200C400329158 /* JMXCanvasElement.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXCanvasElement.mm; sourceTree = "<group>"; };
 		AA9C18D812E2FC1000329158 /* JMXCanvasGradient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXCanvasGradient.h; sourceTree = "<group>"; };
@@ -649,8 +654,6 @@
 		AAEF982214FAE6B7006B9F8B /* NSDictionary+V8.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSDictionary+V8.mm"; sourceTree = "<group>"; };
 		AAEF982414FAE810006B9F8B /* NSObject+V8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+V8.h"; sourceTree = "<group>"; };
 		AAEF982514FAE810006B9F8B /* NSObject+V8.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSObject+V8.mm"; sourceTree = "<group>"; };
-		AAEF982714FAF06E006B9F8B /* NSMutableDictionary+V8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary+V8.h"; sourceTree = "<group>"; };
-		AAEF982814FAF06F006B9F8B /* NSMutableDictionary+V8.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSMutableDictionary+V8.mm"; sourceTree = "<group>"; };
 		AAF3753614CCBE8700347F40 /* cares_wrap.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cares_wrap.cc; sourceTree = "<group>"; };
 		AAF3753714CCBE8700347F40 /* fs_event_wrap.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fs_event_wrap.cc; sourceTree = "<group>"; };
 		AAF3753814CCBE8700347F40 /* handle_wrap.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = handle_wrap.cc; sourceTree = "<group>"; };
@@ -830,7 +833,7 @@
 				AA2BE3F312353BA6006087E7 /* CoreAudio.framework in Frameworks */,
 				AA2BE40B12353D5C006087E7 /* Accelerate.framework in Frameworks */,
 				AADEBFC812414F7E00A6A06D /* AudioToolbox.framework in Frameworks */,
-				AA90043F14ECFB6100952BC8 /* libv8.dylib in Frameworks */,
+				AA9B58FD14FED30700F63C33 /* libv8.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -918,8 +921,8 @@
 				AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */,
 				AAF376A214CCCE5E00347F40 /* libcrypto.dylib */,
 				AAF376A014CCCE5000347F40 /* libz.dylib */,
+				AA9B58FC14FED30700F63C33 /* libv8.dylib */,
 				AAF3769E14CCCE2C00347F40 /* libssl.dylib */,
-				AA90043E14ECFB6100952BC8 /* libv8.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1165,10 +1168,12 @@
 		AA830A2614AB4CD900E7F544 /* V8+DOM */ = {
 			isa = PBXGroup;
 			children = (
+				AA9B58D514FE1E4F00F63C33 /* NSNumber+V8.h */,
+				AA9B58D614FE1E4F00F63C33 /* NSNumber+V8.mm */,
+				AA9B58D714FE1E4F00F63C33 /* NSString+V8.h */,
+				AA9B58D814FE1E4F00F63C33 /* NSString+V8.mm */,
 				AAEF982414FAE810006B9F8B /* NSObject+V8.h */,
 				AAEF982514FAE810006B9F8B /* NSObject+V8.mm */,
-				AAEF982714FAF06E006B9F8B /* NSMutableDictionary+V8.h */,
-				AAEF982814FAF06F006B9F8B /* NSMutableDictionary+V8.mm */,
 				AAEF982114FAE6B6006B9F8B /* NSDictionary+V8.h */,
 				AAEF982214FAE6B7006B9F8B /* NSDictionary+V8.mm */,
 				AAC6334412D36DA900B69DFE /* NSXMLNode+V8.h */,
@@ -1960,9 +1965,10 @@
 				AAEF982014FAD2EE006B9F8B /* JMXByteArray.mm in Sources */,
 				AAEF982314FAE6B7006B9F8B /* NSDictionary+V8.mm in Sources */,
 				AAEF982614FAE811006B9F8B /* NSObject+V8.mm in Sources */,
-				AAEF982914FAF070006B9F8B /* NSMutableDictionary+V8.mm in Sources */,
 				AAEBB9CD14FC6873000DA6F9 /* CIAlphaBlend.m in Sources */,
 				AAEBBA1614FD65CF000DA6F9 /* CIAdditiveBlur.m in Sources */,
+				AA9B58D914FE1E4F00F63C33 /* NSNumber+V8.mm in Sources */,
+				AA9B58DA14FE1E4F00F63C33 /* NSString+V8.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

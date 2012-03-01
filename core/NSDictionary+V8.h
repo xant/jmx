@@ -9,8 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "JMXV8.h"
 
-@interface NSDictionary (JMXV8)
-
-- (v8::Handle<v8::Object>)jsObj;
+@interface NSDictionary (JMXV8) <JMXV8>
 
 @end

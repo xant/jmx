@@ -10,20 +10,21 @@
 #import "JMXEntity.h"
 #import "JMXV8.h"
 
-
 @interface JMXPhidgetEncoderEntity : JMXEntity
 {
 @protected
     CPhidgetEncoderHandle encoder;
     int numInputs, numEncoders;
     NSMutableArray *encoders;
+    NSNumber *frequency;
+    uint64_t lastPulseTime;
+    NSMutableDictionary *accumulators;
+    BOOL limitPulse;
 }
 
-- (void)InputChange:(NSArray *)inputChangeData;
-- (void)PositionChange:(NSArray *)positionChangeData;
-
-- (void)phidgetAdded:(id)nothing;
-- (void)phidgetRemoved:(id)nothing;
+@property (retain) NSNumber *frequency;
+@property (assign) uint64_t lastPulseTime;
+@property (assign) BOOL limitPulse;
 
 JMXV8_DECLARE_NODE_CONSTRUCTOR(JMXPhidgetEncoderEntity);
 

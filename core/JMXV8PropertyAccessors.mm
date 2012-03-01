@@ -59,10 +59,7 @@ v8::Handle<Value>GetObjectProperty(Local<String> name, const AccessorInfo& info)
             Handle<Number> number = Number::New([(NSNumber *)output doubleValue]);
             [pool drain];
             return handle_scope.Close(number);
-        } else if ([output isKindOfClass:[JMXPin class]] || [output isKindOfClass:[JMXEntity class]] || 
-                   [output isKindOfClass:[JMXSize class]] || [output isKindOfClass:[JMXPoint class]] ||
-                   [output isKindOfClass:[NSColor class]])
-        {
+        } else if ([output respondsToSelector:@selector(jsObj)]) {
             Handle<Object> jsObj = [output jsObj];
             [pool drain];
             return handle_scope.Close(jsObj);

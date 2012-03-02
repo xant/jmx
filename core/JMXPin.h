@@ -125,8 +125,7 @@ typedef enum {
     BOOL                connected;
     id                  dataBuffer[kJMXPinDataBufferMask+1]; // double buffer synchronized for writers
                                        // but lockless for readers
-    UInt32              rOffset;
-    UInt32              wOffset;
+    volatile int32_t    offset;
     JMXPinDirection     direction;
     id                  minValue;
     id                  maxValue;
@@ -134,7 +133,6 @@ typedef enum {
     id                  ownerUserData; // weak reference (depends on the owner)
     NSString            *ownerSignal; // weak reference (depends on the owner)
     NSMutableArray      *allowedValues;
-    NSRecursiveLock     *dataLock;
     NSXMLElement        *connections;
     JMXPinMode          mode;
 }

@@ -31,7 +31,7 @@
 #import "JMXScriptEntity.h"
 #import "JMXScriptPinWrapper.h"
 #import "JMXByteArray.h"
-
+#import <libkern/OSAtomic.h>
 using namespace v8;
 
 @implementation JMXPin
@@ -189,12 +189,11 @@ using namespace v8;
         sendNotifications = YES;
         memset(dataBuffer, 0, sizeof(dataBuffer));
         allowedValues = pinValues ? [[NSMutableArray arrayWithArray:pinValues] retain] : nil;
-        rOffset = wOffset = 0;
+        offset = 0;
         if (value && [self isCorrectDataType:value]) {
             currentSender = owner;
-            dataBuffer[wOffset++] = [value retain];
+            dataBuffer[offset] = [value retain];
         }
-        dataLock = [[NSRecursiveLock alloc] init];
         [self addAttribute:[NSXMLNode attributeWithName:@"type" stringValue:[JMXPin nameForType:type]]];
         [self addAttribute:[NSXMLNode attributeWithName:@"multiple" stringValue:multiple ? @"YES" : @"NO" ]];
         [self addAttribute:[NSXMLNode attributeWithName:@"connected" stringValue:connected ? @"YES" : @"NO" ]];
@@ -350,7 +349,8 @@ using namespace v8;
     [label release];
     if (allowedValues)
         [allowedValues release];
-    [dataLock release];
+    for (int i = 0; i < kJMXPinDataBufferMask+1; i++)
+        [dataBuffer[i] release];
     [super dealloc];
 }
 
@@ -513,9 +513,7 @@ using namespace v8;
 
     if (!ret) {
         // otherwise we will return the last signaled data
-        [dataLock lock];
-        ret = [dataBuffer[rOffset&kJMXPinDataBufferMask] retain];
-        [dataLock unlock];
+        ret = [dataBuffer[offset&kJMXPinDataBufferMask] retain];
         [ret autorelease];
     }
     return ret;
@@ -573,25 +571,15 @@ using namespace v8;
     // if instead new data arrived, check if it's of the correct type
     // and propagate the signal if that's the case
     if ([self isValidData:data]) {
-
-        
-        // this lock protects us from multiple senders delivering a signal at the exact same time
-        // wOffset and rOffset must both be incremented in an atomic operation.
-        // concurrency here can happen only in 2 scenarios :
-        // - an input pin which allows multiple producers (like mixers)
-        // - when the user connect a new producer a signal is sent, and the signal from
-        //   current producer could still being executed.
-        [dataLock lock]; // in single-producer mode, this mutex will be always free to lock
-        UInt32 wOff = wOffset&kJMXPinDataBufferMask;
-        if (rOffset != wOffset) {
-            UInt32 rOff = rOffset++&kJMXPinDataBufferMask;
-            [dataBuffer[rOff] release];
+        id currentData = nil;
+        @synchronized(self) {
+            UInt32 currentOffset = offset&kJMXPinDataBufferMask;
+            UInt32 nextOffset = (offset+1)&kJMXPinDataBufferMask;
+            currentData = dataBuffer[currentOffset];
+            dataBuffer[nextOffset] = [data retain];
+            OSAtomicIncrement32(&offset);
         }
-        dataBuffer[wOff] = [data retain];
-        wOffset++;
-        [dataLock unlock];
-
-        // XXX - sender is not protected by a lock
+        [currentData release];
         if (sender)
             currentSender = sender;
         else

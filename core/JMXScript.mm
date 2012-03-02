@@ -672,7 +672,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
 
 - (void)nodejsRun
 {
-    uint64_t maxDelta = 1e9 / 120; // max 120 ticks per seconds
+    uint64_t maxDelta = 1e9 / 120.0; // max 120 ticks per seconds
     @try {
         NSThread *currentThread = [NSThread currentThread];
         while (![currentThread isCancelled]) {
@@ -689,8 +689,16 @@ static char *argv[2] = { (char *)"JMX", NULL };
                 uint64_t now = CVGetCurrentHostTime();
                 uint64_t delta = now - timeStamp;
                 uint64_t sleepTime = (delta && delta < maxDelta) ? maxDelta - delta : 0;
-                if (sleepTime)
-                    [NSThread sleepForTimeInterval:sleepTime/1e9];
+                if (sleepTime) {
+                    struct timespec time = { 0, 0 };
+                    struct timespec remainder = { 0, sleepTime };
+                    do {
+                        time.tv_sec = remainder.tv_sec;
+                        time.tv_nsec = remainder.tv_nsec;
+                        remainder.tv_nsec = 0;
+                        nanosleep(&time, &remainder);
+                    } while (remainder.tv_sec || remainder.tv_nsec);
+                }
             }
         }
     }

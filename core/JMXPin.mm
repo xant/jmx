@@ -578,6 +578,7 @@ using namespace v8;
             currentData = dataBuffer[currentOffset];
             dataBuffer[nextOffset] = [data retain];
             OSAtomicIncrement32(&offset);
+            dataBuffer[currentOffset] = nil;
         }
         [currentData release];
         if (sender)

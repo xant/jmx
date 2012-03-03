@@ -105,6 +105,8 @@ static JMXV8ClassDescriptor mappedClasses[] = {
     { NULL,                       NULL,               NULL                                  }
 };
 
+static NSThread *globalNodejsThread = nil;
+
 void JSExit(int code)
 {
     v8::Locker locker;
@@ -675,7 +677,8 @@ static char *argv[2] = { (char *)"JMX", NULL };
     uint64_t maxDelta = 1e9 / 120.0; // max 120 ticks per seconds
     @try {
         NSThread *currentThread = [NSThread currentThread];
-        while (![currentThread isCancelled]) {
+        while (![[NSThread currentThread] isCancelled])
+        {
             v8::Locker locker;
             v8::HandleScope handle_scope;
             v8::Context::Scope context_scope(ctx);
@@ -770,13 +773,10 @@ static char *argv[2] = { (char *)"JMX", NULL };
     // Enter the newly created execution environment.
     ExecJSCode(baseInclude, strlen(baseInclude), "JMX");
 
-#if 0
-    nodejsRunTimer = [[NSTimer timerWithTimeInterval:0.25 target:self selector:@selector(nodejsRun) userInfo:nil repeats:YES] retain];
-    [[NSRunLoop currentRunLoop] addTimer:nodejsRunTimer forMode:NSRunLoopCommonModes];
-#else
-    nodejsThread = [[NSThread alloc] initWithTarget:self selector:@selector(nodejsRun) object:nil];
-    [nodejsThread start];
-#endif
+    if (!globalNodejsThread) {
+        globalNodejsThread = [[NSThread alloc] initWithTarget:self selector:@selector(nodejsRun) object:nil];
+        [globalNodejsThread start];
+    }
 }
 
 - (void)clearPersistentInstances
@@ -791,15 +791,6 @@ static char *argv[2] = { (char *)"JMX", NULL };
 - (void)clearTimers
 {
     [self execCode:@"clearAllTimers()"];
-    [nodejsThread cancel];
-    [nodejsThread release];
-#if 0
-    for (JMXScriptTimer *scriptTimer in runloopTimers)
-        [scriptTimer.timer invalidate];
-    [runloopTimers removeAllObjects];
-    [nodejsRunTimer invalidate];
-    [nodejsRunTimer release];
-#endif
 }
 
 - (void)stop

@@ -29,11 +29,6 @@
     NSMutableDictionary *persistentInstances;
     NSMutableSet *runloopTimers;
     NSOperationQueue *operationQueue;
-#if 0
-    NSTimer *nodejsRunTimer;
-#else
-    NSThread *nodejsThread;
-#endif
     NSMutableDictionary *eventListeners;
     BOOL started;
 }

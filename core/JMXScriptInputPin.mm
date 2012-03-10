@@ -18,7 +18,7 @@ using namespace v8;
 
 - (void)dealloc
 {
-    
+    [super dealloc];
 }
 
 static v8::Persistent<FunctionTemplate> objectTemplate;

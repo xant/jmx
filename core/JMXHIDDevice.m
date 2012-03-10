@@ -30,6 +30,7 @@
 - (void)dealloc
 {
     [data release];
+    [super dealloc];
 }
 
 @end
@@ -55,6 +56,7 @@
 - (void)dealloc
 {
     [data release];
+    [super dealloc];
 }
 
 @end

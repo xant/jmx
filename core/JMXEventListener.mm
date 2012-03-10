@@ -18,6 +18,7 @@ using namespace v8;
 - (void)dealloc
 {
     self.target = nil;
+    [super dealloc];
 }
 
 - (void)dispatch

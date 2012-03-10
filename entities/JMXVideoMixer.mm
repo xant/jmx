@@ -50,6 +50,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXVideoMixer);
         NSSize defaultSize = { JMX_MIXER_DEFAULT_VIDEOSIZE_WIDTH, JMX_MIXER_DEFAULT_VIDEOSIZE_HEIGHT };
         self.size = [JMXSize sizeWithNSSize:defaultSize];
         self.label = @"VideoMixer";
+        self.frequency = [NSNumber numberWithFloat:60.0];
         currentFrame = nil;
         JMXThreadedEntity *threadedEntity = [[JMXThreadedEntity threadedEntity:self] retain];
         if (threadedEntity)

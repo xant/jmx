@@ -192,4 +192,6 @@
  */
 - (BOOL)dispatchEvent:(JMXEvent *)event toTarget:(NSXMLNode *)target;
 
+- (void)nodejsRun;
+
 @end

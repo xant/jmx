@@ -10,6 +10,7 @@
 #import "JMXScript.h"
 #import "JMXThreadedEntity.h"
 #import "JMXAppDelegate.h"
+#import "node.h"
 
 extern void JSExit(int code);
 
@@ -104,11 +105,10 @@ extern void JSExit(int code);
             isRunning = YES;
             [self exec];
         }
-        //[self resetContext];
-        //JMXAppDelegate *appDelegate = [[NSApplication sharedApplication] delegate];
-        //if (appDelegate.batchMode)
-        //    exit(0);
     }
+    if (jsContext)
+        [jsContext nodejsRun];
+    [super tick:timeStamp];
 }
 
 @end

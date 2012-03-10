@@ -105,8 +105,6 @@ static JMXV8ClassDescriptor mappedClasses[] = {
     { NULL,                       NULL,               NULL                                  }
 };
 
-static NSThread *globalNodejsThread = nil;
-
 void JSExit(int code)
 {
     v8::Locker locker;
@@ -253,15 +251,15 @@ static v8::Handle<Value> Echo(const Arguments& args) {
     if (args[0]->IsObject())
         obj = (id)args[0]->ToObject()->GetPointerFromInternalField(0);
     
-    if (obj) {
+    /*if (obj) {
         v8::Unlocker unlocker;
         NSLog(@"%@", obj);
-    } else {
+    } else {*/
         v8::Handle<Value> arg = args[0];
         v8::String::Utf8Value value(arg);
         v8::Unlocker unlocker;
         NSLog(@"%s", *value);
-    }
+    //}
     return v8::Undefined();
 }
 
@@ -674,36 +672,19 @@ static char *argv[2] = { (char *)"JMX", NULL };
 
 - (void)nodejsRun
 {
-    uint64_t maxDelta = 1e9 / 120.0; // max 120 ticks per seconds
+    //uint64_t maxDelta = 1e9 / 120.0; // max 120 ticks per seconds
     @try {
-        NSThread *currentThread = [NSThread currentThread];
-        while (![[NSThread currentThread] isCancelled])
-        {
+        /*while (![[NSThread currentThread] isCancelled])&
+        {*/
             v8::Locker locker;
             v8::HandleScope handle_scope;
             v8::Context::Scope context_scope(ctx);
-            uint64_t timeStamp = CVGetCurrentHostTime();
+            //uint64_t timeStamp = CVGetCurrentHostTime();
             NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
             //uv_run(uv_default_loop());
             uv_next(uv_default_loop());
             [pool release];
-            {
-                v8::Unlocker unlocker;
-                uint64_t now = CVGetCurrentHostTime();
-                uint64_t delta = now - timeStamp;
-                uint64_t sleepTime = (delta && delta < maxDelta) ? maxDelta - delta : 0;
-                if (sleepTime) {
-                    struct timespec time = { 0, 0 };
-                    struct timespec remainder = { 0, sleepTime };
-                    do {
-                        time.tv_sec = remainder.tv_sec;
-                        time.tv_nsec = remainder.tv_nsec;
-                        remainder.tv_nsec = 0;
-                        nanosleep(&time, &remainder);
-                    } while (remainder.tv_sec || remainder.tv_nsec);
-                }
-            }
-        }
+        //}
     }
     @catch (NSException *exception) {
         NSLog(@"%@", exception);
@@ -772,11 +753,6 @@ static char *argv[2] = { (char *)"JMX", NULL };
     char baseInclude[] = "include('JMX.js');";
     // Enter the newly created execution environment.
     ExecJSCode(baseInclude, strlen(baseInclude), "JMX");
-
-    if (!globalNodejsThread) {
-        globalNodejsThread = [[NSThread alloc] initWithTarget:self selector:@selector(nodejsRun) object:nil];
-        [globalNodejsThread start];
-    }
 }
 
 - (void)clearPersistentInstances

@@ -639,6 +639,7 @@ using namespace v8;
 {
     [lock lock];
     JMXDrawPathGetCurrentContext(context);
+    //NSLog(@"curve to point: %@", point);
     CGContextAddCurveToPoint(context, controlPoint1.x, controlPoint1.y, controlPoint2.x, controlPoint2.y, point.x, point.y);
     [lock unlock];
 }
@@ -1156,9 +1157,9 @@ static v8::Handle<Value> BezierCurveTo(const Arguments& args)
     HandleScope handleScope;
     JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() > 5) {
-        [drawPath bezierCurveTo:[JMXPoint pointWithNSPoint:NSMakePoint(args[0]->NumberValue(), args[1]->NumberValue())]
-                  controlPoint1:[JMXPoint pointWithNSPoint:NSMakePoint(args[2]->NumberValue(), args[3]->NumberValue())]
-                  controlPoint2:[JMXPoint pointWithNSPoint:NSMakePoint(args[4]->NumberValue(), args[5]->NumberValue())]];
+        [drawPath bezierCurveTo:[JMXPoint pointWithNSPoint:NSMakePoint(args[4]->NumberValue(), args[5]->NumberValue())]
+                  controlPoint1:[JMXPoint pointWithNSPoint:NSMakePoint(args[0]->NumberValue(), args[1]->NumberValue())]
+                  controlPoint2:[JMXPoint pointWithNSPoint:NSMakePoint(args[2]->NumberValue(), args[3]->NumberValue())]];
     }
     return Undefined();
 }

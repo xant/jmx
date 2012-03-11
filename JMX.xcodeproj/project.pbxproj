@@ -95,8 +95,8 @@
 		AA54B28B12A1215000EC60B2 /* jmx-icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = AA54B28A12A1215000EC60B2 /* jmx-icon.icns */; };
 		AA55601412AEF7CC00C882FF /* CIAlphaFade.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AA555FC912AEF39600C882FF /* CIAlphaFade.cikernel */; };
 		AA5563C412B188EB00C882FF /* CIAlphaFade.m in Sources */ = {isa = PBXBuildFile; fileRef = AA555FC712AEF39600C882FF /* CIAlphaFade.m */; };
-		AA678A46150CBC1000B2E8F7 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA678A45150CBC1000B2E8F7 /* AVFoundation.framework */; };
-		AA678A48150CC47D00B2E8F7 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA678A47150CC47D00B2E8F7 /* CoreMedia.framework */; };
+		AA678A46150CBC1000B2E8F7 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA678A45150CBC1000B2E8F7 /* AVFoundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		AA678A48150CC47D00B2E8F7 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA678A47150CC47D00B2E8F7 /* CoreMedia.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		AA75F38914F706FA00F1A214 /* drag_movies.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA75F38814F706E200F1A214 /* drag_movies.js */; };
 		AA8CB78E1282BB9900A17115 /* JMXScriptFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8CB78D1282BB9900A17115 /* JMXScriptFile.mm */; };
 		AA8F785812C5880100EA8543 /* VideoCapture.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA4B039812C06C3000775B88 /* VideoCapture.js */; };

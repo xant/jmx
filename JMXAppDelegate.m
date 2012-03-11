@@ -96,9 +96,10 @@
 - (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename
 {
     JMXScriptFile *file = [[JMXScriptFile alloc] init];
-    file.path = filename;
     file.active = YES;
     batchMode = YES;
+    file.path = filename;
+    [window setIsVisible:NO];
     return YES;
 }
 
@@ -121,7 +122,7 @@
 {
     va_list args;
     va_start(args, message);
-    if (!batchMode) {
+    if ([window isVisible]) {
         //NSString *msg = [[NSString alloc] initWithCString:buf encoding:NSASCIIStringEncoding];
 
         NSString *msg = [[[NSString alloc] initWithFormat:message arguments:args] autorelease];

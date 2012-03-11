@@ -75,8 +75,10 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
         [self registerInputPin:@"path" withType:kJMXStringPin andSelector:@"setMoviePath:"];
         [self registerInputPin:@"repeat" withType:kJMXBooleanPin andSelector:@"setRepeatPin:"];
         [self registerInputPin:@"paused" withType:kJMXBooleanPin andSelector:@"setPausedPin:"];
-        JMXOutputPin *outputPin = [self registerOutputPin:@"audio" withType:kJMXAudioPin];
-        outputPin.mode = kJMXPinModePassive;
+        if ([AVAssetReader class]) {
+            JMXOutputPin *outputPin = [self registerOutputPin:@"audio" withType:kJMXAudioPin];
+            outputPin.mode = kJMXPinModePassive;
+        }
         [self addAttribute:[JMXAttribute attributeWithName:@"url" stringValue:@""]];
         JMXThreadedEntity *threadedEntity = [[JMXThreadedEntity threadedEntity:self] retain];
         if (threadedEntity)
@@ -170,25 +172,24 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
         AudioStreamBasicDescription *desc = (AudioStreamBasicDescription *)CMAudioFormatDescriptionGetStreamBasicDescription(descriptionRef);
         
         size_t chunkSize = 512 * desc->mBytesPerFrame;
-        for (int i = 0; i < localBufferList.mNumberBuffers; i++) {
-            AudioBuffer *buffer = &localBufferList.mBuffers[i];
-            int numFrames = buffer->mDataByteSize / desc->mBytesPerFrame;
-            for (int n = 0; n < numFrames; n+= 512) {
-                AudioBuffer *newBuffer = (AudioBuffer *)calloc(sizeof(AudioBuffer) + chunkSize, 1);
-                newBuffer->mDataByteSize = chunkSize;
-                newBuffer->mNumberChannels = buffer->mNumberChannels;
-                newBuffer->mData = (char *)buffer->mData + (n * desc->mBytesPerFrame);
-                JMXAudioBuffer *outputBuffer = [JMXAudioBuffer audioBufferWithCoreAudioBuffer:newBuffer andFormat:desc];
-                @synchronized(samples) {
+        @synchronized(samples) {
+            for (int i = 0; i < localBufferList.mNumberBuffers; i++) {
+                AudioBuffer *buffer = &localBufferList.mBuffers[i];
+                int numFrames = buffer->mDataByteSize / desc->mBytesPerFrame;
+                for (int n = 0; n < numFrames; n+= 512) {
+                    AudioBuffer newBuffer;
+                    newBuffer.mDataByteSize = MIN((numFrames - n) * desc->mBytesPerFrame, chunkSize);
+                    newBuffer.mNumberChannels = buffer->mNumberChannels;
+                    newBuffer.mData = (char *)buffer->mData + (n * desc->mBytesPerFrame);
+                    JMXAudioBuffer *outputBuffer = [JMXAudioBuffer audioBufferWithCoreAudioBuffer:&newBuffer andFormat:desc];
                     [samples addObject:outputBuffer];
-                }
-            }                        
+                }                        
+            }
         }
-        free(sample);
+        CMSampleBufferRef toRelease = sample;
         sample = [audioOutput copyNextSampleBuffer];
-        CFRelease(descriptionRef);
+        CFRelease(toRelease);
     }
-
 }
 
 - (BOOL)_open:(NSString *)file
@@ -269,7 +270,7 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
                 }
             }
 #endif
-            OSAtomicCompareAndSwap64(sampleIndex, -1, &sampleIndex);
+            OSAtomicCompareAndSwap64Barrier(sampleIndex, -1, &sampleIndex);
             if (samples) {
                 @synchronized(samples) {
                     [samples removeAllObjects];
@@ -277,7 +278,7 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
                 [samples release];
                 samples = nil;
             }
-            if (file) {
+            if (file && [AVAssetReader class]) {
                 if (audioReader) {
                     [audioReader cancelReading];
                     [audioReader release];
@@ -305,9 +306,8 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
                                    assetReaderAudioMixOutputWithAudioTracks:outputTracks
                                    audioSettings:audioSettings] retain];
                     [audioReader addOutput:audioOutput];
-                    [audioReader startReading];
                     samples = [[NSMutableArray alloc] initWithCapacity:65535];
-                    [self performSelectorInBackground:@selector(fillAudioBuffer) withObject:nil];
+                    [audioReader startReading];
                 }
             }
         }
@@ -318,6 +318,11 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
         self.active = YES;
         NSXMLNode *attr = [self attributeForName:@"url"];
         [attr setStringValue:moviePath];
+        if (samples) {
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                [self fillAudioBuffer];
+            }];
+        }
         return YES;
     }
     self.active = NO;
@@ -411,7 +416,7 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
                     }
                 }
                 if (now.timeValue == 0 || seekOffset || absoluteTime) {
-                    OSAtomicCompareAndSwap64(sampleIndex, -1, &sampleIndex);
+                    OSAtomicCompareAndSwap64Barrier(sampleIndex, -1, &sampleIndex);
                 }
                 OSAtomicCompareAndSwap64(absoluteTime, 0, &absoluteTime);
                 OSAtomicCompareAndSwap64(seekOffset, 0, &seekOffset);
@@ -471,12 +476,12 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
         @synchronized(samples) {
             if (samples && samples.count) {
                 JMXAudioBuffer *buffer = [samples objectAtIndex:sampleIndex%samples.count];
-                OSAtomicIncrement64(&sampleIndex);
+                OSAtomicIncrement64Barrier(&sampleIndex);
                 return buffer;
             }
         }
     } else if (sampleIndex != -1) {
-        OSAtomicCompareAndSwap64(sampleIndex, -1, &sampleIndex);
+        OSAtomicCompareAndSwap64Barrier(sampleIndex, -1, &sampleIndex);
     }
     return nil;
 }

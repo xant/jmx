@@ -186,6 +186,19 @@ using namespace v8;
         owner = pinOwner;
         ownerSignal = [pinSignal copy];
         ownerUserData = userData;
+        readMode = kJMXPinReadModeInternal;
+        
+        // check if we should use a different read mode (depending on our owner capabilities)
+        if (owner) {
+            SEL signal = NSSelectorFromString(self.label);
+            if ([owner respondsToSelector:signal]) {
+                readMode = kJMXPinReadModeOwnerSelector;
+                readSignal = signal;
+            } else if ([owner conformsToProtocol:@protocol(JMXPinOwner)]) {
+                readMode = kJMXPinReadModeOwnerProtocol;
+            }
+        }
+        
         sendNotifications = YES;
         memset(dataBuffer, 0, sizeof(dataBuffer));
         allowedValues = pinValues ? [[NSMutableArray arrayWithArray:pinValues] retain] : nil;
@@ -488,33 +501,36 @@ using namespace v8;
 {
     // if we have an owner which conforms to the <JMXPinOwner> protocol
     // we will send it a message to get the actual value
-    id ret = nil;
+    id 
+    ret = nil;
     
-    if (owner) {
-        SEL signal = NSSelectorFromString(self.label);
-        if ([owner respondsToSelector:signal]) {
+    switch (readMode) {
+        case kJMXPinReadModeOwnerSelector:
             if (self.type == kJMXBooleanPin) {
                 BOOL raw;
                 // edge case for boolean type
                 NSInvocation *invocation = [NSInvocation 
-                                           invocationWithMethodSignature:[owner methodSignatureForSelector:signal]];
+                                            invocationWithMethodSignature:[owner methodSignatureForSelector:readSignal]];
                 [invocation setTarget:owner];
-                [invocation setSelector:signal];
+                [invocation setSelector:readSignal];
                 [invocation invokeWithTarget:owner];
                 [invocation getReturnValue:(void *)&raw];
                 ret = [NSNumber numberWithBool:raw];
             } else {
-                ret = [owner performSelector:signal];
+                ret = [owner performSelector:readSignal];
             }
-        } else if ([owner conformsToProtocol:@protocol(JMXPinOwner)]) {
+            break;
+        case kJMXPinReadModeOwnerProtocol:
             ret = [owner provideDataToPin:self];
-        }
+            break;
+        default:
+            break;
     }
-
+    
+    // failback always to kJMXPinReadModeInternal if we got no data in other ways
     if (!ret) {
         // otherwise we will return the last signaled data
-        ret = [dataBuffer[offset&kJMXPinDataBufferMask] retain];
-        [ret autorelease];
+        ret = [[dataBuffer[offset&kJMXPinDataBufferMask] retain] autorelease];
     }
     return ret;
 }
@@ -580,7 +596,7 @@ using namespace v8;
             OSAtomicIncrement32(&offset);
             dataBuffer[currentOffset] = nil;
         }
-        [currentData release];
+        [currentData autorelease];
         if (sender)
             currentSender = sender;
         else

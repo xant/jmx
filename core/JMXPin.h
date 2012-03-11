@@ -105,6 +105,12 @@ typedef enum {
                                    //       so for instance 00000111 is a good mask
                                    //       while 00010111 is a wrong mask 
 
+typedef enum {
+    kJMXPinReadModeInternal,
+    kJMXPinReadModeOwnerProtocol,
+    kJMXPinReadModeOwnerSelector
+} JMXPinReadMode;
+
 /*!
  @class JMXPin
  @abstract abstract class for any pin type
@@ -117,16 +123,13 @@ typedef enum {
 @protected
     JMXPinType          type;
     NSString            *label;
+    JMXPinDirection     direction;
     NSMutableDictionary *properties;
     BOOL                multiple; // default NO
     BOOL                continuous; // default YES
     BOOL                sendNotifications; // default YES
     id                  currentSender;
     BOOL                connected;
-    id                  dataBuffer[kJMXPinDataBufferMask+1]; // double buffer synchronized for writers
-                                       // but lockless for readers
-    volatile int32_t    offset;
-    JMXPinDirection     direction;
     id                  minValue;
     id                  maxValue;
     id                  owner;
@@ -135,6 +138,13 @@ typedef enum {
     NSMutableArray      *allowedValues;
     NSXMLElement        *connections;
     JMXPinMode          mode;
+@private
+    JMXPinReadMode      readMode;
+    SEL                 readSignal;
+    id                  dataBuffer[kJMXPinDataBufferMask+1]; // double buffer synchronized for writers
+    // but lockless for readers
+    volatile int32_t    offset;
+
 }
 
 /*!

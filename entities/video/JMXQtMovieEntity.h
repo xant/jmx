@@ -50,7 +50,6 @@
     AVAssetReader *audioReader;
     NSMutableArray *samples;
     int64_t sampleIndex;
-    AudioStreamBasicDescription *desc;
 }
 
 @property (copy) NSString *moviePath;

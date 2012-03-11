@@ -151,6 +151,46 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
     }
 }
 
+- (void)fillAudioBuffer
+{
+    CMSampleBufferRef sample = [audioOutput copyNextSampleBuffer];
+    while (sample) {
+        AudioBufferList  localBufferList;
+        CMBlockBufferRef blockBuffer;
+        CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sample,
+                                                                NULL,
+                                                                &localBufferList,
+                                                                sizeof(localBufferList),
+                                                                NULL,
+                                                                NULL,
+                                                                kCMSampleBufferFlag_AudioBufferList_Assure16ByteAlignment,
+                                                                &blockBuffer);
+        
+        CMFormatDescriptionRef descriptionRef = CMSampleBufferGetFormatDescription(sample);
+        AudioStreamBasicDescription *desc = (AudioStreamBasicDescription *)CMAudioFormatDescriptionGetStreamBasicDescription(descriptionRef);
+        
+        size_t chunkSize = 512 * desc->mBytesPerFrame;
+        for (int i = 0; i < localBufferList.mNumberBuffers; i++) {
+            AudioBuffer *buffer = &localBufferList.mBuffers[i];
+            int numFrames = buffer->mDataByteSize / desc->mBytesPerFrame;
+            for (int n = 0; n < numFrames; n+= 512) {
+                AudioBuffer *newBuffer = (AudioBuffer *)calloc(sizeof(AudioBuffer) + chunkSize, 1);
+                newBuffer->mDataByteSize = chunkSize;
+                newBuffer->mNumberChannels = buffer->mNumberChannels;
+                newBuffer->mData = (char *)buffer->mData + (n * desc->mBytesPerFrame);
+                JMXAudioBuffer *outputBuffer = [JMXAudioBuffer audioBufferWithCoreAudioBuffer:newBuffer andFormat:desc];
+                @synchronized(samples) {
+                    [samples addObject:outputBuffer];
+                }
+            }                        
+        }
+        free(sample);
+        sample = [audioOutput copyNextSampleBuffer];
+        CFRelease(descriptionRef);
+    }
+
+}
+
 - (BOOL)_open:(NSString *)file
 {
     if (file != nil) {
@@ -239,6 +279,7 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
                     [audioOutput release];
                     audioOutput = nil;
                 }
+                OSAtomicCompareAndSwap64(sampleIndex, -1, &sampleIndex);
                 AVAsset *asset = [AVAsset assetWithURL:[NSURL fileURLWithPath:file]];
                 audioReader = [[AVAssetReader assetReaderWithAsset:asset error:&error] retain];
                 NSArray *audioTracks = [asset tracksWithMediaType:AVMediaTypeAudio];
@@ -258,43 +299,11 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
                                    audioSettings:audioSettings] retain];
                     [audioReader addOutput:audioOutput];
                     [audioReader startReading];
-                    CMSampleBufferRef sample = [audioOutput copyNextSampleBuffer];
                     if (samples)
                         [samples release];
                     samples = [[NSMutableArray alloc] initWithCapacity:65535];
-                    while (sample) {
-                        AudioBufferList  localBufferList;
-                        CMBlockBufferRef blockBuffer;
-                        CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sample,
-                                                                                NULL,
-                                                                                &localBufferList,
-                                                                                sizeof(localBufferList),
-                                                                                NULL,
-                                                                                NULL,
-                                                                                kCMSampleBufferFlag_AudioBufferList_Assure16ByteAlignment,
-                                                                                &blockBuffer);
-                        CMFormatDescriptionRef descriptionRef = CMSampleBufferGetFormatDescription(sample);
-                        desc = (AudioStreamBasicDescription *)CMAudioFormatDescriptionGetStreamBasicDescription(descriptionRef);
-                        
-                        size_t chunkSize = 512 * desc->mBytesPerFrame;
-                        for (int i = 0; i < localBufferList.mNumberBuffers; i++) {
-                            AudioBuffer *buffer = &localBufferList.mBuffers[i];
-                            int numFrames = buffer->mDataByteSize / desc->mBytesPerFrame;
-                            for (int n = 0; n < numFrames; n+= 512) {
-                                AudioBuffer *newBuffer = (AudioBuffer *)calloc(sizeof(AudioBuffer) + chunkSize, 1);
-                                newBuffer->mDataByteSize = chunkSize;
-                                newBuffer->mNumberChannels = buffer->mNumberChannels;
-                                newBuffer->mData = (char *)buffer->mData + (n * desc->mBytesPerFrame);
-                                JMXAudioBuffer *outputBuffer = [JMXAudioBuffer audioBufferWithCoreAudioBuffer:newBuffer andFormat:desc];
-                                [samples addObject:outputBuffer];
-                             }                        
-                        }
-                        free(sample);
-                        sample = [audioOutput copyNextSampleBuffer];
-                        CFRelease(descriptionRef);
-                    }
+                    [self performSelectorInBackground:@selector(fillAudioBuffer) withObject:nil];
                 }
-                sampleIndex = -1;
             }
         }
         
@@ -450,14 +459,16 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
             QTTime now = [movie currentTime];
             double nowSecs = now.timeValue / now.timeScale;
             
-            sampleIndex = desc->mSampleRate * nowSecs / 512;
+            sampleIndex = 44100.0 * nowSecs / 512;
             [QTMovie enterQTKitOnThread];
         }
         //return currentAudioSample;
-        if (samples && samples.count) {
-            JMXAudioBuffer *buffer = [samples objectAtIndex:sampleIndex%samples.count];
-            OSAtomicIncrement64(&sampleIndex);
-            return buffer;
+        @synchronized(samples) {
+            if (samples && samples.count) {
+                JMXAudioBuffer *buffer = [samples objectAtIndex:sampleIndex%samples.count];
+                OSAtomicIncrement64(&sampleIndex);
+                return buffer;
+            }
         }
     } else if (sampleIndex != -1) {
         OSAtomicCompareAndSwap64(sampleIndex, -1, &sampleIndex);
@@ -494,11 +505,11 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
         exit(1);
     }
     
-    AudioBufferList *bufferList = calloc(1, sizeof(AudioBufferList) + asbd.mChannelsPerFrame*sizeof(AudioBuffer));
+    AudioBufferList *bufferList = (AudioBufferList *)calloc(1, sizeof(AudioBufferList) + asbd.mChannelsPerFrame*sizeof(AudioBuffer));
     bufferList->mNumberBuffers = asbd.mChannelsPerFrame;
     
-    QTTime duration = [[movie attributeForKey:QTMovieDurationAttribute] QTTimeValue];
-    long long estimatedFrameCount = (long long)ceil(((double)duration.timeValue*asbd.mSampleRate)/duration.timeScale);
+    QTTime qtDuration = [[movie attributeForKey:QTMovieDurationAttribute] QTTimeValue];
+    long long estimatedFrameCount = (long long)ceil(((double)qtDuration.timeValue*asbd.mSampleRate)/qtDuration.timeScale);
     
     int i;
     for (i = 0; i < asbd.mChannelsPerFrame; i ++)

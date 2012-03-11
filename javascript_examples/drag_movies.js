@@ -1,16 +1,19 @@
 // open movie files
 m1 = new MovieFile('/Users/xant/test.mov');
-m2 = new MovieFile('/Users/xant/test.mov');
+m2 = new MovieFile('/Users/xant/Downloads/VIDEO0051.3gp');
+m3 = new MovieFile('/Users/xant/Documents/Music/black eyed peas/Black Eyed Peas - Let\'s Get It Started.avi');
 
 // set their initial origin and scale them
 // (you could want to disable scaling if your movies are small enough)
-m1.origin = new Point(100, 100);
+m1.origin = new Point(0, 0);
 m1.scaleRatio = 0.25;
-m2.origin = new Point(0, 0);
+m2.origin = new Point(100, 100);
 m2.scaleRatio = 0.25;
+m3.origin = new Point(200, 200);
+m3.scaleRatio = 0.75;
 
 // keep all movie files into an array
-movies = new Array(m1, m2);
+movies = new Array(m1, m2, m3);
 
 // create a video output (size doesn't really matter)
 v = new VideoOutput(640, 480);
@@ -22,8 +25,10 @@ mixer.size = v.size; // let's have the videomixer output a frame as big as the o
 // connect the movies to to the mixer
 mixer.input.video.connect(m1.output.frame);
 mixer.input.video.connect(m2.output.frame);
+mixer.input.video.connect(m3.output.frame);
 // and the mixer to the video   output
 mixer.output.frame.connect(v.input.frame);
+mixer.frequency = 90;
 
 // initialize globals to null
 selected_movie = null;

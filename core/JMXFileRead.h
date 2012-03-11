@@ -17,6 +17,8 @@
  @abstract formal protocol for entities using input files (like JMXScriptFileEntity, JMXAudioFileEntity, JMXImageEntity and JMXQtMovieEntity)
  */
 @protocol JMXFileRead
+
+@required
 /*!
  @method supportedFileTypes
  @abstract class method which returns an NSArray containing all allowed/supported file extensions 
@@ -34,4 +36,11 @@
  @abstract close current file (if any has been already opened)
  */
 - (void)close;
+
+@optional
+
+- (void)seekTime:(int64_t)timeOffset;
+- (void)seekAbsoluteTime:(int64_t)timeOffset;
+- (void)seekFrame:(uint64_t)frameNum;
+
 @end

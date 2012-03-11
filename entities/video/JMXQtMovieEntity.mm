@@ -56,7 +56,7 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
 
 @implementation JMXQtMovieEntity
 
-@synthesize moviePath, paused, repeat;
+@synthesize moviePath, paused, repeat, duration, sampleCount;
 
 - (id)init
 {
@@ -188,7 +188,8 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
             QTTrack* firstVideoTrack = [videoTracks objectAtIndex:0];
             QTMedia* media = [firstVideoTrack media];
             QTTime qtTimeDuration = [[media attributeForKey:QTMediaDurationAttribute] QTTimeValue];
-            long sampleCount = [[media attributeForKey:QTMediaSampleCountAttribute] longValue];
+            duration = qtTimeDuration.timeValue / qtTimeDuration.timeScale;
+            sampleCount = [[media attributeForKey:QTMediaSampleCountAttribute] longValue];
             // we can set the frequency to be exactly the same as fps ... since it's useles
             // to have an higher signaling frequency in the case of an existing movie. 
             // In any case we won't have more 'unique' frames than the native movie fps ... so if signaling 
@@ -248,6 +249,22 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
     // TODO - IMPLEMENT
 }
 
+- (void)seekTime:(int64_t)timeOffset
+{
+    OSAtomicCompareAndSwap64(seekOffset, timeOffset, &seekOffset);
+}
+
+- (void)seekAbsoluteTime:(int64_t)timeOffset
+{
+    OSAtomicCompareAndSwap64(absoluteTime, timeOffset, &absoluteTime);
+
+}
+
+- (void)seekFrame:(uint64_t)frameNum
+{
+    OSAtomicCompareAndSwap64(absoluteTime, frameNum * (duration/sampleCount) * 1e9, &absoluteTime);
+}
+
 - (void)dealloc {
     if (movie)
         [movie release];
@@ -262,7 +279,7 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
 {
     CIImage* frame;
     NSError* error = nil;
-    CVPixelBufferRef pixelBuffer = NULL;
+    CGImageRef pixelBuffer = NULL;
     if (movie) {
         [QTMovie enterQTKitOnThread];
         QTTime now = [movie currentTime];
@@ -272,16 +289,23 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
                     [currentFrame release];
                     currentFrame = nil;
                 }
-                uint64_t delta = self.previousTimeStamp
-                               ? (timeStamp - self.previousTimeStamp) / 1e9 * now.timeScale
-                               : now.timeScale / [fps doubleValue];
-
-                uint64_t step = movieFrequency
-                              ? [fps doubleValue] * delta / movieFrequency
-                              : 0;
                 
-                // Calculate the next frame we need to provide.
-                now.timeValue += step;
+                if (absoluteTime) {
+                    now.timeValue = absoluteTime / 1e9 * now.timeScale;
+                } else {
+                    uint64_t delta = self.previousTimeStamp
+                                   ? (timeStamp - self.previousTimeStamp) / 1e9 * now.timeScale
+                                   : (now.timeScale / [fps doubleValue]);
+
+                    uint64_t step = movieFrequency
+                                  ? [fps doubleValue] * delta / movieFrequency
+                                  : 0;
+                    step += (seekOffset / 1e9 * now.timeScale);
+                    // Calculate the next frame we need to provide.
+                    now.timeValue += step;
+                }
+                OSAtomicCompareAndSwap64(absoluteTime, 0, &absoluteTime);
+                OSAtomicCompareAndSwap64(seekOffset, 0, &seekOffset);
 
                 if (QTTimeCompare(now, [movie duration]) == NSOrderedAscending) {
                     [movie setCurrentTime:now];
@@ -298,15 +322,16 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
                 NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                                        [NSValue valueWithSize:self.size.nsSize],
                                        QTMovieFrameImageSize,
-                                       QTMovieFrameImageTypeCVPixelBufferRef,
+                                       QTMovieFrameImageTypeCGImageRef,
                                        QTMovieFrameImageType,
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
                                        [NSNumber numberWithBool:YES],
                                        QTMovieFrameImageSessionMode,
 #endif
                                        nil]; 
-                pixelBuffer = (CVPixelBufferRef)[movie frameImageAtTime:now 
+                pixelBuffer = (CGImageRef)[movie frameImageAtTime:now 
                                                          withAttributes:attrs error:&error];
+                frame = [CIImage imageWithCGImage:pixelBuffer];
 #else
                 if(qtVisualContext)
                 {        
@@ -315,8 +340,9 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
                                                     NULL,
                                                     &pixelBuffer);
                 }
-#endif                
                 frame = [CIImage imageWithCVImageBuffer:pixelBuffer];
+#endif          
+
 #ifndef __x86_64
                 CVPixelBufferRelease(pixelBuffer);
                 MoviesTask([movie quickTimeMovie], 0);
@@ -408,6 +434,33 @@ static v8::Handle<Value>Close(const Arguments& args)
     return v8::Undefined();
 }
 
+static v8::Handle<Value>SeekTime(const Arguments& args)
+{
+    HandleScope handleScope;
+    JMXQtMovieEntity *entity = (JMXQtMovieEntity *)args.Holder()->GetPointerFromInternalField(0);
+    v8::Handle<Value> arg = args[0];
+    [entity seekTime:args[0]->ToNumber()->NumberValue() * 1e9];
+    return Undefined();
+}
+
+static v8::Handle<Value>SeekAbsoluteTime(const Arguments& args)
+{
+    HandleScope handleScope;
+    JMXQtMovieEntity *entity = (JMXQtMovieEntity *)args.Holder()->GetPointerFromInternalField(0);
+    v8::Handle<Value> arg = args[0];
+    [entity seekAbsoluteTime:arg->ToNumber()->NumberValue() * 1e9];
+    return Undefined();
+}
+
+static v8::Handle<Value>SeekFrame(const Arguments& args)
+{
+    HandleScope handleScope;
+    JMXQtMovieEntity *entity = (JMXQtMovieEntity *)args.Holder()->GetPointerFromInternalField(0);
+    v8::Handle<Value> arg = args[0];
+    [entity seekFrame:arg->ToNumber()->NumberValue()];
+    return Undefined();
+}
+
 static v8::Handle<Value>SupportedFileTypes(const Arguments& args)
 {
     HandleScope handleScope;
@@ -436,7 +489,13 @@ static v8::Handle<Value>SupportedFileTypes(const Arguments& args)
     v8::Handle<ObjectTemplate> classProto = entityTemplate->PrototypeTemplate();
     classProto->Set("open", FunctionTemplate::New(Open));
     classProto->Set("close", FunctionTemplate::New(Close));
+    classProto->Set("seekTime", FunctionTemplate::New(SeekTime));
+    classProto->Set("seekAbsoluteTime", FunctionTemplate::New(SeekAbsoluteTime));
+    classProto->Set("seekFrame", FunctionTemplate::New(SeekFrame));
     classProto->Set("supportedFileTypes", FunctionTemplate::New(SupportedFileTypes));
+    
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("duration"), GetDoubleProperty);
+    entityTemplate->InstanceTemplate()->SetAccessor(String::NewSymbol("sampleCount"), GetDoubleProperty);
     return entityTemplate;
 }
 

@@ -35,6 +35,11 @@
     uint64_t movieFrequency;
     BOOL paused;
     BOOL repeat;
+    double sampleCount;
+    double duration;
+    int64_t seekOffset;
+    int64_t absoluteTime;
+
 #ifndef __x86_64
     QTVisualContextRef    qtVisualContext;        // the context the movie is playing in
 #endif
@@ -43,7 +48,8 @@
 @property (copy) NSString *moviePath;
 @property (assign) BOOL paused;
 @property (assign) BOOL repeat;
-
+@property (readonly) double duration;
+@property (readonly) double sampleCount;
 @end
 
 JMXV8_DECLARE_NODE_CONSTRUCTOR(JMXQtMovieEntity);

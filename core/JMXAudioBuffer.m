@@ -81,6 +81,15 @@
 
 }
 
+- (id)initWithCoreAudioBuffer:(AudioBuffer *)audioBuffer andFormat:(AudioStreamBasicDescription *)audioFormat copy:(BOOL)wantsCopy freeOnRelease:(BOOL)wantsFree
+{
+    AudioBufferList list;
+    list.mNumberBuffers = 1;
+    memcpy(&list.mBuffers[0], audioBuffer, sizeof(AudioBuffer));
+    return [self initWithCoreAudioBufferList:&list andFormat:audioFormat copy:wantsCopy freeOnRelease:wantsFree];
+    
+}
+
 - (void)dealloc
 {
     int i;

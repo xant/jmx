@@ -26,7 +26,10 @@
 #ifndef __x86_64
 #import <QuickTime/QuickTime.h>
 #endif
+
 @class QTMovie;
+@class AVAssetReaderAudioMixOutput;
+@class AVAssetReader;
 
 @interface JMXQtMovieEntity : JMXVideoEntity <JMXFileRead> {
 @private
@@ -43,6 +46,11 @@
 #ifndef __x86_64
     QTVisualContextRef    qtVisualContext;        // the context the movie is playing in
 #endif
+    AVAssetReaderAudioMixOutput *audioOutput;
+    AVAssetReader *audioReader;
+    NSMutableArray *samples;
+    int64_t sampleIndex;
+    AudioStreamBasicDescription *desc;
 }
 
 @property (copy) NSString *moviePath;
@@ -50,6 +58,7 @@
 @property (assign) BOOL repeat;
 @property (readonly) double duration;
 @property (readonly) double sampleCount;
+@property (readonly) JMXAudioBuffer *audio;
 @end
 
 JMXV8_DECLARE_NODE_CONSTRUCTOR(JMXQtMovieEntity);

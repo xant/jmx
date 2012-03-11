@@ -22,6 +22,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#include <Carbon/Carbon.h>
 #import <QTKit/QTKit.h>
 #ifndef __x86_64
 #import  <QuickTime/QuickTime.h>
@@ -31,6 +32,9 @@
 #import "JMXScript.h"
 #import "JMXThreadedEntity.h"
 #import "JMXAttribute.h"
+#include <AudioUnit/AudioUnit.h>
+#include <AudioToolbox/AudioToolbox.h>
+#import <AVFoundation/AVFoundation.h>
 
 JMXV8_EXPORT_NODE_CLASS(JMXQtMovieEntity);
 
@@ -71,6 +75,8 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
         [self registerInputPin:@"path" withType:kJMXStringPin andSelector:@"setMoviePath:"];
         [self registerInputPin:@"repeat" withType:kJMXBooleanPin andSelector:@"setRepeatPin:"];
         [self registerInputPin:@"paused" withType:kJMXBooleanPin andSelector:@"setPausedPin:"];
+        JMXOutputPin *outputPin = [self registerOutputPin:@"audio" withType:kJMXAudioPin];
+        outputPin.mode = kJMXPinModePassive;
         [self addAttribute:[JMXAttribute attributeWithName:@"url" stringValue:@""]];
         JMXThreadedEntity *threadedEntity = [[JMXThreadedEntity threadedEntity:self] retain];
         if (threadedEntity)
@@ -223,7 +229,75 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
                 }
             }
 #endif
+            if (file) {
+                if (audioReader) {
+                    [audioReader cancelReading];
+                    [audioReader release];
+                    audioReader = nil;
+                }
+                if (audioOutput) {
+                    [audioOutput release];
+                    audioOutput = nil;
+                }
+                AVAsset *asset = [AVAsset assetWithURL:[NSURL fileURLWithPath:file]];
+                audioReader = [[AVAssetReader assetReaderWithAsset:asset error:&error] retain];
+                NSArray *audioTracks = [asset tracksWithMediaType:AVMediaTypeAudio];
+                if (audioTracks.count) {
+                    NSDictionary *audioSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                   [NSNumber numberWithInt:kAudioFormatLinearPCM], AVFormatIDKey, 
+                                                   [NSNumber numberWithFloat:44100.0],             AVSampleRateKey,
+                                                   [NSNumber numberWithInt:2],                     AVNumberOfChannelsKey,
+                                                   [NSNumber numberWithInt:32],                    AVLinearPCMBitDepthKey,
+                                                   [NSNumber numberWithBool:NO],                   AVLinearPCMIsNonInterleaved,
+                                                   [NSNumber numberWithBool:YES],                  AVLinearPCMIsFloatKey,
+                                                   [NSNumber numberWithBool:NO],                   AVLinearPCMIsBigEndianKey,
+                                                   nil];
+                    NSArray *outputTracks = [NSArray arrayWithObject:[audioTracks objectAtIndex:0]];
+                    audioOutput = [[AVAssetReaderAudioMixOutput
+                                   assetReaderAudioMixOutputWithAudioTracks:outputTracks
+                                   audioSettings:audioSettings] retain];
+                    [audioReader addOutput:audioOutput];
+                    [audioReader startReading];
+                    CMSampleBufferRef sample = [audioOutput copyNextSampleBuffer];
+                    if (samples)
+                        [samples release];
+                    samples = [[NSMutableArray alloc] initWithCapacity:65535];
+                    while (sample) {
+                        AudioBufferList  localBufferList;
+                        CMBlockBufferRef blockBuffer;
+                        CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sample,
+                                                                                NULL,
+                                                                                &localBufferList,
+                                                                                sizeof(localBufferList),
+                                                                                NULL,
+                                                                                NULL,
+                                                                                kCMSampleBufferFlag_AudioBufferList_Assure16ByteAlignment,
+                                                                                &blockBuffer);
+                        CMFormatDescriptionRef descriptionRef = CMSampleBufferGetFormatDescription(sample);
+                        desc = (AudioStreamBasicDescription *)CMAudioFormatDescriptionGetStreamBasicDescription(descriptionRef);
+                        
+                        size_t chunkSize = 512 * desc->mBytesPerFrame;
+                        for (int i = 0; i < localBufferList.mNumberBuffers; i++) {
+                            AudioBuffer *buffer = &localBufferList.mBuffers[i];
+                            int numFrames = buffer->mDataByteSize / desc->mBytesPerFrame;
+                            for (int n = 0; n < numFrames; n+= 512) {
+                                AudioBuffer *newBuffer = (AudioBuffer *)calloc(sizeof(AudioBuffer) + chunkSize, 1);
+                                newBuffer->mDataByteSize = chunkSize;
+                                newBuffer->mNumberChannels = buffer->mNumberChannels;
+                                newBuffer->mData = (char *)buffer->mData + (n * desc->mBytesPerFrame);
+                                JMXAudioBuffer *outputBuffer = [JMXAudioBuffer audioBufferWithCoreAudioBuffer:newBuffer andFormat:desc];
+                                [samples addObject:outputBuffer];
+                             }                        
+                        }
+                        free(sample);
+                        sample = [audioOutput copyNextSampleBuffer];
+                        CFRelease(descriptionRef);
+                    }
+                }
+                sampleIndex = -1;
+            }
         }
+        
         if (moviePath)
             [moviePath release];
         moviePath = [file copy];
@@ -268,6 +342,9 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
 - (void)dealloc {
     if (movie)
         [movie release];
+    [samples release];
+    [audioReader release];
+    [audioOutput release];
 #ifndef __x86_64
     if(qtVisualContext)
         QTVisualContextRelease(qtVisualContext);
@@ -279,7 +356,11 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
 {
     CIImage* frame;
     NSError* error = nil;
+#ifdef __x86_64
     CGImageRef pixelBuffer = NULL;
+#else
+    CVPixelBufferRef pixelBuffer = NULL;
+#endif
     if (movie) {
         [QTMovie enterQTKitOnThread];
         QTTime now = [movie currentTime];
@@ -304,9 +385,6 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
                     // Calculate the next frame we need to provide.
                     now.timeValue += step;
                 }
-                OSAtomicCompareAndSwap64(absoluteTime, 0, &absoluteTime);
-                OSAtomicCompareAndSwap64(seekOffset, 0, &seekOffset);
-
                 if (QTTimeCompare(now, [movie duration]) == NSOrderedAscending) {
                     [movie setCurrentTime:now];
                 } else { // the movie is ended
@@ -318,6 +396,11 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
                         return [super tick:timeStamp]; // we still want to propagate the signal
                     }
                 }
+                if (now.timeValue == 0 || seekOffset || absoluteTime) {
+                    OSAtomicCompareAndSwap64(sampleIndex, -1, &sampleIndex);
+                }
+                OSAtomicCompareAndSwap64(absoluteTime, 0, &absoluteTime);
+                OSAtomicCompareAndSwap64(seekOffset, 0, &seekOffset);
 #ifdef __x86_64
                 NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                                        [NSValue valueWithSize:self.size.nsSize],
@@ -359,6 +442,115 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
     [super tick:timeStamp]; // let super notify output pins
 }
 
+- (JMXAudioBuffer *)audio
+{
+    if (self.active && abs([self.fps doubleValue] - movieFrequency) < 0.1) {
+        if (sampleIndex == -1) {
+            [QTMovie enterQTKitOnThread];
+            QTTime now = [movie currentTime];
+            double nowSecs = now.timeValue / now.timeScale;
+            
+            sampleIndex = desc->mSampleRate * nowSecs / 512;
+            [QTMovie enterQTKitOnThread];
+        }
+        //return currentAudioSample;
+        if (samples && samples.count) {
+            JMXAudioBuffer *buffer = [samples objectAtIndex:sampleIndex%samples.count];
+            OSAtomicIncrement64(&sampleIndex);
+            return buffer;
+        }
+    } else if (sampleIndex != -1) {
+        OSAtomicCompareAndSwap64(sampleIndex, -1, &sampleIndex);
+    }
+    return nil;
+}
+
+- (void)extractAudioFrame
+{
+    
+#ifndef __x86_64
+    NSError *error;
+        
+    if(error)
+    {
+        NSLog(@"movieWithFile Error: %@", [error localizedDescription]);
+        exit(1);
+    }
+    
+    OSStatus err = noErr;
+    
+    MovieAudioExtractionRef extractionSessionRef = nil;
+    err = MovieAudioExtractionBegin([movie quickTimeMovie], 0, &extractionSessionRef);
+    
+    AudioStreamBasicDescription asbd;
+    err = MovieAudioExtractionGetProperty(extractionSessionRef,
+                                          kQTPropertyClass_MovieAudioExtraction_Audio,
+                                          kQTMovieAudioExtractionAudioPropertyID_AudioStreamBasicDescription,
+                                          sizeof (asbd), &asbd, nil);
+    
+    if (err)
+    {
+        NSLog(@"MovieAudioExtractionGetProperty Error: %i", err);
+        exit(1);
+    }
+    
+    AudioBufferList *bufferList = calloc(1, sizeof(AudioBufferList) + asbd.mChannelsPerFrame*sizeof(AudioBuffer));
+    bufferList->mNumberBuffers = asbd.mChannelsPerFrame;
+    
+    QTTime duration = [[movie attributeForKey:QTMovieDurationAttribute] QTTimeValue];
+    long long estimatedFrameCount = (long long)ceil(((double)duration.timeValue*asbd.mSampleRate)/duration.timeScale);
+    
+    int i;
+    for (i = 0; i < asbd.mChannelsPerFrame; i ++)
+    {
+        AudioBuffer audioBuffer = bufferList->mBuffers[i];
+        audioBuffer.mNumberChannels = 1;
+        audioBuffer.mDataByteSize = estimatedFrameCount*sizeof(Float32);
+        audioBuffer.mData = calloc(1, estimatedFrameCount*sizeof(Float32));
+        bufferList->mBuffers[i] = audioBuffer;
+    }
+    
+    UInt32 numFrames;
+    UInt32 flags;
+    UInt32 actualFrameCount = 0;
+    
+    while (true)
+    {
+        err = MovieAudioExtractionFillBuffer(extractionSessionRef, &numFrames, bufferList, &flags);
+        if (err)
+        {
+            NSLog(@"MovieAudioExtractionFillBuffer Error: %i", err);
+            exit(1);
+        }
+        actualFrameCount += numFrames;
+        if (flags & kQTMovieAudioExtractionComplete)
+        {
+            NSLog(@"break");
+            break;
+        }
+    }
+    
+    for (i = 0; i < asbd.mChannelsPerFrame; i ++)
+    {
+        printf("channel %i\n", i);
+        Float32 *frames = (Float32 *)bufferList->mBuffers[i].mData;
+        int j;
+        for (j = 0; j < actualFrameCount; j ++)
+        {
+            printf("%f,", frames[j]);
+        }
+        printf("\n");
+    }
+    
+    err = MovieAudioExtractionEnd(extractionSessionRef);
+    if (err)
+    {
+        NSLog(@"MovieAudioExtractionEnd Error: %i", err);
+        exit(1);
+    }
+#endif
+}
+
 #pragma mark -
 
 - (NSString *)displayName
@@ -368,7 +560,7 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
 
 + (NSArray *)supportedFileTypes
 {
-    return [NSArray arrayWithObjects:@"avi", @"mov", @"mp4", @"pdf", @"html", @"png", @"jpg", nil];
+    return [NSArray arrayWithObjects:@"avi", @"mov", @"mp4", @"pdf", @"html", @"png", @"jpg", @"mpg", nil];
 }
 
 - (void)setSize:(JMXSize *)newSize

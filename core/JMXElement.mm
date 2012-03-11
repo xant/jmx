@@ -20,6 +20,8 @@ JMXV8_EXPORT_NODE_CLASS(JMXElement);
 
 - (void)addElementAttributes
 {
+    if (!idLock)
+        idLock = [[NSRecursiveLock alloc] init];
     if (!uid) {
         uid = [[NSString stringWithFormat:@"%8x", [self hash]] retain];
         [self addAttribute:[JMXAttribute attributeWithName:@"uid"
@@ -68,29 +70,30 @@ JMXV8_EXPORT_NODE_CLASS(JMXElement);
     [self removeAttributeForName:@"id"];
     [uid release];
     [jsId release];
+    [idLock release];
     [super dealloc];
 }
 
 - (NSString *)jsId
 {
-    @synchronized(self) {
-        return [[jsId retain] autorelease];
-    }
+    [idLock lock];
+    NSString *theId = [jsId retain];
+    [idLock unlock];
+    return [theId autorelease];
 }
 
 - (void)setJsId:(NSString *)anId
 {
-    @synchronized(self) {
-        if (!anId)
-            return;
-        if (jsId)
-            [jsId release];
-        jsId = [anId copy];
-        // TODO - check if the ID already exists
-        // we could use document.getElementByID() ... but that could affect performances 
-        JMXAttribute *attr = (JMXAttribute *)[self attributeForName:@"id"];
-        [attr setStringValue:jsId];
-    }
+    if (!anId)
+        return;
+    [idLock lock];
+    [jsId release];
+    jsId = [anId copy];
+    // TODO - check if the ID already exists
+    // we could use document.getElementByID() ... but that could affect performances 
+    JMXAttribute *attr = (JMXAttribute *)[self attributeForName:@"id"];
+    [attr setStringValue:jsId];
+    [idLock unlock];
 }
 
 #pragma mark V8

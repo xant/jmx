@@ -16,6 +16,7 @@
 @private
     NSString *uid;
     NSString *jsId;
+    NSRecursiveLock *idLock;
 }
 
 @property (readonly) NSString *uid;

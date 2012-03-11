@@ -269,6 +269,14 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
                 }
             }
 #endif
+            OSAtomicCompareAndSwap64(sampleIndex, -1, &sampleIndex);
+            if (samples) {
+                @synchronized(samples) {
+                    [samples removeAllObjects];
+                }
+                [samples release];
+                samples = nil;
+            }
             if (file) {
                 if (audioReader) {
                     [audioReader cancelReading];
@@ -279,7 +287,6 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
                     [audioOutput release];
                     audioOutput = nil;
                 }
-                OSAtomicCompareAndSwap64(sampleIndex, -1, &sampleIndex);
                 AVAsset *asset = [AVAsset assetWithURL:[NSURL fileURLWithPath:file]];
                 audioReader = [[AVAssetReader assetReaderWithAsset:asset error:&error] retain];
                 NSArray *audioTracks = [asset tracksWithMediaType:AVMediaTypeAudio];
@@ -299,8 +306,6 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
                                    audioSettings:audioSettings] retain];
                     [audioReader addOutput:audioOutput];
                     [audioReader startReading];
-                    if (samples)
-                        [samples release];
                     samples = [[NSMutableArray alloc] initWithCapacity:65535];
                     [self performSelectorInBackground:@selector(fillAudioBuffer) withObject:nil];
                 }
@@ -370,10 +375,10 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
 #else
     CVPixelBufferRef pixelBuffer = NULL;
 #endif
-    if (movie) {
-        [QTMovie enterQTKitOnThread];
-        QTTime now = [movie currentTime];
-        @synchronized(self) {
+    @synchronized(self) {
+        if (movie) {
+            [QTMovie enterQTKitOnThread];
+            QTTime now = [movie currentTime];
             if (!paused) {
                 if (currentFrame) {
                     [currentFrame release];

@@ -465,7 +465,7 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
             double nowSecs = now.timeValue / now.timeScale;
             
             sampleIndex = 44100.0 * nowSecs / 512;
-            [QTMovie enterQTKitOnThread];
+            [QTMovie exitQTKitOnThread];
         }
         //return currentAudioSample;
         @synchronized(samples) {

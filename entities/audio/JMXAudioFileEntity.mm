@@ -36,7 +36,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXAudioFileEntity);
 
 + (NSArray *)supportedFileTypes
 {
-    return [NSArray arrayWithObjects:@"mp3", @"mp2", @"aif", @"aiff", @"wav", @"avi", nil];
+    return [NSArray arrayWithObjects:@"mp3", @"mp2", @"aif", @"aiff", @"wav", nil];
 }
 
 - (id)init

@@ -696,7 +696,8 @@ using namespace v8;
 
 - (BOOL)isEqual:(id)object
 {
-    if ([object isProxy]) {
+    if ([object isProxy] && [object respondsToSelector:@selector(realEntity)])
+    {
         return [super isEqual:[object realEntity]];
     }
     return [super isEqual:object];

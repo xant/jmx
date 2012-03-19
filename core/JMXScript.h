@@ -103,6 +103,14 @@
 - (BOOL)runScript:(NSString *)source;
 
 /*!
+ @method runScript:withArgs:
+ @abstract run a script in the current thread providing arguments (TODO : elaborate)
+ @param source NSString holding the javscript sourcecode
+ @param args NSArray holding arguments which will be available to the script
+ */
+- (BOOL)runScript:(NSString *)source withArgs:(NSArray *)args;
+
+/*!
  @method execCode:
  @abstract Interpret and exec the provided javascript code in this JS Context
  */

@@ -51,6 +51,10 @@
 #import "NSDictionary+V8.h"
 #import "v8_typed_array.h"
 #import <QuartzCore/QuartzCore.h>
+#import "NSString+V8.h"
+#import "NSDictionary+V8.h"
+#import "NSNumber+V8.h"
+#import "NSObject+V8.h"
 
 using namespace v8;
 using namespace std;
@@ -821,7 +825,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
     }
 }
 
-- (BOOL)runScript:(NSString *)script
+- (BOOL)runScript:(NSString *)script withArgs:(NSArray *)args
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     v8::Locker locker;
@@ -829,6 +833,20 @@ static char *argv[2] = { (char *)"JMX", NULL };
     
     v8::Context::Scope context_scope(ctx);
     
+    
+    if (args && args.count) {
+        v8::Handle<Array> argv = Array::New([args count]);
+        int cnt = 0;
+        for (id arg in args) {
+            if ([arg respondsToSelector:@selector(jsoObj)])
+                argv->Set(cnt++, [arg jsObj]);
+            else
+                NSLog(@"Unsupported script argument %@", arg);
+        }
+        ctx->Global()->Set(String::New("ARGV"), argv);
+    } else {
+        ctx->Global()->Set(String::New("ARGV"), Undefined());
+    }
     //NSLog(@"%@", [self exportGraph:[[JMXContext sharedContext] allEntities] andPins:nil]);
     ctx->Global()->SetHiddenValue(String::New("quit"), v8::Boolean::New(0));
     BOOL ret = ExecJSCode([script UTF8String], [script length],
@@ -836,6 +854,11 @@ static char *argv[2] = { (char *)"JMX", NULL };
     
     [pool drain];
     return ret;
+}
+
+- (BOOL)runScript:(NSString *)script
+{
+    return [self runScript:script withArgs:nil];
 }
 
 + (JMXScript *)getContext

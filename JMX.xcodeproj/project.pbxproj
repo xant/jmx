@@ -92,6 +92,9 @@
 		AA4BFED012BE25E900775B88 /* AudioOutput.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA4BFE1112BE0D7400775B88 /* AudioOutput.js */; };
 		AA4BFED112BE25E900775B88 /* VideoOutput.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA4BFE1512BE135000775B88 /* VideoOutput.js */; };
 		AA4BFF2F12BE2F9500775B88 /* VideoFilter.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA4BFEFD12BE2B4500775B88 /* VideoFilter.js */; };
+		AA4CD9CD150D598D00152655 /* test_phidget_encoder.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA4CD9C7150D596900152655 /* test_phidget_encoder.js */; };
+		AA4CD9CE150D598D00152655 /* scratch_moviefile.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA4CD9C8150D596900152655 /* scratch_moviefile.js */; };
+		AA4CD9CF150D598D00152655 /* powermate.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA4CD9C9150D596900152655 /* powermate.js */; };
 		AA54B28B12A1215000EC60B2 /* jmx-icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = AA54B28A12A1215000EC60B2 /* jmx-icon.icns */; };
 		AA55601412AEF7CC00C882FF /* CIAlphaFade.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AA555FC912AEF39600C882FF /* CIAlphaFade.cikernel */; };
 		AA5563C412B188EB00C882FF /* CIAlphaFade.m in Sources */ = {isa = PBXBuildFile; fileRef = AA555FC712AEF39600C882FF /* CIAlphaFade.m */; };
@@ -266,6 +269,9 @@
 			dstPath = javascript_examples;
 			dstSubfolderSpec = 12;
 			files = (
+				AA4CD9CD150D598D00152655 /* test_phidget_encoder.js in Deploy JS examples */,
+				AA4CD9CE150D598D00152655 /* scratch_moviefile.js in Deploy JS examples */,
+				AA4CD9CF150D598D00152655 /* powermate.js in Deploy JS examples */,
 				AA75F38914F706FA00F1A214 /* drag_movies.js in Deploy JS examples */,
 				AAD751E114E9D9DE008B1085 /* counter.js in Deploy JS examples */,
 				AAD751E214E9D9DE008B1085 /* random_point.js in Deploy JS examples */,
@@ -481,6 +487,9 @@
 		AA4BFE1512BE135000775B88 /* VideoOutput.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = VideoOutput.js; sourceTree = "<group>"; };
 		AA4BFE1912BE13D100775B88 /* OpenGLScreen.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = OpenGLScreen.js; sourceTree = "<group>"; };
 		AA4BFEFD12BE2B4500775B88 /* VideoFilter.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = VideoFilter.js; sourceTree = "<group>"; };
+		AA4CD9C7150D596900152655 /* test_phidget_encoder.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = test_phidget_encoder.js; path = javascript_examples/test_phidget_encoder.js; sourceTree = "<group>"; };
+		AA4CD9C8150D596900152655 /* scratch_moviefile.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = scratch_moviefile.js; path = javascript_examples/scratch_moviefile.js; sourceTree = "<group>"; };
+		AA4CD9C9150D596900152655 /* powermate.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = powermate.js; path = javascript_examples/powermate.js; sourceTree = "<group>"; };
 		AA54B28A12A1215000EC60B2 /* jmx-icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "jmx-icon.icns"; sourceTree = "<group>"; };
 		AA555FC712AEF39600C882FF /* CIAlphaFade.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CIAlphaFade.m; sourceTree = "<group>"; };
 		AA555FC812AEF39600C882FF /* CIAlphaFade.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CIAlphaFade.h; sourceTree = "<group>"; };
@@ -1047,6 +1056,9 @@
 		AA490DD914CC5F9C00407C0D /* Javascript Examples */ = {
 			isa = PBXGroup;
 			children = (
+				AA4CD9C7150D596900152655 /* test_phidget_encoder.js */,
+				AA4CD9C8150D596900152655 /* scratch_moviefile.js */,
+				AA4CD9C9150D596900152655 /* powermate.js */,
 				AA75F38814F706E200F1A214 /* drag_movies.js */,
 				AAD751DF14E9D9C9008B1085 /* counter.js */,
 				AAD751E014E9D9C9008B1085 /* random_point.js */,

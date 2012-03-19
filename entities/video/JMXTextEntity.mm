@@ -95,6 +95,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXTextEntity);
         @synchronized(self) {
             [renderer setString:text withAttributes:stanStringAttrib];
             [renderer drawOnBuffer:textFrame];
+            
             if (renderedText)
                 [renderedText release];
             renderedText = [[CIImage imageWithCVImageBuffer:textFrame] retain];

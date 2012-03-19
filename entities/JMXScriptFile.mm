@@ -106,7 +106,7 @@ extern void JSExit(int code);
             [self exec];
         }
     }
-    if (jsContext)
+    if (isRunning && jsContext)
         [jsContext nodejsRun];
     [super tick:timeStamp];
 }

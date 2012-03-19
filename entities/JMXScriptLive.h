@@ -14,8 +14,6 @@
 @interface JMXScriptLive : JMXScriptEntity {
 @private
     JMXInputPin *codeInputPin;
-    JMXOutputPin *codeOutputPin;
-    NSString *history;
 }
 
 - (void)execCode:(NSString *)code;

@@ -20,13 +20,16 @@
     JMXScript *jsContext;
     NSThread *executionThread;
     NSMutableSet *pinWrappers;
+    JMXOutputPin *codeOutputPin;
 }
 
 @property (copy) NSString *code;
+@property (retain) NSArray *arguments; // XXX - arguments need to be set before code
 @property (readonly) JMXScript *jsContext;
 @property (readonly) NSThread *executionThread;
 
 - (BOOL)exec;
+- (BOOL)exec:(NSString *)code;
 - (void)resetContext;
 - (void)hookEntity:(JMXEntity *)entity;
 

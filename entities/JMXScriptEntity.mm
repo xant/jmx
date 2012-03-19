@@ -23,7 +23,7 @@ using namespace v8;
 
 @implementation JMXScriptEntity
 
-@synthesize code, jsContext, executionThread;
+@synthesize code, arguments, jsContext, executionThread;
 
 + (void)initialize
 {
@@ -40,6 +40,8 @@ using namespace v8;
     if (self) {
         self.label = @"ScriptEntity";
         pinWrappers = [[NSMutableSet alloc] initWithCapacity:25];
+        codeOutputPin = [self registerOutputPin:@"runningCode" withType:kJMXCodePin andSelector:@"code"];
+
     }
     return self;
 }
@@ -99,15 +101,22 @@ using namespace v8;
     [pool drain];
 }
 
-- (BOOL)exec
+- (BOOL)exec:(NSString *)someCode
 {
+    if (!someCode)
+        someCode = self.code;
     if (!jsContext) {
         jsContext = [[JMXScript alloc] init];
         [jsContext startWithEntity:self];
     }
     [executionThread release];
     executionThread = [[NSThread currentThread] retain];
-    return [jsContext runScript:self.code];
+    return [jsContext runScript:someCode withArgs:self.arguments];
+}
+
+- (BOOL)exec
+{
+    return [self exec:nil];
 }
 
 - (void)hookEntity:(JMXEntity *)entity
@@ -140,6 +149,15 @@ using namespace v8;
     pin.function = function;
     [self registerOutputPin:pin];
     return pin;
+}
+
+- (void)setCode:(NSString *)someCode
+{
+    if (code == someCode)
+        return;
+    [code release];
+    code = [someCode retain];
+    codeOutputPin.data = code;
 }
 
 #pragma mark -

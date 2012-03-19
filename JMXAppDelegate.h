@@ -33,6 +33,8 @@
     BOOL batchMode;
     NSTextView *consoleView;
     JMXLibraryTableView *libraryTableView;
+    
+    NSMutableArray *argv;
 }
 
 @property (assign) IBOutlet NSWindow *window;

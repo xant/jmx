@@ -78,9 +78,26 @@
     
 }
 
+- (void)applicationDidFinishLaunching:(NSNotification *)notification
+{
+    if (argv.count) {
+        JMXScriptFile *file = [[JMXScriptFile alloc] init];
+        
+        file.active = YES;
+        batchMode = YES;
+        NSString *filePath = [argv objectAtIndex:0];
+        [argv removeObjectAtIndex:0];
+        file.arguments = argv;
+        file.path = filePath;
+        [window setIsVisible:NO];
+    }
+
+}
+
 - (void)awakeFromNib
 {
     [super awakeFromNib];
+    argv = [[NSMutableArray alloc] initWithCapacity:10];
 }
 
 
@@ -95,12 +112,10 @@
 
 - (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename
 {
-    JMXScriptFile *file = [[JMXScriptFile alloc] init];
-    file.active = YES;
-    batchMode = YES;
-    file.path = filename;
-    [window setIsVisible:NO];
-    return YES;
+    [argv addObject:filename];
+    if (argv.count == 1)
+        return YES;
+    return NO;
 }
 
 - (void)updateOutput:(NSString*)msg

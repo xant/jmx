@@ -156,7 +156,7 @@ static void JMXIOHIDRemoveCallback(void *context, IOReturn result, void *sender)
         long vendorID = IOHIDDevice_GetVendorID(deviceRef);
         long productID = IOHIDDevice_GetProductID(deviceRef);
         if (vendorID == identifier.vendorID && productID == identifier.productID)
-            return [[JMXHIDDevice alloc] initWithDeviceRef:deviceRef delegate:delegate];
+            return [[[JMXHIDDevice alloc] initWithDeviceRef:deviceRef delegate:delegate] autorelease];
     }
     return nil;
 }

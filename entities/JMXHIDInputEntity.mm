@@ -86,6 +86,12 @@ JMXV8_EXPORT_NODE_CLASS(JMXHIDInputEntity);
     return self;
 }
 
+- (void)dealloc
+{
+    [device release];
+    [deviceID release];
+    [super dealloc];
+}
 #pragma mark -
 #pragma mark JMXHIDDeviceDelegate
 

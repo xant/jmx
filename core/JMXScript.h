@@ -114,13 +114,13 @@
  @method execCode:
  @abstract Interpret and exec the provided javascript code in this JS Context
  */
-- (void)execCode:(NSString *)code;
+- (BOOL)execCode:(NSString *)code;
 
 /*!
  @method execFunction:
  @abstract exec the provided javascript function in this JS context
  */
-- (void)execFunction:(v8::Handle<v8::Function>)function;
+- (BOOL)execFunction:(v8::Handle<v8::Function>)function;
 
 /*!
  @method execFunction:WithArguments:count

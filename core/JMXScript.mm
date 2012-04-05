@@ -667,11 +667,19 @@ static char *argv[2] = { (char *)"JMX", NULL };
     return handleScope.Close(ret); 
 }
 
-- (void)execFunction:(v8::Handle<v8::Function>)function
+- (BOOL)execFunction:(v8::Handle<v8::Function>)function
 {
     v8::Locker locker;
     HandleScope handleScope;
+    v8::TryCatch try_catch;
+
     v8::Handle<Value> ret = function->Call(function, 0, nil);
+    
+    if (ret.IsEmpty()) {
+        ReportException(&try_catch);
+        return NO;
+    }
+    return YES;
 }
 
 - (void)nodejsRun
@@ -817,12 +825,9 @@ static char *argv[2] = { (char *)"JMX", NULL };
     [super dealloc];
 }
 
-- (void)execCode:(NSString *)code
+- (BOOL)execCode:(NSString *)code
 {
-    BOOL ret = ExecJSCode((const char *)[code UTF8String], [code length], "code");
-    if (!ret) {
-        // TODO - handle error conditions
-    }
+    return ExecJSCode((const char *)[code UTF8String], [code length], "code");
 }
 
 - (BOOL)runScript:(NSString *)script withArgs:(NSArray *)args

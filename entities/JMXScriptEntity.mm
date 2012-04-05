@@ -101,6 +101,13 @@ using namespace v8;
     [pool drain];
 }
 
+- (BOOL)execFunction:(v8::Handle<v8::Function>)function
+{
+    if (jsContext)
+        return [jsContext execFunction:function];
+    return NO;
+}
+
 - (BOOL)exec:(NSString *)someCode
 {
     if (!someCode)
@@ -151,13 +158,22 @@ using namespace v8;
     return pin;
 }
 
+- (NSString *)code
+{
+    @synchronized(jsContext) {
+        return [[code copy] autorelease];
+    }
+}
+
 - (void)setCode:(NSString *)someCode
 {
-    if (code == someCode)
-        return;
-    [code release];
-    code = [someCode retain];
-    codeOutputPin.data = code;
+    @synchronized(jsContext) {
+        if (code == someCode)
+            return;
+        [code release];
+        code = [someCode copy];
+        codeOutputPin.data = code;
+    }
 }
 
 #pragma mark -
@@ -254,6 +270,25 @@ using namespace v8;
 
 static Persistent<FunctionTemplate> objectTemplate;
 
+static v8::Handle<Value>Exec(const Arguments& args)
+{
+    //v8::Locker lock;
+    BOOL ret;
+    HandleScope handleScope;
+    JMXScriptEntity *entity = (JMXScriptEntity *)args.Holder()->GetPointerFromInternalField(0);
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    if (args[0]->IsFunction()) {
+        ret = [entity execFunction:Local<Function>::New(Handle<Function>::Cast(args[0]))];
+    } else if (args[0]->IsString()) {
+        String::Utf8Value str(args[0]->ToString());
+        [entity exec:[NSString stringWithUTF8String:*str]];
+    } else {
+        NSLog(@"ScriptEntity::exec(): argument is neither a string nor a function");
+    }
+    [pool release];
+    return handleScope.Close(v8::Boolean::New(ret ? 1 : 0));
+}
+
 static v8::Handle<Value>GetEntities(Local<String> name, const AccessorInfo& info)
 {
     //v8::Locker lock;
@@ -284,9 +319,14 @@ static v8::Handle<Value>GetEntities(Local<String> name, const AccessorInfo& info
     objectTemplate->Inherit([super jsObjectTemplate]);
     objectTemplate->SetClassName(String::New("ScriptEntity"));
     v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
+    
+    classProto->Set("exec", FunctionTemplate::New(Exec));
+    
     v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
     instanceTemplate->SetAccessor(String::NewSymbol("frequency"), GetNumberProperty, SetNumberProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("entities"), GetEntities);
+    instanceTemplate->SetAccessor(String::NewSymbol("code"), GetStringProperty, SetStringProperty);
+    
     instanceTemplate->SetInternalFieldCount(1);
     return objectTemplate;
 }

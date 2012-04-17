@@ -19,10 +19,10 @@ hid.output.report.connect(function(v) {
         echo("Current pin: " + currentPin.label);
     }
     direction = v.byteAtIndex(1);
-    if (direction == 1) {
-        currentPin.data += 0.1;
+    if (direction > 127) {
+        currentPin.data -= (256 - direction) / 10;
     } else {
-        currentPin.data -= 0.1;
+        currentPin.data += direction / 10;
     }
-    echo("Value: " + currentPin.data);
+    echo(direction + "  " + currentPin.data);
 });

@@ -34,6 +34,18 @@ using namespace v8;
     }
 }
 
+- (id)initWithName:(NSString *)name
+{
+    self = [super initWithName:name];
+    if (self) {
+        self.label = name;
+        pinWrappers = [[NSMutableSet alloc] initWithCapacity:25];
+        codeOutputPin = [self registerOutputPin:@"runningCode" withType:kJMXCodePin andSelector:@"code"];
+        code = [[NSMutableString alloc] initWithCapacity:1024];
+    }
+    return self;
+}
+
 - (id)init
 {
     self = [super init];
@@ -41,7 +53,7 @@ using namespace v8;
         self.label = @"ScriptEntity";
         pinWrappers = [[NSMutableSet alloc] initWithCapacity:25];
         codeOutputPin = [self registerOutputPin:@"runningCode" withType:kJMXCodePin andSelector:@"code"];
-
+        code = [[NSMutableString alloc] initWithCapacity:1024];
     }
     return self;
 }
@@ -112,13 +124,20 @@ using namespace v8;
 {
     if (!someCode)
         someCode = self.code;
+
     if (!jsContext) {
         jsContext = [[JMXScript alloc] init];
         [jsContext startWithEntity:self];
     }
     [executionThread release];
     executionThread = [[NSThread currentThread] retain];
-    return [jsContext runScript:someCode withArgs:self.arguments];
+    BOOL ret = [jsContext runScript:someCode withArgs:self.arguments];
+    if (ret && ![someCode isEqualToString:self.code]) {
+        // we append the code only if it was successfully executed
+        [code appendFormat:@"%@\n", someCode];
+        codeOutputPin.data = code;
+    }
+    return ret;
 }
 
 - (BOOL)exec
@@ -135,6 +154,11 @@ using namespace v8;
         [self addChild:holder];
     }
     [holder addChild:entity];
+}
+
+- (void)destroyEntity:(JMXEntity *)entity
+{
+    
 }
 
 - (JMXScriptInputPin *)registerJSInputPinWithLabel:(NSString *)aLabel
@@ -171,7 +195,7 @@ using namespace v8;
         if (code == someCode)
             return;
         [code release];
-        code = [someCode copy];
+        code = [someCode mutableCopy];
         codeOutputPin.data = code;
     }
 }

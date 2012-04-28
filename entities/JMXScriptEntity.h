@@ -16,7 +16,7 @@
 
 @interface JMXScriptEntity : JMXEntity {
 @protected
-    NSString *code;
+    NSMutableString *code;
     JMXScript *jsContext;
     NSThread *executionThread;
     NSMutableSet *pinWrappers;

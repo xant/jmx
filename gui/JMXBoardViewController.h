@@ -14,8 +14,9 @@
 @class JMXPinLayer;
 @class JMXDocument;
 @class JMXEntitiesController;
+@class JMXScriptEntity;
 
-@interface JMXBoardViewController : NSViewController {
+@interface JMXBoardViewController : NSViewController <NSTextFieldDelegate> {
     JMXEntityLayer *selectedLayer;
 	JMXConnectorLayer *selectedConnectorLayer;
 	JMXConnectorLayer *fakeConnectorLayer;
@@ -24,6 +25,8 @@
     NSMutableArray *entities;
     JMXEntitiesController *entitiesController;
     NSPoint lastDragLocation;
+    JMXScriptEntity *scriptController;
+    IBOutlet NSTextField *jsInput;
 }
 
 @property (nonatomic, assign) JMXEntityLayer *selectedLayer;

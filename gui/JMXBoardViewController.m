@@ -9,6 +9,7 @@
 #import "JMXBoardViewController.h"
 #import "JMXRunLoop.h"
 #import "JMXEntitiesController.h"
+#import "JMXScriptEntity.h"
 
 #include <math.h>
 
@@ -70,6 +71,10 @@
     selected = [[NSMutableArray alloc] init];
     entities = [[NSMutableArray alloc] init];
     entitiesController = [[JMXEntitiesController alloc] init];
+    scriptController = [[JMXScriptEntity alloc] initWithName:@"scriptController"];
+    jsInput.target = self;
+    jsInput.action = @selector(execStatement);
+    jsInput.delegate = self;
 }
 
 - (void)dealloc
@@ -78,6 +83,7 @@
     [selected release];
     [entities release];
     [entitiesController release];
+    [jsInput release];
     [super dealloc];
 }
 
@@ -319,6 +325,40 @@
 - (void)boardWasModified:(NSNotification *)aNotification
 {
     
+}
+
+- (void)execStatement
+{
+    NSString *code = [jsInput stringValue];
+    BOOL ret = [scriptController exec:code];
+    [jsInput setStringValue:@""];
+}
+
+#pragma mark -
+#pragma mark NSTextDelegate
+- (void)textDidChange:(NSNotification *)notification
+{
+    NSLog(@"A");
+}
+
+- (void)textDidBeginEditing:(NSNotification *)aNotification
+{
+    
+}
+
+- (void)textDidEndEditing:(NSNotification *)aNotification
+{
+    
+}
+
+- (BOOL)textShouldBeginEditing:(NSText *)aTextObject
+{
+    return YES;
+}
+
+- (BOOL)textShouldEndEditing:(NSText *)aTextObject
+{
+    return YES;
 }
 
 @end

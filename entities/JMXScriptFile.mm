@@ -101,7 +101,7 @@ extern void JSExit(int code);
 {
     if (!self.quit && !isRunning) {
         //self.quit = YES; // we want to stop the thread as soon as the script exits
-        if (self.code) {
+        if (self.code && self.code.length) {
             isRunning = YES;
             [self exec];
         }

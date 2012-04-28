@@ -21,6 +21,7 @@
     NSThread *executionThread;
     NSMutableSet *pinWrappers;
     JMXOutputPin *codeOutputPin;
+    NSArray *arguments;
 }
 
 @property (copy) NSString *code;

@@ -43,6 +43,7 @@
 #import "JMXHIDInputEntity.h"
 #import "CIAlphaBlend.h"
 #import "CIAdditiveBlur.h"
+#import <QTKit/QTKit.h>
 
 @implementation JMXAppDelegate
 
@@ -65,6 +66,7 @@
     [sharedContext registerClass:[JMXScriptFile class]];
     [sharedContext registerClass:[JMXScriptLive class]];
     [sharedContext registerClass:[JMXHIDInputEntity class]];
+    [QTMovie initialize];
     [CIAlphaBlend class]; // trigger initialize to have the filter registered and available in the videomixer
     [CIAdditiveBlur class];
     if (CPhidgetEncoder_create != NULL) {

@@ -34,6 +34,13 @@ JMXV8_EXPORT_NODE_CLASS(JMXDrawEntity);
     return nil;
 }
 
+- (void)setSize:(JMXSize *)aSize
+{
+    [super setSize:aSize];
+    canvas.width = aSize.width;
+    canvas.height = aSize.height;
+}
+
 - (void)dealloc
 {
     [canvas detach];

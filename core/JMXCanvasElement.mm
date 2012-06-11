@@ -17,7 +17,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXCanvasElement);
 
 @implementation JMXCanvasElement
 
-@synthesize width, height, drawPath;
+@synthesize drawPath;
 
 - (id)initWithName:(NSString *)name
 {
@@ -28,9 +28,9 @@ JMXV8_EXPORT_NODE_CLASS(JMXCanvasElement);
 {
     self = [super initWithName:@"canvas"];
     if (self) {
-        self.width = frameSize.width; // HC
-        self.height = frameSize.height; // HC
-        drawPath = [[JMXDrawPath alloc] initWithFrameSize:[JMXSize sizeWithNSSize:NSMakeSize(self.width, self.height)]];
+        width = frameSize.width;
+        height = frameSize.height;
+        drawPath = [[JMXDrawPath alloc] initWithFrameSize:[JMXSize sizeWithNSSize:NSMakeSize(width, height)]];
     }
     return self;
 }
@@ -44,6 +44,32 @@ JMXV8_EXPORT_NODE_CLASS(JMXCanvasElement);
         drawPath = [[JMXDrawPath alloc] initWithFrameSize:[JMXSize sizeWithNSSize:NSMakeSize(self.width, self.height)]];
     }
     return self;
+}
+
+- (double)height
+{
+    return height;
+}
+
+- (void)setWidth:(double)aWidth
+{
+    if (aWidth != width) {
+        width = aWidth;
+        [drawPath setFrameSize:[JMXSize sizeWithNSSize:CGSizeMake(aWidth, height)]];
+    }
+}
+
+- (double)width
+{
+    return width;
+}
+
+- (void)setHeight:(double)aHeight
+{
+    if (aHeight != height) {
+        height = aHeight;
+        [drawPath setFrameSize:[JMXSize sizeWithNSSize:CGSizeMake(width, aHeight)]];
+    }
 }
 
 - (oneway void) release

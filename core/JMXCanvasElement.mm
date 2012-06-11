@@ -55,7 +55,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXCanvasElement);
 {
     if (aWidth != width) {
         width = aWidth;
-        [drawPath setFrameSize:[JMXSize sizeWithNSSize:CGSizeMake(aWidth, height)]];
+        [drawPath setFrameSize:[JMXSize sizeWithNSSize:NSSizeFromCGSize(CGSizeMake(aWidth, height))]];
     }
 }
 
@@ -68,7 +68,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXCanvasElement);
 {
     if (aHeight != height) {
         height = aHeight;
-        [drawPath setFrameSize:[JMXSize sizeWithNSSize:CGSizeMake(width, aHeight)]];
+        [drawPath setFrameSize:[JMXSize sizeWithNSSize:NSSizeFromCGSize(CGSizeMake(width, aHeight))]];
     }
 }
 

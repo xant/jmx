@@ -91,6 +91,11 @@
     return [[JMXSize alloc] initWithNSSize:nsSize];
 }
 
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"JMXSize: { w: %f, h: %f }", self.width, self.height];
+}
+
 #pragma mark V8
 using namespace v8;
 static v8::Persistent<FunctionTemplate> objectTemplate;

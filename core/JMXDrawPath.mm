@@ -29,7 +29,7 @@ using namespace v8;
 @implementation JMXDrawPath
 
 @synthesize fillStyle, strokeStyle, globalAlpha,
-            globalCompositeOperation, font, frameSize,
+            globalCompositeOperation, font,
             invertYCoordinates, shadowColor, shadowOffsetX,
             shadowOffsetY, shadowBlur;
 
@@ -46,6 +46,64 @@ using namespace v8;
 - (id)jmxInit
 {
     return [super jmxInit];
+}
+
+- (JMXSize *)frameSize
+{
+    JMXSize *size = nil;
+    [lock lock];
+    size = [frameSize copy];
+    [lock unlock];
+    return [size autorelease];
+}
+
+- (void)setFrameSize:(JMXSize *)aFrameSize
+{
+    [lock lock];
+    // initialize the storage for the spectrum images
+    NSOpenGLPixelFormatAttribute    attributes[] = {
+        NSOpenGLPFAAccelerated,
+        NSOpenGLPFANoRecovery,
+        NSOpenGLPFAColorSize, 24,
+        NSOpenGLPFAAlphaSize,  8,
+        NSOpenGLPFADoubleBuffer,
+        NSOpenGLPFADepthSize, 16,
+        NSOpenGLPFAMultisample,
+        NSOpenGLPFASampleBuffers, 1,
+        NSOpenGLPFASamples, 4,
+        (NSOpenGLPixelFormatAttribute) 0
+    };
+    NSOpenGLPixelFormat *format = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attributes] autorelease];
+    
+    pathLayerOffset = 0;
+    for (int i = 0; i < kJMXDrawPathBufferCount; i++) {
+        if (pathLayers[i])
+            CGLayerRelease(pathLayers[i]);
+        //Create the OpenGL context to render with (with color and depth buffers)
+        NSOpenGLContext *openGLContext = [[[NSOpenGLContext alloc] initWithFormat:format shareContext:nil] autorelease];
+        if(openGLContext == nil) {
+            NSLog(@"Cannot create OpenGL context");
+            [self release];
+            return;
+        }
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+        CIContext *ciContext = [CIContext contextWithCGLContext:(CGLContextObj)[openGLContext CGLContextObj]
+                                                    pixelFormat:(CGLPixelFormatObj)[format CGLPixelFormatObj]
+                                                     colorSpace:colorSpace
+                                                        options:nil];
+        CGColorSpaceRelease(colorSpace);
+        
+        CGSize layerSize = { aFrameSize.width, aFrameSize.height };
+        
+        pathLayers[i] = [ciContext createCGLayerWithSize:layerSize info: nil];
+        CGContextRef context = CGLayerGetContext(pathLayers[i]);
+        CGContextBeginPath(context);
+        CGContextMoveToPoint(context, 0, 0);
+    }
+    [frameSize release];
+    frameSize = [aFrameSize copy];
+    currentFrame = nil;
+    [lock unlock];
 }
 
 - (void)clearFrame:(BOOL)force
@@ -82,51 +140,12 @@ using namespace v8;
     if (self) {
         self.name = @"canvas";
         [self addAttribute:[JMXAttribute attributeWithName:@"class" stringValue:NSStringFromClass([self class])]];
-        // initialize the storage for the spectrum images
-        NSOpenGLPixelFormatAttribute    attributes[] = {
-            NSOpenGLPFAAccelerated,
-            NSOpenGLPFANoRecovery,
-            NSOpenGLPFAColorSize, 24,
-            NSOpenGLPFAAlphaSize,  8,
-            NSOpenGLPFADoubleBuffer,
-            NSOpenGLPFADepthSize, 16,
-            NSOpenGLPFAMultisample,
-            NSOpenGLPFASampleBuffers, 1,
-            NSOpenGLPFASamples, 4,
-            (NSOpenGLPixelFormatAttribute) 0
-        };
-        NSOpenGLPixelFormat *format = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attributes] autorelease];
 
-        pathLayerOffset = 0;
-        for (int i = 0; i < kJMXDrawPathBufferCount; i++) {
-            
-            //Create the OpenGL context to render with (with color and depth buffers)
-            NSOpenGLContext *openGLContext = [[[NSOpenGLContext alloc] initWithFormat:format shareContext:nil] autorelease];
-            if(openGLContext == nil) {
-                NSLog(@"Cannot create OpenGL context");
-                [self release];
-                return nil;
-            }
-            CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-            CIContext *ciContext = [CIContext contextWithCGLContext:(CGLContextObj)[openGLContext CGLContextObj]
-                                             pixelFormat:(CGLPixelFormatObj)[format CGLPixelFormatObj]
-                                              colorSpace:colorSpace
-                                                 options:nil];
-            CGColorSpaceRelease(colorSpace);
-            
-            CGSize layerSize = { aFrameSize.width, aFrameSize.height };
-
-            pathLayers[i] = [ciContext createCGLayerWithSize:layerSize info: nil];
-            CGContextRef context = CGLayerGetContext(pathLayers[i]);
-            CGContextBeginPath(context);
-            CGContextMoveToPoint(context, 0, 0);
-        }
-        frameSize = [aFrameSize copy];
-        currentFrame = nil;
         fillStyle = [(NSColor *)[NSColor colorWithCalibratedRed:0.0 green:0.0 blue:0.0 alpha:1.0] retain];
         strokeStyle = [(NSColor *)[NSColor colorWithCalibratedRed:0.0 green:0.0 blue:0.0 alpha:1.0] retain];
         self.font = [NSFont systemFontOfSize:32];
         lock = [[NSRecursiveLock alloc] init]; // XXX - remove (we don't want locks)
+        [self setFrameSize:aFrameSize];
         [self clearFrame:YES];
         _needsRender = YES;
     }
@@ -870,8 +889,7 @@ using namespace v8;
     
     if (_needsRender) {
         [self clearFrame:NO];
-        if (currentFrame)
-            [currentFrame release];
+        [currentFrame release];
         currentFrame = [[CIImage imageWithCGLayer:pathLayers[pathIndex]] retain];
         _needsRender = NO;
         _didStroke = NO;
@@ -930,6 +948,25 @@ static NSString *validCompositeOperations[] = {
 #pragma mark V8
 
 static v8::Persistent<v8::FunctionTemplate> objectTemplate;
+
+
+- (void)jsInit:(NSValue *)argsValue
+{
+    v8::Arguments *args = (v8::Arguments *)[argsValue pointerValue];
+    if (args->Length() >= 2 && (*args)[0]->IsNumber() && (*args)[1]->IsNumber()) {
+        NSSize newSize;
+        newSize.width = (*args)[0]->ToNumber()->NumberValue();
+        newSize.height = (*args)[1]->ToNumber()->NumberValue();
+        [self setFrameSize:[JMXSize sizeWithNSSize:newSize]];
+    } else if (args->Length() >= 1 && (*args)[0]->IsObject()) {
+        v8::Handle<Object>sizeObj = (*args)[0]->ToObject();
+        if (!sizeObj.IsEmpty()) {
+            JMXSize *jmxSize = (JMXSize *)sizeObj->GetPointerFromInternalField(0);
+            if (jmxSize)
+                [self setFrameSize:jmxSize];
+        }
+    }
+}
 
 static v8::Handle<Value> Save(const Arguments& args)
 {

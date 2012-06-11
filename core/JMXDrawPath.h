@@ -76,7 +76,7 @@
 @property (readwrite, copy) NSString *globalCompositeOperation;
 @property (readwrite, assign) double globalAlpha;
 @property (readwrite, retain) NSFont *font;
-@property (readonly) JMXSize *frameSize;
+@property (readwrite, copy) JMXSize *frameSize;
 @property (readwrite, assign) CGFloat lineWidth;
 @property (assign) BOOL invertYCoordinates;
 - (id)jmxInit;

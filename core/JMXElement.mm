@@ -52,6 +52,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXElement);
 
 - (id)jmxInit
 {
+    v8::Unlocker unlocker;
     self = [super initWithKind:NSXMLElementKind];
     if (self) {
         //self = [super initWithName:self.name ? self.name : @"JMXElement" URI:@"http://jmxapp.org"];

@@ -70,7 +70,7 @@ extern void JSExit(int code);
         NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:newPath];
         if (fh) {
             NSData *data = [fh readDataToEndOfFile];
-            self.code = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            self.code = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
             [NSString stringWithCharacters:(const unichar *)[data bytes] length:[data length]];
             self.label = [[newPath componentsSeparatedByString:@"/"] lastObject];
         }

@@ -65,9 +65,9 @@
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		AA004D8214E7148600009CF9 /* JMXPhidgetEncoderEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA004D8114E7148600009CF9 /* JMXPhidgetEncoderEntity.mm */; };
-		AA004D8414E714B200009CF9 /* Phidget21.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA004D8314E714B200009CF9 /* Phidget21.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		AA02230F14D8BB8C00E7908F /* JMXScriptPinWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA02230E14D8BB8C00E7908F /* JMXScriptPinWrapper.mm */; };
 		AA08D33B14B5AA4500D19015 /* JMXCodePanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA08D33A14B5AA4400D19015 /* JMXCodePanel.m */; };
+		AA0BFDFE1587E5B600D3C8E4 /* Phidget21.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0BFDFD1587E5B600D3C8E4 /* Phidget21.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		AA1E53AD14AE114D00F80337 /* JMXGraphFragment.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA1E53AC14AE114D00F80337 /* JMXGraphFragment.mm */; };
 		AA2BE3F312353BA6006087E7 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE3F212353BA6006087E7 /* CoreAudio.framework */; };
 		AA2BE40B12353D5C006087E7 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE40A12353D5C006087E7 /* Accelerate.framework */; };
@@ -432,11 +432,11 @@
 		8D1107320486CEB800E47090 /* JMX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JMX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA004D8014E7148600009CF9 /* JMXPhidgetEncoderEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXPhidgetEncoderEntity.h; sourceTree = "<group>"; };
 		AA004D8114E7148600009CF9 /* JMXPhidgetEncoderEntity.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXPhidgetEncoderEntity.mm; sourceTree = "<group>"; };
-		AA004D8314E714B200009CF9 /* Phidget21.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Phidget21.framework; path = Library/Frameworks/Phidget21.framework; sourceTree = SDKROOT; };
 		AA02230D14D8BB8C00E7908F /* JMXScriptPinWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXScriptPinWrapper.h; sourceTree = "<group>"; };
 		AA02230E14D8BB8C00E7908F /* JMXScriptPinWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScriptPinWrapper.mm; sourceTree = "<group>"; };
 		AA08D33914B5AA4400D19015 /* JMXCodePanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXCodePanel.h; sourceTree = "<group>"; };
 		AA08D33A14B5AA4400D19015 /* JMXCodePanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXCodePanel.m; sourceTree = "<group>"; };
+		AA0BFDFD1587E5B600D3C8E4 /* Phidget21.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Phidget21.framework; path = /Library/Frameworks/Phidget21.framework; sourceTree = "<absolute>"; };
 		AA1E53AB14AE114D00F80337 /* JMXGraphFragment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXGraphFragment.h; sourceTree = "<group>"; };
 		AA1E53AC14AE114D00F80337 /* JMXGraphFragment.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXGraphFragment.mm; sourceTree = "<group>"; };
 		AA1E53B714AF60F200F80337 /* Global.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = Global.js; sourceTree = "<group>"; };
@@ -833,11 +833,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA0BFDFE1587E5B600D3C8E4 /* Phidget21.framework in Frameworks */,
 				AA678A48150CC47D00B2E8F7 /* CoreMedia.framework in Frameworks */,
 				AA678A46150CBC1000B2E8F7 /* AVFoundation.framework in Frameworks */,
 				AAEF981314FA5C3C006B9F8B /* Carbon.framework in Frameworks */,
 				AAEF981114FA5C31006B9F8B /* IOKit.framework in Frameworks */,
-				AA004D8414E714B200009CF9 /* Phidget21.framework in Frameworks */,
 				AAF376A314CCCE5E00347F40 /* libcrypto.dylib in Frameworks */,
 				AAF376A114CCCE5100347F40 /* libz.dylib in Frameworks */,
 				AAF3769F14CCCE2C00347F40 /* libssl.dylib in Frameworks */,
@@ -921,11 +921,11 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AA0BFDFD1587E5B600D3C8E4 /* Phidget21.framework */,
 				AA678A47150CC47D00B2E8F7 /* CoreMedia.framework */,
 				AA678A45150CBC1000B2E8F7 /* AVFoundation.framework */,
 				AAEF981214FA5C3C006B9F8B /* Carbon.framework */,
 				AAEF981014FA5C31006B9F8B /* IOKit.framework */,
-				AA004D8314E714B200009CF9 /* Phidget21.framework */,
 				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
 				13E42FB307B3F0F600E4EEF1 /* CoreData.framework */,
 				29B97325FDCFA39411CA2CEA /* Foundation.framework */,

@@ -33,7 +33,7 @@ JMXV8_EXPORT_NODE_CLASS(NSXMLNode);
 
 - (NSString *)hashString
 {
-    return [NSString stringWithFormat:@"%d", [self hash]];
+    return [NSString stringWithFormat:@"%ld", [self hash]];
 }
 
 #pragma mark V8

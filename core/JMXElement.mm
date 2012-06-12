@@ -23,7 +23,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXElement);
     if (!idLock)
         idLock = [[NSRecursiveLock alloc] init];
     if (!uid) {
-        uid = [[NSString stringWithFormat:@"%8x", [self hash]] retain];
+        uid = [[NSString stringWithFormat:@"%8lx", [self hash]] retain];
         [self addAttribute:[JMXAttribute attributeWithName:@"uid"
                                                stringValue:uid]];
     }

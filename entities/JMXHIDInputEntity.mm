@@ -26,7 +26,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXHIDInputEntity);
         IOHIDDeviceRef deviceRef = (IOHIDDeviceRef)(NSData *)[deviceData bytes];
         //identifier->vendorID = IOHIDDevice_GetVendorID(deviceRef);
         //identifier->productID = IOHIDDevice_GetProductID(deviceRef);
-        NSString *deviceString = [NSString stringWithFormat:@"%04x:%04x",
+        NSString *deviceString = [NSString stringWithFormat:@"%04lx:%04lx",
                                   IOHIDDevice_GetVendorID(deviceRef),
                                   IOHIDDevice_GetProductID(deviceRef)];
 

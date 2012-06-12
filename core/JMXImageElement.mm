@@ -101,7 +101,7 @@ JMXV8_EXPORT_CLASS(JMXImageElement)
         width = newValue;
         NSXMLNode *attr = [self attributeForName:@"width"];
         if (attr)
-            [attr setStringValue:[NSString stringWithFormat:@"%u", newValue]];
+            [attr setStringValue:[NSString stringWithFormat:@"%lu", newValue]];
     }
 }
 
@@ -118,7 +118,7 @@ JMXV8_EXPORT_CLASS(JMXImageElement)
         height = newValue;
         NSXMLNode *attr = [self attributeForName:@"height"];
         if (attr)
-            [attr setStringValue:[NSString stringWithFormat:@"%u", newValue]];
+            [attr setStringValue:[NSString stringWithFormat:@"%lu", newValue]];
     }
 }
 

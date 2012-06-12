@@ -405,7 +405,7 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, JMXAudioDev
     
     CFMutableDictionaryRef aggDeviceDict = CFDictionaryCreateMutable(NULL, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
     
-    NSString *newUID = [NSString stringWithFormat:@"org.JMX.aggregatedevice.%d", random()];
+    NSString *newUID = [NSString stringWithFormat:@"org.JMX.aggregatedevice.%ld", random()];
     // add the name of the device to the dictionary
     CFDictionaryAddValue(aggDeviceDict, CFSTR(kAudioAggregateDeviceNameKey), name);
     

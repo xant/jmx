@@ -25,6 +25,7 @@
 #import "JMXEntity.h"
 #import "JMXGraph.h"
 #import "JMXAttribute.h"
+#import "JMXHIDDevice.h"
 
 #define kJMXContextSignalNumWorkers 6
 
@@ -85,8 +86,6 @@ static BOOL initialized = NO;
 	return globalContext;
 }
 
-#import "JMXHIDDevice.h"
-
 - (id)init
 {
     self = [super init];
@@ -139,7 +138,7 @@ static BOOL initialized = NO;
     @synchronized(self) {
         if (!entity.parent && ![entity isProxy]) {
             NSValue *value = [NSValue valueWithNonretainedObject:entity];
-            [entities setObject:value forKey:[NSString stringWithFormat:@"%d", entity]];
+            [entities setObject:value forKey:[NSString stringWithFormat:@"%d", (int)entity]];
         }
     }
 }
@@ -148,7 +147,7 @@ static BOOL initialized = NO;
 {
     @synchronized(self) {
         if (entity.parent && ![entity isProxy]) {
-            [entities removeObjectForKey:[NSString stringWithFormat:@"%d", entity]];
+            [entities removeObjectForKey:[NSString stringWithFormat:@"%d", (int)entity]];
         }
     }
 }

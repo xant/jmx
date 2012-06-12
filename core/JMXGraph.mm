@@ -34,7 +34,7 @@
 {
     self = [super init];
     if (self) {
-        uid = [[NSString stringWithFormat:@"%8x", [self hash]] retain];
+        uid = [[NSString stringWithFormat:@"%8lx", [self hash]] retain];
         headNode = [[NSXMLNode alloc] initWithKind:NSXMLElementKind];
         headNode.name = @"head";
     }

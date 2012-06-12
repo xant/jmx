@@ -150,7 +150,7 @@ void ConvertHSLToRGB (const CGFloat *hslComponents, CGFloat *rgbComponents) {
                             NSString *hex = [fullColorString substringWithRange:range];
                             range.location += 2;
                             CGFloat numericalValue = 0;
-                            if (sscanf([hex UTF8String], "%02x", &numericalValue) == 1) {
+                            if (sscanf([hex UTF8String], "%2lf", &numericalValue) == 1) {
                                 switch (i) {
                                     case 0:
                                         r = numericalValue/255.0;

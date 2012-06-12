@@ -79,7 +79,7 @@ static NSString *kEventTypeMouseDragged = @"mousedragged";
 
 - (NSString *)hashString
 {
-    return [NSString stringWithFormat:@"%d", [openglView hash]];
+    return [NSString stringWithFormat:@"%ld", [openglView hash]];
 }
 
 @end
@@ -177,7 +177,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 
 - (void)dealloc
 {
-    [__openglOutputs removeObjectForKey:[NSString stringWithFormat:@"%d", [self hash]]];
+    [__openglOutputs removeObjectForKey:[NSString stringWithFormat:@"%ld", [self hash]]];
     [self cleanup];
     [lock release];
     [super dealloc];

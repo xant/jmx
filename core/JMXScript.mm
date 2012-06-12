@@ -318,7 +318,7 @@ static v8::Handle<Value> Include(const Arguments& args) {
         fh = [NSFileHandle fileHandleForReadingAtPath:path];
         if (!fh) {
             // if still not found, let's try in the user include directory
-            path = [NSString stringWithFormat:@"~/Library/JMX/js/%s", [mainBundle builtInPlugInsPath], *value];
+            path = [NSString stringWithFormat:@"~/Library/JMX/js/%s", *value];
         }
     }
     BOOL ret = NO;

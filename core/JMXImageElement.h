@@ -22,7 +22,7 @@
     BOOL complete;
 @private
     NSData *imageData;
-    NSRecursiveLock *imageLock;
+    NSLock *imageLock;
 }
 
 @property (readwrite, copy) NSString *alt;

@@ -21,7 +21,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXElement);
 - (void)addElementAttributes
 {
     if (!idLock)
-        idLock = [[NSRecursiveLock alloc] init];
+        idLock = [[NSLock alloc] init];
     if (!uid) {
         uid = [[NSString stringWithFormat:@"%8lx", [self hash]] retain];
         [self addAttribute:[JMXAttribute attributeWithName:@"uid"

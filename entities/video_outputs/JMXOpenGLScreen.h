@@ -33,7 +33,7 @@
     CIContext *ciContext;
     BOOL fullScreen;
     NSWindow *myWindow;
-    NSRecursiveLock *lock;
+    NSLock *lock;
     uint64_t lastTime;
     
 #if MAC_OS_X_VERSION_10_6

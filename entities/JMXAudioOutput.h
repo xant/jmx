@@ -49,7 +49,7 @@
     UInt32 wOffset;
     UInt32 rOffset;
     BOOL needsPrefill;
-    NSRecursiveLock *writersLock;
+    NSLock *writersLock;
 }
 
 - (JMXAudioBuffer *)currentSample;

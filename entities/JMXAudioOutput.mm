@@ -27,6 +27,7 @@
 #import "JMXAudioFormat.h"
 #define __JMXV8__ 1
 #import "JMXAudioOutput.h"
+#import <libkern/OSAtomic.h>
 
 #define kJMXAudioOutputPreBufferMaxSize 30
 #define kJMXAudioOutputPreBufferMinSize 15
@@ -139,10 +140,9 @@ static OSStatus _FillComplexBufferProc (
     }
 #else
     JMXAudioBuffer *previousSample;
-    [writersLock lock];
     previousSample = samples[wOffset%kJMXAudioOutputSamplesBufferCount];
-    samples[wOffset++%kJMXAudioOutputSamplesBufferCount] = [buffer retain];
-    [writersLock unlock];
+    samples[wOffset+1%kJMXAudioOutputSamplesBufferCount] = [buffer retain];
+    OSAtomicIncrement32(&wOffset);
     // let's have the buffer released next time the active pool is drained
     // we want to return as soon as possible
     if (previousSample)
@@ -161,10 +161,9 @@ static OSStatus _FillComplexBufferProc (
     //NSLog(@"r: %d - w: %d", rOffset % kJMXAudioOutputSamplesBufferCount , wOffset % kJMXAudioOutputSamplesBufferCount);
     JMXAudioBuffer *sample = nil;
     if (rOffset < wOffset && !needsPrefill) {
-        @synchronized(self) {
-            sample = samples[rOffset%kJMXAudioOutputSamplesBufferCount];
-            samples[rOffset++%kJMXAudioOutputSamplesBufferCount] = nil;
-        }
+        sample = samples[rOffset%kJMXAudioOutputSamplesBufferCount];
+        samples[rOffset+1%kJMXAudioOutputSamplesBufferCount] = nil;
+        OSAtomicIncrement32(&rOffset);
     }
     return [sample autorelease];
 #else
@@ -233,8 +232,6 @@ static OSStatus _FillComplexBufferProc (
 {
     if (format)
         [format dealloc];
-    if (writersLock)
-        [writersLock release];
     for (int i = 0; i < kJMXAudioOutputSamplesBufferCount; i++) {
         if (samples[i])
             [samples[i] release];

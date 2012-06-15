@@ -46,10 +46,9 @@
     UInt32 convertedOffset;
     UInt32 chunkSize;
     JMXAudioBuffer *samples[kJMXAudioOutputSamplesBufferCount];
-    UInt32 wOffset;
-    UInt32 rOffset;
+    volatile int32_t wOffset;
+    volatile int32_t rOffset;
     BOOL needsPrefill;
-    NSLock *writersLock;
 }
 
 - (JMXAudioBuffer *)currentSample;

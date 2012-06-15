@@ -145,7 +145,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         myWindow = nil;
         lastTime = 0;
         [self setSize:frameRect.size];
-        lock = [[NSRecursiveLock alloc] init];
+        lock = [[NSLock alloc] init];
         if (!__openglOutputs) {
             __openglOutputs = [[NSMutableDictionary alloc] initWithCapacity:5];
         }
@@ -241,7 +241,6 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     if (CGLLockContext((CGLContextObj)[[self openGLContext] CGLContextObj]) != kCGLNoError)
          NSLog(@"Could not lock CGLContext");
 
-    //[lock lock];
     NSRect bounds = [self frame];
     GLfloat minX, minY, maxX, maxY;
     minX = NSMinX(bounds);
@@ -265,7 +264,6 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     glClearColor(backgroundColor.redComponent, backgroundColor.greenComponent, backgroundColor.blueComponent, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
     [[self openGLContext] flushBuffer];
-    //[lock unlock];
     CGLUnlockContext((CGLContextObj)[[self openGLContext] CGLContextObj]);
 }
 
@@ -279,18 +277,17 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 
 - (void)setCurrentFrame:(CIImage *)frame
 {
-    [lock lock];
+    [lock lock];    
     [currentFrame release];
     currentFrame = [frame retain];
+    [lock unlock];
     //[self setNeedsDisplay:YES];
     self.needsRedraw = YES;
     //[self renderFrame:0];
-    [lock unlock];
 }
 
 - (void)cleanup
 {
-    //[lock lock];
     if (ciContext) {
         [ciContext release];
         ciContext = nil;
@@ -299,12 +296,10 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         [frameSize release];
     frameSize = nil;
     self.currentFrame = nil;
-    //[lock unlock];  
 }
 
 - (void)setSize:(NSSize)size
 {
-    //[lock lock];
     NSRect actualRect = [[self window] contentRectForFrameRect:[self frame]];
     // XXX - we actually don't allow setting a 0-size (for neither width nor height)
     if (size.width && size.height &&
@@ -325,7 +320,6 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
             [window setMovable:YES]; // XXX - this shouldn't be necessary
         }
     }
-    //[lock unlock];
 }
 
 - (IBAction)toggleFullScreen:(id)sender

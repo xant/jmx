@@ -109,6 +109,8 @@ static JMXV8ClassDescriptor mappedClasses[] = {
     { NULL,                       NULL,               NULL                                  }
 };
 
+static NSThread *nodeJSTimersThread = nil;
+
 void JSExit(int code)
 {
     v8::Locker locker;
@@ -280,6 +282,7 @@ static v8::Handle<Value> DumpDOM(const Arguments& args) {
 static BOOL ExecJSCode(const char *code, uint32_t length, const char *name)
 {
     @try {
+        v8::Locker locker;
         HandleScope scope;
         v8::Handle<v8::Value> result;
         v8::TryCatch try_catch;
@@ -575,7 +578,8 @@ static char *argv[2] = { (char *)"JMX", NULL };
     JMXScript *jsContext = [[self alloc] init];
     BOOL ret = [jsContext runScript:source];
     [jsContext release];
-    return ret;}
+    return ret;
+}
 
 
 + (void)dispatchScript:(NSString *)source
@@ -590,6 +594,54 @@ static char *argv[2] = { (char *)"JMX", NULL };
 {
     //[self performSelector:@selector(dispatchScript:) onThread:[JMXContext scriptThread] withObject:arg waitUntilDone:NO];
     [self performSelectorInBackground:@selector(dispatchScript:) withObject:source];
+}
+
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        if (!nodeJSTimersThread) {
+            nodeJSTimersThread = [[NSThread alloc] initWithTarget:self
+                                                         selector:@selector(nodejsRun)
+                                                           object:nil];
+            [nodeJSTimersThread start];
+        }
+    }
+    return self;
+}
+
+- (void)nodejsRun
+{
+    uint64_t maxDelta = 1e9 / 120.0; // max 120 ticks per seconds
+    while (![[NSThread currentThread] isCancelled]) {
+        @try {
+            v8::Locker locker;
+            v8::HandleScope handle_scope;
+            v8::Context::Scope context_scope(ctx);
+            uint64_t timeStamp = CVGetCurrentHostTime();
+            NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+            //uv_run(uv_default_loop());
+            uv_next(uv_default_loop());
+            uint64_t now = CVGetCurrentHostTime();
+            uint64_t delta = now - timeStamp;
+            uint64_t sleepTime = (delta && delta < maxDelta) ? maxDelta - delta : 0;
+            
+            if (sleepTime) {
+                struct timespec time = { 0, 0 };
+                struct timespec remainder = { 0, sleepTime };
+                do {
+                    time.tv_sec = remainder.tv_sec;
+                    time.tv_nsec = remainder.tv_nsec;
+                    remainder.tv_nsec = 0;
+                    nanosleep(&time, &remainder);
+                } while (remainder.tv_sec || remainder.tv_nsec);
+            }
+            [pool release];
+        }
+        @catch (NSException *exception) {
+            NSLog(@"%@", exception);
+        }
+    }
 }
 
 - (void)registerClasses:(v8::Handle<ObjectTemplate>)ctxTemplate;
@@ -680,27 +732,6 @@ static char *argv[2] = { (char *)"JMX", NULL };
         return NO;
     }
     return YES;
-}
-
-- (void)nodejsRun
-{
-    //uint64_t maxDelta = 1e9 / 120.0; // max 120 ticks per seconds
-    @try {
-        /*while (![[NSThread currentThread] isCancelled])&
-        {*/
-            v8::Locker locker;
-            v8::HandleScope handle_scope;
-            v8::Context::Scope context_scope(ctx);
-            //uint64_t timeStamp = CVGetCurrentHostTime();
-            NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-            //uv_run(uv_default_loop());
-            uv_next(uv_default_loop());
-            [pool release];
-        //}
-    }
-    @catch (NSException *exception) {
-        NSLog(@"%@", exception);
-    }
 }
 
 - (void)startWithEntity:(JMXScriptEntity *)entity
@@ -854,8 +885,14 @@ static char *argv[2] = { (char *)"JMX", NULL };
     }
     //NSLog(@"%@", [self exportGraph:[[JMXContext sharedContext] allEntities] andPins:nil]);
     ctx->Global()->SetHiddenValue(String::New("quit"), v8::Boolean::New(0));
-    BOOL ret = ExecJSCode([script UTF8String], [script length],
-                          scriptEntity ? [scriptEntity.label UTF8String] : [[NSString stringWithFormat:@"%@", self] UTF8String]);
+    BOOL ret = NO;
+    {
+        v8::Unlocker unlocker;
+        ret = ExecJSCode([script UTF8String], [script length],
+                              scriptEntity
+                                  ? [scriptEntity.label UTF8String]
+                                  : [[NSString stringWithFormat:@"%@", self] UTF8String]);
+    }
     
     [pool drain];
     return ret;

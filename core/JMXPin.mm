@@ -588,14 +588,12 @@ using namespace v8;
     // and propagate the signal if that's the case
     if ([self isValidData:data]) {
         id currentData = nil;
-        @synchronized(self) {
-            UInt32 currentOffset = offset&kJMXPinDataBufferMask;
-            UInt32 nextOffset = (offset+1)&kJMXPinDataBufferMask;
-            currentData = dataBuffer[currentOffset];
-            dataBuffer[nextOffset] = [data retain];
-            OSAtomicIncrement32(&offset);
-            dataBuffer[currentOffset] = nil;
-        }
+        UInt32 currentOffset = offset&kJMXPinDataBufferMask;
+        UInt32 nextOffset = (offset+1)&kJMXPinDataBufferMask;
+        currentData = dataBuffer[currentOffset];
+        dataBuffer[nextOffset] = [data retain];
+        OSAtomicIncrement32(&offset);
+        dataBuffer[currentOffset] = nil;
         [currentData autorelease];
         if (sender)
             currentSender = sender;

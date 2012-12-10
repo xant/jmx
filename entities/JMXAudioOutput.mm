@@ -141,7 +141,7 @@ static OSStatus _FillComplexBufferProc (
 #else
     JMXAudioBuffer *previousSample;
     previousSample = samples[wOffset%kJMXAudioOutputSamplesBufferCount];
-    samples[wOffset+1%kJMXAudioOutputSamplesBufferCount] = [buffer retain];
+    samples[(wOffset+1)%kJMXAudioOutputSamplesBufferCount] = [buffer retain];
     OSAtomicIncrement32(&wOffset);
     // let's have the buffer released next time the active pool is drained
     // we want to return as soon as possible
@@ -162,7 +162,7 @@ static OSStatus _FillComplexBufferProc (
     JMXAudioBuffer *sample = nil;
     if (rOffset < wOffset && !needsPrefill) {
         sample = samples[rOffset%kJMXAudioOutputSamplesBufferCount];
-        samples[rOffset+1%kJMXAudioOutputSamplesBufferCount] = nil;
+        samples[(rOffset+1)%kJMXAudioOutputSamplesBufferCount] = nil;
         OSAtomicIncrement32(&rOffset);
     }
     return [sample autorelease];

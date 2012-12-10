@@ -38,6 +38,7 @@
 #import "JMXScriptFile.h"
 #import "JMXScriptLive.h"
 #import "JMXPhidgetEncoderEntity.h"
+#import "JMXAudioToneGenerator.h"
 #import "JMXGlobals.h"
 #import "JMXLibraryTableView.h"
 #import "JMXHIDInputEntity.h"
@@ -66,6 +67,7 @@
     [sharedContext registerClass:[JMXScriptFile class]];
     [sharedContext registerClass:[JMXScriptLive class]];
     [sharedContext registerClass:[JMXHIDInputEntity class]];
+    [sharedContext registerClass:[JMXAudioToneGenerator class]];
     //[QTMovie initialize];
     [CIAlphaBlend class]; // trigger initialize to have the filter registered and available in the videomixer
     [CIAdditiveBlur class];

@@ -21,17 +21,8 @@
     JMXInputPin *audioInputPin;
     JMXOutputPin *audioOutputPin;
 @private
-    //JMXAudioBuffer *currentSample;
-    uint64_t lastSampleTime;
-    JMXAudioBuffer *samples[kJMXAudioMixerSamplesBufferCount];
-    UInt32 rOffset;
-    UInt32 wOffset;
-    JMXAudioDevice *device;
-    JMXAudioFormat *format;
-    BOOL prefill; // defaults to YES
-    BOOL useAggregateDevice; // defaults to YES
 }
 
-@property (readwrite) BOOL useAggregateDevice;
+@property (atomic, readonly) JMXAudioBuffer *outputAudio;
 @end
 

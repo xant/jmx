@@ -15,7 +15,7 @@
 
 @implementation JMXAudioMixer
 
-@synthesize useAggregateDevice;
+@synthesize outputAudio;
 
 - (id)init
 {
@@ -23,40 +23,22 @@
     if (self) {
         audioInputPin = [self registerInputPin:@"audio" withType:kJMXAudioPin];
         [audioInputPin allowMultipleConnections:YES];
-        audioOutputPin = [self registerOutputPin:@"audio" withType:kJMXAudioPin];
+        audioOutputPin = [self registerOutputPin:@"audio" withType:kJMXAudioPin andSelector:@"outputAudio"];
+        audioOutputPin.mode = kJMXPinModePassive;
         [audioOutputPin allowMultipleConnections:YES];
-        self.frequency = [NSNumber numberWithDouble:(44100/512)];
-        useAggregateDevice = NO;
-        prefill = YES;
-        format = nil;
-        rOffset = wOffset = 0;
-        // TODO - if using aggregate device we don't need to be threaded
-        JMXThreadedEntity *threadedEntity = [[JMXThreadedEntity threadedEntity:self] retain];
-        if (threadedEntity)
-            return (JMXAudioMixer *)threadedEntity;
-        [self dealloc];
+        //self.frequency = [NSNumber numberWithDouble:(44100/512)*2];
+        return self;
     }
     return nil;
 }
 
 - (void)dealloc
 {
-    /*
-    if (samples)
-        [samples release];
-     */
-    if (device)
-        [device release];
     [super dealloc];
 }
 
-- (void)tick:(uint64_t)timeStamp
+- (JMXAudioBuffer *)outputAudio
 {
-    
-    if (rOffset < wOffset && !prefill) {
-        JMXAudioBuffer *outSample = samples[rOffset++%kJMXAudioMixerSamplesBufferCount];
-        [audioOutputPin deliverData:[outSample autorelease] fromSender:self];
-    }
     NSArray *newSamples = [audioInputPin readProducers];
     JMXAudioBuffer *currentSample = nil;
     for (JMXAudioBuffer *sample in newSamples) {
@@ -76,97 +58,7 @@
             }
         }
     }
-    if (currentSample)
-        samples[wOffset++%kJMXAudioMixerSamplesBufferCount] = [currentSample retain];
-
-    if ((wOffset - rOffset)%kJMXAudioMixerSamplesBufferCount > 10)
-        prefill = NO;
-    [super outputDefaultSignals:timeStamp];
-}
-
-- (void)provideSamplesToDevice:(JMXAudioDevice *)device
-                     timeStamp:(AudioTimeStamp *)timeStamp
-                     inputData:(AudioBufferList *)inInputData
-                     inputTime:(AudioTimeStamp *)inInputTime
-                    outputData:(AudioBufferList *)outOutputData
-                    outputTime:(AudioTimeStamp *)inOutputTime
-                    clientData:(JMXAudioMixer *)clientData
-
-{
-    if ((wOffset - rOffset)%kJMXAudioMixerSamplesBufferCount > 0) {
-        JMXAudioBuffer *sample = nil;
-        sample = samples[rOffset++%kJMXAudioMixerSamplesBufferCount];
-        if (sample) {
-            int i;
-            for (i = 0; i < inInputData->mNumberBuffers; i++) {
-                SInt32 bytesToCopy = MIN(inInputData->mBuffers[i].mDataByteSize, sample.bufferList->mBuffers[i].mDataByteSize);
-                if (inInputData->mBuffers[i].mData && sample.bufferList->mNumberBuffers > i) {
-                    memcpy(inInputData->mBuffers[i].mData,
-                           sample.bufferList->mBuffers[i].mData,
-                           bytesToCopy);
-                    inInputData->mBuffers[i].mDataByteSize = bytesToCopy;
-                    inInputData->mBuffers[i].mNumberChannels = sample.bufferList->mBuffers[i].mNumberChannels;
-                }
-            }
-            [sample autorelease];
-        }        
-    }
-    [clientData tick:CVGetCurrentHostTime()];
-}
-
-
-- (void)start
-{
-    if (self.active)
-        return;
-    
-    if (useAggregateDevice) {
-        device = [[JMXAudioDevice aggregateDevice:@"JMXMixer"] retain];
-        [device setIOTarget:self 
-               withSelector:@selector(provideSamplesToDevice:timeStamp:inputData:inputTime:outputData:outputTime:clientData:)
-             withClientData:self];
-        format = [[device streamDescriptionForChannel:0 forDirection:kJMXAudioInput] retain];
-        [self activate];
-        [device deviceStart];
-    } else { // start the thread only if don't want to use the aggregate device
-        [super start];
-    }
-}
-
-- (void)stop
-{
-    if (!self.active)
-        return;
-    if (useAggregateDevice) {
-        [self deactivate];
-        if (device) {
-            [device deviceStop];
-            [device release];
-            device = nil;
-            [format release];
-            format = nil;
-        }
-    } else { // start the thread only if don't want to use the aggregate device
-        [super stop];
-    }
-}
-
-- (BOOL)useAggregateDevice
-{
-    @synchronized(self) {
-        return useAggregateDevice;
-    }
-}
-
-- (void)setUseAggregateDevice:(BOOL)value
-{
-    // refulse to change the flag if we are running
-    // TODO - we should just stop/restart and allow 
-    //        changing the mode while running
-    @synchronized(self) {
-        if (!self.active)
-            useAggregateDevice = value;
-    }
+    return currentSample;
 }
 
 @end

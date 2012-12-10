@@ -67,6 +67,8 @@
 		AA004D8214E7148600009CF9 /* JMXPhidgetEncoderEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA004D8114E7148600009CF9 /* JMXPhidgetEncoderEntity.mm */; };
 		AA02230F14D8BB8C00E7908F /* JMXScriptPinWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA02230E14D8BB8C00E7908F /* JMXScriptPinWrapper.mm */; };
 		AA08D33B14B5AA4500D19015 /* JMXCodePanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA08D33A14B5AA4400D19015 /* JMXCodePanel.m */; };
+		AA0A89BD1675E02800FF784F /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0A89BC1675E02800FF784F /* AudioUnit.framework */; };
+		AA0A89C01675E09C00FF784F /* JMXAudioToneGenerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA0A89BF1675E09C00FF784F /* JMXAudioToneGenerator.mm */; };
 		AA0BFDFE1587E5B600D3C8E4 /* Phidget21.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0BFDFD1587E5B600D3C8E4 /* Phidget21.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		AA1E53AD14AE114D00F80337 /* JMXGraphFragment.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA1E53AC14AE114D00F80337 /* JMXGraphFragment.mm */; };
 		AA2BE3F312353BA6006087E7 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE3F212353BA6006087E7 /* CoreAudio.framework */; };
@@ -436,6 +438,9 @@
 		AA02230E14D8BB8C00E7908F /* JMXScriptPinWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXScriptPinWrapper.mm; sourceTree = "<group>"; };
 		AA08D33914B5AA4400D19015 /* JMXCodePanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXCodePanel.h; sourceTree = "<group>"; };
 		AA08D33A14B5AA4400D19015 /* JMXCodePanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXCodePanel.m; sourceTree = "<group>"; };
+		AA0A89BC1675E02800FF784F /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
+		AA0A89BE1675E09C00FF784F /* JMXAudioToneGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXAudioToneGenerator.h; sourceTree = "<group>"; };
+		AA0A89BF1675E09C00FF784F /* JMXAudioToneGenerator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXAudioToneGenerator.mm; sourceTree = "<group>"; };
 		AA0BFDFD1587E5B600D3C8E4 /* Phidget21.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Phidget21.framework; path = /Library/Frameworks/Phidget21.framework; sourceTree = "<absolute>"; };
 		AA1E53AB14AE114D00F80337 /* JMXGraphFragment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXGraphFragment.h; sourceTree = "<group>"; };
 		AA1E53AC14AE114D00F80337 /* JMXGraphFragment.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXGraphFragment.mm; sourceTree = "<group>"; };
@@ -833,6 +838,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA0A89BD1675E02800FF784F /* AudioUnit.framework in Frameworks */,
 				AA0BFDFE1587E5B600D3C8E4 /* Phidget21.framework in Frameworks */,
 				AA678A48150CC47D00B2E8F7 /* CoreMedia.framework in Frameworks */,
 				AA678A46150CBC1000B2E8F7 /* AVFoundation.framework in Frameworks */,
@@ -884,6 +890,7 @@
 		29B97314FDCFA39411CA2CEA /* MoviePlayerD */ = {
 			isa = PBXGroup;
 			children = (
+				AA0A89BC1675E02800FF784F /* AudioUnit.framework */,
 				AAB50B6514DDA472002F385C /* JMX.entitlements */,
 				080E96DDFE201D6D7F000001 /* Sources */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -1390,6 +1397,8 @@
 				825C30ED1275ADB6006376B8 /* JMXAudioFileEntity.mm */,
 				825C30F01275ADB6006376B8 /* JMXQtAudioCaptureEntity.h */,
 				825C30F11275ADB6006376B8 /* JMXQtAudioCaptureEntity.mm */,
+				AA0A89BE1675E09C00FF784F /* JMXAudioToneGenerator.h */,
+				AA0A89BF1675E09C00FF784F /* JMXAudioToneGenerator.mm */,
 			);
 			name = Audio;
 			path = audio;
@@ -1712,7 +1721,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0450;
 				ORGANIZATIONNAME = Dyne.org;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "JMX" */;
@@ -1989,6 +1998,7 @@
 				AAEBBA1614FD65CF000DA6F9 /* CIAdditiveBlur.m in Sources */,
 				AA9B58D914FE1E4F00F63C33 /* NSNumber+V8.mm in Sources */,
 				AA9B58DA14FE1E4F00F63C33 /* NSString+V8.mm in Sources */,
+				AA0A89C01675E09C00FF784F /* JMXAudioToneGenerator.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2018,6 +2028,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = /Library/Frameworks;
@@ -2069,6 +2080,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = /Library/Frameworks;

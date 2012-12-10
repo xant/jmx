@@ -60,6 +60,12 @@ function sketchProc(processing) {
     // Draw circle
     processing.ellipse( X, Y, radius, radius ); 
   };
+
+  processing.mouseMoved = function() {
+      nX = processing.mouseX;
+      nY = processing.mouseY;  
+  };
+
 }
 
 //var canvas = $('canvas:first', drawer).get(0);

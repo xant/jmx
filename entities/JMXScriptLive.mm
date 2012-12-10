@@ -11,6 +11,24 @@
 #import "JMXScript.h"
 
 @implementation JMXScriptLive
+@synthesize scriptThread;
+
+- (id)initWithName:(NSString *)name
+{
+    self = [super initWithName:name];
+    if (self) {
+        codeInputPin = [self registerInputPin:@"code" withType:kJMXCodePin andSelector:@"execCode:"];
+        JMXThreadedEntity *threadedEntity = [[JMXThreadedEntity threadedEntity:self] retain];
+        if (threadedEntity) {
+            scriptThread = threadedEntity.worker;
+            return (JMXScriptLive *)threadedEntity;
+        } else {
+            [self release];
+            return nil;
+        }
+    }
+    return self;
+}
 
 - (id)init
 {
@@ -19,13 +37,18 @@
         self.label = @"JMXScriptLive";
         codeInputPin = [self registerInputPin:@"code" withType:kJMXCodePin andSelector:@"execCode:"];
         JMXThreadedEntity *threadedEntity = [[JMXThreadedEntity threadedEntity:self] retain];
-        if (threadedEntity)
+        if (threadedEntity) {
+            scriptThread = threadedEntity.worker;
             return (JMXScriptLive *)threadedEntity;
+        } else {
+            [self release];
+            return nil;
+        }
     }
     return self;
 }
 
-- (void)execCode:(NSString *)jsCode
+- (void)execCodeInternal:(NSString *)jsCode
 {
     @synchronized(self) {
         if ([self exec:jsCode]) {
@@ -37,6 +60,15 @@
     }
 }
 
+- (void)execCode:(NSString *)jsCode
+{
+    [self performSelector:@selector(execCodeInternal:)
+                             onThread:[self scriptThread]
+                           withObject:jsCode
+                        waitUntilDone:YES
+                                modes:nil];
+}
+
 - (void)dealloc
 {
     [super dealloc];
@@ -44,10 +76,10 @@
 
 - (void)tick:(uint64_t)timeStamp
 {
-    @synchronized(self) {
-        if (jsContext)
-            [jsContext nodejsRun];
-    }
+//    @synchronized(self) {
+//        if (jsContext)
+//            [jsContext nodejsRun];
+//    }
     [super tick:timeStamp];
 }
 

@@ -34,6 +34,8 @@
 #include <utime.h>
 #include <sys/time.h>
 
+# undef fdatasync
+# define fdatasync(fd) fsync (fd)
 
 #define ARGS1(a)       (a)
 #define ARGS2(a,b)     (a), (b)

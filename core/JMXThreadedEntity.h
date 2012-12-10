@@ -138,6 +138,8 @@
  */
 @property (readwrite, assign) BOOL quit;
 
+@property (readonly, retain) NSThread *worker;
+
 /*!
  @method threadedEntity:
  @param entity The entity

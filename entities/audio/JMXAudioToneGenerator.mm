@@ -69,9 +69,9 @@
 
     UInt32 nFrames = 512;
     UInt32 dataSize = nFrames * theOutputFormat.mBytesPerFrame;
-	data = malloc(dataSize);
+	data = (Float32 *)malloc(dataSize);
 
-    AudioBufferList		*theDataBuffer = calloc(1, sizeof(AudioBufferList));
+    AudioBufferList *theDataBuffer = (AudioBufferList *)calloc(1, sizeof(AudioBufferList));
     theDataBuffer->mNumberBuffers = 1;
     theDataBuffer->mBuffers[0].mDataByteSize = dataSize;
     theDataBuffer->mBuffers[0].mNumberChannels = 2;

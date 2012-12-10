@@ -58,10 +58,6 @@ using namespace v8;
     return self;
 }
 
-- (id)retain
-{
-    return [super retain];
-}
 - (void)dealloc
 {
     [self resetContext];
@@ -184,14 +180,14 @@ using namespace v8;
 
 - (NSString *)code
 {
-    @synchronized(jsContext) {
+    @synchronized(self) {
         return [[code copy] autorelease];
     }
 }
 
 - (void)setCode:(NSString *)someCode
 {
-    @synchronized(jsContext) {
+    @synchronized(self) {
         if (code == someCode)
             return;
         [code release];

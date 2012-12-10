@@ -56,6 +56,7 @@
 #endif
 #include "xthread.h"
 
+#include <stdio.h>
 #include <errno.h>
 #include <stddef.h>
 #include <stdlib.h>
@@ -1055,10 +1056,10 @@ eio__futimes (int fd, const struct timeval tv[2])
 
 #endif
 
-#if !HAVE_FDATASYNC
+//#if !HAVE_FDATASYNC
 # undef fdatasync
 # define fdatasync(fd) fsync (fd)
-#endif
+//#endif
 
 static int
 eio__syncfs (int fd)
@@ -1405,11 +1406,13 @@ eio__mtouch (eio_req *req)
     intptr_t end = addr + len;
     intptr_t page = eio_pagesize ();
 
-    if (addr < end)
-      if (flags & EIO_MT_MODIFY) /* modify */
+    if (addr < end) {
+     if (flags & EIO_MT_MODIFY) {/* modify */
         do { *((volatile sig_atomic_t *)addr) |= 0; } while ((addr += page) < len && !EIO_CANCELLED (req));
-      else
+      } else {
         do { *((volatile sig_atomic_t *)addr)     ; } while ((addr += page) < len && !EIO_CANCELLED (req));
+      }
+    }
   }
 
   return 0;
@@ -1851,12 +1854,12 @@ eio__scandir (eio_req *req, etp_worker *self)
             req->int1   = flags;
             req->result = dentoffs;
 
-            if (flags & EIO_READDIR_STAT_ORDER)
+            if (flags & EIO_READDIR_STAT_ORDER) {
               eio_dent_sort (dents, dentoffs, flags & EIO_READDIR_DIRS_FIRST ? 7 : 0, inode_bits);
-            else if (flags & EIO_READDIR_DIRS_FIRST)
-              if (flags & EIO_READDIR_FOUND_UNKNOWN)
+            } else if (flags & EIO_READDIR_DIRS_FIRST) {
+              if (flags & EIO_READDIR_FOUND_UNKNOWN) {
                 eio_dent_sort (dents, dentoffs, 7, inode_bits); /* sort by score and inode */
-              else
+              } else
                 {
                   /* in this case, all is known, and we just put dirs first and sort them */
                   eio_dirent *oth = dents + dentoffs;
@@ -1879,7 +1882,7 @@ eio__scandir (eio_req *req, etp_worker *self)
                   /* now sort the dirs only (dirs all have the same score) */
                   eio_dent_sort (dents, dir - dents, 0, inode_bits);
                 }
-
+            }
             break;
           }
 

@@ -16,6 +16,8 @@
     JMXInputPin *codeInputPin;
 }
 
+@property (readonly) NSThread *scriptThread;
+
 - (void)execCode:(NSString *)code;
 
 @end

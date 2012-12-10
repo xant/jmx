@@ -40,7 +40,7 @@
 
 @implementation JMXThreadedEntity
 
-@synthesize frequency, previousTimeStamp, quit, realEntity;
+@synthesize frequency, previousTimeStamp, quit, realEntity, worker;
 
 + (id)threadedEntity:(JMXEntity *)entity
 {
@@ -161,6 +161,7 @@
         [realEntity addPrivateData:self forKey:@"threadedEntity"];
         NSDebug(@"Thread %@ starting", self);
         worker = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
+        [worker setName:realEntity.name];
         [worker setThreadPriority:1.0];
         [worker start];
         quit = NO;
@@ -237,17 +238,6 @@
 
 - (void)run
 {
-#if 0
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    double maxDelta = 1.0/[self.frequency doubleValue];
-    timer = [NSTimer timerWithTimeInterval:maxDelta target:self selector:@selector(signalTick:) userInfo:nil repeats:YES];
-    realEntity.active = YES;
-    NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-    [runLoop addTimer:timer forMode:NSRunLoopCommonModes];
-    [runLoop run];
-    realEntity.active = NO;
-    [pool drain];
-#else
     NSThread *currentThread = [NSThread currentThread];
     realEntity.active = YES;
     while (![currentThread isCancelled]) {
@@ -266,7 +256,6 @@
         uint64_t sleepTime = (delta && delta < maxDelta) ? maxDelta - delta : 0;
         
         if (sleepTime) {
-#if 1
             // using nanosleep is a good portable way, but since we are running 
             // on OSX only, we should try relying on the NSThread API.
             // We will switch back to nanosleep if we notice that 'sleepForTimeInterval'
@@ -279,12 +268,6 @@
                 remainder.tv_nsec = 0;
                 nanosleep(&time, &remainder);
             } while (remainder.tv_sec || remainder.tv_nsec);
-#else
-            // let's try if NSThread facilities are reliable (in terms of time precision)
-            do {
-                [NSThread sleepForTimeInterval:0.001];
-            } while (CVGetCurrentHostTime() - timeStamp <= sleepTime); // we need to be as precise as possible
-#endif
         } else {
             // mmm ... no sleep time ... perhaps we are out of resources and slowing down mixing
             // TODO - produce a warning in this case
@@ -292,7 +275,6 @@
         [pool drain];
     }
     realEntity.active = NO;
-#endif
 }
 
 - (void)setActive:(BOOL)value

@@ -190,12 +190,17 @@ using namespace v8;
         
         // check if we should use a different read mode (depending on our owner capabilities)
         if (owner) {
-            SEL signal = NSSelectorFromString(self.label);
-            if ([owner respondsToSelector:signal]) {
+            if (pinSignal && [self isKindOfClass:[JMXOutputPin class]]) {
                 readMode = kJMXPinReadModeOwnerSelector;
-                readSignal = signal;
-            } else if ([owner conformsToProtocol:@protocol(JMXPinOwner)]) {
-                readMode = kJMXPinReadModeOwnerProtocol;
+                readSignal = NSSelectorFromString(pinSignal);
+            } else {
+                SEL signal = NSSelectorFromString(self.label);
+                if ([owner respondsToSelector:signal]) {
+                    readMode = kJMXPinReadModeOwnerSelector;
+                    readSignal = signal;
+                } else if ([owner conformsToProtocol:@protocol(JMXPinOwner)]) {
+                    readMode = kJMXPinReadModeOwnerProtocol;
+                }
             }
         }
         
@@ -587,14 +592,14 @@ using namespace v8;
     // if instead new data arrived, check if it's of the correct type
     // and propagate the signal if that's the case
     if ([self isValidData:data]) {
-        id currentData = nil;
+        id toRelease = nil;
         UInt32 currentOffset = offset&kJMXPinDataBufferMask;
         UInt32 nextOffset = (offset+1)&kJMXPinDataBufferMask;
-        currentData = dataBuffer[currentOffset];
+        toRelease = dataBuffer[nextOffset];
         dataBuffer[nextOffset] = [data retain];
         OSAtomicIncrement32(&offset);
         dataBuffer[currentOffset] = nil;
-        [currentData autorelease];
+        [toRelease release];
         if (sender)
             currentSender = sender;
         else

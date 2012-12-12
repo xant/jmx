@@ -593,12 +593,10 @@ using namespace v8;
     // and propagate the signal if that's the case
     if ([self isValidData:data]) {
         id toRelease = nil;
-        UInt32 currentOffset = offset&kJMXPinDataBufferMask;
         UInt32 nextOffset = (offset+1)&kJMXPinDataBufferMask;
         toRelease = dataBuffer[nextOffset];
         dataBuffer[nextOffset] = [data retain];
         OSAtomicIncrement32(&offset);
-        dataBuffer[currentOffset] = nil;
         [toRelease release];
         if (sender)
             currentSender = sender;

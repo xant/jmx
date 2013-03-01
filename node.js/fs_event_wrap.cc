@@ -32,7 +32,7 @@ namespace node {
   assert(!args.Holder().IsEmpty());                                         \
   assert(args.Holder()->InternalFieldCount() > 0);                          \
   FSEventWrap* wrap =                                                       \
-      static_cast<FSEventWrap*>(args.Holder()->GetPointerFromInternalField(0)); \
+      static_cast<FSEventWrap*>(args.Holder()->GetAlignedPointerFromInternalField(0)); \
   if (!wrap) {                                                              \
     uv_err_t err;                                                           \
     err.code = UV_EBADF;                                                    \

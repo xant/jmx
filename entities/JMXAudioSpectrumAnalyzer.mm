@@ -209,15 +209,21 @@ static int _defaultFrequencies[kJMXAudioSpectrumNumFrequencies] =
         
         for (UInt32 i = 0; i < kJMXAudioSpectrumNumFrequencies; i++) {	// for each frequency
             int freq = [[frequencies objectAtIndex:i] intValue];
-            int offset = freq*numBins/44100*analyzer.numChannels;
-            Float32 value = (((Float32 *)(spectrumBuffer->mBuffers[0].mData))[offset] +
-                             ((Float32 *)(spectrumBuffer->mBuffers[1].mData))[offset]) * 0.5;
-            if (value < 0.0)
-                value = 0.0;
+            Float32 freqValue = 0;
+            for (UInt32 n = 0; n < numBins; n++) {
+                freqValue += ((Float32 *)(spectrumBuffer->mBuffers[0]).mData)[n];
+            }
+            freqValue /= numBins;
             
-            NSNumber *numberValue = [NSNumber numberWithFloat:value];
+           /* int offset = freq*numBins/44100*analyzer.numChannels;
+            Float32 value = (((Float32 *)(spectrumBuffer->mBuffers[0].mData))[offset] +
+                             ((Float32 *)(spectrumBuffer->mBuffers[1].mData))[offset]) * 0.5;*/
+            if (freqValue < 0.0)
+                freqValue = 0.0;
+            
+            NSNumber *numberValue = [NSNumber numberWithFloat:freqValue];
             [(JMXOutputPin *)[frequencyPins objectAtIndex:i] deliverData:numberValue];
-            frequencyValues[i] = value;
+            frequencyValues[i] = freqValue;
         }
         if (runcycleCount%5 == 0 && imagePin.connected) { // draw the image only once every 10 samples
             [self drawSpectrumImage];
@@ -254,7 +260,7 @@ using namespace v8;
 static v8::Handle<Value>frequencies(const Arguments& args)
 {
     HandleScope handleScope;
-    JMXAudioSpectrumAnalyzer *entity = (JMXAudioSpectrumAnalyzer *)args.Holder()->GetPointerFromInternalField(0);
+    JMXAudioSpectrumAnalyzer *entity = (JMXAudioSpectrumAnalyzer *)args.Holder()->GetAlignedPointerFromInternalField(0);
     v8::Handle<Array> list = v8::Array::New(entity.numberOfFrequencies);
     for (int i = 0; i < entity.numberOfFrequencies; i++) {
         int freq = [entity frequencyAtIndex:i];
@@ -266,7 +272,7 @@ static v8::Handle<Value>frequencies(const Arguments& args)
 static v8::Handle<Value> frequency(const Arguments& args)
 {
     HandleScope handleScope;
-    JMXAudioSpectrumAnalyzer *entity = (JMXAudioSpectrumAnalyzer *)args.Holder()->GetPointerFromInternalField(0);
+    JMXAudioSpectrumAnalyzer *entity = (JMXAudioSpectrumAnalyzer *)args.Holder()->GetAlignedPointerFromInternalField(0);
     v8::Handle<Value> arg = args[0];
     int freq = args[0]->IntegerValue();
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];

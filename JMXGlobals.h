@@ -36,8 +36,12 @@
 
 #define NSDebug(__format, args...) do {\
                                         if (verbose >= LOG_DEBUG) {\
-                                            [(JMXAppDelegate *)[[NSApplication sharedApplication] delegate]\
-                                                                logMessage:__format, ## args ];\
+                                            id appDelegate = [[NSApplication sharedApplication] delegate];\
+                                            if ([appDelegate respondsToSelector:@selector(logMessage:)]) {\
+                                                [appDelegate  logMessage:__format, ## args ];\
+                                            } else {\
+                                                NSLogv(__format, ## args);\
+                                            }\
                                         }\
                                       } while (0)
 

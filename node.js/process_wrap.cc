@@ -29,7 +29,7 @@
   assert(!args.Holder().IsEmpty()); \
   assert(args.Holder()->InternalFieldCount() > 0); \
   ProcessWrap* wrap =  \
-      static_cast<ProcessWrap*>(args.Holder()->GetPointerFromInternalField(0)); \
+      static_cast<ProcessWrap*>(args.Holder()->GetAlignedPointerFromInternalField(0)); \
   if (!wrap) { \
     uv_err_t err; \
     err.code = UV_EBADF; \

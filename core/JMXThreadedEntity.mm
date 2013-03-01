@@ -392,7 +392,7 @@ static v8::Handle<Value>Start(const Arguments& args)
 {
     HandleScope handleScope;
     Local<Object> obj = args.Holder();
-    JMXThreadedEntity *entity = (JMXThreadedEntity *)obj->GetPointerFromInternalField(0);
+    JMXThreadedEntity *entity = (JMXThreadedEntity *)obj->GetAlignedPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     [entity start];
     [pool drain];
@@ -403,7 +403,7 @@ static v8::Handle<Value>Stop(const Arguments& args)
 {
     HandleScope handleScope;
     Local<Object> obj = args.Holder();
-    JMXThreadedEntity *entity = (JMXThreadedEntity *)obj->GetPointerFromInternalField(0);
+    JMXThreadedEntity *entity = (JMXThreadedEntity *)obj->GetAlignedPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     [entity stop];
     [pool drain];

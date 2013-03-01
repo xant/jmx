@@ -54,11 +54,11 @@ static v8::Handle<Value> DefaultDevice(const Arguments& args)
     HandleScope handleScope;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSString *defaultDevice = nil;
-    JMXVideoCapture *vc = (JMXVideoCapture *)args.Holder()->GetPointerFromInternalField(0);
+    JMXVideoCapture *vc = (JMXVideoCapture *)args.Holder()->GetAlignedPointerFromInternalField(0);
     if (vc) {
         defaultDevice = [[vc class] defaultDevice];
     } else {
-        Class objcClass = (Class)External::Unwrap(args.Holder()->Get(String::NewSymbol("_objcClass")));
+        Class objcClass = (Class)External::Cast(*(args.Holder()->Get(String::NewSymbol("_objcClass"))))->Value();
         defaultDevice = [objcClass defaultDevice];
     }
     v8::Handle<String> deviceName = String::New([defaultDevice UTF8String]);
@@ -72,11 +72,11 @@ static v8::Handle<Value> AvailableDevices(const Arguments& args)
     HandleScope handleScope;
     NSArray *availableDevices = nil;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    JMXVideoCapture *vc = (JMXVideoCapture *)args.Holder()->GetPointerFromInternalField(0);
+    JMXVideoCapture *vc = (JMXVideoCapture *)args.Holder()->GetAlignedPointerFromInternalField(0);
     if (vc) { // called as instance method
         availableDevices = [[vc class] availableDevices];
     } else { // called as class method
-        Class objcClass = (Class)External::Unwrap(args.Holder()->Get(String::NewSymbol("_objcClass")));
+        Class objcClass = (Class)External::Cast(*(args.Holder()->Get(String::NewSymbol("_objcClass"))))->Value();
         availableDevices = [objcClass availableDevices];
     }
     v8::Handle<Array> list = v8::Array::New([availableDevices count]);
@@ -91,7 +91,7 @@ static v8::Handle<Value> SelectDevice(const Arguments& args)
 {
     HandleScope handleScope;
     BOOL ret = NO;
-    JMXVideoCapture *vc = (JMXVideoCapture *)args.Holder()->GetPointerFromInternalField(0);
+    JMXVideoCapture *vc = (JMXVideoCapture *)args.Holder()->GetAlignedPointerFromInternalField(0);
     if (vc) {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         v8::Handle<Value> arg = args[0];
@@ -109,7 +109,7 @@ static v8::Handle<Value>Start(const Arguments& args)
 {
     HandleScope handleScope;
     Local<Object> obj = args.Holder();
-    JMXVideoCapture *vc = (JMXVideoCapture *)obj->GetPointerFromInternalField(0);
+    JMXVideoCapture *vc = (JMXVideoCapture *)obj->GetAlignedPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     [vc start];
     [pool drain];
@@ -120,7 +120,7 @@ static v8::Handle<Value>Stop(const Arguments& args)
 {
     HandleScope handleScope;
     Local<Object> obj = args.Holder();
-    JMXVideoCapture *vc = (JMXVideoCapture *)obj->GetPointerFromInternalField(0);
+    JMXVideoCapture *vc = (JMXVideoCapture *)obj->GetAlignedPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     [vc stop];
     [pool drain];

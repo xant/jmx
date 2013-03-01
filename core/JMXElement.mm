@@ -105,7 +105,7 @@ static v8::Handle<Value> GetId(Local<String> name, const AccessorInfo& info)
 {   
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXElement *element = (JMXElement *)info.Holder()->GetPointerFromInternalField(0);
+    JMXElement *element = (JMXElement *)info.Holder()->GetAlignedPointerFromInternalField(0);
     if (element)
         return handleScope.Close(v8::String::New([element.jsId UTF8String]));
     return handleScope.Close(Undefined());
@@ -115,7 +115,7 @@ void SetId(Local<String> name, Local<Value> value, const AccessorInfo& info)
 {   
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXElement *element = (JMXElement *)info.Holder()->GetPointerFromInternalField(0);
+    JMXElement *element = (JMXElement *)info.Holder()->GetAlignedPointerFromInternalField(0);
     if (!value->IsString()) {
         NSLog(@"Bad parameter (not string) passed to JMXCData.SetData()");
         return;

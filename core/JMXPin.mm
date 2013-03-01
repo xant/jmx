@@ -690,7 +690,7 @@ static v8::Handle<Value>direction(Local<String> name, const AccessorInfo& info)
 {
     //v8::Locker lock;
     HandleScope handle_scope;
-    JMXPin *pin = (JMXPin *)info.Holder()->GetPointerFromInternalField(0);
+    JMXPin *pin = (JMXPin *)info.Holder()->GetAlignedPointerFromInternalField(0);
     v8::Handle<String> ret = String::New((pin.direction == kJMXInputPin) ? "input" : "output");
     return handle_scope.Close(ret);
 }
@@ -699,7 +699,7 @@ static v8::Handle<Value>type(Local<String> name, const AccessorInfo& info)
 {
     //v8::Locker lock;
     HandleScope handle_scope;
-    JMXPin *pin = (JMXPin *)info.Holder()->GetPointerFromInternalField(0);
+    JMXPin *pin = (JMXPin *)info.Holder()->GetAlignedPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSString *typeName = [pin typeName];
     v8::Handle<String> ret = String::New([typeName UTF8String], [typeName length]);
@@ -711,7 +711,7 @@ static v8::Handle<Value>mode(Local<String> name, const AccessorInfo& info)
 {
     //v8::Locker lock;
     HandleScope handle_scope;
-    JMXPin *pin = (JMXPin *)info.Holder()->GetPointerFromInternalField(0);
+    JMXPin *pin = (JMXPin *)info.Holder()->GetAlignedPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSString *modeName = [pin modeName];
     v8::Handle<String> ret = String::New([modeName UTF8String], [modeName length]);
@@ -723,7 +723,7 @@ static v8::Handle<Value>connect(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXPin *pin = (JMXPin *)args.Holder()->GetPointerFromInternalField(0);
+    JMXPin *pin = (JMXPin *)args.Holder()->GetAlignedPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     if (args[0]->IsFunction()) {
         v8::Local<Context> globalContext = v8::Context::GetCalling();
@@ -741,7 +741,7 @@ static v8::Handle<Value>connect(const Arguments& args)
         String::Utf8Value str(args[0]->ToString());
         if (strcmp(*str, "[object Pin]") == 0) {
             v8::Handle<Object> object = args[0]->ToObject();
-            JMXPin *dest = (JMXPin *)object->GetPointerFromInternalField(0);
+            JMXPin *dest = (JMXPin *)object->GetAlignedPointerFromInternalField(0);
             if (dest) {
                 {
                     v8::Unlocker unlocker;
@@ -765,7 +765,7 @@ static v8::Handle<Value>disconnectAll(const Arguments& args)
     //v8::Locker lock;
     BOOL ret = NO;
     HandleScope handleScope;
-    JMXPin *pin = (JMXPin *)args.Holder()->GetPointerFromInternalField(0);
+    JMXPin *pin = (JMXPin *)args.Holder()->GetAlignedPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     {
         Unlocker unlocker;
@@ -780,13 +780,13 @@ static v8::Handle<Value>disconnect(const Arguments& args)
     //v8::Locker lock;
     BOOL ret = NO;
     HandleScope handleScope;
-    JMXPin *pin = (JMXPin *)args.Holder()->GetPointerFromInternalField(0);
+    JMXPin *pin = (JMXPin *)args.Holder()->GetAlignedPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     if (args[0]->IsObject()) {
         String::Utf8Value str(args[0]->ToString());
         if (strcmp(*str, "[object Pin]") == 0) {
             v8::Handle<Object> object = args[0]->ToObject();
-            id dest = (id)object->GetPointerFromInternalField(0);
+            id dest = (id)object->GetAlignedPointerFromInternalField(0);
             if (dest) {
                 Unlocker unlocker;
                 ret = YES;
@@ -813,7 +813,7 @@ static v8::Handle<Value>exportToBoard(const Arguments& args)
     //v8::Locker lock;
     HandleScope scope;
     BOOL ret = NO;
-    JMXPin *pin = (JMXPin *)args.Holder()->GetPointerFromInternalField(0);
+    JMXPin *pin = (JMXPin *)args.Holder()->GetAlignedPointerFromInternalField(0);
     v8::Handle<Value> arg = args[0];
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSString *label = nil;
@@ -840,7 +840,7 @@ static void SetData(Local<String> name, Local<Value> value, const AccessorInfo& 
     HandleScope handleScope;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     String::Utf8Value nameStr(name);
-    JMXPin *obj = (JMXPin *)info.Holder()->GetPointerFromInternalField(0);
+    JMXPin *obj = (JMXPin *)info.Holder()->GetAlignedPointerFromInternalField(0);
 
     id val = nil;
     if (obj.type == kJMXVoidPin) {
@@ -851,7 +851,7 @@ static void SetData(Local<String> name, Local<Value> value, const AccessorInfo& 
         String::Utf8Value str(value->ToString());
         val = [NSString stringWithUTF8String:*str];
     } else if (value->IsObject()) {
-        val = (id)value->ToObject()->GetPointerFromInternalField(0);
+        val = (id)value->ToObject()->GetAlignedPointerFromInternalField(0);
     } else {
         NSLog(@"Bad parameter (not object) passed to %s", *nameStr);
         [pool release];
@@ -924,7 +924,7 @@ static void JMXPinJSDestructor(Persistent<Value> object, void *parameter)
     v8::Handle<Object> jsInstance = objectTemplate->InstanceTemplate()->NewInstance();
     //v8::Persistent<Object> jsInstance = v8::Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
     //jsInstance.MakeWeak([self retain], JMXPinJSDestructor);
-    jsInstance->SetPointerInInternalField(0, self);
+    jsInstance->SetAlignedPointerInInternalField(0, self);
     return handleScope.Close(jsInstance);
 }
 

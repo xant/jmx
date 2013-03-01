@@ -740,7 +740,7 @@ static v8::Handle<Value>InputPins(Local<String> name, const AccessorInfo& info)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXEntity *entity = (JMXEntity *)info.Holder()->GetPointerFromInternalField(0);
+    JMXEntity *entity = (JMXEntity *)info.Holder()->GetAlignedPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSArray *inputPins = [entity inputPins];
     Handle<ObjectTemplate> objTemplate = ObjectTemplate::New();
@@ -756,7 +756,7 @@ static v8::Handle<Value>OutputPins(Local<String> name, const AccessorInfo& info)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXEntity *entity = (JMXEntity *)info.Holder()->GetPointerFromInternalField(0);
+    JMXEntity *entity = (JMXEntity *)info.Holder()->GetAlignedPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSArray *outputPins = [entity outputPins];
     Handle<ObjectTemplate> objTemplate = ObjectTemplate::New();
@@ -773,7 +773,7 @@ static v8::Handle<Value> InputPin(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXEntity *entity = (JMXEntity *)args.Holder()->GetPointerFromInternalField(0);
+    JMXEntity *entity = (JMXEntity *)args.Holder()->GetAlignedPointerFromInternalField(0);
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -793,7 +793,7 @@ static v8::Handle<Value> OutputPin(const Arguments& args)
 {   
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXEntity *entity = (JMXEntity *)args.Holder()->GetPointerFromInternalField(0);
+    JMXEntity *entity = (JMXEntity *)args.Holder()->GetAlignedPointerFromInternalField(0);
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
     Local<Value> ret;
@@ -865,7 +865,7 @@ static v8::Handle<Value> NativeClassName(const Arguments& args)
 {   
     //v8::Locker lock;
     HandleScope handleScope;
-    Class objcClass = (Class)External::Unwrap(args.Holder()->Get(String::NewSymbol("_objcClass")));
+    Class objcClass = (Class)External::Cast(*(args.Holder()->Get(String::NewSymbol("_objcClass"))))->Value();
     if (objcClass)
         return handleScope.Close(String::New([NSStringFromClass(objcClass) UTF8String]));
     return v8::Undefined();
@@ -874,9 +874,9 @@ static v8::Handle<Value> NativeClassName(const Arguments& args)
 + (void)jsRegisterClassMethods:(v8::Handle<v8::FunctionTemplate>)constructor
 {
     constructor->InstanceTemplate()->SetInternalFieldCount(1);
-    //constructor->InstanceTemplate()->SetPointerInInternalField(0, self);
+    //constructor->InstanceTemplate()->SetAlignedPointerInInternalField(0, self);
     PropertyAttribute attrs = DontEnum;
-    constructor->Set(String::NewSymbol("_objcClass"), External::Wrap(self), attrs);
+    constructor->Set(String::NewSymbol("_objcClass"), External::New(self), attrs);
     constructor->Set("nativeClassName", FunctionTemplate::New(NativeClassName));
 }
 
@@ -888,7 +888,7 @@ static v8::Handle<Value> NativeClassName(const Arguments& args)
     v8::Handle<FunctionTemplate> objectTemplate = [[self class] jsObjectTemplate];
     v8::Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
     //jsInstance.MakeWeak([self retain], JMXNodeJSDestructor);
-    jsInstance->SetPointerInInternalField(0, self);
+    jsInstance->SetAlignedPointerInInternalField(0, self);
     //[ctx addPersistentInstance:jsInstance obj:self];
     return handle_scope.Close(jsInstance);
 }

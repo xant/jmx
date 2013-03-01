@@ -53,7 +53,7 @@ using v8::Integer;
   assert(!args.Holder().IsEmpty()); \
   assert(args.Holder()->InternalFieldCount() > 0); \
   StreamWrap* wrap =  \
-      static_cast<StreamWrap*>(args.Holder()->GetPointerFromInternalField(0)); \
+      static_cast<StreamWrap*>(args.Holder()->GetAlignedPointerFromInternalField(0)); \
   if (!wrap) { \
     uv_err_t err; \
     err.code = UV_EBADF; \
@@ -249,7 +249,7 @@ void StreamWrap::OnReadCommon(uv_stream_t* handle, ssize_t nread,
       // Unwrap the client javascript object.
       assert(pending_obj->InternalFieldCount() > 0);
       TCPWrap* pending_wrap =
-          static_cast<TCPWrap*>(pending_obj->GetPointerFromInternalField(0));
+          static_cast<TCPWrap*>(pending_obj->GetAlignedPointerFromInternalField(0));
 
       int r = uv_accept(handle, pending_wrap->GetStream());
       assert(r == 0);
@@ -318,7 +318,7 @@ Handle<Value> StreamWrap::Write(const Arguments& args) {
       Local<Object> send_stream_obj = args[3]->ToObject();
       assert(send_stream_obj->InternalFieldCount() > 0);
       StreamWrap* send_stream_wrap = static_cast<StreamWrap*>(
-          send_stream_obj->GetPointerFromInternalField(0));
+          send_stream_obj->GetAlignedPointerFromInternalField(0));
       send_stream = send_stream_wrap->GetStream();
     }
 

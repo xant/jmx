@@ -54,7 +54,7 @@ static v8::Handle<Value> GetValue(Local<String> name, const AccessorInfo& info)
 {   
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXAttribute *attr = (JMXAttribute *)info.Holder()->GetPointerFromInternalField(0);
+    JMXAttribute *attr = (JMXAttribute *)info.Holder()->GetAlignedPointerFromInternalField(0);
     if (attr)
         return handleScope.Close(v8::String::New([[attr stringValue] UTF8String]));
     return handleScope.Close(Undefined());
@@ -64,7 +64,7 @@ void SetValue(Local<String> name, Local<Value> value, const AccessorInfo& info)
 {   
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXAttribute *attr = (JMXAttribute *)info.Holder()->GetPointerFromInternalField(0);
+    JMXAttribute *attr = (JMXAttribute *)info.Holder()->GetAlignedPointerFromInternalField(0);
     if (!value->IsString()) {
         NSLog(@"Bad parameter (not string) passed to JMXCData.SetData()");
         return;

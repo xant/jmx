@@ -145,7 +145,7 @@ static void JMXSizeJSDestructor(Persistent<Value> object, void *parameter)
     v8::Handle<FunctionTemplate> objectTemplate = [JMXSize jsObjectTemplate];
     v8::Persistent<Object> jsInstance = v8::Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
     jsInstance.MakeWeak([self retain], JMXSizeJSDestructor);
-    jsInstance->SetPointerInInternalField(0, self);
+    jsInstance->SetAlignedPointerInInternalField(0, self);
     return handle_scope.Close(jsInstance);
 }
 
@@ -170,7 +170,7 @@ v8::Handle<v8::Value> JMXSizeJSConstructor(const v8::Arguments& args)
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     JMXSize *size = [[JMXSize sizeWithNSSize:NSMakeSize(width, height)] retain];
     jsInstance.MakeWeak(size, JMXSizeJSDestructor);
-    jsInstance->SetPointerInInternalField(0, size);
+    jsInstance->SetAlignedPointerInInternalField(0, size);
     [pool drain];
     return handleScope.Close(jsInstance);
 }

@@ -84,7 +84,7 @@ static v8::Handle<Value> ByteAtIndex(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXByteArray *byteArray = (JMXByteArray *)args.Holder()->GetPointerFromInternalField(0);
+    JMXByteArray *byteArray = (JMXByteArray *)args.Holder()->GetAlignedPointerFromInternalField(0);
     v8::Handle<Value> arg = args[0];
     if (arg->IsInt32()) {
         //NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -139,7 +139,7 @@ static void JMXByteArrayJSDestructor(Persistent<Value> object, void *parameter)
     HandleScope handle_scope;
     Handle<FunctionTemplate> objectTemplate = [[self class] jsObjectTemplate];
     Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
-    jsInstance->SetPointerInInternalField(0, self);
+    jsInstance->SetAlignedPointerInInternalField(0, self);
     jsInstance.MakeWeak([self retain], JMXByteArrayJSDestructor);
     return handle_scope.Close(jsInstance);
 }

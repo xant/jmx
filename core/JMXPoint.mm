@@ -153,7 +153,7 @@ static void JMXPointJSDestructor(Persistent<Value> object, void *parameter)
     v8::Handle<FunctionTemplate> objectTemplate = [JMXPoint jsObjectTemplate];
     v8::Persistent<Object> jsInstance = v8::Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
     jsInstance.MakeWeak([self retain], JMXPointJSDestructor);
-    jsInstance->SetPointerInInternalField(0, self);
+    jsInstance->SetAlignedPointerInInternalField(0, self);
     return handle_scope.Close(jsInstance);
 }
 
@@ -178,7 +178,7 @@ v8::Handle<v8::Value> JMXPointJSConstructor(const v8::Arguments& args)
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     JMXPoint *point = [[JMXPoint pointWithNSPoint:NSMakePoint(x, y)] retain];
     jsInstance.MakeWeak(point, JMXPointJSDestructor);
-    jsInstance->SetPointerInInternalField(0, point);
+    jsInstance->SetAlignedPointerInInternalField(0, point);
     [pool drain];    
     return handleScope.Close(jsInstance);
 }

@@ -178,7 +178,7 @@ static v8::Handle<Value>disconnect(const Arguments& args)
     BOOL ret = NO;
     HandleScope handleScope;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    JMXScriptPinWrapper *wrapper = (JMXScriptPinWrapper *)args.Holder()->GetPointerFromInternalField(0);
+    JMXScriptPinWrapper *wrapper = (JMXScriptPinWrapper *)args.Holder()->GetAlignedPointerFromInternalField(0);
     [wrapper disconnect];
     [pool release];
     return Undefined();
@@ -227,7 +227,7 @@ static void JMXScriptPinWrapperJSDestructor(Persistent<Value> object, void *para
     v8::Persistent<FunctionTemplate> objectTemplate = [[self class] jsObjectTemplate];
     v8::Persistent<Object> jsInstance = v8::Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
     jsInstance.MakeWeak([self retain], JMXScriptPinWrapperJSDestructor);
-    jsInstance->SetPointerInInternalField(0, self);
+    jsInstance->SetAlignedPointerInInternalField(0, self);
     return handleScope.Close(jsInstance);
 }
 

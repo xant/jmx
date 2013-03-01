@@ -21,11 +21,11 @@ using namespace v8;
 //{
 //    v8::Locker lock;
 //    HandleScope handleScope;
-//    NSMutableDictionary *dict = (NSDictionary *)info.Holder()->GetPointerFromInternalField(0);
+//    NSMutableDictionary *dict = (NSDictionary *)info.Holder()->GetAlignedPointerFromInternalField(0);
 //    if (dict && [dict isKindOfClass:[NSDictionary class]]) {
 //        String::Utf8Value nameStr(name);
 //        NSString *key = [NSString stringWithUTF8String:*nameStr];
-//        id obj = value->ToObject()->GetPointerFromInternalField(0);
+//        id obj = value->ToObject()->GetAlignedPointerFromInternalField(0);
 //        if (obj) {
 //            [dict setObject:obj forKey:
 //        }
@@ -40,7 +40,7 @@ using namespace v8;
 static Handle<Integer> MapQuery(Local<String> property,
                                 const AccessorInfo& info) {
     String::Utf8Value key(property);
-    NSDictionary *dict = (NSDictionary *)info.Holder()->GetPointerFromInternalField(0);
+    NSDictionary *dict = (NSDictionary *)info.Holder()->GetAlignedPointerFromInternalField(0);
     NSString *keyString = [NSString stringWithUTF8String:*key];
     if ([dict objectForKey:keyString]) {
         HandleScope scope;
@@ -53,7 +53,7 @@ static Handle<Integer> MapQuery(Local<String> property,
 static Handle<Array> MapEnumerator(const AccessorInfo& info) {
     HandleScope scope;
     
-    NSDictionary *dict = (NSDictionary *)info.Holder()->GetPointerFromInternalField(0);
+    NSDictionary *dict = (NSDictionary *)info.Holder()->GetAlignedPointerFromInternalField(0);
 
     int size = dict.count;
     
@@ -77,7 +77,7 @@ static v8::Handle<Value> MapGet(Local<String> name, const AccessorInfo &info)
     v8::Locker lock;
     HandleScope handleScope;
     String::Utf8Value nameStr(name);
-    NSDictionary *dict = (NSDictionary *)info.Holder()->GetPointerFromInternalField(0);
+    NSDictionary *dict = (NSDictionary *)info.Holder()->GetAlignedPointerFromInternalField(0);
 
     if (strcasecmp(*nameStr, "toString") == 0)
         return handleScope.Close(String::NewSymbol("[object Dictionary]"));
@@ -96,7 +96,7 @@ static v8::Handle<Value> MapSet(Local<String> name, Local<Value> value, const Ac
 {
     v8::Locker lock;
     HandleScope handleScope;
-    NSMutableDictionary *dict = (NSMutableDictionary *)info.Holder()->GetPointerFromInternalField(0);
+    NSMutableDictionary *dict = (NSMutableDictionary *)info.Holder()->GetAlignedPointerFromInternalField(0);
     if (![dict isKindOfClass:[NSMutableDictionary class]])
         return False();
 
@@ -104,7 +104,7 @@ static v8::Handle<Value> MapSet(Local<String> name, Local<Value> value, const Ac
     if (dict && [dict isKindOfClass:[NSMutableDictionary class]]) {
         String::Utf8Value nameStr(name);
         NSString *key = [NSString stringWithUTF8String:*nameStr];
-        id obj = (id)value->ToObject()->GetPointerFromInternalField(0);
+        id obj = (id)value->ToObject()->GetAlignedPointerFromInternalField(0);
         if (obj) {
             [dict setObject:obj forKey:key];
         }
@@ -118,7 +118,7 @@ static Handle<v8::Boolean> MapDeleter(Local<String> property,
     v8::Locker lock;
     HandleScope scope;
     
-    NSMutableDictionary *dict = (NSMutableDictionary *)info.Holder()->GetPointerFromInternalField(0);
+    NSMutableDictionary *dict = (NSMutableDictionary *)info.Holder()->GetAlignedPointerFromInternalField(0);
     if (![dict isKindOfClass:[NSMutableDictionary class]])
         return False();
     
@@ -184,7 +184,7 @@ static void JMXDictionaryJSDestructor(Persistent<Value> object, void *parameter)
     v8::Handle<FunctionTemplate> objectTemplate = [[self class] jsObjectTemplate];
     v8::Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
     jsInstance.MakeWeak([self retain], JMXDictionaryJSDestructor);
-    jsInstance->SetPointerInInternalField(0, self);
+    jsInstance->SetAlignedPointerInInternalField(0, self);
     //[ctx addPersistentInstance:jsInstance obj:self];
     return handle_scope.Close(jsInstance);
 }

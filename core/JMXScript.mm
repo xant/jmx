@@ -118,7 +118,7 @@ void JSExit(int code)
     v8::Local<v8::Context> context = v8::Context::GetCalling();
     v8::Local<v8::Object> globalObject  = context->Global();
     v8::Local<v8::Object> obj = globalObject->Get(v8::String::New("scriptEntity"))->ToObject();
-    JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetPointerFromInternalField(0);
+    JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetAlignedPointerFromInternalField(0);
     entity.active = NO;
     [entity resetContext];
 }
@@ -255,7 +255,7 @@ static v8::Handle<Value> Echo(const Arguments& args) {
     id obj = nil;
     
     if (args[0]->IsObject())
-        obj = (id)args[0]->ToObject()->GetPointerFromInternalField(0);
+        obj = (id)args[0]->ToObject()->GetAlignedPointerFromInternalField(0);
     
     /*if (obj) {
         v8::Unlocker unlocker;
@@ -373,7 +373,7 @@ static v8::Handle<Value> Run(const Arguments& args)
     v8::Locker locker;
     Local<Context> context = v8::Context::GetCalling();
     Local<Object> globalObject  = context->Global();
-    //JMXEntity *entity = (JMXEntity *)globalObject->GetPointerFromInternalField(0);
+    //JMXEntity *entity = (JMXEntity *)globalObject->GetAlignedPointerFromInternalField(0);
     //v8::Locker::StopPreemption();
     //globalObject->SetHiddenValue(String::New("quit"), v8::Boolean::New(0));
     if (args.Length() >= 1 && args[0]->IsFunction()) {
@@ -388,7 +388,7 @@ static v8::Handle<Value> Run(const Arguments& args)
                 break;                                     
             v8::Local<v8::Object> obj = global->ToObject();
 
-            JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetPointerFromInternalField(0);
+            JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetAlignedPointerFromInternalField(0);
             //ctx->Global()->Set(String::New("scriptEntity"), [scriptEntity jsObj]);
 
             if (!entity.active) {
@@ -440,7 +440,7 @@ static v8::Handle<Value> AddToRunLoop(const Arguments& args)
     Local<Context> context = v8::Context::GetCalling();
     Local<Object> globalObject  = context->Global();
     v8::Local<v8::Object> obj = globalObject->Get(String::New("scriptEntity"))->ToObject();
-    JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetPointerFromInternalField(0);
+    JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetAlignedPointerFromInternalField(0);
     JMXScript *scriptContext = entity.jsContext;
     if (args.Length() >= 2 && args[0]->IsFunction() && args[1]->IsNumber()) {
         JMXScriptTimer *foo = [JMXScriptTimer scriptTimerWithFireDate:[NSDate dateWithTimeIntervalSinceNow:args[1]->NumberValue()]
@@ -465,9 +465,9 @@ static v8::Handle<Value> RemoveFromRunLoop(const Arguments& args)
     Local<Context> context = v8::Context::GetCalling();
     Local<Object> globalObject  = context->Global();
     v8::Local<v8::Object> obj = globalObject->Get(String::New("scriptEntity"))->ToObject();
-    JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetPointerFromInternalField(0);
+    JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetAlignedPointerFromInternalField(0);
     JMXScript *scriptContext = entity.jsContext;
-    JMXScriptTimer *foo = (JMXScriptTimer *)Local<Object>::Cast(args[0])->GetPointerFromInternalField(0);
+    JMXScriptTimer *foo = (JMXScriptTimer *)Local<Object>::Cast(args[0])->GetAlignedPointerFromInternalField(0);
     if (foo && [scriptContext.runloopTimers containsObject:foo]) {
         [foo.timer invalidate];
         [scriptContext removeRunloopTimer:foo];
@@ -484,7 +484,7 @@ static v8::Handle<Value> SetInterval(const Arguments& args)
     Local<Context> context = v8::Context::GetCalling();
     Local<Object> globalObject  = context->Global();
     v8::Local<v8::Object> obj = globalObject->Get(String::New("scriptEntity"))->ToObject();
-    JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetPointerFromInternalField(0);
+    JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetAlignedPointerFromInternalField(0);
     JMXScript *scriptContext = entity.jsContext;
     if (args.Length() >= 2 && args[1]->IsNumber() && 
         (args[0]->IsString() || args[0]->IsFunction()))
@@ -516,7 +516,7 @@ static v8::Handle<Value> SetTimeout(const Arguments& args)
     Local<Context> context = v8::Context::GetCalling();
     Local<Object> globalObject  = context->Global();
     v8::Local<v8::Object> obj = globalObject->Get(String::New("scriptEntity"))->ToObject();
-    JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetPointerFromInternalField(0);
+    JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetAlignedPointerFromInternalField(0);
     JMXScript *scriptContext = entity.jsContext;
     if (args.Length() >= 2 && args[1]->IsNumber() && 
         (args[0]->IsString() || args[0]->IsFunction()))
@@ -549,9 +549,9 @@ static v8::Handle<Value> ClearTimeout(const Arguments& args)
     Local<Context> context = v8::Context::GetCalling();
     Local<Object> globalObject  = context->Global();
     v8::Local<v8::Object> obj = globalObject->Get(String::New("scriptEntity"))->ToObject();
-    JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetPointerFromInternalField(0);
+    JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetAlignedPointerFromInternalField(0);
     JMXScript *scriptContext = entity.jsContext;
-    JMXScriptTimer *foo = (JMXScriptTimer *)Local<Object>::Cast(args[0])->GetPointerFromInternalField(0);
+    JMXScriptTimer *foo = (JMXScriptTimer *)Local<Object>::Cast(args[0])->GetAlignedPointerFromInternalField(0);
     if (foo && [scriptContext.runloopTimers containsObject:foo]) {
         [foo.timer invalidate];
         [scriptContext removeRunloopTimer:foo];
@@ -779,7 +779,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
     ctx->Global()->Set(String::New("scriptEntity"), [scriptEntity jsObj]);
     
     ctx->Global()->SetAccessor(String::New("document"), GetDocument);
-    //ctx->Global()->SetPointerInInternalField(0, self);
+    //ctx->Global()->SetAlignedPointerInInternalField(0, self);
     runloopTimers = [[NSMutableSet alloc] initWithCapacity:100];
     eventListeners = [[NSMutableDictionary alloc] initWithCapacity:50];
     
@@ -910,7 +910,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
     Local<Context> c = v8::Context::GetCurrent();
     Local<Object> globalObject  = c->Global();
     v8::Local<v8::Object> obj = globalObject->Get(v8::String::New("scriptEntity"))->ToObject();
-    JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetPointerFromInternalField(0);
+    JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetAlignedPointerFromInternalField(0);
 
     context = entity.jsContext;
     return context;

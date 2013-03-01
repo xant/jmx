@@ -46,7 +46,7 @@ using v8::Undefined;
   assert(!args.Holder().IsEmpty()); \
   assert(args.Holder()->InternalFieldCount() > 0); \
   TTYWrap* wrap =  \
-      static_cast<TTYWrap*>(args.Holder()->GetPointerFromInternalField(0)); \
+      static_cast<TTYWrap*>(args.Holder()->GetAlignedPointerFromInternalField(0)); \
   if (!wrap) { \
     uv_err_t err; \
     err.code = UV_EBADF; \

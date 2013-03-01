@@ -26,7 +26,7 @@
   assert(!args.Holder().IsEmpty()); \
   assert(args.Holder()->InternalFieldCount() > 0); \
   TimerWrap* wrap =  \
-      static_cast<TimerWrap*>(args.Holder()->GetPointerFromInternalField(0)); \
+      static_cast<TimerWrap*>(args.Holder()->GetAlignedPointerFromInternalField(0)); \
   if (!wrap) { \
     uv_err_t err; \
     err.code = UV_EBADF; \

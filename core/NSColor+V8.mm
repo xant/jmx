@@ -377,7 +377,7 @@ static void JMXColorJSDestructor(Persistent<Value> object, void *parameter)
     v8::Handle<FunctionTemplate> objectTemplate = [NSColor jsObjectTemplate];
     v8::Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
     jsInstance.MakeWeak([self retain], JMXColorJSDestructor);
-    jsInstance->SetPointerInInternalField(0, self);
+    jsInstance->SetAlignedPointerInInternalField(0, self);
     return handle_scope.Close(jsInstance);
 }
 
@@ -414,7 +414,7 @@ v8::Handle<v8::Value> JMXColorJSConstructor(const v8::Arguments& args)
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSColor *color = [[NSColor colorWithDeviceRed:r green:g blue:b alpha:a] retain];
     jsInstance.MakeWeak(color, JMXColorJSDestructor);
-    jsInstance->SetPointerInInternalField(0, color);
+    jsInstance->SetAlignedPointerInInternalField(0, color);
     [pool drain];
     return handleScope.Close(jsInstance);
 }

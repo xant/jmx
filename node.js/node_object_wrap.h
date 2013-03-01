@@ -49,7 +49,7 @@ class ObjectWrap {
   static inline T* Unwrap (v8::Handle<v8::Object> handle) {
     assert(!handle.IsEmpty());
     assert(handle->InternalFieldCount() > 0);
-    return static_cast<T*>(handle->GetPointerFromInternalField(0));
+    return static_cast<T*>(handle->GetAlignedPointerFromInternalField(0));
   }
 
 
@@ -60,7 +60,7 @@ class ObjectWrap {
     assert(handle_.IsEmpty());
     assert(handle->InternalFieldCount() > 0);
     handle_ = v8::Persistent<v8::Object>::New(handle);
-    handle_->SetPointerInInternalField(0, this);
+    handle_->SetAlignedPointerInInternalField(0, this);
     MakeWeak();
   }
 

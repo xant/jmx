@@ -195,7 +195,7 @@ using namespace v8;
 static v8::Handle<Value>Open(const Arguments& args)
 {
     HandleScope handleScope;
-    JMXImageEntity *entity = (JMXImageEntity *)args.Holder()->GetPointerFromInternalField(0);
+    JMXImageEntity *entity = (JMXImageEntity *)args.Holder()->GetAlignedPointerFromInternalField(0);
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
     [entity open:[NSString stringWithUTF8String:*value]];
@@ -205,7 +205,7 @@ static v8::Handle<Value>Open(const Arguments& args)
 static v8::Handle<Value>Close(const Arguments& args)
 {
     HandleScope handleScope;
-    JMXImageEntity *entity = (JMXImageEntity *)args.Holder()->GetPointerFromInternalField(0);
+    JMXImageEntity *entity = (JMXImageEntity *)args.Holder()->GetAlignedPointerFromInternalField(0);
     [entity close];
     return v8::Undefined();
 }
@@ -215,11 +215,11 @@ static v8::Handle<Value>SupportedFileTypes(const Arguments& args)
     HandleScope handleScope;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSArray *supportedTypes = nil;
-    JMXImageEntity *imageFile = (JMXImageEntity *)args.Holder()->GetPointerFromInternalField(1);
+    JMXImageEntity *imageFile = (JMXImageEntity *)args.Holder()->GetAlignedPointerFromInternalField(1);
     if (imageFile) {
         supportedTypes = [[imageFile class] supportedFileTypes];
     } else {
-        Class<JMXFileRead> objcClass = (Class)External::Unwrap(args.Holder()->Get(String::NewSymbol("_objcClass")));
+        Class<JMXFileRead> objcClass = (Class)External::Cast(*(args.Holder()->Get(String::NewSymbol("_objcClass"))))->Value();
         supportedTypes = [objcClass supportedFileTypes];
     }
     v8::Handle<Array> list = v8::Array::New([supportedTypes count]);

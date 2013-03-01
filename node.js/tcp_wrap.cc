@@ -47,7 +47,7 @@
   assert(!args.Holder().IsEmpty()); \
   assert(args.Holder()->InternalFieldCount() > 0); \
   TCPWrap* wrap =  \
-      static_cast<TCPWrap*>(args.Holder()->GetPointerFromInternalField(0)); \
+      static_cast<TCPWrap*>(args.Holder()->GetAlignedPointerFromInternalField(0)); \
   if (!wrap) { \
     uv_err_t err; \
     err.code = UV_EBADF; \
@@ -364,7 +364,7 @@ void TCPWrap::OnConnection(uv_stream_t* handle, int status) {
     // Unwrap the client javascript object.
     assert(client_obj->InternalFieldCount() > 0);
     TCPWrap* client_wrap =
-        static_cast<TCPWrap*>(client_obj->GetPointerFromInternalField(0));
+        static_cast<TCPWrap*>(client_obj->GetAlignedPointerFromInternalField(0));
 
     int r = uv_accept(handle, (uv_stream_t*)&client_wrap->handle_);
 

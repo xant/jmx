@@ -43,7 +43,7 @@ static v8::Handle<Value> GetData(Local<String> name, const AccessorInfo& info)
 {   
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXCDATA *cdata = (JMXCDATA *)info.Holder()->GetPointerFromInternalField(0);
+    JMXCDATA *cdata = (JMXCDATA *)info.Holder()->GetAlignedPointerFromInternalField(0);
     if (cdata) {
         NSData *data = cdata.data;
         return handleScope.Close(v8::String::New((char *)[data bytes], [data length]));
@@ -55,7 +55,7 @@ void SetData(Local<String> name, Local<Value> value, const AccessorInfo& info)
 {   
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXCDATA *cdata = (JMXCDATA *)info.Holder()->GetPointerFromInternalField(0);
+    JMXCDATA *cdata = (JMXCDATA *)info.Holder()->GetAlignedPointerFromInternalField(0);
     if (!value->IsString()) {
         NSLog(@"Bad parameter (not string) passed to JMXCData.SetData()");
         return;
@@ -71,7 +71,7 @@ static v8::Handle<Value> GetLength(Local<String> name, const AccessorInfo& info)
 {   
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXCDATA *cdata = (JMXCDATA *)info.Holder()->GetPointerFromInternalField(0);
+    JMXCDATA *cdata = (JMXCDATA *)info.Holder()->GetAlignedPointerFromInternalField(0);
     if (cdata) {
         NSData *data = cdata.data;
         return handleScope.Close(v8::Integer::New([data length]));
@@ -83,7 +83,7 @@ static v8::Handle<Value> SubstringData(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXCDATA *cdata = (JMXCDATA *)args.Holder()->GetPointerFromInternalField(0);
+    JMXCDATA *cdata = (JMXCDATA *)args.Holder()->GetAlignedPointerFromInternalField(0);
     v8::Handle<Integer> offset = args[0]->ToInteger();
     v8::Handle<Integer> count = args[1]->ToInteger();
     char *data = (char *)malloc(count->Value());
@@ -97,7 +97,7 @@ static v8::Handle<Value> AppendData(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXCDATA *cdata = (JMXCDATA *)args.Holder()->GetPointerFromInternalField(0);
+    JMXCDATA *cdata = (JMXCDATA *)args.Holder()->GetAlignedPointerFromInternalField(0);
     v8::String::Utf8Value str(args[0]);
     size_t newLen = strlen(*str);
     NSUInteger oldLen = [cdata.data length];
@@ -112,7 +112,7 @@ static v8::Handle<Value> InsertData(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXCDATA *cdata = (JMXCDATA *)args.Holder()->GetPointerFromInternalField(0);
+    JMXCDATA *cdata = (JMXCDATA *)args.Holder()->GetAlignedPointerFromInternalField(0);
     uint64_t offset = args[0]->ToInteger()->Value();
     v8::String::Utf8Value str(args[1]);
     size_t newLen = strlen(*str);
@@ -129,7 +129,7 @@ static v8::Handle<Value> DeleteData(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXCDATA *cdata = (JMXCDATA *)args.Holder()->GetPointerFromInternalField(0);
+    JMXCDATA *cdata = (JMXCDATA *)args.Holder()->GetAlignedPointerFromInternalField(0);
     uint64_t offset = args[0]->ToInteger()->Value();
     uint64_t count = args[1]->ToInteger()->Value();
     NSUInteger oldLen = [cdata.data length];
@@ -144,7 +144,7 @@ static v8::Handle<Value> ReplaceData(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXCDATA *cdata = (JMXCDATA *)args.Holder()->GetPointerFromInternalField(0);
+    JMXCDATA *cdata = (JMXCDATA *)args.Holder()->GetAlignedPointerFromInternalField(0);
     uint64_t offset = args[0]->ToInteger()->Value();
     uint64_t count = args[1]->ToInteger()->Value();
     v8::String::Utf8Value str(args[2]);

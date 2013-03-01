@@ -43,7 +43,7 @@ using v8::Integer;
   assert(!args.Holder().IsEmpty()); \
   assert(args.Holder()->InternalFieldCount() > 0); \
   HandleWrap* wrap =  \
-      static_cast<HandleWrap*>(args.Holder()->GetPointerFromInternalField(0)); \
+      static_cast<HandleWrap*>(args.Holder()->GetAlignedPointerFromInternalField(0)); \
   if (!wrap) { \
     uv_err_t err; \
     err.code = UV_EBADF; \
@@ -104,7 +104,7 @@ HandleWrap::HandleWrap(Handle<Object> object, uv_handle_t* h) {
   assert(object_.IsEmpty());
   assert(object->InternalFieldCount() > 0);
   object_ = v8::Persistent<v8::Object>::New(object);
-  object_->SetPointerInInternalField(0, this);
+  object_->SetAlignedPointerInInternalField(0, this);
 }
 
 
@@ -125,7 +125,7 @@ void HandleWrap::OnClose(uv_handle_t* handle) {
   // The wrap object should still be there.
   assert(wrap->object_.IsEmpty() == false);
 
-  wrap->object_->SetPointerInInternalField(0, NULL);
+  wrap->object_->SetAlignedPointerInInternalField(0, NULL);
   wrap->object_.Dispose();
   wrap->object_.Clear();
 

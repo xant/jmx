@@ -98,7 +98,7 @@ static v8::Handle<Value> GetContext(const Arguments& args)
     
     if (strcasecmp(*value, "2d") == 0) { 
         HandleScope handleScope;
-        JMXCanvasElement *element = (JMXCanvasElement *)args.Holder()->GetPointerFromInternalField(0);
+        JMXCanvasElement *element = (JMXCanvasElement *)args.Holder()->GetAlignedPointerFromInternalField(0);
 
         
         return handleScope.Close([element.drawPath jsObj]);

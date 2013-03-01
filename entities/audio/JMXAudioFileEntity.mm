@@ -151,7 +151,7 @@ static v8::Handle<Value> open(const Arguments& args)
 {
     //Locker lock;
     HandleScope handleScope;
-    JMXAudioFileEntity *entity = (JMXAudioFileEntity *)args.Holder()->GetPointerFromInternalField(0);
+    JMXAudioFileEntity *entity = (JMXAudioFileEntity *)args.Holder()->GetAlignedPointerFromInternalField(0);
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
     BOOL ret = [entity open:[NSString stringWithUTF8String:*value]];
@@ -162,7 +162,7 @@ static v8::Handle<Value> close(const Arguments& args)
 {
     //Locker lock;
     HandleScope handleScope;
-    JMXAudioFileEntity *entity = (JMXAudioFileEntity *)args.Holder()->GetPointerFromInternalField(0);
+    JMXAudioFileEntity *entity = (JMXAudioFileEntity *)args.Holder()->GetAlignedPointerFromInternalField(0);
     [entity close];
     return v8::Undefined();
 }
@@ -172,11 +172,11 @@ static v8::Handle<Value>SupportedFileTypes(const Arguments& args)
     HandleScope handleScope;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSArray *supportedTypes = nil;
-    JMXAudioFileEntity *audioFile = (JMXAudioFileEntity *)args.Holder()->GetPointerFromInternalField(1);
+    JMXAudioFileEntity *audioFile = (JMXAudioFileEntity *)args.Holder()->GetAlignedPointerFromInternalField(1);
     if (audioFile) {
         supportedTypes = [[audioFile class] supportedFileTypes];
     } else {
-        Class<JMXFileRead> objcClass = (Class)External::Unwrap(args.Holder()->Get(String::NewSymbol("_objcClass")));
+        Class<JMXFileRead> objcClass = (Class)External::Cast(*(args.Holder()->Get(String::NewSymbol("_objcClass"))))->Value();
         supportedTypes = [objcClass supportedFileTypes];
     }
     v8::Handle<Array> list = v8::Array::New([supportedTypes count]);

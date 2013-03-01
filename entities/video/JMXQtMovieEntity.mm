@@ -546,7 +546,7 @@ using namespace v8;
 static v8::Handle<Value>Open(const Arguments& args)
 {
     HandleScope handleScope;
-    JMXQtMovieEntity *entity = (JMXQtMovieEntity *)args.Holder()->GetPointerFromInternalField(0);
+    JMXQtMovieEntity *entity = (JMXQtMovieEntity *)args.Holder()->GetAlignedPointerFromInternalField(0);
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
     [entity setMoviePath:[NSString stringWithUTF8String:*value]];
@@ -556,7 +556,7 @@ static v8::Handle<Value>Open(const Arguments& args)
 static v8::Handle<Value>Close(const Arguments& args)
 {
     HandleScope handleScope;
-    JMXQtMovieEntity *entity = (JMXQtMovieEntity *)args.Holder()->GetPointerFromInternalField(0);
+    JMXQtMovieEntity *entity = (JMXQtMovieEntity *)args.Holder()->GetAlignedPointerFromInternalField(0);
     [entity close];
     return v8::Undefined();
 }
@@ -564,7 +564,7 @@ static v8::Handle<Value>Close(const Arguments& args)
 static v8::Handle<Value>SeekTime(const Arguments& args)
 {
     HandleScope handleScope;
-    JMXQtMovieEntity *entity = (JMXQtMovieEntity *)args.Holder()->GetPointerFromInternalField(0);
+    JMXQtMovieEntity *entity = (JMXQtMovieEntity *)args.Holder()->GetAlignedPointerFromInternalField(0);
     v8::Handle<Value> arg = args[0];
     [entity seekTime:args[0]->ToNumber()->NumberValue() * 1e9];
     return Undefined();
@@ -573,7 +573,7 @@ static v8::Handle<Value>SeekTime(const Arguments& args)
 static v8::Handle<Value>SeekAbsoluteTime(const Arguments& args)
 {
     HandleScope handleScope;
-    JMXQtMovieEntity *entity = (JMXQtMovieEntity *)args.Holder()->GetPointerFromInternalField(0);
+    JMXQtMovieEntity *entity = (JMXQtMovieEntity *)args.Holder()->GetAlignedPointerFromInternalField(0);
     v8::Handle<Value> arg = args[0];
     [entity seekAbsoluteTime:arg->ToNumber()->NumberValue() * 1e9];
     return Undefined();
@@ -582,7 +582,7 @@ static v8::Handle<Value>SeekAbsoluteTime(const Arguments& args)
 static v8::Handle<Value>SeekFrame(const Arguments& args)
 {
     HandleScope handleScope;
-    JMXQtMovieEntity *entity = (JMXQtMovieEntity *)args.Holder()->GetPointerFromInternalField(0);
+    JMXQtMovieEntity *entity = (JMXQtMovieEntity *)args.Holder()->GetAlignedPointerFromInternalField(0);
     v8::Handle<Value> arg = args[0];
     [entity seekFrame:arg->ToNumber()->NumberValue()];
     return Undefined();
@@ -593,11 +593,11 @@ static v8::Handle<Value>SupportedFileTypes(const Arguments& args)
     HandleScope handleScope;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSArray *supportedTypes = nil;
-    JMXQtMovieEntity *movieFile = (JMXQtMovieEntity *)args.Holder()->GetPointerFromInternalField(1);
+    JMXQtMovieEntity *movieFile = (JMXQtMovieEntity *)args.Holder()->GetAlignedPointerFromInternalField(1);
     if (movieFile) {
         supportedTypes = [[movieFile class] supportedFileTypes];
     } else {
-        Class<JMXFileRead> objcClass = (Class)External::Unwrap(args.Holder()->Get(String::NewSymbol("_objcClass")));
+        Class<JMXFileRead> objcClass = (Class)External::Cast(*(args.Holder()->Get(String::NewSymbol("_objcClass"))))->Value();
         supportedTypes = [objcClass supportedFileTypes];
     }
     v8::Handle<Array> list = v8::Array::New([supportedTypes count]);

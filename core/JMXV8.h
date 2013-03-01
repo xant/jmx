@@ -144,7 +144,7 @@ v8::Handle<Value> __class##JSConstructor(const Arguments& args)\
         /* make the handle weak, with a callback */\
         jsInstance.MakeWeak(instance, __class##JSDestructor);\
         /*instancesMap[instance] = jsInstance;*/\
-        jsInstance->SetPointerInInternalField(0, instance);\
+        jsInstance->SetAlignedPointerInInternalField(0, instance);\
         [ctx addPersistentInstance:jsInstance obj:instance];\
         [instance release];\
     } else {\
@@ -190,7 +190,7 @@ v8::Handle<Value> __class##JSConstructor(const Arguments& args)\
     /* make the handle weak, with a callback */\
     jsInstance.MakeWeak([instance retain], &__class##JSDestructor);\
     /*instancesMap[instance] = jsInstance;*/\
-    jsInstance->SetPointerInInternalField(0, instance);\
+    jsInstance->SetAlignedPointerInInternalField(0, instance);\
     [instance release];\
     [pool drain];\
     if (!jsInstance.IsEmpty())\

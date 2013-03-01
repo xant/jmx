@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		256AC3DA0F4B6AC300CF3369 /* JMXAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* JMXAppDelegate.m */; };
-		82456BC41223DC8300236FE4 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BC31223DC8300236FE4 /* OpenGL.framework */; };
-		82456BC81223DC9900236FE4 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BC71223DC9900236FE4 /* QTKit.framework */; };
 		82456BCC1223DCA700236FE4 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BCB1223DCA700236FE4 /* QuartzCore.framework */; };
 		824576451227DF5800236FE4 /* JMXPinLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8245763D1227DF5800236FE4 /* JMXPinLayer.m */; };
 		825C30DC1275AD32006376B8 /* JMXBoardInputString.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30C91275AD32006376B8 /* JMXBoardInputString.m */; };
@@ -20,39 +18,6 @@
 		825C30E21275AD32006376B8 /* JMXEntityInspectorPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30D51275AD32006376B8 /* JMXEntityInspectorPanel.m */; };
 		825C30E31275AD32006376B8 /* JMXEntityLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30D71275AD32006376B8 /* JMXEntityLayer.m */; };
 		825C30E41275AD32006376B8 /* JMXOutletLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30D91275AD32006376B8 /* JMXOutletLayer.m */; };
-		825C31101275ADB6006376B8 /* JMXQtExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30E71275ADB6006376B8 /* JMXQtExporter.m */; };
-		825C31111275ADB6006376B8 /* JMXCoreImageFilter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30EA1275ADB6006376B8 /* JMXCoreImageFilter.mm */; };
-		825C31121275ADB6006376B8 /* JMXAudioFileEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30ED1275ADB6006376B8 /* JMXAudioFileEntity.mm */; };
-		825C31131275ADB6006376B8 /* JMXImageEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30EF1275ADB6006376B8 /* JMXImageEntity.mm */; };
-		825C31141275ADB6006376B8 /* JMXQtAudioCaptureEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30F11275ADB6006376B8 /* JMXQtAudioCaptureEntity.mm */; };
-		825C31151275ADB6006376B8 /* JMXQtVideoCaptureEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30F31275ADB6006376B8 /* JMXQtVideoCaptureEntity.mm */; };
-		825C31161275ADB6006376B8 /* JMXQtMovieEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30F51275ADB6006376B8 /* JMXQtMovieEntity.mm */; };
-		825C31171275ADB6006376B8 /* JMXCoreAudioOutput.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30F81275ADB6006376B8 /* JMXCoreAudioOutput.mm */; };
-		825C31181275ADB6006376B8 /* JMXQtAudioOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30FA1275ADB6006376B8 /* JMXQtAudioOutput.m */; };
-		825C31191275ADB6006376B8 /* JMXOpenGLScreen.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30FD1275ADB6006376B8 /* JMXOpenGLScreen.mm */; };
-		825C311A1275ADB6006376B8 /* JMXSoftScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30FF1275ADB6006376B8 /* JMXSoftScreen.m */; };
-		825C311B1275ADB6006376B8 /* JMXAudioMixer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31011275ADB6006376B8 /* JMXAudioMixer.mm */; };
-		825C311C1275ADB6006376B8 /* JMXAudioOutput.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31031275ADB6006376B8 /* JMXAudioOutput.mm */; };
-		825C311E1275ADB6006376B8 /* JMXAudioSpectrumAnalyzer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31071275ADB6006376B8 /* JMXAudioSpectrumAnalyzer.mm */; };
-		825C311F1275ADB6006376B8 /* JMXExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31091275ADB6006376B8 /* JMXExporter.m */; };
-		825C31201275ADB6006376B8 /* JMXVideoEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C310B1275ADB6006376B8 /* JMXVideoEntity.mm */; };
-		825C31211275ADB6006376B8 /* JMXVideoMixer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C310D1275ADB6006376B8 /* JMXVideoMixer.mm */; };
-		825C31221275ADB6006376B8 /* JMXVideoOutput.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C310F1275ADB6006376B8 /* JMXVideoOutput.mm */; };
-		825C31461275ADD7006376B8 /* JMXAudioBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31241275ADD6006376B8 /* JMXAudioBuffer.m */; };
-		825C31471275ADD7006376B8 /* JMXAudioDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31261275ADD6006376B8 /* JMXAudioDevice.m */; };
-		825C31481275ADD7006376B8 /* JMXAudioFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31281275ADD6006376B8 /* JMXAudioFile.m */; };
-		825C31491275ADD7006376B8 /* JMXAudioFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C312A1275ADD6006376B8 /* JMXAudioFormat.m */; };
-		825C314B1275ADD7006376B8 /* JMXContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C312E1275ADD6006376B8 /* JMXContext.m */; };
-		825C314C1275ADD7006376B8 /* JMXEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31301275ADD6006376B8 /* JMXEntity.mm */; };
-		825C314D1275ADD7006376B8 /* JMXInputPin.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31331275ADD6006376B8 /* JMXInputPin.m */; };
-		825C314E1275ADD7006376B8 /* JMXOutputPin.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31351275ADD6006376B8 /* JMXOutputPin.m */; };
-		825C314F1275ADD7006376B8 /* JMXPin.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31371275ADD6006376B8 /* JMXPin.mm */; };
-		825C31501275ADD7006376B8 /* JMXPinSignal.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31391275ADD7006376B8 /* JMXPinSignal.m */; };
-		825C31511275ADD7006376B8 /* JMXPoint.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C313B1275ADD7006376B8 /* JMXPoint.mm */; };
-		825C31521275ADD7006376B8 /* JMXRingBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C313D1275ADD7006376B8 /* JMXRingBuffer.m */; };
-		825C31531275ADD7006376B8 /* JMXSize.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31411275ADD7006376B8 /* JMXSize.mm */; };
-		825C31541275ADD7006376B8 /* JMXSpectrumAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31431275ADD7006376B8 /* JMXSpectrumAnalyzer.m */; };
-		825C31551275ADD7006376B8 /* JMXThreadedEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31451275ADD7006376B8 /* JMXThreadedEntity.mm */; };
 		825C31841275AF03006376B8 /* JMXEntityLabelLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31831275AF03006376B8 /* JMXEntityLabelLayer.m */; };
 		825C318A1275AF4B006376B8 /* JMXOutletLabelLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31891275AF4B006376B8 /* JMXOutletLabelLayer.m */; };
 		825C319D1275AFB6006376B8 /* JMXLibraryTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C319A1275AFB6006376B8 /* JMXLibraryTableView.m */; };
@@ -60,24 +25,226 @@
 		82A21F5E12902EE50002738B /* JMXDocumentSplitViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A21F5D12902EE50002738B /* JMXDocumentSplitViewDelegate.m */; };
 		82A2206D129091910002738B /* JMXBoardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A2206C129091910002738B /* JMXBoardViewController.m */; };
 		82A220CA129098A60002738B /* JMXWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A220C9129098A60002738B /* JMXWindowController.m */; };
-		82AD7F701289F3C300C85EB1 /* JMXOpenGLDraw.mm in Sources */ = {isa = PBXBuildFile; fileRef = 82AD7F6F1289F3C300C85EB1 /* JMXOpenGLDraw.mm */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
-		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		AA004D8214E7148600009CF9 /* JMXPhidgetEncoderEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA004D8114E7148600009CF9 /* JMXPhidgetEncoderEntity.mm */; };
-		AA02230F14D8BB8C00E7908F /* JMXScriptPinWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA02230E14D8BB8C00E7908F /* JMXScriptPinWrapper.mm */; };
 		AA08D33B14B5AA4500D19015 /* JMXCodePanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA08D33A14B5AA4400D19015 /* JMXCodePanel.m */; };
 		AA0A89BD1675E02800FF784F /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0A89BC1675E02800FF784F /* AudioUnit.framework */; };
-		AA0A89C01675E09C00FF784F /* JMXAudioToneGenerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA0A89BF1675E09C00FF784F /* JMXAudioToneGenerator.mm */; };
-		AA0BFDFE1587E5B600D3C8E4 /* Phidget21.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0BFDFD1587E5B600D3C8E4 /* Phidget21.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		AA1E53AD14AE114D00F80337 /* JMXGraphFragment.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA1E53AC14AE114D00F80337 /* JMXGraphFragment.mm */; };
-		AA2BE3F312353BA6006087E7 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE3F212353BA6006087E7 /* CoreAudio.framework */; };
-		AA2BE40B12353D5C006087E7 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE40A12353D5C006087E7 /* Accelerate.framework */; };
-		AA3557441277468800EAA2E4 /* JMXTextRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3557001277347300EAA2E4 /* JMXTextRenderer.m */; };
-		AA3557451277468800EAA2E4 /* JMXTextEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA3556F51277340200EAA2E4 /* JMXTextEntity.mm */; };
-		AA3557DA12795C5500EAA2E4 /* JMXDrawEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA3557D912795C5500EAA2E4 /* JMXDrawEntity.mm */; };
+		AA2C746416DFA74000B623C2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		AA2C747216DFA7B400B623C2 /* NSNumber+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9B58D614FE1E4F00F63C33 /* NSNumber+V8.mm */; };
+		AA2C747316DFA7B400B623C2 /* NSString+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9B58D814FE1E4F00F63C33 /* NSString+V8.mm */; };
+		AA2C747416DFA7B400B623C2 /* NSObject+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF982514FAE810006B9F8B /* NSObject+V8.mm */; };
+		AA2C747516DFA7B400B623C2 /* NSDictionary+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF982214FAE6B7006B9F8B /* NSDictionary+V8.mm */; };
+		AA2C747616DFA7B400B623C2 /* NSXMLNode+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6334512D36DA900B69DFE /* NSXMLNode+V8.mm */; };
+		AA2C747716DFA7B400B623C2 /* NSFont+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACCC73E14A921B500D44D71 /* NSFont+V8.mm */; };
+		AA2C747816DFA7B400B623C2 /* JMXV8PropertyAccessors.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACE7D321293195600FBDC0D /* JMXV8PropertyAccessors.mm */; };
+		AA2C747916DFA7B400B623C2 /* JMXGraph.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6323012CFC72B00B69DFE /* JMXGraph.mm */; };
+		AA2C747A16DFA7B400B623C2 /* JMXElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6323B12CFCAB900B69DFE /* JMXElement.mm */; };
+		AA2C747B16DFA7B400B623C2 /* JMXGraphFragment.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA1E53AC14AE114D00F80337 /* JMXGraphFragment.mm */; };
+		AA2C747C16DFA7B400B623C2 /* JMXCDATA.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6376212D5099400B69DFE /* JMXCDATA.mm */; };
+		AA2C747D16DFA7B400B623C2 /* JMXAttribute.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC637DF12D5204C00B69DFE /* JMXAttribute.mm */; };
+		AA2C747E16DFA7B400B623C2 /* JMXPoint.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C313B1275ADD7006376B8 /* JMXPoint.mm */; };
+		AA2C747F16DFA7B400B623C2 /* NSColor+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD13C49128EF2AB00ECB03A /* NSColor+V8.mm */; };
+		AA2C748016DFA7B400B623C2 /* JMXSize.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31411275ADD7006376B8 /* JMXSize.mm */; };
+		AA2C748116DFA7B400B623C2 /* JMXRect.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C19D312E4BDD500329158 /* JMXRect.mm */; };
+		AA2C748216DFA7B400B623C2 /* JMXScript.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAFAAD87129095EB00949028 /* JMXScript.mm */; };
+		AA2C748316DFA7B400B623C2 /* JMXCanvasElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C17FB12E200C400329158 /* JMXCanvasElement.mm */; };
+		AA2C748416DFA7B400B623C2 /* JMXCanvasGradient.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C18D912E2FC1000329158 /* JMXCanvasGradient.mm */; };
+		AA2C748516DFA7B400B623C2 /* JMXCanvasPattern.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C190E12E32B0600329158 /* JMXCanvasPattern.mm */; };
+		AA2C748616DFA7B400B623C2 /* JMXImageElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C1A4812E5964C00329158 /* JMXImageElement.mm */; };
+		AA2C748716DFA7B400B623C2 /* JMXScriptTimer.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA93701C14CC2FFA001D9BB3 /* JMXScriptTimer.mm */; };
+		AA2C748816DFA7B400B623C2 /* JMXEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEA251B14D4D5A000533049 /* JMXEvent.mm */; };
+		AA2C748916DFA7B400B623C2 /* JMXImageData.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAB71A0614D6BF0200BE8C35 /* JMXImageData.mm */; };
+		AA2C748A16DFA7B400B623C2 /* JMXUint8ClampedArray.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAB71A0914D6D89D00BE8C35 /* JMXUint8ClampedArray.mm */; };
+		AA2C748B16DFA7B400B623C2 /* JMXByteArray.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF981F14FAD2ED006B9F8B /* JMXByteArray.mm */; };
+		AA2C748C16DFA7B400B623C2 /* JMXEventListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAB71A0C14D7585400BE8C35 /* JMXEventListener.mm */; };
+		AA2C748D16DFA7B400B623C2 /* JMXMouseEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD751D414E9462F008B1085 /* JMXMouseEvent.mm */; };
+		AA2C748E16DFA7B400B623C2 /* JMXKeyboardEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD751D714E98DD2008B1085 /* JMXKeyboardEvent.mm */; };
+		AA2C748F16DFA7B400B623C2 /* JMXScriptPinWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA02230E14D8BB8C00E7908F /* JMXScriptPinWrapper.mm */; };
+		AA2C749016DFA7B400B623C2 /* JMXScriptInputPin.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD751DA14E9AFF8008B1085 /* JMXScriptInputPin.mm */; };
+		AA2C749116DFA7B400B623C2 /* JMXScriptOutputPin.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD751DD14E9B017008B1085 /* JMXScriptOutputPin.mm */; };
+		AA2C749216DFA7D400B623C2 /* ImmrHIDUtilAddOn.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF980614FA5BFD006B9F8B /* ImmrHIDUtilAddOn.c */; };
+		AA2C749316DFA7D400B623C2 /* IOHIDDevice_.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF980814FA5BFD006B9F8B /* IOHIDDevice_.c */; };
+		AA2C749416DFA7D400B623C2 /* IOHIDElement_.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF980A14FA5BFD006B9F8B /* IOHIDElement_.c */; };
+		AA2C749516DFA7D400B623C2 /* HID_Utilities.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97F614FA5BF3006B9F8B /* HID_Utilities.c */; };
+		AA2C749616DFA7D400B623C2 /* HID_Queue_Utilities.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97F914FA5BF3006B9F8B /* HID_Queue_Utilities.c */; };
+		AA2C749716DFA7D400B623C2 /* HID_Name_Lookup.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97FB14FA5BF3006B9F8B /* HID_Name_Lookup.c */; };
+		AA2C749816DFA7D400B623C2 /* HID_Error_Handler.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97FD14FA5BF3006B9F8B /* HID_Error_Handler.c */; };
+		AA2C749916DFA7D400B623C2 /* HID_Config_Utilities.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97FF14FA5BF3006B9F8B /* HID_Config_Utilities.c */; };
+		AA2C749A16DFA84100B623C2 /* cares_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3753614CCBE8700347F40 /* cares_wrap.cc */; };
+		AA2C749B16DFA84100B623C2 /* fs_event_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3753714CCBE8700347F40 /* fs_event_wrap.cc */; };
+		AA2C749C16DFA84100B623C2 /* handle_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3753814CCBE8700347F40 /* handle_wrap.cc */; };
+		AA2C749D16DFA84100B623C2 /* node.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3753B14CCBE8700347F40 /* node.cc */; };
+		AA2C749E16DFA84100B623C2 /* node_buffer.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3753F14CCBE8700347F40 /* node_buffer.cc */; };
+		AA2C749F16DFA84100B623C2 /* node_constants.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3754214CCBE8700347F40 /* node_constants.cc */; };
+		AA2C74A016DFA84100B623C2 /* node_crypto.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3754414CCBE8700347F40 /* node_crypto.cc */; };
+		AA2C74A116DFA84100B623C2 /* node_dtrace.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3754614CCBE8700347F40 /* node_dtrace.cc */; };
+		AA2C74A216DFA84100B623C2 /* node_extensions.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3754814CCBE8700347F40 /* node_extensions.cc */; };
+		AA2C74A316DFA84100B623C2 /* node_file.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3754A14CCBE8700347F40 /* node_file.cc */; };
+		AA2C74A416DFA84100B623C2 /* node_http_parser.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3754C14CCBE8700347F40 /* node_http_parser.cc */; };
+		AA2C74A516DFA84100B623C2 /* node_io_watcher.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3754E14CCBE8700347F40 /* node_io_watcher.cc */; };
+		AA2C74A616DFA84100B623C2 /* node_javascript.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3755014CCBE8700347F40 /* node_javascript.cc */; };
+		AA2C74A716DFA84100B623C2 /* node_os.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3755414CCBE8700347F40 /* node_os.cc */; };
+		AA2C74A816DFA84100B623C2 /* node_script.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3755814CCBE8700347F40 /* node_script.cc */; };
+		AA2C74A916DFA84100B623C2 /* node_signal_watcher.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3755A14CCBE8700347F40 /* node_signal_watcher.cc */; };
+		AA2C74AA16DFA84100B623C2 /* node_stat_watcher.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3755C14CCBE8700347F40 /* node_stat_watcher.cc */; };
+		AA2C74AB16DFA84100B623C2 /* node_string.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3755E14CCBE8700347F40 /* node_string.cc */; };
+		AA2C74AC16DFA84100B623C2 /* node_zlib.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3756114CCBE8700347F40 /* node_zlib.cc */; };
+		AA2C74AD16DFA84100B623C2 /* pipe_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3756214CCBE8700347F40 /* pipe_wrap.cc */; };
+		AA2C74AE16DFA84100B623C2 /* platform_darwin.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3756514CCBE8700347F40 /* platform_darwin.cc */; };
+		AA2C74AF16DFA84100B623C2 /* process_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3756E14CCBE8700347F40 /* process_wrap.cc */; };
+		AA2C74B016DFA84100B623C2 /* stream_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3757014CCBE8700347F40 /* stream_wrap.cc */; };
+		AA2C74B116DFA84100B623C2 /* tcp_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3757214CCBE8700347F40 /* tcp_wrap.cc */; };
+		AA2C74B216DFA84100B623C2 /* timer_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3757414CCBE8700347F40 /* timer_wrap.cc */; };
+		AA2C74B316DFA84100B623C2 /* tty_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3757514CCBE8700347F40 /* tty_wrap.cc */; };
+		AA2C74B416DFA84100B623C2 /* udp_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3757614CCBE8700347F40 /* udp_wrap.cc */; };
+		AA2C74B516DFA84100B623C2 /* v8_typed_array.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3757714CCBE8700347F40 /* v8_typed_array.cc */; };
+		AA2C74B616DFA84D00B623C2 /* http_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF376AA14CCCEF400347F40 /* http_parser.c */; };
+		AA2C74B716DFA85800B623C2 /* fs.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF376A414CCCE9700347F40 /* fs.c */; };
+		AA2C74B816DFA85800B623C2 /* uv-common.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375E514CCC33800347F40 /* uv-common.c */; };
+		AA2C74B916DFA86100B623C2 /* ev_kqueue.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF376BA14CCCF7900347F40 /* ev_kqueue.c */; };
+		AA2C74BA16DFA86100B623C2 /* ev_poll.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF376BB14CCCF7900347F40 /* ev_poll.c */; };
+		AA2C74BB16DFA86100B623C2 /* ev_select.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF376BC14CCCF7900347F40 /* ev_select.c */; };
+		AA2C74BC16DFA86100B623C2 /* ev.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3766D14CCC4E500347F40 /* ev.c */; };
+		AA2C74BD16DFA86100B623C2 /* event.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3767714CCC4E500347F40 /* event.c */; };
+		AA2C74C116DFA86D00B623C2 /* eio.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3764314CCC4A900347F40 /* eio.c */; };
+		AA2C74C216DFA8A800B623C2 /* cares.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3761614CCC37F00347F40 /* cares.c */; };
+		AA2C74C316DFA8A800B623C2 /* core.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3761714CCC37F00347F40 /* core.c */; };
+		AA2C74C416DFA8A800B623C2 /* darwin.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3761814CCC37F00347F40 /* darwin.c */; };
+		AA2C74C516DFA8A800B623C2 /* dl.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3761914CCC38000347F40 /* dl.c */; };
+		AA2C74C616DFA8A800B623C2 /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3761A14CCC38000347F40 /* error.c */; };
+		AA2C74C716DFA8A800B623C2 /* kqueue.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3761C14CCC38000347F40 /* kqueue.c */; };
+		AA2C74C816DFA8A800B623C2 /* pipe.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3761D14CCC38000347F40 /* pipe.c */; };
+		AA2C74C916DFA8A800B623C2 /* process.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3761E14CCC38000347F40 /* process.c */; };
+		AA2C74CA16DFA8A800B623C2 /* stream.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3761F14CCC38000347F40 /* stream.c */; };
+		AA2C74CB16DFA8A800B623C2 /* tcp.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3762014CCC38000347F40 /* tcp.c */; };
+		AA2C74CC16DFA8A800B623C2 /* tty.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3762114CCC38000347F40 /* tty.c */; };
+		AA2C74CD16DFA8A800B623C2 /* udp.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3762214CCC38000347F40 /* udp.c */; };
+		AA2C74CE16DFA8A800B623C2 /* uv-eio.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3762314CCC38000347F40 /* uv-eio.c */; };
+		AA2C74CF16DFA8A800B623C2 /* ares__close_sockets.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375A314CCC33800347F40 /* ares__close_sockets.c */; };
+		AA2C74D016DFA8A800B623C2 /* ares__get_hostent.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375A414CCC33800347F40 /* ares__get_hostent.c */; };
+		AA2C74D116DFA8A800B623C2 /* ares__read_line.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375A514CCC33800347F40 /* ares__read_line.c */; };
+		AA2C74D216DFA8A800B623C2 /* ares__timeval.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375A614CCC33800347F40 /* ares__timeval.c */; };
+		AA2C74D316DFA8A800B623C2 /* ares_cancel.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375A714CCC33800347F40 /* ares_cancel.c */; };
+		AA2C74D416DFA8A800B623C2 /* ares_data.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375A814CCC33800347F40 /* ares_data.c */; };
+		AA2C74D516DFA8A800B623C2 /* ares_destroy.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375AA14CCC33800347F40 /* ares_destroy.c */; };
+		AA2C74D616DFA8A800B623C2 /* ares_expand_name.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375AC14CCC33800347F40 /* ares_expand_name.c */; };
+		AA2C74D716DFA8A800B623C2 /* ares_expand_string.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375AD14CCC33800347F40 /* ares_expand_string.c */; };
+		AA2C74D816DFA8A800B623C2 /* ares_fds.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375AE14CCC33800347F40 /* ares_fds.c */; };
+		AA2C74D916DFA8A800B623C2 /* ares_free_hostent.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375AF14CCC33800347F40 /* ares_free_hostent.c */; };
+		AA2C74DA16DFA8A800B623C2 /* ares_free_string.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375B014CCC33800347F40 /* ares_free_string.c */; };
+		AA2C74DB16DFA8A800B623C2 /* ares_getenv.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375B114CCC33800347F40 /* ares_getenv.c */; };
+		AA2C74DC16DFA8A800B623C2 /* ares_gethostbyaddr.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375B314CCC33800347F40 /* ares_gethostbyaddr.c */; };
+		AA2C74DD16DFA8A800B623C2 /* ares_gethostbyname.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375B414CCC33800347F40 /* ares_gethostbyname.c */; };
+		AA2C74DE16DFA8A800B623C2 /* ares_getnameinfo.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375B514CCC33800347F40 /* ares_getnameinfo.c */; };
+		AA2C74DF16DFA8A800B623C2 /* ares_getopt.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375B614CCC33800347F40 /* ares_getopt.c */; };
+		AA2C74E016DFA8A800B623C2 /* ares_getsock.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375B814CCC33800347F40 /* ares_getsock.c */; };
+		AA2C74E116DFA8A800B623C2 /* ares_init.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375B914CCC33800347F40 /* ares_init.c */; };
+		AA2C74E216DFA8A800B623C2 /* ares_library_init.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375BC14CCC33800347F40 /* ares_library_init.c */; };
+		AA2C74E316DFA8A800B623C2 /* ares_llist.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375BE14CCC33800347F40 /* ares_llist.c */; };
+		AA2C74E416DFA8A800B623C2 /* ares_mkquery.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375C014CCC33800347F40 /* ares_mkquery.c */; };
+		AA2C74E516DFA8A800B623C2 /* ares_nowarn.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375C114CCC33800347F40 /* ares_nowarn.c */; };
+		AA2C74E616DFA8A800B623C2 /* ares_options.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375C314CCC33800347F40 /* ares_options.c */; };
+		AA2C74E716DFA8C000B623C2 /* ares_parse_a_reply.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375C414CCC33800347F40 /* ares_parse_a_reply.c */; };
+		AA2C74E816DFA8C000B623C2 /* ares_parse_aaaa_reply.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375C514CCC33800347F40 /* ares_parse_aaaa_reply.c */; };
+		AA2C74E916DFA8C000B623C2 /* ares_parse_mx_reply.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375C614CCC33800347F40 /* ares_parse_mx_reply.c */; };
+		AA2C74EA16DFA8C000B623C2 /* ares_parse_ns_reply.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375C714CCC33800347F40 /* ares_parse_ns_reply.c */; };
+		AA2C74EB16DFA8C000B623C2 /* ares_parse_ptr_reply.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375C814CCC33800347F40 /* ares_parse_ptr_reply.c */; };
+		AA2C74EC16DFA8C000B623C2 /* ares_parse_srv_reply.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375C914CCC33800347F40 /* ares_parse_srv_reply.c */; };
+		AA2C74ED16DFA8C000B623C2 /* ares_parse_txt_reply.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375CA14CCC33800347F40 /* ares_parse_txt_reply.c */; };
+		AA2C74EE16DFA8C000B623C2 /* ares_platform.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375CB14CCC33800347F40 /* ares_platform.c */; };
+		AA2C74EF16DFA8C000B623C2 /* ares_process.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375CE14CCC33800347F40 /* ares_process.c */; };
+		AA2C74F016DFA8C000B623C2 /* ares_query.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375CF14CCC33800347F40 /* ares_query.c */; };
+		AA2C74F116DFA8C000B623C2 /* ares_search.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375D114CCC33800347F40 /* ares_search.c */; };
+		AA2C74F216DFA8C000B623C2 /* ares_send.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375D214CCC33800347F40 /* ares_send.c */; };
+		AA2C74F316DFA8C000B623C2 /* ares_strcasecmp.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375D414CCC33800347F40 /* ares_strcasecmp.c */; };
+		AA2C74F416DFA8C000B623C2 /* ares_strdup.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375D614CCC33800347F40 /* ares_strdup.c */; };
+		AA2C74F516DFA8C000B623C2 /* ares_strerror.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375D814CCC33800347F40 /* ares_strerror.c */; };
+		AA2C74F616DFA8C000B623C2 /* ares_timeout.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375D914CCC33800347F40 /* ares_timeout.c */; };
+		AA2C74F716DFA8C000B623C2 /* ares_version.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375DA14CCC33800347F40 /* ares_version.c */; };
+		AA2C74F816DFA8C000B623C2 /* ares_writev.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375DB14CCC33800347F40 /* ares_writev.c */; };
+		AA2C74F916DFA8C000B623C2 /* bitncmp.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375DD14CCC33800347F40 /* bitncmp.c */; };
+		AA2C74FA16DFA8C000B623C2 /* inet_net_pton.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375DF14CCC33800347F40 /* inet_net_pton.c */; };
+		AA2C74FB16DFA8C000B623C2 /* inet_ntop.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375E114CCC33800347F40 /* inet_ntop.c */; };
+		AA2C74FD16DFA8CA00B623C2 /* JMX.js in Sources */ = {isa = PBXBuildFile; fileRef = AA4BFE1312BE0E2000775B88 /* JMX.js */; };
+		AA2C74FE16DFA8CA00B623C2 /* DOM.js in Sources */ = {isa = PBXBuildFile; fileRef = AAC6355612D45C5800B69DFE /* DOM.js */; };
+		AA2C74FF16DFA8CA00B623C2 /* AudioOutput.js in Sources */ = {isa = PBXBuildFile; fileRef = AA4BFE1112BE0D7400775B88 /* AudioOutput.js */; };
+		AA2C750016DFA8CA00B623C2 /* VideoOutput.js in Sources */ = {isa = PBXBuildFile; fileRef = AA4BFE1512BE135000775B88 /* VideoOutput.js */; };
+		AA2C750116DFA8CA00B623C2 /* VideoFilter.js in Sources */ = {isa = PBXBuildFile; fileRef = AA4BFEFD12BE2B4500775B88 /* VideoFilter.js */; };
+		AA2C750216DFA8CA00B623C2 /* AudioCapture.js in Sources */ = {isa = PBXBuildFile; fileRef = AA4B01F312BEC85500775B88 /* AudioCapture.js */; };
+		AA2C750316DFA8CA00B623C2 /* VideoCapture.js in Sources */ = {isa = PBXBuildFile; fileRef = AA4B039812C06C3000775B88 /* VideoCapture.js */; };
+		AA2C750416DFA8CA00B623C2 /* MovieFile.js in Sources */ = {isa = PBXBuildFile; fileRef = AA8F770712C5718600EA8543 /* MovieFile.js */; };
+		AA2C750516DFA8CA00B623C2 /* AudioFile.js in Sources */ = {isa = PBXBuildFile; fileRef = AA8F770812C571A200EA8543 /* AudioFile.js */; };
+		AA2C750616DFA8CA00B623C2 /* jquery.js in Sources */ = {isa = PBXBuildFile; fileRef = AA38D1CB12DCC29D00208826 /* jquery.js */; };
+		AA2C750716DFA8CA00B623C2 /* processing.js in Sources */ = {isa = PBXBuildFile; fileRef = AAEA251714D4D29A00533049 /* processing.js */; };
+		AA2C750816DFA90D00B623C2 /* JMXRingBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C313D1275ADD7006376B8 /* JMXRingBuffer.m */; };
+		AA2C750916DFA90D00B623C2 /* JMXEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31301275ADD6006376B8 /* JMXEntity.mm */; };
+		AA2C750A16DFA90D00B623C2 /* JMXThreadedEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31451275ADD7006376B8 /* JMXThreadedEntity.mm */; };
+		AA2C750B16DFA90D00B623C2 /* JMXPin.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31371275ADD6006376B8 /* JMXPin.mm */; };
+		AA2C750C16DFA90D00B623C2 /* JMXInputPin.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31331275ADD6006376B8 /* JMXInputPin.m */; };
+		AA2C750D16DFA90D00B623C2 /* JMXOutputPin.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31351275ADD6006376B8 /* JMXOutputPin.m */; };
+		AA2C750E16DFA90D00B623C2 /* JMXProxyPin.m in Sources */ = {isa = PBXBuildFile; fileRef = AA4B00C812BE560100775B88 /* JMXProxyPin.m */; };
+		AA2C750F16DFA90D00B623C2 /* JMXPinSignal.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31391275ADD7006376B8 /* JMXPinSignal.m */; };
+		AA2C751016DFA90D00B623C2 /* JMXContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C312E1275ADD6006376B8 /* JMXContext.m */; };
+		AA2C751116DFA90D00B623C2 /* JMXScreenController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAD751D114E913FA008B1085 /* JMXScreenController.m */; };
+		AA2C751216DFA90D00B623C2 /* JMXHIDDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF981514FA5CFE006B9F8B /* JMXHIDDevice.m */; };
+		AA2C751316DFA91800B623C2 /* JMXTextRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3557001277347300EAA2E4 /* JMXTextRenderer.m */; };
+		AA2C751416DFA91800B623C2 /* JMXOpenGLDraw.mm in Sources */ = {isa = PBXBuildFile; fileRef = 82AD7F6F1289F3C300C85EB1 /* JMXOpenGLDraw.mm */; };
+		AA2C751516DFA91800B623C2 /* JMXDrawPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */; };
+		AA2C751616DFA92100B623C2 /* JMXAudioBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31241275ADD6006376B8 /* JMXAudioBuffer.m */; };
+		AA2C751716DFA92100B623C2 /* JMXAudioDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31261275ADD6006376B8 /* JMXAudioDevice.m */; };
+		AA2C751816DFA92100B623C2 /* JMXAudioFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31281275ADD6006376B8 /* JMXAudioFile.m */; };
+		AA2C751916DFA92100B623C2 /* JMXAudioFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C312A1275ADD6006376B8 /* JMXAudioFormat.m */; };
+		AA2C751A16DFA92100B623C2 /* JMXSpectrumAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31431275ADD7006376B8 /* JMXSpectrumAnalyzer.m */; };
+		AA2C751B16DFA93C00B623C2 /* CIAdditiveBlur.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEBBA1414FD65CF000DA6F9 /* CIAdditiveBlur.m */; };
+		AA2C751C16DFA93F00B623C2 /* CIAlphaBlend.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEBB9CC14FC6872000DA6F9 /* CIAlphaBlend.m */; };
+		AA2C751D16DFA94200B623C2 /* CIAlphaFade.m in Sources */ = {isa = PBXBuildFile; fileRef = AA555FC712AEF39600C882FF /* CIAlphaFade.m */; };
+		AA2C751F16DFA9BC00B623C2 /* JMXAudioCapture.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4B020812BED1BB00775B88 /* JMXAudioCapture.mm */; };
+		AA2C752016DFA9BC00B623C2 /* JMXAudioOutput.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31031275ADB6006376B8 /* JMXAudioOutput.mm */; };
+		AA2C752116DFA9BC00B623C2 /* JMXAudioSpectrumAnalyzer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31071275ADB6006376B8 /* JMXAudioSpectrumAnalyzer.mm */; };
+		AA2C752216DFA9BC00B623C2 /* JMXVideoEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C310B1275ADB6006376B8 /* JMXVideoEntity.mm */; };
+		AA2C752316DFA9BC00B623C2 /* JMXVideoCapture.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4B039B12C06C7600775B88 /* JMXVideoCapture.mm */; };
+		AA2C752416DFA9BC00B623C2 /* JMXVideoOutput.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C310F1275ADB6006376B8 /* JMXVideoOutput.mm */; };
+		AA2C752516DFA9BC00B623C2 /* JMXVideoFilter.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4BFC8312BD324A00775B88 /* JMXVideoFilter.mm */; };
+		AA2C752616DFA9BC00B623C2 /* JMXDrawEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA3557D912795C5500EAA2E4 /* JMXDrawEntity.mm */; };
+		AA2C752716DFA9BC00B623C2 /* JMXScriptEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */; };
+		AA2C752816DFA9BC00B623C2 /* JMXExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31091275ADB6006376B8 /* JMXExporter.m */; };
+		AA2C752916DFA9BC00B623C2 /* JMXPhidgetEncoderEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA004D8114E7148600009CF9 /* JMXPhidgetEncoderEntity.mm */; };
+		AA2C752A16DFA9BC00B623C2 /* JMXHIDInputEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF981C14FAB4E2006B9F8B /* JMXHIDInputEntity.mm */; };
+		AA2C752B16DFA9C200B623C2 /* JMXQtExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30E71275ADB6006376B8 /* JMXQtExporter.m */; };
+		AA2C752C16DFA9C700B623C2 /* JMXCoreImageFilter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30EA1275ADB6006376B8 /* JMXCoreImageFilter.mm */; };
+		AA2C752D16DFA9D000B623C2 /* JMXVideoMixer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C310D1275ADB6006376B8 /* JMXVideoMixer.mm */; };
+		AA2C752E16DFA9D000B623C2 /* JMXImageEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30EF1275ADB6006376B8 /* JMXImageEntity.mm */; };
+		AA2C752F16DFA9D000B623C2 /* JMXQtVideoCaptureEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30F31275ADB6006376B8 /* JMXQtVideoCaptureEntity.mm */; };
+		AA2C753016DFA9D000B623C2 /* JMXQtMovieEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30F51275ADB6006376B8 /* JMXQtMovieEntity.mm */; };
+		AA2C753116DFA9D000B623C2 /* JMXTextEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA3556F51277340200EAA2E4 /* JMXTextEntity.mm */; };
+		AA2C753216DFA9D700B623C2 /* JMXAudioMixer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31011275ADB6006376B8 /* JMXAudioMixer.mm */; };
+		AA2C753316DFA9D700B623C2 /* JMXAudioFileEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30ED1275ADB6006376B8 /* JMXAudioFileEntity.mm */; };
+		AA2C753416DFA9D700B623C2 /* JMXQtAudioCaptureEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30F11275ADB6006376B8 /* JMXQtAudioCaptureEntity.mm */; };
+		AA2C753516DFA9D700B623C2 /* JMXAudioToneGenerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA0A89BF1675E09C00FF784F /* JMXAudioToneGenerator.mm */; };
+		AA2C753616DFA9DD00B623C2 /* JMXCoreAudioOutput.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30F81275ADB6006376B8 /* JMXCoreAudioOutput.mm */; };
+		AA2C753716DFA9DD00B623C2 /* JMXQtAudioOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30FA1275ADB6006376B8 /* JMXQtAudioOutput.m */; };
+		AA2C753816DFA9E300B623C2 /* JMXOpenGLScreen.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30FD1275ADB6006376B8 /* JMXOpenGLScreen.mm */; };
+		AA2C753916DFA9E300B623C2 /* JMXSoftScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30FF1275ADB6006376B8 /* JMXSoftScreen.m */; };
+		AA2C753A16DFA9E900B623C2 /* JMXScriptFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8CB78D1282BB9900A17115 /* JMXScriptFile.mm */; };
+		AA2C753B16DFA9E900B623C2 /* JMXScriptLive.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8F806012C9D3FA00EA8543 /* JMXScriptLive.mm */; };
+		AA2C753C16DFAA3600B623C2 /* libv8_nosnapshot.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA306164167B7A630005AFD5 /* libv8_nosnapshot.a */; };
+		AA2C753D16DFAA3700B623C2 /* libv8_snapshot.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA306165167B7A630005AFD5 /* libv8_snapshot.a */; };
+		AA2C753E16DFAA3700B623C2 /* libv8_base.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA306162167B79740005AFD5 /* libv8_base.a */; };
+		AA2C753F16DFAA4000B623C2 /* Phidget21.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0BFDFD1587E5B600D3C8E4 /* Phidget21.framework */; };
+		AA2C754016DFAA4000B623C2 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA678A47150CC47D00B2E8F7 /* CoreMedia.framework */; };
+		AA2C754116DFAA4000B623C2 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA678A45150CBC1000B2E8F7 /* AVFoundation.framework */; };
+		AA2C754216DFAA4000B623C2 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEF981214FA5C3C006B9F8B /* Carbon.framework */; };
+		AA2C754316DFAA4800B623C2 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEF981014FA5C31006B9F8B /* IOKit.framework */; };
+		AA2C754416DFAA4C00B623C2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
+		AA2C754616DFAA5700B623C2 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BC31223DC8300236FE4 /* OpenGL.framework */; };
+		AA2C754716DFAA5700B623C2 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BC71223DC9900236FE4 /* QTKit.framework */; };
+		AA2C754816DFAA5D00B623C2 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE3F212353BA6006087E7 /* CoreAudio.framework */; };
+		AA2C754916DFAA5D00B623C2 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE40A12353D5C006087E7 /* Accelerate.framework */; };
+		AA2C754A16DFAA5D00B623C2 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */; };
+		AA2C754B16DFAA6400B623C2 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAF376A214CCCE5E00347F40 /* libcrypto.dylib */; };
+		AA2C754C16DFAA6400B623C2 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAF376A014CCCE5000347F40 /* libz.dylib */; };
+		AA2C754D16DFAA6400B623C2 /* libssl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAF3769E14CCCE2C00347F40 /* libssl.dylib */; };
 		AA37E05214FA318500CBA0AE /* JMXDOMBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = AA37E05114FA318500CBA0AE /* JMXDOMBrowser.m */; };
-		AA38D1CC12DCC2CA00208826 /* jquery.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA38D1CB12DCC29D00208826 /* jquery.js */; };
 		AA490DD214CC5F8E00407C0D /* draw_pixels.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA490DC314CC5F4900407C0D /* draw_pixels.js */; };
 		AA490DD314CC5F8E00407C0D /* filter_videofile.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA490DC414CC5F4900407C0D /* filter_videofile.js */; };
 		AA490DD414CC5F8E00407C0D /* play_mp3dir.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA490DC514CC5F4900407C0D /* play_mp3dir.js */; };
@@ -85,183 +252,19 @@
 		AA490DD614CC5F8F00407C0D /* test_canvas.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA490DC714CC5F4900407C0D /* test_canvas.js */; };
 		AA490DD714CC5F8F00407C0D /* test_drawing_canvas.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA490DC814CC5F4900407C0D /* test_drawing_canvas.js */; };
 		AA490DD814CC5F8F00407C0D /* test_drawing.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA490DC914CC5F4900407C0D /* test_drawing.js */; };
-		AA4B00C912BE560100775B88 /* JMXProxyPin.m in Sources */ = {isa = PBXBuildFile; fileRef = AA4B00C812BE560100775B88 /* JMXProxyPin.m */; };
-		AA4B01F412BEC85F00775B88 /* AudioCapture.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA4B01F312BEC85500775B88 /* AudioCapture.js */; };
-		AA4B020912BED1BB00775B88 /* JMXAudioCapture.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4B020812BED1BB00775B88 /* JMXAudioCapture.mm */; };
-		AA4B039C12C06C7600775B88 /* JMXVideoCapture.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4B039B12C06C7600775B88 /* JMXVideoCapture.mm */; };
-		AA4BFC8412BD324A00775B88 /* JMXVideoFilter.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4BFC8312BD324A00775B88 /* JMXVideoFilter.mm */; };
-		AA4BFECF12BE25E900775B88 /* JMX.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA4BFE1312BE0E2000775B88 /* JMX.js */; };
-		AA4BFED012BE25E900775B88 /* AudioOutput.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA4BFE1112BE0D7400775B88 /* AudioOutput.js */; };
-		AA4BFED112BE25E900775B88 /* VideoOutput.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA4BFE1512BE135000775B88 /* VideoOutput.js */; };
-		AA4BFF2F12BE2F9500775B88 /* VideoFilter.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA4BFEFD12BE2B4500775B88 /* VideoFilter.js */; };
 		AA4CD9CD150D598D00152655 /* test_phidget_encoder.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA4CD9C7150D596900152655 /* test_phidget_encoder.js */; };
 		AA4CD9CE150D598D00152655 /* scratch_moviefile.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA4CD9C8150D596900152655 /* scratch_moviefile.js */; };
 		AA4CD9CF150D598D00152655 /* powermate.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA4CD9C9150D596900152655 /* powermate.js */; };
 		AA54B28B12A1215000EC60B2 /* jmx-icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = AA54B28A12A1215000EC60B2 /* jmx-icon.icns */; };
-		AA55601412AEF7CC00C882FF /* CIAlphaFade.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AA555FC912AEF39600C882FF /* CIAlphaFade.cikernel */; };
-		AA5563C412B188EB00C882FF /* CIAlphaFade.m in Sources */ = {isa = PBXBuildFile; fileRef = AA555FC712AEF39600C882FF /* CIAlphaFade.m */; };
-		AA678A46150CBC1000B2E8F7 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA678A45150CBC1000B2E8F7 /* AVFoundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		AA678A48150CC47D00B2E8F7 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA678A47150CC47D00B2E8F7 /* CoreMedia.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		AA75F38914F706FA00F1A214 /* drag_movies.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA75F38814F706E200F1A214 /* drag_movies.js */; };
-		AA8CB78E1282BB9900A17115 /* JMXScriptFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8CB78D1282BB9900A17115 /* JMXScriptFile.mm */; };
-		AA8F785812C5880100EA8543 /* VideoCapture.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA4B039812C06C3000775B88 /* VideoCapture.js */; };
-		AA8F785912C5880100EA8543 /* MovieFile.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA8F770712C5718600EA8543 /* MovieFile.js */; };
-		AA8F785A12C5880100EA8543 /* AudioFile.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AA8F770812C571A200EA8543 /* AudioFile.js */; };
-		AA8F806112C9D3FA00EA8543 /* JMXScriptLive.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8F806012C9D3FA00EA8543 /* JMXScriptLive.mm */; };
 		AA8F817612CB236700EA8543 /* JMXTextPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8F817512CB236700EA8543 /* JMXTextPanel.m */; };
-		AA93701D14CC2FFB001D9BB3 /* JMXScriptTimer.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA93701C14CC2FFA001D9BB3 /* JMXScriptTimer.mm */; };
-		AA9B58D914FE1E4F00F63C33 /* NSNumber+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9B58D614FE1E4F00F63C33 /* NSNumber+V8.mm */; };
-		AA9B58DA14FE1E4F00F63C33 /* NSString+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9B58D814FE1E4F00F63C33 /* NSString+V8.mm */; };
-		AA9B58FD14FED30700F63C33 /* libv8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9B58FC14FED30700F63C33 /* libv8.dylib */; };
-		AA9C17FC12E200C400329158 /* JMXCanvasElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C17FB12E200C400329158 /* JMXCanvasElement.mm */; };
-		AA9C18DA12E2FC1000329158 /* JMXCanvasGradient.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C18D912E2FC1000329158 /* JMXCanvasGradient.mm */; };
-		AA9C190F12E32B0600329158 /* JMXCanvasPattern.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C190E12E32B0600329158 /* JMXCanvasPattern.mm */; };
-		AA9C19D412E4BDD500329158 /* JMXRect.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C19D312E4BDD500329158 /* JMXRect.mm */; };
-		AA9C1A4912E5964C00329158 /* JMXImageElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C1A4812E5964C00329158 /* JMXImageElement.mm */; };
 		AAB50B5F14DD4956002F385C /* processing_sample1.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AAB50B5914DD493E002F385C /* processing_sample1.js */; };
 		AAB50B6014DD4956002F385C /* processing_sample2.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AAB50B5A14DD493E002F385C /* processing_sample2.js */; };
 		AAB50B6114DD4956002F385C /* processing_sample3.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AAB50B5B14DD493E002F385C /* processing_sample3.js */; };
 		AAB50B6414DD6405002F385C /* JMXEntitiesController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB50B6314DD6403002F385C /* JMXEntitiesController.m */; };
-		AAB71A0714D6BF0200BE8C35 /* JMXImageData.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAB71A0614D6BF0200BE8C35 /* JMXImageData.mm */; };
-		AAB71A0A14D6D89E00BE8C35 /* JMXUint8ClampedArray.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAB71A0914D6D89D00BE8C35 /* JMXUint8ClampedArray.mm */; };
-		AAB71A0D14D7585500BE8C35 /* JMXEventListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAB71A0C14D7585400BE8C35 /* JMXEventListener.mm */; };
-		AAC6323112CFC72B00B69DFE /* JMXGraph.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6323012CFC72B00B69DFE /* JMXGraph.mm */; };
-		AAC6323C12CFCAB900B69DFE /* JMXElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6323B12CFCAB900B69DFE /* JMXElement.mm */; };
-		AAC6334612D36DA900B69DFE /* NSXMLNode+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6334512D36DA900B69DFE /* NSXMLNode+V8.mm */; };
-		AAC6359C12D4622400B69DFE /* DOM.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AAC6355612D45C5800B69DFE /* DOM.js */; };
-		AAC6376312D5099400B69DFE /* JMXCDATA.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6376212D5099400B69DFE /* JMXCDATA.mm */; };
-		AAC637E012D5204C00B69DFE /* JMXAttribute.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC637DF12D5204C00B69DFE /* JMXAttribute.mm */; };
-		AACCC73F14A921B500D44D71 /* NSFont+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACCC73E14A921B500D44D71 /* NSFont+V8.mm */; };
 		AACD67AE14DEEF66007C7B31 /* canvas_sample1.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AACD67AC14DEEF52007C7B31 /* canvas_sample1.js */; };
-		AACE7D04129315DE00FBDC0D /* JMXScriptEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */; };
-		AACE7D331293195600FBDC0D /* JMXV8PropertyAccessors.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACE7D321293195600FBDC0D /* JMXV8PropertyAccessors.mm */; };
-		AAD139BB128EA0DF00ECB03A /* JMXDrawPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */; };
-		AAD13C4A128EF2AB00ECB03A /* NSColor+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD13C49128EF2AB00ECB03A /* NSColor+V8.mm */; };
-		AAD751D214E913FA008B1085 /* JMXScreenController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAD751D114E913FA008B1085 /* JMXScreenController.m */; };
-		AAD751D514E94631008B1085 /* JMXMouseEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD751D414E9462F008B1085 /* JMXMouseEvent.mm */; };
-		AAD751D814E98DD4008B1085 /* JMXKeyboardEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD751D714E98DD2008B1085 /* JMXKeyboardEvent.mm */; };
-		AAD751DB14E9AFFB008B1085 /* JMXScriptInputPin.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD751DA14E9AFF8008B1085 /* JMXScriptInputPin.mm */; };
-		AAD751DE14E9B01A008B1085 /* JMXScriptOutputPin.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD751DD14E9B017008B1085 /* JMXScriptOutputPin.mm */; };
 		AAD751E114E9D9DE008B1085 /* counter.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AAD751DF14E9D9C9008B1085 /* counter.js */; };
 		AAD751E214E9D9DE008B1085 /* random_point.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AAD751E014E9D9C9008B1085 /* random_point.js */; };
-		AADEBFC812414F7E00A6A06D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */; };
-		AAEA251914D4D2B800533049 /* processing.js in Deploy JS API */ = {isa = PBXBuildFile; fileRef = AAEA251714D4D29A00533049 /* processing.js */; };
-		AAEA251C14D4D5A200533049 /* JMXEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEA251B14D4D5A000533049 /* JMXEvent.mm */; };
-		AAEBB8AD14FC1839000DA6F9 /* CIAlphaBlend.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AAEBB8AC14FC1839000DA6F9 /* CIAlphaBlend.cikernel */; };
-		AAEBB9CD14FC6873000DA6F9 /* CIAlphaBlend.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEBB9CC14FC6872000DA6F9 /* CIAlphaBlend.m */; };
-		AAEBBA1514FD65CF000DA6F9 /* CIAdditiveBlur.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AAEBBA1214FD65CE000DA6F9 /* CIAdditiveBlur.cikernel */; };
-		AAEBBA1614FD65CF000DA6F9 /* CIAdditiveBlur.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEBBA1414FD65CF000DA6F9 /* CIAdditiveBlur.m */; };
-		AAEF980014FA5BF3006B9F8B /* HID_Utilities.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97F614FA5BF3006B9F8B /* HID_Utilities.c */; };
-		AAEF980114FA5BF3006B9F8B /* HID_Queue_Utilities.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97F914FA5BF3006B9F8B /* HID_Queue_Utilities.c */; };
-		AAEF980214FA5BF3006B9F8B /* HID_Name_Lookup.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97FB14FA5BF3006B9F8B /* HID_Name_Lookup.c */; };
-		AAEF980314FA5BF3006B9F8B /* HID_Error_Handler.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97FD14FA5BF3006B9F8B /* HID_Error_Handler.c */; };
-		AAEF980414FA5BF3006B9F8B /* HID_Config_Utilities.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97FF14FA5BF3006B9F8B /* HID_Config_Utilities.c */; };
-		AAEF980D14FA5BFD006B9F8B /* ImmrHIDUtilAddOn.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF980614FA5BFD006B9F8B /* ImmrHIDUtilAddOn.c */; };
-		AAEF980E14FA5BFD006B9F8B /* IOHIDDevice_.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF980814FA5BFD006B9F8B /* IOHIDDevice_.c */; };
-		AAEF980F14FA5BFD006B9F8B /* IOHIDElement_.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF980A14FA5BFD006B9F8B /* IOHIDElement_.c */; };
-		AAEF981114FA5C31006B9F8B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEF981014FA5C31006B9F8B /* IOKit.framework */; };
-		AAEF981314FA5C3C006B9F8B /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEF981214FA5C3C006B9F8B /* Carbon.framework */; };
-		AAEF981614FA5CFE006B9F8B /* JMXHIDDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF981514FA5CFE006B9F8B /* JMXHIDDevice.m */; };
-		AAEF981D14FAB4E2006B9F8B /* JMXHIDInputEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF981C14FAB4E2006B9F8B /* JMXHIDInputEntity.mm */; };
-		AAEF982014FAD2EE006B9F8B /* JMXByteArray.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF981F14FAD2ED006B9F8B /* JMXByteArray.mm */; };
-		AAEF982314FAE6B7006B9F8B /* NSDictionary+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF982214FAE6B7006B9F8B /* NSDictionary+V8.mm */; };
-		AAEF982614FAE811006B9F8B /* NSObject+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF982514FAE810006B9F8B /* NSObject+V8.mm */; };
-		AAF3757914CCBE8700347F40 /* cares_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3753614CCBE8700347F40 /* cares_wrap.cc */; };
-		AAF3757A14CCBE8700347F40 /* fs_event_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3753714CCBE8700347F40 /* fs_event_wrap.cc */; };
-		AAF3757B14CCBE8700347F40 /* handle_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3753814CCBE8700347F40 /* handle_wrap.cc */; };
-		AAF3757D14CCBE8700347F40 /* node.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3753B14CCBE8700347F40 /* node.cc */; };
-		AAF3758014CCBE8700347F40 /* node_buffer.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3753F14CCBE8700347F40 /* node_buffer.cc */; };
-		AAF3758214CCBE8700347F40 /* node_constants.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3754214CCBE8700347F40 /* node_constants.cc */; };
-		AAF3758314CCBE8700347F40 /* node_crypto.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3754414CCBE8700347F40 /* node_crypto.cc */; };
-		AAF3758414CCBE8700347F40 /* node_dtrace.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3754614CCBE8700347F40 /* node_dtrace.cc */; };
-		AAF3758514CCBE8700347F40 /* node_extensions.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3754814CCBE8700347F40 /* node_extensions.cc */; };
-		AAF3758614CCBE8700347F40 /* node_file.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3754A14CCBE8700347F40 /* node_file.cc */; };
-		AAF3758714CCBE8700347F40 /* node_http_parser.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3754C14CCBE8700347F40 /* node_http_parser.cc */; };
-		AAF3758814CCBE8700347F40 /* node_io_watcher.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3754E14CCBE8700347F40 /* node_io_watcher.cc */; };
-		AAF3758914CCBE8700347F40 /* node_javascript.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3755014CCBE8700347F40 /* node_javascript.cc */; };
-		AAF3758B14CCBE8700347F40 /* node_os.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3755414CCBE8700347F40 /* node_os.cc */; };
-		AAF3758D14CCBE8700347F40 /* node_script.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3755814CCBE8700347F40 /* node_script.cc */; };
-		AAF3758E14CCBE8700347F40 /* node_signal_watcher.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3755A14CCBE8700347F40 /* node_signal_watcher.cc */; };
-		AAF3758F14CCBE8700347F40 /* node_stat_watcher.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3755C14CCBE8700347F40 /* node_stat_watcher.cc */; };
-		AAF3759014CCBE8700347F40 /* node_string.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3755E14CCBE8700347F40 /* node_string.cc */; };
-		AAF3759114CCBE8700347F40 /* node_zlib.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3756114CCBE8700347F40 /* node_zlib.cc */; };
-		AAF3759214CCBE8700347F40 /* pipe_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3756214CCBE8700347F40 /* pipe_wrap.cc */; };
-		AAF3759314CCBE8700347F40 /* platform_darwin.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3756514CCBE8700347F40 /* platform_darwin.cc */; };
-		AAF3759B14CCBE8700347F40 /* process_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3756E14CCBE8700347F40 /* process_wrap.cc */; };
-		AAF3759C14CCBE8700347F40 /* stream_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3757014CCBE8700347F40 /* stream_wrap.cc */; };
-		AAF3759D14CCBE8700347F40 /* tcp_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3757214CCBE8700347F40 /* tcp_wrap.cc */; };
-		AAF3759E14CCBE8700347F40 /* timer_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3757414CCBE8700347F40 /* timer_wrap.cc */; };
-		AAF3759F14CCBE8700347F40 /* tty_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3757514CCBE8700347F40 /* tty_wrap.cc */; };
-		AAF375A014CCBE8700347F40 /* udp_wrap.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3757614CCBE8700347F40 /* udp_wrap.cc */; };
-		AAF375A114CCBE8700347F40 /* v8_typed_array.cc in Sources */ = {isa = PBXBuildFile; fileRef = AAF3757714CCBE8700347F40 /* v8_typed_array.cc */; };
-		AAF375E714CCC33800347F40 /* ares__close_sockets.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375A314CCC33800347F40 /* ares__close_sockets.c */; };
-		AAF375E814CCC33800347F40 /* ares__get_hostent.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375A414CCC33800347F40 /* ares__get_hostent.c */; };
-		AAF375E914CCC33800347F40 /* ares__read_line.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375A514CCC33800347F40 /* ares__read_line.c */; };
-		AAF375EA14CCC33800347F40 /* ares__timeval.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375A614CCC33800347F40 /* ares__timeval.c */; };
-		AAF375EB14CCC33800347F40 /* ares_cancel.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375A714CCC33800347F40 /* ares_cancel.c */; };
-		AAF375EC14CCC33800347F40 /* ares_data.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375A814CCC33800347F40 /* ares_data.c */; };
-		AAF375ED14CCC33800347F40 /* ares_destroy.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375AA14CCC33800347F40 /* ares_destroy.c */; };
-		AAF375EE14CCC33800347F40 /* ares_expand_name.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375AC14CCC33800347F40 /* ares_expand_name.c */; };
-		AAF375EF14CCC33800347F40 /* ares_expand_string.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375AD14CCC33800347F40 /* ares_expand_string.c */; };
-		AAF375F014CCC33800347F40 /* ares_fds.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375AE14CCC33800347F40 /* ares_fds.c */; };
-		AAF375F114CCC33800347F40 /* ares_free_hostent.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375AF14CCC33800347F40 /* ares_free_hostent.c */; };
-		AAF375F214CCC33800347F40 /* ares_free_string.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375B014CCC33800347F40 /* ares_free_string.c */; };
-		AAF375F314CCC33800347F40 /* ares_getenv.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375B114CCC33800347F40 /* ares_getenv.c */; };
-		AAF375F414CCC33800347F40 /* ares_gethostbyaddr.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375B314CCC33800347F40 /* ares_gethostbyaddr.c */; };
-		AAF375F514CCC33800347F40 /* ares_gethostbyname.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375B414CCC33800347F40 /* ares_gethostbyname.c */; };
-		AAF375F614CCC33800347F40 /* ares_getnameinfo.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375B514CCC33800347F40 /* ares_getnameinfo.c */; };
-		AAF375F714CCC33800347F40 /* ares_getopt.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375B614CCC33800347F40 /* ares_getopt.c */; };
-		AAF375F814CCC33800347F40 /* ares_getsock.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375B814CCC33800347F40 /* ares_getsock.c */; };
-		AAF375F914CCC33800347F40 /* ares_init.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375B914CCC33800347F40 /* ares_init.c */; };
-		AAF375FA14CCC33800347F40 /* ares_library_init.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375BC14CCC33800347F40 /* ares_library_init.c */; };
-		AAF375FB14CCC33800347F40 /* ares_llist.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375BE14CCC33800347F40 /* ares_llist.c */; };
-		AAF375FC14CCC33800347F40 /* ares_mkquery.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375C014CCC33800347F40 /* ares_mkquery.c */; };
-		AAF375FD14CCC33800347F40 /* ares_nowarn.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375C114CCC33800347F40 /* ares_nowarn.c */; };
-		AAF375FE14CCC33800347F40 /* ares_options.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375C314CCC33800347F40 /* ares_options.c */; };
-		AAF375FF14CCC33800347F40 /* ares_parse_a_reply.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375C414CCC33800347F40 /* ares_parse_a_reply.c */; };
-		AAF3760014CCC33800347F40 /* ares_parse_aaaa_reply.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375C514CCC33800347F40 /* ares_parse_aaaa_reply.c */; };
-		AAF3760114CCC33800347F40 /* ares_parse_mx_reply.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375C614CCC33800347F40 /* ares_parse_mx_reply.c */; };
-		AAF3760214CCC33800347F40 /* ares_parse_ns_reply.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375C714CCC33800347F40 /* ares_parse_ns_reply.c */; };
-		AAF3760314CCC33800347F40 /* ares_parse_ptr_reply.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375C814CCC33800347F40 /* ares_parse_ptr_reply.c */; };
-		AAF3760414CCC33800347F40 /* ares_parse_srv_reply.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375C914CCC33800347F40 /* ares_parse_srv_reply.c */; };
-		AAF3760514CCC33800347F40 /* ares_parse_txt_reply.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375CA14CCC33800347F40 /* ares_parse_txt_reply.c */; };
-		AAF3760614CCC33800347F40 /* ares_platform.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375CB14CCC33800347F40 /* ares_platform.c */; };
-		AAF3760714CCC33800347F40 /* ares_process.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375CE14CCC33800347F40 /* ares_process.c */; };
-		AAF3760814CCC33800347F40 /* ares_query.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375CF14CCC33800347F40 /* ares_query.c */; };
-		AAF3760914CCC33800347F40 /* ares_search.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375D114CCC33800347F40 /* ares_search.c */; };
-		AAF3760A14CCC33800347F40 /* ares_send.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375D214CCC33800347F40 /* ares_send.c */; };
-		AAF3760B14CCC33800347F40 /* ares_strcasecmp.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375D414CCC33800347F40 /* ares_strcasecmp.c */; };
-		AAF3760C14CCC33800347F40 /* ares_strdup.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375D614CCC33800347F40 /* ares_strdup.c */; };
-		AAF3760D14CCC33800347F40 /* ares_strerror.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375D814CCC33800347F40 /* ares_strerror.c */; };
-		AAF3760E14CCC33800347F40 /* ares_timeout.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375D914CCC33800347F40 /* ares_timeout.c */; };
-		AAF3760F14CCC33800347F40 /* ares_version.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375DA14CCC33800347F40 /* ares_version.c */; };
-		AAF3761014CCC33800347F40 /* ares_writev.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375DB14CCC33800347F40 /* ares_writev.c */; };
-		AAF3761114CCC33800347F40 /* bitncmp.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375DD14CCC33800347F40 /* bitncmp.c */; };
-		AAF3761214CCC33800347F40 /* inet_net_pton.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375DF14CCC33800347F40 /* inet_net_pton.c */; };
-		AAF3761314CCC33800347F40 /* inet_ntop.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375E114CCC33800347F40 /* inet_ntop.c */; };
-		AAF3761414CCC33800347F40 /* uv-common.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF375E514CCC33800347F40 /* uv-common.c */; };
-		AAF3762514CCC38000347F40 /* cares.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3761614CCC37F00347F40 /* cares.c */; };
-		AAF3762614CCC38000347F40 /* core.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3761714CCC37F00347F40 /* core.c */; };
-		AAF3762714CCC38000347F40 /* darwin.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3761814CCC37F00347F40 /* darwin.c */; };
-		AAF3762814CCC38000347F40 /* dl.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3761914CCC38000347F40 /* dl.c */; };
-		AAF3762914CCC38000347F40 /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3761A14CCC38000347F40 /* error.c */; };
-		AAF3762A14CCC38000347F40 /* kqueue.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3761C14CCC38000347F40 /* kqueue.c */; };
-		AAF3762B14CCC38000347F40 /* pipe.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3761D14CCC38000347F40 /* pipe.c */; };
-		AAF3762C14CCC38000347F40 /* process.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3761E14CCC38000347F40 /* process.c */; };
-		AAF3762D14CCC38000347F40 /* stream.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3761F14CCC38000347F40 /* stream.c */; };
-		AAF3762E14CCC38000347F40 /* tcp.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3762014CCC38000347F40 /* tcp.c */; };
-		AAF3762F14CCC38000347F40 /* tty.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3762114CCC38000347F40 /* tty.c */; };
-		AAF3763014CCC38000347F40 /* udp.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3762214CCC38000347F40 /* udp.c */; };
-		AAF3763114CCC38000347F40 /* uv-eio.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3762314CCC38000347F40 /* uv-eio.c */; };
-		AAF3765414CCC4A900347F40 /* eio.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3764314CCC4A900347F40 /* eio.c */; };
-		AAF3768C14CCC4E500347F40 /* ev.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3766D14CCC4E500347F40 /* ev.c */; };
-		AAF3769414CCC4E500347F40 /* event.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF3767714CCC4E500347F40 /* event.c */; };
-		AAF3769F14CCCE2C00347F40 /* libssl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAF3769E14CCCE2C00347F40 /* libssl.dylib */; };
-		AAF376A114CCCE5100347F40 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAF376A014CCCE5000347F40 /* libz.dylib */; };
-		AAF376A314CCCE5E00347F40 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAF376A214CCCE5E00347F40 /* libcrypto.dylib */; };
-		AAF376A514CCCE9700347F40 /* fs.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF376A414CCCE9700347F40 /* fs.c */; };
-		AAF376B414CCCEF400347F40 /* http_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF376AA14CCCEF400347F40 /* http_parser.c */; };
-		AAFAAD88129095EB00949028 /* JMXScript.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAFAAD87129095EB00949028 /* JMXScript.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -298,17 +301,6 @@
 			dstPath = js;
 			dstSubfolderSpec = 13;
 			files = (
-				AAEA251914D4D2B800533049 /* processing.js in Deploy JS API */,
-				AA38D1CC12DCC2CA00208826 /* jquery.js in Deploy JS API */,
-				AAC6359C12D4622400B69DFE /* DOM.js in Deploy JS API */,
-				AA4BFECF12BE25E900775B88 /* JMX.js in Deploy JS API */,
-				AA4BFED012BE25E900775B88 /* AudioOutput.js in Deploy JS API */,
-				AA4BFED112BE25E900775B88 /* VideoOutput.js in Deploy JS API */,
-				AA4BFF2F12BE2F9500775B88 /* VideoFilter.js in Deploy JS API */,
-				AA4B01F412BEC85F00775B88 /* AudioCapture.js in Deploy JS API */,
-				AA8F785812C5880100EA8543 /* VideoCapture.js in Deploy JS API */,
-				AA8F785912C5880100EA8543 /* MovieFile.js in Deploy JS API */,
-				AA8F785A12C5880100EA8543 /* AudioFile.js in Deploy JS API */,
 			);
 			name = "Deploy JS API";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -447,6 +439,11 @@
 		AA1E53B714AF60F200F80337 /* Global.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = Global.js; sourceTree = "<group>"; };
 		AA2BE3F212353BA6006087E7 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		AA2BE40A12353D5C006087E7 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		AA2C746316DFA74000B623C2 /* libJMX-Core.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libJMX-Core.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA2C754E16DFAB0A00B623C2 /* JMX-Core_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "JMX-Core_Prefix.pch"; sourceTree = "<group>"; };
+		AA306162167B79740005AFD5 /* libv8_base.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libv8_base.a; path = ../v8/out/x64.release/libv8_base.a; sourceTree = "<group>"; };
+		AA306164167B7A630005AFD5 /* libv8_nosnapshot.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libv8_nosnapshot.a; path = ../v8/out/x64.release/libv8_nosnapshot.a; sourceTree = "<group>"; };
+		AA306165167B7A630005AFD5 /* libv8_snapshot.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libv8_snapshot.a; path = ../v8/out/x64.release/libv8_snapshot.a; sourceTree = "<group>"; };
 		AA3556F41277340200EAA2E4 /* JMXTextEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXTextEntity.h; sourceTree = "<group>"; };
 		AA3556F51277340200EAA2E4 /* JMXTextEntity.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXTextEntity.mm; sourceTree = "<group>"; };
 		AA3556FF1277347300EAA2E4 /* JMXTextRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXTextRenderer.h; sourceTree = "<group>"; };
@@ -564,7 +561,6 @@
 		AA9B58D614FE1E4F00F63C33 /* NSNumber+V8.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSNumber+V8.mm"; sourceTree = "<group>"; };
 		AA9B58D714FE1E4F00F63C33 /* NSString+V8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+V8.h"; sourceTree = "<group>"; };
 		AA9B58D814FE1E4F00F63C33 /* NSString+V8.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSString+V8.mm"; sourceTree = "<group>"; };
-		AA9B58FC14FED30700F63C33 /* libv8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libv8.dylib; path = "../v8-read-only/libv8.dylib"; sourceTree = "<group>"; };
 		AA9C17FA12E200C400329158 /* JMXCanvasElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXCanvasElement.h; sourceTree = "<group>"; };
 		AA9C17FB12E200C400329158 /* JMXCanvasElement.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXCanvasElement.mm; sourceTree = "<group>"; };
 		AA9C18D812E2FC1000329158 /* JMXCanvasGradient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXCanvasGradient.h; sourceTree = "<group>"; };
@@ -839,22 +835,32 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA0A89BD1675E02800FF784F /* AudioUnit.framework in Frameworks */,
-				AA0BFDFE1587E5B600D3C8E4 /* Phidget21.framework in Frameworks */,
-				AA678A48150CC47D00B2E8F7 /* CoreMedia.framework in Frameworks */,
-				AA678A46150CBC1000B2E8F7 /* AVFoundation.framework in Frameworks */,
-				AAEF981314FA5C3C006B9F8B /* Carbon.framework in Frameworks */,
-				AAEF981114FA5C31006B9F8B /* IOKit.framework in Frameworks */,
-				AAF376A314CCCE5E00347F40 /* libcrypto.dylib in Frameworks */,
-				AAF376A114CCCE5100347F40 /* libz.dylib in Frameworks */,
-				AAF3769F14CCCE2C00347F40 /* libssl.dylib in Frameworks */,
-				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
-				82456BC41223DC8300236FE4 /* OpenGL.framework in Frameworks */,
-				82456BC81223DC9900236FE4 /* QTKit.framework in Frameworks */,
 				82456BCC1223DCA700236FE4 /* QuartzCore.framework in Frameworks */,
-				AA2BE3F312353BA6006087E7 /* CoreAudio.framework in Frameworks */,
-				AA2BE40B12353D5C006087E7 /* Accelerate.framework in Frameworks */,
-				AADEBFC812414F7E00A6A06D /* AudioToolbox.framework in Frameworks */,
-				AA9B58FD14FED30700F63C33 /* libv8.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA2C746016DFA74000B623C2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA2C746416DFA74000B623C2 /* Cocoa.framework in Frameworks */,
+				AA2C753C16DFAA3600B623C2 /* libv8_nosnapshot.a in Frameworks */,
+				AA2C753D16DFAA3700B623C2 /* libv8_snapshot.a in Frameworks */,
+				AA2C753E16DFAA3700B623C2 /* libv8_base.a in Frameworks */,
+				AA2C753F16DFAA4000B623C2 /* Phidget21.framework in Frameworks */,
+				AA2C754016DFAA4000B623C2 /* CoreMedia.framework in Frameworks */,
+				AA2C754116DFAA4000B623C2 /* AVFoundation.framework in Frameworks */,
+				AA2C754216DFAA4000B623C2 /* Carbon.framework in Frameworks */,
+				AA2C754316DFAA4800B623C2 /* IOKit.framework in Frameworks */,
+				AA2C754416DFAA4C00B623C2 /* Foundation.framework in Frameworks */,
+				AA2C754616DFAA5700B623C2 /* OpenGL.framework in Frameworks */,
+				AA2C754716DFAA5700B623C2 /* QTKit.framework in Frameworks */,
+				AA2C754816DFAA5D00B623C2 /* CoreAudio.framework in Frameworks */,
+				AA2C754916DFAA5D00B623C2 /* Accelerate.framework in Frameworks */,
+				AA2C754A16DFAA5D00B623C2 /* AudioToolbox.framework in Frameworks */,
+				AA2C754B16DFAA6400B623C2 /* libcrypto.dylib in Frameworks */,
+				AA2C754C16DFAA6400B623C2 /* libz.dylib in Frameworks */,
+				AA2C754D16DFAA6400B623C2 /* libssl.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -883,6 +889,7 @@
 			isa = PBXGroup;
 			children = (
 				8D1107320486CEB800E47090 /* JMX.app */,
+				AA2C746316DFA74000B623C2 /* libJMX-Core.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -909,6 +916,7 @@
 				256AC3D80F4B6AC300CF3369 /* JMXAppDelegate.h */,
 				256AC3D90F4B6AC300CF3369 /* JMXAppDelegate.m */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
+				AA2C754E16DFAB0A00B623C2 /* JMX-Core_Prefix.pch */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -928,6 +936,9 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AA306164167B7A630005AFD5 /* libv8_nosnapshot.a */,
+				AA306165167B7A630005AFD5 /* libv8_snapshot.a */,
+				AA306162167B79740005AFD5 /* libv8_base.a */,
 				AA0BFDFD1587E5B600D3C8E4 /* Phidget21.framework */,
 				AA678A47150CC47D00B2E8F7 /* CoreMedia.framework */,
 				AA678A45150CBC1000B2E8F7 /* AVFoundation.framework */,
@@ -945,7 +956,6 @@
 				AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */,
 				AAF376A214CCCE5E00347F40 /* libcrypto.dylib */,
 				AAF376A014CCCE5000347F40 /* libz.dylib */,
-				AA9B58FC14FED30700F63C33 /* libv8.dylib */,
 				AAF3769E14CCCE2C00347F40 /* libssl.dylib */,
 			);
 			name = Frameworks;
@@ -1692,6 +1702,16 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		AA2C746116DFA74000B623C2 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
 		8D1107260486CEB800E47090 /* JMX */ = {
 			isa = PBXNativeTarget;
@@ -1714,6 +1734,23 @@
 			productName = MoviePlayerD;
 			productReference = 8D1107320486CEB800E47090 /* JMX.app */;
 			productType = "com.apple.product-type.application";
+		};
+		AA2C746216DFA74000B623C2 /* JMX-Core */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA2C747116DFA74000B623C2 /* Build configuration list for PBXNativeTarget "JMX-Core" */;
+			buildPhases = (
+				AA2C745F16DFA74000B623C2 /* Sources */,
+				AA2C746016DFA74000B623C2 /* Frameworks */,
+				AA2C746116DFA74000B623C2 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "JMX-Core";
+			productName = "JMX-Core";
+			productReference = AA2C746316DFA74000B623C2 /* libJMX-Core.a */;
+			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
 
@@ -1739,6 +1776,7 @@
 			projectRoot = "";
 			targets = (
 				8D1107260486CEB800E47090 /* JMX */,
+				AA2C746216DFA74000B623C2 /* JMX-Core */,
 			);
 		};
 /* End PBXProject section */
@@ -1748,12 +1786,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA55601412AEF7CC00C882FF /* CIAlphaFade.cikernel in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
 				AA54B28B12A1215000EC60B2 /* jmx-icon.icns in Resources */,
-				AAEBB8AD14FC1839000DA6F9 /* CIAlphaBlend.cikernel in Resources */,
-				AAEBBA1514FD65CF000DA6F9 /* CIAdditiveBlur.cikernel in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1786,7 +1821,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "V8_LIBNAME=\"\"\nif [ \"$CONFIGURATION\" = \"Debug\" ]; then\n\tV8_LIBNAME=libv8.dylib\nelse\n\tV8_LIBNAME=libv8.dylib\nfi\n\nif [ ! -d  $TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Frameworks ]; then\n\tmkdir $TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Frameworks\nfi\ncp $PROJECT_DIR/../v8-read-only/$V8_LIBNAME $TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Frameworks/\ninstall_name_tool -id @executable_path/../Frameworks/$V8_LIBNAME \\\n\t\"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Frameworks/$V8_LIBNAME\"\ninstall_name_tool \\\n\t-change $V8_LIBNAME \\\n\t@executable_path/../Frameworks/$V8_LIBNAME \\\n\t$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/MacOS/$PRODUCT_NAME";
+			shellScript = "# disabled since the v8 library is now statucally linked\nexit 0\n\nV8_LIBNAME=\"\"\nif [ \"$CONFIGURATION\" = \"Debug\" ]; then\n\tV8_LIBNAME=libv8.dylib\nelse\n\tV8_LIBNAME=libv8.dylib\nfi\n\nif [ ! -d  $TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Frameworks ]; then\n\tmkdir $TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Frameworks\nfi\ncp $PROJECT_DIR/../v8-read-only/$V8_LIBNAME $TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Frameworks/\ninstall_name_tool -id @executable_path/../Frameworks/$V8_LIBNAME \\\n\t\"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Frameworks/$V8_LIBNAME\"\ninstall_name_tool \\\n\t-change $V8_LIBNAME \\\n\t@executable_path/../Frameworks/$V8_LIBNAME \\\n\t$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/MacOS/$PRODUCT_NAME";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1805,200 +1840,221 @@
 				825C30E21275AD32006376B8 /* JMXEntityInspectorPanel.m in Sources */,
 				825C30E31275AD32006376B8 /* JMXEntityLayer.m in Sources */,
 				825C30E41275AD32006376B8 /* JMXOutletLayer.m in Sources */,
-				825C31101275ADB6006376B8 /* JMXQtExporter.m in Sources */,
-				825C31111275ADB6006376B8 /* JMXCoreImageFilter.mm in Sources */,
-				825C31121275ADB6006376B8 /* JMXAudioFileEntity.mm in Sources */,
-				825C31131275ADB6006376B8 /* JMXImageEntity.mm in Sources */,
-				825C31141275ADB6006376B8 /* JMXQtAudioCaptureEntity.mm in Sources */,
-				825C31151275ADB6006376B8 /* JMXQtVideoCaptureEntity.mm in Sources */,
-				825C31161275ADB6006376B8 /* JMXQtMovieEntity.mm in Sources */,
-				825C31171275ADB6006376B8 /* JMXCoreAudioOutput.mm in Sources */,
-				825C31181275ADB6006376B8 /* JMXQtAudioOutput.m in Sources */,
-				825C31191275ADB6006376B8 /* JMXOpenGLScreen.mm in Sources */,
-				825C311A1275ADB6006376B8 /* JMXSoftScreen.m in Sources */,
-				825C311B1275ADB6006376B8 /* JMXAudioMixer.mm in Sources */,
-				825C311C1275ADB6006376B8 /* JMXAudioOutput.mm in Sources */,
-				825C311E1275ADB6006376B8 /* JMXAudioSpectrumAnalyzer.mm in Sources */,
-				825C311F1275ADB6006376B8 /* JMXExporter.m in Sources */,
-				825C31201275ADB6006376B8 /* JMXVideoEntity.mm in Sources */,
-				825C31211275ADB6006376B8 /* JMXVideoMixer.mm in Sources */,
-				825C31221275ADB6006376B8 /* JMXVideoOutput.mm in Sources */,
-				825C31461275ADD7006376B8 /* JMXAudioBuffer.m in Sources */,
-				825C31471275ADD7006376B8 /* JMXAudioDevice.m in Sources */,
-				825C31481275ADD7006376B8 /* JMXAudioFile.m in Sources */,
-				825C31491275ADD7006376B8 /* JMXAudioFormat.m in Sources */,
-				825C314B1275ADD7006376B8 /* JMXContext.m in Sources */,
-				825C314C1275ADD7006376B8 /* JMXEntity.mm in Sources */,
-				825C314D1275ADD7006376B8 /* JMXInputPin.m in Sources */,
-				825C314E1275ADD7006376B8 /* JMXOutputPin.m in Sources */,
-				825C314F1275ADD7006376B8 /* JMXPin.mm in Sources */,
-				825C31501275ADD7006376B8 /* JMXPinSignal.m in Sources */,
-				825C31511275ADD7006376B8 /* JMXPoint.mm in Sources */,
-				825C31521275ADD7006376B8 /* JMXRingBuffer.m in Sources */,
-				825C31531275ADD7006376B8 /* JMXSize.mm in Sources */,
-				825C31541275ADD7006376B8 /* JMXSpectrumAnalyzer.m in Sources */,
-				825C31551275ADD7006376B8 /* JMXThreadedEntity.mm in Sources */,
 				825C31841275AF03006376B8 /* JMXEntityLabelLayer.m in Sources */,
 				825C318A1275AF4B006376B8 /* JMXOutletLabelLayer.m in Sources */,
 				825C319D1275AFB6006376B8 /* JMXLibraryTableView.m in Sources */,
 				825C319E1275AFB6006376B8 /* JMXLibraryTableViewDelegate.m in Sources */,
-				AA3557441277468800EAA2E4 /* JMXTextRenderer.m in Sources */,
-				AA3557451277468800EAA2E4 /* JMXTextEntity.mm in Sources */,
-				AA3557DA12795C5500EAA2E4 /* JMXDrawEntity.mm in Sources */,
-				AA8CB78E1282BB9900A17115 /* JMXScriptFile.mm in Sources */,
-				82AD7F701289F3C300C85EB1 /* JMXOpenGLDraw.mm in Sources */,
-				AAD139BB128EA0DF00ECB03A /* JMXDrawPath.mm in Sources */,
-				AAD13C4A128EF2AB00ECB03A /* NSColor+V8.mm in Sources */,
 				82A21F5E12902EE50002738B /* JMXDocumentSplitViewDelegate.m in Sources */,
-				AAFAAD88129095EB00949028 /* JMXScript.mm in Sources */,
 				82A2206D129091910002738B /* JMXBoardViewController.m in Sources */,
 				82A220CA129098A60002738B /* JMXWindowController.m in Sources */,
-				AACE7D04129315DE00FBDC0D /* JMXScriptEntity.mm in Sources */,
-				AACE7D331293195600FBDC0D /* JMXV8PropertyAccessors.mm in Sources */,
-				AA5563C412B188EB00C882FF /* CIAlphaFade.m in Sources */,
-				AA4BFC8412BD324A00775B88 /* JMXVideoFilter.mm in Sources */,
-				AA4B00C912BE560100775B88 /* JMXProxyPin.m in Sources */,
-				AA4B020912BED1BB00775B88 /* JMXAudioCapture.mm in Sources */,
-				AA4B039C12C06C7600775B88 /* JMXVideoCapture.mm in Sources */,
-				AA8F806112C9D3FA00EA8543 /* JMXScriptLive.mm in Sources */,
 				AA8F817612CB236700EA8543 /* JMXTextPanel.m in Sources */,
-				AAC6323112CFC72B00B69DFE /* JMXGraph.mm in Sources */,
-				AAC6323C12CFCAB900B69DFE /* JMXElement.mm in Sources */,
-				AAC6334612D36DA900B69DFE /* NSXMLNode+V8.mm in Sources */,
-				AAC6376312D5099400B69DFE /* JMXCDATA.mm in Sources */,
-				AAC637E012D5204C00B69DFE /* JMXAttribute.mm in Sources */,
-				AA9C17FC12E200C400329158 /* JMXCanvasElement.mm in Sources */,
-				AA9C18DA12E2FC1000329158 /* JMXCanvasGradient.mm in Sources */,
-				AA9C190F12E32B0600329158 /* JMXCanvasPattern.mm in Sources */,
-				AA9C19D412E4BDD500329158 /* JMXRect.mm in Sources */,
-				AA9C1A4912E5964C00329158 /* JMXImageElement.mm in Sources */,
-				AACCC73F14A921B500D44D71 /* NSFont+V8.mm in Sources */,
-				AA1E53AD14AE114D00F80337 /* JMXGraphFragment.mm in Sources */,
 				AA08D33B14B5AA4500D19015 /* JMXCodePanel.m in Sources */,
-				AA93701D14CC2FFB001D9BB3 /* JMXScriptTimer.mm in Sources */,
-				AAF3757914CCBE8700347F40 /* cares_wrap.cc in Sources */,
-				AAF3757A14CCBE8700347F40 /* fs_event_wrap.cc in Sources */,
-				AAF3757B14CCBE8700347F40 /* handle_wrap.cc in Sources */,
-				AAF3757D14CCBE8700347F40 /* node.cc in Sources */,
-				AAF3758014CCBE8700347F40 /* node_buffer.cc in Sources */,
-				AAF3758214CCBE8700347F40 /* node_constants.cc in Sources */,
-				AAF3758314CCBE8700347F40 /* node_crypto.cc in Sources */,
-				AAF3758414CCBE8700347F40 /* node_dtrace.cc in Sources */,
-				AAF3758514CCBE8700347F40 /* node_extensions.cc in Sources */,
-				AAF3758614CCBE8700347F40 /* node_file.cc in Sources */,
-				AAF3758714CCBE8700347F40 /* node_http_parser.cc in Sources */,
-				AAF3758814CCBE8700347F40 /* node_io_watcher.cc in Sources */,
-				AAF3758914CCBE8700347F40 /* node_javascript.cc in Sources */,
-				AAF3758B14CCBE8700347F40 /* node_os.cc in Sources */,
-				AAF3758D14CCBE8700347F40 /* node_script.cc in Sources */,
-				AAF3758E14CCBE8700347F40 /* node_signal_watcher.cc in Sources */,
-				AAF3758F14CCBE8700347F40 /* node_stat_watcher.cc in Sources */,
-				AAF3759014CCBE8700347F40 /* node_string.cc in Sources */,
-				AAF3759114CCBE8700347F40 /* node_zlib.cc in Sources */,
-				AAF3759214CCBE8700347F40 /* pipe_wrap.cc in Sources */,
-				AAF3759314CCBE8700347F40 /* platform_darwin.cc in Sources */,
-				AAF3759B14CCBE8700347F40 /* process_wrap.cc in Sources */,
-				AAF3759C14CCBE8700347F40 /* stream_wrap.cc in Sources */,
-				AAF3759D14CCBE8700347F40 /* tcp_wrap.cc in Sources */,
-				AAF3759E14CCBE8700347F40 /* timer_wrap.cc in Sources */,
-				AAF3759F14CCBE8700347F40 /* tty_wrap.cc in Sources */,
-				AAF375A014CCBE8700347F40 /* udp_wrap.cc in Sources */,
-				AAF375A114CCBE8700347F40 /* v8_typed_array.cc in Sources */,
-				AAF375E714CCC33800347F40 /* ares__close_sockets.c in Sources */,
-				AAF375E814CCC33800347F40 /* ares__get_hostent.c in Sources */,
-				AAF375E914CCC33800347F40 /* ares__read_line.c in Sources */,
-				AAF375EA14CCC33800347F40 /* ares__timeval.c in Sources */,
-				AAF375EB14CCC33800347F40 /* ares_cancel.c in Sources */,
-				AAF375EC14CCC33800347F40 /* ares_data.c in Sources */,
-				AAF375ED14CCC33800347F40 /* ares_destroy.c in Sources */,
-				AAF375EE14CCC33800347F40 /* ares_expand_name.c in Sources */,
-				AAF375EF14CCC33800347F40 /* ares_expand_string.c in Sources */,
-				AAF375F014CCC33800347F40 /* ares_fds.c in Sources */,
-				AAF375F114CCC33800347F40 /* ares_free_hostent.c in Sources */,
-				AAF375F214CCC33800347F40 /* ares_free_string.c in Sources */,
-				AAF375F314CCC33800347F40 /* ares_getenv.c in Sources */,
-				AAF375F414CCC33800347F40 /* ares_gethostbyaddr.c in Sources */,
-				AAF375F514CCC33800347F40 /* ares_gethostbyname.c in Sources */,
-				AAF375F614CCC33800347F40 /* ares_getnameinfo.c in Sources */,
-				AAF375F714CCC33800347F40 /* ares_getopt.c in Sources */,
-				AAF375F814CCC33800347F40 /* ares_getsock.c in Sources */,
-				AAF375F914CCC33800347F40 /* ares_init.c in Sources */,
-				AAF375FA14CCC33800347F40 /* ares_library_init.c in Sources */,
-				AAF375FB14CCC33800347F40 /* ares_llist.c in Sources */,
-				AAF375FC14CCC33800347F40 /* ares_mkquery.c in Sources */,
-				AAF375FD14CCC33800347F40 /* ares_nowarn.c in Sources */,
-				AAF375FE14CCC33800347F40 /* ares_options.c in Sources */,
-				AAF375FF14CCC33800347F40 /* ares_parse_a_reply.c in Sources */,
-				AAF3760014CCC33800347F40 /* ares_parse_aaaa_reply.c in Sources */,
-				AAF3760114CCC33800347F40 /* ares_parse_mx_reply.c in Sources */,
-				AAF3760214CCC33800347F40 /* ares_parse_ns_reply.c in Sources */,
-				AAF3760314CCC33800347F40 /* ares_parse_ptr_reply.c in Sources */,
-				AAF3760414CCC33800347F40 /* ares_parse_srv_reply.c in Sources */,
-				AAF3760514CCC33800347F40 /* ares_parse_txt_reply.c in Sources */,
-				AAF3760614CCC33800347F40 /* ares_platform.c in Sources */,
-				AAF3760714CCC33800347F40 /* ares_process.c in Sources */,
-				AAF3760814CCC33800347F40 /* ares_query.c in Sources */,
-				AAF3760914CCC33800347F40 /* ares_search.c in Sources */,
-				AAF3760A14CCC33800347F40 /* ares_send.c in Sources */,
-				AAF3760B14CCC33800347F40 /* ares_strcasecmp.c in Sources */,
-				AAF3760C14CCC33800347F40 /* ares_strdup.c in Sources */,
-				AAF3760D14CCC33800347F40 /* ares_strerror.c in Sources */,
-				AAF3760E14CCC33800347F40 /* ares_timeout.c in Sources */,
-				AAF3760F14CCC33800347F40 /* ares_version.c in Sources */,
-				AAF3761014CCC33800347F40 /* ares_writev.c in Sources */,
-				AAF3761114CCC33800347F40 /* bitncmp.c in Sources */,
-				AAF3761214CCC33800347F40 /* inet_net_pton.c in Sources */,
-				AAF3761314CCC33800347F40 /* inet_ntop.c in Sources */,
-				AAF3761414CCC33800347F40 /* uv-common.c in Sources */,
-				AAF3762514CCC38000347F40 /* cares.c in Sources */,
-				AAF3762614CCC38000347F40 /* core.c in Sources */,
-				AAF3762714CCC38000347F40 /* darwin.c in Sources */,
-				AAF3762814CCC38000347F40 /* dl.c in Sources */,
-				AAF3762914CCC38000347F40 /* error.c in Sources */,
-				AAF3762A14CCC38000347F40 /* kqueue.c in Sources */,
-				AAF3762B14CCC38000347F40 /* pipe.c in Sources */,
-				AAF3762C14CCC38000347F40 /* process.c in Sources */,
-				AAF3762D14CCC38000347F40 /* stream.c in Sources */,
-				AAF3762E14CCC38000347F40 /* tcp.c in Sources */,
-				AAF3762F14CCC38000347F40 /* tty.c in Sources */,
-				AAF3763014CCC38000347F40 /* udp.c in Sources */,
-				AAF3763114CCC38000347F40 /* uv-eio.c in Sources */,
-				AAF3765414CCC4A900347F40 /* eio.c in Sources */,
-				AAF3768C14CCC4E500347F40 /* ev.c in Sources */,
-				AAF3769414CCC4E500347F40 /* event.c in Sources */,
-				AAF376A514CCCE9700347F40 /* fs.c in Sources */,
-				AAF376B414CCCEF400347F40 /* http_parser.c in Sources */,
-				AAEA251C14D4D5A200533049 /* JMXEvent.mm in Sources */,
-				AAB71A0714D6BF0200BE8C35 /* JMXImageData.mm in Sources */,
-				AAB71A0A14D6D89E00BE8C35 /* JMXUint8ClampedArray.mm in Sources */,
-				AAB71A0D14D7585500BE8C35 /* JMXEventListener.mm in Sources */,
-				AA02230F14D8BB8C00E7908F /* JMXScriptPinWrapper.mm in Sources */,
 				AAB50B6414DD6405002F385C /* JMXEntitiesController.m in Sources */,
-				AA004D8214E7148600009CF9 /* JMXPhidgetEncoderEntity.mm in Sources */,
-				AAD751D214E913FA008B1085 /* JMXScreenController.m in Sources */,
-				AAD751D514E94631008B1085 /* JMXMouseEvent.mm in Sources */,
-				AAD751D814E98DD4008B1085 /* JMXKeyboardEvent.mm in Sources */,
-				AAD751DB14E9AFFB008B1085 /* JMXScriptInputPin.mm in Sources */,
-				AAD751DE14E9B01A008B1085 /* JMXScriptOutputPin.mm in Sources */,
 				AA37E05214FA318500CBA0AE /* JMXDOMBrowser.m in Sources */,
-				AAEF980014FA5BF3006B9F8B /* HID_Utilities.c in Sources */,
-				AAEF980114FA5BF3006B9F8B /* HID_Queue_Utilities.c in Sources */,
-				AAEF980214FA5BF3006B9F8B /* HID_Name_Lookup.c in Sources */,
-				AAEF980314FA5BF3006B9F8B /* HID_Error_Handler.c in Sources */,
-				AAEF980414FA5BF3006B9F8B /* HID_Config_Utilities.c in Sources */,
-				AAEF980D14FA5BFD006B9F8B /* ImmrHIDUtilAddOn.c in Sources */,
-				AAEF980E14FA5BFD006B9F8B /* IOHIDDevice_.c in Sources */,
-				AAEF980F14FA5BFD006B9F8B /* IOHIDElement_.c in Sources */,
-				AAEF981614FA5CFE006B9F8B /* JMXHIDDevice.m in Sources */,
-				AAEF981D14FAB4E2006B9F8B /* JMXHIDInputEntity.mm in Sources */,
-				AAEF982014FAD2EE006B9F8B /* JMXByteArray.mm in Sources */,
-				AAEF982314FAE6B7006B9F8B /* NSDictionary+V8.mm in Sources */,
-				AAEF982614FAE811006B9F8B /* NSObject+V8.mm in Sources */,
-				AAEBB9CD14FC6873000DA6F9 /* CIAlphaBlend.m in Sources */,
-				AAEBBA1614FD65CF000DA6F9 /* CIAdditiveBlur.m in Sources */,
-				AA9B58D914FE1E4F00F63C33 /* NSNumber+V8.mm in Sources */,
-				AA9B58DA14FE1E4F00F63C33 /* NSString+V8.mm in Sources */,
-				AA0A89C01675E09C00FF784F /* JMXAudioToneGenerator.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA2C745F16DFA74000B623C2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA2C747216DFA7B400B623C2 /* NSNumber+V8.mm in Sources */,
+				AA2C747316DFA7B400B623C2 /* NSString+V8.mm in Sources */,
+				AA2C747416DFA7B400B623C2 /* NSObject+V8.mm in Sources */,
+				AA2C747516DFA7B400B623C2 /* NSDictionary+V8.mm in Sources */,
+				AA2C747616DFA7B400B623C2 /* NSXMLNode+V8.mm in Sources */,
+				AA2C747716DFA7B400B623C2 /* NSFont+V8.mm in Sources */,
+				AA2C747816DFA7B400B623C2 /* JMXV8PropertyAccessors.mm in Sources */,
+				AA2C747916DFA7B400B623C2 /* JMXGraph.mm in Sources */,
+				AA2C747A16DFA7B400B623C2 /* JMXElement.mm in Sources */,
+				AA2C747B16DFA7B400B623C2 /* JMXGraphFragment.mm in Sources */,
+				AA2C747C16DFA7B400B623C2 /* JMXCDATA.mm in Sources */,
+				AA2C747D16DFA7B400B623C2 /* JMXAttribute.mm in Sources */,
+				AA2C747E16DFA7B400B623C2 /* JMXPoint.mm in Sources */,
+				AA2C747F16DFA7B400B623C2 /* NSColor+V8.mm in Sources */,
+				AA2C748016DFA7B400B623C2 /* JMXSize.mm in Sources */,
+				AA2C748116DFA7B400B623C2 /* JMXRect.mm in Sources */,
+				AA2C748216DFA7B400B623C2 /* JMXScript.mm in Sources */,
+				AA2C748316DFA7B400B623C2 /* JMXCanvasElement.mm in Sources */,
+				AA2C748416DFA7B400B623C2 /* JMXCanvasGradient.mm in Sources */,
+				AA2C748516DFA7B400B623C2 /* JMXCanvasPattern.mm in Sources */,
+				AA2C748616DFA7B400B623C2 /* JMXImageElement.mm in Sources */,
+				AA2C748716DFA7B400B623C2 /* JMXScriptTimer.mm in Sources */,
+				AA2C748816DFA7B400B623C2 /* JMXEvent.mm in Sources */,
+				AA2C748916DFA7B400B623C2 /* JMXImageData.mm in Sources */,
+				AA2C748A16DFA7B400B623C2 /* JMXUint8ClampedArray.mm in Sources */,
+				AA2C748B16DFA7B400B623C2 /* JMXByteArray.mm in Sources */,
+				AA2C748C16DFA7B400B623C2 /* JMXEventListener.mm in Sources */,
+				AA2C748D16DFA7B400B623C2 /* JMXMouseEvent.mm in Sources */,
+				AA2C748E16DFA7B400B623C2 /* JMXKeyboardEvent.mm in Sources */,
+				AA2C748F16DFA7B400B623C2 /* JMXScriptPinWrapper.mm in Sources */,
+				AA2C749016DFA7B400B623C2 /* JMXScriptInputPin.mm in Sources */,
+				AA2C749116DFA7B400B623C2 /* JMXScriptOutputPin.mm in Sources */,
+				AA2C749216DFA7D400B623C2 /* ImmrHIDUtilAddOn.c in Sources */,
+				AA2C749316DFA7D400B623C2 /* IOHIDDevice_.c in Sources */,
+				AA2C749416DFA7D400B623C2 /* IOHIDElement_.c in Sources */,
+				AA2C749516DFA7D400B623C2 /* HID_Utilities.c in Sources */,
+				AA2C749616DFA7D400B623C2 /* HID_Queue_Utilities.c in Sources */,
+				AA2C749716DFA7D400B623C2 /* HID_Name_Lookup.c in Sources */,
+				AA2C749816DFA7D400B623C2 /* HID_Error_Handler.c in Sources */,
+				AA2C749916DFA7D400B623C2 /* HID_Config_Utilities.c in Sources */,
+				AA2C749A16DFA84100B623C2 /* cares_wrap.cc in Sources */,
+				AA2C749B16DFA84100B623C2 /* fs_event_wrap.cc in Sources */,
+				AA2C749C16DFA84100B623C2 /* handle_wrap.cc in Sources */,
+				AA2C749D16DFA84100B623C2 /* node.cc in Sources */,
+				AA2C749E16DFA84100B623C2 /* node_buffer.cc in Sources */,
+				AA2C749F16DFA84100B623C2 /* node_constants.cc in Sources */,
+				AA2C74A016DFA84100B623C2 /* node_crypto.cc in Sources */,
+				AA2C74A116DFA84100B623C2 /* node_dtrace.cc in Sources */,
+				AA2C74A216DFA84100B623C2 /* node_extensions.cc in Sources */,
+				AA2C74A316DFA84100B623C2 /* node_file.cc in Sources */,
+				AA2C74A416DFA84100B623C2 /* node_http_parser.cc in Sources */,
+				AA2C74A516DFA84100B623C2 /* node_io_watcher.cc in Sources */,
+				AA2C74A616DFA84100B623C2 /* node_javascript.cc in Sources */,
+				AA2C74A716DFA84100B623C2 /* node_os.cc in Sources */,
+				AA2C74A816DFA84100B623C2 /* node_script.cc in Sources */,
+				AA2C74A916DFA84100B623C2 /* node_signal_watcher.cc in Sources */,
+				AA2C74AA16DFA84100B623C2 /* node_stat_watcher.cc in Sources */,
+				AA2C74AB16DFA84100B623C2 /* node_string.cc in Sources */,
+				AA2C74AC16DFA84100B623C2 /* node_zlib.cc in Sources */,
+				AA2C74AD16DFA84100B623C2 /* pipe_wrap.cc in Sources */,
+				AA2C74AE16DFA84100B623C2 /* platform_darwin.cc in Sources */,
+				AA2C74AF16DFA84100B623C2 /* process_wrap.cc in Sources */,
+				AA2C74B016DFA84100B623C2 /* stream_wrap.cc in Sources */,
+				AA2C74B116DFA84100B623C2 /* tcp_wrap.cc in Sources */,
+				AA2C74B216DFA84100B623C2 /* timer_wrap.cc in Sources */,
+				AA2C74B316DFA84100B623C2 /* tty_wrap.cc in Sources */,
+				AA2C74B416DFA84100B623C2 /* udp_wrap.cc in Sources */,
+				AA2C74B516DFA84100B623C2 /* v8_typed_array.cc in Sources */,
+				AA2C74B616DFA84D00B623C2 /* http_parser.c in Sources */,
+				AA2C74B716DFA85800B623C2 /* fs.c in Sources */,
+				AA2C74B816DFA85800B623C2 /* uv-common.c in Sources */,
+				AA2C74B916DFA86100B623C2 /* ev_kqueue.c in Sources */,
+				AA2C74BA16DFA86100B623C2 /* ev_poll.c in Sources */,
+				AA2C74BB16DFA86100B623C2 /* ev_select.c in Sources */,
+				AA2C74BC16DFA86100B623C2 /* ev.c in Sources */,
+				AA2C74BD16DFA86100B623C2 /* event.c in Sources */,
+				AA2C74C116DFA86D00B623C2 /* eio.c in Sources */,
+				AA2C74C216DFA8A800B623C2 /* cares.c in Sources */,
+				AA2C74C316DFA8A800B623C2 /* core.c in Sources */,
+				AA2C74C416DFA8A800B623C2 /* darwin.c in Sources */,
+				AA2C74C516DFA8A800B623C2 /* dl.c in Sources */,
+				AA2C74C616DFA8A800B623C2 /* error.c in Sources */,
+				AA2C74C716DFA8A800B623C2 /* kqueue.c in Sources */,
+				AA2C74C816DFA8A800B623C2 /* pipe.c in Sources */,
+				AA2C74C916DFA8A800B623C2 /* process.c in Sources */,
+				AA2C74CA16DFA8A800B623C2 /* stream.c in Sources */,
+				AA2C74CB16DFA8A800B623C2 /* tcp.c in Sources */,
+				AA2C74CC16DFA8A800B623C2 /* tty.c in Sources */,
+				AA2C74CD16DFA8A800B623C2 /* udp.c in Sources */,
+				AA2C74CE16DFA8A800B623C2 /* uv-eio.c in Sources */,
+				AA2C74CF16DFA8A800B623C2 /* ares__close_sockets.c in Sources */,
+				AA2C74D016DFA8A800B623C2 /* ares__get_hostent.c in Sources */,
+				AA2C74D116DFA8A800B623C2 /* ares__read_line.c in Sources */,
+				AA2C74D216DFA8A800B623C2 /* ares__timeval.c in Sources */,
+				AA2C74D316DFA8A800B623C2 /* ares_cancel.c in Sources */,
+				AA2C74D416DFA8A800B623C2 /* ares_data.c in Sources */,
+				AA2C74D516DFA8A800B623C2 /* ares_destroy.c in Sources */,
+				AA2C74D616DFA8A800B623C2 /* ares_expand_name.c in Sources */,
+				AA2C74D716DFA8A800B623C2 /* ares_expand_string.c in Sources */,
+				AA2C74D816DFA8A800B623C2 /* ares_fds.c in Sources */,
+				AA2C74D916DFA8A800B623C2 /* ares_free_hostent.c in Sources */,
+				AA2C74DA16DFA8A800B623C2 /* ares_free_string.c in Sources */,
+				AA2C74DB16DFA8A800B623C2 /* ares_getenv.c in Sources */,
+				AA2C74DC16DFA8A800B623C2 /* ares_gethostbyaddr.c in Sources */,
+				AA2C74DD16DFA8A800B623C2 /* ares_gethostbyname.c in Sources */,
+				AA2C74DE16DFA8A800B623C2 /* ares_getnameinfo.c in Sources */,
+				AA2C74DF16DFA8A800B623C2 /* ares_getopt.c in Sources */,
+				AA2C74E016DFA8A800B623C2 /* ares_getsock.c in Sources */,
+				AA2C74E116DFA8A800B623C2 /* ares_init.c in Sources */,
+				AA2C74E216DFA8A800B623C2 /* ares_library_init.c in Sources */,
+				AA2C74E316DFA8A800B623C2 /* ares_llist.c in Sources */,
+				AA2C74E416DFA8A800B623C2 /* ares_mkquery.c in Sources */,
+				AA2C74E516DFA8A800B623C2 /* ares_nowarn.c in Sources */,
+				AA2C74E616DFA8A800B623C2 /* ares_options.c in Sources */,
+				AA2C74E716DFA8C000B623C2 /* ares_parse_a_reply.c in Sources */,
+				AA2C74E816DFA8C000B623C2 /* ares_parse_aaaa_reply.c in Sources */,
+				AA2C74E916DFA8C000B623C2 /* ares_parse_mx_reply.c in Sources */,
+				AA2C74EA16DFA8C000B623C2 /* ares_parse_ns_reply.c in Sources */,
+				AA2C74EB16DFA8C000B623C2 /* ares_parse_ptr_reply.c in Sources */,
+				AA2C74EC16DFA8C000B623C2 /* ares_parse_srv_reply.c in Sources */,
+				AA2C74ED16DFA8C000B623C2 /* ares_parse_txt_reply.c in Sources */,
+				AA2C74EE16DFA8C000B623C2 /* ares_platform.c in Sources */,
+				AA2C74EF16DFA8C000B623C2 /* ares_process.c in Sources */,
+				AA2C74F016DFA8C000B623C2 /* ares_query.c in Sources */,
+				AA2C74F116DFA8C000B623C2 /* ares_search.c in Sources */,
+				AA2C74F216DFA8C000B623C2 /* ares_send.c in Sources */,
+				AA2C74F316DFA8C000B623C2 /* ares_strcasecmp.c in Sources */,
+				AA2C74F416DFA8C000B623C2 /* ares_strdup.c in Sources */,
+				AA2C74F516DFA8C000B623C2 /* ares_strerror.c in Sources */,
+				AA2C74F616DFA8C000B623C2 /* ares_timeout.c in Sources */,
+				AA2C74F716DFA8C000B623C2 /* ares_version.c in Sources */,
+				AA2C74F816DFA8C000B623C2 /* ares_writev.c in Sources */,
+				AA2C74F916DFA8C000B623C2 /* bitncmp.c in Sources */,
+				AA2C74FA16DFA8C000B623C2 /* inet_net_pton.c in Sources */,
+				AA2C74FB16DFA8C000B623C2 /* inet_ntop.c in Sources */,
+				AA2C74FD16DFA8CA00B623C2 /* JMX.js in Sources */,
+				AA2C74FE16DFA8CA00B623C2 /* DOM.js in Sources */,
+				AA2C74FF16DFA8CA00B623C2 /* AudioOutput.js in Sources */,
+				AA2C750016DFA8CA00B623C2 /* VideoOutput.js in Sources */,
+				AA2C750116DFA8CA00B623C2 /* VideoFilter.js in Sources */,
+				AA2C750216DFA8CA00B623C2 /* AudioCapture.js in Sources */,
+				AA2C750316DFA8CA00B623C2 /* VideoCapture.js in Sources */,
+				AA2C750416DFA8CA00B623C2 /* MovieFile.js in Sources */,
+				AA2C750516DFA8CA00B623C2 /* AudioFile.js in Sources */,
+				AA2C750616DFA8CA00B623C2 /* jquery.js in Sources */,
+				AA2C750716DFA8CA00B623C2 /* processing.js in Sources */,
+				AA2C750816DFA90D00B623C2 /* JMXRingBuffer.m in Sources */,
+				AA2C750916DFA90D00B623C2 /* JMXEntity.mm in Sources */,
+				AA2C750A16DFA90D00B623C2 /* JMXThreadedEntity.mm in Sources */,
+				AA2C750B16DFA90D00B623C2 /* JMXPin.mm in Sources */,
+				AA2C750C16DFA90D00B623C2 /* JMXInputPin.m in Sources */,
+				AA2C750D16DFA90D00B623C2 /* JMXOutputPin.m in Sources */,
+				AA2C750E16DFA90D00B623C2 /* JMXProxyPin.m in Sources */,
+				AA2C750F16DFA90D00B623C2 /* JMXPinSignal.m in Sources */,
+				AA2C751016DFA90D00B623C2 /* JMXContext.m in Sources */,
+				AA2C751116DFA90D00B623C2 /* JMXScreenController.m in Sources */,
+				AA2C751216DFA90D00B623C2 /* JMXHIDDevice.m in Sources */,
+				AA2C751316DFA91800B623C2 /* JMXTextRenderer.m in Sources */,
+				AA2C751416DFA91800B623C2 /* JMXOpenGLDraw.mm in Sources */,
+				AA2C751516DFA91800B623C2 /* JMXDrawPath.mm in Sources */,
+				AA2C751616DFA92100B623C2 /* JMXAudioBuffer.m in Sources */,
+				AA2C751716DFA92100B623C2 /* JMXAudioDevice.m in Sources */,
+				AA2C751816DFA92100B623C2 /* JMXAudioFile.m in Sources */,
+				AA2C751916DFA92100B623C2 /* JMXAudioFormat.m in Sources */,
+				AA2C751A16DFA92100B623C2 /* JMXSpectrumAnalyzer.m in Sources */,
+				AA2C751B16DFA93C00B623C2 /* CIAdditiveBlur.m in Sources */,
+				AA2C751C16DFA93F00B623C2 /* CIAlphaBlend.m in Sources */,
+				AA2C751D16DFA94200B623C2 /* CIAlphaFade.m in Sources */,
+				AA2C751F16DFA9BC00B623C2 /* JMXAudioCapture.mm in Sources */,
+				AA2C752016DFA9BC00B623C2 /* JMXAudioOutput.mm in Sources */,
+				AA2C752116DFA9BC00B623C2 /* JMXAudioSpectrumAnalyzer.mm in Sources */,
+				AA2C752216DFA9BC00B623C2 /* JMXVideoEntity.mm in Sources */,
+				AA2C752316DFA9BC00B623C2 /* JMXVideoCapture.mm in Sources */,
+				AA2C752416DFA9BC00B623C2 /* JMXVideoOutput.mm in Sources */,
+				AA2C752516DFA9BC00B623C2 /* JMXVideoFilter.mm in Sources */,
+				AA2C752616DFA9BC00B623C2 /* JMXDrawEntity.mm in Sources */,
+				AA2C752716DFA9BC00B623C2 /* JMXScriptEntity.mm in Sources */,
+				AA2C752816DFA9BC00B623C2 /* JMXExporter.m in Sources */,
+				AA2C752916DFA9BC00B623C2 /* JMXPhidgetEncoderEntity.mm in Sources */,
+				AA2C752A16DFA9BC00B623C2 /* JMXHIDInputEntity.mm in Sources */,
+				AA2C752B16DFA9C200B623C2 /* JMXQtExporter.m in Sources */,
+				AA2C752C16DFA9C700B623C2 /* JMXCoreImageFilter.mm in Sources */,
+				AA2C752D16DFA9D000B623C2 /* JMXVideoMixer.mm in Sources */,
+				AA2C752E16DFA9D000B623C2 /* JMXImageEntity.mm in Sources */,
+				AA2C752F16DFA9D000B623C2 /* JMXQtVideoCaptureEntity.mm in Sources */,
+				AA2C753016DFA9D000B623C2 /* JMXQtMovieEntity.mm in Sources */,
+				AA2C753116DFA9D000B623C2 /* JMXTextEntity.mm in Sources */,
+				AA2C753216DFA9D700B623C2 /* JMXAudioMixer.mm in Sources */,
+				AA2C753316DFA9D700B623C2 /* JMXAudioFileEntity.mm in Sources */,
+				AA2C753416DFA9D700B623C2 /* JMXQtAudioCaptureEntity.mm in Sources */,
+				AA2C753516DFA9D700B623C2 /* JMXAudioToneGenerator.mm in Sources */,
+				AA2C753616DFA9DD00B623C2 /* JMXCoreAudioOutput.mm in Sources */,
+				AA2C753716DFA9DD00B623C2 /* JMXQtAudioOutput.m in Sources */,
+				AA2C753816DFA9E300B623C2 /* JMXOpenGLScreen.mm in Sources */,
+				AA2C753916DFA9E300B623C2 /* JMXSoftScreen.m in Sources */,
+				AA2C753A16DFA9E900B623C2 /* JMXScriptFile.mm in Sources */,
+				AA2C753B16DFA9E900B623C2 /* JMXScriptLive.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2024,6 +2080,65 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		AA2C746F16DFA74000B623C2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "JMX-Core_Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../v8/out/x64.release\"",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		AA2C747016DFA74000B623C2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "JMX-Core_Prefix.pch";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../v8/out/x64.release\"",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		C01FCF4B08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2043,14 +2158,15 @@
 				GENERATE_PROFILING_CODE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$PROJECT_DIR/node.js/**",
-					"$PROJECT_DIR/../v8-read-only/include/**",
+					"$PROJECT_DIR/../v8/include/**",
 					"$PROJECT_DIR/**",
 				);
 				INFOPLIST_FILE = "JMX-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../v8-read-only\"",
+					"\"$(SRCROOT)/../v8\"",
+					"\"$(SRCROOT)/../v8/out/x64.release\"",
 				);
 				OTHER_CFLAGS = (
 					"-Wno-unused",
@@ -2094,14 +2210,15 @@
 				GENERATE_PROFILING_CODE = NO;
 				HEADER_SEARCH_PATHS = (
 					"$PROJECT_DIR/node.js/**",
-					"$PROJECT_DIR/../v8-read-only/include/**",
+					"$PROJECT_DIR/../v8/include/**",
 					"$PROJECT_DIR/**",
 				);
 				INFOPLIST_FILE = "JMX-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../v8-read-only\"",
+					"\"$(SRCROOT)/../v8\"",
+					"\"$(SRCROOT)/../v8/out/x64.release\"",
 				);
 				OTHER_CFLAGS = (
 					"-Wno-unused",
@@ -2149,10 +2266,10 @@
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"$PROJECT_DIR/../v8-read-only/include/**",
+					"$PROJECT_DIR/../v8/include/**",
 					"$PROJECT_DIR/**",
 				);
-				LIBRARY_SEARCH_PATHS = "$PROJECT_DIR/../v8-read-only/include/**";
+				LIBRARY_SEARCH_PATHS = "$PROJECT_DIR/../v8/include/**";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-Wno-unused";
@@ -2186,10 +2303,10 @@
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"$PROJECT_DIR/../v8-read-only/include/**",
+					"$PROJECT_DIR/../v8/include/**",
 					"$PROJECT_DIR/**",
 				);
-				LIBRARY_SEARCH_PATHS = "$PROJECT_DIR/../v8-read-only/include/**";
+				LIBRARY_SEARCH_PATHS = "$PROJECT_DIR/../v8/include/**";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "-Wno-unused";
@@ -2204,6 +2321,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		AA2C747116DFA74000B623C2 /* Build configuration list for PBXNativeTarget "JMX-Core" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA2C746F16DFA74000B623C2 /* Debug */,
+				AA2C747016DFA74000B623C2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "JMX" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

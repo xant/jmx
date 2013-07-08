@@ -83,7 +83,7 @@
                                                            copy:NO
                                                   freeOnRelease:YES];
     // Fixed amplitude is good enough for our purposes
-	const double amplitude = 0.25;
+	const double amplitude = 0.50;
     double freq = [frequency doubleValue];
 	double theta1_increment = 2.0 * M_PI * freq / self->sampleRate;
     double theta2_increment = 2.0 * M_PI * (freq + [channelSkew doubleValue]) / self->sampleRate;

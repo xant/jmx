@@ -10,7 +10,7 @@
 #import <AudioToolbox/AudioConverter.h>
 #import "JMXEntity.h"
 
-#define kJMXAudioSpectrumNumFrequencies 14
+#define kJMXAudioSpectrumNumFrequencies 512
 #define kJMXAudioSpectrumImageBufferCount 32
 
 @class JMXSpectrumAnalyzer;

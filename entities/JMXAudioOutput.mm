@@ -230,8 +230,7 @@ static OSStatus _FillComplexBufferProc (
 
 - (void)dealloc
 {
-    if (format)
-        [format dealloc];
+    [format release];
     for (int i = 0; i < kJMXAudioOutputSamplesBufferCount; i++) {
         if (samples[i])
             [samples[i] release];

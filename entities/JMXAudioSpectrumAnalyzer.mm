@@ -209,7 +209,7 @@ static int _defaultFrequencies[kJMXAudioSpectrumNumFrequencies] =
         
         for (UInt32 i = 0; i < kJMXAudioSpectrumNumFrequencies; i++) {	// for each frequency
             int freq = [[frequencies objectAtIndex:i] intValue];
-            int offset = freq*numBins/44100*analyzer.numChannels;
+            int offset = freq*numBins/(44100*analyzer.numChannels);
             Float32 value = (((Float32 *)(spectrumBuffer->mBuffers[0].mData))[offset] +
                              ((Float32 *)(spectrumBuffer->mBuffers[1].mData))[offset]) * 0.5;
             if (value < 0.0)

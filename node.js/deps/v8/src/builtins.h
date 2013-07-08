@@ -266,7 +266,8 @@ enum BuiltinExtraArguments {
 
 class BuiltinFunctionTable;
 class ObjectVisitor;
-
+class Code;
+class MacroAssembler;
 
 class Builtins {
  public:

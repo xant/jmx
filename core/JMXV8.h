@@ -15,7 +15,7 @@
 
 #ifndef __JMXV8__
 
-@protocol JMXV8
+@protocol JMXV8 <NSObject>
 
 @end
 
@@ -93,6 +93,32 @@
 
 @end
 
+static inline void JMXV8ObjectDestroy(v8::Persistent<v8::Value> object, void *parameter)
+{
+    v8::HandleScope handle_scope;
+    v8::Locker lock;
+    id obj = static_cast<id>(parameter);
+    NSDebug(@"V8 WeakCallback (%@) called ", obj);
+    [obj release];
+    if (!object.IsEmpty()) {
+        object.ClearWeak();
+        object.Dispose();
+        object.Clear();
+    }
+}
+
+static inline v8::Handle<v8::Object>JMXV8ObjectInstance(id<JMXV8> self)
+{
+    //v8::Locker lock;
+    v8::HandleScope handle_scope;
+    v8::Handle<v8::FunctionTemplate> objectTemplate = [[self class] jsObjectTemplate];
+    v8::Persistent<v8::Object> jsInstance = v8::Persistent<v8::Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
+    jsInstance.MakeWeak(static_cast<void *>([(NSObject *)self retain]), &JMXV8ObjectDestroy);
+    jsInstance->SetPointerInInternalField(0, self);
+    //[ctx addPersistentInstance:jsInstance obj:self];
+    return handle_scope.Close(jsInstance);
+}
+
 #define JMXV8_EXPORT_BASE(__class) \
 using namespace v8;\
 static Persistent<FunctionTemplate> objectTemplate;\
@@ -144,7 +170,7 @@ v8::Handle<Value> __class##JSConstructor(const Arguments& args)\
         /* make the handle weak, with a callback */\
         jsInstance.MakeWeak(instance, __class##JSDestructor);\
         /*instancesMap[instance] = jsInstance;*/\
-        jsInstance->SetAlignedPointerInInternalField(0, instance);\
+        jsInstance->SetPointerInInternalField(0, instance);\
         [ctx addPersistentInstance:jsInstance obj:instance];\
         [instance release];\
     } else {\
@@ -190,7 +216,7 @@ v8::Handle<Value> __class##JSConstructor(const Arguments& args)\
     /* make the handle weak, with a callback */\
     jsInstance.MakeWeak([instance retain], &__class##JSDestructor);\
     /*instancesMap[instance] = jsInstance;*/\
-    jsInstance->SetAlignedPointerInInternalField(0, instance);\
+    jsInstance->SetPointerInInternalField(0, instance);\
     [instance release];\
     [pool drain];\
     if (!jsInstance.IsEmpty())\

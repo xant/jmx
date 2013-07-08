@@ -113,7 +113,7 @@ static Persistent<FunctionTemplate> objectTemplate;
     } else if (args->Length() >= 1 && (*args)[0]->IsObject()) {
         v8::Handle<Object>sizeObj = (*args)[0]->ToObject();
         if (!sizeObj.IsEmpty()) {
-            JMXSize *jmxSize = (JMXSize *)sizeObj->GetAlignedPointerFromInternalField(0);
+            JMXSize *jmxSize = (JMXSize *)sizeObj->GetPointerFromInternalField(0);
             if (jmxSize)
                 [self setSize:jmxSize];
         }
@@ -124,7 +124,7 @@ static void SetWidth(Local<String> name, Local<Value> value, const AccessorInfo&
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXVideoOutput *voutput = (JMXVideoOutput *)info.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXVideoOutput *voutput = (JMXVideoOutput *)info.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSSize newSize = voutput.size.nsSize;
     newSize.width = value->NumberValue();
@@ -136,7 +136,7 @@ static void SetHeight(Local<String> name, Local<Value> value, const AccessorInfo
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXVideoOutput *voutput = (JMXVideoOutput *)info.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXVideoOutput *voutput = (JMXVideoOutput *)info.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSSize newSize = voutput.size.nsSize;
     newSize.height = value->NumberValue();
@@ -148,7 +148,7 @@ static v8::Handle<Value>GetWidth(Local<String> name, const AccessorInfo& info)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXVideoOutput *voutput = (JMXVideoOutput *)info.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXVideoOutput *voutput = (JMXVideoOutput *)info.Holder()->GetPointerFromInternalField(0);
     return handleScope.Close(Integer::New(voutput.size.width));
 }
 
@@ -156,7 +156,7 @@ static v8::Handle<Value>GetHeight(Local<String> name, const AccessorInfo& info)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXVideoOutput *voutput = (JMXVideoOutput *)info.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXVideoOutput *voutput = (JMXVideoOutput *)info.Holder()->GetPointerFromInternalField(0);
     return handleScope.Close(Integer::New(voutput.size.height));
 }
 

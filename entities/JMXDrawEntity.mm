@@ -114,7 +114,7 @@ using namespace v8;
     } else if (args->Length() >= 1 && (*args)[0]->IsObject()) {
         v8::Handle<Object>sizeObj = (*args)[0]->ToObject();
         if (!sizeObj.IsEmpty()) {
-            JMXSize *jmxSize = (JMXSize *)sizeObj->GetAlignedPointerFromInternalField(0);
+            JMXSize *jmxSize = (JMXSize *)sizeObj->GetPointerFromInternalField(0);
             if (jmxSize)
                 [self setSize:jmxSize];
         }
@@ -125,26 +125,26 @@ static v8::Handle<Value> DrawPolygon(const Arguments& args)
 {
     HandleScope handleScope;
     //Locker locker;
-    JMXDrawEntity *entity = (JMXDrawEntity *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawEntity *entity = (JMXDrawEntity *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() >= 1 && args[0]->IsArray()) {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         v8::Handle<Array> pointList = v8::Handle<Array>::Cast(args[0]);
         NSMutableArray *points = [[NSMutableArray alloc] init];
         for (int i = 0; i < pointList->Length(); i++) {
             v8::Local<Object>pointObj = v8::Local<Object>::Cast(pointList->Get(i));
-            [points addObject:(JMXPoint *)pointObj->GetAlignedPointerFromInternalField(0)];
+            [points addObject:(JMXPoint *)pointObj->GetPointerFromInternalField(0)];
         }
         NSColor *strokeColor = [[NSColor whiteColor] retain];
         NSColor *fillColor = nil;
         if (args.Length() >= 2 && args[1]->IsObject()) {
             v8::Local<Object>colorObj = args[1]->ToObject();
             if (!colorObj.IsEmpty())
-                strokeColor = [(NSColor *)colorObj->GetAlignedPointerFromInternalField(0) retain]; 
+                strokeColor = [(NSColor *)colorObj->GetPointerFromInternalField(0) retain]; 
         }
         if (args.Length() >= 3 && args[2]->IsObject()) {
             v8::Local<Object>colorObj = args[2]->ToObject();
             if (!colorObj.IsEmpty())
-                fillColor = [(NSColor *)colorObj->GetAlignedPointerFromInternalField(0) retain]; 
+                fillColor = [(NSColor *)colorObj->GetPointerFromInternalField(0) retain]; 
         }
         [entity drawPolygon:points strokeColor:strokeColor fillColor:fillColor];
         [points release];
@@ -160,13 +160,13 @@ static v8::Handle<Value> DrawCircle(const Arguments& args)
 {
     HandleScope handleScope;
     Locker locker;
-    JMXDrawEntity *entity = (JMXDrawEntity *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawEntity *entity = (JMXDrawEntity *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() >= 1 && args[0]->IsObject()) {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         double radius = 0;
         v8::Handle<Object> origin = args[0]->ToObject();
         if (!origin.IsEmpty()) {
-            JMXPoint *point = [(JMXPoint *)origin->GetAlignedPointerFromInternalField(0) retain];
+            JMXPoint *point = [(JMXPoint *)origin->GetPointerFromInternalField(0) retain];
             if (args.Length() >= 2) {
                 if (args[1]->IsNumber()) {
                     radius = args[1]->ToNumber()->NumberValue();
@@ -178,13 +178,13 @@ static v8::Handle<Value> DrawCircle(const Arguments& args)
             NSColor *fillColor = nil;
             if (args.Length() >= 3) {
                 v8::Handle<Object>colorObj = args[2]->ToObject();
-                strokeColor = (NSColor *)colorObj->GetAlignedPointerFromInternalField(0);
+                strokeColor = (NSColor *)colorObj->GetPointerFromInternalField(0);
                 if (strokeColor)
                     [strokeColor retain];
             }
             if (args.Length() >= 4) {
                 v8::Handle<Object>colorObj = args[3]->ToObject();
-                fillColor = (NSColor *)colorObj->GetAlignedPointerFromInternalField(0);
+                fillColor = (NSColor *)colorObj->GetPointerFromInternalField(0);
                 if (fillColor)
                     [fillColor retain];
             }
@@ -203,16 +203,16 @@ static v8::Handle<Value> DrawPixel(const Arguments& args)
 {
     HandleScope handleScope;
     //Locker locker;
-    JMXDrawEntity *entity = (JMXDrawEntity *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawEntity *entity = (JMXDrawEntity *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() >= 1 && args[0]->IsObject()) {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         v8::Handle<Object> origin = args[0]->ToObject();
         if (!origin.IsEmpty()) {
-            JMXPoint *point = [(JMXPoint *)origin->GetAlignedPointerFromInternalField(0) retain];
+            JMXPoint *point = [(JMXPoint *)origin->GetPointerFromInternalField(0) retain];
             NSColor *fillColor = [[NSColor whiteColor] retain];
             if (args.Length() >= 2) {
                 v8::Handle<Object>colorObj = args[1]->ToObject();
-                fillColor = (NSColor *)colorObj->GetAlignedPointerFromInternalField(0);
+                fillColor = (NSColor *)colorObj->GetPointerFromInternalField(0);
                 if (fillColor)
                     [fillColor retain];
             }
@@ -230,7 +230,7 @@ static v8::Handle<Value> Clear(const Arguments& args)
     HandleScope handleScope;
     Locker locker;
     v8::Handle<Object> self = args.Holder();
-    JMXDrawEntity *entity = (JMXDrawEntity *)self->GetAlignedPointerFromInternalField(0);
+    JMXDrawEntity *entity = (JMXDrawEntity *)self->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     [entity clear];
     [pool release];
@@ -240,7 +240,7 @@ static v8::Handle<Value> Clear(const Arguments& args)
 static v8::Handle<Value>GetCanvas(Local<String> name, const AccessorInfo& info)
 {
     HandleScope handleScope;
-    JMXDrawEntity *entity = (JMXDrawEntity *)info.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawEntity *entity = (JMXDrawEntity *)info.Holder()->GetPointerFromInternalField(0);
     return handleScope.Close([entity.canvas jsObj]);
 }
 

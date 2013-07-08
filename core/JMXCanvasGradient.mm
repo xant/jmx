@@ -115,7 +115,7 @@ static v8::Handle<Value> AddColorStop(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXCanvasGradient *gradient = (JMXCanvasGradient *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXCanvasGradient *gradient = (JMXCanvasGradient *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() > 1) {
         v8::String::Utf8Value colorString(args[0]);
         double offset = args[1]->NumberValue();
@@ -155,7 +155,7 @@ static v8::Handle<Value> AddColorStop(const Arguments& args)
     v8::Handle<FunctionTemplate> objectTemplate = [JMXCanvasGradient jsObjectTemplate];
     v8::Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
     jsInstance.MakeWeak([self retain], JMXCanvasGradientJSDestructor);
-    jsInstance->SetAlignedPointerInInternalField(0, self);
+    jsInstance->SetPointerInInternalField(0, self);
     return handle_scope.Close(jsInstance);
 }
 

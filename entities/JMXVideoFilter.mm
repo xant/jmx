@@ -91,7 +91,7 @@ static v8::Handle<Value> AvailableFilters(const Arguments& args)
     HandleScope handleScope;
     NSArray *availableFilters;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    JMXVideoFilter *filter = (JMXVideoFilter *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXVideoFilter *filter = (JMXVideoFilter *)args.Holder()->GetPointerFromInternalField(0);
     if (filter) { // called as instance method
         availableFilters = [filter availableFilters];
     } else { // called as class method
@@ -111,7 +111,7 @@ static v8::Handle<Value> SelectFilter(const Arguments& args)
 {
     HandleScope handleScope;
     BOOL ret = NO;
-    JMXVideoFilter *filterInstance = (JMXVideoFilter *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXVideoFilter *filterInstance = (JMXVideoFilter *)args.Holder()->GetPointerFromInternalField(0);
     if (filterInstance) {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         v8::Handle<Value> arg = args[0];

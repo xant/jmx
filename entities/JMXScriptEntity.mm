@@ -218,7 +218,7 @@ using namespace v8;
             String::Utf8Value str(ret->ToString());
             return [NSString stringWithUTF8String:*str];
         } else if (ret->IsObject()) {
-            return (id)ret->ToObject()->GetAlignedPointerFromInternalField(0);
+            return (id)ret->ToObject()->GetPointerFromInternalField(0);
         }
     } else {
         return [super provideDataToPin:aPin];
@@ -284,7 +284,7 @@ using namespace v8;
     HandleScope handle_scope;
     v8::Handle<FunctionTemplate> objectTemplate = [[self class] jsObjectTemplate];
     v8::Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
-    jsInstance->SetAlignedPointerInInternalField(0, self);
+    jsInstance->SetPointerInInternalField(0, self);
     return handle_scope.Close(jsInstance);
 }
 
@@ -295,7 +295,7 @@ static v8::Handle<Value>Exec(const Arguments& args)
     //v8::Locker lock;
     BOOL ret;
     HandleScope handleScope;
-    JMXScriptEntity *entity = (JMXScriptEntity *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXScriptEntity *entity = (JMXScriptEntity *)args.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     if (args[0]->IsFunction()) {
         ret = [entity execFunction:Local<Function>::New(Handle<Function>::Cast(args[0]))];
@@ -313,7 +313,7 @@ static v8::Handle<Value>GetEntities(Local<String> name, const AccessorInfo& info
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXScriptEntity *entity = (JMXScriptEntity *)info.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXScriptEntity *entity = (JMXScriptEntity *)info.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSArray *entities = [entity elementsForName:@"Entities"];
     v8::Handle<Array> list = Array::New(entities.count);

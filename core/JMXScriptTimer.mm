@@ -102,7 +102,7 @@ static void JMXScriptTimerJSDestructor(Persistent<Value> object, void *parameter
     v8::Handle<FunctionTemplate> objectTemplate = [JMXScriptTimer jsObjectTemplate];
     v8::Persistent<Object> jsInstance = v8::Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
     jsInstance.MakeWeak([self retain], JMXScriptTimerJSDestructor);
-    jsInstance->SetAlignedPointerInInternalField(0, self);
+    jsInstance->SetPointerInInternalField(0, self);
     return handle_scope.Close(jsInstance);
 }
 

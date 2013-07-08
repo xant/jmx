@@ -9,6 +9,7 @@
 
 // Generic syslog based logging
 #include <syslog.h>
+#import <Foundation/NSObjCRuntime.h>
 
 #define LOG_DEBUG2              (LOG_DEBUG+1)
 #define LOG_DEBUG3              (LOG_DEBUG+2)
@@ -30,18 +31,13 @@
 #define VERBOSE_DEFAULT         LOG_WARNING     //!< \brief default verbose level (syslog LOG_* value)
 
 
-#define NSLog(__format, args...) do { [(JMXAppDelegate *)[[NSApplication sharedApplication] delegate]\
-                                                          logMessage:__format, ## args ];\
-                                    } while (0)
+//#define NSLog(__format, args...) do { [(JMXAppDelegate *)[[NSApplication sharedApplication] delegate]\
+//                                                          logMessage:__format, ## args ];\
+//                                    } while (0)
 
 #define NSDebug(__format, args...) do {\
                                         if (verbose >= LOG_DEBUG) {\
-                                            id appDelegate = [[NSApplication sharedApplication] delegate];\
-                                            if ([appDelegate respondsToSelector:@selector(logMessage:)]) {\
-                                                [appDelegate  logMessage:__format, ## args ];\
-                                            } else {\
-                                                NSLogv(__format, ## args);\
-                                            }\
+                                            NSLog(__format, ## args);\
                                         }\
                                       } while (0)
 

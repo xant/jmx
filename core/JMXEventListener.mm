@@ -40,7 +40,7 @@ static v8::Handle<Value> HandleEvent(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXEventListener *listener = (JMXEventListener *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXEventListener *listener = (JMXEventListener *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() && args[0]->IsObject() && [listener isKindOfClass:[JMXEventListener class]]) {
         Handle<Object> obj = args[0]->ToObject();
         {
@@ -100,7 +100,7 @@ static void JMXEventListenerJSDestructor(Persistent<Value> object, void *paramet
     HandleScope handle_scope;
     Handle<FunctionTemplate> objectTemplate = [JMXEventListener jsObjectTemplate];
     Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
-    jsInstance->SetAlignedPointerInInternalField(0, self);
+    jsInstance->SetPointerInInternalField(0, self);
     jsInstance.MakeWeak([self retain], JMXEventListenerJSDestructor);
     return handle_scope.Close(jsInstance);
 }

@@ -268,7 +268,7 @@ using namespace v8;
         }
     }
     
-    CGRect size = { { center.x, center.y }, { radius*2, radius*2 } };
+    CGRect size = { { center.x, center.y }, { static_cast<CGFloat>(radius*2), static_cast<CGFloat>(radius*2) } };
     CGContextAddEllipseInRect(context, size);
     CGContextDrawPath(context, kCGPathFillStroke);
     CGContextRestoreGState(context);
@@ -878,7 +878,7 @@ static v8::Persistent<v8::FunctionTemplate> objectTemplate;
     } else if (args->Length() >= 1 && (*args)[0]->IsObject()) {
         v8::Handle<Object>sizeObj = (*args)[0]->ToObject();
         if (!sizeObj.IsEmpty()) {
-            JMXSize *jmxSize = (JMXSize *)sizeObj->GetAlignedPointerFromInternalField(0);
+            JMXSize *jmxSize = (JMXSize *)sizeObj->GetPointerFromInternalField(0);
             if (jmxSize)
                 [self setFrameSize:jmxSize];
         }
@@ -889,7 +889,7 @@ static v8::Handle<Value> Save(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
     [drawPath saveCurrentState];
@@ -900,7 +900,7 @@ static v8::Handle<Value> Restore(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
     [drawPath restorePreviousState];
@@ -911,7 +911,7 @@ static v8::Handle<Value> Scale(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() > 1) {
         CGFloat x = args[0]->NumberValue();
         CGFloat y = args[1]->NumberValue();
@@ -924,7 +924,7 @@ static v8::Handle<Value> Rotate(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length()) {
         CGFloat angle = args[0]->NumberValue();
         [drawPath rotate:angle];
@@ -936,7 +936,7 @@ static v8::Handle<Value> Translate(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() > 1) {
         CGFloat x = args[0]->NumberValue();
         CGFloat y = args[1]->NumberValue();
@@ -950,7 +950,7 @@ static v8::Handle<Value> Transform(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() > 5) {
         CGFloat a = args[0]->NumberValue();
         CGFloat b = args[1]->NumberValue();
@@ -967,7 +967,7 @@ static v8::Handle<Value> SetTransform(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() > 5) {
         CGFloat a = args[0]->NumberValue();
         CGFloat b = args[1]->NumberValue();
@@ -984,7 +984,7 @@ static v8::Handle<Value> CreateLinearGradient(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    //JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    //JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() > 3) {
         return handleScope.Close(JMXCanvasGradientJSConstructor(args));
     }
@@ -1018,7 +1018,7 @@ static v8::Handle<Value> ClearRect(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() > 3) {
         [drawPath clearRect:[JMXPoint pointWithNSPoint:NSMakePoint(args[0]->NumberValue(), args[1]->NumberValue())]
                        size:[JMXSize sizeWithNSSize:NSMakeSize(args[2]->NumberValue(), args[3]->NumberValue())]];
@@ -1030,7 +1030,7 @@ static v8::Handle<Value> FillRect(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() > 3) {
         [drawPath fillRect:[JMXPoint pointWithNSPoint:NSMakePoint(args[0]->NumberValue(), args[1]->NumberValue())]
                       size:[JMXSize sizeWithNSSize:NSMakeSize(args[2]->NumberValue(), args[3]->NumberValue())]];
@@ -1042,7 +1042,7 @@ static v8::Handle<Value> StrokeRect(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() > 3) {
         [drawPath drawRect:[JMXPoint pointWithNSPoint:NSMakePoint(args[0]->NumberValue(), args[1]->NumberValue())]
                       size:[JMXSize sizeWithNSSize:NSMakeSize(args[2]->NumberValue(), args[3]->NumberValue())]];
@@ -1054,7 +1054,7 @@ static v8::Handle<Value> BeginPath(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     [drawPath beginPath];
     return Undefined();
 }
@@ -1063,7 +1063,7 @@ static v8::Handle<Value> ClosePath(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     [drawPath closePath];
     return Undefined();
 }
@@ -1072,7 +1072,7 @@ static v8::Handle<Value> MoveTo(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() > 1) {
         [drawPath moveTo:[JMXPoint pointWithNSPoint:NSMakePoint(args[0]->NumberValue(),
                                                                 args[1]->NumberValue())]];
@@ -1084,7 +1084,7 @@ static v8::Handle<Value> LineTo(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() > 1) {
         [drawPath lineTo:[JMXPoint pointWithNSPoint:NSMakePoint(args[0]->NumberValue(), 
                                                                 args[1]->NumberValue())]];
@@ -1096,7 +1096,7 @@ static v8::Handle<Value> QuadraticCurveTo(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() > 3) {
         [drawPath quadraticCurveTo:[JMXPoint pointWithNSPoint:NSMakePoint(args[0]->NumberValue(), args[1]->NumberValue())]
                       controlPoint:[JMXPoint pointWithNSPoint:NSMakePoint(args[2]->NumberValue(), args[3]->NumberValue())]];
@@ -1109,7 +1109,7 @@ static v8::Handle<Value> BezierCurveTo(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() > 5) {
         [drawPath bezierCurveTo:[JMXPoint pointWithNSPoint:NSMakePoint(args[4]->NumberValue(), args[5]->NumberValue())]
                   controlPoint1:[JMXPoint pointWithNSPoint:NSMakePoint(args[0]->NumberValue(), args[1]->NumberValue())]
@@ -1122,7 +1122,7 @@ static v8::Handle<Value> ArcTo(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() > 4) {
         [drawPath arcTo:[JMXPoint pointWithNSPoint:NSMakePoint(args[0]->NumberValue(), args[1]->NumberValue())]
                endPoint:[JMXPoint pointWithNSPoint:NSMakePoint(args[2]->NumberValue(), args[3]->NumberValue())]
@@ -1135,7 +1135,7 @@ static v8::Handle<Value> Arc(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() > 5) {
         [drawPath drawArc:[JMXPoint pointWithNSPoint:NSMakePoint(args[0]->NumberValue(), args[1]->NumberValue())]
                    radius:args[2]->NumberValue()
@@ -1151,7 +1151,7 @@ static v8::Handle<Value> AddRect(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() > 3) {
         [drawPath drawRect:[JMXPoint pointWithNSPoint:NSMakePoint(args[0]->NumberValue(), args[1]->NumberValue())] 
                       size:[JMXSize sizeWithNSSize:NSMakeSize(args[2]->NumberValue(), args[3]->NumberValue())]];
@@ -1164,7 +1164,7 @@ static v8::Handle<Value> Fill(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     [drawPath fill];
     return Undefined();
 }
@@ -1173,7 +1173,7 @@ static v8::Handle<Value> Stroke(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     [drawPath stroke];
     return Undefined();
 }
@@ -1182,7 +1182,7 @@ static v8::Handle<Value> Clip(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     [drawPath clip];
     return Undefined();
 }
@@ -1191,7 +1191,7 @@ static v8::Handle<Value> IsPointInPath(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     BOOL test = NO;
     if (args.Length() > 1) {
         test = [drawPath isPointInPath:[JMXPoint pointWithNSPoint:NSMakePoint(args[0]->NumberValue(), args[1]->NumberValue())]];
@@ -1203,7 +1203,7 @@ static v8::Handle<Value> DrawFocusRing(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    //JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    //JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     BOOL test = NO;
     if (args.Length() > 3) {
         // TODO - Implement
@@ -1215,7 +1215,7 @@ static v8::Handle<Value> DrawImage(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length()) {
         CIImage *image = nil;
         String::Utf8Value str(args[0]->ToString());
@@ -1248,7 +1248,7 @@ static v8::Handle<Value> GetImageData(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     CIImage *image = drawPath.currentFrame;
     CGRect rect = [image extent];
@@ -1278,7 +1278,7 @@ static v8::Handle<Value> CreateImageData(const Arguments& args)
 {    
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     CIImage *image = drawPath.currentFrame;
     if (args.Length() >= 1) {
@@ -1286,7 +1286,7 @@ static v8::Handle<Value> CreateImageData(const Arguments& args)
         CGSize size = CGSizeZero;
         if (args[0]->IsObject() && strcmp(*str, "[object ImageData]") == 0)
         {
-            JMXImageData *originalImageData = (JMXImageData *)args[0]->ToObject()->GetAlignedPointerFromInternalField(0);
+            JMXImageData *originalImageData = (JMXImageData *)args[0]->ToObject()->GetPointerFromInternalField(0);
             size.width = originalImageData.width;
             size.height = originalImageData.height;
             
@@ -1308,7 +1308,7 @@ static v8::Handle<Value> CreateImageData(const Arguments& args)
 static v8::Handle<Value> PutImageData(const Arguments& args)
 {
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     CIImage *image = drawPath.currentFrame;
     if (args.Length() >= 3 && args[0]->IsObject() &&
@@ -1324,7 +1324,7 @@ static v8::Handle<Value> PutImageData(const Arguments& args)
         {
             double dX = args[1]->ToNumber()->NumberValue();
             double dY = args[2]->ToNumber()->NumberValue();
-             JMXImageData *originalImageData = (JMXImageData *)args[0]->ToObject()->GetAlignedPointerFromInternalField(0);  
+             JMXImageData *originalImageData = (JMXImageData *)args[0]->ToObject()->GetPointerFromInternalField(0);  
             if (args.Length() > 3) {
                 if (args.Length() >= 4) {
                     dirtyX = args[3]->ToNumber()->NumberValue();
@@ -1377,7 +1377,7 @@ static v8::Handle<Value> PutImageData(const Arguments& args)
 static v8::Handle<Value> StrokeText(const Arguments& args)
 {
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() >= 3) {
         int maxWidth = 0;
         if (args.Length() > 3) { // maxWidth has been provided
@@ -1400,7 +1400,7 @@ static v8::Handle<Value> StrokeText(const Arguments& args)
 static v8::Handle<Value> FillText(const Arguments& args)
 {
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() >= 3) {
         int maxWidth = 0;
         if (args.Length() > 3) { // maxWidth has been provided
@@ -1423,7 +1423,7 @@ static v8::Handle<Value> FillText(const Arguments& args)
 static v8::Handle<Value> MeasureText(const Arguments& args)
 {
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() >= 1) {
         String::Utf8Value text(args[0]->ToString());
         NSString *textString = [NSString stringWithUTF8String:*text];
@@ -1438,7 +1438,7 @@ v8::Handle<Value>GetStyle(Local<String> name, const AccessorInfo& info)
 {
     HandleScope handleScope;
     String::Utf8Value nameStr(name);
-    JMXDrawPath *drawPath = (JMXDrawPath *)info.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)info.Holder()->GetPointerFromInternalField(0);
     if (strcmp(*nameStr, "fillStyle") == 0) {
         return handleScope.Close([[drawPath fillStyle] jsObj]);
     } else if (strcmp(*nameStr, "strokeStyle") == 0) {
@@ -1451,12 +1451,12 @@ static void SetStyle(Local<String> name, Local<Value> value, const AccessorInfo&
 {
     HandleScope handle_scope;
     NSColor *color = nil;
-    JMXDrawPath *drawPath = (JMXDrawPath *)info.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)info.Holder()->GetPointerFromInternalField(0);
     String::Utf8Value str(value->ToString());
     if (value->IsObject()) {
         if (strcmp(*str, "[object Color]") == 0) {
             v8::Handle<Object> object = value->ToObject();
-            color = (NSColor *)object->GetAlignedPointerFromInternalField(0);
+            color = (NSColor *)object->GetPointerFromInternalField(0);
         }
     } else {
         color = [NSColor colorFromCSSString:[NSString stringWithUTF8String:*str]];
@@ -1477,12 +1477,12 @@ static void SetShadowColor(Local<String> name, Local<Value> value, const Accesso
 {
     HandleScope handle_scope;
     NSColor *color = nil;
-    JMXDrawPath *drawPath = (JMXDrawPath *)info.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)info.Holder()->GetPointerFromInternalField(0);
     String::Utf8Value str(value->ToString());
     if (value->IsObject()) {
         if (strcmp(*str, "[object Color]") == 0) {
             v8::Handle<Object> object = value->ToObject();
-            color = (NSColor *)object->GetAlignedPointerFromInternalField(0);
+            color = (NSColor *)object->GetPointerFromInternalField(0);
         }
     } else {
         color = [NSColor colorFromCSSString:[NSString stringWithUTF8String:*str]];
@@ -1496,7 +1496,7 @@ v8::Handle<Value>GetFont(Local<String> name, const AccessorInfo& info)
 {
     HandleScope handleScope;
     String::Utf8Value nameStr(name);
-    JMXDrawPath *drawPath = (JMXDrawPath *)info.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)info.Holder()->GetPointerFromInternalField(0);
     if (drawPath)
         return [drawPath.font jsObj];
     return handleScope.Close(Undefined());
@@ -1505,12 +1505,12 @@ v8::Handle<Value>GetFont(Local<String> name, const AccessorInfo& info)
 static void SetFont(Local<String> name, Local<Value> value, const AccessorInfo& info)
 {
     HandleScope handle_scope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)info.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)info.Holder()->GetPointerFromInternalField(0);
     String::Utf8Value str(value->ToString());
     if (value->IsObject()) {
         if (strcmp(*str, "[object Font]") == 0) {
             v8::Handle<Object> object = value->ToObject();
-            NSFont *font = (NSFont *)object->GetAlignedPointerFromInternalField(0);
+            NSFont *font = (NSFont *)object->GetPointerFromInternalField(0);
             String::Utf8Value nameStr(name);
             drawPath.font = font;
         }
@@ -1538,7 +1538,7 @@ v8::Handle<Value>GetLineWidth(Local<String> name, const AccessorInfo& info)
 {
     HandleScope handleScope;
     String::Utf8Value nameStr(name);
-    JMXDrawPath *drawPath = (JMXDrawPath *)info.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)info.Holder()->GetPointerFromInternalField(0);
     if (drawPath)
         return handleScope.Close(v8::Number::New(drawPath.lineWidth));
     return handleScope.Close(Undefined());
@@ -1547,7 +1547,7 @@ v8::Handle<Value>GetLineWidth(Local<String> name, const AccessorInfo& info)
 static void SetLineWidth(Local<String> name, Local<Value> value, const AccessorInfo& info)
 {
     HandleScope handle_scope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)info.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXDrawPath *drawPath = (JMXDrawPath *)info.Holder()->GetPointerFromInternalField(0);
     if (value->IsNumber()) {
         drawPath.lineWidth = value->ToNumber()->NumberValue();
     }
@@ -1635,7 +1635,7 @@ static void SetLineWidth(Local<String> name, Local<Value> value, const AccessorI
     v8::Handle<FunctionTemplate> objectTemplate = [[self class] jsObjectTemplate];
     v8::Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
     //jsInstance.MakeWeak([self retain], JMXNodeJSDestructor);
-    jsInstance->SetAlignedPointerInInternalField(0, self);
+    jsInstance->SetPointerInInternalField(0, self);
     //[ctx addPersistentInstance:jsInstance obj:self];
     return handle_scope.Close(jsInstance);
 }

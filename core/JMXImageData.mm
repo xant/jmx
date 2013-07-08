@@ -97,7 +97,7 @@ static v8::Handle<Value>GetData(Local<String> name, const AccessorInfo& info)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXImageData *data = (JMXImageData *)info.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXImageData *data = (JMXImageData *)info.Holder()->GetPointerFromInternalField(0);
     JMXUint8ClampedArray *clampedArray = [JMXUint8ClampedArray
                                           uint8ClampedArrayWithBytesNoCopy:(uint8_t *)[data bytes]
                                                                     length:[data length]
@@ -150,7 +150,7 @@ static void JMXImageDataJSDestructor(Persistent<Value> object, void *parameter)
     HandleScope handle_scope;
     Handle<FunctionTemplate> objectTemplate = [JMXImageData jsObjectTemplate];
     Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
-    jsInstance->SetAlignedPointerInInternalField(0, self);
+    jsInstance->SetPointerInInternalField(0, self);
     jsInstance.MakeWeak([self retain], JMXImageDataJSDestructor);
     return handle_scope.Close(jsInstance);
 }

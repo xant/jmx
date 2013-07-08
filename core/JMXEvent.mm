@@ -108,7 +108,7 @@ static void JMXEventJSDestructor(Persistent<Value> object, void *parameter)
     HandleScope handle_scope;
     Handle<FunctionTemplate> objectTemplate = [[self class] jsObjectTemplate];
     Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
-    jsInstance->SetAlignedPointerInInternalField(0, self);
+    jsInstance->SetPointerInInternalField(0, self);
     jsInstance.MakeWeak([self retain], JMXEventJSDestructor);
     return handle_scope.Close(jsInstance);
 }

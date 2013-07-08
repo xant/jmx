@@ -44,7 +44,7 @@ v8::Handle<Value>GetObjectProperty(Local<String> name, const AccessorInfo& info)
 {
     //Locker lock;
     HandleScope handle_scope;
-    id obj = (id)info.Holder()->GetAlignedPointerFromInternalField(0);
+    id obj = (id)info.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     String::Utf8Value value(name);
     NSString *property = [NSString stringWithUTF8String:*value];
@@ -101,7 +101,7 @@ v8::Handle<Value>GetBoolProperty(Local<String> name, const AccessorInfo& info)
     HandleScope handle_scope;
     BOOL ret = NO;
     String::Utf8Value value(name);
-    id obj = (id)info.Holder()->GetAlignedPointerFromInternalField(0);
+    id obj = (id)info.Holder()->GetPointerFromInternalField(0);
     if (!_GetProperty(obj, *value, &ret))
         return Undefined();
     return handle_scope.Close(v8::Boolean::New(ret));
@@ -114,7 +114,7 @@ v8::Handle<Value>GetDoubleProperty(Local<String> name, const AccessorInfo& info)
     double ret = 0;
     String::Utf8Value value(name);
     
-    id obj = (id)info.Holder()->GetAlignedPointerFromInternalField(0);
+    id obj = (id)info.Holder()->GetPointerFromInternalField(0);
     if (!_GetProperty(obj, *value, &ret))
         return Undefined();
     return handle_scope.Close(Number::New(ret));
@@ -127,7 +127,7 @@ v8::Handle<Value>GetIntProperty(Local<String> name, const AccessorInfo& info)
     NSInteger ret = 0;
     String::Utf8Value value(name);
     
-    id obj = (id)info.Holder()->GetAlignedPointerFromInternalField(0);
+    id obj = (id)info.Holder()->GetPointerFromInternalField(0);
     if (!_GetProperty(obj, *value, &ret))
         return Undefined();
     return handle_scope.Close(Integer::New(ret));
@@ -165,7 +165,7 @@ void SetStringProperty(Local<String> name, Local<Value> value, const AccessorInf
         return;
     }
     String::Utf8Value str(value->ToString());
-    id obj = (id)info.Holder()->GetAlignedPointerFromInternalField(0);
+    id obj = (id)info.Holder()->GetPointerFromInternalField(0);
     {
          NSString *newValue = [[NSString alloc] initWithUTF8String:*str];
         _SetProperty(obj, *nameStr, newValue);
@@ -184,9 +184,9 @@ void SetColorProperty(Local<String> name, Local<Value> value, const AccessorInfo
     }
     Handle<Object> val = value->ToObject();
     if (!val.IsEmpty()) {
-        id newVal = (id)val->GetAlignedPointerFromInternalField(0);
+        id newVal = (id)val->GetPointerFromInternalField(0);
         if (newVal) {
-            id obj = (id)info.Holder()->GetAlignedPointerFromInternalField(0);
+            id obj = (id)info.Holder()->GetPointerFromInternalField(0);
             _SetProperty(obj, *nameStr, newVal);
         }
     }
@@ -202,7 +202,7 @@ void SetNumberProperty(Local<String> name, Local<Value> value, const AccessorInf
         return;
     }
     double number = value->NumberValue();
-    id obj = (id)info.Holder()->GetAlignedPointerFromInternalField(0);
+    id obj = (id)info.Holder()->GetPointerFromInternalField(0);
     {
         NSNumber *newValue = [[NSNumber alloc] initWithDouble:number];
         _SetProperty(obj, *nameStr, newValue);
@@ -220,7 +220,7 @@ void SetBoolProperty(Local<String> name, Local<Value> value, const AccessorInfo&
         return;
     }
     BOOL newValue = value->BooleanValue();
-    id obj = (id)info.Holder()->GetAlignedPointerFromInternalField(0);
+    id obj = (id)info.Holder()->GetPointerFromInternalField(0);
     {
         Unlocker unlocker;
         
@@ -255,7 +255,7 @@ void SetIntProperty(Local<String> name, Local<Value> value, const AccessorInfo& 
         return;
     }
     int32_t newValue = value->NumberValue();
-    id obj = (id)info.Holder()->GetAlignedPointerFromInternalField(0);
+    id obj = (id)info.Holder()->GetPointerFromInternalField(0);
     {
         Unlocker unlocker;
         
@@ -290,7 +290,7 @@ void SetDoubleProperty(Local<String> name, Local<Value> value, const AccessorInf
         return;
     }
     double newValue = value->NumberValue();
-    id obj = (id)info.Holder()->GetAlignedPointerFromInternalField(0);
+    id obj = (id)info.Holder()->GetPointerFromInternalField(0);
     {
         Unlocker unlocker;
         
@@ -325,9 +325,9 @@ void SetSizeProperty(Local<String> name, Local<Value> value, const AccessorInfo&
         NSLog(@"%s: Bad parameter (%s is not a Size object)", *nameStr, *str);
         return;
     }
-    id obj = (id)info.Holder()->GetAlignedPointerFromInternalField(0);
+    id obj = (id)info.Holder()->GetPointerFromInternalField(0);
     {
-        JMXSize *newSize = (JMXSize *)value->ToObject()->GetAlignedPointerFromInternalField(0);
+        JMXSize *newSize = (JMXSize *)value->ToObject()->GetPointerFromInternalField(0);
         _SetProperty(obj, *nameStr, newSize);
     }
 }
@@ -342,9 +342,9 @@ void SetPointProperty(Local<String> name, Local<Value> value, const AccessorInfo
         NSLog(@"%s: Bad parameter (%s is not a Point object)", *nameStr, *str);
         return;
     }
-    id obj = (id)info.Holder()->GetAlignedPointerFromInternalField(0);
+    id obj = (id)info.Holder()->GetPointerFromInternalField(0);
     {
-        JMXPoint *newPoint = (JMXPoint *)value->ToObject()->GetAlignedPointerFromInternalField(0);
+        JMXPoint *newPoint = (JMXPoint *)value->ToObject()->GetPointerFromInternalField(0);
         _SetProperty(obj, *nameStr, newPoint);
     }
 }

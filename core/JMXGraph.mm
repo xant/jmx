@@ -57,7 +57,7 @@ static v8::Handle<Value>GetRootNode(Local<String> name, const AccessorInfo& info
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXGraph *document = (JMXGraph *)info.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXGraph *document = (JMXGraph *)info.Holder()->GetPointerFromInternalField(0);
     return handleScope.Close([[document rootElement] jsObj]);
 }
 
@@ -65,7 +65,7 @@ static v8::Handle<Value>GetHeadNode(Local<String> name, const AccessorInfo& info
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXGraph *document = (JMXGraph *)info.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXGraph *document = (JMXGraph *)info.Holder()->GetPointerFromInternalField(0);
     return handleScope.Close([[document headNode] jsObj]);
 }
 
@@ -84,10 +84,10 @@ static v8::Handle<Value> CreateElement(const Arguments& args)
         JMXElement *element = [name isEqualToString:@"canvas"]
                             ? [[[JMXCanvasElement alloc] init] autorelease]
                             : [[[JMXElement alloc] initWithName:name] autorelease];
-        JMXGraph *document = (JMXGraph *)args.Holder()->GetAlignedPointerFromInternalField(0);
+        JMXGraph *document = (JMXGraph *)args.Holder()->GetPointerFromInternalField(0);
         //[[document rootElement] addChild:element];
         //ersistent<Object> jsInstance = Persistent<Object>::New([element jsObj]);
-        //jsInstance->SetAlignedPointerInInternalField(0, element);
+        //jsInstance->SetPointerInInternalField(0, element);
         //[ctx addPersistentInstance:jsInstance obj:element];
         //[element release];
         return handleScope.Close([element jsObj]);
@@ -110,7 +110,7 @@ static v8::Handle<Value> CreateComment(const Arguments& args)
         JMXElement *element = [NSXMLNode commentWithStringValue:name];
         /*
         Persistent<Object> jsInstance = Persistent<Object>::New([element jsObj]);
-        jsInstance->SetAlignedPointerInInternalField(0, element);
+        jsInstance->SetPointerInInternalField(0, element);
         [ctx addPersistentInstance:jsInstance obj:element];*/
         return handleScope.Close([element jsObj]);
     }
@@ -138,7 +138,7 @@ static v8::Handle<Value> GetElementById(const Arguments& args)
    // NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     v8::String::Utf8Value jsId(args[0]);
 
-    JMXGraph *document = (JMXGraph *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXGraph *document = (JMXGraph *)args.Holder()->GetPointerFromInternalField(0);
     NSXMLNode *element = GatherElementById(document, *jsId);
     //NSError *error = nil;
     //NSArray *nodes = [[document rootElement] nodesForXPath:[NSString stringWithFormat:@"descendant::*[attribute::id=%@]", jsId] error:&error];
@@ -218,7 +218,7 @@ static void JMXGraphJSDestructor(Persistent<Value> object, void *parameter)
     HandleScope handle_scope;
     v8::Persistent<FunctionTemplate> objectTemplate = [JMXGraph jsObjectTemplate];
     Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
-    jsInstance->SetAlignedPointerInInternalField(0, self);
+    jsInstance->SetPointerInInternalField(0, self);
     jsInstance.MakeWeak([self retain], JMXGraphJSDestructor);
     //jsInstance->SetHiddenValue(String::NewSymbol("map"), Object::New());
     return handle_scope.Close(jsInstance);

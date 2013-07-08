@@ -217,7 +217,7 @@ using namespace v8;
 static v8::Handle<Value>SetText(const Arguments& args)
 {
     HandleScope handleScope;
-    JMXTextEntity *entity = (JMXTextEntity *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXTextEntity *entity = (JMXTextEntity *)args.Holder()->GetPointerFromInternalField(0);
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
     [entity setText:[NSString stringWithUTF8String:*value]];
@@ -227,7 +227,7 @@ static v8::Handle<Value>SetText(const Arguments& args)
 static v8::Handle<Value>SetFont(const Arguments& args)
 {
     HandleScope handleScope;
-    JMXTextEntity *entity = (JMXTextEntity *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXTextEntity *entity = (JMXTextEntity *)args.Holder()->GetPointerFromInternalField(0);
     v8::Handle<Value> arg = args[0];
     v8::String::Utf8Value value(arg);
     [entity setFontWithName:[NSString stringWithUTF8String:*value]];
@@ -238,11 +238,11 @@ static v8::Handle<Value>SetBackgroundColor(const Arguments& args)
 {
     BOOL ret = NO;
     HandleScope handleScope;
-    JMXTextEntity *entity = (JMXTextEntity *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXTextEntity *entity = (JMXTextEntity *)args.Holder()->GetPointerFromInternalField(0);
     String::Utf8Value str(args[0]->ToString());
     if (strcmp(*str, "[object Color]") == 0) {
         v8::Handle<Object> object = args[0]->ToObject();
-        NSColor *color = (NSColor *)object->GetAlignedPointerFromInternalField(0);
+        NSColor *color = (NSColor *)object->GetPointerFromInternalField(0);
         [entity setBackgroundColor:color];
         ret = YES;
     }
@@ -253,11 +253,11 @@ static v8::Handle<Value>SetBackgroundColor(const Arguments& args)
 static v8::Handle<Value>SetFontColor(const Arguments& args)
 {
     HandleScope handleScope;
-    JMXTextEntity *entity = (JMXTextEntity *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXTextEntity *entity = (JMXTextEntity *)args.Holder()->GetPointerFromInternalField(0);
     String::Utf8Value str(args[0]->ToString());
     if (strcmp(*str, "[object Color]") == 0) {
         v8::Handle<Object> object = args[0]->ToObject();
-        NSColor *color = (NSColor *)object->GetAlignedPointerFromInternalField(0);
+        NSColor *color = (NSColor *)object->GetPointerFromInternalField(0);
         [entity setFontColor:color];
     }
     return handleScope.Close(Undefined());

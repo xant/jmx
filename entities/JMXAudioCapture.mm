@@ -108,7 +108,7 @@ static Persistent<FunctionTemplate> objectTemplate;
 static v8::Handle<Value>Start(const Arguments& args)
 {
     HandleScope handleScope;
-    JMXAudioCapture *entity = (JMXAudioCapture *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXAudioCapture *entity = (JMXAudioCapture *)args.Holder()->GetPointerFromInternalField(0);
     if (entity)
         [entity start];
     return v8::Undefined();
@@ -117,7 +117,7 @@ static v8::Handle<Value>Start(const Arguments& args)
 static v8::Handle<Value>Stop(const Arguments& args)
 {
     HandleScope handleScope;
-    JMXAudioCapture *entity = (JMXAudioCapture *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXAudioCapture *entity = (JMXAudioCapture *)args.Holder()->GetPointerFromInternalField(0);
     if (entity)
         [entity stop];
     return v8::Undefined();
@@ -128,7 +128,7 @@ static v8::Handle<Value> DefaultDevice(const Arguments& args)
     HandleScope handleScope;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSString *defaultDevice = nil;
-    JMXAudioCapture *ac = (JMXAudioCapture *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXAudioCapture *ac = (JMXAudioCapture *)args.Holder()->GetPointerFromInternalField(0);
     if (ac) {
         defaultDevice = [[ac class] defaultDevice];
     } else {
@@ -147,7 +147,7 @@ static v8::Handle<Value> AvailableDevices(const Arguments& args)
     HandleScope handleScope;
     NSArray *availableDevices = nil;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    JMXAudioCapture *ac = (JMXAudioCapture *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXAudioCapture *ac = (JMXAudioCapture *)args.Holder()->GetPointerFromInternalField(0);
     if (ac) { // called as instance method
         availableDevices = [[ac class] availableDevices];
     } else { // called as class method
@@ -166,7 +166,7 @@ static v8::Handle<Value> SelectDevice(const Arguments& args)
 {
     HandleScope handleScope;
     BOOL ret = NO;
-    JMXAudioCapture *ac = (JMXAudioCapture *)args.Holder()->GetAlignedPointerFromInternalField(0);
+    JMXAudioCapture *ac = (JMXAudioCapture *)args.Holder()->GetPointerFromInternalField(0);
     if (ac) {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         v8::Handle<Value> arg = args[0];

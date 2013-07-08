@@ -109,7 +109,7 @@ v8::Handle<v8::Value> JMXOutputPinJSConstructor(const v8::Arguments& args)
                                                                 function:Persistent<Function>::New(Handle<Function>::Cast(args[2]))];
         
         //jsInstance.MakeWeak([pin retain], JMXOutputPinJSDestructor);
-        jsInstance->SetAlignedPointerInInternalField(0, pin);
+        jsInstance->SetPointerInInternalField(0, pin);
     }
 
     [pool drain];    

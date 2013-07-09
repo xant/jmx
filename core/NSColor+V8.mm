@@ -126,7 +126,7 @@ void ConvertHSLToRGB (const CGFloat *hslComponents, CGFloat *rgbComponents) {
     if (mainExpInitialized) {
         int code = regexec(&exp, [cssString UTF8String], 1, matches, 0);
         if (code == 0) {
-            int length = matches[0].rm_eo-matches[0].rm_so;
+            int64_t length = matches[0].rm_eo-matches[0].rm_so;
             if (length) {
                 char *string = (char *)malloc(length + 1);
                 strncpy(string, [cssString UTF8String] + matches[0].rm_so, length);
@@ -185,7 +185,7 @@ void ConvertHSLToRGB (const CGFloat *hslComponents, CGFloat *rgbComponents) {
                         if (subcode == 0) {
                             for (int i = 2; i < 6; i++) { // NOTE: the first two matches are the whole string
                                 if (submatches[i].rm_so && submatches[i].rm_eo) {
-                                    int sublength = submatches[i].rm_eo - submatches[i].rm_so;
+                                    int64_t sublength = submatches[i].rm_eo - submatches[i].rm_so;
                                     char *substring = (char *)malloc(sublength + 1);
                                     strncpy(substring, string + submatches[i].rm_so, sublength);
                                     substring[sublength] = 0;
@@ -239,7 +239,7 @@ void ConvertHSLToRGB (const CGFloat *hslComponents, CGFloat *rgbComponents) {
                         if (subcode == 0) {
                             for (int i = 1; i < 5; i++) { // NOTE: the first two matches are the whole string
                                 if (submatches[i].rm_so && submatches[i].rm_eo) {
-                                    int sublength = submatches[i].rm_eo - submatches[i].rm_so;
+                                    int64_t sublength = submatches[i].rm_eo - submatches[i].rm_so;
                                     char *substring = (char *)malloc(sublength + 1);
                                     strncpy(substring, string + submatches[i].rm_so, sublength);
                                     substring[sublength] = 0;

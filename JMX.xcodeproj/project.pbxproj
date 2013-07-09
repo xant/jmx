@@ -281,7 +281,6 @@
 		AA6D4724178AF0B40020BD4C /* windows_port.c in Sources */ = {isa = PBXBuildFile; fileRef = AA6D2D44178AF0A90020BD4C /* windows_port.c */; };
 		AA6D4725178AF0B40020BD4C /* http_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = AA6D2D4A178AF0A90020BD4C /* http_parser.c */; };
 		AA6D4726178AF0B40020BD4C /* http_parser.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D2D4C178AF0A90020BD4C /* http_parser.h */; };
-		AA6D4727178AF0B40020BD4C /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = AA6D2D4E178AF0A90020BD4C /* Makefile */; };
 		AA6D4729178AF0B40020BD4C /* url_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = AA6D2D51178AF0A90020BD4C /* url_parser.c */; };
 		AA6D47F8178AF0B40020BD4C /* gyp_dummy.c in Sources */ = {isa = PBXBuildFile; fileRef = AA6D301E178AF0AA0020BD4C /* gyp_dummy.c */; };
 		AA6D480E178AF0B40020BD4C /* lib1.hpp in Headers */ = {isa = PBXBuildFile; fileRef = AA6D30B5178AF0AA0020BD4C /* lib1.hpp */; };
@@ -690,10 +689,8 @@
 		AA6D5264178AF0B50020BD4C /* v8checks.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D45CB178AF0B40020BD4C /* v8checks.h */; };
 		AA6D5265178AF0B50020BD4C /* v8conversions.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45CC178AF0B40020BD4C /* v8conversions.cc */; };
 		AA6D5266178AF0B50020BD4C /* v8conversions.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D45CD178AF0B40020BD4C /* v8conversions.h */; };
-		AA6D5267178AF0B50020BD4C /* v8dll-main.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45CE178AF0B40020BD4C /* v8dll-main.cc */; };
 		AA6D5268178AF0B50020BD4C /* v8globals.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D45CF178AF0B40020BD4C /* v8globals.h */; };
 		AA6D5269178AF0B50020BD4C /* v8memory.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D45D0178AF0B40020BD4C /* v8memory.h */; };
-		AA6D526B178AF0B50020BD4C /* v8preparserdll-main.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45D2178AF0B40020BD4C /* v8preparserdll-main.cc */; };
 		AA6D526C178AF0B50020BD4C /* v8threads.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45D3178AF0B40020BD4C /* v8threads.cc */; };
 		AA6D526D178AF0B50020BD4C /* v8threads.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D45D4178AF0B40020BD4C /* v8threads.h */; };
 		AA6D526E178AF0B50020BD4C /* v8utils.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45D5178AF0B40020BD4C /* v8utils.cc */; };
@@ -736,9 +733,8 @@
 		AA6D5296178AF0B50020BD4C /* zone-inl.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D45FE178AF0B40020BD4C /* zone-inl.h */; };
 		AA6D5297178AF0B50020BD4C /* zone.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45FF178AF0B40020BD4C /* zone.cc */; };
 		AA6D5298178AF0B50020BD4C /* zone.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D4600178AF0B40020BD4C /* zone.h */; };
-		AA6D529C178AF0B50020BD4C /* gcmole.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D4612178AF0B40020BD4C /* gcmole.cc */; };
-		AA6D529F178AF0B50020BD4C /* oom_dump.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D4626178AF0B40020BD4C /* oom_dump.cc */; };
 		AA6D52CB178AFD160020BD4C /* node_natives.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D52CA178AFD150020BD4C /* node_natives.h */; };
+		AA6D52CC178C04C70020BD4C /* libJMX-Core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2C746316DFA74000B623C2 /* libJMX-Core.a */; };
 		AA70C831178AACF700190C38 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA70C830178AACF700190C38 /* Foundation.framework */; };
 		AA75F38914F706FA00F1A214 /* drag_movies.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA75F38814F706E200F1A214 /* drag_movies.js */; };
 		AA8F817612CB236700EA8543 /* JMXTextPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8F817512CB236700EA8543 /* JMXTextPanel.m */; };
@@ -4498,6 +4494,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA6D52CC178C04C70020BD4C /* libJMX-Core.a in Frameworks */,
 				AA0A89BD1675E02800FF784F /* AudioUnit.framework in Frameworks */,
 				82456BCC1223DCA700236FE4 /* QuartzCore.framework in Frameworks */,
 			);
@@ -14277,7 +14274,6 @@
 				AA6D4721178AF0B40020BD4C /* inet_ntop.c in Sources */,
 				AA6D4724178AF0B40020BD4C /* windows_port.c in Sources */,
 				AA6D4725178AF0B40020BD4C /* http_parser.c in Sources */,
-				AA6D4727178AF0B40020BD4C /* Makefile in Sources */,
 				AA6D4729178AF0B40020BD4C /* url_parser.c in Sources */,
 				AA6D47F8178AF0B40020BD4C /* gyp_dummy.c in Sources */,
 				AA6D500B178AF0B50020BD4C /* fs-poll.c in Sources */,
@@ -14425,8 +14421,6 @@
 				AA6D5260178AF0B50020BD4C /* v8-counters.cc in Sources */,
 				AA6D5262178AF0B50020BD4C /* v8.cc in Sources */,
 				AA6D5265178AF0B50020BD4C /* v8conversions.cc in Sources */,
-				AA6D5267178AF0B50020BD4C /* v8dll-main.cc in Sources */,
-				AA6D526B178AF0B50020BD4C /* v8preparserdll-main.cc in Sources */,
 				AA6D526C178AF0B50020BD4C /* v8threads.cc in Sources */,
 				AA6D526E178AF0B50020BD4C /* v8utils.cc in Sources */,
 				AA6D5270178AF0B50020BD4C /* variables.cc in Sources */,
@@ -14450,8 +14444,6 @@
 				AA6D5293178AF0B50020BD4C /* simulator-x64.cc in Sources */,
 				AA6D5295178AF0B50020BD4C /* stub-cache-x64.cc in Sources */,
 				AA6D5297178AF0B50020BD4C /* zone.cc in Sources */,
-				AA6D529C178AF0B50020BD4C /* gcmole.cc in Sources */,
-				AA6D529F178AF0B50020BD4C /* oom_dump.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14529,10 +14521,12 @@
 				GCC_PREFIX_HEADER = "JMX-Core_Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
+					"ENABLE_DISASSEMBLER=1",
+					"OBJECT_PRINT=1",
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				HEADER_SEARCH_PATHS = "$PROJECT_DIR/**";
 				LIBRARY_SEARCH_PATHS = (
@@ -14583,7 +14577,7 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "JMX-Core_Prefix.pch";
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				HEADER_SEARCH_PATHS = "$PROJECT_DIR/**";
 				LIBRARY_SEARCH_PATHS = (
@@ -14668,6 +14662,7 @@
 					QuickTime,
 				);
 				PRODUCT_NAME = JMX;
+				VALID_ARCHS = x86_64;
 			};
 			name = Debug;
 		};
@@ -14721,6 +14716,7 @@
 				);
 				PRODUCT_NAME = JMX;
 				STRIP_INSTALLED_PRODUCT = YES;
+				VALID_ARCHS = x86_64;
 			};
 			name = Release;
 		};
@@ -14753,7 +14749,7 @@
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				SDKROOT = macosx;
 				STRIP_INSTALLED_PRODUCT = NO;
-				VALID_ARCHS = "i386 x86_64";
+				VALID_ARCHS = x86_64;
 			};
 			name = Debug;
 		};
@@ -14787,7 +14783,7 @@
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				SDKROOT = macosx;
 				STRIP_INSTALLED_PRODUCT = YES;
-				VALID_ARCHS = "i386 x86_64";
+				VALID_ARCHS = x86_64;
 			};
 			name = Release;
 		};

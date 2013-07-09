@@ -55,9 +55,9 @@ static Handle<Array> MapEnumerator(const AccessorInfo& info) {
     
     NSDictionary *dict = (NSDictionary *)info.Holder()->GetPointerFromInternalField(0);
 
-    int size = dict.count;
+    NSUInteger size = dict.count;
     
-    Local<Array> env = Array::New(size);
+    Local<Array> env = Array::New((int)size);
     int i = 0;
     for (id value in dict) {
         if ([value respondsToSelector:@selector(jsObj)]) {

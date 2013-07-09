@@ -78,7 +78,7 @@
 	
 	// Initialize texture
 	glBindTexture(GL_TEXTURE_2D, textureID);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, _width, _height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, (GLsizei)_width, (GLsizei)_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 	
 	// Set texture parameters.
 	
@@ -87,7 +87,7 @@
 	
 	// Initialize depth renderbuffer.
 	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, rbID);
-	glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, _width, _height);
+	glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, (GLsizei)_width, (GLsizei)_height);
 	
 	// Attach framebuffer to depth renderbuffer.
 	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, rbID);
@@ -100,7 +100,7 @@
 	
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fboID);
 	glPushAttrib(GL_VIEWPORT_BIT);
-	glViewport(0, 0, _width, _height);
+	glViewport(0, 0, (GLsizei)_width, (GLsizei)_height);
 	
 	glClearColor(1, 1, 1, 1);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);

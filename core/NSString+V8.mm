@@ -17,7 +17,7 @@ using namespace v8;
 - (v8::Handle<v8::String>)jsObj
 {
     HandleScope handle_scope;
-    return handle_scope.Close(String::New([(NSString *)self UTF8String], [(NSString *)self length]));
+    return handle_scope.Close(String::New([(NSString *)self UTF8String], (int)[(NSString *)self length]));
 }
 
 @end

@@ -264,7 +264,7 @@ Boolean HIDConfigureAction( IOHIDDeviceRef* outIOHIDDeviceRef, IOHIDElementRef *
 								   vendorID,
 								   productID,
 								   tIOHIDElementRef,
-								   cookie,
+								   (void *)cookie,
 								   (long unsigned int) usagePage,
 								   (long unsigned int) usage ); fflush( stdout );
 							
@@ -395,7 +395,7 @@ Boolean HIDSaveElementPref( const CFStringRef inKeyCFStringRef,
 		IOHIDElementCookie eleCookie = IOHIDElementGetCookie( inIOHIDElementRef );
 		
 		CFStringRef prefCFStringRef = CFStringCreateWithFormat( kCFAllocatorDefault, NULL,
-															   CFSTR( "d:{v:%ld, p:%ld, l:%ld, p:%ld, u:%ld}, e:{p:%ld, u:%ld, c:%ld}" ),
+															   CFSTR( "d:{v:%ld, p:%ld, l:%ld, p:%d, u:%d}, e:{p:%d, u:%d, c:%d}" ),
 															   vendorID,
 															   productID,
 															   locID,

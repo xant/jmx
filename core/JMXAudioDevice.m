@@ -687,10 +687,11 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, JMXAudioDev
     propertyAddress.mSelector = kAudioDevicePropertyDataSources;
     propertyAddress.mScope = (theDirection == kJMXAudioOutput)  ? kAudioDevicePropertyScopeOutput : kAudioDevicePropertyScopeInput;
     propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
-    AudioObjectGetPropertyDataSize( deviceID, &propertyAddress, 0, NULL, &theSize );
-
+    
+    theStatus = AudioObjectGetPropertyDataSize( deviceID, &propertyAddress, 0, NULL, &theSize );
 	if (theStatus != 0)
 		return rv;
+    
 	theSourceIDs = (UInt32 *) malloc ( theSize );
 	numSources = theSize / sizeof(UInt32);
     theStatus = AudioObjectGetPropertyData( deviceID, &propertyAddress, 0, NULL, &theSize, theSourceIDs );
@@ -740,7 +741,7 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, JMXAudioDev
     propertyAddress.mSelector = kAudioDevicePropertyDataSources;
     propertyAddress.mScope = (theDirection == kJMXAudioOutput)  ? kAudioDevicePropertyScopeOutput : kAudioDevicePropertyScopeInput;
     propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
-    AudioObjectGetPropertyDataSize( deviceID, &propertyAddress, 0, NULL, &theSize );
+    theStatus = AudioObjectGetPropertyDataSize( deviceID, &propertyAddress, 0, NULL, &theSize );
 	if (theStatus != 0)
 		return;
 	theSourceIDs = (UInt32 *) malloc ( theSize );

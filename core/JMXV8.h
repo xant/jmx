@@ -111,7 +111,7 @@ static inline v8::Handle<v8::Object>JMXV8ObjectInstance(id<JMXV8> self)
 {
     //v8::Locker lock;
     v8::HandleScope handle_scope;
-    v8::Handle<v8::FunctionTemplate> objectTemplate = [[self class] jsObjectTemplate];
+    v8::Handle<v8::FunctionTemplate> objectTemplate = [[(id)self class] jsObjectTemplate];
     v8::Persistent<v8::Object> jsInstance = v8::Persistent<v8::Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
     jsInstance.MakeWeak(static_cast<void *>([(NSObject *)self retain]), &JMXV8ObjectDestroy);
     jsInstance->SetPointerInInternalField(0, self);

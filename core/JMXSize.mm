@@ -160,8 +160,8 @@ v8::Handle<v8::Value> JMXSizeJSConstructor(const v8::Arguments& args)
     HandleScope handleScope;
     //v8::Locker locker;
     v8::Persistent<FunctionTemplate> objectTemplate = [JMXSize jsObjectTemplate];
-    int width = 0;
-    int height = 0;
+    int64_t width = 0;
+    int64_t height = 0;
     if (args.Length() >= 2) {
         width = args[0]->IntegerValue();
         height = args[1]->IntegerValue();

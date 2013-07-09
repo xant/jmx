@@ -258,13 +258,13 @@ using namespace v8;
         CGContextSetFillPattern(context, [(JMXCanvasPattern *)fillColor patternRef], [(JMXCanvasPattern *)fillColor components]);
     } else if ([fillColor isKindOfClass:[JMXCanvasGradient class]]) {
         JMXCanvasGradient *gradient = (JMXCanvasGradient *)fillColor;
-        CGPoint center = CGPointMake(center.x, center.y);
+        CGPoint centerPoint = CGPointMake(center.x, center.y);
         if (gradient.mode == kJMXCanvasGradientLinear) {
-            CGPoint startPoint = CGPointMake(center.x - radius, center.y);
-            CGPoint endPoint = CGPointMake(center.x + radius, center.y);
+            CGPoint startPoint = CGPointMake(centerPoint.x - radius, centerPoint.y);
+            CGPoint endPoint = CGPointMake(centerPoint.x + radius, centerPoint.y);
             CGContextDrawLinearGradient(context, [gradient gradientRef], startPoint, endPoint, 0);
         } else if (gradient.mode == kJMXCanvasGradientRadial) {
-            CGContextDrawRadialGradient(context, [gradient gradientRef], center, 0, center, radius, 0);
+            CGContextDrawRadialGradient(context, [gradient gradientRef], centerPoint, 0, centerPoint, radius, 0);
         }
     }
     

@@ -223,7 +223,7 @@ static v8::Handle<Value> ListDir(const Arguments& args) {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSArray *content = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[NSString stringWithUTF8String:*value] error:nil];
     if (content) {
-        v8::Handle<Array> list = Array::New([content count]);
+        v8::Handle<Array> list = Array::New((int)[content count]);
         int cnt = 0;
         for (NSString *path in content) {
             list->Set(cnt++, String::New([path UTF8String]));
@@ -274,7 +274,7 @@ static v8::Handle<Value> DumpDOM(const Arguments& args) {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     HandleScope scope;
     NSString *xmlString = [[JMXContext sharedContext] dumpDOM];
-    v8::Handle<String> output = String::New([xmlString UTF8String], [xmlString length]);
+    v8::Handle<String> output = String::New([xmlString UTF8String], (int)[xmlString length]);
     [pool release];
     return scope.Close(output);
 }

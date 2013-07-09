@@ -291,7 +291,7 @@ long IOHIDDevice_GetLocationID( IOHIDDeviceRef inIOHIDDeviceRef )
 uint32_t IOHIDDevice_GetUsage( IOHIDDeviceRef inIOHIDDeviceRef )
 {
 	uint32_t result = 0;
-	( void ) IOHIDDevice_GetLongProperty( inIOHIDDeviceRef, CFSTR( kIOHIDDeviceUsageKey ), ( long * ) &result );
+	( void ) IOHIDDevice_GetLongProperty( inIOHIDDeviceRef, CFSTR( kIOHIDDeviceUsageKey ), (long *)&result );
 	return result;
 } // IOHIDDevice_GetUsage
 
@@ -309,7 +309,7 @@ uint32_t IOHIDDevice_GetUsage( IOHIDDeviceRef inIOHIDDeviceRef )
 uint32_t IOHIDDevice_GetUsagePage( IOHIDDeviceRef inIOHIDDeviceRef )
 {
 	uint32_t result = 0;
-	( void ) IOHIDDevice_GetLongProperty( inIOHIDDeviceRef, CFSTR( kIOHIDDeviceUsagePageKey ), &result );
+	( void ) IOHIDDevice_GetLongProperty( inIOHIDDeviceRef, CFSTR( kIOHIDDeviceUsagePageKey ), (long *)&result );
 	return result;
 }   // IOHIDDevice_GetUsagePage
 
@@ -344,7 +344,7 @@ CFArrayRef IOHIDDevice_GetUsagePairs( IOHIDDeviceRef inIOHIDDeviceRef )
 uint32_t IOHIDDevice_GetPrimaryUsage( IOHIDDeviceRef inIOHIDDeviceRef )
 {
 	long result = 0;
-	( void ) IOHIDDevice_GetLongProperty( inIOHIDDeviceRef, CFSTR( kIOHIDPrimaryUsageKey ), &result );
+	( void ) IOHIDDevice_GetLongProperty( inIOHIDDeviceRef, CFSTR( kIOHIDPrimaryUsageKey ), (long *)&result );
 	return result;
 }
 
@@ -362,7 +362,7 @@ uint32_t IOHIDDevice_GetPrimaryUsage( IOHIDDeviceRef inIOHIDDeviceRef )
 uint32_t IOHIDDevice_GetPrimaryUsagePage( IOHIDDeviceRef inIOHIDDeviceRef )
 {
 	long result = 0;
-	( void ) IOHIDDevice_GetLongProperty( inIOHIDDeviceRef, CFSTR( kIOHIDPrimaryUsagePageKey ), &result );
+	( void ) IOHIDDevice_GetLongProperty( inIOHIDDeviceRef, CFSTR( kIOHIDPrimaryUsagePageKey ), (long *)&result );
 	return result;
 }
 
@@ -380,7 +380,7 @@ uint32_t IOHIDDevice_GetPrimaryUsagePage( IOHIDDeviceRef inIOHIDDeviceRef )
 long IOHIDDevice_GetMaxInputReportSize( IOHIDDeviceRef inIOHIDDeviceRef )
 {
 	long result = 0;
-	( void ) IOHIDDevice_GetLongProperty( inIOHIDDeviceRef, CFSTR( kIOHIDMaxInputReportSizeKey ), &result );
+	( void ) IOHIDDevice_GetLongProperty( inIOHIDDeviceRef, CFSTR( kIOHIDMaxInputReportSizeKey ), (long *)&result );
 	return result;
 }
 

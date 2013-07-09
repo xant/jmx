@@ -26,10 +26,6 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "externalize-string-extension.h"
-#include "globals.h"
-#include "string.h"
-#include "checks.h"
-#include "api.h"
 
 namespace v8 {
 namespace internal {

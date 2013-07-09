@@ -33,6 +33,8 @@
 
 #if defined(V8_TARGET_ARCH_X64)
 
+#include "utils.h"
+#include "platform.h"
 #include "disasm.h"
 #include "lazy-instance.h"
 

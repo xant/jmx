@@ -26,11 +26,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "statistics-extension.h"
-#include "string.h"
-#include "checks.h"
-#include "counters.h"
-#include "isolate.h"
-//#include "v8-counters.h"
+
 namespace v8 {
 namespace internal {
 

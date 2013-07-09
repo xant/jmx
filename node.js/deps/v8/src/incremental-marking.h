@@ -29,7 +29,7 @@
 #define V8_INCREMENTAL_MARKING_H_
 
 
-//#include "execution.h"
+#include "execution.h"
 #include "mark-compact.h"
 #include "objects.h"
 

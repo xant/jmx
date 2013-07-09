@@ -29,7 +29,6 @@
 #define V8_EXECUTION_H_
 
 #include "allocation.h"
-#include "objects.h"
 
 namespace v8 {
 namespace internal {
@@ -49,9 +48,8 @@ enum InterruptFlag {
 
 
 class Isolate;
-class ObjectTemplateInfo;
-class JSRegExp;
-    
+
+
 class Execution : public AllStatic {
  public:
   // Call a function, the caller supplies a receiver and an array

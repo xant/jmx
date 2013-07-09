@@ -29,10 +29,11 @@
 
 #if defined(V8_TARGET_ARCH_X64)
 
-#include "codegen.h"
+#include "v8globals.h"
 #include "deoptimizer.h"
 #include "full-codegen.h"
 #include "safepoint-table.h"
+#include "codegen.h"
 
 namespace v8 {
 namespace internal {

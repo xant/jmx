@@ -76,7 +76,6 @@ class Profiler;
 class Semaphore;
 class SlidingStateWindow;
 class Ticker;
-class SharedFunctionInfo;
 
 #undef LOG
 #define LOG(isolate, Call)                          \

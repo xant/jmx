@@ -29,8 +29,6 @@
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		AA08D33B14B5AA4500D19015 /* JMXCodePanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA08D33A14B5AA4400D19015 /* JMXCodePanel.m */; };
 		AA0A89BD1675E02800FF784F /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0A89BC1675E02800FF784F /* AudioUnit.framework */; };
-		AA0BF273178B1F3C007E2EAC /* Phidget21.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0BF272178B1F3C007E2EAC /* Phidget21.framework */; };
-		AA2C746416DFA74000B623C2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		AA2C747216DFA7B400B623C2 /* NSNumber+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9B58D614FE1E4F00F63C33 /* NSNumber+V8.mm */; };
 		AA2C747316DFA7B400B623C2 /* NSString+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9B58D814FE1E4F00F63C33 /* NSString+V8.mm */; };
 		AA2C747416DFA7B400B623C2 /* NSObject+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF982514FAE810006B9F8B /* NSObject+V8.mm */; };
@@ -121,19 +119,6 @@
 		AA2C753916DFA9E300B623C2 /* JMXSoftScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30FF1275ADB6006376B8 /* JMXSoftScreen.m */; };
 		AA2C753A16DFA9E900B623C2 /* JMXScriptFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8CB78D1282BB9900A17115 /* JMXScriptFile.mm */; };
 		AA2C753B16DFA9E900B623C2 /* JMXScriptLive.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8F806012C9D3FA00EA8543 /* JMXScriptLive.mm */; };
-		AA2C754016DFAA4000B623C2 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA678A47150CC47D00B2E8F7 /* CoreMedia.framework */; };
-		AA2C754116DFAA4000B623C2 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA678A45150CBC1000B2E8F7 /* AVFoundation.framework */; };
-		AA2C754216DFAA4000B623C2 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEF981214FA5C3C006B9F8B /* Carbon.framework */; };
-		AA2C754316DFAA4800B623C2 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEF981014FA5C31006B9F8B /* IOKit.framework */; };
-		AA2C754416DFAA4C00B623C2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
-		AA2C754616DFAA5700B623C2 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BC31223DC8300236FE4 /* OpenGL.framework */; };
-		AA2C754716DFAA5700B623C2 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BC71223DC9900236FE4 /* QTKit.framework */; };
-		AA2C754816DFAA5D00B623C2 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE3F212353BA6006087E7 /* CoreAudio.framework */; };
-		AA2C754916DFAA5D00B623C2 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE40A12353D5C006087E7 /* Accelerate.framework */; };
-		AA2C754A16DFAA5D00B623C2 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */; };
-		AA2C754B16DFAA6400B623C2 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAF376A214CCCE5E00347F40 /* libcrypto.dylib */; };
-		AA2C754C16DFAA6400B623C2 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAF376A014CCCE5000347F40 /* libz.dylib */; };
-		AA2C754D16DFAA6400B623C2 /* libssl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAF3769E14CCCE2C00347F40 /* libssl.dylib */; };
 		AA37E05214FA318500CBA0AE /* JMXDOMBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = AA37E05114FA318500CBA0AE /* JMXDOMBrowser.m */; };
 		AA490DD214CC5F8E00407C0D /* draw_pixels.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA490DC314CC5F4900407C0D /* draw_pixels.js */; };
 		AA490DD314CC5F8E00407C0D /* filter_videofile.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA490DC414CC5F4900407C0D /* filter_videofile.js */; };
@@ -370,7 +355,6 @@
 		AA6D50CD178AF0B50020BD4C /* v8-preparser.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D441C178AF0B20020BD4C /* v8-preparser.h */; };
 		AA6D50CE178AF0B50020BD4C /* v8-profiler.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D441D178AF0B20020BD4C /* v8-profiler.h */; };
 		AA6D50CF178AF0B50020BD4C /* v8-testing.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D441E178AF0B20020BD4C /* v8-testing.h */; };
-		AA6D50D0178AF0B50020BD4C /* v8.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D441F178AF0B20020BD4C /* v8.h */; };
 		AA6D50D1178AF0B50020BD4C /* v8stdint.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D4420178AF0B20020BD4C /* v8stdint.h */; };
 		AA6D50D3178AF0B50020BD4C /* preparser-process.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D4429178AF0B20020BD4C /* preparser-process.cc */; };
 		AA6D50D5178AF0B50020BD4C /* lineprocessor.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D442F178AF0B20020BD4C /* lineprocessor.cc */; };
@@ -387,7 +371,6 @@
 		AA6D50E1178AF0B50020BD4C /* arguments.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D443F178AF0B20020BD4C /* arguments.h */; };
 		AA6D50E2178AF0B50020BD4C /* assembler-arm-inl.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D4441178AF0B20020BD4C /* assembler-arm-inl.h */; };
 		AA6D50E4178AF0B50020BD4C /* assembler-arm.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D4443178AF0B20020BD4C /* assembler-arm.h */; };
-		AA6D50E7178AF0B50020BD4C /* code-stubs-arm.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D4446178AF0B20020BD4C /* code-stubs-arm.h */; };
 		AA6D50E9178AF0B50020BD4C /* codegen-arm.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D4448178AF0B20020BD4C /* codegen-arm.h */; };
 		AA6D50EB178AF0B50020BD4C /* constants-arm.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D444A178AF0B20020BD4C /* constants-arm.h */; };
 		AA6D50F1178AF0B50020BD4C /* frames-arm.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D4450178AF0B20020BD4C /* frames-arm.h */; };
@@ -517,7 +500,6 @@
 		AA6D5181178AF0B50020BD4C /* hydrogen.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D44E2178AF0B30020BD4C /* hydrogen.h */; };
 		AA6D5182178AF0B50020BD4C /* assembler-ia32-inl.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D44E4178AF0B30020BD4C /* assembler-ia32-inl.h */; };
 		AA6D5184178AF0B50020BD4C /* assembler-ia32.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D44E6178AF0B30020BD4C /* assembler-ia32.h */; };
-		AA6D5187178AF0B50020BD4C /* code-stubs-ia32.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D44E9178AF0B30020BD4C /* code-stubs-ia32.h */; };
 		AA6D5189178AF0B50020BD4C /* codegen-ia32.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D44EB178AF0B30020BD4C /* codegen-ia32.h */; };
 		AA6D518F178AF0B50020BD4C /* frames-ia32.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D44F1178AF0B30020BD4C /* frames-ia32.h */; };
 		AA6D5193178AF0B50020BD4C /* lithium-codegen-ia32.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D44F5178AF0B30020BD4C /* lithium-codegen-ia32.h */; };
@@ -570,7 +552,6 @@
 		AA6D51CB178AF0B50020BD4C /* messages.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D452E178AF0B30020BD4C /* messages.h */; };
 		AA6D51CD178AF0B50020BD4C /* assembler-mips-inl.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D4531178AF0B30020BD4C /* assembler-mips-inl.h */; };
 		AA6D51CF178AF0B50020BD4C /* assembler-mips.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D4533178AF0B30020BD4C /* assembler-mips.h */; };
-		AA6D51D2178AF0B50020BD4C /* code-stubs-mips.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D4536178AF0B30020BD4C /* code-stubs-mips.h */; };
 		AA6D51D4178AF0B50020BD4C /* codegen-mips.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D4538178AF0B30020BD4C /* codegen-mips.h */; };
 		AA6D51D6178AF0B50020BD4C /* constants-mips.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D453A178AF0B30020BD4C /* constants-mips.h */; };
 		AA6D51DC178AF0B50020BD4C /* frames-mips.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D4540178AF0B30020BD4C /* frames-mips.h */; };
@@ -685,7 +666,6 @@
 		AA6D5260178AF0B50020BD4C /* v8-counters.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45C7178AF0B40020BD4C /* v8-counters.cc */; };
 		AA6D5261178AF0B50020BD4C /* v8-counters.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D45C8178AF0B40020BD4C /* v8-counters.h */; };
 		AA6D5262178AF0B50020BD4C /* v8.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45C9178AF0B40020BD4C /* v8.cc */; };
-		AA6D5263178AF0B50020BD4C /* v8.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D45CA178AF0B40020BD4C /* v8.h */; };
 		AA6D5264178AF0B50020BD4C /* v8checks.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D45CB178AF0B40020BD4C /* v8checks.h */; };
 		AA6D5265178AF0B50020BD4C /* v8conversions.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45CC178AF0B40020BD4C /* v8conversions.cc */; };
 		AA6D5266178AF0B50020BD4C /* v8conversions.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D45CD178AF0B40020BD4C /* v8conversions.h */; };
@@ -702,40 +682,59 @@
 		AA6D5274178AF0B50020BD4C /* vm-state-inl.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D45DB178AF0B40020BD4C /* vm-state-inl.h */; };
 		AA6D5275178AF0B50020BD4C /* vm-state.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D45DC178AF0B40020BD4C /* vm-state.h */; };
 		AA6D5279178AF0B50020BD4C /* assembler-x64-inl.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D45E1178AF0B40020BD4C /* assembler-x64-inl.h */; };
-		AA6D527A178AF0B50020BD4C /* assembler-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45E2178AF0B40020BD4C /* assembler-x64.cc */; };
 		AA6D527B178AF0B50020BD4C /* assembler-x64.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D45E3178AF0B40020BD4C /* assembler-x64.h */; };
-		AA6D527C178AF0B50020BD4C /* builtins-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45E4178AF0B40020BD4C /* builtins-x64.cc */; };
-		AA6D527D178AF0B50020BD4C /* code-stubs-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45E5178AF0B40020BD4C /* code-stubs-x64.cc */; };
 		AA6D527E178AF0B50020BD4C /* code-stubs-x64.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D45E6178AF0B40020BD4C /* code-stubs-x64.h */; };
-		AA6D527F178AF0B50020BD4C /* codegen-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45E7178AF0B40020BD4C /* codegen-x64.cc */; };
 		AA6D5280178AF0B50020BD4C /* codegen-x64.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D45E8178AF0B40020BD4C /* codegen-x64.h */; };
-		AA6D5281178AF0B50020BD4C /* cpu-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45E9178AF0B40020BD4C /* cpu-x64.cc */; };
-		AA6D5282178AF0B50020BD4C /* debug-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45EA178AF0B40020BD4C /* debug-x64.cc */; };
-		AA6D5283178AF0B50020BD4C /* deoptimizer-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45EB178AF0B40020BD4C /* deoptimizer-x64.cc */; };
-		AA6D5284178AF0B50020BD4C /* disasm-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45EC178AF0B40020BD4C /* disasm-x64.cc */; };
-		AA6D5285178AF0B50020BD4C /* frames-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45ED178AF0B40020BD4C /* frames-x64.cc */; };
 		AA6D5286178AF0B50020BD4C /* frames-x64.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D45EE178AF0B40020BD4C /* frames-x64.h */; };
-		AA6D5287178AF0B50020BD4C /* full-codegen-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45EF178AF0B40020BD4C /* full-codegen-x64.cc */; };
-		AA6D5288178AF0B50020BD4C /* ic-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45F0178AF0B40020BD4C /* ic-x64.cc */; };
-		AA6D5289178AF0B50020BD4C /* lithium-codegen-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45F1178AF0B40020BD4C /* lithium-codegen-x64.cc */; };
 		AA6D528A178AF0B50020BD4C /* lithium-codegen-x64.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D45F2178AF0B40020BD4C /* lithium-codegen-x64.h */; };
-		AA6D528B178AF0B50020BD4C /* lithium-gap-resolver-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45F3178AF0B40020BD4C /* lithium-gap-resolver-x64.cc */; };
 		AA6D528C178AF0B50020BD4C /* lithium-gap-resolver-x64.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D45F4178AF0B40020BD4C /* lithium-gap-resolver-x64.h */; };
-		AA6D528D178AF0B50020BD4C /* lithium-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45F5178AF0B40020BD4C /* lithium-x64.cc */; };
 		AA6D528E178AF0B50020BD4C /* lithium-x64.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D45F6178AF0B40020BD4C /* lithium-x64.h */; };
-		AA6D528F178AF0B50020BD4C /* macro-assembler-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45F7178AF0B40020BD4C /* macro-assembler-x64.cc */; };
 		AA6D5290178AF0B50020BD4C /* macro-assembler-x64.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D45F8178AF0B40020BD4C /* macro-assembler-x64.h */; };
-		AA6D5291178AF0B50020BD4C /* regexp-macro-assembler-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45F9178AF0B40020BD4C /* regexp-macro-assembler-x64.cc */; };
 		AA6D5292178AF0B50020BD4C /* regexp-macro-assembler-x64.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D45FA178AF0B40020BD4C /* regexp-macro-assembler-x64.h */; };
-		AA6D5293178AF0B50020BD4C /* simulator-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45FB178AF0B40020BD4C /* simulator-x64.cc */; };
 		AA6D5294178AF0B50020BD4C /* simulator-x64.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D45FC178AF0B40020BD4C /* simulator-x64.h */; };
-		AA6D5295178AF0B50020BD4C /* stub-cache-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45FD178AF0B40020BD4C /* stub-cache-x64.cc */; };
 		AA6D5296178AF0B50020BD4C /* zone-inl.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D45FE178AF0B40020BD4C /* zone-inl.h */; };
 		AA6D5297178AF0B50020BD4C /* zone.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45FF178AF0B40020BD4C /* zone.cc */; };
 		AA6D5298178AF0B50020BD4C /* zone.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D4600178AF0B40020BD4C /* zone.h */; };
 		AA6D52CB178AFD160020BD4C /* node_natives.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D52CA178AFD150020BD4C /* node_natives.h */; };
 		AA6D52CC178C04C70020BD4C /* libJMX-Core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2C746316DFA74000B623C2 /* libJMX-Core.a */; };
-		AA70C831178AACF700190C38 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA70C830178AACF700190C38 /* Foundation.framework */; };
+		AA6D52CD178C055D0020BD4C /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE3F212353BA6006087E7 /* CoreAudio.framework */; };
+		AA6D52CE178C05750020BD4C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA70C830178AACF700190C38 /* Foundation.framework */; };
+		AA6D52CF178C05750020BD4C /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA678A47150CC47D00B2E8F7 /* CoreMedia.framework */; };
+		AA6D52D0178C05750020BD4C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA678A45150CBC1000B2E8F7 /* AVFoundation.framework */; };
+		AA6D52D1178C05750020BD4C /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEF981214FA5C3C006B9F8B /* Carbon.framework */; };
+		AA6D52D2178C05750020BD4C /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEF981014FA5C31006B9F8B /* IOKit.framework */; };
+		AA6D52D3178C05750020BD4C /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97324FDCFA39411CA2CEA /* AppKit.framework */; };
+		AA6D52D4178C05750020BD4C /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 13E42FB307B3F0F600E4EEF1 /* CoreData.framework */; };
+		AA6D52D5178C05750020BD4C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
+		AA6D52D6178C05750020BD4C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BC31223DC8300236FE4 /* OpenGL.framework */; };
+		AA6D52D7178C05750020BD4C /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BC71223DC9900236FE4 /* QTKit.framework */; };
+		AA6D52D8178C05750020BD4C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		AA6D52D9178C05750020BD4C /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE40A12353D5C006087E7 /* Accelerate.framework */; };
+		AA6D52DA178C05750020BD4C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */; };
+		AA6D52DB178C05AC0020BD4C /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAF376A214CCCE5E00347F40 /* libcrypto.dylib */; };
+		AA6D52DC178C05AC0020BD4C /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAF376A014CCCE5000347F40 /* libz.dylib */; };
+		AA6D52DD178C05AC0020BD4C /* libssl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAF3769E14CCCE2C00347F40 /* libssl.dylib */; };
+		AA6D52DF178C1CBF0020BD4C /* code-stubs-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45E5178AF0B40020BD4C /* code-stubs-x64.cc */; };
+		AA6D52E0178C36DB0020BD4C /* assembler-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45E2178AF0B40020BD4C /* assembler-x64.cc */; };
+		AA6D52E1178C36DB0020BD4C /* builtins-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45E4178AF0B40020BD4C /* builtins-x64.cc */; };
+		AA6D52E2178C36DB0020BD4C /* codegen-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45E7178AF0B40020BD4C /* codegen-x64.cc */; };
+		AA6D52E3178C36DB0020BD4C /* cpu-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45E9178AF0B40020BD4C /* cpu-x64.cc */; };
+		AA6D52E4178C36DB0020BD4C /* debug-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45EA178AF0B40020BD4C /* debug-x64.cc */; };
+		AA6D52E5178C36DB0020BD4C /* deoptimizer-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45EB178AF0B40020BD4C /* deoptimizer-x64.cc */; };
+		AA6D52E6178C36DB0020BD4C /* disasm-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45EC178AF0B40020BD4C /* disasm-x64.cc */; };
+		AA6D52E7178C36DB0020BD4C /* frames-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45ED178AF0B40020BD4C /* frames-x64.cc */; };
+		AA6D52E8178C36DB0020BD4C /* full-codegen-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45EF178AF0B40020BD4C /* full-codegen-x64.cc */; };
+		AA6D52E9178C36DB0020BD4C /* lithium-codegen-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45F1178AF0B40020BD4C /* lithium-codegen-x64.cc */; };
+		AA6D52EA178C36DB0020BD4C /* lithium-gap-resolver-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45F3178AF0B40020BD4C /* lithium-gap-resolver-x64.cc */; };
+		AA6D52EB178C36DB0020BD4C /* lithium-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45F5178AF0B40020BD4C /* lithium-x64.cc */; };
+		AA6D52EC178C36DB0020BD4C /* macro-assembler-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45F7178AF0B40020BD4C /* macro-assembler-x64.cc */; };
+		AA6D52ED178C36DB0020BD4C /* regexp-macro-assembler-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45F9178AF0B40020BD4C /* regexp-macro-assembler-x64.cc */; };
+		AA6D52EE178C36DB0020BD4C /* simulator-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45FB178AF0B40020BD4C /* simulator-x64.cc */; };
+		AA6D52EF178C36DB0020BD4C /* stub-cache-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45FD178AF0B40020BD4C /* stub-cache-x64.cc */; };
+		AA6D52F0178C62A80020BD4C /* ic-x64.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45F0178AF0B40020BD4C /* ic-x64.cc */; };
+		AA6D52F1178C63730020BD4C /* externalize-string-extension.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D44BB178AF0B30020BD4C /* externalize-string-extension.cc */; };
+		AA6D52F2178C63730020BD4C /* gc-extension.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D44BD178AF0B30020BD4C /* gc-extension.cc */; };
+		AA6D52F3178C63730020BD4C /* statistics-extension.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D44BF178AF0B30020BD4C /* statistics-extension.cc */; };
 		AA75F38914F706FA00F1A214 /* drag_movies.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA75F38814F706E200F1A214 /* drag_movies.js */; };
 		AA8F817612CB236700EA8543 /* JMXTextPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8F817512CB236700EA8543 /* JMXTextPanel.m */; };
 		AAB50B5F14DD4956002F385C /* processing_sample1.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AAB50B5914DD493E002F385C /* processing_sample1.js */; };
@@ -3761,7 +3760,6 @@
 		AA6D441C178AF0B20020BD4C /* v8-preparser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "v8-preparser.h"; sourceTree = "<group>"; };
 		AA6D441D178AF0B20020BD4C /* v8-profiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "v8-profiler.h"; sourceTree = "<group>"; };
 		AA6D441E178AF0B20020BD4C /* v8-testing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "v8-testing.h"; sourceTree = "<group>"; };
-		AA6D441F178AF0B20020BD4C /* v8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = v8.h; sourceTree = "<group>"; };
 		AA6D4420178AF0B20020BD4C /* v8stdint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = v8stdint.h; sourceTree = "<group>"; };
 		AA6D4421178AF0B20020BD4C /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		AA6D4422178AF0B20020BD4C /* LICENSE.strongtalk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.strongtalk; sourceTree = "<group>"; };
@@ -4179,7 +4177,6 @@
 		AA6D45C7178AF0B40020BD4C /* v8-counters.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "v8-counters.cc"; sourceTree = "<group>"; };
 		AA6D45C8178AF0B40020BD4C /* v8-counters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "v8-counters.h"; sourceTree = "<group>"; };
 		AA6D45C9178AF0B40020BD4C /* v8.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = v8.cc; sourceTree = "<group>"; };
-		AA6D45CA178AF0B40020BD4C /* v8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = v8.h; sourceTree = "<group>"; };
 		AA6D45CB178AF0B40020BD4C /* v8checks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = v8checks.h; sourceTree = "<group>"; };
 		AA6D45CC178AF0B40020BD4C /* v8conversions.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = v8conversions.cc; sourceTree = "<group>"; };
 		AA6D45CD178AF0B40020BD4C /* v8conversions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = v8conversions.h; sourceTree = "<group>"; };
@@ -4494,9 +4491,26 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA6D52CC178C04C70020BD4C /* libJMX-Core.a in Frameworks */,
+				AA6D52DB178C05AC0020BD4C /* libcrypto.dylib in Frameworks */,
+				AA6D52DC178C05AC0020BD4C /* libz.dylib in Frameworks */,
+				AA6D52DD178C05AC0020BD4C /* libssl.dylib in Frameworks */,
+				AA6D52CE178C05750020BD4C /* Foundation.framework in Frameworks */,
 				AA0A89BD1675E02800FF784F /* AudioUnit.framework in Frameworks */,
+				AA6D52CF178C05750020BD4C /* CoreMedia.framework in Frameworks */,
+				AA6D52D0178C05750020BD4C /* AVFoundation.framework in Frameworks */,
+				AA6D52D1178C05750020BD4C /* Carbon.framework in Frameworks */,
+				AA6D52D2178C05750020BD4C /* IOKit.framework in Frameworks */,
+				AA6D52D3178C05750020BD4C /* AppKit.framework in Frameworks */,
+				AA6D52D4178C05750020BD4C /* CoreData.framework in Frameworks */,
+				AA6D52D5178C05750020BD4C /* Foundation.framework in Frameworks */,
+				AA6D52D6178C05750020BD4C /* OpenGL.framework in Frameworks */,
+				AA6D52D7178C05750020BD4C /* QTKit.framework in Frameworks */,
 				82456BCC1223DCA700236FE4 /* QuartzCore.framework in Frameworks */,
+				AA6D52D8178C05750020BD4C /* Cocoa.framework in Frameworks */,
+				AA6D52CD178C055D0020BD4C /* CoreAudio.framework in Frameworks */,
+				AA6D52D9178C05750020BD4C /* Accelerate.framework in Frameworks */,
+				AA6D52DA178C05750020BD4C /* AudioToolbox.framework in Frameworks */,
+				AA6D52CC178C04C70020BD4C /* libJMX-Core.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4504,22 +4518,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA70C831178AACF700190C38 /* Foundation.framework in Frameworks */,
-				AA2C746416DFA74000B623C2 /* Cocoa.framework in Frameworks */,
-				AA2C754016DFAA4000B623C2 /* CoreMedia.framework in Frameworks */,
-				AA2C754116DFAA4000B623C2 /* AVFoundation.framework in Frameworks */,
-				AA2C754216DFAA4000B623C2 /* Carbon.framework in Frameworks */,
-				AA2C754316DFAA4800B623C2 /* IOKit.framework in Frameworks */,
-				AA2C754416DFAA4C00B623C2 /* Foundation.framework in Frameworks */,
-				AA2C754616DFAA5700B623C2 /* OpenGL.framework in Frameworks */,
-				AA2C754716DFAA5700B623C2 /* QTKit.framework in Frameworks */,
-				AA2C754816DFAA5D00B623C2 /* CoreAudio.framework in Frameworks */,
-				AA2C754916DFAA5D00B623C2 /* Accelerate.framework in Frameworks */,
-				AA2C754A16DFAA5D00B623C2 /* AudioToolbox.framework in Frameworks */,
-				AA0BF273178B1F3C007E2EAC /* Phidget21.framework in Frameworks */,
-				AA2C754B16DFAA6400B623C2 /* libcrypto.dylib in Frameworks */,
-				AA2C754C16DFAA6400B623C2 /* libz.dylib in Frameworks */,
-				AA2C754D16DFAA6400B623C2 /* libssl.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12574,7 +12572,6 @@
 				AA6D441C178AF0B20020BD4C /* v8-preparser.h */,
 				AA6D441D178AF0B20020BD4C /* v8-profiler.h */,
 				AA6D441E178AF0B20020BD4C /* v8-testing.h */,
-				AA6D441F178AF0B20020BD4C /* v8.h */,
 				AA6D4420178AF0B20020BD4C /* v8stdint.h */,
 			);
 			path = include;
@@ -12911,7 +12908,6 @@
 				AA6D45C7178AF0B40020BD4C /* v8-counters.cc */,
 				AA6D45C8178AF0B40020BD4C /* v8-counters.h */,
 				AA6D45C9178AF0B40020BD4C /* v8.cc */,
-				AA6D45CA178AF0B40020BD4C /* v8.h */,
 				AA6D45CB178AF0B40020BD4C /* v8checks.h */,
 				AA6D45CC178AF0B40020BD4C /* v8conversions.cc */,
 				AA6D45CD178AF0B40020BD4C /* v8conversions.h */,
@@ -13731,7 +13727,6 @@
 				AA6D50CD178AF0B50020BD4C /* v8-preparser.h in Headers */,
 				AA6D50CE178AF0B50020BD4C /* v8-profiler.h in Headers */,
 				AA6D50CF178AF0B50020BD4C /* v8-testing.h in Headers */,
-				AA6D50D0178AF0B50020BD4C /* v8.h in Headers */,
 				AA6D50D1178AF0B50020BD4C /* v8stdint.h in Headers */,
 				AA6D50D9178AF0B50020BD4C /* accessors.h in Headers */,
 				AA6D50DA178AF0B50020BD4C /* allocation-inl.h in Headers */,
@@ -13741,7 +13736,6 @@
 				AA6D50E1178AF0B50020BD4C /* arguments.h in Headers */,
 				AA6D50E2178AF0B50020BD4C /* assembler-arm-inl.h in Headers */,
 				AA6D50E4178AF0B50020BD4C /* assembler-arm.h in Headers */,
-				AA6D50E7178AF0B50020BD4C /* code-stubs-arm.h in Headers */,
 				AA6D50E9178AF0B50020BD4C /* codegen-arm.h in Headers */,
 				AA6D50EB178AF0B50020BD4C /* constants-arm.h in Headers */,
 				AA6D50F1178AF0B50020BD4C /* frames-arm.h in Headers */,
@@ -13822,7 +13816,6 @@
 				AA6D5181178AF0B50020BD4C /* hydrogen.h in Headers */,
 				AA6D5182178AF0B50020BD4C /* assembler-ia32-inl.h in Headers */,
 				AA6D5184178AF0B50020BD4C /* assembler-ia32.h in Headers */,
-				AA6D5187178AF0B50020BD4C /* code-stubs-ia32.h in Headers */,
 				AA6D5189178AF0B50020BD4C /* codegen-ia32.h in Headers */,
 				AA6D518F178AF0B50020BD4C /* frames-ia32.h in Headers */,
 				AA6D5193178AF0B50020BD4C /* lithium-codegen-ia32.h in Headers */,
@@ -13860,7 +13853,6 @@
 				AA6D51CB178AF0B50020BD4C /* messages.h in Headers */,
 				AA6D51CD178AF0B50020BD4C /* assembler-mips-inl.h in Headers */,
 				AA6D51CF178AF0B50020BD4C /* assembler-mips.h in Headers */,
-				AA6D51D2178AF0B50020BD4C /* code-stubs-mips.h in Headers */,
 				AA6D51D4178AF0B50020BD4C /* codegen-mips.h in Headers */,
 				AA6D51D6178AF0B50020BD4C /* constants-mips.h in Headers */,
 				AA6D51DC178AF0B50020BD4C /* frames-mips.h in Headers */,
@@ -13931,7 +13923,6 @@
 				AA6D525D178AF0B50020BD4C /* utils-inl.h in Headers */,
 				AA6D525F178AF0B50020BD4C /* utils.h in Headers */,
 				AA6D5261178AF0B50020BD4C /* v8-counters.h in Headers */,
-				AA6D5263178AF0B50020BD4C /* v8.h in Headers */,
 				AA6D5264178AF0B50020BD4C /* v8checks.h in Headers */,
 				AA6D5266178AF0B50020BD4C /* v8conversions.h in Headers */,
 				AA6D5268178AF0B50020BD4C /* v8globals.h in Headers */,
@@ -14107,6 +14098,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA6D52F1178C63730020BD4C /* externalize-string-extension.cc in Sources */,
+				AA6D52F2178C63730020BD4C /* gc-extension.cc in Sources */,
+				AA6D52F3178C63730020BD4C /* statistics-extension.cc in Sources */,
+				AA6D52F0178C62A80020BD4C /* ic-x64.cc in Sources */,
+				AA6D52E0178C36DB0020BD4C /* assembler-x64.cc in Sources */,
+				AA6D52E1178C36DB0020BD4C /* builtins-x64.cc in Sources */,
+				AA6D52E2178C36DB0020BD4C /* codegen-x64.cc in Sources */,
+				AA6D52E3178C36DB0020BD4C /* cpu-x64.cc in Sources */,
+				AA6D52E4178C36DB0020BD4C /* debug-x64.cc in Sources */,
+				AA6D52E5178C36DB0020BD4C /* deoptimizer-x64.cc in Sources */,
+				AA6D52E6178C36DB0020BD4C /* disasm-x64.cc in Sources */,
+				AA6D52E7178C36DB0020BD4C /* frames-x64.cc in Sources */,
+				AA6D52E8178C36DB0020BD4C /* full-codegen-x64.cc in Sources */,
+				AA6D52E9178C36DB0020BD4C /* lithium-codegen-x64.cc in Sources */,
+				AA6D52EA178C36DB0020BD4C /* lithium-gap-resolver-x64.cc in Sources */,
+				AA6D52EB178C36DB0020BD4C /* lithium-x64.cc in Sources */,
+				AA6D52EC178C36DB0020BD4C /* macro-assembler-x64.cc in Sources */,
+				AA6D52ED178C36DB0020BD4C /* regexp-macro-assembler-x64.cc in Sources */,
+				AA6D52EE178C36DB0020BD4C /* simulator-x64.cc in Sources */,
+				AA6D52EF178C36DB0020BD4C /* stub-cache-x64.cc in Sources */,
+				AA6D52DF178C1CBF0020BD4C /* code-stubs-x64.cc in Sources */,
 				AA2C747216DFA7B400B623C2 /* NSNumber+V8.mm in Sources */,
 				AA2C747316DFA7B400B623C2 /* NSString+V8.mm in Sources */,
 				AA2C747416DFA7B400B623C2 /* NSObject+V8.mm in Sources */,
@@ -14425,24 +14437,6 @@
 				AA6D526E178AF0B50020BD4C /* v8utils.cc in Sources */,
 				AA6D5270178AF0B50020BD4C /* variables.cc in Sources */,
 				AA6D5272178AF0B50020BD4C /* version.cc in Sources */,
-				AA6D527A178AF0B50020BD4C /* assembler-x64.cc in Sources */,
-				AA6D527C178AF0B50020BD4C /* builtins-x64.cc in Sources */,
-				AA6D527D178AF0B50020BD4C /* code-stubs-x64.cc in Sources */,
-				AA6D527F178AF0B50020BD4C /* codegen-x64.cc in Sources */,
-				AA6D5281178AF0B50020BD4C /* cpu-x64.cc in Sources */,
-				AA6D5282178AF0B50020BD4C /* debug-x64.cc in Sources */,
-				AA6D5283178AF0B50020BD4C /* deoptimizer-x64.cc in Sources */,
-				AA6D5284178AF0B50020BD4C /* disasm-x64.cc in Sources */,
-				AA6D5285178AF0B50020BD4C /* frames-x64.cc in Sources */,
-				AA6D5287178AF0B50020BD4C /* full-codegen-x64.cc in Sources */,
-				AA6D5288178AF0B50020BD4C /* ic-x64.cc in Sources */,
-				AA6D5289178AF0B50020BD4C /* lithium-codegen-x64.cc in Sources */,
-				AA6D528B178AF0B50020BD4C /* lithium-gap-resolver-x64.cc in Sources */,
-				AA6D528D178AF0B50020BD4C /* lithium-x64.cc in Sources */,
-				AA6D528F178AF0B50020BD4C /* macro-assembler-x64.cc in Sources */,
-				AA6D5291178AF0B50020BD4C /* regexp-macro-assembler-x64.cc in Sources */,
-				AA6D5293178AF0B50020BD4C /* simulator-x64.cc in Sources */,
-				AA6D5295178AF0B50020BD4C /* stub-cache-x64.cc in Sources */,
 				AA6D5297178AF0B50020BD4C /* zone.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -14523,15 +14517,21 @@
 					"DEBUG=1",
 					"ENABLE_DISASSEMBLER=1",
 					"OBJECT_PRINT=1",
+					"ENABLE_DEBUGGER_SUPPORT=1",
+					"_DARWIN_USE_64_BIT_INODE=1",
+					"ENABLE_EXTRA_CHECKS=1",
 					"$(inherited)",
+					"V8_TARGET_ARCH_X64=1",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				HEADER_SEARCH_PATHS = "$PROJECT_DIR/**";
+				HEADER_SEARCH_PATHS = (
+					$PROJECT_DIR/node.js/deps/v8/src,
+					"$PROJECT_DIR/**",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../v8/out/x64.release\"",
 					"\"$(LOCAL_LIBRARY_DIR)/Frameworks/Phidget21.framework/Versions/A\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
@@ -14577,12 +14577,15 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "JMX-Core_Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = V8_TARGET_ARCH_X64;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				HEADER_SEARCH_PATHS = "$PROJECT_DIR/**";
+				HEADER_SEARCH_PATHS = (
+					$PROJECT_DIR/node.js/deps/v8/src,
+					"$PROJECT_DIR/**",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../v8/out/x64.release\"",
 					"\"$(LOCAL_LIBRARY_DIR)/Frameworks/Phidget21.framework/Versions/A\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
@@ -14631,16 +14634,11 @@
 				GENERATE_PROFILING_CODE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$PROJECT_DIR/node.js/**",
-					"$PROJECT_DIR/../v8/include/**",
 					"$PROJECT_DIR/**",
 				);
 				INFOPLIST_FILE = "JMX-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../v8\"",
-					"\"$(SRCROOT)/../v8/out/x64.release\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_CFLAGS = (
 					"-Wno-unused",
 					"-D_FORTIFY_SOURCE=2",
@@ -14684,16 +14682,11 @@
 				GENERATE_PROFILING_CODE = NO;
 				HEADER_SEARCH_PATHS = (
 					"$PROJECT_DIR/node.js/**",
-					"$PROJECT_DIR/../v8/include/**",
 					"$PROJECT_DIR/**",
 				);
 				INFOPLIST_FILE = "JMX-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../v8\"",
-					"\"$(SRCROOT)/../v8/out/x64.release\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_CFLAGS = (
 					"-Wno-unused",
 					"-D_FORTIFY_SOURCE=2",

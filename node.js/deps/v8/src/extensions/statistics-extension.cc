@@ -29,7 +29,8 @@
 #include "string.h"
 #include "checks.h"
 #include "counters.h"
-#include "v8-counters.h"
+#include "isolate.h"
+//#include "v8-counters.h"
 namespace v8 {
 namespace internal {
 

@@ -29,6 +29,7 @@
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		AA08D33B14B5AA4500D19015 /* JMXCodePanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA08D33A14B5AA4400D19015 /* JMXCodePanel.m */; };
 		AA0A89BD1675E02800FF784F /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0A89BC1675E02800FF784F /* AudioUnit.framework */; };
+		AA0BF273178B1F3C007E2EAC /* Phidget21.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0BF272178B1F3C007E2EAC /* Phidget21.framework */; };
 		AA2C746416DFA74000B623C2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		AA2C747216DFA7B400B623C2 /* NSNumber+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9B58D614FE1E4F00F63C33 /* NSNumber+V8.mm */; };
 		AA2C747316DFA7B400B623C2 /* NSString+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9B58D814FE1E4F00F63C33 /* NSString+V8.mm */; };
@@ -102,7 +103,6 @@
 		AA2C752616DFA9BC00B623C2 /* JMXDrawEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA3557D912795C5500EAA2E4 /* JMXDrawEntity.mm */; };
 		AA2C752716DFA9BC00B623C2 /* JMXScriptEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */; };
 		AA2C752816DFA9BC00B623C2 /* JMXExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31091275ADB6006376B8 /* JMXExporter.m */; };
-		AA2C752916DFA9BC00B623C2 /* JMXPhidgetEncoderEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA004D8114E7148600009CF9 /* JMXPhidgetEncoderEntity.mm */; };
 		AA2C752A16DFA9BC00B623C2 /* JMXHIDInputEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF981C14FAB4E2006B9F8B /* JMXHIDInputEntity.mm */; };
 		AA2C752B16DFA9C200B623C2 /* JMXQtExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30E71275ADB6006376B8 /* JMXQtExporter.m */; };
 		AA2C752C16DFA9C700B623C2 /* JMXCoreImageFilter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30EA1275ADB6006376B8 /* JMXCoreImageFilter.mm */; };
@@ -121,7 +121,6 @@
 		AA2C753916DFA9E300B623C2 /* JMXSoftScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30FF1275ADB6006376B8 /* JMXSoftScreen.m */; };
 		AA2C753A16DFA9E900B623C2 /* JMXScriptFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8CB78D1282BB9900A17115 /* JMXScriptFile.mm */; };
 		AA2C753B16DFA9E900B623C2 /* JMXScriptLive.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8F806012C9D3FA00EA8543 /* JMXScriptLive.mm */; };
-		AA2C753F16DFAA4000B623C2 /* Phidget21.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0BFDFD1587E5B600D3C8E4 /* Phidget21.framework */; };
 		AA2C754016DFAA4000B623C2 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA678A47150CC47D00B2E8F7 /* CoreMedia.framework */; };
 		AA2C754116DFAA4000B623C2 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA678A45150CBC1000B2E8F7 /* AVFoundation.framework */; };
 		AA2C754216DFAA4000B623C2 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEF981214FA5C3C006B9F8B /* Carbon.framework */; };
@@ -483,12 +482,6 @@
 		AA6D5157178AF0B50020BD4C /* elements.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D44B7178AF0B30020BD4C /* elements.h */; };
 		AA6D5158178AF0B50020BD4C /* execution.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D44B8178AF0B30020BD4C /* execution.cc */; };
 		AA6D5159178AF0B50020BD4C /* execution.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D44B9178AF0B30020BD4C /* execution.h */; };
-		AA6D515A178AF0B50020BD4C /* externalize-string-extension.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D44BB178AF0B30020BD4C /* externalize-string-extension.cc */; };
-		AA6D515B178AF0B50020BD4C /* externalize-string-extension.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D44BC178AF0B30020BD4C /* externalize-string-extension.h */; };
-		AA6D515C178AF0B50020BD4C /* gc-extension.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D44BD178AF0B30020BD4C /* gc-extension.cc */; };
-		AA6D515D178AF0B50020BD4C /* gc-extension.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D44BE178AF0B30020BD4C /* gc-extension.h */; };
-		AA6D515E178AF0B50020BD4C /* statistics-extension.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D44BF178AF0B30020BD4C /* statistics-extension.cc */; };
-		AA6D515F178AF0B50020BD4C /* statistics-extension.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D44C0178AF0B30020BD4C /* statistics-extension.h */; };
 		AA6D5160178AF0B50020BD4C /* factory.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D44C1178AF0B30020BD4C /* factory.cc */; };
 		AA6D5161178AF0B50020BD4C /* factory.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6D44C2178AF0B30020BD4C /* factory.h */; };
 		AA6D5162178AF0B50020BD4C /* fast-dtoa.cc in Sources */ = {isa = PBXBuildFile; fileRef = AA6D44C3178AF0B30020BD4C /* fast-dtoa.cc */; };
@@ -924,7 +917,7 @@
 		AA0A89BC1675E02800FF784F /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
 		AA0A89BE1675E09C00FF784F /* JMXAudioToneGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXAudioToneGenerator.h; sourceTree = "<group>"; };
 		AA0A89BF1675E09C00FF784F /* JMXAudioToneGenerator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXAudioToneGenerator.mm; sourceTree = "<group>"; };
-		AA0BFDFD1587E5B600D3C8E4 /* Phidget21.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Phidget21.framework; path = /Library/Frameworks/Phidget21.framework; sourceTree = "<absolute>"; };
+		AA0BF272178B1F3C007E2EAC /* Phidget21.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Phidget21.framework; path = /Library/Frameworks/Phidget21.framework; sourceTree = "<absolute>"; };
 		AA1E53AB14AE114D00F80337 /* JMXGraphFragment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXGraphFragment.h; sourceTree = "<group>"; };
 		AA1E53AC14AE114D00F80337 /* JMXGraphFragment.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXGraphFragment.mm; sourceTree = "<group>"; };
 		AA1E53B714AF60F200F80337 /* Global.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = Global.js; sourceTree = "<group>"; };
@@ -4516,7 +4509,6 @@
 			files = (
 				AA70C831178AACF700190C38 /* Foundation.framework in Frameworks */,
 				AA2C746416DFA74000B623C2 /* Cocoa.framework in Frameworks */,
-				AA2C753F16DFAA4000B623C2 /* Phidget21.framework in Frameworks */,
 				AA2C754016DFAA4000B623C2 /* CoreMedia.framework in Frameworks */,
 				AA2C754116DFAA4000B623C2 /* AVFoundation.framework in Frameworks */,
 				AA2C754216DFAA4000B623C2 /* Carbon.framework in Frameworks */,
@@ -4527,6 +4519,7 @@
 				AA2C754816DFAA5D00B623C2 /* CoreAudio.framework in Frameworks */,
 				AA2C754916DFAA5D00B623C2 /* Accelerate.framework in Frameworks */,
 				AA2C754A16DFAA5D00B623C2 /* AudioToolbox.framework in Frameworks */,
+				AA0BF273178B1F3C007E2EAC /* Phidget21.framework in Frameworks */,
 				AA2C754B16DFAA6400B623C2 /* libcrypto.dylib in Frameworks */,
 				AA2C754C16DFAA6400B623C2 /* libz.dylib in Frameworks */,
 				AA2C754D16DFAA6400B623C2 /* libssl.dylib in Frameworks */,
@@ -4566,8 +4559,6 @@
 		29B97314FDCFA39411CA2CEA /* MoviePlayerD */ = {
 			isa = PBXGroup;
 			children = (
-				AA70C830178AACF700190C38 /* Foundation.framework */,
-				AA0A89BC1675E02800FF784F /* AudioUnit.framework */,
 				AAB50B6514DDA472002F385C /* JMX.entitlements */,
 				080E96DDFE201D6D7F000001 /* Sources */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -4606,7 +4597,9 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				AA0BFDFD1587E5B600D3C8E4 /* Phidget21.framework */,
+				AA0BF272178B1F3C007E2EAC /* Phidget21.framework */,
+				AA70C830178AACF700190C38 /* Foundation.framework */,
+				AA0A89BC1675E02800FF784F /* AudioUnit.framework */,
 				AA678A47150CC47D00B2E8F7 /* CoreMedia.framework */,
 				AA678A45150CBC1000B2E8F7 /* AVFoundation.framework */,
 				AAEF981214FA5C3C006B9F8B /* Carbon.framework */,
@@ -13810,9 +13803,6 @@
 				AA6D5155178AF0B50020BD4C /* elements-kind.h in Headers */,
 				AA6D5157178AF0B50020BD4C /* elements.h in Headers */,
 				AA6D5159178AF0B50020BD4C /* execution.h in Headers */,
-				AA6D515B178AF0B50020BD4C /* externalize-string-extension.h in Headers */,
-				AA6D515D178AF0B50020BD4C /* gc-extension.h in Headers */,
-				AA6D515F178AF0B50020BD4C /* statistics-extension.h in Headers */,
 				AA6D5161178AF0B50020BD4C /* factory.h in Headers */,
 				AA6D5163178AF0B50020BD4C /* fast-dtoa.h in Headers */,
 				AA6D5165178AF0B50020BD4C /* fixed-dtoa.h in Headers */,
@@ -14192,7 +14182,6 @@
 				AA2C752616DFA9BC00B623C2 /* JMXDrawEntity.mm in Sources */,
 				AA2C752716DFA9BC00B623C2 /* JMXScriptEntity.mm in Sources */,
 				AA2C752816DFA9BC00B623C2 /* JMXExporter.m in Sources */,
-				AA2C752916DFA9BC00B623C2 /* JMXPhidgetEncoderEntity.mm in Sources */,
 				AA2C752A16DFA9BC00B623C2 /* JMXHIDInputEntity.mm in Sources */,
 				AA2C752B16DFA9C200B623C2 /* JMXQtExporter.m in Sources */,
 				AA2C752C16DFA9C700B623C2 /* JMXCoreImageFilter.mm in Sources */,
@@ -14362,9 +14351,6 @@
 				AA6D5154178AF0B50020BD4C /* elements-kind.cc in Sources */,
 				AA6D5156178AF0B50020BD4C /* elements.cc in Sources */,
 				AA6D5158178AF0B50020BD4C /* execution.cc in Sources */,
-				AA6D515A178AF0B50020BD4C /* externalize-string-extension.cc in Sources */,
-				AA6D515C178AF0B50020BD4C /* gc-extension.cc in Sources */,
-				AA6D515E178AF0B50020BD4C /* statistics-extension.cc in Sources */,
 				AA6D5160178AF0B50020BD4C /* factory.cc in Sources */,
 				AA6D5162178AF0B50020BD4C /* fast-dtoa.cc in Sources */,
 				AA6D5164178AF0B50020BD4C /* fixed-dtoa.cc in Sources */,
@@ -14552,6 +14538,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../v8/out/x64.release\"",
+					"\"$(LOCAL_LIBRARY_DIR)/Frameworks/Phidget21.framework/Versions/A\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_CFLAGS = (
@@ -14602,6 +14589,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../v8/out/x64.release\"",
+					"\"$(LOCAL_LIBRARY_DIR)/Frameworks/Phidget21.framework/Versions/A\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_CFLAGS = (

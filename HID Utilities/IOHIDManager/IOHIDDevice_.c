@@ -308,7 +308,7 @@ uint32_t IOHIDDevice_GetUsage( IOHIDDeviceRef inIOHIDDeviceRef )
 
 uint32_t IOHIDDevice_GetUsagePage( IOHIDDeviceRef inIOHIDDeviceRef )
 {
-	long result = 0;
+	uint32_t result = 0;
 	( void ) IOHIDDevice_GetLongProperty( inIOHIDDeviceRef, CFSTR( kIOHIDDeviceUsagePageKey ), &result );
 	return result;
 }   // IOHIDDevice_GetUsagePage

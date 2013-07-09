@@ -26,7 +26,6 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gc-extension.h"
-#include "heap.h"
 
 namespace v8 {
 namespace internal {

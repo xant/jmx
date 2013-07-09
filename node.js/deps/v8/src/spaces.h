@@ -28,7 +28,6 @@
 #ifndef V8_SPACES_H_
 #define V8_SPACES_H_
 
-#include "objects.h"
 #include "allocation.h"
 #include "hashmap.h"
 #include "list.h"

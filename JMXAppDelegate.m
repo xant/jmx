@@ -43,6 +43,7 @@
 #import "JMXLibraryTableView.h"
 #import "JMXHIDInputEntity.h"
 #import "CIAlphaBlend.h"
+#import "CIAlphaFade.h"
 #import "CIAdditiveBlur.h"
 #import <QTKit/QTKit.h>
 
@@ -69,6 +70,7 @@
     [sharedContext registerClass:[JMXHIDInputEntity class]];
     [sharedContext registerClass:[JMXAudioToneGenerator class]];
     //[QTMovie initialize];
+    [CIAlphaFade class];
     [CIAlphaBlend class]; // trigger initialize to have the filter registered and available in the videomixer
     [CIAdditiveBlur class];
 //    if (CPhidgetEncoder_create != NULL) {

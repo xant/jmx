@@ -129,6 +129,9 @@
 		AA447AC9178D7E8B00DA8700 /* libhttp_parser.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA447AA2178D7CE500DA8700 /* libhttp_parser.a */; };
 		AA447ACC178D7F3700DA8700 /* libv8_base.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA447ACA178D7F2900DA8700 /* libv8_base.a */; };
 		AA447ACE178D803900DA8700 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA447ACD178D803900DA8700 /* libc++.dylib */; };
+		AA447AD2178D9A1D00DA8700 /* CIAdditiveBlur.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AAEBBA1214FD65CE000DA6F9 /* CIAdditiveBlur.cikernel */; };
+		AA447AD3178D9A1D00DA8700 /* CIAlphaBlend.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AAEBB8AC14FC1839000DA6F9 /* CIAlphaBlend.cikernel */; };
+		AA447AD4178D9A1D00DA8700 /* CIAlphaFade.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AA555FC912AEF39600C882FF /* CIAlphaFade.cikernel */; };
 		AA490DD214CC5F8E00407C0D /* draw_pixels.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA490DC314CC5F4900407C0D /* draw_pixels.js */; };
 		AA490DD314CC5F8E00407C0D /* filter_videofile.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA490DC414CC5F4900407C0D /* filter_videofile.js */; };
 		AA490DD414CC5F8E00407C0D /* play_mp3dir.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA490DC514CC5F4900407C0D /* play_mp3dir.js */; };
@@ -1220,6 +1223,9 @@
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
 				AA54B28B12A1215000EC60B2 /* jmx-icon.icns in Resources */,
+				AA447AD2178D9A1D00DA8700 /* CIAdditiveBlur.cikernel in Resources */,
+				AA447AD3178D9A1D00DA8700 /* CIAlphaBlend.cikernel in Resources */,
+				AA447AD4178D9A1D00DA8700 /* CIAlphaFade.cikernel in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

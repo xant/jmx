@@ -865,7 +865,7 @@ static v8::Handle<Value> NativeClassName(const Arguments& args)
 {   
     //v8::Locker lock;
     HandleScope handleScope;
-    Class objcClass = (Class)External::Unwrap(args.Holder()->Get(String::NewSymbol("_objcClass")));
+    Class objcClass = (Class)External::Cast(*(args.Holder()->Get(String::NewSymbol("_objcClass"))))->Value();
     if (objcClass)
         return handleScope.Close(String::New([NSStringFromClass(objcClass) UTF8String]));
     return v8::Undefined();
@@ -876,7 +876,7 @@ static v8::Handle<Value> NativeClassName(const Arguments& args)
     constructor->InstanceTemplate()->SetInternalFieldCount(1);
     //constructor->InstanceTemplate()->SetPointerInInternalField(0, self);
     PropertyAttribute attrs = DontEnum;
-    constructor->Set(String::NewSymbol("_objcClass"), External::Wrap(self), attrs);
+    constructor->Set(String::NewSymbol("_objcClass"), External::New(self), attrs);
     constructor->Set("nativeClassName", FunctionTemplate::New(NativeClassName));
 }
 

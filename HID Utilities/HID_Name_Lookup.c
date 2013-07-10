@@ -669,7 +669,7 @@ static Boolean hu_XMLSearchForElementNameByCookie( long inVendorID, long inProdu
 						if ( CFDictionaryGetValueIfPresent( productCFDictionaryRef, kNameKeyCFStringRef, ( const void ** ) & productCFStringRef ) ) {
 							// CFShow( productCFStringRef );
 						}
-						cookieKeyCFStringRef = CFStringCreateWithFormat( kCFAllocatorDefault, NULL, CFSTR( "%ld" ), inCookie );
+						cookieKeyCFStringRef = CFStringCreateWithFormat( kCFAllocatorDefault, NULL, CFSTR( "%d" ), inCookie );
 						
 						if ( CFDictionaryGetValueIfPresent( productCFDictionaryRef, cookieKeyCFStringRef, ( const void ** ) & cookieCFStringRef ) ) {
 #if VERBOSE_ELEMENT_NAMES

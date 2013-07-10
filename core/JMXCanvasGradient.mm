@@ -85,7 +85,7 @@ JMXV8_EXPORT_CLASS(JMXCanvasGradient)
 - (void)addColor:(NSColor *)color stop:(NSUInteger)offset
 {
     [colors addObject:color];
-    [locations addObject:[NSNumber numberWithUnsignedInt:offset]];
+    [locations addObject:[NSNumber numberWithUnsignedInt:(uint)offset]];
 }
 
 - (CGGradientRef)gradientRef

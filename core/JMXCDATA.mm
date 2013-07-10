@@ -46,7 +46,7 @@ static v8::Handle<Value> GetData(Local<String> name, const AccessorInfo& info)
     JMXCDATA *cdata = (JMXCDATA *)info.Holder()->GetPointerFromInternalField(0);
     if (cdata) {
         NSData *data = cdata.data;
-        return handleScope.Close(v8::String::New((char *)[data bytes], [data length]));
+        return handleScope.Close(v8::String::New((char *)[data bytes], (int)[data length]));
     }
     return handleScope.Close(Undefined());
 }
@@ -74,7 +74,7 @@ static v8::Handle<Value> GetLength(Local<String> name, const AccessorInfo& info)
     JMXCDATA *cdata = (JMXCDATA *)info.Holder()->GetPointerFromInternalField(0);
     if (cdata) {
         NSData *data = cdata.data;
-        return handleScope.Close(v8::Integer::New([data length]));
+        return handleScope.Close(v8::Integer::New((int)[data length]));
     }
     return handleScope.Close(Undefined());
 }
@@ -88,7 +88,7 @@ static v8::Handle<Value> SubstringData(const Arguments& args)
     v8::Handle<Integer> count = args[1]->ToInteger();
     char *data = (char *)malloc(count->Value());
     [cdata.data getBytes:&data range:NSMakeRange(offset->Value(), count->Value())];
-    v8::Handle<String> outString = String::New(data, count->Value());
+    v8::Handle<String> outString = String::New(data, (int)count->Value());
     free(data);
     return handleScope.Close(outString);
 }

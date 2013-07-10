@@ -329,7 +329,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         fullScreen = NO;
     } else {
         CGDisplayModeRef newMode;
-        bool exactMatch;
+        BOOL exactMatch = NO;
         CGDirectDisplayID currentDisplayID = (CGDirectDisplayID)[[[[[self window] screen] deviceDescription] objectForKey:@"NSScreenNumber"] intValue];
         //CGDirectDisplayID currentDisplayID = viewDisplayID;
         // Loop through all display modes to determine the closest match.
@@ -347,7 +347,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
             if((CGDisplayModeGetWidth(mode) >= frameSize.width) && (CGDisplayModeGetHeight(mode) >= frameSize.height))
             {
                 newMode = mode;
-                exactMatch = true;
+                exactMatch = YES;
                 break;
             }
         }

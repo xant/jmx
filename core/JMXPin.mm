@@ -452,7 +452,7 @@ using namespace v8;
 
 - (NSString *)description
 {
-    NSString *ownerName;
+    NSString *ownerName = @"";
     if ([owner respondsToSelector:@selector(name)])
         ownerName = [owner performSelector:@selector(name)];
     return [NSString stringWithFormat:@"%@:%@", ownerName, label];
@@ -602,7 +602,7 @@ using namespace v8;
             currentSender = sender;
         else
             currentSender = self;
-        JMXPinSignal *signal;
+        JMXPinSignal *signal = nil;
 
         @synchronized(self) {
             if (owner)

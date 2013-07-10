@@ -293,7 +293,7 @@ static Persistent<FunctionTemplate> objectTemplate;
 static v8::Handle<Value>Exec(const Arguments& args)
 {
     //v8::Locker lock;
-    BOOL ret;
+    BOOL ret = NO;
     HandleScope handleScope;
     JMXScriptEntity *entity = (JMXScriptEntity *)args.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];

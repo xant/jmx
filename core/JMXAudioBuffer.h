@@ -146,11 +146,7 @@
  @return the samplerate
  */
 - (NSUInteger)sampleRate;
-/*!
- @method numChannels
- @return the number of channels
- */
-- (NSUInteger)numChannels;
+
 /*!
  @method fillComplexBuffer:countPointer:offset:
  @abstract fill the encapsulated buffer (or bufferlist) with the provided data

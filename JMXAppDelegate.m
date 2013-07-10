@@ -37,13 +37,14 @@
 #import "JMXTextEntity.h"
 #import "JMXScriptFile.h"
 #import "JMXScriptLive.h"
-#import "JMXPhidgetEncoderEntity.h"
+//#import "JMXPhidgetEncoderEntity.h"
 #import "JMXAudioToneGenerator.h"
 #import "JMXGlobals.h"
 #import "JMXLibraryTableView.h"
 #import "JMXHIDInputEntity.h"
 #import "JMXAudioDumper.h"
 #import "CIAlphaBlend.h"
+#import "CIAlphaFade.h"
 #import "CIAdditiveBlur.h"
 #import <QTKit/QTKit.h>
 
@@ -72,14 +73,15 @@
     [sharedContext registerClass:[JMXAudioDumper class]];
     
     //[QTMovie initialize];
+    [CIAlphaFade class];
     [CIAlphaBlend class]; // trigger initialize to have the filter registered and available in the videomixer
     [CIAdditiveBlur class];
-    if (CPhidgetEncoder_create != NULL) {
-        // XXX - exception case for weakly linked Phidget library
-        //       if it's not available at runtime we don't want to register the phidget-related entities
-        //       or the application will crash when the user tries accessing them
-        [sharedContext registerClass:[JMXPhidgetEncoderEntity class]];
-    }
+//    if (CPhidgetEncoder_create != NULL) {
+//        // XXX - exception case for weakly linked Phidget library
+//        //       if it's not available at runtime we don't want to register the phidget-related entities
+//        //       or the application will crash when the user tries accessing them
+//        [sharedContext registerClass:[JMXPhidgetEncoderEntity class]];
+//    }
 	INFO("Registered %ul entities", (unsigned int)[[sharedContext registeredClasses] count]);
     [libraryTableView reloadData];
     

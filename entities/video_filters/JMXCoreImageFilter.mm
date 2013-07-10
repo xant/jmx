@@ -112,13 +112,20 @@ JMXV8_EXPORT_NODE_CLASS(JMXCoreImageFilter);
 {
     for (JMXInputPin *pin in [self inputPins]) {
         // TODO - extendable [JMXEntity defaultInputPins]
-        if (pin.label != @"frame" && pin.label != @"filter" && pin.label != @"active")
+        if (![pin.label isEqualToString:@"frame"] &&
+            ![pin.label isEqualToString:@"filter"] &&
+            ![pin.label isEqualToString:@"active"])
+        {
             [self unregisterInputPin:pin.label];
+        }
     }
     for (JMXOutputPin *pin in [self outputPins]) {
         // TODO - extendable [JMXEntity defaultOutputPins]
-        if (pin.label != @"frame" && pin.label != @"active")
+        if (![pin.label isEqualToString:@"frame"] &&
+            ![pin.label isEqualToString:@"active"])
+        {
             [self unregisterOutputPin:pin.label];
+        }
     }
 }
 
@@ -145,7 +152,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXCoreImageFilter);
                 if (![key isEqualTo:@"inputImage"]) {
                     NSDictionary *inputParam = [attributes objectForKey:key];
                     NSString *type = [inputParam objectForKey:@"CIAttributeClass"];
-                    JMXInputPin *inputPin;
+                    JMXInputPin *inputPin = nil;
                     if ([type isEqualTo:@"NSNumber"]) {
                         inputPin = [self registerInputPin:key withType:kJMXNumberPin andSelector:@"setFilterValue:userData:" userData:key];
                     } else if ([type isEqualTo:@"CIVector"]) {

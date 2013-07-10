@@ -176,7 +176,7 @@ static v8::Handle<Value>SupportedFileTypes(const Arguments& args)
     if (audioFile) {
         supportedTypes = [[audioFile class] supportedFileTypes];
     } else {
-        Class<JMXFileRead> objcClass = (Class)External::Unwrap(args.Holder()->Get(String::NewSymbol("_objcClass")));
+        Class<JMXFileRead> objcClass = (Class)External::Cast(*(args.Holder()->Get(String::NewSymbol("_objcClass"))))->Value();
         supportedTypes = [objcClass supportedFileTypes];
     }
     v8::Handle<Array> list = v8::Array::New([supportedTypes count]);

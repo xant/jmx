@@ -281,7 +281,7 @@ void HIDRebuildDevices( void ) {
 
 UInt32 HIDCountDevices( void )
 {
-	return CFArrayGetCount( gDeviceCFArrayRef );
+	return (UInt32)CFArrayGetCount( gDeviceCFArrayRef );
 }
 
 // ---------------------------------

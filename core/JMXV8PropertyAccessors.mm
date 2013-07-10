@@ -52,7 +52,7 @@ v8::Handle<Value>GetObjectProperty(Local<String> name, const AccessorInfo& info)
     if (obj && [obj respondsToSelector:selector]) {
         id output = [obj performSelector:selector];
         if ([output isKindOfClass:[NSString class]]) {
-            Handle<String> string = String::New([(NSString *)output UTF8String], [(NSString *)output length]);
+            Handle<String> string = String::New([(NSString *)output UTF8String], (int)[(NSString *)output length]);
             [pool drain];
             return handle_scope.Close(string);
         } else if ([output isKindOfClass:[NSNumber class]]) {
@@ -124,7 +124,7 @@ v8::Handle<Value>GetIntProperty(Local<String> name, const AccessorInfo& info)
 {
     //Locker lock;
     HandleScope handle_scope;
-    NSInteger ret = 0;
+    int32_t ret = 0;
     String::Utf8Value value(name);
     
     id obj = (id)info.Holder()->GetPointerFromInternalField(0);

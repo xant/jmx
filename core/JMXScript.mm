@@ -42,7 +42,7 @@
 #import "JMXEventListener.h"
 #import "JMXCanvasElement.h"
 #import "JMXImageEntity.h"
-#import "JMXPhidgetEncoderEntity.h"
+//#import "JMXPhidgetEncoderEntity.h"
 #import "JMXTextEntity.h"
 #import "JMXScriptInputPin.h"
 #import "JMXScriptOutputPin.h"
@@ -101,7 +101,7 @@ static JMXV8ClassDescriptor mappedClasses[] = {
     { "JMXAttribute",             "Attribute",        JMXAttributeJSConstructor             },
     { "JMXGraphFragment",         "DocumentFragment", JMXGraphFragmentJSConstructor         },
     { "JMXCanvasElement",         "HTMLCanvasElement",JMXCanvasElementJSConstructor         },
-    { "JMXPhidgetEncoderEntity",  "PhidgetEncoder",   JMXPhidgetEncoderEntityJSConstructor  },
+//    { "JMXPhidgetEncoderEntity",  "PhidgetEncoder",   JMXPhidgetEncoderEntityJSConstructor  },
     { "JMXScriptInputPin",        "InputPin",         JMXInputPinJSConstructor              },
     { "JMXScriptOutputPin",       "OutputPin",        JMXOutputPinJSConstructor             },
     { "JMXTextEntity",            "TextEntity",       JMXTextEntityJSConstructor            },
@@ -223,7 +223,7 @@ static v8::Handle<Value> ListDir(const Arguments& args) {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSArray *content = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[NSString stringWithUTF8String:*value] error:nil];
     if (content) {
-        v8::Handle<Array> list = Array::New([content count]);
+        v8::Handle<Array> list = Array::New((int)[content count]);
         int cnt = 0;
         for (NSString *path in content) {
             list->Set(cnt++, String::New([path UTF8String]));
@@ -274,7 +274,7 @@ static v8::Handle<Value> DumpDOM(const Arguments& args) {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     HandleScope scope;
     NSString *xmlString = [[JMXContext sharedContext] dumpDOM];
-    v8::Handle<String> output = String::New([xmlString UTF8String], [xmlString length]);
+    v8::Handle<String> output = String::New([xmlString UTF8String], (int)[xmlString length]);
     [pool release];
     return scope.Close(output);
 }
@@ -405,7 +405,7 @@ static v8::Handle<Value> Run(const Arguments& args)
             foo->Call(foo, nArgs, fArgs);
             if (fArgs)
                 free(fArgs);
-            uv_next(uv_default_loop());
+            uv_run(uv_default_loop(), (uv_run_mode)(UV_RUN_ONCE | UV_RUN_NOWAIT));
         }
         // restore quit status for nested loops
         v8::Locker::StopPreemption();
@@ -620,15 +620,14 @@ static char *argv[2] = { (char *)"JMX", NULL };
             v8::Context::Scope context_scope(ctx);
             uint64_t timeStamp = CVGetCurrentHostTime();
             NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-            //uv_run(uv_default_loop());
-            uv_next(uv_default_loop());
+            uv_run(uv_default_loop(), (uv_run_mode)(UV_RUN_ONCE | UV_RUN_NOWAIT));
             uint64_t now = CVGetCurrentHostTime();
             uint64_t delta = now - timeStamp;
             uint64_t sleepTime = (delta && delta < maxDelta) ? maxDelta - delta : 0;
             
             if (sleepTime) {
                 struct timespec time = { 0, 0 };
-                struct timespec remainder = { 0, sleepTime };
+                struct timespec remainder = { 0, static_cast<long>(sleepTime) };
                 do {
                     time.tv_sec = remainder.tv_sec;
                     time.tv_nsec = remainder.tv_nsec;
@@ -655,13 +654,13 @@ static char *argv[2] = { (char *)"JMX", NULL };
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     for (int i = 0; mappedClasses[i].className != NULL; i++) {
         v8::Handle<FunctionTemplate> constructor = FunctionTemplate::New(mappedClasses[i].jsConstructor);
-        if (strcmp(mappedClasses[i].className, "JMXPhidgetEncoderEntity") == 0) {
-            // XXX - exception case for weakly linked Phidget library
-            //       if it's not available at runtime we don't want to register the phidget-related entities
-            //       or the application will crash when the user tries accessing them
-            if (CPhidgetEncoder_create == NULL)
-                continue;
-        }
+//        if (strcmp(mappedClasses[i].className, "JMXPhidgetEncoderEntity") == 0) {
+//            // XXX - exception case for weakly linked Phidget library
+//            //       if it's not available at runtime we don't want to register the phidget-related entities
+//            //       or the application will crash when the user tries accessing them
+//            if (CPhidgetEncoder_create == NULL)
+//                continue;
+//        }
         Class entityClass = NSClassFromString([NSString stringWithUTF8String:mappedClasses[i].className]);
         if (entityClass) {
             [entityClass jsRegisterClassMethods:constructor];

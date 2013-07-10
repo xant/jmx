@@ -95,7 +95,7 @@ static v8::Handle<Value> AvailableFilters(const Arguments& args)
     if (filter) { // called as instance method
         availableFilters = [filter availableFilters];
     } else { // called as class method
-        Class objcClass = (Class)External::Unwrap(args.Holder()->Get(String::NewSymbol("_objcClass")));
+        Class objcClass = (Class)External::Cast(*(args.Holder()->Get(String::NewSymbol("_objcClass"))))->Value();
         availableFilters = [objcClass availableFilters];
     }
     v8::Handle<Array> list = v8::Array::New([availableFilters count]);

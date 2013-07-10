@@ -261,7 +261,7 @@
             // We will switch back to nanosleep if we notice that 'sleepForTimeInterval'
             // is not precise enough.
             struct timespec time = { 0, 0 };
-            struct timespec remainder = { 0, sleepTime };
+            struct timespec remainder = { 0, static_cast<long>(sleepTime) };
             do {
                 time.tv_sec = remainder.tv_sec;
                 time.tv_nsec = remainder.tv_nsec;

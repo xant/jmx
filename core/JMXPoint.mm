@@ -168,8 +168,8 @@ v8::Handle<v8::Value> JMXPointJSConstructor(const v8::Arguments& args)
     HandleScope handleScope;
     //v8::Locker locker;
     v8::Persistent<FunctionTemplate> objectTemplate = [JMXPoint jsObjectTemplate];
-    int x = 0;
-    int y = 0;
+    int64_t x = 0;
+    int64_t y = 0;
     if (args.Length() >= 2) {
         x = args[0]->IntegerValue();
         y = args[1]->IntegerValue();

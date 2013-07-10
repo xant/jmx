@@ -59,14 +59,6 @@
 - (void) setString:(NSString *)aString font:(NSFont *)font textColor:(NSColor *)textColor boxColor:(NSColor *)boxColor borderColor:(NSColor *)borderColor;
 
 /*!
- @method initWithAttributedString:
- @param aString the string
- @param attribs NSDictionary containing attributes to use for the internally used NSAttributedString
- @return the initialized instance
- */
-- (void) setString:(NSString *)aString withAttributes:(NSDictionary *)attribs;
-
-/*!
  @method textColor
  @return NSColor used to draw the text
  */

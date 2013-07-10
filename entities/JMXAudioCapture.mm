@@ -132,7 +132,7 @@ static v8::Handle<Value> DefaultDevice(const Arguments& args)
     if (ac) {
         defaultDevice = [[ac class] defaultDevice];
     } else {
-        Class objcClass = (Class)External::Unwrap(args.Holder()->Get(String::NewSymbol("_objcClass")));
+        Class objcClass = (Class)External::Cast(*(args.Holder()->Get(String::NewSymbol("_objcClass"))))->Value();
         defaultDevice = [objcClass defaultDevice];
     }
     v8::Handle<String> deviceName = String::New([defaultDevice UTF8String]);
@@ -151,7 +151,7 @@ static v8::Handle<Value> AvailableDevices(const Arguments& args)
     if (ac) { // called as instance method
         availableDevices = [[ac class] availableDevices];
     } else { // called as class method
-        Class objcClass = (Class)External::Unwrap(args.Holder()->Get(String::NewSymbol("_objcClass")));
+        Class objcClass = (Class)External::Cast(*(args.Holder()->Get(String::NewSymbol("_objcClass"))))->Value();
         availableDevices = [objcClass availableDevices];
     }
     v8::Handle<Array> list = v8::Array::New([availableDevices count]);

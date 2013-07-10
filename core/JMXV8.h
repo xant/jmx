@@ -15,7 +15,7 @@
 
 #ifndef __JMXV8__
 
-@protocol JMXV8
+@protocol JMXV8 <NSObject>
 
 @end
 
@@ -92,6 +92,32 @@
 - (void)jsInit:(NSValue *)argsValue;
 
 @end
+
+static inline void JMXV8ObjectDestroy(v8::Persistent<v8::Value> object, void *parameter)
+{
+    v8::HandleScope handle_scope;
+    v8::Locker lock;
+    id obj = static_cast<id>(parameter);
+    NSDebug(@"V8 WeakCallback (%@) called ", obj);
+    [obj release];
+    if (!object.IsEmpty()) {
+        object.ClearWeak();
+        object.Dispose();
+        object.Clear();
+    }
+}
+
+static inline v8::Handle<v8::Object>JMXV8ObjectInstance(id<JMXV8> self)
+{
+    //v8::Locker lock;
+    v8::HandleScope handle_scope;
+    v8::Handle<v8::FunctionTemplate> objectTemplate = [[(id)self class] jsObjectTemplate];
+    v8::Persistent<v8::Object> jsInstance = v8::Persistent<v8::Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
+    jsInstance.MakeWeak(static_cast<void *>([(NSObject *)self retain]), &JMXV8ObjectDestroy);
+    jsInstance->SetPointerInInternalField(0, self);
+    //[ctx addPersistentInstance:jsInstance obj:self];
+    return handle_scope.Close(jsInstance);
+}
 
 #define JMXV8_EXPORT_BASE(__class) \
 using namespace v8;\

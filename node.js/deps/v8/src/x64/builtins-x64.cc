@@ -29,9 +29,9 @@
 
 #if defined(V8_TARGET_ARCH_X64)
 
+#include "codegen.h"
 #include "deoptimizer.h"
 #include "full-codegen.h"
-#include "codegen.h"
 
 namespace v8 {
 namespace internal {

@@ -29,8 +29,8 @@
 
 #if defined(V8_TARGET_ARCH_X64)
 
-#include "macro-assembler.h"
 #include "codegen.h"
+#include "macro-assembler.h"
 
 namespace v8 {
 namespace internal {

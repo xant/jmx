@@ -61,6 +61,7 @@
     // are running from a script and running the REPL - but there are a few
     // others like the debugger or running --eval arguments. Here we decide
     // which mode we run in.
+    return;
 
     if (NativeModule.exists('_third_party_main')) {
       // To allow people to extend Node in different ways, this hook allows

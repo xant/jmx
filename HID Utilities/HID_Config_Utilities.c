@@ -373,13 +373,13 @@ Boolean HIDSaveElementPref( const CFStringRef inKeyCFStringRef,
 	
 	if ( inKeyCFStringRef && inAppCFStringRef && inIOHIDDeviceRef && inIOHIDElementRef ) {
 		long vendorID = IOHIDDevice_GetVendorID( inIOHIDDeviceRef );
-		require( vendorID, Oops );
+		//require( vendorID, Oops );
 		
 		long productID = IOHIDDevice_GetProductID( inIOHIDDeviceRef );
-		require( productID, Oops );
+		//require( productID, Oops );
 		
 		long locID = IOHIDDevice_GetLocationID( inIOHIDDeviceRef );
-		require( locID, Oops );
+		//require( locID, Oops );
 		
 		uint32_t usagePage = IOHIDDevice_GetUsagePage( inIOHIDDeviceRef );
 		uint32_t usage = IOHIDDevice_GetUsage( inIOHIDDeviceRef );
@@ -388,7 +388,7 @@ Boolean HIDSaveElementPref( const CFStringRef inKeyCFStringRef,
 			usagePage = IOHIDDevice_GetPrimaryUsagePage( inIOHIDDeviceRef );
 			usage = IOHIDDevice_GetPrimaryUsage( inIOHIDDeviceRef );
 		}
-		require( usagePage && usage, Oops );
+		//require( usagePage && usage, Oops );
 		
 		uint32_t usagePageE = IOHIDElementGetUsagePage( inIOHIDElementRef );
 		uint32_t usageE = IOHIDElementGetUsage( inIOHIDElementRef );
@@ -698,16 +698,16 @@ void HIDSetElementConfig (pRecSaveHID pConfigRec, IOHIDDeviceRef inIOHIDDeviceRe
     // device
     // need to add serial number when I have a test case
 	if (inIOHIDDeviceRef && inIOHIDElementRef) {
-		pConfigRec->device.vendorID = IOHIDDevice_GetVendorID( inIOHIDDeviceRef );
-		pConfigRec->device.productID = IOHIDDevice_GetProductID( inIOHIDDeviceRef );
-		pConfigRec->device.locID = IOHIDDevice_GetLocationID( inIOHIDDeviceRef );
-		pConfigRec->device.usage = IOHIDDevice_GetUsage( inIOHIDDeviceRef );
-		pConfigRec->device.usagePage = IOHIDDevice_GetUsagePage( inIOHIDDeviceRef );
+		pConfigRec->device.vendorID = (int)IOHIDDevice_GetVendorID( inIOHIDDeviceRef );
+		pConfigRec->device.productID = (int)IOHIDDevice_GetProductID( inIOHIDDeviceRef );
+		pConfigRec->device.locID = (int)IOHIDDevice_GetLocationID( inIOHIDDeviceRef );
+		pConfigRec->device.usage = (int)IOHIDDevice_GetUsage( inIOHIDDeviceRef );
+		pConfigRec->device.usagePage = (int)IOHIDDevice_GetUsagePage( inIOHIDDeviceRef );
 		
 		pConfigRec->element.usagePage = IOHIDElementGetUsagePage( inIOHIDElementRef );
 		pConfigRec->element.usage = IOHIDElementGetUsage( inIOHIDElementRef );
-		pConfigRec->element.minReport = IOHIDElement_GetCalibrationSaturationMin( inIOHIDElementRef );
-		pConfigRec->element.maxReport = IOHIDElement_GetCalibrationSaturationMax( inIOHIDElementRef );
+		pConfigRec->element.minReport = (int)IOHIDElement_GetCalibrationSaturationMin( inIOHIDElementRef );
+		pConfigRec->element.maxReport = (int)IOHIDElement_GetCalibrationSaturationMax( inIOHIDElementRef );
 		pConfigRec->element.cookie = IOHIDElementGetCookie( inIOHIDElementRef );
 	} else {
 		pConfigRec->device.vendorID = 0;

@@ -258,6 +258,8 @@
 		AA9BFB50178F1894003673D9 /* CIAdditiveBlur.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AAEBBA1214FD65CE000DA6F9 /* CIAdditiveBlur.cikernel */; };
 		AA9BFB51178F1899003673D9 /* CIAlphaBlend.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AAEBB8AC14FC1839000DA6F9 /* CIAlphaBlend.cikernel */; };
 		AA9BFB52178F189D003673D9 /* CIAlphaFade.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AA555FC912AEF39600C882FF /* CIAlphaFade.cikernel */; };
+		AA9BFB56178F19DE003673D9 /* v8.h in Headers */ = {isa = PBXBuildFile; fileRef = AA9BFB54178F19DE003673D9 /* v8.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB57178F19DE003673D9 /* v8stdint.h in Headers */ = {isa = PBXBuildFile; fileRef = AA9BFB55178F19DE003673D9 /* v8stdint.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AAB50B5F14DD4956002F385C /* processing_sample1.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AAB50B5914DD493E002F385C /* processing_sample1.js */; };
 		AAB50B6014DD4956002F385C /* processing_sample2.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AAB50B5A14DD493E002F385C /* processing_sample2.js */; };
 		AAB50B6114DD4956002F385C /* processing_sample3.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AAB50B5B14DD493E002F385C /* processing_sample3.js */; };
@@ -561,6 +563,8 @@
 		AA9BFA67178F0FB2003673D9 /* JMXCore-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "JMXCore-Info.plist"; sourceTree = "<group>"; };
 		AA9BFA69178F0FB2003673D9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AA9BFA6B178F0FB2003673D9 /* JMXCore-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "JMXCore-Prefix.pch"; sourceTree = "<group>"; };
+		AA9BFB54178F19DE003673D9 /* v8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = v8.h; path = node.js/deps/v8/include/v8.h; sourceTree = SOURCE_ROOT; };
+		AA9BFB55178F19DE003673D9 /* v8stdint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = v8stdint.h; path = node.js/deps/v8/include/v8stdint.h; sourceTree = SOURCE_ROOT; };
 		AA9C17FA12E200C400329158 /* JMXCanvasElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXCanvasElement.h; sourceTree = "<group>"; };
 		AA9C17FB12E200C400329158 /* JMXCanvasElement.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXCanvasElement.mm; sourceTree = "<group>"; };
 		AA9C18D812E2FC1000329158 /* JMXCanvasGradient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXCanvasGradient.h; sourceTree = "<group>"; };
@@ -1001,6 +1005,7 @@
 		AA830A2614AB4CD900E7F544 /* V8+DOM */ = {
 			isa = PBXGroup;
 			children = (
+				AA9BFB53178F19C1003673D9 /* externals */,
 				AA9B58D514FE1E4F00F63C33 /* NSNumber+V8.h */,
 				AA9B58D614FE1E4F00F63C33 /* NSNumber+V8.mm */,
 				AA9B58D714FE1E4F00F63C33 /* NSString+V8.h */,
@@ -1251,6 +1256,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		AA9BFB53178F19C1003673D9 /* externals */ = {
+			isa = PBXGroup;
+			children = (
+				AA9BFB54178F19DE003673D9 /* v8.h */,
+				AA9BFB55178F19DE003673D9 /* v8stdint.h */,
+			);
+			name = externals;
+			sourceTree = "<group>";
+		};
 		AAEF97F514FA5BD8006B9F8B /* HID Utilities */ = {
 			isa = PBXGroup;
 			children = (
@@ -1398,6 +1412,8 @@
 				AA9BFB4D178F1808003673D9 /* JMXSoftScreen.h in Headers */,
 				AA9BFB4E178F1808003673D9 /* JMXScriptFile.h in Headers */,
 				AA9BFB4F178F1808003673D9 /* JMXScriptLive.h in Headers */,
+				AA9BFB56178F19DE003673D9 /* v8.h in Headers */,
+				AA9BFB57178F19DE003673D9 /* v8stdint.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

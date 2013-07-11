@@ -295,8 +295,8 @@
     
     [self genImage];
     
-    int pxWidth = CVPixelBufferGetWidth(pixelBuffer);
-    int pxHeight = CVPixelBufferGetHeight(pixelBuffer);
+    size_t pxWidth = CVPixelBufferGetWidth(pixelBuffer);
+    size_t pxHeight = CVPixelBufferGetHeight(pixelBuffer);
     CVPixelBufferLockBaseAddress(pixelBuffer, 0);
     void *rasterData = CVPixelBufferGetBaseAddress(pixelBuffer);
     size_t bytesPerRow = CVPixelBufferGetBytesPerRow(pixelBuffer);

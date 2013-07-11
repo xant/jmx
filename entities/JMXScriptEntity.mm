@@ -316,7 +316,7 @@ static v8::Handle<Value>GetEntities(Local<String> name, const AccessorInfo& info
     JMXScriptEntity *entity = (JMXScriptEntity *)info.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSArray *entities = [entity elementsForName:@"Entities"];
-    v8::Handle<Array> list = Array::New(entities.count);
+    v8::Handle<Array> list = Array::New((int)entities.count);
     if (entities.count) {
         JMXElement *holder = [entities objectAtIndex:0];
         int cnt = 0;

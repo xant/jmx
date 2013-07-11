@@ -133,7 +133,7 @@ static v8::Handle<Value>availableDevices(const Arguments& args)
     HandleScope handleScope;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSArray *availableDevices = [JMXCoreAudioOutput availableDevices];
-    v8::Handle<Array> list = Array::New([availableDevices count]);
+    v8::Handle<Array> list = Array::New((int)[availableDevices count]);
     for (int i = 0; i < [availableDevices count]; i++) {
         list->Set(i, String::New([[availableDevices objectAtIndex:i] UTF8String]));
     }

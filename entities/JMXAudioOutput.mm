@@ -192,7 +192,7 @@ static OSStatus _FillComplexBufferProc (
     }
     OSStatus err = noErr;
     CallbackContext callbackContext;
-    UInt32 framesRead = [buffer numFrames];
+    UInt32 framesRead = (UInt32)[buffer numFrames];
     // TODO - check if framesRead is > 512
     outputBufferList->mBuffers[0].mDataByteSize = outputDescription.mBytesPerFrame * outputDescription.mChannelsPerFrame * framesRead;
     outputBufferList->mBuffers[0].mData = ((char *)convertedBuffer)+(convertedOffset++%kJMXAudioOutputConvertedBufferSize)*chunkSize;

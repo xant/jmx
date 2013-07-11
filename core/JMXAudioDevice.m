@@ -1148,14 +1148,14 @@ finish:
 	AudioDevicePropertyID thePropertyID;
 	BOOL hasVolumeInfoDidChangeMethod = false;
 	
-	theDeviceID = [[theUserInfo objectForKey:kJMXAudioDeviceIDKey] unsignedLongValue];
+	theDeviceID = [[theUserInfo objectForKey:kJMXAudioDeviceIDKey] unsignedIntValue];
     
 	// if (delegate && (theDeviceID == deviceID))
 	if (theDeviceID == deviceID)
 	{
 		theDirection = ( [[theUserInfo objectForKey:kJMXAudioDirectionKey] boolValue] ) ? kJMXAudioInput : kJMXAudioOutput ;
-		theChannel = [[theUserInfo objectForKey:kJMXAudioChannelKey] unsignedLongValue];
-		thePropertyID = [[theUserInfo objectForKey:kJMXAudioPropertyIDKey] unsignedLongValue];
+		theChannel = [[theUserInfo objectForKey:kJMXAudioChannelKey] unsignedIntValue];
+		thePropertyID = [[theUserInfo objectForKey:kJMXAudioPropertyIDKey] unsignedIntValue];
         
 		switch (thePropertyID)
 		{

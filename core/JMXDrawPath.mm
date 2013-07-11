@@ -1381,7 +1381,7 @@ static v8::Handle<Value> StrokeText(const Arguments& args)
     if (args.Length() >= 3) {
         int maxWidth = 0;
         if (args.Length() > 3) { // maxWidth has been provided
-            maxWidth = args[2]->IntegerValue();
+            maxWidth = (int)args[2]->IntegerValue();
             if (maxWidth == 0) // The spec says to stop doing anything if 0 has been passed as maxWidth
                 return handleScope.Close(v8::Undefined());
         }
@@ -1404,7 +1404,7 @@ static v8::Handle<Value> FillText(const Arguments& args)
     if (args.Length() >= 3) {
         int maxWidth = 0;
         if (args.Length() > 3) { // maxWidth has been provided
-            maxWidth = args[2]->IntegerValue();
+            maxWidth = (int)args[2]->IntegerValue();
             if (maxWidth == 0) // The spec says to stop doing anything if 0 has been passed as maxWidth
                 return handleScope.Close(v8::Undefined());
         }

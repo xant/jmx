@@ -343,7 +343,7 @@ CFArrayRef IOHIDDevice_GetUsagePairs( IOHIDDeviceRef inIOHIDDeviceRef )
 
 uint32_t IOHIDDevice_GetPrimaryUsage( IOHIDDeviceRef inIOHIDDeviceRef )
 {
-	long result = 0;
+	uint32_t result = 0;
 	( void ) IOHIDDevice_GetLongProperty( inIOHIDDeviceRef, CFSTR( kIOHIDPrimaryUsageKey ), (long *)&result );
 	return result;
 }
@@ -361,7 +361,7 @@ uint32_t IOHIDDevice_GetPrimaryUsage( IOHIDDeviceRef inIOHIDDeviceRef )
 
 uint32_t IOHIDDevice_GetPrimaryUsagePage( IOHIDDeviceRef inIOHIDDeviceRef )
 {
-	long result = 0;
+	uint32_t result = 0;
 	( void ) IOHIDDevice_GetLongProperty( inIOHIDDeviceRef, CFSTR( kIOHIDPrimaryUsagePageKey ), (long *)&result );
 	return result;
 }

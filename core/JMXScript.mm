@@ -57,7 +57,7 @@
 #import "NSObject+V8.h"
 
 #include "node_natives_jmx.h"
-#include "node_String.h"
+#include "node_string.h"
 
 using namespace v8;
 using namespace std;
@@ -331,7 +331,7 @@ static v8::Handle<Value> Include(const Arguments& args) {
     BOOL ret = NO;
     if (fh) {
         NSData *data = [fh readDataToEndOfFile];
-        ret = ExecJSCode((const char *)[data bytes], [data length], [path UTF8String]);
+        ret = ExecJSCode((const char *)[data bytes], (uint32_t)[data length], [path UTF8String]);
     }
     [pool release];
     return scope.Close(v8::Boolean::New(ret ? 1 : 0));
@@ -681,7 +681,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
     v8::Context::Scope context_scope(ctx);
     JMXScriptTimer *foo = timer.userInfo;
     if (foo.statements && [foo.statements length]) {
-        ExecJSCode([foo.statements UTF8String], [foo.statements length], "JMXScriptTimeout");
+        ExecJSCode([foo.statements UTF8String], (uint32_t)[foo.statements length], "JMXScriptTimeout");
         if (!foo.repeats) {
             [foo.timer invalidate];
             [runloopTimers removeObject:foo];
@@ -714,7 +714,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
     v8::Locker locker;
     HandleScope handleScope;
     v8::TryCatch try_catch;
-    v8::Handle<Value> ret = function->Call(function, count, argv);
+    v8::Handle<Value> ret = function->Call(function, (int)count, argv);
     if (ret.IsEmpty()) {
         ReportException(&try_catch);
         return Undefined();
@@ -877,7 +877,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
 
 - (BOOL)execCode:(NSString *)code
 {
-    return ExecJSCode((const char *)[code UTF8String], [code length], "code");
+    return ExecJSCode((const char *)[code UTF8String], (uint32_t)[code length], "code");
 }
 
 - (BOOL)runScript:(NSString *)script withArgs:(NSArray *)args
@@ -890,7 +890,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
     
     
     if (args && args.count) {
-        v8::Handle<Array> argv = Array::New([args count]);
+        v8::Handle<Array> argv = Array::New((int)[args count]);
         int cnt = 0;
         for (id arg in args) {
             if ([arg respondsToSelector:@selector(jsoObj)])
@@ -907,7 +907,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
     BOOL ret = NO;
     {
         v8::Unlocker unlocker;
-        ret = ExecJSCode([script UTF8String], [script length],
+        ret = ExecJSCode([script UTF8String], (uint32_t)[script length],
                               scriptEntity
                                   ? [scriptEntity.label UTF8String]
                                   : [[NSString stringWithFormat:@"%@", self] UTF8String]);

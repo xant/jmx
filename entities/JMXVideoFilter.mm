@@ -98,7 +98,7 @@ static v8::Handle<Value> AvailableFilters(const Arguments& args)
         Class objcClass = (Class)External::Cast(*(args.Holder()->Get(String::NewSymbol("_objcClass"))))->Value();
         availableFilters = [objcClass availableFilters];
     }
-    v8::Handle<Array> list = v8::Array::New([availableFilters count]);
+    v8::Handle<Array> list = v8::Array::New((int)[availableFilters count]);
     for (int i = 0; i < [availableFilters count]; i++) {
         list->Set(Number::New(i), String::New([[availableFilters objectAtIndex:i] UTF8String]));
     }

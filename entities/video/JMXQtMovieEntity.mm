@@ -178,7 +178,7 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
                 int numFrames = buffer->mDataByteSize / desc->mBytesPerFrame;
                 for (int n = 0; n < numFrames; n+= 512) {
                     AudioBuffer newBuffer;
-                    newBuffer.mDataByteSize = MIN((numFrames - n) * desc->mBytesPerFrame, chunkSize);
+                    newBuffer.mDataByteSize = (UInt32)MIN((numFrames - n) * desc->mBytesPerFrame, chunkSize);
                     newBuffer.mNumberChannels = buffer->mNumberChannels;
                     newBuffer.mData = (char *)buffer->mData + (n * desc->mBytesPerFrame);
                     JMXAudioBuffer *outputBuffer = [JMXAudioBuffer audioBufferWithCoreAudioBuffer:&newBuffer andFormat:desc];
@@ -600,7 +600,7 @@ static v8::Handle<Value>SupportedFileTypes(const Arguments& args)
         Class<JMXFileRead> objcClass = (Class)External::Cast(*(args.Holder()->Get(String::NewSymbol("_objcClass"))))->Value();
         supportedTypes = [objcClass supportedFileTypes];
     }
-    v8::Handle<Array> list = v8::Array::New([supportedTypes count]);
+    v8::Handle<Array> list = v8::Array::New((int)[supportedTypes count]);
     for (int i = 0; i < [supportedTypes count]; i++)
         list->Set(Number::New(i), String::New([[supportedTypes objectAtIndex:i] UTF8String]));
     [pool release];

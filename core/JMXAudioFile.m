@@ -165,11 +165,11 @@
 	
 	// Read all the data into memory
 	//UInt32 theFramesToRead = (UInt32)theFileLengthInFrames;		
-	UInt32 dataSize = numFrames * theOutputFormat.mBytesPerFrame;
+	UInt32 dataSize = (UInt32)numFrames * theOutputFormat.mBytesPerFrame;
 	data = malloc(dataSize);
 	if (data)
 	{
-        UInt32 nFrames = numFrames;
+        UInt32 nFrames = (UInt32)numFrames;
 		AudioBufferList		*theDataBuffer = calloc(1, sizeof(AudioBufferList));
 		theDataBuffer->mNumberBuffers = 1;
 		theDataBuffer->mBuffers[0].mDataByteSize = dataSize;

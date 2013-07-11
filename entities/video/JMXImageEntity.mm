@@ -222,7 +222,7 @@ static v8::Handle<Value>SupportedFileTypes(const Arguments& args)
         Class<JMXFileRead> objcClass = (Class)External::Cast(*(args.Holder()->Get(String::NewSymbol("_objcClass"))))->Value();
         supportedTypes = [objcClass supportedFileTypes];
     }
-    v8::Handle<Array> list = v8::Array::New([supportedTypes count]);
+    v8::Handle<Array> list = v8::Array::New((int)[supportedTypes count]);
     for (int i = 0; i < [supportedTypes count]; i++)
         list->Set(Number::New(i), String::New([[supportedTypes objectAtIndex:i] UTF8String]));
     [pool release];

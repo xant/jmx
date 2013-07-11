@@ -162,7 +162,7 @@
 - (OSStatus)fillComplexBuffer:(AudioBufferList *)ioData countPointer:(UInt32 *)ioNumberFrames offset:(UInt32)offset
 {
 	unsigned i;
-	unsigned framesInBuffer = [self numFrames];
+	unsigned framesInBuffer = (unsigned)[self numFrames];
 	
 	*ioNumberFrames = MIN ( *ioNumberFrames, framesInBuffer );
 

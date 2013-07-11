@@ -702,7 +702,7 @@ static v8::Handle<Value>type(Local<String> name, const AccessorInfo& info)
     JMXPin *pin = (JMXPin *)info.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSString *typeName = [pin typeName];
-    v8::Handle<String> ret = String::New([typeName UTF8String], [typeName length]);
+    v8::Handle<String> ret = String::New([typeName UTF8String], (int)[typeName length]);
     [pool drain];
     return handle_scope.Close(ret);
 }
@@ -714,7 +714,7 @@ static v8::Handle<Value>mode(Local<String> name, const AccessorInfo& info)
     JMXPin *pin = (JMXPin *)info.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSString *modeName = [pin modeName];
-    v8::Handle<String> ret = String::New([modeName UTF8String], [modeName length]);
+    v8::Handle<String> ret = String::New([modeName UTF8String], (int)[modeName length]);
     [pool drain];
     return handle_scope.Close(ret);
 }
@@ -732,7 +732,7 @@ static v8::Handle<Value>connect(const Arguments& args)
         {
             v8::Unlocker unlocker;
             wrapper = [ctx.scriptEntity wrapPin:pin
-                                                        withFunction:Persistent<Function>::New(Handle<Function>::Cast(args[0]))];
+                                   withFunction:Persistent<Function>::New(Handle<Function>::Cast(args[0]))];
             [pool release];
         }
         if (wrapper)

@@ -179,7 +179,7 @@ static int _defaultFrequencies[kJMXAudioSpectrumNumFrequencies] =
                 break;
             case 2:
                 {
-                    UInt32 numFrames = [sample numFrames];
+                    UInt32 numFrames = (UInt32)[sample numFrames];
                     for (int j = 0; j < numFrames; j++) {
                         uint8_t *frame = ((uint8_t *)bufferList->mBuffers[0].mData) + (j*8);
                         memcpy((u_char *)deinterleavedBuffer->mBuffers[0].mData+(j*4), frame, 4);
@@ -203,7 +203,7 @@ static int _defaultFrequencies[kJMXAudioSpectrumNumFrequencies] =
             // TODO - error messages
             return;
         }
-        [analyzer processForwards:[sample numFrames] input:deinterleavedBuffer];
+        [analyzer processForwards:(UInt32)[sample numFrames] input:deinterleavedBuffer];
 
         [analyzer getMagnitude:spectrumBuffer min:minAmp max:maxAmp];
         
@@ -244,7 +244,7 @@ static int _defaultFrequencies[kJMXAudioSpectrumNumFrequencies] =
 
 - (int)numberOfFrequencies
 {
-    return [frequencies count];
+    return (int)[frequencies count];
 }
 
 - (int)frequencyAtIndex:(NSUInteger)index
@@ -274,7 +274,7 @@ static v8::Handle<Value> frequency(const Arguments& args)
     HandleScope handleScope;
     JMXAudioSpectrumAnalyzer *entity = (JMXAudioSpectrumAnalyzer *)args.Holder()->GetPointerFromInternalField(0);
     v8::Handle<Value> arg = args[0];
-    int freq = args[0]->IntegerValue();
+    int freq = (int)args[0]->IntegerValue();
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSString *label = freq < 1000
                     ? [NSString stringWithFormat:@"%d", freq]

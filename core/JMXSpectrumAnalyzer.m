@@ -79,7 +79,7 @@ static inline UInt32 Log2Ceil(UInt32 x)
 // next power of two greater or equal to x
 static inline UInt32 NextPowerOfTwo(UInt32 x)
 {
-	return 1L << Log2Ceil(x);
+	return (UInt32)(1L << Log2Ceil(x));
 }
 
 
@@ -366,7 +366,7 @@ const double two_pi = 2. * M_PI;
 - (void)copyInput:(AudioBufferList *)input frames:(UInt32)numFrames
 {
     int i;
-    int channelsNum = MIN([channels count], input->mNumberBuffers);
+    int channelsNum = (int)MIN([channels count], input->mNumberBuffers);
     // TODO - deinterleave
     for (i = 0; i < channelsNum; i++) {
         JMXSpectralChannel *channel = [channels objectAtIndex:i];

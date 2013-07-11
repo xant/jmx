@@ -121,7 +121,7 @@ static void JMXIOHIDReportCallback(
     }
     JMXHIDDeviceReport *reportBuffer = [[[JMXHIDDeviceReport alloc]
                                          initWithReport:report
-                                         length:reportLength
+                                         length:(uint32_t)reportLength
                                          type:reportType] autorelease];
     
     if (device.delegate)
@@ -186,7 +186,7 @@ static void JMXIOHIDRemoveCallback(void *context, IOReturn result, void *sender)
     if (self) {
         deviceRef = aDeviceRef;
         IOReturn tIOReturn = IOHIDDeviceOpen(deviceRef, kIOHIDOptionsTypeNone);
-        require_noerr(tIOReturn, Oops);
+        //require_noerr(tIOReturn, Oops);
         IOHIDDeviceRegisterInputValueCallback(deviceRef, JMXIOHIDValueCallback, self);
         uint8_t *buffer = malloc(255);
         IOHIDDeviceRegisterInputReportCallback(deviceRef, buffer, 255, JMXIOHIDReportCallback, self);

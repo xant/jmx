@@ -12,13 +12,13 @@
 @interface JMXByteArray : NSObject <JMXV8>
 {
     uint8_t *buffer;
-    int  size;
+    size_t  size;
     BOOL copy;
     BOOL mustFreeOnRelease;
 }
 
 @property (readonly) uint8_t *buffer;
-@property (readonly) int size;
+@property (readonly) size_t size;
 
 + (id)byteArrayWithBytes:(uint8_t *)bytes length:(size_t)length;
 

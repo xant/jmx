@@ -154,7 +154,7 @@ static v8::Handle<Value> AvailableDevices(const Arguments& args)
         Class objcClass = (Class)External::Cast(*(args.Holder()->Get(String::NewSymbol("_objcClass"))))->Value();
         availableDevices = [objcClass availableDevices];
     }
-    v8::Handle<Array> list = v8::Array::New([availableDevices count]);
+    v8::Handle<Array> list = v8::Array::New((int)[availableDevices count]);
     for (int i = 0; i < [availableDevices count]; i++) {
         list->Set(Number::New(i), String::New([[availableDevices objectAtIndex:i] UTF8String]));
     }

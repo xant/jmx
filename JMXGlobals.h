@@ -9,17 +9,12 @@
 
 // Generic syslog based logging
 
-@protocol JMXApplication
-
-- (void)logMessage:(NSString *)message, ...;
-
-@end
-
 #ifndef __JMXGLOBALS_H__
 #define __JMXGLOBALS_H__
 
 #include <syslog.h>
 #import <Foundation/NSObjCRuntime.h>
+#import "JMXApplicationDelegate.h"
 
 #define LOG_DEBUG2              (LOG_DEBUG+1)
 #define LOG_DEBUG3              (LOG_DEBUG+2)
@@ -41,7 +36,7 @@
 #define VERBOSE_DEFAULT         LOG_WARNING     //!< \brief default verbose level (syslog LOG_* value)
 
 
-#define NSLog(__format, args...) do { [(id<JMXApplication>)[[NSApplication sharedApplication] delegate]\
+#define NSLog(__format, args...) do { [(id<JMXApplicationDelegate>)[[NSApplication sharedApplication] delegate]\
                                                           logMessage:__format, ## args ];\
                                     } while (0)
 

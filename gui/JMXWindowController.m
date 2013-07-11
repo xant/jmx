@@ -28,7 +28,7 @@
 - (void)windowDidLoad
 {
     NSLog(@"Entering viewDidLoad\n");
-    JMXAppDelegate *appDelegate = [[NSApplication sharedApplication] delegate];
+    JMXAppDelegate *appDelegate = (JMXAppDelegate *)[[NSApplication sharedApplication] delegate];
     if (appDelegate.batchMode) {
         [self.window close];
         //self.window = nil;

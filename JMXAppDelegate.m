@@ -21,92 +21,33 @@
 //  along with JMX.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#import "JMXAppDelegate.h"
+#import "JMXApplication.h"
 #import "JMXContext.h"
-#import "JMXVideoMixer.h"
-#import "JMXQtMovieEntity.h"
-#import "JMXOpenGLScreen.h"
-#import "JMXImageEntity.h"
-#import "JMXQtVideoCaptureEntity.h"
-#import "JMXAudioFileEntity.h"
-#import "JMXCoreAudioOutput.h"
-#import "JMXQtAudioCaptureEntity.h"
-#import "JMXAudioMixer.h"
-#import "JMXAudioSpectrumAnalyzer.h"
-#import "JMXCoreImageFilter.h"
-#import "JMXTextEntity.h"
-#import "JMXScriptFile.h"
-#import "JMXScriptLive.h"
-//#import "JMXPhidgetEncoderEntity.h"
-#import "JMXAudioToneGenerator.h"
 #import "JMXGlobals.h"
 #import "JMXLibraryTableView.h"
-#import "JMXHIDInputEntity.h"
-#import "JMXAudioDumper.h"
-#import "CIAlphaBlend.h"
-#import "CIAlphaFade.h"
-#import "CIAdditiveBlur.h"
+#import <JMXScriptFile.h>
 #import <QTKit/QTKit.h>
 
 @implementation JMXAppDelegate
 
-@synthesize window, batchMode, consoleView, libraryTableView;
+@synthesize window, consoleView, libraryTableView;
 
 - (void)applicationWillFinishLaunching:(NSNotification *)notification {
-	JMXContext *sharedContext = [JMXContext sharedContext];
-	[sharedContext registerClass:[JMXVideoMixer class]];
-	[sharedContext registerClass:[JMXImageEntity class]];
-	[sharedContext registerClass:[JMXOpenGLScreen class]];
-	[sharedContext registerClass:[JMXQtVideoCaptureEntity class]];
-	[sharedContext registerClass:[JMXQtMovieEntity class]];
-	[sharedContext registerClass:[JMXCoreAudioOutput class]];
-	[sharedContext registerClass:[JMXQtAudioCaptureEntity class]];
-	[sharedContext registerClass:[JMXAudioFileEntity class]];
-	[sharedContext registerClass:[JMXAudioMixer class]];
-    [sharedContext registerClass:[JMXAudioSpectrumAnalyzer class]];
-    [sharedContext registerClass:[JMXCoreImageFilter class]];
-	[sharedContext registerClass:[JMXTextEntity class]];
-    [sharedContext registerClass:[JMXScriptFile class]];
-    [sharedContext registerClass:[JMXScriptLive class]];
-    [sharedContext registerClass:[JMXHIDInputEntity class]];
-    [sharedContext registerClass:[JMXAudioToneGenerator class]];
-    [sharedContext registerClass:[JMXAudioDumper class]];
-    
-    //[QTMovie initialize];
-    [CIAlphaFade class];
-    [CIAlphaBlend class]; // trigger initialize to have the filter registered and available in the videomixer
-    [CIAdditiveBlur class];
-//    if (CPhidgetEncoder_create != NULL) {
-//        // XXX - exception case for weakly linked Phidget library
-//        //       if it's not available at runtime we don't want to register the phidget-related entities
-//        //       or the application will crash when the user tries accessing them
-//        [sharedContext registerClass:[JMXPhidgetEncoderEntity class]];
-//    }
-	INFO("Registered %ul entities", (unsigned int)[[sharedContext registeredClasses] count]);
-    [libraryTableView reloadData];
-    
+    [super applicationWillFinishLaunching:notification];
+    [libraryTableView reloadData];    
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
 {
-    if (argv.count) {
-        JMXScriptFile *file = [[JMXScriptFile alloc] init];
-        
-        file.active = YES;
-        batchMode = YES;
-        NSString *filePath = [argv objectAtIndex:0];
-        [argv removeObjectAtIndex:0];
-        file.arguments = argv;
-        file.path = filePath;
+    [super applicationDidFinishLaunching:notification];
+    if (self.batchMode) {
         [window setIsVisible:NO];
     }
-
 }
 
 - (void)awakeFromNib
 {
     [super awakeFromNib];
-    argv = [[NSMutableArray alloc] initWithCapacity:10];
 }
 
 
@@ -117,14 +58,6 @@
     // but since we are to be considered 'immutable' we can adopt what described at the end of :
     // http://developer.apple.com/mac/library/documentation/cocoa/conceptual/MemoryMgmt/Articles/mmImplementCopy.html
     return [self retain];
-}
-
-- (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename
-{
-    [argv addObject:filename];
-    if (argv.count == 1)
-        return YES;
-    return NO;
 }
 
 - (void)updateOutput:(NSString*)msg
@@ -154,7 +87,7 @@
         [self performSelectorOnMainThread:@selector(updateOutput:)
                                withObject:msg waitUntilDone:NO];
     } else if (message) {
-        NSLogv(message, args);
+        [super logMessage:message args:args];
     }
     va_end(args);
 }

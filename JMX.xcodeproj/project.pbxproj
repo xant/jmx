@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		256AC3DA0F4B6AC300CF3369 /* JMXAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* JMXAppDelegate.m */; };
-		82456BCC1223DCA700236FE4 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BCB1223DCA700236FE4 /* QuartzCore.framework */; };
 		824576451227DF5800236FE4 /* JMXPinLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8245763D1227DF5800236FE4 /* JMXPinLayer.m */; };
 		825C30DC1275AD32006376B8 /* JMXBoardInputString.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30C91275AD32006376B8 /* JMXBoardInputString.m */; };
 		825C30DD1275AD32006376B8 /* JMXBoardSelection.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30CB1275AD32006376B8 /* JMXBoardSelection.m */; };
@@ -28,110 +27,7 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		AA08D33B14B5AA4500D19015 /* JMXCodePanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA08D33A14B5AA4400D19015 /* JMXCodePanel.m */; };
-		AA0A89BD1675E02800FF784F /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0A89BC1675E02800FF784F /* AudioUnit.framework */; };
-		AA2C747216DFA7B400B623C2 /* NSNumber+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9B58D614FE1E4F00F63C33 /* NSNumber+V8.mm */; };
-		AA2C747316DFA7B400B623C2 /* NSString+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9B58D814FE1E4F00F63C33 /* NSString+V8.mm */; };
-		AA2C747416DFA7B400B623C2 /* NSObject+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF982514FAE810006B9F8B /* NSObject+V8.mm */; };
-		AA2C747516DFA7B400B623C2 /* NSDictionary+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF982214FAE6B7006B9F8B /* NSDictionary+V8.mm */; };
-		AA2C747616DFA7B400B623C2 /* NSXMLNode+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6334512D36DA900B69DFE /* NSXMLNode+V8.mm */; };
-		AA2C747716DFA7B400B623C2 /* NSFont+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACCC73E14A921B500D44D71 /* NSFont+V8.mm */; };
-		AA2C747816DFA7B400B623C2 /* JMXV8PropertyAccessors.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACE7D321293195600FBDC0D /* JMXV8PropertyAccessors.mm */; };
-		AA2C747916DFA7B400B623C2 /* JMXGraph.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6323012CFC72B00B69DFE /* JMXGraph.mm */; };
-		AA2C747A16DFA7B400B623C2 /* JMXElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6323B12CFCAB900B69DFE /* JMXElement.mm */; };
-		AA2C747B16DFA7B400B623C2 /* JMXGraphFragment.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA1E53AC14AE114D00F80337 /* JMXGraphFragment.mm */; };
-		AA2C747C16DFA7B400B623C2 /* JMXCDATA.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6376212D5099400B69DFE /* JMXCDATA.mm */; };
-		AA2C747D16DFA7B400B623C2 /* JMXAttribute.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC637DF12D5204C00B69DFE /* JMXAttribute.mm */; };
-		AA2C747E16DFA7B400B623C2 /* JMXPoint.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C313B1275ADD7006376B8 /* JMXPoint.mm */; };
-		AA2C747F16DFA7B400B623C2 /* NSColor+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD13C49128EF2AB00ECB03A /* NSColor+V8.mm */; };
-		AA2C748016DFA7B400B623C2 /* JMXSize.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31411275ADD7006376B8 /* JMXSize.mm */; };
-		AA2C748116DFA7B400B623C2 /* JMXRect.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C19D312E4BDD500329158 /* JMXRect.mm */; };
-		AA2C748216DFA7B400B623C2 /* JMXScript.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAFAAD87129095EB00949028 /* JMXScript.mm */; };
-		AA2C748316DFA7B400B623C2 /* JMXCanvasElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C17FB12E200C400329158 /* JMXCanvasElement.mm */; };
-		AA2C748416DFA7B400B623C2 /* JMXCanvasGradient.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C18D912E2FC1000329158 /* JMXCanvasGradient.mm */; };
-		AA2C748516DFA7B400B623C2 /* JMXCanvasPattern.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C190E12E32B0600329158 /* JMXCanvasPattern.mm */; };
-		AA2C748616DFA7B400B623C2 /* JMXImageElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C1A4812E5964C00329158 /* JMXImageElement.mm */; };
-		AA2C748716DFA7B400B623C2 /* JMXScriptTimer.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA93701C14CC2FFA001D9BB3 /* JMXScriptTimer.mm */; };
-		AA2C748816DFA7B400B623C2 /* JMXEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEA251B14D4D5A000533049 /* JMXEvent.mm */; };
-		AA2C748916DFA7B400B623C2 /* JMXImageData.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAB71A0614D6BF0200BE8C35 /* JMXImageData.mm */; };
-		AA2C748A16DFA7B400B623C2 /* JMXUint8ClampedArray.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAB71A0914D6D89D00BE8C35 /* JMXUint8ClampedArray.mm */; };
-		AA2C748B16DFA7B400B623C2 /* JMXByteArray.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF981F14FAD2ED006B9F8B /* JMXByteArray.mm */; };
-		AA2C748C16DFA7B400B623C2 /* JMXEventListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAB71A0C14D7585400BE8C35 /* JMXEventListener.mm */; };
-		AA2C748D16DFA7B400B623C2 /* JMXMouseEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD751D414E9462F008B1085 /* JMXMouseEvent.mm */; };
-		AA2C748E16DFA7B400B623C2 /* JMXKeyboardEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD751D714E98DD2008B1085 /* JMXKeyboardEvent.mm */; };
-		AA2C748F16DFA7B400B623C2 /* JMXScriptPinWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA02230E14D8BB8C00E7908F /* JMXScriptPinWrapper.mm */; };
-		AA2C749016DFA7B400B623C2 /* JMXScriptInputPin.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD751DA14E9AFF8008B1085 /* JMXScriptInputPin.mm */; };
-		AA2C749116DFA7B400B623C2 /* JMXScriptOutputPin.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD751DD14E9B017008B1085 /* JMXScriptOutputPin.mm */; };
-		AA2C749216DFA7D400B623C2 /* ImmrHIDUtilAddOn.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF980614FA5BFD006B9F8B /* ImmrHIDUtilAddOn.c */; };
-		AA2C749316DFA7D400B623C2 /* IOHIDDevice_.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF980814FA5BFD006B9F8B /* IOHIDDevice_.c */; };
-		AA2C749416DFA7D400B623C2 /* IOHIDElement_.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF980A14FA5BFD006B9F8B /* IOHIDElement_.c */; };
-		AA2C749516DFA7D400B623C2 /* HID_Utilities.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97F614FA5BF3006B9F8B /* HID_Utilities.c */; };
-		AA2C749616DFA7D400B623C2 /* HID_Queue_Utilities.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97F914FA5BF3006B9F8B /* HID_Queue_Utilities.c */; };
-		AA2C749716DFA7D400B623C2 /* HID_Name_Lookup.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97FB14FA5BF3006B9F8B /* HID_Name_Lookup.c */; };
-		AA2C749816DFA7D400B623C2 /* HID_Error_Handler.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97FD14FA5BF3006B9F8B /* HID_Error_Handler.c */; };
-		AA2C749916DFA7D400B623C2 /* HID_Config_Utilities.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97FF14FA5BF3006B9F8B /* HID_Config_Utilities.c */; };
-		AA2C750816DFA90D00B623C2 /* JMXRingBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C313D1275ADD7006376B8 /* JMXRingBuffer.m */; };
-		AA2C750916DFA90D00B623C2 /* JMXEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31301275ADD6006376B8 /* JMXEntity.mm */; };
-		AA2C750A16DFA90D00B623C2 /* JMXThreadedEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31451275ADD7006376B8 /* JMXThreadedEntity.mm */; };
-		AA2C750B16DFA90D00B623C2 /* JMXPin.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31371275ADD6006376B8 /* JMXPin.mm */; };
-		AA2C750C16DFA90D00B623C2 /* JMXInputPin.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31331275ADD6006376B8 /* JMXInputPin.m */; };
-		AA2C750D16DFA90D00B623C2 /* JMXOutputPin.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31351275ADD6006376B8 /* JMXOutputPin.m */; };
-		AA2C750E16DFA90D00B623C2 /* JMXProxyPin.m in Sources */ = {isa = PBXBuildFile; fileRef = AA4B00C812BE560100775B88 /* JMXProxyPin.m */; };
-		AA2C750F16DFA90D00B623C2 /* JMXPinSignal.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31391275ADD7006376B8 /* JMXPinSignal.m */; };
-		AA2C751016DFA90D00B623C2 /* JMXContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C312E1275ADD6006376B8 /* JMXContext.m */; };
-		AA2C751116DFA90D00B623C2 /* JMXScreenController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAD751D114E913FA008B1085 /* JMXScreenController.m */; };
-		AA2C751216DFA90D00B623C2 /* JMXHIDDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF981514FA5CFE006B9F8B /* JMXHIDDevice.m */; };
-		AA2C751316DFA91800B623C2 /* JMXTextRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3557001277347300EAA2E4 /* JMXTextRenderer.m */; };
-		AA2C751416DFA91800B623C2 /* JMXOpenGLDraw.mm in Sources */ = {isa = PBXBuildFile; fileRef = 82AD7F6F1289F3C300C85EB1 /* JMXOpenGLDraw.mm */; };
-		AA2C751516DFA91800B623C2 /* JMXDrawPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */; };
-		AA2C751616DFA92100B623C2 /* JMXAudioBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31241275ADD6006376B8 /* JMXAudioBuffer.m */; };
-		AA2C751716DFA92100B623C2 /* JMXAudioDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31261275ADD6006376B8 /* JMXAudioDevice.m */; };
-		AA2C751816DFA92100B623C2 /* JMXAudioFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31281275ADD6006376B8 /* JMXAudioFile.m */; };
-		AA2C751916DFA92100B623C2 /* JMXAudioFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C312A1275ADD6006376B8 /* JMXAudioFormat.m */; };
-		AA2C751A16DFA92100B623C2 /* JMXSpectrumAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31431275ADD7006376B8 /* JMXSpectrumAnalyzer.m */; };
-		AA2C751B16DFA93C00B623C2 /* CIAdditiveBlur.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEBBA1414FD65CF000DA6F9 /* CIAdditiveBlur.m */; };
-		AA2C751C16DFA93F00B623C2 /* CIAlphaBlend.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEBB9CC14FC6872000DA6F9 /* CIAlphaBlend.m */; };
-		AA2C751D16DFA94200B623C2 /* CIAlphaFade.m in Sources */ = {isa = PBXBuildFile; fileRef = AA555FC712AEF39600C882FF /* CIAlphaFade.m */; };
-		AA2C751F16DFA9BC00B623C2 /* JMXAudioCapture.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4B020812BED1BB00775B88 /* JMXAudioCapture.mm */; };
-		AA2C752016DFA9BC00B623C2 /* JMXAudioOutput.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31031275ADB6006376B8 /* JMXAudioOutput.mm */; };
-		AA2C752116DFA9BC00B623C2 /* JMXAudioSpectrumAnalyzer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31071275ADB6006376B8 /* JMXAudioSpectrumAnalyzer.mm */; };
-		AA2C752216DFA9BC00B623C2 /* JMXVideoEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C310B1275ADB6006376B8 /* JMXVideoEntity.mm */; };
-		AA2C752316DFA9BC00B623C2 /* JMXVideoCapture.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4B039B12C06C7600775B88 /* JMXVideoCapture.mm */; };
-		AA2C752416DFA9BC00B623C2 /* JMXVideoOutput.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C310F1275ADB6006376B8 /* JMXVideoOutput.mm */; };
-		AA2C752516DFA9BC00B623C2 /* JMXVideoFilter.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4BFC8312BD324A00775B88 /* JMXVideoFilter.mm */; };
-		AA2C752616DFA9BC00B623C2 /* JMXDrawEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA3557D912795C5500EAA2E4 /* JMXDrawEntity.mm */; };
-		AA2C752716DFA9BC00B623C2 /* JMXScriptEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */; };
-		AA2C752816DFA9BC00B623C2 /* JMXExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31091275ADB6006376B8 /* JMXExporter.m */; };
-		AA2C752A16DFA9BC00B623C2 /* JMXHIDInputEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF981C14FAB4E2006B9F8B /* JMXHIDInputEntity.mm */; };
-		AA2C752B16DFA9C200B623C2 /* JMXQtExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30E71275ADB6006376B8 /* JMXQtExporter.m */; };
-		AA2C752C16DFA9C700B623C2 /* JMXCoreImageFilter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30EA1275ADB6006376B8 /* JMXCoreImageFilter.mm */; };
-		AA2C752D16DFA9D000B623C2 /* JMXVideoMixer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C310D1275ADB6006376B8 /* JMXVideoMixer.mm */; };
-		AA2C752E16DFA9D000B623C2 /* JMXImageEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30EF1275ADB6006376B8 /* JMXImageEntity.mm */; };
-		AA2C752F16DFA9D000B623C2 /* JMXQtVideoCaptureEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30F31275ADB6006376B8 /* JMXQtVideoCaptureEntity.mm */; };
-		AA2C753016DFA9D000B623C2 /* JMXQtMovieEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30F51275ADB6006376B8 /* JMXQtMovieEntity.mm */; };
-		AA2C753116DFA9D000B623C2 /* JMXTextEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA3556F51277340200EAA2E4 /* JMXTextEntity.mm */; };
-		AA2C753216DFA9D700B623C2 /* JMXAudioMixer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31011275ADB6006376B8 /* JMXAudioMixer.mm */; };
-		AA2C753316DFA9D700B623C2 /* JMXAudioFileEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30ED1275ADB6006376B8 /* JMXAudioFileEntity.mm */; };
-		AA2C753416DFA9D700B623C2 /* JMXQtAudioCaptureEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30F11275ADB6006376B8 /* JMXQtAudioCaptureEntity.mm */; };
-		AA2C753516DFA9D700B623C2 /* JMXAudioToneGenerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA0A89BF1675E09C00FF784F /* JMXAudioToneGenerator.mm */; };
-		AA2C753616DFA9DD00B623C2 /* JMXCoreAudioOutput.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30F81275ADB6006376B8 /* JMXCoreAudioOutput.mm */; };
-		AA2C753716DFA9DD00B623C2 /* JMXQtAudioOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30FA1275ADB6006376B8 /* JMXQtAudioOutput.m */; };
-		AA2C753816DFA9E300B623C2 /* JMXOpenGLScreen.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30FD1275ADB6006376B8 /* JMXOpenGLScreen.mm */; };
-		AA2C753916DFA9E300B623C2 /* JMXSoftScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30FF1275ADB6006376B8 /* JMXSoftScreen.m */; };
-		AA2C753A16DFA9E900B623C2 /* JMXScriptFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8CB78D1282BB9900A17115 /* JMXScriptFile.mm */; };
-		AA2C753B16DFA9E900B623C2 /* JMXScriptLive.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8F806012C9D3FA00EA8543 /* JMXScriptLive.mm */; };
 		AA37E05214FA318500CBA0AE /* JMXDOMBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = AA37E05114FA318500CBA0AE /* JMXDOMBrowser.m */; };
-		AA447AC3178D7E8B00DA8700 /* libnode.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA447A9C178D7CE500DA8700 /* libnode.a */; };
-		AA447AC4178D7E8B00DA8700 /* libchrome_zlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA447A9D178D7CE500DA8700 /* libchrome_zlib.a */; };
-		AA447AC5178D7E8B00DA8700 /* libv8_nosnapshot.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA447A9E178D7CE500DA8700 /* libv8_nosnapshot.a */; };
-		AA447AC6178D7E8B00DA8700 /* libuv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA447A9F178D7CE500DA8700 /* libuv.a */; };
-		AA447AC7178D7E8B00DA8700 /* libopenssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA447AA0178D7CE500DA8700 /* libopenssl.a */; };
-		AA447AC8178D7E8B00DA8700 /* libcares.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA447AA1178D7CE500DA8700 /* libcares.a */; };
-		AA447AC9178D7E8B00DA8700 /* libhttp_parser.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA447AA2178D7CE500DA8700 /* libhttp_parser.a */; };
-		AA447ACC178D7F3700DA8700 /* libv8_base.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA447ACA178D7F2900DA8700 /* libv8_base.a */; };
-		AA447ACE178D803900DA8700 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA447ACD178D803900DA8700 /* libc++.dylib */; };
-		AA447AD2178D9A1D00DA8700 /* CIAdditiveBlur.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AAEBBA1214FD65CE000DA6F9 /* CIAdditiveBlur.cikernel */; };
-		AA447AD3178D9A1D00DA8700 /* CIAlphaBlend.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AAEBB8AC14FC1839000DA6F9 /* CIAlphaBlend.cikernel */; };
-		AA447AD4178D9A1D00DA8700 /* CIAlphaFade.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AA555FC912AEF39600C882FF /* CIAlphaFade.cikernel */; };
 		AA490DD214CC5F8E00407C0D /* draw_pixels.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA490DC314CC5F4900407C0D /* draw_pixels.js */; };
 		AA490DD314CC5F8E00407C0D /* filter_videofile.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA490DC414CC5F4900407C0D /* filter_videofile.js */; };
 		AA490DD414CC5F8E00407C0D /* play_mp3dir.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA490DC514CC5F4900407C0D /* play_mp3dir.js */; };
@@ -143,24 +39,225 @@
 		AA4CD9CE150D598D00152655 /* scratch_moviefile.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA4CD9C8150D596900152655 /* scratch_moviefile.js */; };
 		AA4CD9CF150D598D00152655 /* powermate.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA4CD9C9150D596900152655 /* powermate.js */; };
 		AA54B28B12A1215000EC60B2 /* jmx-icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = AA54B28A12A1215000EC60B2 /* jmx-icon.icns */; };
-		AA6D52CC178C04C70020BD4C /* libJMX-Core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2C746316DFA74000B623C2 /* libJMX-Core.a */; };
-		AA6D52CD178C055D0020BD4C /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE3F212353BA6006087E7 /* CoreAudio.framework */; };
-		AA6D52CE178C05750020BD4C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA70C830178AACF700190C38 /* Foundation.framework */; };
-		AA6D52CF178C05750020BD4C /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA678A47150CC47D00B2E8F7 /* CoreMedia.framework */; };
-		AA6D52D0178C05750020BD4C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA678A45150CBC1000B2E8F7 /* AVFoundation.framework */; };
-		AA6D52D1178C05750020BD4C /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEF981214FA5C3C006B9F8B /* Carbon.framework */; };
-		AA6D52D2178C05750020BD4C /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEF981014FA5C31006B9F8B /* IOKit.framework */; };
-		AA6D52D3178C05750020BD4C /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97324FDCFA39411CA2CEA /* AppKit.framework */; };
-		AA6D52D4178C05750020BD4C /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 13E42FB307B3F0F600E4EEF1 /* CoreData.framework */; };
-		AA6D52D5178C05750020BD4C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
-		AA6D52D6178C05750020BD4C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BC31223DC8300236FE4 /* OpenGL.framework */; };
-		AA6D52D7178C05750020BD4C /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BC71223DC9900236FE4 /* QTKit.framework */; };
-		AA6D52D8178C05750020BD4C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		AA6D52D9178C05750020BD4C /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE40A12353D5C006087E7 /* Accelerate.framework */; };
-		AA6D52DA178C05750020BD4C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */; };
 		AA75F38914F706FA00F1A214 /* drag_movies.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA75F38814F706E200F1A214 /* drag_movies.js */; };
 		AA8F817612CB236700EA8543 /* JMXTextPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8F817512CB236700EA8543 /* JMXTextPanel.m */; };
 		AA9BFA51178DA30F003673D9 /* JMXAudioDumper.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9BFA50178DA30F003673D9 /* JMXAudioDumper.mm */; };
+		AA9BFA60178F0FB2003673D9 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		AA9BFA6A178F0FB2003673D9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AA9BFA68178F0FB2003673D9 /* InfoPlist.strings */; };
+		AA9BFA72178F113D003673D9 /* HID_Utilities.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97F614FA5BF3006B9F8B /* HID_Utilities.c */; };
+		AA9BFA73178F113D003673D9 /* HID_Queue_Utilities.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97F914FA5BF3006B9F8B /* HID_Queue_Utilities.c */; };
+		AA9BFA74178F113D003673D9 /* HID_Name_Lookup.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97FB14FA5BF3006B9F8B /* HID_Name_Lookup.c */; };
+		AA9BFA75178F113D003673D9 /* HID_Error_Handler.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97FD14FA5BF3006B9F8B /* HID_Error_Handler.c */; };
+		AA9BFA76178F113D003673D9 /* HID_Config_Utilities.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97FF14FA5BF3006B9F8B /* HID_Config_Utilities.c */; };
+		AA9BFA77178F117C003673D9 /* NSNumber+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9B58D614FE1E4F00F63C33 /* NSNumber+V8.mm */; };
+		AA9BFA78178F117C003673D9 /* NSString+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9B58D814FE1E4F00F63C33 /* NSString+V8.mm */; };
+		AA9BFA79178F117C003673D9 /* NSObject+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF982514FAE810006B9F8B /* NSObject+V8.mm */; };
+		AA9BFA7A178F117C003673D9 /* NSDictionary+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF982214FAE6B7006B9F8B /* NSDictionary+V8.mm */; };
+		AA9BFA7B178F117C003673D9 /* NSXMLNode+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6334512D36DA900B69DFE /* NSXMLNode+V8.mm */; };
+		AA9BFA7C178F117C003673D9 /* NSFont+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACCC73E14A921B500D44D71 /* NSFont+V8.mm */; };
+		AA9BFA7D178F117C003673D9 /* JMXV8PropertyAccessors.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACE7D321293195600FBDC0D /* JMXV8PropertyAccessors.mm */; };
+		AA9BFA7E178F117C003673D9 /* JMXGraph.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6323012CFC72B00B69DFE /* JMXGraph.mm */; };
+		AA9BFA7F178F117C003673D9 /* JMXElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6323B12CFCAB900B69DFE /* JMXElement.mm */; };
+		AA9BFA80178F117C003673D9 /* JMXGraphFragment.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA1E53AC14AE114D00F80337 /* JMXGraphFragment.mm */; };
+		AA9BFA81178F117C003673D9 /* JMXCDATA.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC6376212D5099400B69DFE /* JMXCDATA.mm */; };
+		AA9BFA82178F117C003673D9 /* JMXAttribute.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAC637DF12D5204C00B69DFE /* JMXAttribute.mm */; };
+		AA9BFA83178F117C003673D9 /* JMXPoint.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C313B1275ADD7006376B8 /* JMXPoint.mm */; };
+		AA9BFA84178F117C003673D9 /* NSColor+V8.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD13C49128EF2AB00ECB03A /* NSColor+V8.mm */; };
+		AA9BFA85178F117C003673D9 /* JMXSize.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31411275ADD7006376B8 /* JMXSize.mm */; };
+		AA9BFA86178F117C003673D9 /* JMXRect.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C19D312E4BDD500329158 /* JMXRect.mm */; };
+		AA9BFA87178F117C003673D9 /* JMXScript.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAFAAD87129095EB00949028 /* JMXScript.mm */; };
+		AA9BFA88178F117C003673D9 /* JMXCanvasElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C17FB12E200C400329158 /* JMXCanvasElement.mm */; };
+		AA9BFA89178F117C003673D9 /* JMXCanvasGradient.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C18D912E2FC1000329158 /* JMXCanvasGradient.mm */; };
+		AA9BFA8A178F117C003673D9 /* JMXCanvasPattern.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C190E12E32B0600329158 /* JMXCanvasPattern.mm */; };
+		AA9BFA8B178F117C003673D9 /* JMXImageElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9C1A4812E5964C00329158 /* JMXImageElement.mm */; };
+		AA9BFA8C178F117C003673D9 /* JMXScriptTimer.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA93701C14CC2FFA001D9BB3 /* JMXScriptTimer.mm */; };
+		AA9BFA8D178F117C003673D9 /* JMXEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEA251B14D4D5A000533049 /* JMXEvent.mm */; };
+		AA9BFA8E178F117C003673D9 /* JMXImageData.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAB71A0614D6BF0200BE8C35 /* JMXImageData.mm */; };
+		AA9BFA8F178F117C003673D9 /* JMXUint8ClampedArray.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAB71A0914D6D89D00BE8C35 /* JMXUint8ClampedArray.mm */; };
+		AA9BFA90178F117C003673D9 /* JMXByteArray.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF981F14FAD2ED006B9F8B /* JMXByteArray.mm */; };
+		AA9BFA91178F117C003673D9 /* JMXEventListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAB71A0C14D7585400BE8C35 /* JMXEventListener.mm */; };
+		AA9BFA92178F117C003673D9 /* JMXMouseEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD751D414E9462F008B1085 /* JMXMouseEvent.mm */; };
+		AA9BFA93178F117C003673D9 /* JMXKeyboardEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD751D714E98DD2008B1085 /* JMXKeyboardEvent.mm */; };
+		AA9BFA94178F117C003673D9 /* JMXScriptPinWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA02230E14D8BB8C00E7908F /* JMXScriptPinWrapper.mm */; };
+		AA9BFA95178F117C003673D9 /* JMXScriptInputPin.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD751DA14E9AFF8008B1085 /* JMXScriptInputPin.mm */; };
+		AA9BFA96178F117C003673D9 /* JMXScriptOutputPin.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD751DD14E9B017008B1085 /* JMXScriptOutputPin.mm */; };
+		AA9BFA97178F1191003673D9 /* JMXRingBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C313D1275ADD7006376B8 /* JMXRingBuffer.m */; };
+		AA9BFA98178F1191003673D9 /* JMXEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31301275ADD6006376B8 /* JMXEntity.mm */; };
+		AA9BFA99178F1191003673D9 /* JMXThreadedEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31451275ADD7006376B8 /* JMXThreadedEntity.mm */; };
+		AA9BFA9A178F1191003673D9 /* JMXPin.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31371275ADD6006376B8 /* JMXPin.mm */; };
+		AA9BFA9B178F1191003673D9 /* JMXInputPin.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31331275ADD6006376B8 /* JMXInputPin.m */; };
+		AA9BFA9C178F1191003673D9 /* JMXOutputPin.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31351275ADD6006376B8 /* JMXOutputPin.m */; };
+		AA9BFA9D178F1191003673D9 /* JMXProxyPin.m in Sources */ = {isa = PBXBuildFile; fileRef = AA4B00C812BE560100775B88 /* JMXProxyPin.m */; };
+		AA9BFA9E178F1191003673D9 /* JMXPinSignal.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31391275ADD7006376B8 /* JMXPinSignal.m */; };
+		AA9BFA9F178F1191003673D9 /* JMXContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C312E1275ADD6006376B8 /* JMXContext.m */; };
+		AA9BFAA0178F1191003673D9 /* JMXScreenController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAD751D114E913FA008B1085 /* JMXScreenController.m */; };
+		AA9BFAA1178F1191003673D9 /* JMXHIDDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF981514FA5CFE006B9F8B /* JMXHIDDevice.m */; };
+		AA9BFAA2178F1191003673D9 /* JMXApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9BFA57178F0BC6003673D9 /* JMXApplication.m */; };
+		AA9BFAA3178F119A003673D9 /* JMXTextRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3557001277347300EAA2E4 /* JMXTextRenderer.m */; };
+		AA9BFAA4178F119A003673D9 /* JMXOpenGLDraw.mm in Sources */ = {isa = PBXBuildFile; fileRef = 82AD7F6F1289F3C300C85EB1 /* JMXOpenGLDraw.mm */; };
+		AA9BFAA5178F119A003673D9 /* JMXDrawPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */; };
+		AA9BFAA6178F11A3003673D9 /* JMXAudioBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31241275ADD6006376B8 /* JMXAudioBuffer.m */; };
+		AA9BFAA7178F11A3003673D9 /* JMXAudioDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31261275ADD6006376B8 /* JMXAudioDevice.m */; };
+		AA9BFAA8178F11A3003673D9 /* JMXAudioFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31281275ADD6006376B8 /* JMXAudioFile.m */; };
+		AA9BFAA9178F11A3003673D9 /* JMXAudioFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C312A1275ADD6006376B8 /* JMXAudioFormat.m */; };
+		AA9BFAAA178F11A3003673D9 /* JMXSpectrumAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31431275ADD7006376B8 /* JMXSpectrumAnalyzer.m */; };
+		AA9BFAAB178F11AB003673D9 /* CIAdditiveBlur.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEBBA1414FD65CF000DA6F9 /* CIAdditiveBlur.m */; };
+		AA9BFAAC178F11AB003673D9 /* CIAlphaBlend.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEBB9CC14FC6872000DA6F9 /* CIAlphaBlend.m */; };
+		AA9BFAAD178F11AB003673D9 /* CIAlphaFade.m in Sources */ = {isa = PBXBuildFile; fileRef = AA555FC712AEF39600C882FF /* CIAlphaFade.m */; };
+		AA9BFAAE178F11BF003673D9 /* JMXAudioCapture.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4B020812BED1BB00775B88 /* JMXAudioCapture.mm */; };
+		AA9BFAAF178F11BF003673D9 /* JMXAudioOutput.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31031275ADB6006376B8 /* JMXAudioOutput.mm */; };
+		AA9BFAB0178F11BF003673D9 /* JMXAudioSpectrumAnalyzer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31071275ADB6006376B8 /* JMXAudioSpectrumAnalyzer.mm */; };
+		AA9BFAB1178F11BF003673D9 /* JMXVideoEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C310B1275ADB6006376B8 /* JMXVideoEntity.mm */; };
+		AA9BFAB2178F11BF003673D9 /* JMXVideoCapture.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4B039B12C06C7600775B88 /* JMXVideoCapture.mm */; };
+		AA9BFAB3178F11BF003673D9 /* JMXVideoOutput.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C310F1275ADB6006376B8 /* JMXVideoOutput.mm */; };
+		AA9BFAB4178F11BF003673D9 /* JMXVideoFilter.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4BFC8312BD324A00775B88 /* JMXVideoFilter.mm */; };
+		AA9BFAB5178F11BF003673D9 /* JMXDrawEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA3557D912795C5500EAA2E4 /* JMXDrawEntity.mm */; };
+		AA9BFAB6178F11BF003673D9 /* JMXScriptEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AACE7D03129315DE00FBDC0D /* JMXScriptEntity.mm */; };
+		AA9BFAB7178F11BF003673D9 /* JMXExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C31091275ADB6006376B8 /* JMXExporter.m */; };
+		AA9BFAB9178F11BF003673D9 /* JMXHIDInputEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AAEF981C14FAB4E2006B9F8B /* JMXHIDInputEntity.mm */; };
+		AA9BFABA178F11CB003673D9 /* JMXQtExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30E71275ADB6006376B8 /* JMXQtExporter.m */; };
+		AA9BFABB178F11CF003673D9 /* JMXCoreImageFilter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30EA1275ADB6006376B8 /* JMXCoreImageFilter.mm */; };
+		AA9BFABC178F11D6003673D9 /* JMXVideoMixer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C310D1275ADB6006376B8 /* JMXVideoMixer.mm */; };
+		AA9BFABD178F11D6003673D9 /* JMXImageEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30EF1275ADB6006376B8 /* JMXImageEntity.mm */; };
+		AA9BFABE178F11D6003673D9 /* JMXQtVideoCaptureEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30F31275ADB6006376B8 /* JMXQtVideoCaptureEntity.mm */; };
+		AA9BFABF178F11D6003673D9 /* JMXQtMovieEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30F51275ADB6006376B8 /* JMXQtMovieEntity.mm */; };
+		AA9BFAC0178F11D6003673D9 /* JMXTextEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA3556F51277340200EAA2E4 /* JMXTextEntity.mm */; };
+		AA9BFAC1178F11DE003673D9 /* JMXAudioFileEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30ED1275ADB6006376B8 /* JMXAudioFileEntity.mm */; };
+		AA9BFAC2178F11DE003673D9 /* JMXAudioMixer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C31011275ADB6006376B8 /* JMXAudioMixer.mm */; };
+		AA9BFAC3178F11DE003673D9 /* JMXAudioToneGenerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA0A89BF1675E09C00FF784F /* JMXAudioToneGenerator.mm */; };
+		AA9BFAC4178F11DE003673D9 /* JMXQtAudioCaptureEntity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30F11275ADB6006376B8 /* JMXQtAudioCaptureEntity.mm */; };
+		AA9BFAC5178F11E4003673D9 /* JMXAudioDumper.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9BFA50178DA30F003673D9 /* JMXAudioDumper.mm */; };
+		AA9BFAC6178F11E4003673D9 /* JMXCoreAudioOutput.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30F81275ADB6006376B8 /* JMXCoreAudioOutput.mm */; };
+		AA9BFAC7178F11E4003673D9 /* JMXQtAudioOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30FA1275ADB6006376B8 /* JMXQtAudioOutput.m */; };
+		AA9BFAC8178F11EA003673D9 /* JMXOpenGLScreen.mm in Sources */ = {isa = PBXBuildFile; fileRef = 825C30FD1275ADB6006376B8 /* JMXOpenGLScreen.mm */; };
+		AA9BFAC9178F11EA003673D9 /* JMXSoftScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 825C30FF1275ADB6006376B8 /* JMXSoftScreen.m */; };
+		AA9BFACA178F11F1003673D9 /* JMXScriptFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8CB78D1282BB9900A17115 /* JMXScriptFile.mm */; };
+		AA9BFACB178F11F1003673D9 /* JMXScriptLive.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA8F806012C9D3FA00EA8543 /* JMXScriptLive.mm */; };
+		AA9BFACC178F120E003673D9 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA447ACD178D803900DA8700 /* libc++.dylib */; };
+		AA9BFACD178F120E003673D9 /* libv8_base.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA447ACA178D7F2900DA8700 /* libv8_base.a */; };
+		AA9BFACE178F120E003673D9 /* libnode.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA447A9C178D7CE500DA8700 /* libnode.a */; };
+		AA9BFACF178F120E003673D9 /* libchrome_zlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA447A9D178D7CE500DA8700 /* libchrome_zlib.a */; };
+		AA9BFAD0178F120E003673D9 /* libv8_nosnapshot.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA447A9E178D7CE500DA8700 /* libv8_nosnapshot.a */; };
+		AA9BFAD1178F120E003673D9 /* libuv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA447A9F178D7CE500DA8700 /* libuv.a */; };
+		AA9BFAD2178F120E003673D9 /* libopenssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA447AA0178D7CE500DA8700 /* libopenssl.a */; };
+		AA9BFAD3178F120E003673D9 /* libcares.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA447AA1178D7CE500DA8700 /* libcares.a */; };
+		AA9BFAD4178F120E003673D9 /* libhttp_parser.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA447AA2178D7CE500DA8700 /* libhttp_parser.a */; };
+		AA9BFAD6178F1215003673D9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA70C830178AACF700190C38 /* Foundation.framework */; };
+		AA9BFAD7178F1215003673D9 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0A89BC1675E02800FF784F /* AudioUnit.framework */; };
+		AA9BFAD8178F1215003673D9 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA678A47150CC47D00B2E8F7 /* CoreMedia.framework */; };
+		AA9BFAD9178F1215003673D9 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA678A45150CBC1000B2E8F7 /* AVFoundation.framework */; };
+		AA9BFADA178F1215003673D9 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEF981214FA5C3C006B9F8B /* Carbon.framework */; };
+		AA9BFADB178F1215003673D9 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEF981014FA5C31006B9F8B /* IOKit.framework */; };
+		AA9BFADC178F1215003673D9 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97324FDCFA39411CA2CEA /* AppKit.framework */; };
+		AA9BFADD178F1215003673D9 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 13E42FB307B3F0F600E4EEF1 /* CoreData.framework */; };
+		AA9BFADE178F1215003673D9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
+		AA9BFADF178F1215003673D9 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BC31223DC8300236FE4 /* OpenGL.framework */; };
+		AA9BFAE0178F1215003673D9 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BC71223DC9900236FE4 /* QTKit.framework */; };
+		AA9BFAE1178F1215003673D9 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BCB1223DCA700236FE4 /* QuartzCore.framework */; };
+		AA9BFAE2178F1215003673D9 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE3F212353BA6006087E7 /* CoreAudio.framework */; };
+		AA9BFAE3178F1215003673D9 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BE40A12353D5C006087E7 /* Accelerate.framework */; };
+		AA9BFAE4178F1215003673D9 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */; };
+		AA9BFAEE178F1404003673D9 /* JMXCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9BFA5F178F0FB2003673D9 /* JMXCore.framework */; };
+		AA9BFAEF178F1535003673D9 /* ImmrHIDUtilAddOn.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF980614FA5BFD006B9F8B /* ImmrHIDUtilAddOn.c */; };
+		AA9BFAF0178F1535003673D9 /* IOHIDDevice_.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF980814FA5BFD006B9F8B /* IOHIDDevice_.c */; };
+		AA9BFAF1178F1535003673D9 /* IOHIDElement_.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF980A14FA5BFD006B9F8B /* IOHIDElement_.c */; };
+		AA9BFAF2178F169C003673D9 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82456BCB1223DCA700236FE4 /* QuartzCore.framework */; };
+		AA9BFAF3178F16C2003673D9 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9BFA62178F0FB2003673D9 /* AppKit.framework */; };
+		AA9BFAF4178F16C6003673D9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9BFA64178F0FB2003673D9 /* Foundation.framework */; };
+		AA9BFAF5178F16D3003673D9 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		AA9BFAF6178F170C003673D9 /* JMXGlobals.h in Headers */ = {isa = PBXBuildFile; fileRef = AA7400C6130E56EA005A205C /* JMXGlobals.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFAF7178F1743003673D9 /* NSNumber+V8.h in Headers */ = {isa = PBXBuildFile; fileRef = AA9B58D514FE1E4F00F63C33 /* NSNumber+V8.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFAF8178F1743003673D9 /* NSString+V8.h in Headers */ = {isa = PBXBuildFile; fileRef = AA9B58D714FE1E4F00F63C33 /* NSString+V8.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFAF9178F1743003673D9 /* NSObject+V8.h in Headers */ = {isa = PBXBuildFile; fileRef = AAEF982414FAE810006B9F8B /* NSObject+V8.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFAFA178F1743003673D9 /* NSDictionary+V8.h in Headers */ = {isa = PBXBuildFile; fileRef = AAEF982114FAE6B6006B9F8B /* NSDictionary+V8.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFAFB178F1743003673D9 /* NSXMLNode+V8.h in Headers */ = {isa = PBXBuildFile; fileRef = AAC6334412D36DA900B69DFE /* NSXMLNode+V8.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFAFC178F1743003673D9 /* NSFont+V8.h in Headers */ = {isa = PBXBuildFile; fileRef = AACCC73D14A921B500D44D71 /* NSFont+V8.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFAFD178F1743003673D9 /* JMXV8.h in Headers */ = {isa = PBXBuildFile; fileRef = AAFAADA1129097A200949028 /* JMXV8.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFAFE178F1743003673D9 /* JMXV8PropertyAccessors.h in Headers */ = {isa = PBXBuildFile; fileRef = AACE7D311293195600FBDC0D /* JMXV8PropertyAccessors.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFAFF178F1743003673D9 /* JMXGraph.h in Headers */ = {isa = PBXBuildFile; fileRef = AAC6322F12CFC72B00B69DFE /* JMXGraph.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB00178F1743003673D9 /* JMXElement.h in Headers */ = {isa = PBXBuildFile; fileRef = AAC6323A12CFCAB900B69DFE /* JMXElement.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB01178F1743003673D9 /* JMXGraphFragment.h in Headers */ = {isa = PBXBuildFile; fileRef = AA1E53AB14AE114D00F80337 /* JMXGraphFragment.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB02178F1743003673D9 /* JMXCDATA.h in Headers */ = {isa = PBXBuildFile; fileRef = AAC6376112D5099400B69DFE /* JMXCDATA.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB03178F1743003673D9 /* JMXAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = AAC637DE12D5204C00B69DFE /* JMXAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB04178F1743003673D9 /* JMXPoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C313A1275ADD7006376B8 /* JMXPoint.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB05178F1743003673D9 /* NSColor+V8.h in Headers */ = {isa = PBXBuildFile; fileRef = AAD13C48128EF2AB00ECB03A /* NSColor+V8.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB06178F1743003673D9 /* JMXSize.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C31401275ADD7006376B8 /* JMXSize.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB07178F1743003673D9 /* JMXRect.h in Headers */ = {isa = PBXBuildFile; fileRef = AA9C19D212E4BDD500329158 /* JMXRect.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB08178F1743003673D9 /* JMXScript.h in Headers */ = {isa = PBXBuildFile; fileRef = AA3557E612795D0A00EAA2E4 /* JMXScript.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB09178F1743003673D9 /* JMXCanvasElement.h in Headers */ = {isa = PBXBuildFile; fileRef = AA9C17FA12E200C400329158 /* JMXCanvasElement.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB0A178F1743003673D9 /* JMXCanvasGradient.h in Headers */ = {isa = PBXBuildFile; fileRef = AA9C18D812E2FC1000329158 /* JMXCanvasGradient.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB0B178F1743003673D9 /* JMXCanvasPattern.h in Headers */ = {isa = PBXBuildFile; fileRef = AA9C190D12E32B0600329158 /* JMXCanvasPattern.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB0C178F1743003673D9 /* JMXCanvasStyle.h in Headers */ = {isa = PBXBuildFile; fileRef = AA9C194712E3363100329158 /* JMXCanvasStyle.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB0D178F1743003673D9 /* JMXImageElement.h in Headers */ = {isa = PBXBuildFile; fileRef = AA9C1A4712E5964C00329158 /* JMXImageElement.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB0E178F1743003673D9 /* JMXScriptTimer.h in Headers */ = {isa = PBXBuildFile; fileRef = AA93701B14CC2FF9001D9BB3 /* JMXScriptTimer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB0F178F1743003673D9 /* JMXEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = AAEA251A14D4D59F00533049 /* JMXEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB10178F1743003673D9 /* JMXImageData.h in Headers */ = {isa = PBXBuildFile; fileRef = AAB71A0514D6BF0200BE8C35 /* JMXImageData.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB11178F1743003673D9 /* JMXUint8ClampedArray.h in Headers */ = {isa = PBXBuildFile; fileRef = AAB71A0814D6D89D00BE8C35 /* JMXUint8ClampedArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB12178F1743003673D9 /* JMXByteArray.h in Headers */ = {isa = PBXBuildFile; fileRef = AAEF981E14FAD2ED006B9F8B /* JMXByteArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB13178F1743003673D9 /* JMXEventListener.h in Headers */ = {isa = PBXBuildFile; fileRef = AAB71A0B14D7585300BE8C35 /* JMXEventListener.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB14178F1743003673D9 /* JMXMouseEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = AAD751D314E9462F008B1085 /* JMXMouseEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB15178F1743003673D9 /* JMXKeyboardEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = AAD751D614E98DD1008B1085 /* JMXKeyboardEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB16178F1743003673D9 /* JMXScriptPinWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = AA02230D14D8BB8C00E7908F /* JMXScriptPinWrapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB17178F1743003673D9 /* JMXScriptInputPin.h in Headers */ = {isa = PBXBuildFile; fileRef = AAD751D914E9AFF6008B1085 /* JMXScriptInputPin.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB18178F1743003673D9 /* JMXScriptOutputPin.h in Headers */ = {isa = PBXBuildFile; fileRef = AAD751DC14E9B014008B1085 /* JMXScriptOutputPin.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB19178F1760003673D9 /* JMXRingBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C313C1275ADD7006376B8 /* JMXRingBuffer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB1A178F1760003673D9 /* JMXEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C312F1275ADD6006376B8 /* JMXEntity.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB1B178F1760003673D9 /* JMXThreadedEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C31441275ADD7006376B8 /* JMXThreadedEntity.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB1C178F1760003673D9 /* JMXPin.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C31361275ADD6006376B8 /* JMXPin.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB1D178F1760003673D9 /* JMXInputPin.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C31321275ADD6006376B8 /* JMXInputPin.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB1E178F1760003673D9 /* JMXOutputPin.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C31341275ADD6006376B8 /* JMXOutputPin.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB1F178F1760003673D9 /* JMXProxyPin.h in Headers */ = {isa = PBXBuildFile; fileRef = AA4B00C712BE560100775B88 /* JMXProxyPin.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB20178F1760003673D9 /* JMXPinSignal.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C31381275ADD7006376B8 /* JMXPinSignal.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB21178F1760003673D9 /* JMXContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C312D1275ADD6006376B8 /* JMXContext.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB22178F1760003673D9 /* JMXScreenController.h in Headers */ = {isa = PBXBuildFile; fileRef = AAD751D014E913FA008B1085 /* JMXScreenController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB23178F1760003673D9 /* JMXHIDDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = AAEF981414FA5CFE006B9F8B /* JMXHIDDevice.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB24178F1760003673D9 /* JMXApplicationDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = AA9BFA52178F09CE003673D9 /* JMXApplicationDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB25178F1760003673D9 /* JMXApplication.h in Headers */ = {isa = PBXBuildFile; fileRef = AA9BFA56178F0BC6003673D9 /* JMXApplication.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB26178F1773003673D9 /* JMXFileRead.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C31311275ADD6006376B8 /* JMXFileRead.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB27178F1773003673D9 /* JMXSeekable.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C313F1275ADD7006376B8 /* JMXSeekable.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB28178F1773003673D9 /* JMXRunLoop.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C313E1275ADD7006376B8 /* JMXRunLoop.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB29178F1773003673D9 /* JMXPinOwner.h in Headers */ = {isa = PBXBuildFile; fileRef = AAEA251314D4AC4800533049 /* JMXPinOwner.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB2A178F1793003673D9 /* JMXTextRenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = AA3556FF1277347300EAA2E4 /* JMXTextRenderer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB2B178F1793003673D9 /* JMXOpenGLDraw.h in Headers */ = {isa = PBXBuildFile; fileRef = 82AD7F6E1289F3C300C85EB1 /* JMXOpenGLDraw.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB2C178F1793003673D9 /* JMXDrawPath.h in Headers */ = {isa = PBXBuildFile; fileRef = AAD139B9128EA0DF00ECB03A /* JMXDrawPath.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB2D178F17A0003673D9 /* JMXAudioBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C31231275ADD6006376B8 /* JMXAudioBuffer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB2E178F17A0003673D9 /* JMXAudioDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C31251275ADD6006376B8 /* JMXAudioDevice.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB2F178F17A0003673D9 /* JMXAudioFile.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C31271275ADD6006376B8 /* JMXAudioFile.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB30178F17A0003673D9 /* JMXAudioFormat.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C31291275ADD6006376B8 /* JMXAudioFormat.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB31178F17A0003673D9 /* JMXSpectrumAnalyzer.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C31421275ADD7006376B8 /* JMXSpectrumAnalyzer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB32178F17CC003673D9 /* JMXAudioCapture.h in Headers */ = {isa = PBXBuildFile; fileRef = AA4B020712BED1BB00775B88 /* JMXAudioCapture.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB33178F17CC003673D9 /* JMXAudioOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C31021275ADB6006376B8 /* JMXAudioOutput.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB34178F17CC003673D9 /* JMXAudioSpectrumAnalyzer.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C31061275ADB6006376B8 /* JMXAudioSpectrumAnalyzer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB35178F17CC003673D9 /* JMXVideoEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C310A1275ADB6006376B8 /* JMXVideoEntity.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB36178F17CC003673D9 /* JMXVideoCapture.h in Headers */ = {isa = PBXBuildFile; fileRef = AA4B039A12C06C7600775B88 /* JMXVideoCapture.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB37178F17CC003673D9 /* JMXVideoOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C310E1275ADB6006376B8 /* JMXVideoOutput.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB38178F17CC003673D9 /* JMXVideoFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = AA4BFC8212BD324A00775B88 /* JMXVideoFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB39178F17CC003673D9 /* JMXDrawEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = AA3557D812795C5500EAA2E4 /* JMXDrawEntity.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB3A178F17CC003673D9 /* JMXScriptEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = AACE7D02129315DE00FBDC0D /* JMXScriptEntity.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB3B178F17CC003673D9 /* JMXExporter.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C31081275ADB6006376B8 /* JMXExporter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB3C178F17CC003673D9 /* JMXPhidgetEncoderEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = AA004D8014E7148600009CF9 /* JMXPhidgetEncoderEntity.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB3D178F17CC003673D9 /* JMXHIDInputEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = AAEF981B14FAB4E2006B9F8B /* JMXHIDInputEntity.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB3E178F17DA003673D9 /* JMXQtExporter.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C30E61275ADB6006376B8 /* JMXQtExporter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB3F178F17E4003673D9 /* JMXCoreImageFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C30E91275ADB6006376B8 /* JMXCoreImageFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB40178F1808003673D9 /* JMXVideoMixer.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C310C1275ADB6006376B8 /* JMXVideoMixer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB41178F1808003673D9 /* JMXImageEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C30EE1275ADB6006376B8 /* JMXImageEntity.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB42178F1808003673D9 /* JMXQtVideoCaptureEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C30F21275ADB6006376B8 /* JMXQtVideoCaptureEntity.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB43178F1808003673D9 /* JMXQtMovieEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C30F41275ADB6006376B8 /* JMXQtMovieEntity.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB44178F1808003673D9 /* JMXTextEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = AA3556F41277340200EAA2E4 /* JMXTextEntity.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB45178F1808003673D9 /* JMXAudioFileEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C30EC1275ADB6006376B8 /* JMXAudioFileEntity.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB46178F1808003673D9 /* JMXAudioMixer.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C31001275ADB6006376B8 /* JMXAudioMixer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB47178F1808003673D9 /* JMXAudioToneGenerator.h in Headers */ = {isa = PBXBuildFile; fileRef = AA0A89BE1675E09C00FF784F /* JMXAudioToneGenerator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB48178F1808003673D9 /* JMXQtAudioCaptureEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C30F01275ADB6006376B8 /* JMXQtAudioCaptureEntity.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB49178F1808003673D9 /* JMXAudioDumper.h in Headers */ = {isa = PBXBuildFile; fileRef = AA9BFA4F178DA30F003673D9 /* JMXAudioDumper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB4A178F1808003673D9 /* JMXCoreAudioOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C30F71275ADB6006376B8 /* JMXCoreAudioOutput.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB4B178F1808003673D9 /* JMXQtAudioOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C30F91275ADB6006376B8 /* JMXQtAudioOutput.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB4C178F1808003673D9 /* JMXOpenGLScreen.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C30FC1275ADB6006376B8 /* JMXOpenGLScreen.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB4D178F1808003673D9 /* JMXSoftScreen.h in Headers */ = {isa = PBXBuildFile; fileRef = 825C30FE1275ADB6006376B8 /* JMXSoftScreen.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB4E178F1808003673D9 /* JMXScriptFile.h in Headers */ = {isa = PBXBuildFile; fileRef = AA8CB78C1282BB9800A17115 /* JMXScriptFile.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB4F178F1808003673D9 /* JMXScriptLive.h in Headers */ = {isa = PBXBuildFile; fileRef = AA8F805F12C9D3FA00EA8543 /* JMXScriptLive.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA9BFB50178F1894003673D9 /* CIAdditiveBlur.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AAEBBA1214FD65CE000DA6F9 /* CIAdditiveBlur.cikernel */; };
+		AA9BFB51178F1899003673D9 /* CIAlphaBlend.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AAEBB8AC14FC1839000DA6F9 /* CIAlphaBlend.cikernel */; };
+		AA9BFB52178F189D003673D9 /* CIAlphaFade.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = AA555FC912AEF39600C882FF /* CIAlphaFade.cikernel */; };
 		AAB50B5F14DD4956002F385C /* processing_sample1.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AAB50B5914DD493E002F385C /* processing_sample1.js */; };
 		AAB50B6014DD4956002F385C /* processing_sample2.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AAB50B5A14DD493E002F385C /* processing_sample2.js */; };
 		AAB50B6114DD4956002F385C /* processing_sample3.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AAB50B5B14DD493E002F385C /* processing_sample3.js */; };
@@ -169,6 +266,23 @@
 		AAD751E114E9D9DE008B1085 /* counter.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AAD751DF14E9D9C9008B1085 /* counter.js */; };
 		AAD751E214E9D9DE008B1085 /* random_point.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AAD751E014E9D9C9008B1085 /* random_point.js */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		AA9BFAEA178F13EC003673D9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AA9BFAE5178F12C1003673D9;
+			remoteInfo = node.js;
+		};
+		AA9BFAEC178F13F9003673D9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AA9BFA5E178F0FB2003673D9;
+			remoteInfo = JMXCore;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		AA490DD114CC5F7C00407C0D /* Deploy JS examples */ = {
@@ -342,7 +456,6 @@
 		AA1E53B714AF60F200F80337 /* Global.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = Global.js; sourceTree = "<group>"; };
 		AA2BE3F212353BA6006087E7 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		AA2BE40A12353D5C006087E7 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
-		AA2C746316DFA74000B623C2 /* libJMX-Core.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libJMX-Core.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA2C754E16DFAB0A00B623C2 /* JMX-Core_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "JMX-Core_Prefix.pch"; sourceTree = "<group>"; };
 		AA3556F41277340200EAA2E4 /* JMXTextEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXTextEntity.h; sourceTree = "<group>"; };
 		AA3556F51277340200EAA2E4 /* JMXTextEntity.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXTextEntity.mm; sourceTree = "<group>"; };
@@ -408,7 +521,7 @@
 		AA678A45150CBC1000B2E8F7 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		AA678A47150CC47D00B2E8F7 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		AA70C830178AACF700190C38 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		AA7400C6130E56EA005A205C /* JMXGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXGlobals.h; sourceTree = "<group>"; };
+		AA7400C6130E56EA005A205C /* JMXGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JMXGlobals.h; path = ../JMXGlobals.h; sourceTree = "<group>"; };
 		AA75F37E14F706C100F1A214 /* CanvasRenderingContext2D.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = CanvasRenderingContext2D.js; sourceTree = "<group>"; };
 		AA75F37F14F706C100F1A214 /* Event.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Event.js; sourceTree = "<group>"; };
 		AA75F38014F706C100F1A214 /* EventListener.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = EventListener.js; sourceTree = "<group>"; };
@@ -438,6 +551,16 @@
 		AA9B58D814FE1E4F00F63C33 /* NSString+V8.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSString+V8.mm"; sourceTree = "<group>"; };
 		AA9BFA4F178DA30F003673D9 /* JMXAudioDumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXAudioDumper.h; sourceTree = "<group>"; };
 		AA9BFA50178DA30F003673D9 /* JMXAudioDumper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXAudioDumper.mm; sourceTree = "<group>"; };
+		AA9BFA52178F09CE003673D9 /* JMXApplicationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXApplicationDelegate.h; sourceTree = "<group>"; };
+		AA9BFA56178F0BC6003673D9 /* JMXApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXApplication.h; sourceTree = "<group>"; };
+		AA9BFA57178F0BC6003673D9 /* JMXApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXApplication.m; sourceTree = "<group>"; };
+		AA9BFA5F178F0FB2003673D9 /* JMXCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = JMXCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA9BFA62178F0FB2003673D9 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		AA9BFA63178F0FB2003673D9 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		AA9BFA64178F0FB2003673D9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		AA9BFA67178F0FB2003673D9 /* JMXCore-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "JMXCore-Info.plist"; sourceTree = "<group>"; };
+		AA9BFA69178F0FB2003673D9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		AA9BFA6B178F0FB2003673D9 /* JMXCore-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "JMXCore-Prefix.pch"; sourceTree = "<group>"; };
 		AA9C17FA12E200C400329158 /* JMXCanvasElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXCanvasElement.h; sourceTree = "<group>"; };
 		AA9C17FB12E200C400329158 /* JMXCanvasElement.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JMXCanvasElement.mm; sourceTree = "<group>"; };
 		AA9C18D812E2FC1000329158 /* JMXCanvasGradient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXCanvasGradient.h; sourceTree = "<group>"; };
@@ -544,39 +667,43 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA447ACE178D803900DA8700 /* libc++.dylib in Frameworks */,
-				AA6D52CE178C05750020BD4C /* Foundation.framework in Frameworks */,
-				AA0A89BD1675E02800FF784F /* AudioUnit.framework in Frameworks */,
-				AA6D52CF178C05750020BD4C /* CoreMedia.framework in Frameworks */,
-				AA6D52D0178C05750020BD4C /* AVFoundation.framework in Frameworks */,
-				AA6D52D1178C05750020BD4C /* Carbon.framework in Frameworks */,
-				AA6D52D2178C05750020BD4C /* IOKit.framework in Frameworks */,
-				AA6D52D3178C05750020BD4C /* AppKit.framework in Frameworks */,
-				AA6D52D4178C05750020BD4C /* CoreData.framework in Frameworks */,
-				AA6D52D5178C05750020BD4C /* Foundation.framework in Frameworks */,
-				AA6D52D6178C05750020BD4C /* OpenGL.framework in Frameworks */,
-				AA6D52D7178C05750020BD4C /* QTKit.framework in Frameworks */,
-				82456BCC1223DCA700236FE4 /* QuartzCore.framework in Frameworks */,
-				AA6D52D8178C05750020BD4C /* Cocoa.framework in Frameworks */,
-				AA6D52CD178C055D0020BD4C /* CoreAudio.framework in Frameworks */,
-				AA6D52D9178C05750020BD4C /* Accelerate.framework in Frameworks */,
-				AA6D52DA178C05750020BD4C /* AudioToolbox.framework in Frameworks */,
-				AA6D52CC178C04C70020BD4C /* libJMX-Core.a in Frameworks */,
+				AA9BFAEE178F1404003673D9 /* JMXCore.framework in Frameworks */,
+				AA9BFAF2178F169C003673D9 /* QuartzCore.framework in Frameworks */,
+				AA9BFAF3178F16C2003673D9 /* AppKit.framework in Frameworks */,
+				AA9BFAF4178F16C6003673D9 /* Foundation.framework in Frameworks */,
+				AA9BFAF5178F16D3003673D9 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		AA2C746016DFA74000B623C2 /* Frameworks */ = {
+		AA9BFA5B178F0FB2003673D9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA447AC3178D7E8B00DA8700 /* libnode.a in Frameworks */,
-				AA447AC4178D7E8B00DA8700 /* libchrome_zlib.a in Frameworks */,
-				AA447AC5178D7E8B00DA8700 /* libv8_nosnapshot.a in Frameworks */,
-				AA447AC6178D7E8B00DA8700 /* libuv.a in Frameworks */,
-				AA447AC7178D7E8B00DA8700 /* libopenssl.a in Frameworks */,
-				AA447AC8178D7E8B00DA8700 /* libcares.a in Frameworks */,
-				AA447AC9178D7E8B00DA8700 /* libhttp_parser.a in Frameworks */,
-				AA447ACC178D7F3700DA8700 /* libv8_base.a in Frameworks */,
+				AA9BFAD6178F1215003673D9 /* Foundation.framework in Frameworks */,
+				AA9BFAD7178F1215003673D9 /* AudioUnit.framework in Frameworks */,
+				AA9BFAD8178F1215003673D9 /* CoreMedia.framework in Frameworks */,
+				AA9BFAD9178F1215003673D9 /* AVFoundation.framework in Frameworks */,
+				AA9BFADA178F1215003673D9 /* Carbon.framework in Frameworks */,
+				AA9BFADB178F1215003673D9 /* IOKit.framework in Frameworks */,
+				AA9BFADC178F1215003673D9 /* AppKit.framework in Frameworks */,
+				AA9BFADD178F1215003673D9 /* CoreData.framework in Frameworks */,
+				AA9BFADE178F1215003673D9 /* Foundation.framework in Frameworks */,
+				AA9BFADF178F1215003673D9 /* OpenGL.framework in Frameworks */,
+				AA9BFAE0178F1215003673D9 /* QTKit.framework in Frameworks */,
+				AA9BFAE1178F1215003673D9 /* QuartzCore.framework in Frameworks */,
+				AA9BFA60178F0FB2003673D9 /* Cocoa.framework in Frameworks */,
+				AA9BFAE2178F1215003673D9 /* CoreAudio.framework in Frameworks */,
+				AA9BFAE3178F1215003673D9 /* Accelerate.framework in Frameworks */,
+				AA9BFAE4178F1215003673D9 /* AudioToolbox.framework in Frameworks */,
+				AA9BFACC178F120E003673D9 /* libc++.dylib in Frameworks */,
+				AA9BFACD178F120E003673D9 /* libv8_base.a in Frameworks */,
+				AA9BFACE178F120E003673D9 /* libnode.a in Frameworks */,
+				AA9BFACF178F120E003673D9 /* libchrome_zlib.a in Frameworks */,
+				AA9BFAD0178F120E003673D9 /* libv8_nosnapshot.a in Frameworks */,
+				AA9BFAD1178F120E003673D9 /* libuv.a in Frameworks */,
+				AA9BFAD2178F120E003673D9 /* libopenssl.a in Frameworks */,
+				AA9BFAD3178F120E003673D9 /* libcares.a in Frameworks */,
+				AA9BFAD4178F120E003673D9 /* libhttp_parser.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -586,16 +713,9 @@
 		080E96DDFE201D6D7F000001 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				AAEF97F514FA5BD8006B9F8B /* HID Utilities */,
-				AA830A2614AB4CD900E7F544 /* V8+DOM */,
-				AA4BFDD712BE0C8600775B88 /* jsapi */,
-				AA830A2A14AB4EF400E7F544 /* Core */,
-				AA830A2914AB4EC300E7F544 /* Protocols */,
-				AA830A2B14AB4EF800E7F544 /* Drawing */,
-				AA830A2814AB4E9B00E7F544 /* Audio */,
-				AA830A2C14AB4F7500E7F544 /* CoreImage Filters */,
-				AAF17A91123E4DFA001319BA /* Entities */,
-				8245763C1227DF2900236FE4 /* GUI */,
+				256AC3D80F4B6AC300CF3369 /* JMXAppDelegate.h */,
+				256AC3D90F4B6AC300CF3369 /* JMXAppDelegate.m */,
+				29B97316FDCFA39411CA2CEA /* main.m */,
 			);
 			name = Sources;
 			sourceTree = "<group>";
@@ -604,7 +724,7 @@
 			isa = PBXGroup;
 			children = (
 				8D1107320486CEB800E47090 /* JMX.app */,
-				AA2C746316DFA74000B623C2 /* libJMX-Core.a */,
+				AA9BFA5F178F0FB2003673D9 /* JMXCore.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -613,26 +733,24 @@
 			isa = PBXGroup;
 			children = (
 				AAB50B6514DDA472002F385C /* JMX.entitlements */,
+				8245763C1227DF2900236FE4 /* GUI */,
 				080E96DDFE201D6D7F000001 /* Sources */,
-				29B97315FDCFA39411CA2CEA /* Other Sources */,
+				29B97315FDCFA39411CA2CEA /* Supporting Files */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
+				AA9BFA65178F0FB2003673D9 /* JMXCore */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
 			name = MoviePlayerD;
 			sourceTree = "<group>";
 		};
-		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
+		29B97315FDCFA39411CA2CEA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
 				AA8F7ED912C6E16C00EA8543 /* JMX_Prefix.pch */,
-				AA7400C6130E56EA005A205C /* JMXGlobals.h */,
-				256AC3D80F4B6AC300CF3369 /* JMXAppDelegate.h */,
-				256AC3D90F4B6AC300CF3369 /* JMXAppDelegate.m */,
-				29B97316FDCFA39411CA2CEA /* main.m */,
 				AA2C754E16DFAB0A00B623C2 /* JMX-Core_Prefix.pch */,
 			);
-			name = "Other Sources";
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
@@ -676,6 +794,7 @@
 				AA2BE3F212353BA6006087E7 /* CoreAudio.framework */,
 				AA2BE40A12353D5C006087E7 /* Accelerate.framework */,
 				AADEBFC712414F7E00A6A06D /* AudioToolbox.framework */,
+				AA9BFA61178F0FB2003673D9 /* Other Frameworks */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -950,7 +1069,7 @@
 				AAD751DD14E9B017008B1085 /* JMXScriptOutputPin.mm */,
 			);
 			name = "V8+DOM";
-			path = core;
+			path = ../core;
 			sourceTree = "<group>";
 		};
 		AA830A2814AB4E9B00E7F544 /* Audio */ = {
@@ -968,7 +1087,7 @@
 				825C31431275ADD7006376B8 /* JMXSpectrumAnalyzer.m */,
 			);
 			name = Audio;
-			path = core;
+			path = ../core;
 			sourceTree = "<group>";
 		};
 		AA830A2914AB4EC300E7F544 /* Protocols */ = {
@@ -980,7 +1099,7 @@
 				AAEA251314D4AC4800533049 /* JMXPinOwner.h */,
 			);
 			name = Protocols;
-			path = core;
+			path = ../core;
 			sourceTree = "<group>";
 		};
 		AA830A2A14AB4EF400E7F544 /* Core */ = {
@@ -1008,9 +1127,12 @@
 				AAD751D114E913FA008B1085 /* JMXScreenController.m */,
 				AAEF981414FA5CFE006B9F8B /* JMXHIDDevice.h */,
 				AAEF981514FA5CFE006B9F8B /* JMXHIDDevice.m */,
+				AA9BFA52178F09CE003673D9 /* JMXApplicationDelegate.h */,
+				AA9BFA56178F0BC6003673D9 /* JMXApplication.h */,
+				AA9BFA57178F0BC6003673D9 /* JMXApplication.m */,
 			);
 			name = Core;
-			path = core;
+			path = ../core;
 			sourceTree = "<group>";
 		};
 		AA830A2B14AB4EF800E7F544 /* Drawing */ = {
@@ -1024,7 +1146,7 @@
 				AAD139BA128EA0DF00ECB03A /* JMXDrawPath.mm */,
 			);
 			name = Drawing;
-			path = core;
+			path = ../core;
 			sourceTree = "<group>";
 		};
 		AA830A2C14AB4F7500E7F544 /* CoreImage Filters */ = {
@@ -1041,7 +1163,7 @@
 				AA555FC812AEF39600C882FF /* CIAlphaFade.h */,
 			);
 			name = "CoreImage Filters";
-			path = core;
+			path = ../core;
 			sourceTree = "<group>";
 		};
 		AA830A2D14AB4FC400E7F544 /* Base Classes */ = {
@@ -1091,6 +1213,44 @@
 			path = audio;
 			sourceTree = "<group>";
 		};
+		AA9BFA61178F0FB2003673D9 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AA9BFA62178F0FB2003673D9 /* AppKit.framework */,
+				AA9BFA63178F0FB2003673D9 /* CoreData.framework */,
+				AA9BFA64178F0FB2003673D9 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		AA9BFA65178F0FB2003673D9 /* JMXCore */ = {
+			isa = PBXGroup;
+			children = (
+				AA7400C6130E56EA005A205C /* JMXGlobals.h */,
+				AAEF97F514FA5BD8006B9F8B /* HID Utilities */,
+				AA830A2614AB4CD900E7F544 /* V8+DOM */,
+				AA4BFDD712BE0C8600775B88 /* jsapi */,
+				AA830A2A14AB4EF400E7F544 /* Core */,
+				AA830A2914AB4EC300E7F544 /* Protocols */,
+				AA830A2B14AB4EF800E7F544 /* Drawing */,
+				AA830A2814AB4E9B00E7F544 /* Audio */,
+				AA830A2C14AB4F7500E7F544 /* CoreImage Filters */,
+				AAF17A91123E4DFA001319BA /* Entities */,
+				AA9BFA66178F0FB2003673D9 /* Supporting Files */,
+			);
+			path = JMXCore;
+			sourceTree = "<group>";
+		};
+		AA9BFA66178F0FB2003673D9 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				AA9BFA67178F0FB2003673D9 /* JMXCore-Info.plist */,
+				AA9BFA68178F0FB2003673D9 /* InfoPlist.strings */,
+				AA9BFA6B178F0FB2003673D9 /* JMXCore-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		AAEF97F514FA5BD8006B9F8B /* HID Utilities */ = {
 			isa = PBXGroup;
 			children = (
@@ -1107,6 +1267,7 @@
 				AAEF97FF14FA5BF3006B9F8B /* HID_Config_Utilities.c */,
 			);
 			name = "HID Utilities";
+			path = ..;
 			sourceTree = "<group>";
 		};
 		AAEF980514FA5BFD006B9F8B /* IOHIDManager */ = {
@@ -1137,20 +1298,127 @@
 				AA830A2514AB4C9A00E7F544 /* Scriptable Entities */,
 			);
 			name = Entities;
-			path = entities;
+			path = ../entities;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		AA2C746116DFA74000B623C2 /* Headers */ = {
+		AA9BFA5C178F0FB2003673D9 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA9BFAF6178F170C003673D9 /* JMXGlobals.h in Headers */,
+				AA9BFAF7178F1743003673D9 /* NSNumber+V8.h in Headers */,
+				AA9BFAF8178F1743003673D9 /* NSString+V8.h in Headers */,
+				AA9BFAF9178F1743003673D9 /* NSObject+V8.h in Headers */,
+				AA9BFAFA178F1743003673D9 /* NSDictionary+V8.h in Headers */,
+				AA9BFAFB178F1743003673D9 /* NSXMLNode+V8.h in Headers */,
+				AA9BFAFC178F1743003673D9 /* NSFont+V8.h in Headers */,
+				AA9BFAFD178F1743003673D9 /* JMXV8.h in Headers */,
+				AA9BFAFE178F1743003673D9 /* JMXV8PropertyAccessors.h in Headers */,
+				AA9BFAFF178F1743003673D9 /* JMXGraph.h in Headers */,
+				AA9BFB00178F1743003673D9 /* JMXElement.h in Headers */,
+				AA9BFB01178F1743003673D9 /* JMXGraphFragment.h in Headers */,
+				AA9BFB02178F1743003673D9 /* JMXCDATA.h in Headers */,
+				AA9BFB03178F1743003673D9 /* JMXAttribute.h in Headers */,
+				AA9BFB04178F1743003673D9 /* JMXPoint.h in Headers */,
+				AA9BFB05178F1743003673D9 /* NSColor+V8.h in Headers */,
+				AA9BFB06178F1743003673D9 /* JMXSize.h in Headers */,
+				AA9BFB07178F1743003673D9 /* JMXRect.h in Headers */,
+				AA9BFB08178F1743003673D9 /* JMXScript.h in Headers */,
+				AA9BFB09178F1743003673D9 /* JMXCanvasElement.h in Headers */,
+				AA9BFB0A178F1743003673D9 /* JMXCanvasGradient.h in Headers */,
+				AA9BFB0B178F1743003673D9 /* JMXCanvasPattern.h in Headers */,
+				AA9BFB0C178F1743003673D9 /* JMXCanvasStyle.h in Headers */,
+				AA9BFB0D178F1743003673D9 /* JMXImageElement.h in Headers */,
+				AA9BFB0E178F1743003673D9 /* JMXScriptTimer.h in Headers */,
+				AA9BFB0F178F1743003673D9 /* JMXEvent.h in Headers */,
+				AA9BFB10178F1743003673D9 /* JMXImageData.h in Headers */,
+				AA9BFB11178F1743003673D9 /* JMXUint8ClampedArray.h in Headers */,
+				AA9BFB12178F1743003673D9 /* JMXByteArray.h in Headers */,
+				AA9BFB13178F1743003673D9 /* JMXEventListener.h in Headers */,
+				AA9BFB14178F1743003673D9 /* JMXMouseEvent.h in Headers */,
+				AA9BFB15178F1743003673D9 /* JMXKeyboardEvent.h in Headers */,
+				AA9BFB16178F1743003673D9 /* JMXScriptPinWrapper.h in Headers */,
+				AA9BFB17178F1743003673D9 /* JMXScriptInputPin.h in Headers */,
+				AA9BFB18178F1743003673D9 /* JMXScriptOutputPin.h in Headers */,
+				AA9BFB19178F1760003673D9 /* JMXRingBuffer.h in Headers */,
+				AA9BFB1A178F1760003673D9 /* JMXEntity.h in Headers */,
+				AA9BFB1B178F1760003673D9 /* JMXThreadedEntity.h in Headers */,
+				AA9BFB1C178F1760003673D9 /* JMXPin.h in Headers */,
+				AA9BFB1D178F1760003673D9 /* JMXInputPin.h in Headers */,
+				AA9BFB1E178F1760003673D9 /* JMXOutputPin.h in Headers */,
+				AA9BFB1F178F1760003673D9 /* JMXProxyPin.h in Headers */,
+				AA9BFB20178F1760003673D9 /* JMXPinSignal.h in Headers */,
+				AA9BFB21178F1760003673D9 /* JMXContext.h in Headers */,
+				AA9BFB22178F1760003673D9 /* JMXScreenController.h in Headers */,
+				AA9BFB23178F1760003673D9 /* JMXHIDDevice.h in Headers */,
+				AA9BFB24178F1760003673D9 /* JMXApplicationDelegate.h in Headers */,
+				AA9BFB25178F1760003673D9 /* JMXApplication.h in Headers */,
+				AA9BFB26178F1773003673D9 /* JMXFileRead.h in Headers */,
+				AA9BFB27178F1773003673D9 /* JMXSeekable.h in Headers */,
+				AA9BFB28178F1773003673D9 /* JMXRunLoop.h in Headers */,
+				AA9BFB29178F1773003673D9 /* JMXPinOwner.h in Headers */,
+				AA9BFB2A178F1793003673D9 /* JMXTextRenderer.h in Headers */,
+				AA9BFB2B178F1793003673D9 /* JMXOpenGLDraw.h in Headers */,
+				AA9BFB2C178F1793003673D9 /* JMXDrawPath.h in Headers */,
+				AA9BFB2D178F17A0003673D9 /* JMXAudioBuffer.h in Headers */,
+				AA9BFB2E178F17A0003673D9 /* JMXAudioDevice.h in Headers */,
+				AA9BFB2F178F17A0003673D9 /* JMXAudioFile.h in Headers */,
+				AA9BFB30178F17A0003673D9 /* JMXAudioFormat.h in Headers */,
+				AA9BFB31178F17A0003673D9 /* JMXSpectrumAnalyzer.h in Headers */,
+				AA9BFB32178F17CC003673D9 /* JMXAudioCapture.h in Headers */,
+				AA9BFB33178F17CC003673D9 /* JMXAudioOutput.h in Headers */,
+				AA9BFB34178F17CC003673D9 /* JMXAudioSpectrumAnalyzer.h in Headers */,
+				AA9BFB35178F17CC003673D9 /* JMXVideoEntity.h in Headers */,
+				AA9BFB36178F17CC003673D9 /* JMXVideoCapture.h in Headers */,
+				AA9BFB37178F17CC003673D9 /* JMXVideoOutput.h in Headers */,
+				AA9BFB38178F17CC003673D9 /* JMXVideoFilter.h in Headers */,
+				AA9BFB39178F17CC003673D9 /* JMXDrawEntity.h in Headers */,
+				AA9BFB3A178F17CC003673D9 /* JMXScriptEntity.h in Headers */,
+				AA9BFB3B178F17CC003673D9 /* JMXExporter.h in Headers */,
+				AA9BFB3C178F17CC003673D9 /* JMXPhidgetEncoderEntity.h in Headers */,
+				AA9BFB3D178F17CC003673D9 /* JMXHIDInputEntity.h in Headers */,
+				AA9BFB3E178F17DA003673D9 /* JMXQtExporter.h in Headers */,
+				AA9BFB3F178F17E4003673D9 /* JMXCoreImageFilter.h in Headers */,
+				AA9BFB40178F1808003673D9 /* JMXVideoMixer.h in Headers */,
+				AA9BFB41178F1808003673D9 /* JMXImageEntity.h in Headers */,
+				AA9BFB42178F1808003673D9 /* JMXQtVideoCaptureEntity.h in Headers */,
+				AA9BFB43178F1808003673D9 /* JMXQtMovieEntity.h in Headers */,
+				AA9BFB44178F1808003673D9 /* JMXTextEntity.h in Headers */,
+				AA9BFB45178F1808003673D9 /* JMXAudioFileEntity.h in Headers */,
+				AA9BFB46178F1808003673D9 /* JMXAudioMixer.h in Headers */,
+				AA9BFB47178F1808003673D9 /* JMXAudioToneGenerator.h in Headers */,
+				AA9BFB48178F1808003673D9 /* JMXQtAudioCaptureEntity.h in Headers */,
+				AA9BFB49178F1808003673D9 /* JMXAudioDumper.h in Headers */,
+				AA9BFB4A178F1808003673D9 /* JMXCoreAudioOutput.h in Headers */,
+				AA9BFB4B178F1808003673D9 /* JMXQtAudioOutput.h in Headers */,
+				AA9BFB4C178F1808003673D9 /* JMXOpenGLScreen.h in Headers */,
+				AA9BFB4D178F1808003673D9 /* JMXSoftScreen.h in Headers */,
+				AA9BFB4E178F1808003673D9 /* JMXScriptFile.h in Headers */,
+				AA9BFB4F178F1808003673D9 /* JMXScriptLive.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
+
+/* Begin PBXLegacyTarget section */
+		AA9BFAE5178F12C1003673D9 /* node.js */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = AA9BFAE6178F12C1003673D9 /* Build configuration list for PBXLegacyTarget "node.js" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/bin/make;
+			buildWorkingDirectory = "$(PROJECT_DIR)/node.js";
+			dependencies = (
+			);
+			name = node.js;
+			passBuildSettingsInEnvironment = 1;
+			productName = node.js;
+		};
+/* End PBXLegacyTarget section */
 
 /* Begin PBXNativeTarget section */
 		8D1107260486CEB800E47090 /* JMX */ = {
@@ -1166,6 +1434,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				AA9BFAED178F13F9003673D9 /* PBXTargetDependency */,
 			);
 			name = JMX;
 			productInstallPath = "$(HOME)/Applications";
@@ -1173,23 +1442,25 @@
 			productReference = 8D1107320486CEB800E47090 /* JMX.app */;
 			productType = "com.apple.product-type.application";
 		};
-		AA2C746216DFA74000B623C2 /* JMX-Core */ = {
+		AA9BFA5E178F0FB2003673D9 /* JMXCore */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AA2C747116DFA74000B623C2 /* Build configuration list for PBXNativeTarget "JMX-Core" */;
+			buildConfigurationList = AA9BFA6F178F0FB2003673D9 /* Build configuration list for PBXNativeTarget "JMXCore" */;
 			buildPhases = (
-				AA446A8A178C72A100DA8700 /* Run Script */,
-				AA2C745F16DFA74000B623C2 /* Sources */,
-				AA2C746016DFA74000B623C2 /* Frameworks */,
-				AA2C746116DFA74000B623C2 /* Headers */,
+				AA9BFAE9178F13DE003673D9 /* ShellScript */,
+				AA9BFA5A178F0FB2003673D9 /* Sources */,
+				AA9BFA5B178F0FB2003673D9 /* Frameworks */,
+				AA9BFA5C178F0FB2003673D9 /* Headers */,
+				AA9BFA5D178F0FB2003673D9 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				AA9BFAEB178F13EC003673D9 /* PBXTargetDependency */,
 			);
-			name = "JMX-Core";
-			productName = "JMX-Core";
-			productReference = AA2C746316DFA74000B623C2 /* libJMX-Core.a */;
-			productType = "com.apple.product-type.library.static";
+			name = JMXCore;
+			productName = JMXCore;
+			productReference = AA9BFA5F178F0FB2003673D9 /* JMXCore.framework */;
+			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
 
@@ -1209,13 +1480,15 @@
 				Japanese,
 				French,
 				German,
+				en,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* MoviePlayerD */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				8D1107260486CEB800E47090 /* JMX */,
-				AA2C746216DFA74000B623C2 /* JMX-Core */,
+				AA9BFA5E178F0FB2003673D9 /* JMXCore */,
+				AA9BFAE5178F12C1003673D9 /* node.js */,
 			);
 		};
 /* End PBXProject section */
@@ -1228,28 +1501,35 @@
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
 				AA54B28B12A1215000EC60B2 /* jmx-icon.icns in Resources */,
-				AA447AD2178D9A1D00DA8700 /* CIAdditiveBlur.cikernel in Resources */,
-				AA447AD3178D9A1D00DA8700 /* CIAlphaBlend.cikernel in Resources */,
-				AA447AD4178D9A1D00DA8700 /* CIAlphaFade.cikernel in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA9BFA5D178F0FB2003673D9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA9BFA6A178F0FB2003673D9 /* InfoPlist.strings in Resources */,
+				AA9BFB50178F1894003673D9 /* CIAdditiveBlur.cikernel in Resources */,
+				AA9BFB51178F1899003673D9 /* CIAlphaBlend.cikernel in Resources */,
+				AA9BFB52178F189D003673D9 /* CIAlphaFade.cikernel in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		AA446A8A178C72A100DA8700 /* Run Script */ = {
+		AA9BFAE9178F13DE003673D9 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Run Script";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd ${PROJECT_DIR}/node.js; make; cd -;\n$PROJECT_DIR/node.js/tools/js2c.py $PROJECT_DIR/core/node_natives_jmx.h $PROJECT_DIR/jsapi/*.js";
+			shellScript = "$PROJECT_DIR/node.js/tools/js2c.py $PROJECT_DIR/core/node_natives_jmx.h $PROJECT_DIR/jsapi/*.js";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1283,104 +1563,119 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		AA2C745F16DFA74000B623C2 /* Sources */ = {
+		AA9BFA5A178F0FB2003673D9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA2C747216DFA7B400B623C2 /* NSNumber+V8.mm in Sources */,
-				AA2C747316DFA7B400B623C2 /* NSString+V8.mm in Sources */,
-				AA2C747416DFA7B400B623C2 /* NSObject+V8.mm in Sources */,
-				AA2C747516DFA7B400B623C2 /* NSDictionary+V8.mm in Sources */,
-				AA2C747616DFA7B400B623C2 /* NSXMLNode+V8.mm in Sources */,
-				AA2C747716DFA7B400B623C2 /* NSFont+V8.mm in Sources */,
-				AA2C747816DFA7B400B623C2 /* JMXV8PropertyAccessors.mm in Sources */,
-				AA2C747916DFA7B400B623C2 /* JMXGraph.mm in Sources */,
-				AA2C747A16DFA7B400B623C2 /* JMXElement.mm in Sources */,
-				AA2C747B16DFA7B400B623C2 /* JMXGraphFragment.mm in Sources */,
-				AA2C747C16DFA7B400B623C2 /* JMXCDATA.mm in Sources */,
-				AA2C747D16DFA7B400B623C2 /* JMXAttribute.mm in Sources */,
-				AA2C747E16DFA7B400B623C2 /* JMXPoint.mm in Sources */,
-				AA2C747F16DFA7B400B623C2 /* NSColor+V8.mm in Sources */,
-				AA2C748016DFA7B400B623C2 /* JMXSize.mm in Sources */,
-				AA2C748116DFA7B400B623C2 /* JMXRect.mm in Sources */,
-				AA2C748216DFA7B400B623C2 /* JMXScript.mm in Sources */,
-				AA2C748316DFA7B400B623C2 /* JMXCanvasElement.mm in Sources */,
-				AA2C748416DFA7B400B623C2 /* JMXCanvasGradient.mm in Sources */,
-				AA2C748516DFA7B400B623C2 /* JMXCanvasPattern.mm in Sources */,
-				AA2C748616DFA7B400B623C2 /* JMXImageElement.mm in Sources */,
-				AA2C748716DFA7B400B623C2 /* JMXScriptTimer.mm in Sources */,
-				AA2C748816DFA7B400B623C2 /* JMXEvent.mm in Sources */,
-				AA2C748916DFA7B400B623C2 /* JMXImageData.mm in Sources */,
-				AA2C748A16DFA7B400B623C2 /* JMXUint8ClampedArray.mm in Sources */,
-				AA2C748B16DFA7B400B623C2 /* JMXByteArray.mm in Sources */,
-				AA2C748C16DFA7B400B623C2 /* JMXEventListener.mm in Sources */,
-				AA2C748D16DFA7B400B623C2 /* JMXMouseEvent.mm in Sources */,
-				AA2C748E16DFA7B400B623C2 /* JMXKeyboardEvent.mm in Sources */,
-				AA2C748F16DFA7B400B623C2 /* JMXScriptPinWrapper.mm in Sources */,
-				AA2C749016DFA7B400B623C2 /* JMXScriptInputPin.mm in Sources */,
-				AA2C749116DFA7B400B623C2 /* JMXScriptOutputPin.mm in Sources */,
-				AA2C749216DFA7D400B623C2 /* ImmrHIDUtilAddOn.c in Sources */,
-				AA2C749316DFA7D400B623C2 /* IOHIDDevice_.c in Sources */,
-				AA2C749416DFA7D400B623C2 /* IOHIDElement_.c in Sources */,
-				AA2C749516DFA7D400B623C2 /* HID_Utilities.c in Sources */,
-				AA2C749616DFA7D400B623C2 /* HID_Queue_Utilities.c in Sources */,
-				AA2C749716DFA7D400B623C2 /* HID_Name_Lookup.c in Sources */,
-				AA2C749816DFA7D400B623C2 /* HID_Error_Handler.c in Sources */,
-				AA2C749916DFA7D400B623C2 /* HID_Config_Utilities.c in Sources */,
-				AA2C750816DFA90D00B623C2 /* JMXRingBuffer.m in Sources */,
-				AA2C750916DFA90D00B623C2 /* JMXEntity.mm in Sources */,
-				AA2C750A16DFA90D00B623C2 /* JMXThreadedEntity.mm in Sources */,
-				AA2C750B16DFA90D00B623C2 /* JMXPin.mm in Sources */,
-				AA2C750C16DFA90D00B623C2 /* JMXInputPin.m in Sources */,
-				AA2C750D16DFA90D00B623C2 /* JMXOutputPin.m in Sources */,
-				AA2C750E16DFA90D00B623C2 /* JMXProxyPin.m in Sources */,
-				AA2C750F16DFA90D00B623C2 /* JMXPinSignal.m in Sources */,
-				AA2C751016DFA90D00B623C2 /* JMXContext.m in Sources */,
-				AA2C751116DFA90D00B623C2 /* JMXScreenController.m in Sources */,
-				AA2C751216DFA90D00B623C2 /* JMXHIDDevice.m in Sources */,
-				AA2C751316DFA91800B623C2 /* JMXTextRenderer.m in Sources */,
-				AA2C751416DFA91800B623C2 /* JMXOpenGLDraw.mm in Sources */,
-				AA2C751516DFA91800B623C2 /* JMXDrawPath.mm in Sources */,
-				AA2C751616DFA92100B623C2 /* JMXAudioBuffer.m in Sources */,
-				AA2C751716DFA92100B623C2 /* JMXAudioDevice.m in Sources */,
-				AA2C751816DFA92100B623C2 /* JMXAudioFile.m in Sources */,
-				AA2C751916DFA92100B623C2 /* JMXAudioFormat.m in Sources */,
-				AA2C751A16DFA92100B623C2 /* JMXSpectrumAnalyzer.m in Sources */,
-				AA2C751B16DFA93C00B623C2 /* CIAdditiveBlur.m in Sources */,
-				AA2C751C16DFA93F00B623C2 /* CIAlphaBlend.m in Sources */,
-				AA2C751D16DFA94200B623C2 /* CIAlphaFade.m in Sources */,
-				AA2C751F16DFA9BC00B623C2 /* JMXAudioCapture.mm in Sources */,
-				AA2C752016DFA9BC00B623C2 /* JMXAudioOutput.mm in Sources */,
-				AA2C752116DFA9BC00B623C2 /* JMXAudioSpectrumAnalyzer.mm in Sources */,
-				AA2C752216DFA9BC00B623C2 /* JMXVideoEntity.mm in Sources */,
-				AA2C752316DFA9BC00B623C2 /* JMXVideoCapture.mm in Sources */,
-				AA2C752416DFA9BC00B623C2 /* JMXVideoOutput.mm in Sources */,
-				AA2C752516DFA9BC00B623C2 /* JMXVideoFilter.mm in Sources */,
-				AA2C752616DFA9BC00B623C2 /* JMXDrawEntity.mm in Sources */,
-				AA2C752716DFA9BC00B623C2 /* JMXScriptEntity.mm in Sources */,
-				AA2C752816DFA9BC00B623C2 /* JMXExporter.m in Sources */,
-				AA2C752A16DFA9BC00B623C2 /* JMXHIDInputEntity.mm in Sources */,
-				AA2C752B16DFA9C200B623C2 /* JMXQtExporter.m in Sources */,
-				AA2C752C16DFA9C700B623C2 /* JMXCoreImageFilter.mm in Sources */,
-				AA2C752D16DFA9D000B623C2 /* JMXVideoMixer.mm in Sources */,
-				AA2C752E16DFA9D000B623C2 /* JMXImageEntity.mm in Sources */,
-				AA2C752F16DFA9D000B623C2 /* JMXQtVideoCaptureEntity.mm in Sources */,
-				AA2C753016DFA9D000B623C2 /* JMXQtMovieEntity.mm in Sources */,
-				AA2C753116DFA9D000B623C2 /* JMXTextEntity.mm in Sources */,
-				AA2C753216DFA9D700B623C2 /* JMXAudioMixer.mm in Sources */,
-				AA2C753316DFA9D700B623C2 /* JMXAudioFileEntity.mm in Sources */,
-				AA2C753416DFA9D700B623C2 /* JMXQtAudioCaptureEntity.mm in Sources */,
-				AA2C753516DFA9D700B623C2 /* JMXAudioToneGenerator.mm in Sources */,
-				AA2C753616DFA9DD00B623C2 /* JMXCoreAudioOutput.mm in Sources */,
-				AA2C753716DFA9DD00B623C2 /* JMXQtAudioOutput.m in Sources */,
-				AA2C753816DFA9E300B623C2 /* JMXOpenGLScreen.mm in Sources */,
-				AA2C753916DFA9E300B623C2 /* JMXSoftScreen.m in Sources */,
-				AA2C753A16DFA9E900B623C2 /* JMXScriptFile.mm in Sources */,
-				AA2C753B16DFA9E900B623C2 /* JMXScriptLive.mm in Sources */,
+				AA9BFA72178F113D003673D9 /* HID_Utilities.c in Sources */,
+				AA9BFA73178F113D003673D9 /* HID_Queue_Utilities.c in Sources */,
+				AA9BFA74178F113D003673D9 /* HID_Name_Lookup.c in Sources */,
+				AA9BFA75178F113D003673D9 /* HID_Error_Handler.c in Sources */,
+				AA9BFA76178F113D003673D9 /* HID_Config_Utilities.c in Sources */,
+				AA9BFA77178F117C003673D9 /* NSNumber+V8.mm in Sources */,
+				AA9BFA78178F117C003673D9 /* NSString+V8.mm in Sources */,
+				AA9BFA79178F117C003673D9 /* NSObject+V8.mm in Sources */,
+				AA9BFA7A178F117C003673D9 /* NSDictionary+V8.mm in Sources */,
+				AA9BFA7B178F117C003673D9 /* NSXMLNode+V8.mm in Sources */,
+				AA9BFA7C178F117C003673D9 /* NSFont+V8.mm in Sources */,
+				AA9BFA7D178F117C003673D9 /* JMXV8PropertyAccessors.mm in Sources */,
+				AA9BFA7E178F117C003673D9 /* JMXGraph.mm in Sources */,
+				AA9BFA7F178F117C003673D9 /* JMXElement.mm in Sources */,
+				AA9BFA80178F117C003673D9 /* JMXGraphFragment.mm in Sources */,
+				AA9BFA81178F117C003673D9 /* JMXCDATA.mm in Sources */,
+				AA9BFA82178F117C003673D9 /* JMXAttribute.mm in Sources */,
+				AA9BFA83178F117C003673D9 /* JMXPoint.mm in Sources */,
+				AA9BFA84178F117C003673D9 /* NSColor+V8.mm in Sources */,
+				AA9BFA85178F117C003673D9 /* JMXSize.mm in Sources */,
+				AA9BFA86178F117C003673D9 /* JMXRect.mm in Sources */,
+				AA9BFA87178F117C003673D9 /* JMXScript.mm in Sources */,
+				AA9BFA88178F117C003673D9 /* JMXCanvasElement.mm in Sources */,
+				AA9BFA89178F117C003673D9 /* JMXCanvasGradient.mm in Sources */,
+				AA9BFA8A178F117C003673D9 /* JMXCanvasPattern.mm in Sources */,
+				AA9BFA8B178F117C003673D9 /* JMXImageElement.mm in Sources */,
+				AA9BFA8C178F117C003673D9 /* JMXScriptTimer.mm in Sources */,
+				AA9BFA8D178F117C003673D9 /* JMXEvent.mm in Sources */,
+				AA9BFA8E178F117C003673D9 /* JMXImageData.mm in Sources */,
+				AA9BFA8F178F117C003673D9 /* JMXUint8ClampedArray.mm in Sources */,
+				AA9BFA90178F117C003673D9 /* JMXByteArray.mm in Sources */,
+				AA9BFA91178F117C003673D9 /* JMXEventListener.mm in Sources */,
+				AA9BFA92178F117C003673D9 /* JMXMouseEvent.mm in Sources */,
+				AA9BFA93178F117C003673D9 /* JMXKeyboardEvent.mm in Sources */,
+				AA9BFA94178F117C003673D9 /* JMXScriptPinWrapper.mm in Sources */,
+				AA9BFA95178F117C003673D9 /* JMXScriptInputPin.mm in Sources */,
+				AA9BFA96178F117C003673D9 /* JMXScriptOutputPin.mm in Sources */,
+				AA9BFA97178F1191003673D9 /* JMXRingBuffer.m in Sources */,
+				AA9BFA98178F1191003673D9 /* JMXEntity.mm in Sources */,
+				AA9BFA99178F1191003673D9 /* JMXThreadedEntity.mm in Sources */,
+				AA9BFA9A178F1191003673D9 /* JMXPin.mm in Sources */,
+				AA9BFA9B178F1191003673D9 /* JMXInputPin.m in Sources */,
+				AA9BFA9C178F1191003673D9 /* JMXOutputPin.m in Sources */,
+				AA9BFA9D178F1191003673D9 /* JMXProxyPin.m in Sources */,
+				AA9BFA9E178F1191003673D9 /* JMXPinSignal.m in Sources */,
+				AA9BFA9F178F1191003673D9 /* JMXContext.m in Sources */,
+				AA9BFAA0178F1191003673D9 /* JMXScreenController.m in Sources */,
+				AA9BFAA1178F1191003673D9 /* JMXHIDDevice.m in Sources */,
+				AA9BFAA2178F1191003673D9 /* JMXApplication.m in Sources */,
+				AA9BFAA3178F119A003673D9 /* JMXTextRenderer.m in Sources */,
+				AA9BFAA4178F119A003673D9 /* JMXOpenGLDraw.mm in Sources */,
+				AA9BFAA5178F119A003673D9 /* JMXDrawPath.mm in Sources */,
+				AA9BFAA6178F11A3003673D9 /* JMXAudioBuffer.m in Sources */,
+				AA9BFAA7178F11A3003673D9 /* JMXAudioDevice.m in Sources */,
+				AA9BFAA8178F11A3003673D9 /* JMXAudioFile.m in Sources */,
+				AA9BFAA9178F11A3003673D9 /* JMXAudioFormat.m in Sources */,
+				AA9BFAAA178F11A3003673D9 /* JMXSpectrumAnalyzer.m in Sources */,
+				AA9BFAAB178F11AB003673D9 /* CIAdditiveBlur.m in Sources */,
+				AA9BFAAC178F11AB003673D9 /* CIAlphaBlend.m in Sources */,
+				AA9BFAAD178F11AB003673D9 /* CIAlphaFade.m in Sources */,
+				AA9BFAAE178F11BF003673D9 /* JMXAudioCapture.mm in Sources */,
+				AA9BFAAF178F11BF003673D9 /* JMXAudioOutput.mm in Sources */,
+				AA9BFAB0178F11BF003673D9 /* JMXAudioSpectrumAnalyzer.mm in Sources */,
+				AA9BFAB1178F11BF003673D9 /* JMXVideoEntity.mm in Sources */,
+				AA9BFAB2178F11BF003673D9 /* JMXVideoCapture.mm in Sources */,
+				AA9BFAB3178F11BF003673D9 /* JMXVideoOutput.mm in Sources */,
+				AA9BFAB4178F11BF003673D9 /* JMXVideoFilter.mm in Sources */,
+				AA9BFAB5178F11BF003673D9 /* JMXDrawEntity.mm in Sources */,
+				AA9BFAB6178F11BF003673D9 /* JMXScriptEntity.mm in Sources */,
+				AA9BFAB7178F11BF003673D9 /* JMXExporter.m in Sources */,
+				AA9BFAB9178F11BF003673D9 /* JMXHIDInputEntity.mm in Sources */,
+				AA9BFABA178F11CB003673D9 /* JMXQtExporter.m in Sources */,
+				AA9BFABB178F11CF003673D9 /* JMXCoreImageFilter.mm in Sources */,
+				AA9BFABC178F11D6003673D9 /* JMXVideoMixer.mm in Sources */,
+				AA9BFABD178F11D6003673D9 /* JMXImageEntity.mm in Sources */,
+				AA9BFABE178F11D6003673D9 /* JMXQtVideoCaptureEntity.mm in Sources */,
+				AA9BFABF178F11D6003673D9 /* JMXQtMovieEntity.mm in Sources */,
+				AA9BFAC0178F11D6003673D9 /* JMXTextEntity.mm in Sources */,
+				AA9BFAC1178F11DE003673D9 /* JMXAudioFileEntity.mm in Sources */,
+				AA9BFAC2178F11DE003673D9 /* JMXAudioMixer.mm in Sources */,
+				AA9BFAC3178F11DE003673D9 /* JMXAudioToneGenerator.mm in Sources */,
+				AA9BFAC4178F11DE003673D9 /* JMXQtAudioCaptureEntity.mm in Sources */,
+				AA9BFAC5178F11E4003673D9 /* JMXAudioDumper.mm in Sources */,
+				AA9BFAC6178F11E4003673D9 /* JMXCoreAudioOutput.mm in Sources */,
+				AA9BFAC7178F11E4003673D9 /* JMXQtAudioOutput.m in Sources */,
+				AA9BFAC8178F11EA003673D9 /* JMXOpenGLScreen.mm in Sources */,
+				AA9BFAC9178F11EA003673D9 /* JMXSoftScreen.m in Sources */,
+				AA9BFACA178F11F1003673D9 /* JMXScriptFile.mm in Sources */,
+				AA9BFACB178F11F1003673D9 /* JMXScriptLive.mm in Sources */,
+				AA9BFAEF178F1535003673D9 /* ImmrHIDUtilAddOn.c in Sources */,
+				AA9BFAF0178F1535003673D9 /* IOHIDDevice_.c in Sources */,
+				AA9BFAF1178F1535003673D9 /* IOHIDElement_.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AA9BFAEB178F13EC003673D9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AA9BFAE5178F12C1003673D9 /* node.js */;
+			targetProxy = AA9BFAEA178F13EC003673D9 /* PBXContainerItemProxy */;
+		};
+		AA9BFAED178F13F9003673D9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AA9BFA5E178F0FB2003673D9 /* JMXCore */;
+			targetProxy = AA9BFAEC178F13F9003673D9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
@@ -1399,10 +1694,18 @@
 			name = MainMenu.xib;
 			sourceTree = "<group>";
 		};
+		AA9BFA68178F0FB2003673D9 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AA9BFA69178F0FB2003673D9 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		AA2C746F16DFA74000B623C2 /* Debug */ = {
+		AA9BFA70178F0FB2003673D9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -1415,63 +1718,33 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "JMX-Core_Prefix.pch";
+				GCC_PREFIX_HEADER = "JMXCore/JMXCore-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
-					"ENABLE_DISASSEMBLER=1",
-					"OBJECT_PRINT=1",
-					"ENABLE_DEBUGGER_SUPPORT=1",
-					"_DARWIN_USE_64_BIT_INODE=1",
-					"ENABLE_EXTRA_CHECKS=1",
 					"$(inherited)",
-					"V8_TARGET_ARCH_X64=1",
-					"unix=1",
-					"_OSD_POSIX=1",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				HEADER_SEARCH_PATHS = (
-					$PROJECT_DIR/node.js/deps/v8/src,
-					"$PROJECT_DIR/**",
-				);
+				INFOPLIST_FILE = "JMXCore/JMXCore-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(LOCAL_LIBRARY_DIR)/Frameworks/Phidget21.framework/Versions/A\"",
 					"\"$(SRCROOT)/node.js/out/Release\"",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				OTHER_CFLAGS = (
-					"-Wno-unused",
-					"-D_FORTIFY_SOURCE=2",
-					"-DEV_MULTIPLICITY=1",
-					"-DHAVE_CONFIG_H",
-					"-DHAVE_OPENSSL=1",
-					"-D__POSIX__=1",
-					"-D_LARGEFILE_SOURCE",
-					"-D_FILE_OFFSET_BITS=64",
-					"-DARCH=\\\"Universal\\\"",
-					"-DPLATFORM=\\\"darwin\\\"",
-					"-DEV_EMBED_ENABLE=0",
-					"-DX_STACKSIZE=65536",
-					"-DEV_FORK_ENABLE=0",
-					"-DV8_USE_UNSAFE_HANDLES=1",
-					"-DNODE_WANT_INTERNALS",
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					QuickTime,
-				);
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				VALID_ARCHS = x86_64;
+				WRAPPER_EXTENSION = framework;
 			};
 			name = Debug;
 		};
-		AA2C747016DFA74000B623C2 /* Release */ = {
+		AA9BFA71178F0FB2003673D9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -1484,45 +1757,75 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "JMX-Core_Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = V8_TARGET_ARCH_X64;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
+				GCC_PREFIX_HEADER = "JMXCore/JMXCore-Prefix.pch";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				HEADER_SEARCH_PATHS = (
-					$PROJECT_DIR/node.js/deps/v8/src,
-					"$PROJECT_DIR/**",
-				);
+				INFOPLIST_FILE = "JMXCore/JMXCore-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(LOCAL_LIBRARY_DIR)/Frameworks/Phidget21.framework/Versions/A\"",
 					"\"$(SRCROOT)/node.js/out/Release\"",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				OTHER_CFLAGS = (
-					"-Wno-unused",
-					"-D_FORTIFY_SOURCE=2",
-					"-DEV_MULTIPLICITY=1",
-					"-DHAVE_CONFIG_H",
-					"-DHAVE_OPENSSL=1",
-					"-D__POSIX__=1",
-					"-D_LARGEFILE_SOURCE",
-					"-D_FILE_OFFSET_BITS=64",
-					"-DARCH=\\\"Universal\\\"",
-					"-DPLATFORM=\\\"darwin\\\"",
-					"-DEV_EMBED_ENABLE=0",
-					"-DX_STACKSIZE=65536",
-					"-DEV_FORK_ENABLE=0",
-					"-DV8_USE_UNSAFE_HANDLES=1",
-					"-DNODE_WANT_INTERNALS",
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					QuickTime,
-				);
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				VALID_ARCHS = x86_64;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Release;
+		};
+		AA9BFAE7178F12C1003673D9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		AA9BFAE8178F12C1003673D9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
@@ -1702,14 +2005,21 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		AA2C747116DFA74000B623C2 /* Build configuration list for PBXNativeTarget "JMX-Core" */ = {
+		AA9BFA6F178F0FB2003673D9 /* Build configuration list for PBXNativeTarget "JMXCore" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				AA2C746F16DFA74000B623C2 /* Debug */,
-				AA2C747016DFA74000B623C2 /* Release */,
+				AA9BFA70178F0FB2003673D9 /* Debug */,
+				AA9BFA71178F0FB2003673D9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+		};
+		AA9BFAE6178F12C1003673D9 /* Build configuration list for PBXLegacyTarget "node.js" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA9BFAE7178F12C1003673D9 /* Debug */,
+				AA9BFAE8178F12C1003673D9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "JMX" */ = {
 			isa = XCConfigurationList;

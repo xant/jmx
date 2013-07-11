@@ -22,27 +22,22 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import <JMXApplication.h>
 
 #ifndef __JMXAppDelegate_H__
 #define __JMXAppDelegate_H__
 
 @class JMXLibraryTableView;
 
-@interface JMXAppDelegate : NSObject <NSApplicationDelegate> {
+@interface JMXAppDelegate : JMXApplication {
     NSWindow *window;
-    BOOL batchMode;
     NSTextView *consoleView;
-    JMXLibraryTableView *libraryTableView;
-    
-    NSMutableArray *argv;
+    JMXLibraryTableView *libraryTableView;    
 }
 
 @property (assign) IBOutlet NSWindow *window;
 @property (assign) IBOutlet JMXLibraryTableView *libraryTableView;
-@property (readonly) BOOL batchMode;
 @property (assign) IBOutlet NSTextView *consoleView;
-
-- (void)logMessage:(NSString *)message, ...;
 
 @end
 

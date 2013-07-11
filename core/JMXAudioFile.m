@@ -185,6 +185,9 @@
                                                                   andFormat:(AudioStreamBasicDescription *)&theOutputFormat
                                                                        copy:NO
                                                               freeOnRelease:YES];
+            } else {
+                free(data);
+                free(theDataBuffer);
             }
 		}
 		else 

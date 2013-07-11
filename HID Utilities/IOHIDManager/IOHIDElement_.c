@@ -508,7 +508,7 @@ Boolean IOHIDElement_GetLongProperty( IOHIDElementRef inElementRef, CFStringRef 
 
 void IOHIDElement_SetLongProperty( IOHIDElementRef inElementRef, CFStringRef inKey, long inValue )
 {
-	CFNumberRef tCFNumberRef = CFNumberCreate( kCFAllocatorDefault, kCFNumberSInt32Type, &inValue );
+	CFNumberRef tCFNumberRef = CFNumberCreate( kCFAllocatorDefault, kCFNumberSInt64Type, &inValue );
 
 	if ( tCFNumberRef ) {
 		IOHIDElementSetProperty( inElementRef, inKey, tCFNumberRef );

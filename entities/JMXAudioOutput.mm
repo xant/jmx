@@ -211,7 +211,8 @@ static OSStatus _FillComplexBufferProc (
     } else {
         err = AudioConverterFillComplexBuffer ( converter, _FillComplexBufferProc, &callbackContext, &framesRead, outputBufferList, NULL );
     }
-    /*if (err != noErr) {
+    if (err != noErr) {
+    /*
         JMXAudioBuffer *previousSample;
         @synchronized(samples) {
             previousSample = samples[wOffset%kJMXAudioOutputSamplesBufferCount];
@@ -221,7 +222,8 @@ static OSStatus _FillComplexBufferProc (
         // we want to return as soon as possible
         if (previousSample)
             [previousSample release];
-    }*/
+    */
+    }
     JMXAudioBuffer *outputBuffer = [JMXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&outputDescription];
     currentSamplePin.data = outputBuffer;
     return outputBuffer;

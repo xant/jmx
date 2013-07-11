@@ -258,8 +258,8 @@ static v8::Handle<Value> Echo(const Arguments& args) {
     HandleScope scope;
     id obj = nil;
     
-    if (args[0]->IsObject())
-        obj = (id)args[0]->ToObject()->GetPointerFromInternalField(0);
+//    if (args[0]->IsObject())
+//        obj = (id)args[0]->ToObject()->GetPointerFromInternalField(0);
     
     /*if (obj) {
         v8::Unlocker unlocker;
@@ -953,11 +953,13 @@ static char *argv[2] = { (char *)"JMX", NULL };
 
 - (void)addPersistentInstance:(Persistent<Object>)persistent obj:(id)obj
 {
+#ifndef __clang_analyzer__
     JMXPersistentInstance *instance = (JMXPersistentInstance *)malloc(sizeof(JMXPersistentInstance));
     instance->obj = [obj retain];
     instance->jsObj = persistent;
     NSValue *val = [NSValue valueWithPointer:instance];
     [persistentInstances setObject:val forKey:[obj hashString]];
+#endif
 }
 
 - (void)removePersistentInstance:(id)obj

@@ -565,7 +565,7 @@ static Boolean IOHIDDevice_GetLongProperty( IOHIDDeviceRef inIOHIDDeviceRef, CFS
 
 static void IOHIDDevice_SetLongProperty( IOHIDDeviceRef inIOHIDDeviceRef, CFStringRef inKey, long inValue )
 {
-	CFNumberRef tCFNumberRef = CFNumberCreate( kCFAllocatorDefault, kCFNumberSInt32Type, &inValue );
+	CFNumberRef tCFNumberRef = CFNumberCreate( kCFAllocatorDefault, kCFNumberSInt64Type, &inValue );
 
 	if ( tCFNumberRef ) {
 		IOHIDDeviceSetProperty( inIOHIDDeviceRef, inKey, tCFNumberRef );

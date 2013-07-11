@@ -146,7 +146,7 @@ using namespace v8;
     NSArray *elements = [self elementsForName:@"Entities"];
     JMXElement *holder = [elements count] ? [elements objectAtIndex:0] : nil;
     if (!holder) {
-        holder = [[JMXGraphFragment alloc] initWithName:@"Entities"];
+        holder = [[[JMXGraphFragment alloc] initWithName:@"Entities"] autorelease];
         [self addChild:holder];
     }
     [holder addChild:entity];

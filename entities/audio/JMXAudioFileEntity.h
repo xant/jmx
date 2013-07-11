@@ -35,7 +35,7 @@
     JMXOutputPin *outputPin;
     BOOL paused;
     BOOL repeat; // defaults to YES
-    NSUInteger offset;
+    //NSUInteger offset;
 }
 
 @property (readwrite) BOOL repeat;

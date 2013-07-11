@@ -36,7 +36,7 @@
     JMXInputPin *imageInputPin;
     CIFilter *ciBlendFilter;
     NSString *blendFilter;
-    uint64_t lastFrameTime;
+    //uint64_t lastFrameTime;
 }
 
 @property (readwrite, copy) NSString *blendFilter;

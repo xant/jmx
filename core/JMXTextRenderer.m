@@ -311,6 +311,7 @@
     CGContextRef ctxt = CGBitmapContextCreate(rasterData, pxWidth, pxHeight, bitsPerComponent, bytesPerRow, cs, kCGImageAlphaNoneSkipFirst);
     if(ctxt == NULL){
         NSLog(@"could not create context");
+        CFRelease(cs);
         return NULL;
     }
     

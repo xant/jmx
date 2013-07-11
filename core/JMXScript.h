@@ -30,7 +30,7 @@
     NSMutableSet *runloopTimers;
     NSOperationQueue *operationQueue;
     NSMutableDictionary *eventListeners;
-    BOOL started;
+    //BOOL started;
 }
 
 /*!

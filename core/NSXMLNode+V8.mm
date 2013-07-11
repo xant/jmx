@@ -582,7 +582,7 @@ static v8::Handle<Value> RemoveEventListener(const Arguments& args)
 {
     //v8::Locker lock;
     HandleScope handleScope;
-    NSXMLNode *node = (NSXMLNode *)args.Holder()->GetPointerFromInternalField(0);
+    //NSXMLNode *node = (NSXMLNode *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() > 2 && args[0]->IsString() && args[1]->IsObject()
         && (args[2]->IsBoolean() || args[2]->IsNumber()))
     {
@@ -590,7 +590,7 @@ static v8::Handle<Value> RemoveEventListener(const Arguments& args)
         
         Handle<Object> obj = args[1]->ToObject();
         JMXEventListener *listener = (JMXEventListener *)obj->GetPointerFromInternalField(0);
-        BOOL capture = args[2]->BooleanValue();
+        //BOOL capture = args[2]->BooleanValue();
         Local<Context> context = v8::Context::GetCalling();
         Local<Object> globalObject  = context->Global();
         v8::Local<v8::Object> entityObj = globalObject->Get(String::New("scriptEntity"))->ToObject();
@@ -606,7 +606,7 @@ static v8::Handle<Value> DispatchEvent(const Arguments& args)
     //v8::Locker lock;
     BOOL ret = NO;
     HandleScope handleScope;
-    NSXMLNode *node = (NSXMLNode *)args.Holder()->GetPointerFromInternalField(0);
+    //NSXMLNode *node = (NSXMLNode *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() && args[0]->IsObject())
     {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];

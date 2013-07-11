@@ -199,8 +199,8 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
             CGRect screenFrame = NSRectToCGRect([[self window] contentRectForFrameRect:[self frame]]);
             CGFloat width = screenFrame.size.width;
             CGFloat height = screenFrame.size.height;
-            CGFloat scaledWidth = width;
-            CGFloat scaledHeight = height;
+            CGFloat scaledWidth = 0;
+            CGFloat scaledHeight = 0;
             if (width > height) {
                 scaledHeight = height;
                 scaledWidth = floor((scaledHeight*frameSize.width)/frameSize.height);
@@ -328,7 +328,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         [self exitFullScreenModeWithOptions:nil];
         fullScreen = NO;
     } else {
-        CGDisplayModeRef newMode;
+        //CGDisplayModeRef newMode;
         BOOL exactMatch = NO;
         CGDirectDisplayID currentDisplayID = (CGDirectDisplayID)[[[[[self window] screen] deviceDescription] objectForKey:@"NSScreenNumber"] intValue];
         //CGDirectDisplayID currentDisplayID = viewDisplayID;
@@ -342,11 +342,14 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
             CGDisplayModeRef mode = (CGDisplayModeRef)CFArrayGetValueAtIndex(allModes, i);
             CFStringRef pixEnc = CGDisplayModeCopyPixelEncoding(mode);
             if(CFStringCompare(pixEnc, CFSTR(IO32BitDirectPixels), kCFCompareCaseInsensitive) != kCFCompareEqualTo)
+            {
+                CFRelease(pixEnc);
                 continue;
-            
+            }
+            CFRelease(pixEnc);
             if((CGDisplayModeGetWidth(mode) >= frameSize.width) && (CGDisplayModeGetHeight(mode) >= frameSize.height))
             {
-                newMode = mode;
+                //newMode = mode;
                 exactMatch = YES;
                 break;
             }
@@ -360,11 +363,14 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
                 CGDisplayModeRef mode = (CGDisplayModeRef)CFArrayGetValueAtIndex(allModes, i);
                 CFStringRef pixEnc = CGDisplayModeCopyPixelEncoding(mode);
                 if(CFStringCompare(pixEnc, CFSTR(IO32BitDirectPixels), kCFCompareCaseInsensitive) != kCFCompareEqualTo)
+                {
+                    CFRelease(pixEnc);
                     continue;
-                
+                }
+                CFRelease(pixEnc);
                 if((CGDisplayModeGetWidth(mode) >= frameSize.width) && (CGDisplayModeGetHeight(mode) >= frameSize.height))
                 {
-                    newMode = mode;
+                    //newMode = mode;
                     break;
                 }
             }
@@ -381,6 +387,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
                                     NSApplicationPresentationAutoHideDock],
                                    NSFullScreenModeApplicationPresentationOptions,
                                    nil]];
+        CFRelease(allModes);
         fullScreen = YES;
     }
     [self reshape];
@@ -531,8 +538,8 @@ static void translateScreenCoordinates(JMXOpenGLView *view, NSSize screenSize, N
     
     CGFloat width = screenSize.width;
     CGFloat height = screenSize.height;
-    CGFloat scaledWidth = width;
-    CGFloat scaledHeight = height;
+    CGFloat scaledWidth = 0;
+    CGFloat scaledHeight = 0;
     if (width > height) {
         scaledHeight = height;
         scaledWidth = floor((scaledHeight*frameSize.width)/frameSize.height);
@@ -593,7 +600,7 @@ static void translateScreenCoordinates(JMXOpenGLView *view, NSSize screenSize, N
 {
     NSPoint location = event.locationInWindow;
     if (ctx) {
-        JMXScriptEntity *scriptEntity = ctx.scriptEntity;
+        //JMXScriptEntity *scriptEntity = ctx.scriptEntity;
         uint64_t currentEventTime =  CVGetCurrentHostTime();
         if (lastEventType == kEventTypeMouseMove &&
             currentEventTime - lastEventTime < 1e9/kMaxEventsPerSecond)
@@ -661,7 +668,7 @@ static void translateScreenCoordinates(JMXOpenGLView *view, NSSize screenSize, N
 - (void)mouseDragged:(NSEvent *)event inView:(JMXOpenGLView *)aView
 {
     if (ctx) {
-        JMXScriptEntity *scriptEntity = ctx.scriptEntity;
+        //JMXScriptEntity *scriptEntity = ctx.scriptEntity;
         uint64_t currentEventTime =  CVGetCurrentHostTime();
         if (lastEventType == kEventTypeMouseDragged &&
             currentEventTime - lastEventTime < 1e9/kMaxEventsPerSecond)

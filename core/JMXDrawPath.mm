@@ -433,8 +433,8 @@ using namespace v8;
     if (invertYCoordinates == yesOrNo)
         return;
     invertYCoordinates = yesOrNo;
-    UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
-    CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
+    //UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
+    //CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
     //[self clearFrame:YES];
 }
 
@@ -799,9 +799,10 @@ using namespace v8;
 {
     @synchronized(self) {
         UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
+        
+    #if 0
         CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
 
-    #if 0
         BOOL fillOrStroke = (_didFill || _didStroke);
         CGPathDrawingMode drawingMode = kCGPathFillStroke;
         if (fillOrStroke && !(_didFill && _didStroke)) {
@@ -1232,7 +1233,7 @@ static v8::Handle<Value> DrawImage(const Arguments& args)
             }
         } else if (args[0]->IsString()) {
             NSString *path = [NSString stringWithUTF8String:*str];
-            NSData *imageData = [[NSData alloc] initWithContentsOfFile:path];
+            NSData *imageData = [[[NSData alloc] initWithContentsOfFile:path] autorelease];
             if (imageData)
                 image = [CIImage imageWithData:imageData];           
         }
@@ -1278,9 +1279,9 @@ static v8::Handle<Value> CreateImageData(const Arguments& args)
 {    
     //v8::Locker lock;
     HandleScope handleScope;
-    JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
+    //JMXDrawPath *drawPath = (JMXDrawPath *)args.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    CIImage *image = drawPath.currentFrame;
+    //CIImage *image = drawPath.currentFrame;
     if (args.Length() >= 1) {
         String::Utf8Value str(args[0]->ToString());
         CGSize size = CGSizeZero;
@@ -1386,7 +1387,7 @@ static v8::Handle<Value> StrokeText(const Arguments& args)
                 return handleScope.Close(v8::Undefined());
         }
 
-        NSColor *textColor = (NSColor *)[NSColor blackColor];
+        //NSColor *textColor = (NSColor *)[NSColor blackColor];
         String::Utf8Value text(args[0]->ToString());
         CGFloat x = args[1]->NumberValue();
         CGFloat y = args[2]->NumberValue();
@@ -1409,7 +1410,7 @@ static v8::Handle<Value> FillText(const Arguments& args)
                 return handleScope.Close(v8::Undefined());
         }
         
-        NSColor *textColor = (NSColor *)[NSColor blackColor];
+        //NSColor *textColor = (NSColor *)[NSColor blackColor];
         String::Utf8Value text(args[0]->ToString());
         CGFloat x = args[1]->NumberValue();
         CGFloat y = args[2]->NumberValue();

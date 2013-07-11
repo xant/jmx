@@ -118,7 +118,7 @@
 	
 	glBindTexture(GL_TEXTURE_2D, textureID);
 	
-	NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL
+	NSBitmapImageRep *bitmap = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL
 																	   pixelsWide:_width
 																	   pixelsHigh:_height
 																	bitsPerSample:8
@@ -127,7 +127,7 @@
 																		 isPlanar:NO
 																   colorSpaceName:NSDeviceRGBColorSpace
 																	  bytesPerRow:0
-																	 bitsPerPixel:0];
+																	 bitsPerPixel:0] autorelease];
 	
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 

@@ -11,7 +11,7 @@
 
 @interface JMXAttribute : NSXMLNode {
 @private
-    BOOL _initialized;
+    //BOOL _initialized;
 }
 
 

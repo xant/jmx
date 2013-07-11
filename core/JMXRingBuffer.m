@@ -32,8 +32,10 @@
     if (self) {
         size = _size + 1;;
         buf = malloc(size);
-        if(!buf)
+        if(!buf) {
+            [self release];
             return nil;
+        }
     }
     return self;
 }
@@ -165,7 +167,7 @@
         for (i = 0; to_read > 0 && (total_size-to_read) < maxsize; i++) {
             to_read--;
             if(buf[i] == octet) {
-                found = 1;
+                //found = 1;
                 break;
             }
             else {

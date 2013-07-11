@@ -138,8 +138,10 @@ static v8::Handle<Value> DrawPolygon(const Arguments& args)
         NSColor *fillColor = nil;
         if (args.Length() >= 2 && args[1]->IsObject()) {
             v8::Local<Object>colorObj = args[1]->ToObject();
-            if (!colorObj.IsEmpty())
-                strokeColor = [(NSColor *)colorObj->GetPointerFromInternalField(0) retain]; 
+            if (!colorObj.IsEmpty()) {
+                [strokeColor release];
+                strokeColor = [(NSColor *)colorObj->GetPointerFromInternalField(0) retain];
+            }
         }
         if (args.Length() >= 3 && args[2]->IsObject()) {
             v8::Local<Object>colorObj = args[2]->ToObject();
@@ -178,9 +180,11 @@ static v8::Handle<Value> DrawCircle(const Arguments& args)
             NSColor *fillColor = nil;
             if (args.Length() >= 3) {
                 v8::Handle<Object>colorObj = args[2]->ToObject();
-                strokeColor = (NSColor *)colorObj->GetPointerFromInternalField(0);
-                if (strokeColor)
-                    [strokeColor retain];
+                NSColor *newColor = (NSColor *)colorObj->GetPointerFromInternalField(0);
+                if (newColor) {
+                    [strokeColor release];
+                    strokeColor = [newColor retain];
+                }
             }
             if (args.Length() >= 4) {
                 v8::Handle<Object>colorObj = args[3]->ToObject();
@@ -212,9 +216,11 @@ static v8::Handle<Value> DrawPixel(const Arguments& args)
             NSColor *fillColor = [[NSColor whiteColor] retain];
             if (args.Length() >= 2) {
                 v8::Handle<Object>colorObj = args[1]->ToObject();
-                fillColor = (NSColor *)colorObj->GetPointerFromInternalField(0);
-                if (fillColor)
-                    [fillColor retain];
+                NSColor *newColor = (NSColor *)colorObj->GetPointerFromInternalField(0);
+                if (newColor) {
+                    [fillColor release];
+                    fillColor = [newColor retain];
+                }
             }
             [entity drawPixel:point fillColor:fillColor];
             [point release];

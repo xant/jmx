@@ -52,8 +52,8 @@ JMXV8_EXPORT_NODE_CLASS(JMXCoreAudioOutput);
                                            andSelector:@"setDevice"
                                          allowedValues:[JMXCoreAudioOutput availableDevices]
                                           initialValue:[outputDevice deviceUID]];
-    [super init]; // we know that our parent won't never return nil and we need
-                  // its initializer to be run after we have set the format
+    self = [super init]; // we know that our parent won't never return nil and we need
+                         // its initializer to be run after we have set the format
     // start the device
     [outputDevice deviceStart];
     return self;

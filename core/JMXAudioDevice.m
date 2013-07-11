@@ -328,6 +328,9 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, JMXAudioDev
     propertyAddress.mScope = kAudioObjectPropertyScopeGlobal;
     propertyAddress.mElement = kAudioObjectPropertyElementMaster;
     theStatus = AudioObjectGetPropertyDataSize( kAudioObjectSystemObject, &propertyAddress, 0, NULL, &theSize );
+    if (theStatus != 0) {
+        // TODO - bail out
+    }
     theStatus = AudioObjectGetPropertyData( kAudioObjectSystemObject, &propertyAddress, 0, NULL, &theSize, &theTranslation );
 	CFRelease ( theCFString );
 	free ( theCharacters );
@@ -350,6 +353,9 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, JMXAudioDev
     propertyAddress.mScope = kAudioObjectPropertyScopeGlobal;
     propertyAddress.mElement = kAudioObjectPropertyElementMaster;
     theStatus = AudioObjectGetPropertyDataSize( kAudioObjectSystemObject, &propertyAddress, 0, NULL, &theSize );
+    if (theStatus != 0) {
+        // TODO - bail out
+    }
     theStatus = AudioObjectGetPropertyData( kAudioObjectSystemObject, &propertyAddress, 0, NULL, &theSize, &theID );
 	if (theStatus == 0)
 		return [[self class] deviceWithID:theID];
@@ -391,7 +397,7 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, JMXAudioDev
     AudioValueTranslation pluginAVT;
     
     CFStringRef inBundleRef = CFSTR("com.apple.audio.CoreAudio");
-    AudioObjectID pluginID;
+    AudioObjectID pluginID = UINT32_MAX;
     
     pluginAVT.mInputData = &inBundleRef;
     pluginAVT.mInputDataSize = sizeof(inBundleRef);
@@ -399,7 +405,7 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, JMXAudioDev
     pluginAVT.mOutputDataSize = sizeof(pluginID);
     osErr = AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, sizeof(AudioValueTranslation), &pluginAVT, &outSize, &outWritable);
     //osErr = AudioHardwareGetProperty(kAudioHardwarePropertyPlugInForBundleID, &outSize, &pluginAVT);
-    if (osErr != noErr)
+    if (osErr != noErr || pluginID == UINT32_MAX)
         return nil;
     
     
@@ -524,7 +530,7 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, JMXAudioDev
         AudioValueTranslation pluginAVT;
         
         CFStringRef inBundleRef = CFSTR("com.apple.audio.CoreAudio");
-        AudioObjectID pluginID;
+        AudioObjectID pluginID = UINT32_MAX;
         
         pluginAVT.mInputData = &inBundleRef;
         pluginAVT.mInputDataSize = sizeof(inBundleRef);
@@ -533,7 +539,7 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, JMXAudioDev
         
         osErr = AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, sizeof(AudioValueTranslation), &pluginAVT, &outSize, &outWritable);
         //osErr = AudioHardwareGetProperty(kAudioHardwarePropertyPlugInForBundleID, &outSize, &pluginAVT);
-        if (osErr != noErr) {
+        if (osErr != noErr && pluginID != UINT32_MAX) {
             // TODO - Error Messages
         }
         
@@ -559,15 +565,17 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, JMXAudioDev
 
 - (JMXAudioDevice *)initWithDeviceID:(AudioDeviceID)theID
 {
-	[super init];
-	//myStreams[0] = myStreams[1] = nil;
-	//streamsDirty[0] = streamsDirty[1] = true;
-	deviceID = theID;
-	delegate = nil;
-	ioProc = NULL;
-    demuxIOProcID = NULL;
-    muxStarted = NO;
-    isRegisteredForNotifications = NO;
+	self = [super init];
+    if (self) {
+        //myStreams[0] = myStreams[1] = nil;
+        //streamsDirty[0] = streamsDirty[1] = true;
+        deviceID = theID;
+        delegate = nil;
+        ioProc = NULL;
+        demuxIOProcID = NULL;
+        muxStarted = NO;
+        isRegisteredForNotifications = NO;
+    }
 	return self;
 }
 
@@ -646,14 +654,24 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, JMXAudioDev
 	myName = [self deviceName];
 	if ( myName == nil )
 		return NSOrderedDescending; // dead devices to the back of the bus!
-	rv = [myName compare:[other deviceName]];
+    
+    NSString *otherName = [other deviceName];
+    if (!otherName)
+        return NSOrderedAscending;
+
+	rv = [myName compare:otherName];
 	if ( rv != NSOrderedSame )
 		return rv;
 	
 	myUID = [self deviceUID];
 	if ( myUID == nil )
 		return NSOrderedDescending;
-	return [myUID compare:[other deviceUID]];
+    
+    NSString *otherUID = [other deviceUID];
+    if (!otherUID)
+        return NSOrderedAscending;
+    
+	return [myUID compare:otherUID];
 }
 
 // real methods
@@ -757,7 +775,8 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, JMXAudioDev
 	theSize = sizeof(UInt32);
 	for ( x = 0; x < numSources; x++ )
 	{
-		if ( [theSource compare:_DataSourceNameForID ( deviceID, theDirection, 0, theSourceIDs[x] )] == NSOrderedSame )
+        NSString *newSource = _DataSourceNameForID ( deviceID, theDirection, 0, theSourceIDs[x] );
+		if ( newSource && [theSource compare:newSource] == NSOrderedSame )
             AudioObjectSetPropertyData( deviceID, &propertyAddress, 0, NULL, theSize, &theSourceIDs[x] );
 	}
 	free(theSourceIDs);
@@ -838,7 +857,8 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, JMXAudioDev
 	
 	theSize = sizeof(UInt32);
 	for ( x = 0; x < numSources; x++ ) {
-		if ( [theSource compare:_ClockSourceNameForID ( deviceID, theDirection, theChannel, theSourceIDs[x] )] == NSOrderedSame )
+        NSString *newSource = _ClockSourceNameForID ( deviceID, theDirection, theChannel, theSourceIDs[x] );
+		if ( newSource && [theSource compare:newSource] == NSOrderedSame )
             AudioObjectSetPropertyData( deviceID, &propertyAddress, 0, NULL, theSize, &theSourceIDs[x] );
 	}
 	free(theSourceIDs);
@@ -856,7 +876,10 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, JMXAudioDev
     propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
     propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
     theStatus = AudioObjectGetPropertyData( deviceID, &propertyAddress, 0, NULL, &theSize, &frameSize );
-	return frameSize;
+	if (theStatus != noErr) {
+        // TODO : output an error message
+    }
+    return frameSize;
 }
 
 - (UInt32) deviceMaxVariableBufferSizeInFrames
@@ -889,6 +912,9 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, JMXAudioDev
     propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
     propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
     theStatus = AudioObjectGetPropertyData( deviceID, &propertyAddress, 0, NULL, &theSize, &theRange );
+    if (theStatus != noErr) {
+        // TODO - output an error message
+    }
 	return (UInt32) theRange.mMinimum;
 }
 
@@ -904,7 +930,10 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, JMXAudioDev
     propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
     propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
     theStatus = AudioObjectGetPropertyData( deviceID, &propertyAddress, 0, NULL, &theSize, &theRange );
-	return (UInt32) theRange.mMaximum;
+    if (theStatus != noErr) {
+        // TODO - output an error message
+    }
+    return (UInt32) theRange.mMaximum;
 }
 
 - (void) setDeviceBufferSizeInFrames:(UInt32)numFrames
@@ -918,6 +947,9 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, JMXAudioDev
     propertyAddress.mScope = kAudioObjectPropertyScopeWildcard;
     propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
     theStatus = AudioObjectSetPropertyData( deviceID, &propertyAddress, 0, NULL, theSize, &numFrames );
+    if (theStatus != noErr) {
+        // TODO - output an error message
+    }
 }
 
 - (UInt32)deviceLatencyFramesForDirection:(JMXAudioDeviceDirection)theDirection
@@ -932,6 +964,9 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, JMXAudioDev
     propertyAddress.mScope = (theDirection == kJMXAudioOutput)  ? kAudioDevicePropertyScopeOutput : kAudioDevicePropertyScopeInput;
     propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
     theStatus = AudioObjectGetPropertyData( deviceID, &propertyAddress, 0, NULL, &theSize, &latencyFrames );
+    if (theStatus != noErr) {
+        // TODO - output an error message
+    }
     return latencyFrames;
 }
 
@@ -947,7 +982,10 @@ static NSString * _ClockSourceNameForID ( AudioDeviceID theDeviceID, JMXAudioDev
     propertyAddress.mScope = (theDirection == kJMXAudioOutput)  ? kAudioDevicePropertyScopeOutput : kAudioDevicePropertyScopeInput;
     propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
     theStatus = AudioObjectGetPropertyData( deviceID, &propertyAddress, 0, NULL, &theSize, &safetyFrames );
-	return safetyFrames;
+    if (theStatus != noErr) {
+        // TODO - output an error message
+    }
+    return safetyFrames;
 }
 
 - (NSArray *)channelsByStreamForDirection:(JMXAudioDeviceDirection)theDirection
@@ -1448,6 +1486,9 @@ finish:
                            : kAudioDevicePropertyScopeOutput;    propertyAddress.mElement = kAudioObjectPropertyElementWildcard;
     propertyAddress.mElement = theChannel;
     theStatus = AudioObjectSetPropertyData( deviceID, &propertyAddress, 0, NULL, theSize, &theVolume );
+    if (theStatus != noErr) {
+        // TODO - output an error message
+    }
 }
 
 - (OSStatus) ioCycleForDevice:(JMXAudioDevice *)theDevice timeStamp:(const AudioTimeStamp *)inNow inputData:(const AudioBufferList *)inInputData inputTime:(const AudioTimeStamp *)inInputTime outputData:(AudioBufferList *)outOutputData outputTime:(const AudioTimeStamp *)inOutputTime clientData:(void *)inClientData

@@ -30,7 +30,7 @@
     [[NSColor colorWithDeviceRed:0.0 green:0.0 blue:1.0 alpha:1.0] setStroke];
 
     NSBezierPath *thePath = [[NSBezierPath alloc] init];
-    NSAffineTransform *transform = [[NSAffineTransform alloc] init];
+    NSAffineTransform *transform = [[[NSAffineTransform alloc] init] autorelease];
     [transform translateXBy:0.5 yBy:0.5];
     [thePath transformUsingAffineTransform:transform];
     [thePath setLineWidth:2.0];

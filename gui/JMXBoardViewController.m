@@ -332,6 +332,9 @@
     NSString *code = [jsInput stringValue];
     BOOL ret = [scriptController exec:code];
     [jsInput setStringValue:@""];
+    if (!ret) {
+        // TODO - show error messages
+    }
 }
 
 #pragma mark -

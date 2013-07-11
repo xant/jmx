@@ -45,7 +45,7 @@
 
 - (void)pinDisconnected:(NSNotification *)notification
 {
-    NSMutableDictionary *userInfo = [[notification userInfo] mutableCopy];
+    NSMutableDictionary *userInfo = [[[notification userInfo] mutableCopy] autorelease];
     if ([userInfo objectForKey:@"inputPin"] == realPin) {
         [userInfo setObject:self forKey:@"inputPin"];
     } else if ([userInfo objectForKey:@"outputPin"] == realPin) {

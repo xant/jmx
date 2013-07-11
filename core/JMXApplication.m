@@ -92,7 +92,7 @@ int verbose = LOG_INFO;
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
 {
     if (argv.count) {
-        JMXScriptFile *file = [[JMXScriptFile alloc] init];
+        JMXScriptFile *file = [[[JMXScriptFile alloc] init] autorelease];
         
         file.active = YES;
         _batchMode = YES;

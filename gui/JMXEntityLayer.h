@@ -40,7 +40,7 @@
     JMXBoardView *board;
     BOOL selected;
 @private
-    CGFloat labelHeight;
+    //CGFloat labelHeight;
 }
 
 @property (nonatomic,retain) JMXEntity *entity;

@@ -38,7 +38,7 @@
     JMXPin *pin;
 @private
     JMXConnectorLayer *tempConnector;
-    JMXEntityInspector *inspector;
+    //JMXEntityInspector *inspector;
     JMXOutletLayer *outlet;
     NSMutableArray *connectors;
 }

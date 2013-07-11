@@ -186,7 +186,11 @@ static void JMXIOHIDRemoveCallback(void *context, IOReturn result, void *sender)
     if (self) {
         deviceRef = aDeviceRef;
         IOReturn tIOReturn = IOHIDDeviceOpen(deviceRef, kIOHIDOptionsTypeNone);
-        //require_noerr(tIOReturn, Oops);
+        if (tIOReturn != kIOReturnSuccess) {
+            // TODO : show an error message
+            [self release];
+            return nil;
+        }
         IOHIDDeviceRegisterInputValueCallback(deviceRef, JMXIOHIDValueCallback, self);
         uint8_t *buffer = malloc(255);
         IOHIDDeviceRegisterInputReportCallback(deviceRef, buffer, 255, JMXIOHIDReportCallback, self);

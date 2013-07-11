@@ -99,7 +99,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXImageEntity);
     if (file) {
         @synchronized(self) {
             self.imagePath = file;
-            NSData *imageData = [[NSData alloc] initWithContentsOfFile:self.imagePath];
+            NSData *imageData = [[[NSData alloc] initWithContentsOfFile:self.imagePath] autorelease];
             if (imageData) {
                 self.image = [CIImage imageWithData:imageData];
                 NSArray *path = [file componentsSeparatedByString:@"/"];
@@ -115,11 +115,8 @@ JMXV8_EXPORT_NODE_CLASS(JMXImageEntity);
 
 - (void)close
 {
-    if (self.imagePath)
-        [self.imagePath release];
     self.imagePath = nil;
-    if (self.image)
-        self.image = nil;
+    self.image = nil;
 }
 
 - (void)tick:(uint64_t)timeStamp

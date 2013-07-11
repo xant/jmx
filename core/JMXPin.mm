@@ -745,7 +745,7 @@ static v8::Handle<Value>connect(const Arguments& args)
             if (dest) {
                 {
                     v8::Unlocker unlocker;
-                    BOOL ret = [pin connectToPin:dest];
+                    [pin connectToPin:dest];
                 }
                 [pool release];
                 return handleScope.Close([dest jsObj]);

@@ -34,7 +34,7 @@ static const CGPatternCallbacks patternCallbacks = {
 {
     JMXCanvasPattern *obj = [self alloc];
     if (obj)
-        return [[obj initWithBounds:bounds xStep:xStep yStep:yStep tiling:tilingMode isColored:isColored] retain];
+        return [[obj initWithBounds:bounds xStep:xStep yStep:yStep tiling:tilingMode isColored:isColored] autorelease];
     return obj;
 }
 

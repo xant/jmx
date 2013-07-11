@@ -45,7 +45,7 @@
     NSString *globalCompositeOperation;
     NSFont *font;
     CGFloat lineWidth;
-    BOOL _needsRender;
+    //BOOL _needsRender;
     BOOL _didFill;
     BOOL _didStroke;
     BOOL invertYCoordinates;

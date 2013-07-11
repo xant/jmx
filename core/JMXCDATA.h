@@ -11,7 +11,7 @@
 
 @interface JMXCDATA : NSXMLNode {
 @private
-    BOOL _initialized;
+    //BOOL _initialized;
     NSData *data;
 }
 

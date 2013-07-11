@@ -225,7 +225,7 @@
         [_transformFilter setValue:transform forKey:@"inputTransform"];
         [_transformFilter setValue:frame forKey:@"inputImage"];
         if (origin.x || origin.y) {
-            applyTransforms = YES;
+            //applyTransforms = YES;
             NSAffineTransform *originTransform = [NSAffineTransform transform];
             CGRect rect = [outputFrame extent];
             CGFloat x = fmod(origin.x, rect.size.width);

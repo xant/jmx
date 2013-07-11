@@ -154,6 +154,7 @@ unsigned char HIDConfigureSingleDeviceAction (IOHIDDeviceRef inIOHIDDeviceRef, I
 		CFRelease( elementCFArrayRef );
 	}                               // if ( elementCFArrayRef )
 	
+    free(saveValueArray);
 	// return device and element moved
 	if ( found ) {
 		return 1;
@@ -202,6 +203,9 @@ Boolean HIDConfigureAction( IOHIDDeviceRef* outIOHIDDeviceRef, IOHIDElementRef *
 	// determine the maximum number of elements
 	CFIndex maxElements = 0;
 	CFIndex devIndex, devCount = CFArrayGetCount( gDeviceCFArrayRef );
+    if (devCount <= 0)
+        return FALSE;
+    
 	for ( devIndex = 0; devIndex < devCount; devIndex++ ) {
 		tIOHIDDeviceRef = ( IOHIDDeviceRef ) CFArrayGetValueAtIndex( gDeviceCFArrayRef, devIndex );
 		
@@ -215,6 +219,9 @@ Boolean HIDConfigureAction( IOHIDDeviceRef* outIOHIDDeviceRef, IOHIDElementRef *
 		}
 	}
 	
+    if (maxElements <= 0)
+        return FALSE;
+    
 	// allocate an array of int's in which to store devCount * maxElements values
 	double* saveValueArray = ( double * ) calloc( devCount * maxElements, sizeof( double ) ); // clear 2D array to save values
 	
@@ -343,6 +350,8 @@ Boolean HIDConfigureAction( IOHIDDeviceRef* outIOHIDDeviceRef, IOHIDElementRef *
 		}
 	}	//	while ( !found )
 	
+    free(saveValueArray);
+    
 	// return device and element moved
 	if ( !found ) {
 		*outIOHIDDeviceRef = NULL;

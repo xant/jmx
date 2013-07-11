@@ -127,8 +127,7 @@ JMXV8_EXPORT_CLASS(JMXImageElement)
     [imageLock lock];
     NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithData:imageData];
     [imageLock unlock];
-    CGImageRef cgImage = CGImageRetain(rep.CGImage);
-    return cgImage; // NOTE - caller MUST release the image
+    return rep.CGImage;
 }
 
 - (CIImage *)ciImage

@@ -138,8 +138,8 @@ static inline UInt32 NextPowerOfTwo(UInt32 x)
         fftLen = sizeof(Float32)*fftSize;
         inputBuf = calloc(1, bufLen);
         outputBuf = calloc(1, bufLen);
-        fftBuf = calloc(1, fftLen);
-        splitFFTBuf = calloc(1, fftLen);
+        fftBuf = (fftLen > 0) ? calloc(1, fftLen) : nil;
+        splitFFTBuf = (fftLen > 0) ? calloc(1, fftLen) : nil;
         fftMask = fftSize - 1;
         fftByteSize = fftSize * sizeof(Float32);
         ioBufSize = NextPowerOfTwo(fftSize + maxFrames);

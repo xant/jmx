@@ -37,6 +37,7 @@ using namespace v8;
         buffer = (uint8_t *)calloc(length, sizeof(uint8_t));
         if (!buffer) {
             // TODO - log an error
+            [self release];
             return nil;
         }
         memcpy(buffer, bytes, length);

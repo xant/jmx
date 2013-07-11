@@ -150,11 +150,13 @@ static v8::Handle<Value> ReplaceData(const Arguments& args)
     v8::String::Utf8Value str(args[2]);
     // TODO - check if (strlen(*str) >= count)
     NSUInteger oldLen = [cdata.data length];
-    char *data = (char *)malloc(oldLen);
-    [cdata.data getBytes:data length:offset];
-    memcpy(data + offset, *str, count);
-    [cdata.data getBytes:(data + offset + count) range:NSMakeRange(offset + count, (oldLen - offset - count))];
-    cdata.data = [NSData dataWithBytesNoCopy:data length:oldLen freeWhenDone:YES];
+    if (oldLen) {
+        char *data = (char *)malloc(oldLen);
+        [cdata.data getBytes:data length:offset];
+        memcpy(data + offset, *str, count);
+        [cdata.data getBytes:(data + offset + count) range:NSMakeRange(offset + count, (oldLen - offset - count))];
+        cdata.data = [NSData dataWithBytesNoCopy:data length:oldLen freeWhenDone:YES];
+    }
     return handleScope.Close(Undefined());
 }
 

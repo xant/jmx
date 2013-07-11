@@ -398,7 +398,7 @@ IOHIDDeviceRef HIDGetNextDevice( IOHIDDeviceRef inIOHIDDeviceRef )
 				
 				// search for current device's index
 				for ( index = 0; index < count; index++ ) {
-					result = ( IOHIDDeviceRef ) CFArrayGetValueAtIndex( gDeviceCFArrayRef, gDeviceIndex );
+					result = ( IOHIDDeviceRef ) CFArrayGetValueAtIndex( gDeviceCFArrayRef, index );
 					
 					if ( ( result ) && ( result == inIOHIDDeviceRef ) ) {
 						gDeviceIndex = index + 1;   // found valid index; bump to next one

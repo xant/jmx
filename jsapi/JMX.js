@@ -6,7 +6,7 @@
  */
 
 //echo("Initializing JMX Core API");
-
+/*
 include("VideoOutput.js");
 //echo("Registered class: VideoOutput");
 include("VideoFilter.js");
@@ -22,7 +22,7 @@ include("AudioFile.js");
 include("DOM.js"); // DOM related additions
 include("jquery.js");
 include("processing.js");
-
+*/
 /**
  * Extend the internal Pin class to allow 'stringifying' them
  * (so that "echo(array_variable)" will dump its content)

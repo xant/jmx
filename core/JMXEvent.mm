@@ -10,6 +10,8 @@
 #import "JMXEvent.h"
 #import "JMXScript.h"
 
+JMXV8_EXPORT_CLASS(JMXEvent);
+
 using namespace v8;
 
 @implementation JMXEvent
@@ -57,9 +59,36 @@ using namespace v8;
 }
 
 
+
 #pragma mark V8
 
-static v8::Persistent<FunctionTemplate> objectTemplate;
+- (void)_initInternal:(v8::Arguments *)args
+{
+    if (args->Length() >= 1) {
+        v8::Handle<Value> arg = (*args)[0];
+        v8::String::Utf8Value evtType(arg);
+        self.type = [NSString stringWithFormat:@"%s", *evtType];
+    }
+}
+
+- (void)jsInit:(NSValue *)argsValue
+{
+    v8::Locker lock;
+    HandleScope handleScope;
+    v8::Arguments *args = (v8::Arguments *)[argsValue pointerValue];
+    [self _initInternal:args];
+}
+
+static v8::Handle<Value>InitEvent(const Arguments& args)
+{
+    v8::Locker lock;
+    HandleScope handleScope;
+    if (args.Length() >= 1) {
+        JMXEvent *event = (JMXEvent *)args.Holder()->GetPointerFromInternalField(0);
+        [event _initInternal:(v8::Arguments *)&args];
+    }
+    return handleScope.Close(Undefined());
+}
 
 + (v8::Persistent<FunctionTemplate>)jsObjectTemplate
 {
@@ -74,6 +103,8 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
     objectTemplate->SetClassName(String::New("Event"));
     v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     // set instance methods
+    classProto->Set("initEvent", FunctionTemplate::New(InitEvent));
+
     v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
     instanceTemplate->SetInternalFieldCount(1);
     // Add accessors for each of the fields of the entity.
@@ -88,19 +119,19 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
     return objectTemplate;
 }
 
-static void JMXEventJSDestructor(Persistent<Value> object, void *parameter)
-{
-    HandleScope handle_scope;
-    Locker lock;
-    JMXEvent *obj = static_cast<JMXEvent *>(parameter);
-    //NSLog(@"V8 WeakCallback (Rect) called %@", obj);
-    [obj release];
-    if (!object.IsEmpty()) {
-        object.ClearWeak();
-        object.Dispose();
-        object.Clear();
-    }
-}
+//static void JMXEventJSDestructor(Persistent<Value> object, void *parameter)
+//{
+//    HandleScope handle_scope;
+//    Locker lock;
+//    JMXEvent *obj = static_cast<JMXEvent *>(parameter);
+//    //NSLog(@"V8 WeakCallback (Rect) called %@", obj);
+//    [obj release];
+//    if (!object.IsEmpty()) {
+//        object.ClearWeak();
+//        object.Dispose();
+//        object.Clear();
+//    }
+//}
 
 - (Handle<Object>)jsObj
 {

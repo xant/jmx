@@ -78,7 +78,6 @@
 @property (readwrite, copy) JMXSize *frameSize;
 @property (readwrite, assign) CGFloat lineWidth;
 @property (assign) BOOL invertYCoordinates;
-- (id)jmxInit;
 
 /*!
  @method drawPathWithFrameSize

@@ -54,7 +54,6 @@
  */
 - (v8::Handle<v8::Object>)jsObj;
 
-
 @optional
 
 /*!
@@ -77,9 +76,11 @@
  @method jsRegisterClassMethods:
  @param constructor The constructor FunctionTemplate where to attach class methods
  @discussion If implemented, this message will be called when the constructor is registered
-             into the javascript global context. 
+ into the javascript global context.
  */
 + (void)jsRegisterClassMethods:(v8::Handle<v8::FunctionTemplate>)constructor;
+
+- (id)jmxInit;
 
 /*!
  @method jsInit:
@@ -153,11 +154,14 @@ v8::Handle<Value> __class##JSConstructor(const Arguments& args)\
     if (objectTemplate.IsEmpty())\
         objectTemplate = [__class jsObjectTemplate];\
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];\
-    __class *instance = nil;\
     v8::Local<Context> currentContext = v8::Context::GetCurrent();\
     JMXScript *ctx = [JMXScript getContext];\
     if (ctx) {\
-        instance = [[__class alloc] jmxInit];\
+        __class *instance = [__class alloc];\
+        if ([instance respondsToSelector:@selector(jmxInit)])\
+            instance = [instance jmxInit];\
+        else\
+            instance = [instance init];\
         /* connect the entity to our scriptEntity */\
         if ([instance isKindOfClass:[JMXElement class]]) {\
             [ctx.scriptEntity performSelector:@selector(hookEntity:) withObject:instance];\
@@ -206,7 +210,11 @@ v8::Handle<Value> __class##JSConstructor(const Arguments& args)\
     if (objectTemplate.IsEmpty())\
         objectTemplate = [__class jsObjectTemplate];\
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];\
-    __class *instance = [[__class alloc] jmxInit];\
+    __class *instance = [__class alloc];\
+    if ([instance respondsToSelector:@selector(jmxInit)])\
+        instance = [instance jmxInit];\
+    else\
+        instance = [instance init];\
     /* connect the entity to our scriptEntity */\
     if ([instance respondsToSelector:@selector(jsInit:)]) {\
         NSValue *argsValue = [NSValue valueWithPointer:(void *)&args];\

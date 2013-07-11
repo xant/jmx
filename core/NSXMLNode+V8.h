@@ -42,7 +42,6 @@
 
 @interface NSXMLNode (JMXV8) <JMXV8>
 
-- (id)jmxInit;
 - (NSString *)hashString;
 
 JMXV8_DECLARE_NODE_CONSTRUCTOR(NSXMLNode);

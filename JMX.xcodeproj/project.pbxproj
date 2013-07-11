@@ -1249,7 +1249,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd ${PROJECT_DIR}/node.js; make; cd -;";
+			shellScript = "cd ${PROJECT_DIR}/node.js; make; cd -;\n$PROJECT_DIR/node.js/tools/js2c.py $PROJECT_DIR/core/node_natives_jmx.h $PROJECT_DIR/jsapi/*.js";
 		};
 /* End PBXShellScriptBuildPhase section */
 

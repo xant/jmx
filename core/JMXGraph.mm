@@ -12,6 +12,7 @@
 #import "JMXElement.h"
 #import "JMXCanvasElement.h"
 #import "NSXMLNode+V8.h"
+#import "JMXEvent.h"
 
 @implementation JMXGraph
 
@@ -147,6 +148,23 @@ static v8::Handle<Value> GetElementById(const Arguments& args)
     return Undefined();
 }
 
+static v8::Handle<Value> CreateEvent(const Arguments& args)
+{
+    v8::Locker lock;
+    HandleScope handleScope;
+    if (args.Length() >= 1) {
+        v8::String::Utf8Value eventType(args[0]);
+        if (strcasecmp(*eventType, "Event") == 0) {
+            JMXEvent *event = [[[JMXEvent alloc] init] autorelease];
+            return handleScope.Close([event jsObj]);
+        } else {
+            // TODO - throw exception
+            NSLog(@"Unknown event type: %s", *eventType);
+        }
+    }
+    return Undefined();
+}
+
 static v8::Handle<Value> MapSet(Local<String> name, Local<Value> value, const AccessorInfo &info)
 {
     v8::Locker lock;
@@ -232,12 +250,12 @@ static void JMXGraphJSDestructor(Persistent<Value> object, void *parameter)
         return objectTemplate;
     objectTemplate = v8::Persistent<FunctionTemplate>::New(FunctionTemplate::New());
     objectTemplate->Inherit([super jsObjectTemplate]);
-    objectTemplate->SetClassName(String::New("Graph"));
+    objectTemplate->SetClassName(String::New("Document"));
     v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     classProto->Set("createElement", FunctionTemplate::New(CreateElement));
     classProto->Set("createComment", FunctionTemplate::New(CreateComment));
     classProto->Set("getElementById", FunctionTemplate::New(GetElementById));
-
+    classProto->Set("createEvent", FunctionTemplate::New(CreateEvent));
     
     v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
     instanceTemplate->SetAccessor(String::NewSymbol("uid"), GetStringProperty, SetStringProperty);

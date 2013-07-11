@@ -56,6 +56,9 @@
 #import "NSNumber+V8.h"
 #import "NSObject+V8.h"
 
+#include "node_natives_jmx.h"
+#include "node_String.h"
+
 using namespace v8;
 using namespace std;
 using namespace node;
@@ -106,6 +109,7 @@ static JMXV8ClassDescriptor mappedClasses[] = {
     { "JMXScriptOutputPin",       "OutputPin",        JMXOutputPinJSConstructor             },
     { "JMXTextEntity",            "TextEntity",       JMXTextEntityJSConstructor            },
     { "JMXHIDInputEntity",        "HIDInput",         JMXHIDInputEntityJSConstructor        },
+    { "JMXEvent",                 "Event",            JMXEventJSConstructor                 },
     { NULL,                       NULL,               NULL                                  }
 };
 
@@ -662,10 +666,10 @@ static char *argv[2] = { (char *)"JMX", NULL };
 //                continue;
 //        }
         Class entityClass = NSClassFromString([NSString stringWithUTF8String:mappedClasses[i].className]);
-        if (entityClass) {
+        if ([entityClass respondsToSelector:@selector(jsRegisterClassMethods:)]) {
             [entityClass jsRegisterClassMethods:constructor];
-            ctxTemplate->Set(String::New(mappedClasses[i].jsClassName), constructor);
         }
+        ctxTemplate->Set(String::New(mappedClasses[i].jsClassName), constructor);
     }
     [pool drain];
 }
@@ -784,17 +788,33 @@ static char *argv[2] = { (char *)"JMX", NULL };
     
     operationQueue = [[NSOperationQueue alloc] init];
     
+    
     // second part of node initialization
     Handle<Object> process = node::SetupProcessObject(1, argv);
     v8_typed_array::AttachBindings(ctx->Global());
     
     // Create all the objects, load modules, do everything.
-    // so your next reading stop should be node::Load()!
     node::Load(process);
     
-    char baseInclude[] = "include('JMX.js');";
-    // Enter the newly created execution environment.
-    ExecJSCode(baseInclude, strlen(baseInclude), "JMX");
+    // and now load the JMX native library (includes processing and jquery)
+    for (int i = 0; natives[i].name; i++) {
+        Local<String> name = String::New(natives[i].name);
+        Handle<String> source = BUILTIN_ASCII_ARRAY(natives[i].source, natives[i].source_len);
+        
+        TryCatch try_catch;
+        
+        Local<v8::Script> script = v8::Script::Compile(source, name);
+        if (script.IsEmpty()) {
+            ReportException(&try_catch);
+           // exit(3);
+        }
+        
+        Local<Value> result = script->Run();
+        if (result.IsEmpty()) {
+            ReportException(&try_catch);
+            //exit(4);
+        }
+    }
 }
 
 - (void)clearPersistentInstances

@@ -16,6 +16,10 @@ using namespace v8;
 
 static Persistent<FunctionTemplate> objectTemplate;
 
++ (void)jsRegisterClassMethods:(v8::Handle<v8::FunctionTemplate>)constructor
+{
+    // do nothing for now
+}
 
 + (v8::Persistent<FunctionTemplate>)jsObjectTemplate
 {
@@ -61,6 +65,11 @@ static void JMXObjectJSDestructor(Persistent<Value> object, void *parameter)
     jsInstance->SetPointerInInternalField(0, self);
     //[ctx addPersistentInstance:jsInstance obj:self];
     return handle_scope.Close(jsInstance);
+}
+
+- (id)jmxInit
+{
+    return [self init];
 }
 
 @end

@@ -11,8 +11,6 @@
 
 @interface NSFont (JMXV8) <JMXV8>    
 
-- (id)jmxInit;
-
 JMXV8_DECLARE_CONSTRUCTOR(NSXMLFont);
 
 @end

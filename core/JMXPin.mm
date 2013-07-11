@@ -876,14 +876,17 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
     objectTemplate = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
     objectTemplate->Inherit([super jsObjectTemplate]);
     objectTemplate->SetClassName(String::New("Pin"));
+
+    // set instance methods
     v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     classProto->Set("connect", FunctionTemplate::New(connect));
     classProto->Set("disconnect", FunctionTemplate::New(disconnect));
     classProto->Set("disconnectAll", FunctionTemplate::New(disconnectAll));
     classProto->Set("export", FunctionTemplate::New(exportToBoard));
-    // set instance methods
+    
     v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
     instanceTemplate->SetInternalFieldCount(1);
+    
     // Add accessors for each of the fields of the entity.
     instanceTemplate->SetAccessor(String::NewSymbol("label"), GetStringProperty, SetStringProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("type"), type);

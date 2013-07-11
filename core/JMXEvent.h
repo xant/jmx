@@ -108,3 +108,7 @@ typedef enum {
            capture:(BOOL)capture;
 
 @end
+
+#ifdef __JMXV8__
+JMXV8_DECLARE_CONSTRUCTOR(JMXEvent);
+#endif

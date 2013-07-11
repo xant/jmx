@@ -9,6 +9,12 @@
 
 // Generic syslog based logging
 
+@protocol JMXApplication
+
+- (void)logMessage:(NSString *)message, ...;
+
+@end
+
 #ifndef __JMXGLOBALS_H__
 #define __JMXGLOBALS_H__
 
@@ -35,9 +41,9 @@
 #define VERBOSE_DEFAULT         LOG_WARNING     //!< \brief default verbose level (syslog LOG_* value)
 
 
-//#define NSLog(__format, args...) do { [(JMXAppDelegate *)[[NSApplication sharedApplication] delegate]\
-//                                                          logMessage:__format, ## args ];\
-//                                    } while (0)
+#define NSLog(__format, args...) do { [(id<JMXApplication>)[[NSApplication sharedApplication] delegate]\
+                                                          logMessage:__format, ## args ];\
+                                    } while (0)
 
 #define NSDebug(__format, args...) do {\
                                         if (verbose >= LOG_DEBUG) {\

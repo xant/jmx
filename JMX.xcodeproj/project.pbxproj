@@ -41,7 +41,6 @@
 		AA54B28B12A1215000EC60B2 /* jmx-icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = AA54B28A12A1215000EC60B2 /* jmx-icon.icns */; };
 		AA75F38914F706FA00F1A214 /* drag_movies.js in Deploy JS examples */ = {isa = PBXBuildFile; fileRef = AA75F38814F706E200F1A214 /* drag_movies.js */; };
 		AA8F817612CB236700EA8543 /* JMXTextPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8F817512CB236700EA8543 /* JMXTextPanel.m */; };
-		AA9BFA51178DA30F003673D9 /* JMXAudioDumper.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA9BFA50178DA30F003673D9 /* JMXAudioDumper.mm */; };
 		AA9BFA60178F0FB2003673D9 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		AA9BFA6A178F0FB2003673D9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AA9BFA68178F0FB2003673D9 /* InfoPlist.strings */; };
 		AA9BFA72178F113D003673D9 /* HID_Utilities.c in Sources */ = {isa = PBXBuildFile; fileRef = AAEF97F614FA5BF3006B9F8B /* HID_Utilities.c */; };
@@ -1575,7 +1574,6 @@
 				AA08D33B14B5AA4500D19015 /* JMXCodePanel.m in Sources */,
 				AAB50B6414DD6405002F385C /* JMXEntitiesController.m in Sources */,
 				AA37E05214FA318500CBA0AE /* JMXDOMBrowser.m in Sources */,
-				AA9BFA51178DA30F003673D9 /* JMXAudioDumper.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

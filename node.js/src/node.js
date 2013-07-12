@@ -169,25 +169,47 @@
   };
 
   startup.globalTimeouts = function() {
+    _timeouts = new Array();
+    _intervals = new Array();
+
     global.setTimeout = function() {
       var t = NativeModule.require('timers');
-      return t.setTimeout.apply(this, arguments);
+      timer = t.setTimeout.apply(this, arguments);
+      _timeouts.push(timer);
+      return timer;
     };
 
     global.setInterval = function() {
       var t = NativeModule.require('timers');
-      return t.setInterval.apply(this, arguments);
+      timer = t.setInterval.apply(this, arguments);
+      _intervals.push(timer);
+      return timer;
     };
 
     global.clearTimeout = function() {
       var t = NativeModule.require('timers');
+      var i = _timeouts.indexOf(arguments[0]);
+      if(i != -1) {
+        _timeouts.splice(i, 1);
+      }
       return t.clearTimeout.apply(this, arguments);
     };
 
     global.clearInterval = function() {
       var t = NativeModule.require('timers');
+      var i = _intervals.indexOf(arguments[0]);
+      if(i != -1) {
+        _intervals.splice(i, 1);
+      }
       return t.clearInterval.apply(this, arguments);
     };
+
+    global.clearAllTimers = function() {
+      for (i in _intervals)
+        global.clearInterval(_intervals[i]);
+      for (i in _timeouts)
+        global.clearTimeout(_timeouts[i]);
+    } 
 
     global.setImmediate = function() {
       var t = NativeModule.require('timers');
@@ -305,6 +327,8 @@
     var config = NativeModule._source.config;
     delete NativeModule._source.config;
 
+    if (!config)
+      return;
     // strip the gyp comment line at the beginning
     config = config.split('\n').slice(1).join('\n').replace(/'/g, '"');
 
@@ -409,7 +433,10 @@
           return tickDone(0);
 
         while (infoBox[index] < nextTickLength) {
-          callback = nextTickQueue[infoBox[index]++].callback;
+          obj = nextTickQueue[infoBox[index]++];
+          if (!obj)
+              continue;
+          callback = obj.callback;
           threw = true;
           try {
             callback();

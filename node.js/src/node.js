@@ -172,6 +172,7 @@
     _timeouts = new Array();
     _intervals = new Array();
 
+/*
     global.setTimeout = function() {
       var t = NativeModule.require('timers');
       timer = t.setTimeout.apply(this, arguments);
@@ -203,6 +204,7 @@
       }
       return t.clearInterval.apply(this, arguments);
     };
+*/
 
     global.clearAllTimers = function() {
       for (i in _intervals)

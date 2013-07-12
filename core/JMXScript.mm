@@ -502,6 +502,7 @@ static v8::Handle<Value> SetInterval(const Arguments& args)
             v8::String::Utf8Value statements(args[0]->ToString());
             foo.statements = [NSString stringWithUTF8String:*statements];
         } else {
+            v8::String::Utf8Value statements(args[0]->ToString());
             foo.function = Persistent<Function>::New(Handle<Function>::Cast(args[0]));
             foo.function->SetHiddenValue(String::New("lastUpdate"), v8::Number::New([[NSDate date] timeIntervalSince1970]));
             foo.function->SetHiddenValue(String::New("interval"), args[1]);
@@ -753,7 +754,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
 //    ctxTemplate->Set(String::New("quit"), FunctionTemplate::New(Quit));
     ctxTemplate->Set(String::New("addToRunLoop"), FunctionTemplate::New(AddToRunLoop));
     ctxTemplate->Set(String::New("removeFromRunLoop"), FunctionTemplate::New(RemoveFromRunLoop));
-#if 0
+#if 1
     ctxTemplate->Set(String::New("setTimeout"), FunctionTemplate::New(SetTimeout));
     ctxTemplate->Set(String::New("clearTimeout"), FunctionTemplate::New(ClearTimeout));
     

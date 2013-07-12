@@ -72,6 +72,11 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
     return objectTemplate;
 }
 
+- (void)invalidate
+{
+    [timer invalidate];
+}
+
 - (void)dealloc
 {
     if (!function.IsEmpty())

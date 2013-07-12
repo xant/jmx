@@ -40,4 +40,7 @@
                 target:(id)target
               selector:(SEL)selector
                 repeats:(BOOL)repeats;
+
+- (void)invalidate;
+
 @end

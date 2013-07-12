@@ -371,65 +371,65 @@ static v8::Handle<Value> Sleep(const Arguments& args)
     return Undefined();
 }
 
-static v8::Handle<Value> Run(const Arguments& args)
-{   
-    HandleScope handleScope;
-    v8::Locker locker;
-    Local<Context> context = v8::Context::GetCalling();
-    Local<Object> globalObject  = context->Global();
-    //JMXEntity *entity = (JMXEntity *)globalObject->GetPointerFromInternalField(0);
-    //v8::Locker::StopPreemption();
-    //globalObject->SetHiddenValue(String::New("quit"), v8::Boolean::New(0));
-    if (args.Length() >= 1 && args[0]->IsFunction()) {
-        v8::Locker::StartPreemption(50);
-        while (1) {
-            HandleScope iterationScope;
-            if (globalObject->GetHiddenValue(String::New("quit"))->BooleanValue())
-                break;
-            
-            Local<Value> global = globalObject->Get(String::New("scriptEntity"));
-            if (global.IsEmpty() || global->IsUndefined() || global->IsNull())
-                break;                                     
-            v8::Local<v8::Object> obj = global->ToObject();
+//static v8::Handle<Value> Run(const Arguments& args)
+//{   
+//    HandleScope handleScope;
+//    v8::Locker locker;
+//    Local<Context> context = v8::Context::GetCalling();
+//    Local<Object> globalObject  = context->Global();
+//    //JMXEntity *entity = (JMXEntity *)globalObject->GetPointerFromInternalField(0);
+//    //v8::Locker::StopPreemption();
+//    //globalObject->SetHiddenValue(String::New("quit"), v8::Boolean::New(0));
+//    if (args.Length() >= 1 && args[0]->IsFunction()) {
+//        v8::Locker::StartPreemption(50);
+//        while (1) {
+//            HandleScope iterationScope;
+//            if (globalObject->GetHiddenValue(String::New("quit"))->BooleanValue())
+//                break;
+//            
+//            Local<Value> global = globalObject->Get(String::New("scriptEntity"));
+//            if (global.IsEmpty() || global->IsUndefined() || global->IsNull())
+//                break;                                     
+//            v8::Local<v8::Object> obj = global->ToObject();
+//
+//            JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetPointerFromInternalField(0);
+//            //ctx->Global()->Set(String::New("scriptEntity"), [scriptEntity jsObj]);
+//
+//            if (!entity.active) {
+//                break;
+//            }
+//            v8::Local<v8::Function> foo = v8::Local<v8::Function>::Cast(args[0]);
+//            int nArgs = args.Length() ? args.Length() - 1 : 0;
+//            v8::Handle<v8::Value> *fArgs = nArgs
+//                                         ? (v8::Handle<v8::Value> *)malloc(sizeof(v8::Handle<v8::Value>) * nArgs)
+//                                         : nil;
+//            for (int i = 0; i < nArgs; i++)
+//                fArgs[i] = args[i+1];
+//            //v8::Local<v8::Value> result = 
+//            foo->Call(foo, nArgs, fArgs);
+//            if (fArgs)
+//                free(fArgs);
+//            //uv_run(uv_default_loop(), (uv_run_mode)(UV_RUN_ONCE | UV_RUN_NOWAIT));
+//        }
+//        // restore quit status for nested loops
+//        v8::Locker::StopPreemption();
+//        globalObject->SetHiddenValue(String::New("quit"), v8::Boolean::New(0));
+//    }
+//    //v8::Locker::StartPreemption(50);
+//    NSLog(@"Javascript run() is exiting");
+//    v8::Handle<Primitive> t = Undefined();
+//    return reinterpret_cast<v8::Handle<String>&>(t);
+//}
 
-            JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetPointerFromInternalField(0);
-            //ctx->Global()->Set(String::New("scriptEntity"), [scriptEntity jsObj]);
-
-            if (!entity.active) {
-                break;
-            }
-            v8::Local<v8::Function> foo = v8::Local<v8::Function>::Cast(args[0]);
-            int nArgs = args.Length() ? args.Length() - 1 : 0;
-            v8::Handle<v8::Value> *fArgs = nArgs
-                                         ? (v8::Handle<v8::Value> *)malloc(sizeof(v8::Handle<v8::Value>) * nArgs)
-                                         : nil;
-            for (int i = 0; i < nArgs; i++)
-                fArgs[i] = args[i+1];
-            //v8::Local<v8::Value> result = 
-            foo->Call(foo, nArgs, fArgs);
-            if (fArgs)
-                free(fArgs);
-            //uv_run(uv_default_loop(), (uv_run_mode)(UV_RUN_ONCE | UV_RUN_NOWAIT));
-        }
-        // restore quit status for nested loops
-        v8::Locker::StopPreemption();
-        globalObject->SetHiddenValue(String::New("quit"), v8::Boolean::New(0));
-    }
-    //v8::Locker::StartPreemption(50);
-    NSLog(@"Javascript run() is exiting");
-    v8::Handle<Primitive> t = Undefined();
-    return reinterpret_cast<v8::Handle<String>&>(t);
-}
-
-static v8::Handle<Value> Quit(const Arguments& args)
-{
-    //v8::Locker lock;
-    HandleScope handleScope;
-    Local<Context> globalContext = v8::Context::GetCurrent();
-    Local<Object> globalObject  = globalContext->Global();
-    globalObject->SetHiddenValue(String::New("quit"), v8::Boolean::New(1));
-    return Undefined();
-}
+//static v8::Handle<Value> Quit(const Arguments& args)
+//{
+//    //v8::Locker lock;
+//    HandleScope handleScope;
+//    Local<Context> globalContext = v8::Context::GetCurrent();
+//    Local<Object> globalObject  = globalContext->Global();
+//    globalObject->SetHiddenValue(String::New("quit"), v8::Boolean::New(1));
+//    return Undefined();
+//}
 
 static v8::Handle<Value> GetDocument(v8::Local<v8::String> name, const v8::AccessorInfo& info)
 {
@@ -749,8 +749,8 @@ static char *argv[2] = { (char *)"JMX", NULL };
     ctxTemplate->Set(String::New("isdir"), FunctionTemplate::New(IsDir));
     ctxTemplate->Set(String::New("exportPin"), FunctionTemplate::New(ExportPin));
     ctxTemplate->Set(String::New("dumpDOM"), FunctionTemplate::New(DumpDOM));
-    ctxTemplate->Set(String::New("run"), FunctionTemplate::New(Run));
-    ctxTemplate->Set(String::New("quit"), FunctionTemplate::New(Quit));
+//    ctxTemplate->Set(String::New("run"), FunctionTemplate::New(Run));
+//    ctxTemplate->Set(String::New("quit"), FunctionTemplate::New(Quit));
     ctxTemplate->Set(String::New("addToRunLoop"), FunctionTemplate::New(AddToRunLoop));
     ctxTemplate->Set(String::New("removeFromRunLoop"), FunctionTemplate::New(RemoveFromRunLoop));
 #if 0
@@ -828,6 +828,10 @@ static char *argv[2] = { (char *)"JMX", NULL };
 
 - (void)clearTimers
 {
+    for (JMXScriptTimer *t in runloopTimers) {
+        [t invalidate];
+    }
+    [runloopTimers removeAllObjects];
     [self execCode:@"clearAllTimers()"];
 }
 

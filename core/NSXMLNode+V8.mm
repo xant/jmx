@@ -42,7 +42,7 @@ using namespace v8;
 
 static v8::Handle<Value>GetParentNode(Local<String> name, const AccessorInfo& info)
 {   
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     NSXMLNode *node = (NSXMLNode *)info.Holder()->GetPointerFromInternalField(0);
     Local<Value> ret;
@@ -58,7 +58,7 @@ static v8::Handle<Value>GetParentNode(Local<String> name, const AccessorInfo& in
 
 static v8::Handle<Value>GetChildNodes(Local<String> name, const AccessorInfo& info)
 {   
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     NSXMLNode *node = (NSXMLNode *)info.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -85,15 +85,17 @@ static v8::Handle<Value>GetChildNodes(Local<String> name, const AccessorInfo& in
 
 static v8::Handle<Value>GetFirstChild(Local<String> name, const AccessorInfo& info)
 {   
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     NSXMLNode *node = (NSXMLNode *)info.Holder()->GetPointerFromInternalField(0);
-    return handleScope.Close([[node childAtIndex:0] jsObj]);
+    if ([node childCount] > 0)
+        return handleScope.Close([[node childAtIndex:0] jsObj]);
+    return handleScope.Close(Undefined());
 }
 
 static v8::Handle<Value>GetLastChild(Local<String> name, const AccessorInfo& info)
 {   
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     NSXMLNode *node = (NSXMLNode *)info.Holder()->GetPointerFromInternalField(0);
     return handleScope.Close([[node childAtIndex:[node childCount]-1] jsObj]);
@@ -101,7 +103,7 @@ static v8::Handle<Value>GetLastChild(Local<String> name, const AccessorInfo& inf
 
 static v8::Handle<Value>GetPreviousSibling(Local<String> name, const AccessorInfo& info)
 {   
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     NSXMLNode *node = (NSXMLNode *)info.Holder()->GetPointerFromInternalField(0);
     NSXMLNode *sibling = [node previousSibling];
@@ -113,7 +115,7 @@ static v8::Handle<Value>GetPreviousSibling(Local<String> name, const AccessorInf
 
 static v8::Handle<Value>GetNextSibling(Local<String> name, const AccessorInfo& info)
 {   
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     NSXMLNode *node = (NSXMLNode *)info.Holder()->GetPointerFromInternalField(0);
     NSXMLNode *sibling = [node nextSibling];
@@ -125,7 +127,7 @@ static v8::Handle<Value>GetNextSibling(Local<String> name, const AccessorInfo& i
 
 static v8::Handle<Value>GetAttributes(Local<String> name, const AccessorInfo& info)
 {   
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     Local<Context> ctx = v8::Context::GetCurrent();
     Local<Function> constructor = v8::Local<v8::Function>::Cast(ctx->Global()->Get(String::New("NamedNodeMap")));
@@ -152,7 +154,7 @@ static v8::Handle<Value>GetAttributes(Local<String> name, const AccessorInfo& in
 
 static v8::Handle<Value>GetNameSpaceURI(Local<String> name, const AccessorInfo& info)
 {   
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     NSXMLNode *node = (NSXMLNode *)info.Holder()->GetPointerFromInternalField(0);
     return handleScope.Close(String::New([[node URI] UTF8String]));
@@ -160,15 +162,15 @@ static v8::Handle<Value>GetNameSpaceURI(Local<String> name, const AccessorInfo& 
 
 static v8::Handle<Value>GetLocalName(Local<String> name, const AccessorInfo& info)
 {   
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     NSXMLNode *node = (NSXMLNode *)info.Holder()->GetPointerFromInternalField(0);
     return handleScope.Close(String::New([[node localName] UTF8String]));
 }
 
 static v8::Handle<Value>GetOwnerDocument(Local<String> name, const AccessorInfo& info)
-{   
-    //v8::Locker lock;
+{
+    v8::Locker lock;
     HandleScope handleScope;
     NSXMLNode *node = (NSXMLNode *)info.Holder()->GetPointerFromInternalField(0);
     return handleScope.Close([[node rootDocument] jsObj]);
@@ -176,7 +178,7 @@ static v8::Handle<Value>GetOwnerDocument(Local<String> name, const AccessorInfo&
 
 static v8::Handle<Value>GetPrefix(Local<String> name, const AccessorInfo& info)
 {   
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     NSXMLNode *node = (NSXMLNode *)info.Holder()->GetPointerFromInternalField(0);
     return handleScope.Close(String::New([[node prefix] UTF8String]));
@@ -184,7 +186,7 @@ static v8::Handle<Value>GetPrefix(Local<String> name, const AccessorInfo& info)
 
 static v8::Handle<Value>GetBaseURI(Local<String> name, const AccessorInfo& info)
 {   
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     NSXMLNode *node = (NSXMLNode *)info.Holder()->GetPointerFromInternalField(0);
     return handleScope.Close(String::New([[[node rootDocument] URI] UTF8String]));
@@ -192,7 +194,7 @@ static v8::Handle<Value>GetBaseURI(Local<String> name, const AccessorInfo& info)
 
 static v8::Handle<Value>GetTextContent(Local<String> name, const AccessorInfo& info)
 {   
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     NSXMLNode *node = (NSXMLNode *)info.Holder()->GetPointerFromInternalField(0);
     return handleScope.Close(String::New([[node stringValue] UTF8String]));
@@ -200,14 +202,14 @@ static v8::Handle<Value>GetTextContent(Local<String> name, const AccessorInfo& i
 
 static v8::Handle<Value>GetNodeType(Local<String> name, const AccessorInfo& info)
 {   
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     return handleScope.Close(v8::Integer::New(1));
 }
 
 static v8::Handle<Value> InsertBefore(const Arguments& args)
 {
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     id holder = (id)args.Holder()->GetPointerFromInternalField(0);
     if ([holder isKindOfClass:[NSXMLElement class]]) {
@@ -233,7 +235,7 @@ static v8::Handle<Value> InsertBefore(const Arguments& args)
 
 static v8::Handle<Value> ReplaceChild(const Arguments& args)
 {
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     id holder = (id)args.Holder()->GetPointerFromInternalField(0);
     if ([holder isKindOfClass:[NSXMLElement class]]) {
@@ -252,7 +254,7 @@ static v8::Handle<Value> ReplaceChild(const Arguments& args)
 
 static v8::Handle<Value> RemoveChild(const Arguments& args)
 {
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     id holder = (id)args.Holder()->GetPointerFromInternalField(0);
     if ([holder isKindOfClass:[NSXMLElement class]]) {
@@ -270,7 +272,7 @@ static v8::Handle<Value> RemoveChild(const Arguments& args)
 
 static v8::Handle<Value> AppendChild(const Arguments& args)
 {
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     id holder = (id)args.Holder()->GetPointerFromInternalField(0);
     if ([holder isKindOfClass:[NSXMLElement class]]) {
@@ -290,7 +292,7 @@ static v8::Handle<Value> AppendChild(const Arguments& args)
 
 static v8::Handle<Value> HasChildNodes(const Arguments& args)
 {
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     bool ret = false;
     NSXMLNode *node = (NSXMLNode *)args.Holder()->GetPointerFromInternalField(0);
@@ -301,7 +303,7 @@ static v8::Handle<Value> HasChildNodes(const Arguments& args)
 
 static v8::Handle<Value> Normalize(const Arguments& args)
 {
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     id holder = (id)args.Holder()->GetPointerFromInternalField(0);
     if (holder && [holder isKindOfClass:[NSXMLElement class]])
@@ -311,7 +313,7 @@ static v8::Handle<Value> Normalize(const Arguments& args)
 
 static v8::Handle<Value> IsSupported(const Arguments& args)
 {
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     id holder = (id)args.Holder()->GetPointerFromInternalField(0);
     if (holder && [holder isKindOfClass:[NSXMLElement class]]) {
@@ -331,7 +333,7 @@ static v8::Handle<Value> IsSupported(const Arguments& args)
 
 static v8::Handle<Value> GetFeature(const Arguments& args)
 {
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     id holder = (id)args.Holder()->GetPointerFromInternalField(0);
     if (holder && [holder isKindOfClass:[NSXMLElement class]]) {
@@ -351,7 +353,7 @@ static v8::Handle<Value> GetFeature(const Arguments& args)
 
 static v8::Handle<Value> IsSameNode(const Arguments& args)
 {
-    //v8::Locker lock;
+    v8::Locker lock;
     BOOL ret = NO;
     HandleScope handleScope;
     NSXMLNode *holder = (NSXMLNode *)args.Holder()->GetPointerFromInternalField(0);
@@ -363,7 +365,7 @@ static v8::Handle<Value> IsSameNode(const Arguments& args)
 
 static v8::Handle<Value> IsEqualNode(const Arguments& args)
 {
-    //v8::Locker lock;
+    v8::Locker lock;
     BOOL ret = NO;
     HandleScope handleScope;
     NSXMLNode *holder = (NSXMLNode *)args.Holder()->GetPointerFromInternalField(0);
@@ -375,7 +377,7 @@ static v8::Handle<Value> IsEqualNode(const Arguments& args)
 
 static v8::Handle<Value> SetUserData(const Arguments& args)
 {
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     v8::Handle<Object> obj = args.Holder();
     if (args.Length() >= 2 && args[0]->IsString()) {
@@ -387,7 +389,7 @@ static v8::Handle<Value> SetUserData(const Arguments& args)
 
 static v8::Handle<Value> GetUserData(const Arguments& args)
 {
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     v8::Handle<Object> obj = args.Holder();
     if (args.Length() >= 1 && args[0]->IsString())
@@ -397,7 +399,7 @@ static v8::Handle<Value> GetUserData(const Arguments& args)
 
 static v8::Handle<Value> LookupPrefix(const Arguments& args)
 {
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     v8::Handle<Object> obj = args.Holder();
     NSXMLNode *node = (NSXMLNode *)args.Holder()->GetPointerFromInternalField(0);
@@ -416,7 +418,7 @@ static v8::Handle<Value> LookupPrefix(const Arguments& args)
 
 static v8::Handle<Value> IsDefaultNamespace(const Arguments& args)
 {
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     BOOL ret = NO;
     v8::Handle<Object> obj = args.Holder();
@@ -436,7 +438,7 @@ static v8::Handle<Value> IsDefaultNamespace(const Arguments& args)
 
 static v8::Handle<Value> LookupNamespaceURI(const Arguments& args)
 {
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     v8::Handle<Object> obj = args.Holder();
     NSXMLNode *node = (NSXMLNode *)args.Holder()->GetPointerFromInternalField(0);
@@ -462,7 +464,7 @@ const unsigned short      DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC = 0x20;
 */
 static v8::Handle<Value> CompareDocumentPosition(const Arguments& args)
 {
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     /*
     v8::Handle<Object> obj = args.Holder();
@@ -482,7 +484,7 @@ static void GatherElementsByName(NSXMLNode *node, char *name, NSMutableArray *el
 
 static v8::Handle<Value> GetElementsByTagName(const Arguments& args)
 {
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     v8::Handle<Object> obj = args.Holder();
     NSXMLNode *node = (NSXMLNode *)args.Holder()->GetPointerFromInternalField(0);
@@ -512,7 +514,7 @@ static v8::Handle<Value> GetElementsByTagName(const Arguments& args)
 
 static v8::Handle<Value> GetAttribute(const Arguments& args)
 {
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     v8::Handle<Value> ret = Undefined();
@@ -535,7 +537,7 @@ static v8::Handle<Value> GetAttribute(const Arguments& args)
 
 static v8::Handle<Value> SetAttribute(const Arguments& args)
 {
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     NSXMLNode *node = (NSXMLNode *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() > 1 && [node isKindOfClass:[NSXMLElement class]]) {
@@ -556,7 +558,7 @@ static v8::Handle<Value> SetAttribute(const Arguments& args)
 
 static v8::Handle<Value> AddEventListener(const Arguments& args)
 {
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     NSXMLNode *node = (NSXMLNode *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() > 2 && args[0]->IsString() && args[1]->IsFunction()
@@ -580,7 +582,7 @@ static v8::Handle<Value> AddEventListener(const Arguments& args)
 
 static v8::Handle<Value> RemoveEventListener(const Arguments& args)
 {
-    //v8::Locker lock;
+    v8::Locker lock;
     HandleScope handleScope;
     //NSXMLNode *node = (NSXMLNode *)args.Holder()->GetPointerFromInternalField(0);
     if (args.Length() > 2 && args[0]->IsString() && args[1]->IsObject()
@@ -603,7 +605,7 @@ static v8::Handle<Value> RemoveEventListener(const Arguments& args)
 
 static v8::Handle<Value> DispatchEvent(const Arguments& args)
 {
-    //v8::Locker lock;
+    v8::Locker lock;
     BOOL ret = NO;
     HandleScope handleScope;
     //NSXMLNode *node = (NSXMLNode *)args.Holder()->GetPointerFromInternalField(0);

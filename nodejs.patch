@@ -1,0 +1,108 @@
+diff -purN node-v0.10.12/lib/_third_party_main.js jmx/node.js/lib/_third_party_main.js
+--- node-v0.10.12/lib/_third_party_main.js	1970-01-01 01:00:00.000000000 +0100
++++ jmx/node.js/lib/_third_party_main.js	2013-07-12 12:19:45.000000000 +0200
+@@ -0,0 +1,2 @@
++
++
+diff -purN node-v0.10.12/node.gyp jmx/node.js/node.gyp
+--- node-v0.10.12/node.gyp	2013-06-18 18:50:53.000000000 +0200
++++ jmx/node.js/node.gyp	2013-07-11 13:09:42.000000000 +0200
+@@ -58,13 +58,14 @@
+       'lib/util.js',
+       'lib/vm.js',
+       'lib/zlib.js',
++      'lib/_third_party_main.js'
+     ],
+   },
+ 
+   'targets': [
+     {
+       'target_name': 'node',
+-      'type': 'executable',
++      'type': 'static_library',
+ 
+       'dependencies': [
+         'node_js2c#host',
+@@ -88,7 +89,6 @@
+         'src/node_file.cc',
+         'src/node_http_parser.cc',
+         'src/node_javascript.cc',
+-        'src/node_main.cc',
+         'src/node_os.cc',
+         'src/node_script.cc',
+         'src/node_stat_watcher.cc',
+diff -purN node-v0.10.12/src/node.js jmx/node.js/src/node.js
+--- node-v0.10.12/src/node.js	2013-06-18 18:50:53.000000000 +0200
++++ jmx/node.js/src/node.js	2013-07-12 10:07:22.000000000 +0200
+@@ -169,26 +169,48 @@
+   };
+ 
+   startup.globalTimeouts = function() {
++    _timeouts = new Array();
++    _intervals = new Array();
++
+     global.setTimeout = function() {
+       var t = NativeModule.require('timers');
+-      return t.setTimeout.apply(this, arguments);
++      timer = t.setTimeout.apply(this, arguments);
++      _timeouts.push(timer);
++      return timer;
+     };
+ 
+     global.setInterval = function() {
+       var t = NativeModule.require('timers');
+-      return t.setInterval.apply(this, arguments);
++      timer = t.setInterval.apply(this, arguments);
++      _intervals.push(timer);
++      return timer;
+     };
+ 
+     global.clearTimeout = function() {
+       var t = NativeModule.require('timers');
++      var i = _timeouts.indexOf(arguments[0]);
++      if(i != -1) {
++        _timeouts.splice(i, 1);
++      }
+       return t.clearTimeout.apply(this, arguments);
+     };
+ 
+     global.clearInterval = function() {
+       var t = NativeModule.require('timers');
++      var i = _intervals.indexOf(arguments[0]);
++      if(i != -1) {
++        _intervals.splice(i, 1);
++      }
+       return t.clearInterval.apply(this, arguments);
+     };
+ 
++    global.clearAllTimers = function() {
++      for (i in _intervals)
++        global.clearInterval(_intervals[i]);
++      for (i in _timeouts)
++        global.clearTimeout(_timeouts[i]);
++    } 
++
+     global.setImmediate = function() {
+       var t = NativeModule.require('timers');
+       return t.setImmediate.apply(this, arguments);
+@@ -305,6 +327,8 @@
+     var config = NativeModule._source.config;
+     delete NativeModule._source.config;
+ 
++    if (!config)
++      return;
+     // strip the gyp comment line at the beginning
+     config = config.split('\n').slice(1).join('\n').replace(/'/g, '"');
+ 
+@@ -409,7 +433,10 @@
+           return tickDone(0);
+ 
+         while (infoBox[index] < nextTickLength) {
+-          callback = nextTickQueue[infoBox[index]++].callback;
++          obj = nextTickQueue[infoBox[index]++];
++          if (!obj)
++              continue;
++          callback = obj.callback;
+           threw = true;
+           try {
+             callback();

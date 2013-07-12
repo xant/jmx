@@ -330,6 +330,8 @@
 - (void)execStatement
 {
     NSString *code = [jsInput stringValue];
+    if (!code.length)
+        return;
     BOOL ret = [scriptController exec:code];
     [jsInput setStringValue:@""];
     if (!ret) {

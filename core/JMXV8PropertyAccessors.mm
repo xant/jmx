@@ -42,7 +42,7 @@ v8::Handle<Value>GetColorProperty(Local<String> name, const AccessorInfo& info)
 
 v8::Handle<Value>GetObjectProperty(Local<String> name, const AccessorInfo& info)
 {
-    //Locker lock;
+    Locker lock;
     HandleScope handle_scope;
     id obj = (id)info.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -97,7 +97,7 @@ static inline BOOL _GetProperty(id obj, char *name, void *ret)
 
 v8::Handle<Value>GetBoolProperty(Local<String> name, const AccessorInfo& info)
 {
-    //Locker lock;
+    Locker lock;
     HandleScope handle_scope;
     BOOL ret = NO;
     String::Utf8Value value(name);
@@ -109,7 +109,7 @@ v8::Handle<Value>GetBoolProperty(Local<String> name, const AccessorInfo& info)
 
 v8::Handle<Value>GetDoubleProperty(Local<String> name, const AccessorInfo& info)
 {
-    //Locker lock;
+    Locker lock;
     HandleScope handle_scope;
     double ret = 0;
     String::Utf8Value value(name);
@@ -122,7 +122,7 @@ v8::Handle<Value>GetDoubleProperty(Local<String> name, const AccessorInfo& info)
 
 v8::Handle<Value>GetIntProperty(Local<String> name, const AccessorInfo& info)
 {
-    //Locker lock;
+    Locker lock;
     HandleScope handle_scope;
     int32_t ret = 0;
     String::Utf8Value value(name);
@@ -157,7 +157,7 @@ static inline void _SetProperty(id obj, char *name, id value)
 
 void SetStringProperty(Local<String> name, Local<Value> value, const AccessorInfo& info)
 {
-    //Locker lock;
+    Locker lock;
     HandleScope handleScope;
     String::Utf8Value nameStr(name);
     if (!value->IsString()) {
@@ -175,7 +175,7 @@ void SetStringProperty(Local<String> name, Local<Value> value, const AccessorInf
 
 void SetColorProperty(Local<String> name, Local<Value> value, const AccessorInfo& info)
 {
-    //Locker lock;
+    Locker lock;
     HandleScope handleScope;
     String::Utf8Value nameStr(name);
     if (!value->IsObject()) {
@@ -194,7 +194,7 @@ void SetColorProperty(Local<String> name, Local<Value> value, const AccessorInfo
 
 void SetNumberProperty(Local<String> name, Local<Value> value, const AccessorInfo& info)
 {
-    //Locker lock;
+    Locker lock;
     HandleScope handleScope;
     String::Utf8Value nameStr(name);
     if (!value->IsNumber()) {
@@ -212,7 +212,7 @@ void SetNumberProperty(Local<String> name, Local<Value> value, const AccessorInf
 
 void SetBoolProperty(Local<String> name, Local<Value> value, const AccessorInfo& info)
 {
-    //Locker lock;
+    Locker lock;
     HandleScope handleScope;
     String::Utf8Value nameStr(name);
     if (!(value->IsBoolean() || value->IsNumber())) {
@@ -247,7 +247,7 @@ void SetBoolProperty(Local<String> name, Local<Value> value, const AccessorInfo&
 
 void SetIntProperty(Local<String> name, Local<Value> value, const AccessorInfo& info)
 {
-    //Locker lock;
+    Locker lock;
     HandleScope handleScope;
     String::Utf8Value nameStr(name);
     if (!value->IsInt32()) {
@@ -282,7 +282,7 @@ void SetIntProperty(Local<String> name, Local<Value> value, const AccessorInfo& 
 
 void SetDoubleProperty(Local<String> name, Local<Value> value, const AccessorInfo& info)
 {
-    //Locker lock;
+    Locker lock;
     HandleScope handleScope;
     String::Utf8Value nameStr(name);
     if (!value->IsInt32()) {
@@ -317,7 +317,7 @@ void SetDoubleProperty(Local<String> name, Local<Value> value, const AccessorInf
 
 void SetSizeProperty(Local<String> name, Local<Value> value, const AccessorInfo& info)
 {
-    //Locker lock;
+    Locker lock;
     HandleScope handleScope;
     String::Utf8Value nameStr(name);
     String::Utf8Value str(value->ToString());
@@ -334,7 +334,7 @@ void SetSizeProperty(Local<String> name, Local<Value> value, const AccessorInfo&
 
 void SetPointProperty(Local<String> name, Local<Value> value, const AccessorInfo& info)
 {
-    //Locker lock;
+    Locker lock;
     HandleScope handleScope;
     String::Utf8Value nameStr(name);
     String::Utf8Value str(value->ToString());

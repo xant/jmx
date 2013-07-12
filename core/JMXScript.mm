@@ -409,7 +409,7 @@ static v8::Handle<Value> Run(const Arguments& args)
             foo->Call(foo, nArgs, fArgs);
             if (fArgs)
                 free(fArgs);
-            uv_run(uv_default_loop(), (uv_run_mode)(UV_RUN_ONCE | UV_RUN_NOWAIT));
+            //uv_run(uv_default_loop(), (uv_run_mode)(UV_RUN_ONCE | UV_RUN_NOWAIT));
         }
         // restore quit status for nested loops
         v8::Locker::StopPreemption();
@@ -604,12 +604,6 @@ static char *argv[2] = { (char *)"JMX", NULL };
 {
     self = [super init];
     if (self) {
-        if (!nodeJSTimersThread) {
-            nodeJSTimersThread = [[NSThread alloc] initWithTarget:self
-                                                         selector:@selector(nodejsRun)
-                                                           object:nil];
-            [nodeJSTimersThread start];
-        }
     }
     return self;
 }
@@ -814,6 +808,12 @@ static char *argv[2] = { (char *)"JMX", NULL };
             ReportException(&try_catch);
             //exit(4);
         }
+    }
+    if (!nodeJSTimersThread) {
+        nodeJSTimersThread = [[NSThread alloc] initWithTarget:self
+                                                     selector:@selector(nodejsRun)
+                                                       object:nil];
+        [nodeJSTimersThread start];
     }
 }
 
@@ -1041,7 +1041,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
     Handle<Value> args[1];
     args[0] = [anEvent jsObj];
     for (JMXEventListener *listener in listeners) {
-        Unlocker unlocker;
+        //Unlocker unlocker;
         [self execFunction:listener.function withArguments:args count:1];
     }
     [pool release];

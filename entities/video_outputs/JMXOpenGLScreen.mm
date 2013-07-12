@@ -150,7 +150,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
             __openglOutputs = [[NSMutableDictionary alloc] initWithCapacity:5];
         }
         JMXOpenGLViewWrapper *wrapper = [JMXOpenGLViewWrapper openglViewWrapperWithOpenglView:self];
-        [__openglOutputs setObject:wrapper forKey:[wrapper hashString]];
+        [__openglOutputs setObject:wrapper forKey:[NSNumber numberWithInteger:[self hash]]];
     }
     return self;
 }
@@ -177,7 +177,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 
 - (void)dealloc
 {
-    [__openglOutputs removeObjectForKey:[NSString stringWithFormat:@"%ld", [self hash]]];
+    [__openglOutputs removeObjectForKey:[NSNumber numberWithInteger:[self hash]]];
     [self cleanup];
     [lock release];
     [super dealloc];

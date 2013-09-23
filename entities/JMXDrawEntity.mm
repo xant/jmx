@@ -23,7 +23,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXDrawEntity);
 {
     self = [super init];
     if (self) {
-        canvas = [[JMXCanvasElement alloc] init];
+        canvas = [[[JMXCanvasElement alloc] init] autorelease];
         JMXThreadedEntity *threadedEntity = [[JMXThreadedEntity threadedEntity:self] retain];
         self.label = @"DrawPath";
         drawPath = canvas.drawPath; // NOTE : weak reference (it's owned by the canvas)
@@ -37,14 +37,16 @@ JMXV8_EXPORT_NODE_CLASS(JMXDrawEntity);
 - (void)setSize:(JMXSize *)aSize
 {
     [super setSize:aSize];
-    canvas.width = aSize.width;
-    canvas.height = aSize.height;
+    if (aSize) {
+        canvas.width = aSize.width;
+        canvas.height = aSize.height;
+    }
 }
 
 - (void)dealloc
 {
     [canvas detach];
-    [canvas release];
+    //[canvas release];
     [super dealloc];
 }
 

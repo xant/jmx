@@ -697,19 +697,19 @@ static v8::Handle<Value> DispatchEvent(const Arguments& args)
     return objectTemplate;
 }
 
-static void JMXNodeJSDestructor(Persistent<Value> object, void *parameter)
-{
-    HandleScope handle_scope;
-    v8::Locker lock;
-    id obj = static_cast<id>(parameter);
-    NSDebug(@"V8 WeakCallback (%@) called ", obj);
-    [obj release];
-    if (!object.IsEmpty()) {
-        object.ClearWeak();
-        object.Dispose();
-        object.Clear();
-    }
-}
+//static void JMXNodeJSDestructor(Persistent<Value> object, void *parameter)
+//{
+//    HandleScope handle_scope;
+//    v8::Locker lock;
+//    id obj = static_cast<id>(parameter);
+//    NSDebug(@"V8 WeakCallback (%@) called ", obj);
+//    [obj release];
+//    if (!object.IsEmpty()) {
+//        object.ClearWeak();
+//        object.Dispose();
+//        object.Clear();
+//    }
+//}
 
 - (v8::Handle<v8::Object>)jsObj
 {
@@ -717,7 +717,7 @@ static void JMXNodeJSDestructor(Persistent<Value> object, void *parameter)
     HandleScope handle_scope;
     v8::Handle<FunctionTemplate> objectTemplate = [[self class] jsObjectTemplate];
     v8::Persistent<Object> jsInstance = Persistent<Object>::New(objectTemplate->InstanceTemplate()->NewInstance());
-    jsInstance.MakeWeak([self retain], JMXNodeJSDestructor);
+    //jsInstance.MakeWeak([self retain], JMXNodeJSDestructor);
     jsInstance->SetPointerInInternalField(0, self);
     //[ctx addPersistentInstance:jsInstance obj:self];
     return handle_scope.Close(jsInstance);

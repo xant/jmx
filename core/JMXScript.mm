@@ -60,16 +60,7 @@
 #include "node_string.h"
 
 using namespace v8;
-using namespace std;
 using namespace node;
-/*
-typedef std::map<id, v8::Persistent<v8::Object> > InstMap;
-*/
-
-typedef std::pair< JMXScript *, Handle<Context> >CtxPair;
-typedef std::map< JMXScript *, Handle<Context> > CtxMap;
-
-CtxMap contextes;
 
 typedef struct __JMXPersistantInstance {
     id obj;
@@ -112,8 +103,6 @@ static JMXV8ClassDescriptor mappedClasses[] = {
     { "JMXEvent",                 "Event",            JMXEventJSConstructor                 },
     { NULL,                       NULL,               NULL                                  }
 };
-
-static NSThread *nodeJSTimersThread = nil;
 
 void JSExit(int code)
 {
@@ -455,7 +444,6 @@ static v8::Handle<Value> AddToRunLoop(const Arguments& args)
         foo.function = Persistent<Function>::New(Handle<Function>::Cast(args[0]));
         foo.function->SetHiddenValue(String::New("lastUpdate"), v8::Number::New([[NSDate date] timeIntervalSince1970]));
         foo.function->SetHiddenValue(String::New("interval"), args[1]);
-        [[NSRunLoop currentRunLoop] addTimer:foo.timer forMode:NSRunLoopCommonModes];
         [scriptContext addRunloopTimer:foo];
         return handleScope.Close([foo jsObj]);
     }
@@ -507,7 +495,6 @@ static v8::Handle<Value> SetInterval(const Arguments& args)
             foo.function->SetHiddenValue(String::New("lastUpdate"), v8::Number::New([[NSDate date] timeIntervalSince1970]));
             foo.function->SetHiddenValue(String::New("interval"), args[1]);
         }
-        [[NSRunLoop currentRunLoop] addTimer:foo.timer forMode:NSRunLoopCommonModes];
         [scriptContext addRunloopTimer:foo];
         return handleScope.Close([foo jsObj]);
     }
@@ -540,7 +527,6 @@ static v8::Handle<Value> SetTimeout(const Arguments& args)
             foo.function->SetHiddenValue(String::New("lastUpdate"), v8::Number::New([[NSDate date] timeIntervalSince1970]));
             foo.function->SetHiddenValue(String::New("interval"), args[1]);
         }
-        [[NSRunLoop currentRunLoop] addTimer:foo.timer forMode:NSRunLoopCommonModes];
         [scriptContext addRunloopTimer:foo];
         return handleScope.Close([foo jsObj]);
     }
@@ -556,15 +542,22 @@ static v8::Handle<Value> ClearTimeout(const Arguments& args)
     v8::Local<v8::Object> obj = globalObject->Get(String::New("scriptEntity"))->ToObject();
     JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetPointerFromInternalField(0);
     JMXScript *scriptContext = entity.jsContext;
-    JMXScriptTimer *foo = (JMXScriptTimer *)Local<Object>::Cast(args[0])->GetPointerFromInternalField(0);
-    if (foo && [scriptContext.runloopTimers containsObject:foo]) {
-        [foo.timer invalidate];
-        [scriptContext removeRunloopTimer:foo];
-        return handleScope.Close(v8::Boolean::New(1));
+    if (args[0]->IsObject() && Local<Object>::Cast(args[0])->InternalFieldCount() > 0) {
+        JMXScriptTimer *foo = (JMXScriptTimer *)Local<Object>::Cast(args[0])->GetPointerFromInternalField(0);
+        if (foo && [scriptContext.runloopTimers containsObject:foo]) {
+            [foo.timer invalidate];
+            [scriptContext removeRunloopTimer:foo];
+            return handleScope.Close(v8::Boolean::New(1));
+        }
     }
     return handleScope.Close(v8::Boolean::New(0));
 }
 
+@interface JMXScript ()
+{
+    NSThread *nodeJSTimersThread;
+}
+@end
 @implementation JMXScript
 
 @synthesize scriptEntity, runloopTimers, eventListeners, ctx;
@@ -609,17 +602,36 @@ static char *argv[2] = { (char *)"JMX", NULL };
     return self;
 }
 
-- (void)nodejsRun
+- (void)jsRunTimers
 {
     uint64_t maxDelta = 1e9 / 120.0; // max 120 ticks per seconds
     while (![[NSThread currentThread] isCancelled]) {
         @try {
-            v8::Locker locker;
-            v8::HandleScope handle_scope;
-            v8::Context::Scope context_scope(ctx);
+            //v8::Context::Scope context_scope(ctx);
             uint64_t timeStamp = CVGetCurrentHostTime();
+            
             NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-            uv_run(uv_default_loop(), (uv_run_mode)(UV_RUN_ONCE | UV_RUN_NOWAIT));
+            //uv_run(uv_default_loop(), (uv_run_mode)(UV_RUN_ONCE | UV_RUN_NOWAIT));
+            NSMutableArray *toRemove = [NSMutableArray array];
+            for (JMXScriptTimer *scriptTimer in runloopTimers) {
+                if (!scriptTimer.timer.isValid) {
+                    [toRemove addObject:scriptTimer];
+                } else if ([scriptTimer.timer.fireDate
+                            compare:[NSDate dateWithTimeInterval:0.001
+                                                       sinceDate:[NSDate date]]] == NSOrderedAscending)
+                {
+                    [scriptTimer.timer fire];
+                    if (scriptTimer.repeats) {
+                        scriptTimer.timer.fireDate = [NSDate dateWithTimeInterval:scriptTimer.timer.timeInterval sinceDate:[NSDate date]];
+                    }
+                }
+            }
+            
+            
+            for (JMXScriptTimer *scriptTimer in toRemove) {
+                [self removeRunloopTimer:scriptTimer];
+            }
+
             uint64_t now = CVGetCurrentHostTime();
             uint64_t delta = now - timeStamp;
             uint64_t sleepTime = (delta && delta < maxDelta) ? maxDelta - delta : 0;
@@ -710,6 +722,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
     HandleScope handleScope;
     v8::TryCatch try_catch;
     v8::Handle<Value> ret = function->Call(function, (int)count, argv);
+    
     if (ret.IsEmpty()) {
         ReportException(&try_catch);
         return Undefined();
@@ -724,6 +737,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
     v8::TryCatch try_catch;
 
     v8::Handle<Value> ret = function->Call(function, 0, nil);
+
     
     if (ret.IsEmpty()) {
         ReportException(&try_catch);
@@ -783,11 +797,10 @@ static char *argv[2] = { (char *)"JMX", NULL };
     
     operationQueue = [[NSOperationQueue alloc] init];
     
-    
     // second part of node initialization
     Handle<Object> process = node::SetupProcessObject(1, argv);
     v8_typed_array::AttachBindings(ctx->Global());
-    
+
     // Create all the objects, load modules, do everything.
     node::Load(process);
     
@@ -810,12 +823,10 @@ static char *argv[2] = { (char *)"JMX", NULL };
             //exit(4);
         }
     }
-    if (!nodeJSTimersThread) {
-        nodeJSTimersThread = [[NSThread alloc] initWithTarget:self
-                                                     selector:@selector(nodejsRun)
-                                                       object:nil];
-        [nodeJSTimersThread start];
-    }
+    nodeJSTimersThread = [[NSThread alloc] initWithTarget:self
+                                                 selector:@selector(jsRunTimers)
+                                                   object:self];
+    [nodeJSTimersThread start];
 }
 
 - (void)clearPersistentInstances
@@ -833,7 +844,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
         [t invalidate];
     }
     [runloopTimers removeAllObjects];
-    [self execCode:@"clearAllTimers()"];
+    //[self execCode:@"clearAllTimers()"];
 }
 
 - (void)stop
@@ -841,10 +852,12 @@ static char *argv[2] = { (char *)"JMX", NULL };
     v8::Locker locker;
     v8::HandleScope handle_scope;
     v8::Context::Scope context_scope(ctx);
+
+    
+    [nodeJSTimersThread cancel];
+    [nodeJSTimersThread release];
     
     [self clearTimers];
-    // and tell V8 we want to release anything possible (by notifying a low memory condition
-    V8::LowMemoryNotification();
     
     if (scriptEntity) {
         if ([scriptEntity conformsToProtocol:@protocol(JMXRunLoop)])
@@ -852,27 +865,32 @@ static char *argv[2] = { (char *)"JMX", NULL };
         scriptEntity = nil;
     }
     [self clearPersistentInstances];
+    
+    Local<Array> properties = ctx->Global()->GetPropertyNames();
+    for (int i = 0; i < properties->Length(); i++) {
+        Local<String> str = properties->Get(i)->ToString();
+        v8::String::Utf8Value cstr(str);
+        if (strcmp("process", *cstr) == 0)
+            continue;
+        ctx->Global()->Delete(str);
+    }
+    ctx->Global().Clear();
+    
+    ctx.Dispose();
+    ctx.Clear();
+    
+    // and tell V8 we want to release anything possible (by notifying a low memory condition
+    V8::LowMemoryNotification();
+    
+    // notify that we have disposed the context
+    V8::ContextDisposedNotification();
+    
+    while( !V8::IdleNotification() )
+        ;
 }
 
 - (void)dealloc
 {
-    v8::Locker locker;
-    v8::HandleScope handle_scope;
-    v8::Context::Scope context_scope(ctx);
-
-    // and tell V8 we want to release anything possible (by notifying a low memory condition
-    V8::LowMemoryNotification();
-
-    ctx->Global()->Delete(String::New("scriptEntity"));
-    ctx->Global().Clear();
-    //contextes.erase(self);
-    ctx.Dispose();
-    ctx.Clear();
-    // notify that we have disposed the context
-    V8::ContextDisposedNotification();    
-    while( !V8::IdleNotification() )
-        ;
-    
     [persistentInstances release];
     [runloopTimers release];
     [eventListeners release];
@@ -882,7 +900,8 @@ static char *argv[2] = { (char *)"JMX", NULL };
 
 - (BOOL)execCode:(NSString *)code
 {
-    return ExecJSCode((const char *)[code UTF8String], (uint32_t)[code length], "code");
+    BOOL ret = ExecJSCode((const char *)[code UTF8String], (uint32_t)[code length], "code");
+    return ret;
 }
 
 - (BOOL)runScript:(NSString *)script withArgs:(NSArray *)args

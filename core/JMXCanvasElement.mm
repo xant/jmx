@@ -72,14 +72,6 @@ JMXV8_EXPORT_NODE_CLASS(JMXCanvasElement);
     }
 }
 
-- (oneway void) release
-{
-    return [super release];
-}
-- (id)retain
-{
-    return [super retain];
-}
 - (void)dealloc
 {
     [drawPath release];

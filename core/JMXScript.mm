@@ -439,7 +439,7 @@ static v8::Handle<Value> AddToRunLoop(const Arguments& args)
         JMXScriptTimer *foo = [JMXScriptTimer scriptTimerWithFireDate:[NSDate dateWithTimeIntervalSinceNow:args[1]->NumberValue()]
                                                               interval:args[1]->NumberValue()
                                                                 target:scriptContext
-                                                              selector:@selector(JSRunLoop:)
+                                                              selector:@selector(JSRunTimer:)
                                                                repeats:YES];
         foo.function = Persistent<Function>::New(Handle<Function>::Cast(args[0]));
         foo.function->SetHiddenValue(String::New("lastUpdate"), v8::Number::New([[NSDate date] timeIntervalSince1970]));
@@ -461,8 +461,8 @@ static v8::Handle<Value> RemoveFromRunLoop(const Arguments& args)
     JMXScript *scriptContext = entity.jsContext;
     JMXScriptTimer *foo = (JMXScriptTimer *)Local<Object>::Cast(args[0])->GetPointerFromInternalField(0);
     if (foo && [scriptContext.runloopTimers containsObject:foo]) {
-        [foo.timer invalidate];
         [scriptContext removeRunloopTimer:foo];
+        [foo.timer invalidate];
         return handleScope.Close(v8::Boolean::New(1));
     }
     return handleScope.Close(v8::Boolean::New(0));
@@ -484,7 +484,7 @@ static v8::Handle<Value> SetInterval(const Arguments& args)
         JMXScriptTimer *foo = [JMXScriptTimer scriptTimerWithFireDate:[NSDate dateWithTimeIntervalSinceNow:args[1]->NumberValue()]
                                                              interval:args[1]->NumberValue()/1000 // millisecs here
                                                                target:scriptContext
-                                                             selector:@selector(JSRunLoop:)
+                                                             selector:@selector(JSRunTimer:)
                                                               repeats:YES];
         if (args[0]->IsString()) {
             v8::String::Utf8Value statements(args[0]->ToString());
@@ -516,7 +516,7 @@ static v8::Handle<Value> SetTimeout(const Arguments& args)
         JMXScriptTimer *foo = [JMXScriptTimer scriptTimerWithFireDate:[NSDate dateWithTimeIntervalSinceNow:args[1]->NumberValue()]
                                                              interval:args[1]->NumberValue()/1000 // millisecs here
                                                                target:scriptContext
-                                                             selector:@selector(JSRunLoop:)
+                                                             selector:@selector(JSRunTimer:)
                                                               repeats:NO];
         
         if (args[0]->IsString()) {
@@ -545,8 +545,8 @@ static v8::Handle<Value> ClearTimeout(const Arguments& args)
     if (args[0]->IsObject() && Local<Object>::Cast(args[0])->InternalFieldCount() > 0) {
         JMXScriptTimer *foo = (JMXScriptTimer *)Local<Object>::Cast(args[0])->GetPointerFromInternalField(0);
         if (foo && [scriptContext.runloopTimers containsObject:foo]) {
-            [foo.timer invalidate];
             [scriptContext removeRunloopTimer:foo];
+            [foo.timer invalidate];
             return handleScope.Close(v8::Boolean::New(1));
         }
     }
@@ -555,9 +555,13 @@ static v8::Handle<Value> ClearTimeout(const Arguments& args)
 
 @interface JMXScript ()
 {
-    NSThread *nodeJSTimersThread;
+    NSThread *timersThread;
 }
+
+- (void)jsRunTimers;
+
 @end
+
 @implementation JMXScript
 
 @synthesize scriptEntity, runloopTimers, eventListeners, ctx;
@@ -613,24 +617,27 @@ static char *argv[2] = { (char *)"JMX", NULL };
             NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
             //uv_run(uv_default_loop(), (uv_run_mode)(UV_RUN_ONCE | UV_RUN_NOWAIT));
             NSMutableArray *toRemove = [NSMutableArray array];
-            for (JMXScriptTimer *scriptTimer in runloopTimers) {
-                if (!scriptTimer.timer.isValid) {
-                    [toRemove addObject:scriptTimer];
-                } else if ([scriptTimer.timer.fireDate
-                            compare:[NSDate dateWithTimeInterval:0.001
-                                                       sinceDate:[NSDate date]]] == NSOrderedAscending)
-                {
-                    [scriptTimer.timer fire];
-                    if (scriptTimer.repeats) {
-                        scriptTimer.timer.fireDate = [NSDate dateWithTimeInterval:scriptTimer.timer.timeInterval sinceDate:[NSDate date]];
+            @synchronized(timersThread) {
+                for (JMXScriptTimer *scriptTimer in runloopTimers) {
+                    if (!scriptTimer.timer.isValid) {
+                        [toRemove addObject:scriptTimer];
+                    } else if ([scriptTimer.timer.fireDate
+                                compare:[NSDate dateWithTimeInterval:0.001
+                                                           sinceDate:[NSDate date]]] == NSOrderedAscending)
+                    {
+                        [scriptTimer.timer fire];
+                        if (scriptTimer.repeats) {
+                            scriptTimer.timer.fireDate = [NSDate dateWithTimeInterval:scriptTimer.timer.timeInterval sinceDate:[NSDate date]];
+                        }
                     }
                 }
+
+
+                for (JMXScriptTimer *scriptTimer in toRemove) {
+                    [self removeRunloopTimer:scriptTimer];
+                }
             }
-            
-            
-            for (JMXScriptTimer *scriptTimer in toRemove) {
-                [self removeRunloopTimer:scriptTimer];
-            }
+            [pool release];
 
             uint64_t now = CVGetCurrentHostTime();
             uint64_t delta = now - timeStamp;
@@ -646,7 +653,6 @@ static char *argv[2] = { (char *)"JMX", NULL };
                     nanosleep(&time, &remainder);
                 } while (remainder.tv_sec || remainder.tv_nsec);
             }
-            [pool release];
         }
         @catch (NSException *exception) {
             NSLog(@"%@", exception);
@@ -681,14 +687,14 @@ static char *argv[2] = { (char *)"JMX", NULL };
     [pool drain];
 }
 
-- (void)JSRunLoop:(NSTimer *)timer
+- (void)JSRunTimer:(NSTimer *)timer
 {
     v8::Locker locker;
     HandleScope handleScope;
     v8::Context::Scope context_scope(ctx);
     JMXScriptTimer *foo = timer.userInfo;
     if (foo.statements && [foo.statements length]) {
-        ExecJSCode([foo.statements UTF8String], (uint32_t)[foo.statements length], "JMXScriptTimeout");
+        ExecJSCode([foo.statements UTF8String], (uint32_t)[foo.statements length], "JMXScriptTimer");
         if (!foo.repeats) {
             [foo.timer invalidate];
             [runloopTimers removeObject:foo];
@@ -823,10 +829,10 @@ static char *argv[2] = { (char *)"JMX", NULL };
             //exit(4);
         }
     }
-    nodeJSTimersThread = [[NSThread alloc] initWithTarget:self
+    timersThread = [[NSThread alloc] initWithTarget:self
                                                  selector:@selector(jsRunTimers)
                                                    object:self];
-    [nodeJSTimersThread start];
+    [timersThread start];
 }
 
 - (void)clearPersistentInstances
@@ -840,10 +846,12 @@ static char *argv[2] = { (char *)"JMX", NULL };
 
 - (void)clearTimers
 {
-    for (JMXScriptTimer *t in runloopTimers) {
-        [t invalidate];
+    @synchronized(timersThread) {
+        for (JMXScriptTimer *t in runloopTimers) {
+            [t invalidate];
+        }
+        [runloopTimers removeAllObjects];
     }
-    [runloopTimers removeAllObjects];
     //[self execCode:@"clearAllTimers()"];
 }
 
@@ -853,10 +861,10 @@ static char *argv[2] = { (char *)"JMX", NULL };
     v8::HandleScope handle_scope;
     v8::Context::Scope context_scope(ctx);
 
-    
-    [nodeJSTimersThread cancel];
-    [nodeJSTimersThread release];
-    
+    @synchronized(timersThread) {
+        [timersThread cancel];
+        [timersThread release];
+    }
     [self clearTimers];
     
     if (scriptEntity) {
@@ -1012,11 +1020,15 @@ static char *argv[2] = { (char *)"JMX", NULL };
 
 - (void)addRunloopTimer:(JMXScriptTimer *)timer
 {
-    [runloopTimers addObject:timer];
+    @synchronized(timersThread) {
+        [runloopTimers addObject:timer];
+    }
 }
 - (void)removeRunloopTimer:(JMXScriptTimer *)timer
 {
-    [runloopTimers removeObject:timer];
+    @synchronized(timersThread) {
+        [runloopTimers removeObject:timer];
+    }
 }
 
 - (void)addListener:(JMXEventListener *)listener forEvent:(NSString *)event

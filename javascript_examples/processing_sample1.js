@@ -3,7 +3,7 @@ height = 480;
 
 drawer = new DrawPath(width, height);
 // the following is necessary to have coordinates matching between mouse events and the canvas context
-drawer.canvas.getContext('2d').invertYCoordinates = true; 
+//drawer.canvas.getContext('2d').invertYCoordinates = true; 
 
 // comment the following lines if you don't want 
 // the output window to be automatically created

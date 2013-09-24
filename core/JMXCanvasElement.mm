@@ -31,6 +31,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXCanvasElement);
         width = frameSize.width;
         height = frameSize.height;
         drawPath = [[JMXDrawPath alloc] initWithFrameSize:[JMXSize sizeWithNSSize:NSMakeSize(width, height)]];
+        drawPath.invertYCoordinates = YES;
     }
     return self;
 }

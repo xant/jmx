@@ -17,6 +17,7 @@ movies = new Array(m1, m2, m3);
 
 // create a video output (size doesn't really matter)
 v = new VideoOutput(640, 480);
+v.invertYCoordinates = false;
 
 // and create a videomixer so that we can blend the movie files on the same video frame
 mixer = new VideoMixer();

@@ -402,6 +402,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 {
     [super jsInit:argsValue];
     ctx = [JMXScript getContext];
+    self.invertYCoordinates = YES;
 }
 
 - (id)initWithSize:(NSSize)screenSize

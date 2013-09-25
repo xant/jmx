@@ -313,7 +313,24 @@ void ConvertHSLToRGB (const CGFloat *hslComponents, CGFloat *rgbComponents) {
 
 - (CGFloat)w
 {
-    return [self whiteComponent];
+    return [[self colorUsingColorSpaceName:NSCalibratedWhiteColorSpace] whiteComponent];
+}
+
+v8::Handle<Value>GetWhiteComponent(Local<String> name, const AccessorInfo& info)
+{
+    Locker lock;
+    HandleScope handle_scope;
+    NSColor *obj = (NSColor *)info.Holder()->GetPointerFromInternalField(0);
+    return handle_scope.Close(Number::New([[obj colorUsingColorSpaceName:NSCalibratedWhiteColorSpace] whiteComponent]));
+}
+
+v8::Handle<Value>GetBlackComponent(Local<String> name, const AccessorInfo& info)
+{
+    Locker lock;
+    HandleScope handle_scope;
+    NSColor *obj = (NSColor *)info.Holder()->GetPointerFromInternalField(0);
+    CGFloat f = [[obj colorUsingColorSpaceName:NSCalibratedWhiteColorSpace] whiteComponent];
+    return handle_scope.Close(Number::New(1.0 - f));
 }
 
 static v8::Persistent<FunctionTemplate> objectTemplate;
@@ -340,15 +357,15 @@ static v8::Persistent<FunctionTemplate> objectTemplate;
     instanceTemplate->SetAccessor(String::NewSymbol("redComponent"), GetDoubleProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("blueComponent"), GetDoubleProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("greenComponent"), GetDoubleProperty);
-    instanceTemplate->SetAccessor(String::NewSymbol("whiteComponent"), GetDoubleProperty);
-    instanceTemplate->SetAccessor(String::NewSymbol("blackComponent"), GetDoubleProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("whiteComponent"), GetWhiteComponent);
+    instanceTemplate->SetAccessor(String::NewSymbol("blackComponent"), GetBlackComponent);
     instanceTemplate->SetAccessor(String::NewSymbol("alphaComponent"), GetDoubleProperty);
     
     // ad shortcuts (just aliases)
     instanceTemplate->SetAccessor(String::NewSymbol("r"), GetDoubleProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("b"), GetDoubleProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("g"), GetDoubleProperty);
-    instanceTemplate->SetAccessor(String::NewSymbol("w"), GetDoubleProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("w"), GetWhiteComponent);
     instanceTemplate->SetAccessor(String::NewSymbol("a"), GetDoubleProperty);
     return objectTemplate;
 }

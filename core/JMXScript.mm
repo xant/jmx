@@ -573,6 +573,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
     // initialize node.js
     node::Init(1, argv);
     v8::V8::Initialize();
+    [self createDefaultContext];
 }
 
 + (BOOL)runScript:(NSString *)source
@@ -660,7 +661,7 @@ static char *argv[2] = { (char *)"JMX", NULL };
     }
 }
 
-- (void)registerClasses:(v8::Handle<ObjectTemplate>)ctxTemplate;
++ (void)registerClasses:(v8::Handle<ObjectTemplate>)ctxTemplate;
 {
     // register all the core entities exposed to the javascript context.
     // JMXPins are also exposed but those can't be created directly from
@@ -752,13 +753,15 @@ static char *argv[2] = { (char *)"JMX", NULL };
     return YES;
 }
 
-- (void)startWithEntity:(JMXScriptEntity *)entity
+static NSThread *nodejsThread = nil;
+static Persistent<ObjectTemplate> ctxTemplate;
+
++ (void)createDefaultContext
 {
     v8::Locker locker;
     v8::HandleScope handle_scope;
     
-    persistentInstances = [[NSMutableDictionary alloc] init];
-    Local<ObjectTemplate>ctxTemplate = ObjectTemplate::New();
+    ctxTemplate = Persistent<ObjectTemplate>::New(ObjectTemplate::New());
     
     ctxTemplate->Set(String::New("rand"), FunctionTemplate::New(Rand));
     ctxTemplate->Set(String::New("frand"), FunctionTemplate::New(FRand));
@@ -770,8 +773,8 @@ static char *argv[2] = { (char *)"JMX", NULL };
     ctxTemplate->Set(String::New("isdir"), FunctionTemplate::New(IsDir));
     ctxTemplate->Set(String::New("exportPin"), FunctionTemplate::New(ExportPin));
     ctxTemplate->Set(String::New("dumpDOM"), FunctionTemplate::New(DumpDOM));
-//    ctxTemplate->Set(String::New("run"), FunctionTemplate::New(Run));
-//    ctxTemplate->Set(String::New("quit"), FunctionTemplate::New(Quit));
+    //    ctxTemplate->Set(String::New("run"), FunctionTemplate::New(Run));
+    //    ctxTemplate->Set(String::New("quit"), FunctionTemplate::New(Quit));
     ctxTemplate->Set(String::New("addToRunLoop"), FunctionTemplate::New(AddToRunLoop));
     ctxTemplate->Set(String::New("removeFromRunLoop"), FunctionTemplate::New(RemoveFromRunLoop));
 #if 1
@@ -788,6 +791,13 @@ static char *argv[2] = { (char *)"JMX", NULL };
      ctxTemplate->Set(String::New("ListEntities"), FunctionTemplate::New(ListEntities));
      */
     [self registerClasses:ctxTemplate];
+}
+- (void)startWithEntity:(JMXScriptEntity *)entity
+{
+    v8::Locker locker;
+    v8::HandleScope handle_scope;
+    
+    persistentInstances = [[NSMutableDictionary alloc] init];
     ctx = Persistent<Context>::New(Context::New(NULL, ctxTemplate));
     v8::Context::Scope context_scope(ctx);
     
@@ -833,6 +843,46 @@ static char *argv[2] = { (char *)"JMX", NULL };
                                                  selector:@selector(jsRunTimers)
                                                    object:self];
     [timersThread start];
+
+    if (!nodejsThread) {
+        nodejsThread = [[NSThread alloc] initWithTarget:[self class] selector:@selector(nodejsRun:) object:self];
+        [nodejsThread start];
+    }
+}
+
++ (void)nodejsRun:(JMXScript *)context
+{
+    Locker locker;
+    HandleScope handleScope;
+    v8::Context::Scope context_scope(context.ctx);
+    
+    uint64_t maxDelta = 1e9 / 120.0; // max 120 ticks per seconds
+    while (![[NSThread currentThread] isCancelled]) {
+        @try {
+            
+            uint64_t timeStamp = CVGetCurrentHostTime();
+            
+            NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+            uv_run(uv_default_loop(), (uv_run_mode)(UV_RUN_ONCE | UV_RUN_NOWAIT));
+            uint64_t now = CVGetCurrentHostTime();
+            uint64_t delta = now - timeStamp;
+            uint64_t sleepTime = (delta && delta < maxDelta) ? maxDelta - delta : 0;
+            
+            if (sleepTime) {
+                struct timespec time = { 0, 0 };
+                struct timespec remainder = { 0, static_cast<long>(sleepTime) };
+                do {
+                    time.tv_sec = remainder.tv_sec;
+                    time.tv_nsec = remainder.tv_nsec;
+                    remainder.tv_nsec = 0;
+                    nanosleep(&time, &remainder);
+                } while (remainder.tv_sec || remainder.tv_nsec);
+            }
+        }
+        @catch (NSException *exception) {
+            NSLog(@"%@", exception);
+        }
+    }
 }
 
 - (void)clearPersistentInstances

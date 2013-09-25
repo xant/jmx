@@ -157,7 +157,9 @@ static v8::Handle<Value>GetNameSpaceURI(Local<String> name, const AccessorInfo& 
     v8::Locker lock;
     HandleScope handleScope;
     NSXMLNode *node = (NSXMLNode *)info.Holder()->GetPointerFromInternalField(0);
-    return handleScope.Close(String::New([[node URI] UTF8String]));
+    if (node && [node URI])
+        return handleScope.Close(String::New([[node URI] UTF8String]));
+    return handleScope.Close(Undefined());
 }
 
 static v8::Handle<Value>GetLocalName(Local<String> name, const AccessorInfo& info)
@@ -181,7 +183,9 @@ static v8::Handle<Value>GetPrefix(Local<String> name, const AccessorInfo& info)
     v8::Locker lock;
     HandleScope handleScope;
     NSXMLNode *node = (NSXMLNode *)info.Holder()->GetPointerFromInternalField(0);
-    return handleScope.Close(String::New([[node prefix] UTF8String]));
+    if (node && [node prefix])
+        return handleScope.Close(String::New([[node prefix] UTF8String]));
+    return handleScope.Close(Undefined());
 }
 
 static v8::Handle<Value>GetBaseURI(Local<String> name, const AccessorInfo& info)
@@ -189,7 +193,10 @@ static v8::Handle<Value>GetBaseURI(Local<String> name, const AccessorInfo& info)
     v8::Locker lock;
     HandleScope handleScope;
     NSXMLNode *node = (NSXMLNode *)info.Holder()->GetPointerFromInternalField(0);
-    return handleScope.Close(String::New([[[node rootDocument] URI] UTF8String]));
+    if (node && [node URI])
+        return handleScope.Close(String::New([[node URI] UTF8String]));
+    
+    return handleScope.Close(Undefined());
 }
 
 static v8::Handle<Value>GetTextContent(Local<String> name, const AccessorInfo& info)

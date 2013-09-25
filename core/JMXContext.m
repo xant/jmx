@@ -104,6 +104,7 @@ static BOOL initialized = NO;
         [ns setStringValue:@"http://jmxapp.org"];
         [ns setName:@"jmx"];
         [root addNamespace:ns];
+        [root setURI:@"http://jmxapp.org"];
 #if USE_NSOPERATIONS
         [self initQueue];
 #endif

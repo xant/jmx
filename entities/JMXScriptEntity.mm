@@ -18,6 +18,7 @@
 #import "JMXScriptPinWrapper.h"
 #import "JMXByteArray.h"
 #import "NSDictionary+V8.h"
+#import "JMXScriptFile.h"
 
 using namespace v8;
 
@@ -196,6 +197,14 @@ using namespace v8;
     }
 }
 
+- (JMXScriptFile *)load:(NSString *)path
+{
+    JMXScriptFile *script = [[JMXScriptFile alloc] init];
+    script.path = path;
+    [self hookEntity:script];
+    return script;
+}
+
 #pragma mark -
 #pragma JMXPinOwner
 - (id)provideDataToPin:(JMXOutputPin *)aPin
@@ -290,6 +299,24 @@ using namespace v8;
 
 static Persistent<FunctionTemplate> objectTemplate;
 
+static v8::Handle<Value>LoadScript(const Arguments& args)
+{
+    //v8::Locker lock;
+    BOOL ret = NO;
+    HandleScope handleScope;
+    JMXScriptEntity *entity = (JMXScriptEntity *)args.Holder()->GetPointerFromInternalField(0);
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    if (args[0]->IsString()) {
+        String::Utf8Value str(args[0]->ToString());
+        if ([entity load:[NSString stringWithUTF8String:*str]])
+            ret = YES;
+    } else {
+        NSLog(@"ScriptEntity::load(): argument is not a string");
+    }
+    [pool release];
+    return handleScope.Close(v8::Boolean::New(ret ? 1 : 0));
+}
+
 static v8::Handle<Value>Exec(const Arguments& args)
 {
     //v8::Locker lock;
@@ -341,7 +368,8 @@ static v8::Handle<Value>GetEntities(Local<String> name, const AccessorInfo& info
     v8::Handle<ObjectTemplate> classProto = objectTemplate->PrototypeTemplate();
     
     classProto->Set("exec", FunctionTemplate::New(Exec));
-    
+    classProto->Set("load", FunctionTemplate::New(LoadScript));
+
     v8::Handle<ObjectTemplate> instanceTemplate = objectTemplate->InstanceTemplate();
     instanceTemplate->SetAccessor(String::NewSymbol("frequency"), GetNumberProperty, SetNumberProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("entities"), GetEntities);

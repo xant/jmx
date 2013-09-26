@@ -186,8 +186,13 @@
 - (void)setSelected:(BOOL)isSelected
 {
     selected = isSelected;
-    self.foregroundColor = selected ? CGColorCreateGenericRGB(1.0f, 0.0f, 0.0f, 1.0f) : CGColorCreateGenericRGB(0.0f, 0.0f, 0.0f, 0.5f);
+    CGColorRef color = selected
+                     ? CGColorCreateGenericRGB(1.0f, 0.0f, 0.0f, 1.0f)
+                     : CGColorCreateGenericRGB(0.0f, 0.0f, 0.0f, 0.5f);
+    self.foregroundColor = color;
+    CFRelease(color);
     [self setNeedsDisplay];
+    
 }
 
 - (void)setForegroundColor:(CGColorRef)aColor

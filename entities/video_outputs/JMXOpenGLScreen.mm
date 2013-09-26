@@ -432,6 +432,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         mousePositionPin = [self registerOutputPin:@"mousePosition" withType:kJMXPointPin];
         controller = [[JMXScreenController alloc] initWithView:view delegate:self];
         self.label = @"OpenGLScreen";
+        [window makeKeyAndOrderFront:[NSApplication sharedApplication]];
         //[window orderBack:self];
     }
     return self;

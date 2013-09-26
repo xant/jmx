@@ -57,6 +57,7 @@ using namespace v8;
         size = length;
         if (!buffer) {
             // TODO - log an error
+            [self release];
             return nil;
         }
         mustFreeOnRelease = freeOnRelease;

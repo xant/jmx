@@ -17,7 +17,8 @@ if (process.argv[0] == 'jmx-cli' && require('tty').isatty(0)) {
     repl.on('exit', function() {
       process.exit();
     });
-
+    process.stdin._readableState.objectMode = true;
+    process.stdout._writableState.objectMode = true;
 } else {
     // Read all of stdin - execute it.
     process.stdin.setEncoding('utf8');

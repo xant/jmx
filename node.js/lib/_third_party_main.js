@@ -1,7 +1,7 @@
 var Module = require('module');
 
 // If -i or --interactive were passed, or stdin is a TTY.
-if (process._forceRepl || require('tty').isatty(0)) {
+if (process.argv[0] == 'jmx-cli' && require('tty').isatty(0)) {
     // REPL
     var opts = {
       useGlobal: true,

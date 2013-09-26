@@ -52,7 +52,7 @@
     if (self) {
         receivers = [[NSMutableDictionary alloc] init];
         direction = kJMXOutputPin;
-        [self addAttribute:[NSXMLNode attributeWithName:@"direction" stringValue:@"output"]];
+        [self addAttribute:[JMXAttribute attributeWithName:@"direction" stringValue:@"output"]];
     }
     return self;
 }

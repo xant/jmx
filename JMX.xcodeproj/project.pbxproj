@@ -490,7 +490,7 @@
 		AA37E05014FA318400CBA0AE /* JMXDOMBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMXDOMBrowser.h; sourceTree = "<group>"; };
 		AA37E05114FA318500CBA0AE /* JMXDOMBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMXDOMBrowser.m; sourceTree = "<group>"; };
 		AA38D1CB12DCC29D00208826 /* jquery.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = jquery.js; sourceTree = "<group>"; };
-		AA417D5417F2D34B00A705DF /* jmx */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = jmx; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA417D5417F2D34B00A705DF /* jmx-cli */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "jmx-cli"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA417D5717F2D34B00A705DF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		AA417D5A17F2D34B00A705DF /* jmx-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "jmx-Prefix.pch"; sourceTree = "<group>"; };
 		AA417D5B17F2D34B00A705DF /* jmx.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = jmx.1; sourceTree = "<group>"; };
@@ -765,7 +765,7 @@
 			children = (
 				8D1107320486CEB800E47090 /* JMX.app */,
 				AA9BFA5F178F0FB2003673D9 /* JMXCore.framework */,
-				AA417D5417F2D34B00A705DF /* jmx */,
+				AA417D5417F2D34B00A705DF /* jmx-cli */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1515,9 +1515,9 @@
 			productReference = 8D1107320486CEB800E47090 /* JMX.app */;
 			productType = "com.apple.product-type.application";
 		};
-		AA417D5317F2D34B00A705DF /* jmx */ = {
+		AA417D5317F2D34B00A705DF /* jmx-cli */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AA417D5F17F2D34B00A705DF /* Build configuration list for PBXNativeTarget "jmx" */;
+			buildConfigurationList = AA417D5F17F2D34B00A705DF /* Build configuration list for PBXNativeTarget "jmx-cli" */;
 			buildPhases = (
 				AA417D5017F2D34B00A705DF /* Sources */,
 				AA417D5117F2D34B00A705DF /* Frameworks */,
@@ -1528,9 +1528,9 @@
 			dependencies = (
 				AA417D6117F2D36400A705DF /* PBXTargetDependency */,
 			);
-			name = jmx;
+			name = "jmx-cli";
 			productName = jmx;
-			productReference = AA417D5417F2D34B00A705DF /* jmx */;
+			productReference = AA417D5417F2D34B00A705DF /* jmx-cli */;
 			productType = "com.apple.product-type.tool";
 		};
 		AA9BFA5E178F0FB2003673D9 /* JMXCore */ = {
@@ -1580,7 +1580,7 @@
 				8D1107260486CEB800E47090 /* JMX */,
 				AA9BFA5E178F0FB2003673D9 /* JMXCore */,
 				AA9BFAE5178F12C1003673D9 /* node.js */,
-				AA417D5317F2D34B00A705DF /* jmx */,
+				AA417D5317F2D34B00A705DF /* jmx-cli */,
 			);
 		};
 /* End PBXProject section */
@@ -2171,7 +2171,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		AA417D5F17F2D34B00A705DF /* Build configuration list for PBXNativeTarget "jmx" */ = {
+		AA417D5F17F2D34B00A705DF /* Build configuration list for PBXNativeTarget "jmx-cli" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AA417D5D17F2D34B00A705DF /* Debug */,

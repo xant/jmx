@@ -15,6 +15,7 @@
 }
 
 @property (nonatomic, readonly) BOOL batchMode;
+@property (nonatomic, copy) NSString *appName;
 
 @end
 

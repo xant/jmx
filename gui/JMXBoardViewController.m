@@ -10,7 +10,7 @@
 #import "JMXRunLoop.h"
 #import "JMXEntitiesController.h"
 #import "JMXScriptEntity.h"
-
+#import "JMXContext.h"
 #include <math.h>
 
 
@@ -71,7 +71,11 @@
     selected = [[NSMutableArray alloc] init];
     entities = [[NSMutableArray alloc] init];
     entitiesController = [[JMXEntitiesController alloc] init];
-    scriptController = [[JMXScriptEntity alloc] initWithName:@"scriptController"];
+    scriptController = [[JMXScriptEntity alloc] init];//:@"scriptController"];
+    NSXMLElement *rootElement = [[[JMXContext sharedContext] dom] rootElement];
+    @synchronized(rootElement) {
+        [rootElement addChild:scriptController];
+    }
     jsInput.target = self;
     jsInput.action = @selector(execStatement);
     jsInput.delegate = self;

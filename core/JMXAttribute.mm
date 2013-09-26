@@ -48,6 +48,13 @@ using namespace v8;
     return self;
 }
 
+- (NSXMLNode *)childAtIndex:(NSUInteger)index
+{
+    if (self.childCount > index)
+        return [self.children objectAtIndex:index];
+    return nil;
+}
+
 #pragma mark V8
 
 static v8::Handle<Value> GetValue(Local<String> name, const AccessorInfo& info)

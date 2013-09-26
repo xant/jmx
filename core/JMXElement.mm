@@ -44,12 +44,6 @@ JMXV8_EXPORT_NODE_CLASS(JMXElement);
     return self;
 }
 
-- (id)init
-{
-    self = [super init];
-    return self;
-}
-
 - (id)jmxInit
 {
     v8::Unlocker unlocker;
@@ -95,6 +89,13 @@ JMXV8_EXPORT_NODE_CLASS(JMXElement);
     JMXAttribute *attr = (JMXAttribute *)[self attributeForName:@"id"];
     [attr setStringValue:jsId];
     [idLock unlock];
+}
+
+- (NSXMLNode *)childAtIndex:(NSUInteger)index
+{
+    if (self.childCount > index)
+        return [self.children objectAtIndex:index];
+    return nil;
 }
 
 #pragma mark V8

@@ -39,6 +39,7 @@ int verbose = LOG_INFO;
     self = [super init];
     if (self) {
         argv = [[NSMutableArray alloc] initWithCapacity:10];
+        self.appName = @"JMX";
     }
     return self;
 }

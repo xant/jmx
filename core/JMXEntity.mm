@@ -135,10 +135,10 @@ using namespace v8;
 {
     // TODO - start using debug messages activated by some flag
     //NSLog(@"Initializing %@", [self class]);
-    self = [super init];
+    self = [super initWithName:@"JMXEntity"];
     if (self) {
         owner = nil;
-        self.name = @"JMXEntity";
+        //self.name = @"JMXEntity";
         self.label = @"";
         active = NO;
         [self addAttribute:[JMXAttribute attributeWithName:@"class" stringValue:NSStringFromClass([self class])]];
@@ -155,6 +155,11 @@ using namespace v8;
         proxyPins = [[NSMutableSet alloc] initWithCapacity:25];
     }
     return self;
+}
+
+- (void)addChild:(NSXMLNode *)child
+{
+    [super addChild:child];
 }
 
 - (void)dealloc

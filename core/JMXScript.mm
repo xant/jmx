@@ -55,6 +55,7 @@
 #import "NSDictionary+V8.h"
 #import "NSNumber+V8.h"
 #import "NSObject+V8.h"
+#import "JMXApplication.h"
 
 #include "node_natives_jmx.h"
 #include "node_string.h"
@@ -566,10 +567,11 @@ static v8::Handle<Value> ClearTimeout(const Arguments& args)
 
 @synthesize scriptEntity, runloopTimers, eventListeners, ctx;
 
-static char *argv[2] = { (char *)"JMX", NULL };
+static char *argv[2] = { NULL, NULL };
 
 + (void)initialize
 {
+    argv[0] = (char *)((JMXApplication *)[NSApplication sharedApplication].delegate).appName.UTF8String;
     // initialize node.js
     node::Init(1, argv);
     v8::V8::Initialize();
@@ -869,6 +871,7 @@ static Persistent<ObjectTemplate> ctxTemplate;
             uint64_t sleepTime = (delta && delta < maxDelta) ? maxDelta - delta : 0;
             
             if (sleepTime) {
+                Unlocker unlocker;
                 struct timespec time = { 0, 0 };
                 struct timespec remainder = { 0, static_cast<long>(sleepTime) };
                 do {

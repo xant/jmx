@@ -98,7 +98,10 @@ static v8::Handle<Value>GetLastChild(Local<String> name, const AccessorInfo& inf
     v8::Locker lock;
     HandleScope handleScope;
     NSXMLNode *node = (NSXMLNode *)info.Holder()->GetPointerFromInternalField(0);
-    return handleScope.Close([[node childAtIndex:[node childCount]-1] jsObj]);
+    if (node.childCount)
+        return handleScope.Close([[node childAtIndex:[node childCount]-1] jsObj]);
+    else
+        return handleScope.Close(Undefined());
 }
 
 static v8::Handle<Value>GetPreviousSibling(Local<String> name, const AccessorInfo& info)
@@ -167,7 +170,9 @@ static v8::Handle<Value>GetLocalName(Local<String> name, const AccessorInfo& inf
     v8::Locker lock;
     HandleScope handleScope;
     NSXMLNode *node = (NSXMLNode *)info.Holder()->GetPointerFromInternalField(0);
-    return handleScope.Close(String::New([[node localName] UTF8String]));
+    if ([node localName])
+        return handleScope.Close(String::New([[node localName] UTF8String]));
+    return handleScope.Close(Undefined());
 }
 
 static v8::Handle<Value>GetOwnerDocument(Local<String> name, const AccessorInfo& info)

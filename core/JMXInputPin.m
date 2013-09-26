@@ -23,6 +23,7 @@
 
 #import "JMXInputPin.h"
 #import "JMXOutputPin.h"
+#import "JMXAttribute.h"
 
 @implementation JMXInputPin
 
@@ -46,7 +47,7 @@
     if (self) {
         producers = [[NSMutableArray alloc] init];
         direction = kJMXInputPin;
-        [self addAttribute:[NSXMLNode attributeWithName:@"direction" stringValue:@"input"]];
+        [self addAttribute:[JMXAttribute attributeWithName:@"direction" stringValue:@"input"]];
     }
     return self;
 }

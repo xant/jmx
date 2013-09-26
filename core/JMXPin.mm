@@ -31,6 +31,7 @@
 #import "JMXScriptEntity.h"
 #import "JMXScriptPinWrapper.h"
 #import "JMXByteArray.h"
+#import "JMXAttribute.h"
 #import <libkern/OSAtomic.h>
 using namespace v8;
 
@@ -212,10 +213,10 @@ using namespace v8;
             currentSender = owner;
             dataBuffer[offset] = [value retain];
         }
-        [self addAttribute:[NSXMLNode attributeWithName:@"type" stringValue:[JMXPin nameForType:type]]];
-        [self addAttribute:[NSXMLNode attributeWithName:@"multiple" stringValue:multiple ? @"YES" : @"NO" ]];
-        [self addAttribute:[NSXMLNode attributeWithName:@"connected" stringValue:connected ? @"YES" : @"NO" ]];
-        [self addAttribute:[NSXMLNode attributeWithName:@"label" stringValue:label]];
+        [self addAttribute:[JMXAttribute attributeWithName:@"type" stringValue:[JMXPin nameForType:type]]];
+        [self addAttribute:[JMXAttribute attributeWithName:@"multiple" stringValue:multiple ? @"YES" : @"NO" ]];
+        [self addAttribute:[JMXAttribute attributeWithName:@"connected" stringValue:connected ? @"YES" : @"NO" ]];
+        [self addAttribute:[JMXAttribute attributeWithName:@"label" stringValue:label]];
         connections = [[JMXElement alloc] initWithName:@"connections"];
         [self addChild:connections];
         [self performSelectorOnMainThread:@selector(notifyCreation) withObject:nil waitUntilDone:NO];
@@ -228,6 +229,11 @@ using namespace v8;
     // bad usage
     [self dealloc];
     return nil;
+}
+
+- (void)addChild:(NSXMLNode *)child
+{
+    [super addChild:child];
 }
 
 - (void)notifyCreation

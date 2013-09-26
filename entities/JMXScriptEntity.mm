@@ -34,17 +34,17 @@ using namespace v8;
     }
 }
 
-- (id)initWithName:(NSString *)name
-{
-    self = [super initWithName:name];
-    if (self) {
-        self.label = name;
-        pinWrappers = [[NSMutableSet alloc] initWithCapacity:25];
-        codeOutputPin = [self registerOutputPin:@"runningCode" withType:kJMXCodePin andSelector:@"code"];
-        code = [[NSMutableString alloc] initWithCapacity:1024];
-    }
-    return self;
-}
+//- (id)initWithName:(NSString *)name
+//{
+//    self = [super initWithName:name];
+//    if (self) {
+//        self.label = name;
+//        pinWrappers = [[NSMutableSet alloc] initWithCapacity:25];
+//        codeOutputPin = [self registerOutputPin:@"runningCode" withType:kJMXCodePin andSelector:@"code"];
+//        code = [[NSMutableString alloc] initWithCapacity:1024];
+//    }
+//    return self;
+//}
 
 - (id)init
 {

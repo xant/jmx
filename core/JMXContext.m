@@ -140,6 +140,9 @@ static BOOL initialized = NO;
         if (!entity.parent && ![entity isProxy]) {
             NSValue *value = [NSValue valueWithNonretainedObject:entity];
             [entities setObject:value forKey:[NSString stringWithFormat:@"%d", (int)entity]];
+            @synchronized(dom.rootElement) {
+                [dom.rootElement addChild:entity];
+            }
         }
     }
 }

@@ -639,15 +639,17 @@ static char *argv[2] = { NULL, NULL };
             NSMutableArray *toRemove = [NSMutableArray array];
             @synchronized(timersThread) {
                 for (JMXScriptTimer *scriptTimer in runloopTimers) {
+                    NSDate *now = [NSDate date];
                     if (!scriptTimer.timer.isValid) {
                         [toRemove addObject:scriptTimer];
                     } else if ([scriptTimer.timer.fireDate
                                 compare:[NSDate dateWithTimeInterval:0.001
-                                                           sinceDate:[NSDate date]]] == NSOrderedAscending)
+                                                           sinceDate:now]] == NSOrderedAscending)
                     {
                         [scriptTimer.timer fire];
                         if (scriptTimer.repeats) {
-                            scriptTimer.timer.fireDate = [NSDate dateWithTimeInterval:scriptTimer.timer.timeInterval sinceDate:[NSDate date]];
+                            scriptTimer.timer.fireDate = [NSDate dateWithTimeInterval:scriptTimer.timer.timeInterval
+                                                                            sinceDate:now];
                         }
                     }
                 }
@@ -919,16 +921,13 @@ static Persistent<ObjectTemplate> ctxTemplate;
 
 - (BOOL)clearTimers
 {
-    BOOL ret = YES;
     @synchronized(timersThread) {
         for (JMXScriptTimer *t in runloopTimers) {
             [t invalidate];
-            if (t.timer.isValid)
-                ret = NO;
         }
         [runloopTimers removeAllObjects];
     }
-    return (ret && !runloopTimers.count);
+    return (runloopTimers.count);
     //[self execCode:@"clearAllTimers()"];
 }
 
@@ -1154,7 +1153,7 @@ static Persistent<ObjectTemplate> ctxTemplate;
     Handle<Value> args[1];
     args[0] = [anEvent jsObj];
     for (JMXEventListener *listener in listeners) {
-        //Unlocker unlocker;
+        Unlocker unlocker;
         [self execFunction:listener.function withArguments:args count:1];
     }
     [pool release];

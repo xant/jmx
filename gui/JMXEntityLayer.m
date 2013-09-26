@@ -73,12 +73,6 @@
                                                  selector:@selector(outputPinRemoved:)
                                                      name:@"JMXEntityOutputPinRemoved"
                                                    object:self.entity];
-       
-        // attach the new entity to the main document
-        NSXMLElement *rootElement = [[[JMXContext sharedContext] dom] rootElement];
-        @synchronized(rootElement) {
-            [rootElement addChild:anEntity];
-        }
     }
     return self;
 }

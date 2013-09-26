@@ -29,13 +29,11 @@ int main(int argc, const char * argv[])
 
         scriptController = [[JMXScriptEntity alloc] init];
         scriptController.name = @"scriptController";
-        NSXMLElement *rootElement = [[[JMXContext sharedContext] dom] rootElement];
-        @synchronized(rootElement) {
-            [rootElement addChild:scriptController];
-        }
+
         scriptController.active = YES;
         [scriptController exec:@""];
-        
+
+        // create a menubar and an invisible (main) window to make NSApplication happy
         [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
         
         NSMenu *menubar = [NSMenu new];
@@ -55,7 +53,6 @@ int main(int argc, const char * argv[])
         NSWindow *window = [[NSWindow alloc] initWithContentRect:NSZeroRect
                                                        styleMask:NSTitledWindowMask
                                                          backing:NSBackingStoreBuffered defer:NO];
-        //[window cascadeTopLeftFromPoint:NSMakePoint(20,20)];
         window.title = app.appName;
         window.isVisible = NO;
         [window makeKeyAndOrderFront:nil];

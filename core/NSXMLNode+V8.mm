@@ -271,10 +271,14 @@ static v8::Handle<Value> RemoveChild(const Arguments& args)
     id holder = (id)args.Holder()->GetPointerFromInternalField(0);
     if ([holder isKindOfClass:[NSXMLElement class]]) {
         NSXMLElement *node = (NSXMLElement *)holder;
-        NSXMLNode *child = (NSXMLNode *)args[0]->ToObject()->GetPointerFromInternalField(0);
-        if (child) {
-            [node removeChildAtIndex:[child index]];
-            return handleScope.Close(args[0]->ToObject());
+        if (!args[0].IsEmpty() && args[0]->IsObject()) {
+            NSXMLNode *child = (NSXMLNode *)args[0]->ToObject()->GetPointerFromInternalField(0);
+            if (child) {
+                [node removeChildAtIndex:[child index]];
+                return handleScope.Close(args[0]->ToObject());
+            } else {
+                // TODO - Error Messages
+            }
         } else {
             // TODO - Error Messages
         }

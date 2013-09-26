@@ -150,7 +150,10 @@ using namespace v8;
         holder = [[[JMXGraphFragment alloc] initWithName:@"Entities"] autorelease];
         [self addChild:holder];
     }
+    [entity retain];
+    [entity detach];
     [holder addChild:entity];
+    [entity release];
 }
 
 - (void)destroyEntity:(JMXEntity *)entity
@@ -200,8 +203,8 @@ using namespace v8;
 - (JMXScriptFile *)load:(NSString *)path
 {
     JMXScriptFile *script = [[JMXScriptFile alloc] init];
-    script.path = path;
     [self hookEntity:script];
+    script.path = path;
     return script;
 }
 

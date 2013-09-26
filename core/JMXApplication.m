@@ -87,7 +87,7 @@ int verbose = LOG_INFO;
 //        //       or the application will crash when the user tries accessing them
 //        [sharedContext registerClass:[JMXPhidgetEncoderEntity class]];
 //    }
-	INFO("Registered %ul entities", (unsigned int)[[sharedContext registeredClasses] count]);
+//	INFO("Registered %u entities", (unsigned int)[[sharedContext registeredClasses] count]);
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification

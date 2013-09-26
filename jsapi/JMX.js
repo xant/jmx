@@ -12,17 +12,21 @@
 
 if (process.argv[0] == 'jmx-cli') {
     global.print = function(str) {
+        var ret = false;
         if (typeof(str) == 'function')
-            process.stdout.write(str.toString());
+            ret = process.stdout.write(str.toString());
         else
-            process.stdout.write(str);
+            ret = process.stdout.write(str);
+        return ret;
     }
 
     global.echo = function(str) {
+        var ret = false;
         if (typeof(str) == 'function')
-            process.stdout.write(str.toString() + "\n");
+            ret = process.stdout.write(str.toString() + "\n");
         else
-            process.stdout.write(str + "\n");
+            ret = process.stdout.write(str + "\n");
+        return ret;
     }
 }
 

@@ -123,7 +123,8 @@ static const char* ToCString(const v8::String::Utf8Value& value) {
 }
 
 static v8::Handle<Value> ExportPin(const Arguments& args) {
-    if (args.Length() < 1) return Undefined();
+    if (args.Length() < 1)
+        return Undefined();
     //v8::Locker lock;
     HandleScope scope;
     v8::Handle<Object> pinObj = args[0]->ToObject();
@@ -190,7 +191,8 @@ static void ReportException(v8::TryCatch* try_catch) {
 }
 
 static v8::Handle<Value> IsDir(const Arguments& args) {
-    if (args.Length() < 1) return Undefined();
+    if (args.Length() < 1)
+        return Undefined();
     //v8::Locker lock;
     HandleScope scope;
     v8::Handle<Value> arg = args[0];
@@ -209,7 +211,8 @@ static v8::Handle<Value> IsDir(const Arguments& args) {
 }
 
 static v8::Handle<Value> ListDir(const Arguments& args) {
-    if (args.Length() < 1) return Undefined();
+    if (args.Length() < 1)
+        return Undefined();
     //v8::Locker lock;
     HandleScope scope;
     v8::Handle<Value> arg = args[0];
@@ -243,7 +246,8 @@ static v8::Handle<Value> FRand(const Arguments& args) {
 }
 
 static v8::Handle<Value> Echo(const Arguments& args) {
-    if (args.Length() < 1) return v8::Undefined();
+    if (args.Length() < 1)
+        return v8::Undefined();
     //v8::Locker lock;
     HandleScope scope;
     id obj = nil;
@@ -260,7 +264,7 @@ static v8::Handle<Value> Echo(const Arguments& args) {
         v8::Unlocker unlocker;
         NSLog(@"%s", *value);
     //}
-    return v8::Undefined();
+    return scope.Close(v8::Boolean::New(YES));
 }
 
 static v8::Handle<Value> DumpDOM(const Arguments& args) {
@@ -300,7 +304,8 @@ static BOOL ExecJSCode(const char *code, uint32_t length, const char *name)
 }
 
 static v8::Handle<Value> Include(const Arguments& args) {
-    if (args.Length() < 1) return v8::Undefined();
+    if (args.Length() < 1)
+        return v8::Undefined();
     //v8::Locker lock;
     HandleScope scope;
     v8::Handle<Value> arg = args[0];
@@ -358,7 +363,7 @@ static v8::Handle<Value> Sleep(const Arguments& args)
         v8::Unlocker unlocker;
         [NSThread sleepForTimeInterval:args[0]->NumberValue()];
     }
-    return Undefined();
+    return handleScope.Close(v8::Boolean::New(YES));
 }
 
 //static v8::Handle<Value> Run(const Arguments& args)
@@ -552,6 +557,18 @@ static v8::Handle<Value> ClearTimeout(const Arguments& args)
         }
     }
     return handleScope.Close(v8::Boolean::New(0));
+}
+
+static v8::Handle<Value> ClearAllTimers(const Arguments& args)
+{
+    v8::Locker locker;
+    HandleScope handleScope;
+    Local<Context> context = v8::Context::GetCalling();
+    Local<Object> globalObject  = context->Global();
+    v8::Local<v8::Object> obj = globalObject->Get(String::New("scriptEntity"))->ToObject();
+    JMXScriptEntity *entity = (JMXScriptEntity *)obj->GetPointerFromInternalField(0);
+    JMXScript *scriptContext = entity.jsContext;
+    return handleScope.Close(v8::Boolean::New([scriptContext clearTimers]));
 }
 
 @interface JMXScript ()
@@ -785,6 +802,9 @@ static Persistent<ObjectTemplate> ctxTemplate;
     
     ctxTemplate->Set(String::New("setInterval"), FunctionTemplate::New(SetInterval));
     ctxTemplate->Set(String::New("clearInterval"), FunctionTemplate::New(ClearTimeout)); // alias for ClearTimeout
+    
+    ctxTemplate->Set(String::New("clearAllTimers"), FunctionTemplate::New(ClearAllTimers)); // alias for ClearAllTimers
+
 #endif
     ctxTemplate->SetInternalFieldCount(1);
     
@@ -897,14 +917,18 @@ static Persistent<ObjectTemplate> ctxTemplate;
     [pool drain];
 }
 
-- (void)clearTimers
+- (BOOL)clearTimers
 {
+    BOOL ret = YES;
     @synchronized(timersThread) {
         for (JMXScriptTimer *t in runloopTimers) {
             [t invalidate];
+            if (t.timer.isValid)
+                ret = NO;
         }
         [runloopTimers removeAllObjects];
     }
+    return (ret && !runloopTimers.count);
     //[self execCode:@"clearAllTimers()"];
 }
 

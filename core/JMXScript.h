@@ -157,8 +157,9 @@
 /*!
  @method clearTimers
  @abstract clear all timers registered to this JS context
+ @return YES if all timers have been cleared NO otherwise
  */
-- (void)clearTimers;
+- (BOOL)clearTimers;
 
 /*!
  @method addRunLoopTimer:

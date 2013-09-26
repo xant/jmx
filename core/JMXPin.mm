@@ -769,7 +769,6 @@ static v8::Handle<Value>connect(const Arguments& args)
 static v8::Handle<Value>disconnectAll(const Arguments& args)
 {   
     //v8::Locker lock;
-    BOOL ret = NO;
     HandleScope handleScope;
     JMXPin *pin = (JMXPin *)args.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -778,7 +777,7 @@ static v8::Handle<Value>disconnectAll(const Arguments& args)
         [pin disconnectAllPins];
     }
     [pool release];
-    return Undefined();
+    return handleScope.Close(v8::Boolean::New(!pin.connected));
 }
 
 static v8::Handle<Value>disconnect(const Arguments& args)

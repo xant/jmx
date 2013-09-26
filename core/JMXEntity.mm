@@ -820,8 +820,7 @@ static v8::Handle<Value> MapSet(Local<String> name, Local<Value> value, const Ac
     v8::Locker lock;
     HandleScope handleScope;
     Local<Object> obj = Local<Object>::Cast(info.Holder()->GetHiddenValue(String::NewSymbol("map")));
-    obj->Set(name, value);
-    return Undefined();
+    return handleScope.Close(v8::Boolean::New(obj->Set(name, value)));
 }
 
 static v8::Handle<Value> MapGet(Local<String> name, const AccessorInfo &info)
@@ -850,6 +849,8 @@ static v8::Handle<Value> MapGet(Local<String> name, const AccessorInfo &info)
     instanceTemplate->SetInternalFieldCount(1);
     
     // Add accessors for each of the fields of the entity.
+    instanceTemplate->SetAccessor(String::NewSymbol("className"), GetStringProperty, SetStringProperty);
+    instanceTemplate->SetAccessor(String::NewSymbol("label"), GetStringProperty, SetStringProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("description"), GetStringProperty);
     instanceTemplate->SetAccessor(String::NewSymbol("input"), InputPins);
     instanceTemplate->SetAccessor(String::NewSymbol("output"), OutputPins);

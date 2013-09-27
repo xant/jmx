@@ -71,11 +71,13 @@ extern void JSExit(int code);
         if (fh) {
             NSData *data = [fh readDataToEndOfFile];
             self.code = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+            // TODO - validate code
             [NSString stringWithCharacters:(const unichar *)[data bytes] length:[data length]];
             self.label = [[newPath componentsSeparatedByString:@"/"] lastObject];
+            return YES;
         }
     }
-    return YES;
+    return NO;
 }
 
 - (void)close

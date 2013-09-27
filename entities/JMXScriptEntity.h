@@ -13,6 +13,7 @@
 @class JMXScriptInputPin;
 @class JMXScriptOutputPin;
 @class JMXScriptPinWrapper;
+@class JMXScriptFile;
 
 @interface JMXScriptEntity : JMXEntity {
 @protected
@@ -33,6 +34,7 @@
 - (BOOL)exec:(NSString *)code;
 - (void)resetContext;
 - (void)hookEntity:(JMXEntity *)entity;
+- (JMXScriptFile *)load:(NSString *)path;
 
 #ifdef __JMXV8__
 - (JMXScriptPinWrapper *)wrapPin:(JMXPin *)pin withFunction:(v8::Persistent<v8::Function>)function;

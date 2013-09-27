@@ -203,8 +203,12 @@ using namespace v8;
 - (JMXScriptFile *)load:(NSString *)path
 {
     JMXScriptFile *script = [[JMXScriptFile alloc] init];
-    [self hookEntity:script];
     script.path = path;
+    if (![script.path isEqualToString:path]) {
+        [script release];
+        return nil;
+    }
+    [self hookEntity:script];
     return script;
 }
 
@@ -305,19 +309,22 @@ static Persistent<FunctionTemplate> objectTemplate;
 static v8::Handle<Value>LoadScript(const Arguments& args)
 {
     //v8::Locker lock;
-    BOOL ret = NO;
+    JMXScriptFile *script = nil;;
     HandleScope handleScope;
     JMXScriptEntity *entity = (JMXScriptEntity *)args.Holder()->GetPointerFromInternalField(0);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     if (args[0]->IsString()) {
         String::Utf8Value str(args[0]->ToString());
-        if ([entity load:[NSString stringWithUTF8String:*str]])
-            ret = YES;
+        script = [entity load:[NSString stringWithUTF8String:*str]];
     } else {
         NSLog(@"ScriptEntity::load(): argument is not a string");
     }
     [pool release];
-    return handleScope.Close(v8::Boolean::New(ret ? 1 : 0));
+
+    if (script)
+        return handleScope.Close([script jsObj]);
+
+    return handleScope.Close(Undefined());
 }
 
 static v8::Handle<Value>Exec(const Arguments& args)

@@ -12,11 +12,7 @@
 
 @class JMXCanvasElement;
 
-@interface JMXDrawEntity : JMXVideoEntity {
-@private
-    JMXCanvasElement *canvas;
-    JMXDrawPath *drawPath; // weak reference
-}
+@interface JMXDrawEntity : JMXVideoEntity
 
 @property (readonly) JMXDrawPath *drawPath;
 @property (readonly) JMXCanvasElement *canvas;

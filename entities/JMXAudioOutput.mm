@@ -84,89 +84,14 @@ static OSStatus _FillComplexBufferProc (
 
     if (!buffer)
         return;
-#if 0 // disable conversion for now 
-    // sample needs to be converted before being sent to the audio device
-    // the output format depends on the output device and could be different from the 
-    // one used internally (44Khz stereo float32 interleaved)
-    
-    AudioStreamBasicDescription inputDescription = buffer.format.audioStreamBasicDescription;
-    if (!converter) { // create on first use
-        if ( noErr != AudioConverterNew ( &inputDescription, &outputDescription, &converter )) {
-            converter = NULL; // just in case
-            // TODO - Error Messages
-            return;
-        } else {
-            
-            UInt32 primeMethod = kConverterPrimeMethod_None;
-            UInt32 srcQuality = kAudioConverterQuality_Max;
-            (void) AudioConverterSetProperty ( converter, kAudioConverterPrimeMethod, sizeof(UInt32), &primeMethod );
-            (void) AudioConverterSetProperty ( converter, kAudioConverterSampleRateConverterQuality, sizeof(UInt32), &srcQuality );
-        }
-    } else {
-        // TODO - check if inputdescription or outputdescription have changed and, 
-        //        if that's the case, reset the converter accordingly
-    }
-    OSStatus err = noErr;
-    CallbackContext callbackContext;
-    UInt32 framesRead = [buffer numFrames];
-    // TODO - check if framesRead is > 512
-    outputBufferList->mBuffers[0].mDataByteSize = outputDescription.mBytesPerFrame * outputDescription.mChannelsPerFrame * framesRead;
-    outputBufferList->mBuffers[0].mData = convertedBuffer+(convertedOffset++%kJMXAudioOutputConvertedBufferSize)*chunkSize;
-    callbackContext.theConversionBuffer = buffer;
-    callbackContext.wait = NO; // XXX (actually unused)
-    //UInt32 outputChannels = [buffer numChannels];
-    if (inputDescription.mSampleRate == outputDescription.mSampleRate &&
-        inputDescription.mBytesPerFrame == outputDescription.mBytesPerFrame) {
-        err = AudioConverterConvertBuffer (
-                                           converter,
-                                           buffer.bufferList->mBuffers[0].mDataByteSize,
-                                           buffer.bufferList->mBuffers[0].mData,
-                                           &outputBufferList->mBuffers[0].mDataByteSize,
-                                           outputBufferList->mBuffers[0].mData
-                                           );
-    } else {
-        err = AudioConverterFillComplexBuffer ( converter, _FillComplexBufferProc, &callbackContext, &framesRead, outputBufferList, NULL );
-    }
-    if (err != noErr) {
-        JMXAudioBuffer *previousSample;
-        @synchronized(samples) {
-            previousSample = samples[wOffset%kJMXAudioOutputSamplesBufferCount];
-            samples[wOffset++%kJMXAudioOutputSamplesBufferCount] = [[JMXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&inputDescription copy:YES freeOnRelease:YES] retain];
-        }
-        // let's have the buffer released next time the active pool is drained
-        // we want to return as soon as possible
-        if (previousSample)
-            [previousSample release];
-    }
-#else
-    JMXAudioBuffer *previousSample;
-    previousSample = samples[wOffset%kJMXAudioOutputSamplesBufferCount];
-    samples[(wOffset+1)%kJMXAudioOutputSamplesBufferCount] = [buffer retain];
-    OSAtomicIncrement32(&wOffset);
-    // let's have the buffer released next time the active pool is drained
-    // we want to return as soon as possible
-    if (previousSample)
-        [previousSample release];
-#endif
+
     [currentSamplePin deliverData:buffer fromSender:self];
-    if (wOffset > kJMXAudioOutputSamplesBufferPrefillCount)
-        needsPrefill = NO;
 }
 
 // this will only be called by the audio-output mainthread
 // so we can avoid using locks
 - (JMXAudioBuffer *)currentSample
 {
-#if 0
-    //NSLog(@"r: %d - w: %d", rOffset % kJMXAudioOutputSamplesBufferCount , wOffset % kJMXAudioOutputSamplesBufferCount);
-    JMXAudioBuffer *sample = nil;
-    if (rOffset < wOffset && !needsPrefill) {
-        sample = samples[rOffset%kJMXAudioOutputSamplesBufferCount];
-        samples[(rOffset+1)%kJMXAudioOutputSamplesBufferCount] = nil;
-        OSAtomicIncrement32(&rOffset);
-    }
-    return [sample autorelease];
-#else
     JMXAudioBuffer *buffer = audioInputPin.data;
     // sample needs to be converted before being sent to the audio device
     // the output format depends on the output device and could be different from the 
@@ -212,22 +137,10 @@ static OSStatus _FillComplexBufferProc (
         err = AudioConverterFillComplexBuffer ( converter, _FillComplexBufferProc, &callbackContext, &framesRead, outputBufferList, NULL );
     }
     if (err != noErr) {
-    /*
-        JMXAudioBuffer *previousSample;
-        @synchronized(samples) {
-            previousSample = samples[wOffset%kJMXAudioOutputSamplesBufferCount];
-            samples[wOffset++%kJMXAudioOutputSamplesBufferCount] = [[JMXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&inputDescription copy:YES freeOnRelease:YES] retain];
-        }
-        // let's have the buffer released next time the active pool is drained
-        // we want to return as soon as possible
-        if (previousSample)
-            [previousSample release];
-    */
     }
     JMXAudioBuffer *outputBuffer = [JMXAudioBuffer audioBufferWithCoreAudioBufferList:outputBufferList andFormat:&outputDescription];
     currentSamplePin.data = outputBuffer;
     return outputBuffer;
-#endif
 }
 
 - (void)dealloc

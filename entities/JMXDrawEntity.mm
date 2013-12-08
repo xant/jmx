@@ -15,6 +15,14 @@
 
 JMXV8_EXPORT_NODE_CLASS(JMXDrawEntity);
 
+@interface JMXDrawEntity ()
+{
+    JMXCanvasElement *canvas;
+    JMXDrawPath *drawPath; // weak reference
+    OSSpinLock lock;
+}
+@end
+
 @implementation JMXDrawEntity
 
 @synthesize drawPath, canvas;
@@ -52,37 +60,37 @@ JMXV8_EXPORT_NODE_CLASS(JMXDrawEntity);
 
 - (void)drawRect:(JMXPoint *)rectOrigin size:(JMXSize *)rectSize strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
-    @synchronized(drawPath) {
-        [drawPath drawRect:rectOrigin size:rectSize strokeColor:strokeColor fillColor:fillColor];
-    }
+    OSSpinLockLock(&lock);
+    [drawPath drawRect:rectOrigin size:rectSize strokeColor:strokeColor fillColor:fillColor];
+    OSSpinLockUnlock(&lock);
 }
 
 - (void)drawPolygon:(NSArray *)points strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
-    @synchronized(drawPath) {
-        [drawPath drawPolygon:points strokeColor:strokeColor fillColor:fillColor];
-    }
+    OSSpinLockLock(&lock);
+    [drawPath drawPolygon:points strokeColor:strokeColor fillColor:fillColor];
+    OSSpinLockUnlock(&lock);
 }
 
 - (void)drawPixel:(JMXPoint *)point fillColor:(NSColor *)fillColor
 {
-    @synchronized(drawPath) {
-        [drawPath drawPixel:point fillColor:fillColor];
-    }
+    OSSpinLockLock(&lock);
+    [drawPath drawPixel:point fillColor:fillColor];
+    OSSpinLockUnlock(&lock);
 }
 
 - (void)drawTriangle:(NSArray *)points strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
-    @synchronized(drawPath) {
-        [drawPath drawTriangle:points strokeColor:strokeColor fillColor:fillColor];
-    }
+    OSSpinLockLock(&lock);
+    [drawPath drawTriangle:points strokeColor:strokeColor fillColor:fillColor];
+    OSSpinLockUnlock(&lock);
 }
 
 - (void)drawCircle:(JMXPoint *)center radius:(NSUInteger)radius strokeColor:(NSColor *)strokeColor fillColor:(NSColor *)fillColor
 {
-    @synchronized(drawPath) {
-        [drawPath drawCircle:center radius:radius strokeColor:strokeColor fillColor:fillColor];
-    }
+    OSSpinLockLock(&lock);
+    [drawPath drawCircle:center radius:radius strokeColor:strokeColor fillColor:fillColor];
+    OSSpinLockUnlock(&lock);
 }
 
 - (void)clear
@@ -93,12 +101,12 @@ JMXV8_EXPORT_NODE_CLASS(JMXDrawEntity);
 
 - (void)tick:(uint64_t)timeStamp
 {
-    @synchronized(drawPath) {
-        //[drawPath render];
-        if (currentFrame)
-            [currentFrame release];
-        currentFrame = [drawPath.currentFrame retain];
-    }
+    OSSpinLockLock(&lock);
+    //[drawPath render];
+    if (currentFrame)
+        [currentFrame release];
+    currentFrame = [drawPath.currentFrame retain];
+    OSSpinLockUnlock(&lock);
     [super tick:timeStamp];
 }
 

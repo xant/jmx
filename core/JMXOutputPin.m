@@ -31,6 +31,13 @@
 - (void)sendData:(id)data toReceiver:(id)receiver withSelector:(NSString *)selectorName fromSender:(id)sender;
 @end
 
+@interface JMXOutputPin ()
+{
+    NSMutableDictionary *receivers;
+    OSSpinLock receiversLock;
+}
+@end
+
 @implementation JMXOutputPin
 @synthesize receivers;
 
@@ -68,14 +75,14 @@
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     [super performSignal:signal];
     // and then propagate it to all receivers
-    @synchronized (receivers) {
-        for (id receiver in [receivers allKeys]) {
-            signal.receiver = receiver;
-            [self sendData:signal.data toReceiver:receiver
-              withSelector:[receivers objectForKey:receiver]
-                fromSender:signal.sender];
-        }
+    OSSpinLockLock(&receiversLock);
+    for (id receiver in [receivers allKeys]) {
+        signal.receiver = receiver;
+        [self sendData:signal.data toReceiver:receiver
+          withSelector:[receivers objectForKey:receiver]
+            fromSender:signal.sender];
     }
+    OSSpinLockUnlock(&receiversLock);
     [pool drain];
 }
 
@@ -100,9 +107,9 @@
             [newConnection addAttribute:[JMXAttribute attributeWithName:@"entity" stringValue:[self.owner uid]]];
         [destinationPin.connections addChild:newConnection];
     }
-    @synchronized(receivers) {
-        [receivers setObject:pinSignal forKey:pinReceiver];
-    }
+    OSSpinLockLock(&receiversLock);
+    [receivers setObject:pinSignal forKey:pinReceiver];
+    OSSpinLockUnlock(&receiversLock);
     rv = YES;
     // deliver the signal to the just connected receiver
     if (rv == YES) {
@@ -126,14 +133,14 @@
 
 - (void)detachObject:(id)pinReceiver
 {
-    @synchronized(receivers) {
-        [receivers removeObjectForKey:pinReceiver];
-        if ([receivers count] == 0) {
-            connected = NO;
-            NSXMLNode *connectedAttribute = [self attributeForName:@"connected"];
-            [connectedAttribute setStringValue:@"NO"];
-        }
+    OSSpinLockLock(&receiversLock);
+    [receivers removeObjectForKey:pinReceiver];
+    if ([receivers count] == 0) {
+        connected = NO;
+        NSXMLNode *connectedAttribute = [self attributeForName:@"connected"];
+        [connectedAttribute setStringValue:@"NO"];
     }
+    OSSpinLockUnlock(&receiversLock);
 }
 
 // disconnection (as well as connection) happens always from the input pin to the output one 
@@ -151,9 +158,9 @@
 - (void)disconnectAllPins
 {
     NSArray *receiverObjects;
-    @synchronized(receivers) {
-        receiverObjects = [receivers allKeys];
-    }
+    OSSpinLockLock(&receiversLock);
+    receiverObjects = [receivers allKeys];
+    OSSpinLockUnlock(&receiversLock);
     for (JMXPin *receiver in receiverObjects)
         [receiver disconnectFromPin:self];
 }

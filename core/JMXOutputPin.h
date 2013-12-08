@@ -34,10 +34,7 @@
  @class JMXOutputPin
  @abstract concrete class for output pins
  */
-@interface JMXOutputPin : JMXPin {
-    NSMutableDictionary *receivers;
-
-}
+@interface JMXOutputPin : JMXPin
 
 /*!
  @property receivers

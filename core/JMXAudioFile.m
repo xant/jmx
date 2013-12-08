@@ -24,6 +24,18 @@
 #import "JMXAudioFile.h"
 #import "JMXAudioBuffer.h"
 
+@interface JMXAudioFile () {
+    ExtAudioFileRef audioFile;
+    AudioStreamBasicDescription fileFormat;
+    JMXAudioBuffer *samples[kJMXAudioFileBufferCount];
+    OSSpinLock lock;
+    UInt32 rOffset;
+    UInt32 wOffset;
+    BOOL isFilling;
+    NSURL *url;
+    BOOL overflow;
+}
+@end
 
 @implementation JMXAudioFile
 @synthesize url;
@@ -43,20 +55,22 @@
     // in the worst case we will do an extra iteration ...
     // which is not a big deal (having a long-term lock is much worse)
     //NSLog(@"%@ buffering starts", self.url );
-    while (wOffset-rOffset < kJMXAudioFileBufferCount/2) {
-        @synchronized(self) {
-            JMXAudioBuffer *newSample = [self readFrames:512];
-            if (samples[wOffset%kJMXAudioFileBufferCount]) {
-                [samples[wOffset%kJMXAudioFileBufferCount] release];
-                samples[wOffset%kJMXAudioFileBufferCount] = nil;
-            }
-            if (newSample) {
-                samples[wOffset++%kJMXAudioFileBufferCount] = [newSample retain];
-            } else {
-                // end of file
-                break;
-            }
+    BOOL eof = NO;
+    while (wOffset-rOffset < kJMXAudioFileBufferCount/2 && !eof) {
+        JMXAudioBuffer *newSample = [self readFrames:512];
+        OSSpinLockLock(&lock);
+        if (samples[wOffset%kJMXAudioFileBufferCount]) {
+            [samples[wOffset%kJMXAudioFileBufferCount] release];
+            samples[wOffset%kJMXAudioFileBufferCount] = nil;
         }
+        if (newSample) {
+            samples[wOffset++%kJMXAudioFileBufferCount] = [newSample retain];
+            if (wOffset == 0)
+                overflow = YES;
+        } else {
+            eof = YES;
+        }
+        OSSpinLockUnlock(&lock);
     }
     //NSLog(@"%@ buffering ends", self.url);
     isFilling = NO;
@@ -115,16 +129,20 @@
 - (JMXAudioBuffer *)readSample
 {
     JMXAudioBuffer *sample = nil;
-    @synchronized(self) {
+    OSSpinLockLock(&lock);
+    if (rOffset < wOffset || overflow) {
         sample = samples[rOffset%kJMXAudioFileBufferCount];
         samples[rOffset++%kJMXAudioFileBufferCount] = nil;
-        if (wOffset - rOffset < kJMXAudioFileBufferCount / 4 && !isFilling &&
-            !(self.currentOffset >= self.numFrames - (512 * self.numChannels)))
-        {
-            isFilling = YES;
-            [self performSelectorInBackground:@selector(fillBuffer) withObject:nil];
-        }
+        if (rOffset == 0 && overflow) // Note: rOffset is always behind wOffset
+            overflow = NO;
     }
+    if ((wOffset <= rOffset || wOffset - rOffset < kJMXAudioFileBufferCount / 4) && !overflow
+        && !isFilling && !(self.currentOffset >= self.numFrames - (512 * self.numChannels)))
+    {
+        isFilling = YES;
+        [self performSelectorInBackground:@selector(fillBuffer) withObject:nil];
+    }
+    OSSpinLockUnlock(&lock);
     return [sample autorelease];
 }
 

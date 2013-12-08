@@ -35,6 +35,17 @@
 #import <libkern/OSAtomic.h>
 using namespace v8;
 
+@interface JMXPin ()
+{
+    JMXPinReadMode      readMode;
+    SEL                 readSignal;
+    id                  dataBuffer[kJMXPinDataBufferMask+1]; // double buffer synchronized for writers
+    // but lockless for readers
+    volatile int32_t    offset;
+    OSSpinLock          lock;
+}
+@end
+
 @implementation JMXPin
 
 @synthesize type, label, multiple, continuous, connected, sendNotifications,
@@ -365,9 +376,9 @@ using namespace v8;
 
 - (void)dealloc
 {
-    @synchronized(self) {
-        [self performSelectorOnMainThread:@selector(notifyRelease) withObject:nil waitUntilDone:YES];
-    }
+    OSSpinLockLock(&lock);
+    [self performSelectorOnMainThread:@selector(notifyRelease) withObject:nil waitUntilDone:YES];
+    OSSpinLockUnlock(&lock);
     [connections detach];
     [connections release];
     [label release];
@@ -610,10 +621,10 @@ using namespace v8;
             currentSender = self;
         JMXPinSignal *signal = nil;
 
-        @synchronized(self) {
-            if (owner)
-                signal = [JMXPinSignal signalFromSender:sender receiver:owner data:data];
-        }
+        OSSpinLockLock(&lock);
+        if (owner)
+            signal = [JMXPinSignal signalFromSender:sender receiver:owner data:data];
+        OSSpinLockUnlock(&lock);
 
 #if USE_NSOPERATIONS
         NSBlockOperation *signalDelivery = [NSBlockOperation blockOperationWithBlock:^{
@@ -681,12 +692,12 @@ using namespace v8;
 
 - (void)detach
 {
-    @synchronized(self) {
-        owner = nil;
-        if (ownerSignal)
-            [ownerSignal release];
-        ownerSignal = nil;
-    }
+    OSSpinLockLock(&lock);
+    owner = nil;
+    if (ownerSignal)
+        [ownerSignal release];
+    ownerSignal = nil;
+    OSSpinLockUnlock(&lock);
     [super detach];
 }
 

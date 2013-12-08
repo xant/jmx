@@ -25,6 +25,15 @@
 #import "JMXOutputPin.h"
 #import "JMXAttribute.h"
 
+@interface JMXInputPin ()
+{
+    NSMutableArray      *producers;
+    int passiveProducersCount;
+    OSSpinLock producersLock;
+}
+
+@end
+
 @implementation JMXInputPin
 
 @synthesize producers;
@@ -61,13 +70,13 @@
 - (NSArray *)readProducers
 {
     NSMutableArray *array = [[NSMutableArray alloc] init];
-    @synchronized(producers) {
-        for (JMXOutputPin *producer in producers) {
-            id value = [producer readData];
-            if (value)
-                [array addObject:value];
-        }
+    OSSpinLockLock(&producersLock);
+    for (JMXOutputPin *producer in producers) {
+        id value = [producer readData];
+        if (value)
+            [array addObject:value];
     }
+    OSSpinLockUnlock(&producersLock);
     return [array autorelease];
 }
 
@@ -83,40 +92,40 @@
 
 - (BOOL)moveProducerFromIndex:(NSUInteger)src toIndex:(NSUInteger)dst
 {
-    @synchronized(producers) {
-        if ([producers count] > dst) {
-            JMXOutputPin *obj = [[producers objectAtIndex:src] retain];
-            [producers removeObjectAtIndex:src];
-            [producers insertObject:obj atIndex:dst];
-            [obj release];
-            return YES;
-        }
+    OSSpinLockLock(&producersLock);
+    if ([producers count] > dst) {
+        JMXOutputPin *obj = [[producers objectAtIndex:src] retain];
+        [producers removeObjectAtIndex:src];
+        [producers insertObject:obj atIndex:dst];
+        [obj release];
+        return YES;
     }
+    OSSpinLockUnlock(&producersLock);
     return NO;
 }
 
 - (BOOL)connectToPin:(JMXOutputPin *)destinationPin
 {
     if ([self canConnectToPin:destinationPin]) {
-        @synchronized(producers) {
-            if ([producers count] && !multiple) {
-                JMXOutputPin *producer = [producers objectAtIndex:0];
-                [producer detachObject:self];
-                [super disconnectFromPin:producer];
-                if (producer.mode == kJMXPinModePassive)
-                    passiveProducersCount--;
-                [producers removeObjectAtIndex:0];
-            }
-            if ([destinationPin attachObject:self withSelector:@"deliverData:fromSender:"]) {
-                [producers addObject:destinationPin];
-                connected = YES;
-                NSXMLNode *connectedAttribute = [self attributeForName:@"connected"];
-                [connectedAttribute setStringValue:@"YES"];
-                if (destinationPin.mode == kJMXPinModePassive)
-                    passiveProducersCount++;
-                return [super connectToPin:destinationPin];
-            }
+        OSSpinLockLock(&producersLock);
+        if ([producers count] && !multiple) {
+            JMXOutputPin *producer = [producers objectAtIndex:0];
+            [producer detachObject:self];
+            [super disconnectFromPin:producer];
+            if (producer.mode == kJMXPinModePassive)
+                passiveProducersCount--;
+            [producers removeObjectAtIndex:0];
         }
+        if ([destinationPin attachObject:self withSelector:@"deliverData:fromSender:"]) {
+            [producers addObject:destinationPin];
+            connected = YES;
+            NSXMLNode *connectedAttribute = [self attributeForName:@"connected"];
+            [connectedAttribute setStringValue:@"YES"];
+            if (destinationPin.mode == kJMXPinModePassive)
+                passiveProducersCount++;
+            return [super connectToPin:destinationPin];
+        }
+        OSSpinLockUnlock(&producersLock);
     }
     return NO;
 }
@@ -124,17 +133,17 @@
 - (void)disconnectFromPin:(JMXOutputPin *)destinationPin
 {
     [destinationPin retain];
-    @synchronized(producers) {
-        [producers removeObjectIdenticalTo:destinationPin];
-        [destinationPin detachObject:self];
-        if (destinationPin.mode == kJMXPinModePassive)
-            passiveProducersCount--;
-        if ([producers count] == 0) {
-            NSXMLNode *connectedAttribute = [self attributeForName:@"connected"];
-            [connectedAttribute setStringValue:@"NO"];
-            connected = NO;
-        }
+    OSSpinLockLock(&producersLock);
+    [producers removeObjectIdenticalTo:destinationPin];
+    [destinationPin detachObject:self];
+    if (destinationPin.mode == kJMXPinModePassive)
+        passiveProducersCount--;
+    if ([producers count] == 0) {
+        NSXMLNode *connectedAttribute = [self attributeForName:@"connected"];
+        [connectedAttribute setStringValue:@"NO"];
+        connected = NO;
     }
+    OSSpinLockUnlock(&producersLock);
 
     for (NSXMLElement *element in connections.children) {
         if ([[element attributeForName:@"uid"] isEqual:[destinationPin attributeForName:@"uid"]]) {
@@ -156,11 +165,11 @@
 
 - (void)disconnectAllPins
 {
-    @synchronized(producers) {
-        while ([producers count])
-            [self disconnectFromPin:[producers objectAtIndex:0]];
-        passiveProducersCount = 0;
-    }
+    OSSpinLockLock(&producersLock);
+    while ([producers count])
+        [self disconnectFromPin:[producers objectAtIndex:0]];
+    passiveProducersCount = 0;
+    OSSpinLockUnlock(&producersLock);
 }
 
 /*

@@ -10,6 +10,12 @@
 #import "JMXInputPin.h"
 #import "JMXEntity.h"
 
+@interface JMXCodePanel ()
+{
+    OSSpinLock lock;
+}
+@end
+
 @implementation JMXCodePanel
 
 - (id)initWithContentRect:(NSRect)contentRect 
@@ -62,39 +68,43 @@
 
 - (void)unsetPin:(NSNotification *)notification
 {
-    @synchronized(textBuffer) {
-        [textBuffer setString:@""];
-    }
+    OSSpinLockLock(&lock);
+    [textBuffer setString:@""];
+    OSSpinLockUnlock(&lock);
     self.pin = nil;
     [self setIsVisible:NO];
 }
 
 - (void)setPin:(JMXInputPin *)aPin
 {
-    @synchronized(self) {
-        [super setPin:aPin];
-        if (aPin && aPin.type == kJMXCodePin) {
-            // if this is a code pin, let's retrieve the actual code being executed
-            id owner = aPin.owner;
-            if (![owner isKindOfClass:[JMXEntity class]])
-                return;
-            JMXEntity *entity = (JMXEntity *)owner;
-            JMXPin *outputCodePin = nil;
-            for (JMXOutputPin *outputPin in [entity outputPins]) {
-                if (outputPin.type == kJMXCodePin) {
-                    outputCodePin = outputPin;
-                    break;
-                }
-            }
-            if (!outputCodePin)
-                return;
-            //NSString *text = [[textView textStorage] string];
-            [textView setString:@""];
-            NSString *data = outputCodePin.data;
-            if (data)
-                [textView insertText:(NSString *)outputCodePin.data];
+    OSSpinLockLock(&lock);
+    [super setPin:aPin];
+    if (aPin && aPin.type == kJMXCodePin) {
+        // if this is a code pin, let's retrieve the actual code being executed
+        id owner = aPin.owner;
+        if (![owner isKindOfClass:[JMXEntity class]]) {
+            OSSpinLockUnlock(&lock);
+            return;
         }
+        JMXEntity *entity = (JMXEntity *)owner;
+        JMXPin *outputCodePin = nil;
+        for (JMXOutputPin *outputPin in [entity outputPins]) {
+            if (outputPin.type == kJMXCodePin) {
+                outputCodePin = outputPin;
+                break;
+            }
+        }
+        if (!outputCodePin) {
+            OSSpinLockUnlock(&lock);
+            return;
+        }
+        //NSString *text = [[textView textStorage] string];
+        [textView setString:@""];
+        NSString *data = outputCodePin.data;
+        if (data)
+            [textView insertText:(NSString *)outputCodePin.data];
     }
+    OSSpinLockUnlock(&lock);
 }
 
 @end

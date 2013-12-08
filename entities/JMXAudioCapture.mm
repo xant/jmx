@@ -68,10 +68,11 @@
 
 - (JMXAudioBuffer *)currentBuffer
 {
+    static OSSpinLock lock;
     JMXAudioBuffer *buf = nil;
-    @synchronized (self) {
-        buf = [[currentBuffer retain] autorelease];
-    }
+    OSSpinLockLock(&lock);
+    buf = [[currentBuffer retain] autorelease];
+    OSSpinLockUnlock(&lock);
     return buf;
 }
 

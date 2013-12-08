@@ -31,6 +31,12 @@
 
 JMXV8_EXPORT_NODE_CLASS(JMXCoreImageFilter);
 
+@interface JMXCoreImageFilter ()
+{
+    OSSpinLock flock;
+}
+@end
+
 @implementation JMXCoreImageFilter
 
 + (NSArray *)availableFilters
@@ -71,41 +77,41 @@ JMXV8_EXPORT_NODE_CLASS(JMXCoreImageFilter);
 
 - (void)newFrame:(CIImage *)frame
 {
-    @synchronized(self) {
-        if (currentFrame)
-            [currentFrame release];
-        if (ciFilter) {
-            [ciFilter setValue:frame forKey:@"inputImage"];
-            currentFrame = [[ciFilter valueForKey:@"outputImage"] retain];
-        } else {
-            currentFrame = [frame retain];
-        }
-        [outFrame deliverData:currentFrame];
+    OSSpinLockLock(&flock);
+    if (currentFrame)
+        [currentFrame release];
+    if (ciFilter) {
+        [ciFilter setValue:frame forKey:@"inputImage"];
+        currentFrame = [[ciFilter valueForKey:@"outputImage"] retain];
+    } else {
+        currentFrame = [frame retain];
     }
+    [outFrame deliverData:currentFrame];
+    OSSpinLockUnlock(&flock);
 }
 
 - (void)setFilterValue:(id)value userData:(id)userData
 {
     NSString *pinName = (NSString *)userData;
-    @synchronized(self) {
-        if (ciFilter) {
-            @try {
-                if ([value isKindOfClass:[JMXPoint class]]) { // XXX
-                    [ciFilter setValue:[CIVector vectorWithX:[value x] Y:[value y]] forKey:pinName];
-                } else if ([value isKindOfClass:[NSColor class]]) {
-                    CIColor *color = [CIColor colorWithRed:[value redComponent]
-                                                     green:[value greenComponent]
-                                                      blue:[value blueComponent]];
-                    [ciFilter setValue:color forKey:pinName];
-                } else {
-                    [ciFilter setValue:value forKey:pinName];
-                }
-            }
-            @catch (NSException * e) {
-                // key doesn't exist
+    OSSpinLockLock(&flock);
+    if (ciFilter) {
+        @try {
+            if ([value isKindOfClass:[JMXPoint class]]) { // XXX
+                [ciFilter setValue:[CIVector vectorWithX:[value x] Y:[value y]] forKey:pinName];
+            } else if ([value isKindOfClass:[NSColor class]]) {
+                CIColor *color = [CIColor colorWithRed:[value redComponent]
+                                                 green:[value greenComponent]
+                                                  blue:[value blueComponent]];
+                [ciFilter setValue:color forKey:pinName];
+            } else {
+                [ciFilter setValue:value forKey:pinName];
             }
         }
+        @catch (NSException * e) {
+            // key doesn't exist
+        }
     }
+    OSSpinLockUnlock(&flock);
 }
 
 - (void)removeFilterAttributesPins
@@ -145,7 +151,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXCoreImageFilter);
         //NSLog(@"Filter Attributes : %@", [newFilter attributes]);
         NSArray *inputKeys = [newFilter inputKeys];
         NSDictionary *attributes = [newFilter attributes];
-        @synchronized(self) {
+        OSSpinLockLock(&flock);
             [self removeFilterAttributesPins];
             for (NSString *key in inputKeys) {
                 // TODO - max/min values and display name
@@ -173,7 +179,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXCoreImageFilter);
             if (ciFilter)
                 [ciFilter release];
             ciFilter = [newFilter retain];
-        }
+        OSSpinLockUnlock(&flock);
         if (filter)
             [filter release];
         filter = [filterName copy];

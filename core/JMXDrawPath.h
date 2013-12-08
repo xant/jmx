@@ -37,23 +37,6 @@
     CIImage *currentFrame;
     id<JMXCanvasStyle,JMXV8> fillStyle;
     id<JMXCanvasStyle,JMXV8> strokeStyle;
-@private
-    JMXSize *frameSize;
-    BOOL _clear;
-    NSUInteger subPaths;
-    double globalAlpha;
-    NSString *globalCompositeOperation;
-    NSFont *font;
-    CGFloat lineWidth;
-    //BOOL _needsRender;
-    BOOL _didFill;
-    BOOL _didStroke;
-    BOOL invertYCoordinates;
-    NSColor *shadowColor;
-    CGFloat shadowOffsetX;
-    CGFloat shadowOffsetY;
-    CGFloat shadowBlur;
-    CGPathRef lastPath;
 }
 
 /*!

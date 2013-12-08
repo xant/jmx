@@ -26,7 +26,25 @@ using namespace v8;
 
 #pragma mark JMXDrawPath
 
-@interface JMXDrawPath ()
+@interface JMXDrawPath () {
+    JMXSize *frameSize;
+    BOOL _clear;
+    NSUInteger subPaths;
+    double globalAlpha;
+    NSString *globalCompositeOperation;
+    NSFont *font;
+    CGFloat lineWidth;
+    //BOOL _needsRender;
+    BOOL _didFill;
+    BOOL _didStroke;
+    BOOL invertYCoordinates;
+    NSColor *shadowColor;
+    CGFloat shadowOffsetX;
+    CGFloat shadowOffsetY;
+    CGFloat shadowBlur;
+    CGPathRef lastPath;
+    OSSpinLock lock;
+}
 @property (retain) CIImage *currentFrame;
 @end
 
@@ -797,34 +815,34 @@ using namespace v8;
 
 - (void)doRender
 {
-    @synchronized(self) {
-        UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
+    OSSpinLockLock(&lock);
+    UInt32 pathIndex = pathLayerOffset%kJMXDrawPathBufferCount;
         
-    #if 0
-        CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
+#if 0
+    CGContextRef context = CGLayerGetContext(pathLayers[pathIndex]);
 
-        BOOL fillOrStroke = (_didFill || _didStroke);
-        CGPathDrawingMode drawingMode = kCGPathFillStroke;
-        if (fillOrStroke && !(_didFill && _didStroke)) {
-            if (_didFill)
-                drawingMode = kCGPathFill;
-            else if (_didStroke)
-                drawingMode = kCGPathStroke;
-        }
-        if (fillOrStroke) {
-            _didFill = _didStroke = NO;
-            CGContextDrawPath(context, drawingMode);
-        }
-    #endif
-        
-        //if (_needsRender) {
-            [self clearFrame:NO];
-            self.currentFrame = [CIImage imageWithCGLayer:pathLayers[pathIndex]];
-            //_needsRender = NO;
-            _didStroke = NO;
-            _didFill = NO;
-        //}
+    BOOL fillOrStroke = (_didFill || _didStroke);
+    CGPathDrawingMode drawingMode = kCGPathFillStroke;
+    if (fillOrStroke && !(_didFill && _didStroke)) {
+        if (_didFill)
+            drawingMode = kCGPathFill;
+        else if (_didStroke)
+            drawingMode = kCGPathStroke;
     }
+    if (fillOrStroke) {
+        _didFill = _didStroke = NO;
+        CGContextDrawPath(context, drawingMode);
+    }
+#endif
+    
+    //if (_needsRender) {
+        [self clearFrame:NO];
+        self.currentFrame = [CIImage imageWithCGLayer:pathLayers[pathIndex]];
+        //_needsRender = NO;
+        _didStroke = NO;
+        _didFill = NO;
+    //}
+    OSSpinLockUnlock(&lock);
 }
 
 static NSString *validCompositeOperations[] = { 
@@ -845,18 +863,20 @@ static NSString *validCompositeOperations[] = {
 
 - (NSString *)globalCompositeOperation
 {
-    @synchronized(self) {
-        return [[globalCompositeOperation retain] autorelease];
-    }
+    NSString *string;
+    OSSpinLockLock(&lock);
+    string = [[globalCompositeOperation retain] autorelease];
+    OSSpinLockUnlock(&lock);
+    return string;
 }
 
 - (void)setGlobalCompositeOperation:(NSString *)operation
 {
     for (int i = 0; validCompositeOperations[i]; i++) {
         if ([operation caseInsensitiveCompare:validCompositeOperations[i]] == NSOrderedSame) {
-            @synchronized(self) {
-                globalCompositeOperation = [validCompositeOperations[i] copy];
-            }
+            OSSpinLockLock(&lock);
+            globalCompositeOperation = [validCompositeOperations[i] copy];
+            OSSpinLockUnlock(&lock);
             break;
         }
     }

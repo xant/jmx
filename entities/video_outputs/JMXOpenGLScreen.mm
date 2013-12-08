@@ -441,31 +441,29 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 
 - (NSColor *)backgroundColor
 {
-    @synchronized(self) {
-        return [[backgroundColor retain] autorelease];
-    }
+    OSSpinLockLock(&lock);
+    return [[backgroundColor retain] autorelease];
+    OSSpinLockUnlock(&lock);
 }
 
 - (void)setBackgroundColor:(NSColor *)newBackgroundColor
 {
-    @synchronized(self) {
-        if (backgroundColor != newBackgroundColor) {
-            [backgroundColor release];
-            backgroundColor = [newBackgroundColor retain];
-            view.backgroundColor = backgroundColor;
-            [view reshape];
-        }
+    OSSpinLockLock(&lock);
+    if (backgroundColor != newBackgroundColor) {
+        [backgroundColor release];
+        backgroundColor = [newBackgroundColor retain];
+        view.backgroundColor = backgroundColor;
+        [view reshape];
     }
+    OSSpinLockUnlock(&lock);
 }
 
 - (void)setSize:(JMXSize *)newSize
 {
-    //@synchronized(self) {
     if (![newSize isEqual:size]) {
         [super setSize:newSize];
         [controller setSize:newSize];
     }
-    //}
 }
 
 - (void)drawFrame:(CIImage *)frame
@@ -492,22 +490,25 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 
 - (BOOL)fullScreen
 {
-    @synchronized(self) {
-        return fullScreen;
-    }
+    BOOL ret;
+    OSSpinLockLock(&lock);
+    ret = fullScreen;
+    OSSpinLockUnlock(&lock);
+    return ret;
 }
 
 - (void)setFullScreen:(BOOL)yesOrNo
 {
-    @synchronized(self) {
-        if (fullScreen == yesOrNo)
-            return;
-        fullScreen = yesOrNo;
-        [view performSelectorOnMainThread:@selector(toggleFullScreen:)
-                               withObject:self
-                            waitUntilDone:YES];
+    OSSpinLockLock(&lock);
+    if (fullScreen == yesOrNo) {
+        OSSpinLockUnlock(&lock);
+        return;
     }
-    
+    fullScreen = yesOrNo;
+    [view performSelectorOnMainThread:@selector(toggleFullScreen:)
+                           withObject:self
+                        waitUntilDone:YES];
+    OSSpinLockUnlock(&lock);
 }
 
 - (BOOL)invertYCoordinates

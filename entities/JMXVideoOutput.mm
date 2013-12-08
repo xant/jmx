@@ -57,11 +57,12 @@
 
 - (void)drawFrame:(CIImage *)frame
 {
-    @synchronized(self) {
-        if (currentFrame)
-            [currentFrame release];
-        currentFrame = [frame retain];
-    }
+    static OSSpinLock flock;
+    OSSpinLockLock(&flock);
+    if (currentFrame)
+        [currentFrame release];
+    currentFrame = [frame retain];
+    OSSpinLockUnlock(&flock);
 }
 
 - (void)dealloc
@@ -74,27 +75,31 @@
 
 - (JMXSize *)size
 {
-    @synchronized(self) {
-        return [[size retain] autorelease];
-    }
+    JMXSize *ret;
+    OSSpinLockLock(&lock);
+    ret = [[size retain] autorelease];
+    OSSpinLockUnlock(&lock);
+    return ret;
 }
 
 - (void)setSize:(JMXSize *)newSize
 {
-    @synchronized(self) {
-        if ([size isEqualTo:newSize])
-            return;
-        [size release];
-        if (newSize)
-            size = [newSize retain];
-        else
-            size = nil;
-        NSXMLNode *widthAttr = [self attributeForName:@"width"];
-        NSXMLNode *heightAttr = [self attributeForName:@"height"];
-
-        [widthAttr setStringValue:[NSString stringWithFormat:@"%.0f", size.width]];
-        [heightAttr setStringValue:[NSString stringWithFormat:@"%.0f", size.height]];
+    OSSpinLockLock(&lock);
+    if ([size isEqualTo:newSize]) {
+        OSSpinLockUnlock(&lock);
+        return;
     }
+    [size release];
+    if (newSize)
+        size = [newSize retain];
+    else
+        size = nil;
+    NSXMLNode *widthAttr = [self attributeForName:@"width"];
+    NSXMLNode *heightAttr = [self attributeForName:@"height"];
+
+    [widthAttr setStringValue:[NSString stringWithFormat:@"%.0f", size.width]];
+    [heightAttr setStringValue:[NSString stringWithFormat:@"%.0f", size.height]];
+    OSSpinLockUnlock(&lock);
 }
 
 #pragma mark V8

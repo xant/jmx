@@ -34,10 +34,8 @@
  @class JMXInputPin
  @abstract concrete class for input pins
  */
-@interface JMXInputPin : JMXPin {
-    NSMutableArray      *producers;
-    int passiveProducersCount;
-}
+@interface JMXInputPin : JMXPin
+
 /*!
  @property producers
  @abstract array containing all output pins currently connected to this input pin

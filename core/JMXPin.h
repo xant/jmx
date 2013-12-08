@@ -138,13 +138,6 @@ typedef enum {
     NSMutableArray      *allowedValues;
     NSXMLElement        *connections;
     JMXPinMode          mode;
-@private
-    JMXPinReadMode      readMode;
-    SEL                 readSignal;
-    id                  dataBuffer[kJMXPinDataBufferMask+1]; // double buffer synchronized for writers
-    // but lockless for readers
-    volatile int32_t    offset;
-
 }
 
 /*!

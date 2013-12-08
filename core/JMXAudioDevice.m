@@ -1428,27 +1428,28 @@ finish:
                           outputData:(AudioBufferList *)outOutputData
                           outputTime:(AudioTimeStamp *)inOutputTime
 {
+    static OSSpinLock lock;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    @synchronized(self) {
-        if ( isPaused )
-            return;
+    OSSpinLockLock(&lock);
+    if ( isPaused )
+        return;
 #if 0        
-        if (myIOProc)
-        {
-            (void)(*myIOProc)( myDevice, inNow, inInputData, inInputTime, outOutputData, inOutputTime, myIOProcClientData );
-        }
-        else
-#endif
-        if (myIOInvocation)
-        {
-            [myIOInvocation setArgument:&inNow atIndex:3];
-            [myIOInvocation setArgument:&inInputData atIndex:4];
-            [myIOInvocation setArgument:&inInputTime atIndex:5];
-            [myIOInvocation setArgument:&outOutputData atIndex:6];
-            [myIOInvocation setArgument:&inOutputTime atIndex:7];
-            [myIOInvocation invoke];
-        }
+    if (myIOProc)
+    {
+        (void)(*myIOProc)( myDevice, inNow, inInputData, inInputTime, outOutputData, inOutputTime, myIOProcClientData );
     }
+    else
+#endif
+    if (myIOInvocation)
+    {
+        [myIOInvocation setArgument:&inNow atIndex:3];
+        [myIOInvocation setArgument:&inInputData atIndex:4];
+        [myIOInvocation setArgument:&inInputTime atIndex:5];
+        [myIOInvocation setArgument:&outOutputData atIndex:6];
+        [myIOInvocation setArgument:&inOutputTime atIndex:7];
+        [myIOInvocation invoke];
+    }
+    OSSpinLockUnlock(&lock);
     [pool drain];
 }
 

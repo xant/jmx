@@ -84,6 +84,7 @@
 @public
     NSString *label;
     BOOL active;
+    
 @protected
     /*
     NSMutableDictionary *inputPins;
@@ -93,6 +94,8 @@
     JMXInputPin *activeIn;
     JMXOutputPin *activeOut;
     NSMutableSet *proxyPins;
+    OSSpinLock lock;
+
 @private
     NSMutableDictionary *privateData;
     JMXEntity *owner;

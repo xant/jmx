@@ -164,66 +164,70 @@ static int _defaultFrequencies[kJMXAudioSpectrumNumFrequencies] =
 {
     if (!sample)
         return;
+    
+    static OSSpinLock lock;
     // XXX - get rid of this stupid lock
-    @synchronized(analyzer) {
-        AudioBufferList *bufferList = sample.bufferList;
-        switch(bufferList->mNumberBuffers) {
-        case 1:
-            switch (bufferList->mBuffers[0].mNumberChannels) {
-            case 1: // we got a mono sample, let's just copy that across all channels
-                for (int i = 0; i < deinterleavedBuffer->mNumberBuffers; i++) {
-                    UInt32 sizeToCopy = MIN(bufferList->mBuffers[0].mDataByteSize, 
-                                            deinterleavedBuffer->mBuffers[i].mDataByteSize);
-                    memcpy(deinterleavedBuffer->mBuffers[i].mData, bufferList->mBuffers[0].mData, sizeToCopy);
-                }
-                break;
-            case 2:
-                {
-                    UInt32 numFrames = (UInt32)[sample numFrames];
-                    for (int j = 0; j < numFrames; j++) {
-                        uint8_t *frame = ((uint8_t *)bufferList->mBuffers[0].mData) + (j*8);
-                        memcpy((u_char *)deinterleavedBuffer->mBuffers[0].mData+(j*4), frame, 4);
-                        memcpy((u_char *)deinterleavedBuffer->mBuffers[1].mData+(j*4), frame + 4, 4);
-                    }
-                }
-                break;
-            default: // more than 2 channels are not supported yet
-                // TODO - error messages
-                return;
-            }
-            break;
-        case 2: // same number of channels (2 at the moment)
+    OSSpinLockLock(&lock);
+    AudioBufferList *bufferList = sample.bufferList;
+    switch(bufferList->mNumberBuffers) {
+    case 1:
+        switch (bufferList->mBuffers[0].mNumberChannels) {
+        case 1: // we got a mono sample, let's just copy that across all channels
             for (int i = 0; i < deinterleavedBuffer->mNumberBuffers; i++) {
-                UInt32 sizeToCopy = MIN(bufferList->mBuffers[i].mDataByteSize, 
+                UInt32 sizeToCopy = MIN(bufferList->mBuffers[0].mDataByteSize, 
                                         deinterleavedBuffer->mBuffers[i].mDataByteSize);
-                memcpy(deinterleavedBuffer->mBuffers[i].mData, bufferList->mBuffers[i].mData, sizeToCopy);
+                memcpy(deinterleavedBuffer->mBuffers[i].mData, bufferList->mBuffers[0].mData, sizeToCopy);
             }
             break;
-        default: // buffers with more than 2 channels are not supported yet
+        case 2:
+            {
+                UInt32 numFrames = (UInt32)[sample numFrames];
+                for (int j = 0; j < numFrames; j++) {
+                    uint8_t *frame = ((uint8_t *)bufferList->mBuffers[0].mData) + (j*8);
+                    memcpy((u_char *)deinterleavedBuffer->mBuffers[0].mData+(j*4), frame, 4);
+                    memcpy((u_char *)deinterleavedBuffer->mBuffers[1].mData+(j*4), frame + 4, 4);
+                }
+            }
+            break;
+        default: // more than 2 channels are not supported yet
             // TODO - error messages
+            OSSpinLockUnlock(&lock);
             return;
         }
-        [analyzer processForwards:(UInt32)[sample numFrames] input:deinterleavedBuffer];
-
-        [analyzer getMagnitude:spectrumBuffer min:minAmp max:maxAmp];
-        
-        for (UInt32 i = 0; i < kJMXAudioSpectrumNumFrequencies; i++) {	// for each frequency
-            int freq = [[frequencies objectAtIndex:i] intValue];
-            int offset = freq*numBins/44100*analyzer.numChannels;
-            Float32 freqValue = (((Float32 *)(spectrumBuffer->mBuffers[0].mData))[offset] +
-                                ((Float32 *)(spectrumBuffer->mBuffers[1].mData))[offset]) * 0.5;
-            if (freqValue < 0.0)
-                freqValue = 0.0;
-            
-            NSNumber *numberValue = [NSNumber numberWithFloat:freqValue];
-            [(JMXOutputPin *)[frequencyPins objectAtIndex:i] deliverData:numberValue];
-            frequencyValues[i] = freqValue;
+        break;
+    case 2: // same number of channels (2 at the moment)
+        for (int i = 0; i < deinterleavedBuffer->mNumberBuffers; i++) {
+            UInt32 sizeToCopy = MIN(bufferList->mBuffers[i].mDataByteSize, 
+                                    deinterleavedBuffer->mBuffers[i].mDataByteSize);
+            memcpy(deinterleavedBuffer->mBuffers[i].mData, bufferList->mBuffers[i].mData, sizeToCopy);
         }
-        if (runcycleCount%5 == 0 && imagePin.connected) { // draw the image only once every 10 samples
-            [self drawSpectrumImage];
-        }
-        runcycleCount++;
+        break;
+    default: // buffers with more than 2 channels are not supported yet
+        // TODO - error messages
+            OSSpinLockUnlock(&lock);
+        return;
     }
+    [analyzer processForwards:(UInt32)[sample numFrames] input:deinterleavedBuffer];
+
+    [analyzer getMagnitude:spectrumBuffer min:minAmp max:maxAmp];
+    
+    for (UInt32 i = 0; i < kJMXAudioSpectrumNumFrequencies; i++) {	// for each frequency
+        int freq = [[frequencies objectAtIndex:i] intValue];
+        int offset = freq*numBins/44100*analyzer.numChannels;
+        Float32 freqValue = (((Float32 *)(spectrumBuffer->mBuffers[0].mData))[offset] +
+                            ((Float32 *)(spectrumBuffer->mBuffers[1].mData))[offset]) * 0.5;
+        if (freqValue < 0.0)
+            freqValue = 0.0;
+        
+        NSNumber *numberValue = [NSNumber numberWithFloat:freqValue];
+        [(JMXOutputPin *)[frequencyPins objectAtIndex:i] deliverData:numberValue];
+        frequencyValues[i] = freqValue;
+    }
+    if (runcycleCount%5 == 0 && imagePin.connected) { // draw the image only once every 10 samples
+        [self drawSpectrumImage];
+    }
+    runcycleCount++;
+    OSSpinLockUnlock(&lock);
 }
 
 // override outputPins to return them properly sorted

@@ -39,16 +39,7 @@
              Note that all samples will be returned as :
              44100 float32 stereo interleaved
  */
-@interface JMXAudioFile : NSObject {
-@private
-    ExtAudioFileRef audioFile;
-    AudioStreamBasicDescription fileFormat;
-    JMXAudioBuffer *samples[kJMXAudioFileBufferCount];
-    UInt32 rOffset;
-    UInt32 wOffset;
-    BOOL isFilling;
-    NSURL *url;
-}
+@interface JMXAudioFile : NSObject 
 
 @property (copy) NSURL *url;
 /*!

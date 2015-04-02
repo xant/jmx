@@ -1,0 +1,4 @@
+*.m linguist-language=Objective-C
+*.mm linguist-language=Objective-C
+JMXAppDelegate.h linguist-language=Objective-C
+JMXGlobals.h linguist-language=Objective-C

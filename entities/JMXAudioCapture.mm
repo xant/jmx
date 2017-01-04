@@ -68,7 +68,7 @@
 
 - (JMXAudioBuffer *)currentBuffer
 {
-    static OSSpinLock lock;
+    //static OSSpinLock lock;
     JMXAudioBuffer *buf = nil;
     OSSpinLockLock(&lock);
     buf = [[currentBuffer retain] autorelease];

@@ -55,7 +55,7 @@ using namespace v8;
 
 - (BOOL)isEqual:(JMXEvent *)anObject
 {
-    return ([type isEqual:anObject.type] && target == target && listener == listener);
+    return ([type isEqual:anObject.type] && target == anObject.target && listener == anObject.listener);
 }
 
 

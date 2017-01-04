@@ -22,19 +22,21 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import <AVFoundation/AVFoundation.h>
+
 #import "JMXEntity.h"
 #import "JMXAudioCapture.h"
 
 @class JMXQtAudioGrabber;
 @class QTCaptureDevice;
 
-@interface JMXQtAudioCaptureEntity : JMXAudioCapture
+@interface JMXQtAudioCaptureEntity : JMXAudioCapture <AVCaptureAudioDataOutputSampleBufferDelegate>
 {
 @private
 	JMXQtAudioGrabber *grabber;
-    QTCaptureDevice *captureDevice;
+    AVCaptureDevice *captureDevice;
 }
-@property (readonly) QTCaptureDevice *captureDevice;
+@property (readonly) AVCaptureDevice *captureDevice;
 @end
 
 JMXV8_DECLARE_NODE_CONSTRUCTOR(JMXQtAudioCaptureEntity);

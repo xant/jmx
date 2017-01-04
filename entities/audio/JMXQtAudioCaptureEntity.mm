@@ -22,7 +22,7 @@
 //
 
 #include <CoreAudio/CoreAudioTypes.h>
-#import <QTKit/QTKit.h>
+
 #define __JMXV8__
 #import "JMXQtAudioCaptureEntity.h"
 #include "JMXScript.h"
@@ -63,20 +63,21 @@ static OSStatus _FillComplexBufferProc (
  * QTKit Bridge
  */
 
-@interface JMXQtAudioGrabber : QTCaptureDecompressedAudioOutput
+@interface JMXQtAudioGrabber : NSObject
 {
-    QTCaptureDeviceInput         *input;
-    QTCaptureMovieFileOutput     *captureOutput;
-    QTCaptureSession             *session;
-    QTCaptureDevice              *device;
-}
+    AVCaptureDeviceInput         *input;
+    AVCaptureAudioDataOutput     *captureOutput;
+    AVCaptureSession             *session;
+    AVCaptureDevice              *device;
+    dispatch_queue_t             dispatch_queue;
+    }
 
 - (id)init;
 - (void)startCapture:(JMXQtAudioCaptureEntity *)controller;
 - (void)stopCapture;
 @end
 
-@implementation JMXQtAudioGrabber : QTCaptureDecompressedAudioOutput
+@implementation JMXQtAudioGrabber : NSObject
 
 - (id)init
 {
@@ -108,47 +109,53 @@ static OSStatus _FillComplexBufferProc (
             goto error;
         }
         [device retain];
-        
-        if( ![device open: &o_returnedError] )
-        {
-            NSLog(@"Unable to open the capture device (%ld)", (long)[o_returnedError code]);
-            goto error;
-        }
-        
+
         if( [device isInUseByAnotherApplication] == YES )
         {
             NSLog(@"default capture device is exclusively in use by another application");
             goto error;
         }
         
-        input = [[QTCaptureDeviceInput alloc] initWithDevice: device];
+        input = [[AVCaptureDeviceInput alloc] initWithDevice: device error:&o_returnedError];
         if( !input )
         {
-            NSLog(@"can't create a valid capture input facility");
+            NSLog(@"can't create a valid capture input facility: %@", o_returnedError);
             goto error;
         }
         
         
-        session = [[QTCaptureSession alloc] init];
-        
-        ret = [session addInput:input error: &o_returnedError];
-        if( !ret )
+        session = [[AVCaptureSession alloc] init];
+
+
+        if( ![session canAddInput:input] )
         {
-            NSLog(@"default audio capture device could not be added to capture session (%ld)", (long)[o_returnedError code]);
+            NSLog(@"default audio capture device could not be added to capture session");
             goto error;
         }
-        
-        ret = [session addOutput:self error: &o_returnedError];
-        if( !ret )
+        [session addInput:input];
+
+
+
+        captureOutput = [[AVCaptureAudioDataOutput alloc] init];
+
+        // TODO - configure the output audio format
+        //[captureOutput setAudioSettings:<#(NSDictionary *)#>]
+
+        dispatch_queue = dispatch_queue_create("jmx.videocapture", NULL);
+
+        [captureOutput setSampleBufferDelegate:controller queue:dispatch_queue];
+
+        if( ![session canAddOutput:captureOutput] )
         {
             NSLog(@"output could not be added to capture session (%ld)", (long)[o_returnedError code]);
             goto error;
         }
-        
+
+        [session addOutput:captureOutput];
+
         [session startRunning]; // start the capture session
         NSLog(@"audio device ready!");
         
-        [self setDelegate:controller];
         return;
     error:
         [input release];
@@ -165,7 +172,7 @@ static OSStatus _FillComplexBufferProc (
                 [input release];
                 input = NULL;
             }
-            [session removeOutput:self];
+           // [session removeOutput:self];
             [session release];
             session = nil;
         }
@@ -176,8 +183,10 @@ static OSStatus _FillComplexBufferProc (
          }
          */
         if (device) {
+            /*
             if ([device isOpen])
                 [device close];
+             */
             [device release];
             device = NULL;
         }
@@ -196,15 +205,15 @@ static OSStatus _FillComplexBufferProc (
 + (NSArray *)availableDevices
 {
     NSMutableArray *devicesList = [[NSMutableArray alloc] init];
-    NSArray *availableDevices = [QTCaptureDevice inputDevicesWithMediaType:QTMediaTypeSound];
-    for (QTCaptureDevice *dev in availableDevices) 
+    NSArray *availableDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeAudio];
+    for (AVCaptureDevice *dev in availableDevices)
         [devicesList addObject:[dev uniqueID]];
     return [devicesList autorelease];
 }
 
 + (NSString *)defaultDevice
 {
-    return [[QTCaptureDevice defaultInputDeviceWithMediaType:QTMediaTypeSound] uniqueID];
+    return [[AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio] uniqueID];
 }
 
 - (id)init
@@ -213,7 +222,7 @@ static OSStatus _FillComplexBufferProc (
     if (self) {
         grabber = [[JMXQtAudioGrabber alloc] init];
         device = [JMXQtAudioCaptureEntity defaultDevice];
-        captureDevice = [[QTCaptureDevice deviceWithUniqueID:device] retain];
+        captureDevice = [[AVCaptureDevice deviceWithUniqueID:device] retain];
         if (self.active)
             [grabber startCapture:self];
     } else {
@@ -234,7 +243,7 @@ static OSStatus _FillComplexBufferProc (
 
 - (void)setDevice:(NSString *)uniqueID
 {
-    QTCaptureDevice *dev = [QTCaptureDevice deviceWithUniqueID:uniqueID];
+    AVCaptureDevice *dev = [AVCaptureDevice deviceWithUniqueID:uniqueID];
     if (dev) {
         if (captureDevice)
             [captureDevice release];
@@ -248,8 +257,7 @@ static OSStatus _FillComplexBufferProc (
         
 }
 
-- (void)captureOutput:(QTCaptureOutput *)captureOutput didOutputAudioSampleBuffer:(QTSampleBuffer *)sampleBuffer
-                                                             fromConnection:(QTCaptureConnection *)connection
+- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
     //@synchronized(outputPin) {
         AudioStreamBasicDescription format;

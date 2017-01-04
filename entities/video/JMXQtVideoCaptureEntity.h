@@ -22,12 +22,13 @@
 //
 
 #import "JMXVideoCapture.h"
+#import <AVFoundation/AVFoundation.h>
 
 #ifndef __JMXQTVIDEOCAPTURELAYER_H__
 #define __JMXQTVIDEOCAPTURELAYER_H__
 @class JMXQtVideoGrabber;
 
-@interface JMXQtVideoCaptureEntity : JMXVideoCapture
+@interface JMXQtVideoCaptureEntity : JMXVideoCapture <AVCaptureVideoDataOutputSampleBufferDelegate>
 {
 @private
 	JMXQtVideoGrabber *grabber;

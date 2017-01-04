@@ -40,4 +40,4 @@ mainloop = function() {
     sleep(1/drawer.frequency);
 };
 
-run(mainloop);
+addToRunLoop(mainloop, 1/60);

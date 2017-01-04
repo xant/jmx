@@ -165,7 +165,7 @@ static int _defaultFrequencies[kJMXAudioSpectrumNumFrequencies] =
     if (!sample)
         return;
     
-    static OSSpinLock lock;
+    //static OSSpinLock lock;
     // XXX - get rid of this stupid lock
     OSSpinLockLock(&lock);
     AudioBufferList *bufferList = sample.bufferList;

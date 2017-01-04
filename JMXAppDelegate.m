@@ -26,7 +26,6 @@
 #import "JMXGlobals.h"
 #import "JMXLibraryTableView.h"
 #import <JMXScriptFile.h>
-#import <QTKit/QTKit.h>
 
 @implementation JMXAppDelegate
 

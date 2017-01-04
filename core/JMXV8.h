@@ -162,6 +162,7 @@ v8::Handle<Value> __class##JSConstructor(const Arguments& args)\
             instance = [instance jmxInit];\
         else\
             instance = [instance init];\
+        NSLog(@"Instance %@ - class %@ \n", instance, [instance class]);\
         /* connect the entity to our scriptEntity */\
         if ([instance isKindOfClass:[JMXElement class]]) {\
             [ctx.scriptEntity performSelector:@selector(hookEntity:) withObject:instance];\

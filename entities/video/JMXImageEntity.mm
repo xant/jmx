@@ -23,9 +23,9 @@
 
 #define __JMXV8__
 #import "JMXImageEntity.h"
-#import <QTKit/QTKit.h>
 #import "JMXThreadedEntity.h"
 #import "JMXScript.h"
+#import <QuartzCore/QuartzCore.h>
 
 JMXV8_EXPORT_NODE_CLASS(JMXImageEntity);
 

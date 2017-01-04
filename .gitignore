@@ -22,3 +22,8 @@ latex/
 
 # headerdoc output directories
 *_h/
+
+core/node_natives_jmx.h
+
+JMX.xcodeproj/xcuserdata/
+JMX.xcodeproj/project.xcworkspace/

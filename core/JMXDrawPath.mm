@@ -1362,7 +1362,7 @@ static v8::Handle<Value> PutImageData(const Arguments& args)
                 
                 if (dirtyWidth < 0) {
                     dirtyX += dirtyWidth;
-                    dirtyWidth = abs(dirtyWidth);
+                    dirtyWidth = abs((int)dirtyWidth);
                 }
                 if (dirtyX < 0) {
                     dirtyWidth += dirtyX;

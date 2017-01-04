@@ -1422,11 +1422,11 @@ finish:
 	}
 }
 
-- (void)dispatchIOProcsWithTimeStamp:(AudioTimeStamp *)inNow
-                           inputData:(AudioBufferList *)inInputData
-                           inputTime:(AudioTimeStamp *)inInputTime
+- (void)dispatchIOProcsWithTimeStamp:(const AudioTimeStamp *)inNow
+                           inputData:(const AudioBufferList *)inInputData
+                           inputTime:(const AudioTimeStamp *)inInputTime
                           outputData:(AudioBufferList *)outOutputData
-                          outputTime:(AudioTimeStamp *)inOutputTime
+                          outputTime:(const AudioTimeStamp *)inOutputTime
 {
     static OSSpinLock lock;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];

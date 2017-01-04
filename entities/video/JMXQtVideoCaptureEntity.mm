@@ -23,7 +23,6 @@
 
 #include <OpenGL/OpenGL.h>
 #include <OpenGL/gl.h>
-#import <QTKit/QTKit.h>
 #import <Cocoa/Cocoa.h>
 #define __JMXV8__
 #import "JMXQtVideoCaptureEntity.h"
@@ -37,24 +36,25 @@
  */
 
 JMXV8_EXPORT_NODE_CLASS(JMXQtVideoCaptureEntity);
-
-@interface JMXQtVideoGrabber : QTCaptureDecompressedVideoOutput
+@interface JMXQtVideoGrabber : NSObject
 {
-    QTCaptureDeviceInput         *input;
-    QTCaptureMovieFileOutput     *captureOutput;
-    QTCaptureSession             *session;
-    QTCaptureDevice              *device;
+    AVCaptureDeviceInput         *input;
+    AVCaptureVideoDataOutput     *captureOutput;
+    AVCaptureSession             *session;
+    AVCaptureDevice              *device;
     int                          width;
     int                          height;
+    dispatch_queue_t             dispatch_queue;
 }
 
 - (id)init;
 - (void)startCapture:(JMXQtVideoCaptureEntity *)controller;
 - (void)stopCapture;
+- (void)setPixelBufferAttributes:(NSDictionary *)attributes;
 - (NSSize)size;
 @end
 
-@implementation JMXQtVideoGrabber : QTCaptureDecompressedVideoOutput
+@implementation JMXQtVideoGrabber : NSObject
 
 - (id)init
 {
@@ -80,7 +80,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXQtVideoCaptureEntity);
 {
     if (session) // a session is already running
         return;
-    
+
     NSLog(@"QTCapture opened");
     bool ret = false;
     
@@ -94,59 +94,59 @@ JMXV8_EXPORT_NODE_CLASS(JMXQtVideoCaptureEntity);
     int w = (width < JMX_GRABBER_WIDTH_MAX)
             ? width
             : JMX_GRABBER_WIDTH_MAX;
-    device = [QTCaptureDevice defaultInputDeviceWithMediaType: QTMediaTypeVideo];
-    if( !device )
+    
+    device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    if ( !device )
     {
         NSLog(@"Can't find any Video device");
         goto error;
     }
-    [device retain];
-    
-    if( ![device open: &o_returnedError] )
-    {
-        NSLog(@"Unable to open the capture device (%ld)", (long)[o_returnedError code]);
-        goto error;
-    }
-    
-    if( [device isInUseByAnotherApplication] == YES )
+
+    if ([device isInUseByAnotherApplication] == YES)
     {
         NSLog(@"default capture device is exclusively in use by another application");
         goto error;
     }
-    
-    input = [[QTCaptureDeviceInput alloc] initWithDevice: device];
-    if( !input )
+
+    input = [[AVCaptureDeviceInput alloc] initWithDevice:device error:&o_returnedError];
+    if ( !input )
     {
-        NSLog(@"can't create a valid capture input facility");
+        NSLog(@"can't create a valid capture input facility: %@", o_returnedError);
         goto error;
     }
+
+    session = [[AVCaptureSession alloc] init];
     
-    [self setPixelBufferAttributes: [NSDictionary dictionaryWithObjectsAndKeys:
+    
+    if( ![session canAddInput:input] )
+    {
+        NSLog(@"default video capture device could not be added to capture session");
+        goto error;
+    }
+    [session addInput:input];
+
+    captureOutput = [[AVCaptureVideoDataOutput alloc] init];
+    [captureOutput setVideoSettings:[NSDictionary dictionaryWithObjectsAndKeys:
                                      [NSNumber numberWithInt:h], kCVPixelBufferHeightKey,
-                                     [NSNumber numberWithInt:w], kCVPixelBufferWidthKey, 
+                                     [NSNumber numberWithInt:w], kCVPixelBufferWidthKey,
                                      [NSNumber numberWithInt:kCVPixelFormatType_32ARGB],
                                      (id)kCVPixelBufferPixelFormatTypeKey, nil]];
-    
-    session = [[QTCaptureSession alloc] init];
-    
-    ret = [session addInput:input error: &o_returnedError];
-    if( !ret )
+
+
+    if( ![session canAddOutput:captureOutput] )
     {
-        NSLog(@"default video capture device could not be added to capture session (%ld)", (long)[o_returnedError code]);
+        NSLog(@"output could not be added to capture session");
         goto error;
     }
-    
-    ret = [session addOutput:self error: &o_returnedError];
-    if( !ret )
-    {
-        NSLog(@"output could not be added to capture session (%ld)", (long)[o_returnedError code]);
-        goto error;
-    }
+    [session addOutput:captureOutput];
     
     [session startRunning]; // start the capture session
     NSLog(@"Video device ready!");
     
-    [self setDelegate:controller];
+    dispatch_queue = dispatch_queue_create("jmx.videocapture", NULL);
+
+    
+    [captureOutput setSampleBufferDelegate:controller queue:dispatch_queue];
     return;
 error:
     //[= exitQTKitOnThread];
@@ -154,29 +154,38 @@ error:
     
 }
 
+- (void)setPixelBufferAttributes:(NSDictionary *)attributes
+{
+    if (captureOutput) {
+        [captureOutput setVideoSettings:attributes];
+    }
+}
+
 - (void)stopCapture
 {
     if (session) {
         [session stopRunning];
-        [session removeOutput:self];
-       // if (input) {
-        [session removeInput:input];
-        [session release];
-        [input release];
-        input = nil;
-        //}
+        [session removeOutput:captureOutput];
+        if (input) {
+            [session removeInput:input];
+            [session release];
+            [input release];
+            dispatch_release(dispatch_queue);
+            input = nil;
+        }
         session = nil;
     }
-    /*
-     if (output) {
-     [output release];
-     output = NULL;
-     }
-     */
+    if (captureOutput) {
+        [captureOutput release];
+        captureOutput = NULL;
+    }
     if (device) {
+        // NOTE: this is autoreleased because we are not retaining it (but the session is)
+        /*
         if ([device isOpen])
             [device close];
         [device release];
+         */
         device = nil;
     }
     
@@ -189,16 +198,15 @@ error:
 
 @end
 
-
 @implementation JMXQtVideoCaptureEntity : JMXVideoCapture
 
-- (void)captureOutput:(QTCaptureOutput *)captureOutput 
-  didOutputVideoFrame:(CVImageBufferRef)videoFrame 
-     withSampleBuffer:(QTSampleBuffer *)sampleBuffer 
-       fromConnection:(QTCaptureConnection *)connection
+- (void)captureOutput:(AVCaptureOutput *)captureOutput
+didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
+       fromConnection:(AVCaptureConnection *)connection
 {
     if (currentFrame)
         [currentFrame release];
+    CVImageBufferRef videoFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
     currentFrame = [[CIImage imageWithCVImageBuffer:videoFrame] retain];
     [self tick:CVGetCurrentHostTime()];
 }

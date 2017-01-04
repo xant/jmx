@@ -23,10 +23,7 @@
 
 #import <Cocoa/Cocoa.h>
 #include <Carbon/Carbon.h>
-#import <QTKit/QTKit.h>
-#ifndef __x86_64
-#import  <QuickTime/QuickTime.h>
-#endif
+
 #define __JMXV8__
 #import "JMXQtMovieEntity.h"
 #import "JMXScript.h"
@@ -34,29 +31,8 @@
 #import "JMXAttribute.h"
 #include <AudioUnit/AudioUnit.h>
 #include <AudioToolbox/AudioToolbox.h>
-#import <AVFoundation/AVFoundation.h>
 
 JMXV8_EXPORT_NODE_CLASS(JMXQtMovieEntity);
-
-#ifndef __x86_64
-/* Utility to set a SInt32 value in a CFDictionary
- */
-static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
-                               CFStringRef inKey,
-                               SInt32 inValue)
-{
-    CFNumberRef number;
-    
-    number = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &inValue);
-    if (NULL == number) return coreFoundationUnknownErr;
-    
-    CFDictionarySetValue(inDict, inKey, number);
-    
-    CFRelease(number);
-    
-    return noErr;
-}
-#endif
 
 @implementation JMXQtMovieEntity
 
@@ -88,54 +64,6 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
     }
     return nil;
 }
-
-#ifndef __x86_64
-- (void)setupPixelBuffer
-{
-    OSStatus err;
-    CGLContextObj         glContext;
-    CGLPixelFormatObj pFormat;
-    GLint npix;
-    const int attrs[2] = { kCGLPFADoubleBuffer, 0};
-    err = CGLChoosePixelFormat ((CGLPixelFormatAttribute *)attrs,
-                                 &pFormat,
-                                 &npix
-                                 );
-    err = CGLCreateContext(pFormat , NULL, &glContext);
-    
-    /* Create QT Visual context */
-    
-    // Pixel Buffer attributes
-    CFMutableDictionaryRef pixelBufferOptions = CFDictionaryCreateMutable(kCFAllocatorDefault, 0,
-                                                                          &kCFTypeDictionaryKeyCallBacks,
-                                                                          &kCFTypeDictionaryValueCallBacks);
-    
-    // the pixel format we want (freej require BGRA pixel format)
-    SetNumberValue(pixelBufferOptions, kCVPixelBufferPixelFormatTypeKey, k32ARGBPixelFormat);
-    
-    // size
-    SetNumberValue(pixelBufferOptions, kCVPixelBufferWidthKey, size.width);
-    SetNumberValue(pixelBufferOptions, kCVPixelBufferHeightKey, size.height);
-    
-    // alignment
-    SetNumberValue(pixelBufferOptions, kCVPixelBufferBytesPerRowAlignmentKey, 1);
-    // QT Visual Context attributes
-    CFMutableDictionaryRef visualContextOptions = CFDictionaryCreateMutable(kCFAllocatorDefault, 0,
-                                                                            &kCFTypeDictionaryKeyCallBacks,
-                                                                            &kCFTypeDictionaryValueCallBacks);
-    // set the pixel buffer attributes for the visual context
-    CFDictionarySetValue(visualContextOptions,
-                         kQTVisualContextPixelBufferAttributesKey,
-                         pixelBufferOptions);
-    CFRelease(pixelBufferOptions);
-    
-    err = QTOpenGLTextureContextCreate(kCFAllocatorDefault, glContext,
-                                       CGLGetPixelFormat(glContext), visualContextOptions, &qtVisualContext);
-    CGLReleaseContext(glContext);
-    
-    CFRelease(visualContextOptions);
-}
-#endif
 
 - (NSString *)moviePath
 {
@@ -200,76 +128,46 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
         @synchronized(self) {
             if (movie)
                 [movie release];
+            if (movieAsset)
+                [movieAsset release];
+
+            movieAsset = [[AVURLAsset alloc] initWithURL:[NSURL fileURLWithPath:file] options:nil];
 
             // Setter already releases and retains where appropriate.
-            movie = [[QTMovie movieWithFile:file error:&error] retain];
-            
+            movie = [[AVMovie movieWithURL:[NSURL fileURLWithPath:file] options:nil] retain];
+
             if (!movie) {
-                NSLog(@"Got error: %@", error);
+                NSLog(@"Can't open movie at url %@", file);
                 return NO;
             }
-            
-#if 0
-            NSArray *tracks = [qtMovie tracks];
-            bool hasVideo = NO;
-            for (NSUInteger i = 0; i < [tracks count]; i ++) {
-                QTTrack *track = [tracks objectAtIndex:i];
-                NSString *type = [track attributeForKey:QTTrackMediaTypeAttribute];
-                if (![type isEqualToString:QTMediaTypeVideo]) {
-                    [track setEnabled:NO];
-#ifndef __x86_64
-                    DisposeMovieTrack([track quickTimeTrack]);
-#endif
-                } else {
-                    hasVideo = YES;
-                }
-            }
-            if (!hasVideo) {
-                qtMovie = nil;
-                [lock unlock];
-                return NO;
-            }
-#endif
+
             NSLog(@"movie: %@", movie);
-            NSArray* videoTracks = [movie tracksOfMediaType:QTMediaTypeVideo];
-            QTTrack* firstVideoTrack = [videoTracks objectAtIndex:0];
-            QTMedia* media = [firstVideoTrack media];
-            QTTime qtTimeDuration = [[media attributeForKey:QTMediaDurationAttribute] QTTimeValue];
-            duration = qtTimeDuration.timeValue / qtTimeDuration.timeScale;
-            sampleCount = [[media attributeForKey:QTMediaSampleCountAttribute] longValue];
+            NSArray* videoTracks = [movie tracksWithMediaType:AVMediaTypeVideo];
+
+            AVMovieTrack* firstVideoTrack = [videoTracks objectAtIndex:0];
+            CMTimeRange timeRange = [firstVideoTrack timeRange];//mediaDataStorage];
+
+            //AVTime qtTimeDuration = [[media attributeForKey:QTMediaDurationAttribute] QTTimeValue];
+            duration = timeRange.duration.epoch; // XXX
+
             // we can set the frequency to be exactly the same as fps ... since it's useles
             // to have an higher signaling frequency in the case of an existing movie. 
             // In any case we won't have more 'unique' frames than the native movie fps ... so if signaling 
             // the frames more often we will just send the same image multiple times (wasting precious cpu time)
-            if (sampleCount > 1) { // check if we indeed have a sequence of frames
-                double freq = (sampleCount+1)/(qtTimeDuration.timeValue/qtTimeDuration.timeScale);
-                self.frequency = [NSNumber numberWithDouble:freq];
-                movieFrequency = freq;
-            } else {// or if it's just a still image, set the frequency to 1 sec
-                self.frequency = [NSNumber numberWithDouble:1]; // XXX
-                movieFrequency = 0;
-            }
-                
+            self.frequency = [NSNumber numberWithFloat:firstVideoTrack.nominalFrameRate];
+            movieFrequency = firstVideoTrack.nominalFrameRate;
+
+
             // set the layer size to the native movie size
             // scaling is a quite expensive operation and the user 
             // must be aware he is doing that (so better waiting for him
             // to set a different layer size by using the proper input pin)
-            NSSize movieSize = [firstVideoTrack apertureModeDimensionsForMode:@"QTMovieApertureModeClean"];
+            NSSize movieSize = firstVideoTrack.naturalSize;
             size = [[JMXSize sizeWithNSSize:movieSize] retain];
             fpsPin.data = self.frequency;
             NSArray *path = [file componentsSeparatedByString:@"/"];
             self.label = [path lastObject];
-#ifndef __x86_64
-            if (qtVisualContext) {
-                QTVisualContextTask(qtVisualContext);
-            } else {
-                [self setupPixelBuffer];
-                OSStatus err = SetMovieVisualContext([movie quickTimeMovie], qtVisualContext);
-                if (err != noErr) {
-                    // TODO - Error Messages
-                }
-            }
-#endif
+
             OSAtomicCompareAndSwap64Barrier(sampleIndex, -1, &sampleIndex);
             if (samples) {
                 @synchronized(samples) {
@@ -330,12 +228,7 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
 }
 
 - (BOOL)open:(NSString *)file {
-#ifndef __x86_64
-    [self performSelectorOnMainThread:@selector(_open:) withObject:file waitUntilDone:YES];
-    return (movie && self.active);
-#else
     return [self _open:file];
-#endif
 }
 
 - (void)close {
@@ -364,10 +257,7 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
     [samples release];
     [audioReader release];
     [audioOutput release];
-#ifndef __x86_64
-    if(qtVisualContext)
-        QTVisualContextRelease(qtVisualContext);
-#endif
+
     [super dealloc];
 }
 
@@ -375,14 +265,12 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
 {
     CIImage* frame;
     NSError* error = nil;
-#ifdef __x86_64
     CGImageRef pixelBuffer = NULL;
-#else
-    CVPixelBufferRef pixelBuffer = NULL;
-#endif
     @synchronized(self) {
         if (movie) {
+            /*
             [QTMovie enterQTKitOnThread];
+            */
             QTTime now = [movie currentTime];
             if (!paused) {
                 if (currentFrame) {
@@ -420,36 +308,19 @@ static OSStatus SetNumberValue(CFMutableDictionaryRef inDict,
                 }
                 OSAtomicCompareAndSwap64(absoluteTime, 0, &absoluteTime);
                 OSAtomicCompareAndSwap64(seekOffset, 0, &seekOffset);
-#ifdef __x86_64
                 NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                                        [NSValue valueWithSize:self.size.nsSize],
                                        QTMovieFrameImageSize,
                                        QTMovieFrameImageTypeCGImageRef,
                                        QTMovieFrameImageType,
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
                                        [NSNumber numberWithBool:YES],
                                        QTMovieFrameImageSessionMode,
-#endif
-                                       nil]; 
+                                       nil];
                 pixelBuffer = (CGImageRef)[movie frameImageAtTime:now 
                                                          withAttributes:attrs error:&error];
                 frame = [CIImage imageWithCGImage:pixelBuffer];
-#else
-                if(qtVisualContext)
-                {        
-                    QTVisualContextCopyImageForTime(qtVisualContext,
-                                                    NULL,
-                                                    NULL,
-                                                    &pixelBuffer);
-                }
-                frame = [CIImage imageWithCVImageBuffer:pixelBuffer];
-#endif          
 
-#ifndef __x86_64
-                CVPixelBufferRelease(pixelBuffer);
-                MoviesTask([movie quickTimeMovie], 0);
-                QTVisualContextTask(qtVisualContext);
-#endif
+
                 if (frame)
                     currentFrame = [frame retain];
                 else if (error)

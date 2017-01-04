@@ -23,17 +23,21 @@
 
 #import "JMXVideoEntity.h"
 #import "JMXFileRead.h"
+#import <AVFoundation/AVFoundation.h>
+
+/*
 #ifndef __x86_64
 #import <QuickTime/QuickTime.h>
 #endif
-
-@class QTMovie;
+*/
+@class AVMovie;
 @class AVAssetReaderAudioMixOutput;
 @class AVAssetReader;
 
 @interface JMXQtMovieEntity : JMXVideoEntity <JMXFileRead> {
 @private
-    QTMovie *movie;
+    AVMovie *movie;
+    AVURLAsset *movieAsset;
     NSString *moviePath;
     uint64_t movieFrequency;
     BOOL paused;

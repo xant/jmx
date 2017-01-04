@@ -319,9 +319,11 @@
     NSGraphicsContext *nsctxt = [NSGraphicsContext graphicsContextWithGraphicsPort:ctxt flipped:NO];
     [NSGraphicsContext saveGraphicsState];
     [NSGraphicsContext setCurrentContext:nsctxt];
-    [image compositeToPoint:NSMakePoint(round((pxWidth-frameSize.width)/2),
-                                        round((pxHeight-frameSize.height)/2)) 
-                  operation:NSCompositeCopy];
+    [image drawAtPoint:NSMakePoint(round((pxWidth-frameSize.width)/2),
+                                   round((pxHeight-frameSize.height)/2))
+              fromRect:NSMakeRect(0, 0, image.size.width, image.size.height)
+             operation:NSCompositeCopy
+              fraction:1.0];
     [NSGraphicsContext restoreGraphicsState];
     
     CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);

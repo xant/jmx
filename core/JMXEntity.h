@@ -137,7 +137,7 @@
  @property description
  @abstract text description of this entity
  */
-@property (readonly) NSString *description;
+@property (readonly, copy) NSString *description;
 
 #pragma mark Pin API
 /*!

@@ -1023,13 +1023,16 @@ static Persistent<ObjectTemplate> ctxTemplate;
 
 - (void)addPersistentInstance:(Persistent<Object>)persistent obj:(id)obj
 {
-#ifndef __clang_analyzer__
     JMXPersistentInstance *instance = (JMXPersistentInstance *)malloc(sizeof(JMXPersistentInstance));
     instance->obj = [obj retain];
     instance->jsObj = persistent;
     NSValue *val = [NSValue valueWithPointer:instance];
-    [persistentInstances setObject:val forKey:[obj hashString]];
-#endif
+    
+    if ([obj respondsToSelector:@selector(copyWithZone:)]) {
+        [persistentInstances setObject:val forKey:obj];
+    } else {
+        NSLog(@"PORKODIO %@", obj);
+    }
 }
 
 - (void)removePersistentInstance:(id)obj

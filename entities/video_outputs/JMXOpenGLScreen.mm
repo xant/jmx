@@ -34,6 +34,7 @@
 #import "JMXKeyboardEvent.h"
 
 #import <AppKit/AppKit.h>
+#import <OpenGL/gl.h>
 //#import <Carbon/Carbon.h>
 
 JMXV8_EXPORT_NODE_CLASS(JMXOpenGLScreen);

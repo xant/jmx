@@ -270,7 +270,7 @@ static inline UInt32 NextPowerOfTwo(UInt32 x)
 @end
 
 @implementation JMXSpectrumAnalyzer
-#include <vecLib/vectorOps.h>
+//#include <vecLib/vectorOps.h>
 
 @synthesize numChannels;
 #define OFFSETOF(class, field)((size_t)&((class*)0)->field)

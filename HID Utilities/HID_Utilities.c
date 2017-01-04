@@ -755,7 +755,7 @@ void HIDDumpElementInfo( IOHIDElementRef inIOHIDElementRef )
 		printf( " }, " );
 #endif
 		IOHIDElementCookie tIOHIDElementCookie = IOHIDElementGetCookie( inIOHIDElementRef );
-		printf( "cookie: %p, ", (void *)tIOHIDElementCookie );
+		printf( "cookie: %d, ", tIOHIDElementCookie );
 		
 		IOHIDElementType tIOHIDElementType = IOHIDElementGetType( inIOHIDElementRef );
 		switch ( tIOHIDElementType ) {

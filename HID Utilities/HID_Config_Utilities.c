@@ -265,13 +265,13 @@ Boolean HIDConfigureAction( IOHIDDeviceRef* outIOHIDDeviceRef, IOHIDElementRef *
 #ifdef DEBUG
 						if ( first ) {
 							IOHIDElementCookie cookie = IOHIDElementGetCookie( tIOHIDElementRef );
-							printf( "%s, dev: {ref:%p, ven: 0x%08lX, pro: 0x%08lX}, ele: {ref:%p, cookie: %p, usage:%04lX:%08lX}\n",
+							printf( "%s, dev: {ref:%p, ven: 0x%08lX, pro: 0x%08lX}, ele: {ref:%p, cookie: %d, usage:%04lX:%08lX}\n",
 								   __PRETTY_FUNCTION__,
 								   tIOHIDDeviceRef,
 								   vendorID,
 								   productID,
 								   tIOHIDElementRef,
-								   (void *)cookie,
+								   cookie,
 								   (long unsigned int) usagePage,
 								   (long unsigned int) usage ); fflush( stdout );
 							

@@ -81,6 +81,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXQtMovieEntity);
     }
 }
 
+/*
 - (void)fillAudioBuffer
 {
     CMSampleBufferRef sample = [audioOutput copyNextSampleBuffer];
@@ -119,6 +120,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXQtMovieEntity);
         CFRelease(toRelease);
     }
 }
+ */
 
 - (BOOL)_open:(NSString *)file
 {
@@ -140,6 +142,13 @@ JMXV8_EXPORT_NODE_CLASS(JMXQtMovieEntity);
                 NSLog(@"Can't open movie at url %@", file);
                 return NO;
             }
+
+            if (mediaReader) {
+                [mediaReader cancelReading];
+                [mediaReader release];
+                mediaReader = nil;
+            }
+            mediaReader = [[AVAssetReader assetReaderWithAsset:movieAsset error:&error] retain];
 
             NSLog(@"movie: %@", movie);
             NSArray* videoTracks = [movie tracksWithMediaType:AVMediaTypeVideo];
@@ -168,59 +177,49 @@ JMXV8_EXPORT_NODE_CLASS(JMXQtMovieEntity);
             NSArray *path = [file componentsSeparatedByString:@"/"];
             self.label = [path lastObject];
 
-            OSAtomicCompareAndSwap64Barrier(sampleIndex, -1, &sampleIndex);
-            if (samples) {
-                @synchronized(samples) {
-                    [samples removeAllObjects];
-                }
-                [samples release];
-                samples = nil;
+            videoOutput = [AVAssetReaderVideoCompositionOutput assetReaderVideoCompositionOutputWithVideoTracks:videoTracks
+                                                                                                  videoSettings:nil];
+            [mediaReader addOutput:videoOutput];
+            
+            if (audioOutput) {
+                [audioOutput release];
+                audioOutput = nil;
             }
-            if (file && [AVAssetReader class]) {
-                if (audioReader) {
-                    [audioReader cancelReading];
-                    [audioReader release];
-                    audioReader = nil;
-                }
-                if (audioOutput) {
-                    [audioOutput release];
-                    audioOutput = nil;
-                }
-                AVAsset *asset = [AVAsset assetWithURL:[NSURL fileURLWithPath:file]];
-                audioReader = [[AVAssetReader assetReaderWithAsset:asset error:&error] retain];
-                NSArray *audioTracks = [asset tracksWithMediaType:AVMediaTypeAudio];
-                if (audioTracks.count) {
-                    NSDictionary *audioSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                   [NSNumber numberWithInt:kAudioFormatLinearPCM], AVFormatIDKey, 
-                                                   [NSNumber numberWithFloat:44100.0],             AVSampleRateKey,
-                                                   [NSNumber numberWithInt:2],                     AVNumberOfChannelsKey,
-                                                   [NSNumber numberWithInt:32],                    AVLinearPCMBitDepthKey,
-                                                   [NSNumber numberWithBool:NO],                   AVLinearPCMIsNonInterleaved,
-                                                   [NSNumber numberWithBool:YES],                  AVLinearPCMIsFloatKey,
-                                                   [NSNumber numberWithBool:NO],                   AVLinearPCMIsBigEndianKey,
-                                                   nil];
-                    NSArray *outputTracks = [NSArray arrayWithObject:[audioTracks objectAtIndex:0]];
-                    audioOutput = [[AVAssetReaderAudioMixOutput
-                                   assetReaderAudioMixOutputWithAudioTracks:outputTracks
-                                   audioSettings:audioSettings] retain];
-                    [audioReader addOutput:audioOutput];
-                    samples = [[NSMutableArray alloc] initWithCapacity:65535];
-                    [audioReader startReading];
-                }
+            NSArray *audioTracks = [movieAsset tracksWithMediaType:AVMediaTypeAudio];
+            if (audioTracks.count) {
+                NSDictionary *audioSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                               [NSNumber numberWithInt:kAudioFormatLinearPCM], AVFormatIDKey, 
+                                               [NSNumber numberWithFloat:44100.0],             AVSampleRateKey,
+                                               [NSNumber numberWithInt:2],                     AVNumberOfChannelsKey,
+                                               [NSNumber numberWithInt:32],                    AVLinearPCMBitDepthKey,
+                                               [NSNumber numberWithBool:NO],                   AVLinearPCMIsNonInterleaved,
+                                               [NSNumber numberWithBool:YES],                  AVLinearPCMIsFloatKey,
+                                               [NSNumber numberWithBool:NO],                   AVLinearPCMIsBigEndianKey,
+                                               nil];
+                NSArray *outputTracks = [NSArray arrayWithObject:[audioTracks objectAtIndex:0]];
+                audioOutput = [[AVAssetReaderAudioMixOutput
+                               assetReaderAudioMixOutputWithAudioTracks:outputTracks
+                               audioSettings:audioSettings] retain];
+                [mediaReader addOutput:audioOutput];
+                //samples = [[NSMutableArray alloc] initWithCapacity:65535];
             }
+            [mediaReader startReading];
+
         }
         
         if (moviePath)
             [moviePath release];
         moviePath = [file copy];
         self.active = YES;
+        
         NSXMLNode *attr = [self attributeForName:@"url"];
         [attr setStringValue:moviePath];
+        /*
         if (samples) {
             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                 [self fillAudioBuffer];
             }];
-        }
+        }*/
         return YES;
     }
     self.active = NO;
@@ -254,8 +253,8 @@ JMXV8_EXPORT_NODE_CLASS(JMXQtMovieEntity);
 - (void)dealloc {
     if (movie)
         [movie release];
-    [samples release];
-    [audioReader release];
+    //[samples release];
+    [mediaReader release];
     [audioOutput release];
 
     [super dealloc];
@@ -263,7 +262,7 @@ JMXV8_EXPORT_NODE_CLASS(JMXQtMovieEntity);
 
 - (void)tick:(uint64_t)timeStamp
 {
-    CIImage* frame;
+    CIImage* frame = nil;
     NSError* error = nil;
     CGImageRef pixelBuffer = NULL;
     @synchronized(self) {
@@ -271,55 +270,18 @@ JMXV8_EXPORT_NODE_CLASS(JMXQtMovieEntity);
             /*
             [QTMovie enterQTKitOnThread];
             */
-            QTTime now = [movie currentTime];
+          //  QTTime now = [movie currentTime];
+            
             if (!paused) {
                 if (currentFrame) {
                     [currentFrame release];
                     currentFrame = nil;
                 }
                 
-                if (absoluteTime) {
-                    now.timeValue = absoluteTime / 1e9 * now.timeScale;
-                } else {
-                    uint64_t delta = self.previousTimeStamp
-                                   ? (timeStamp - self.previousTimeStamp) / 1e9 * now.timeScale
-                                   : (now.timeScale / [fps doubleValue]);
-
-                    uint64_t step = movieFrequency
-                                  ? [fps doubleValue] * delta / movieFrequency
-                                  : 0;
-                    step += (seekOffset / 1e9 * now.timeScale);
-                    // Calculate the next frame we need to provide.
-                    now.timeValue += step;
+                CMSampleBufferRef sampleBuffer = [videoOutput copyNextSampleBuffer];
+                if (sampleBuffer != nil) {
+                    frame = [CIImage imageWithCVPixelBuffer:(CVPixelBufferRef)CMSampleBufferGetImageBuffer(sampleBuffer)]; //options: [NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], kCIImageColorSpace, nil]];
                 }
-                if (QTTimeCompare(now, [movie duration]) == NSOrderedAscending) {
-                    [movie setCurrentTime:now];
-                } else { // the movie is ended
-                    if (repeat) { // check if we need to rewind and re-start extracting frames
-                        [movie gotoBeginning];
-                        now.timeValue = 0;
-                    } else {
-                        [self stop];
-                        return [super tick:timeStamp]; // we still want to propagate the signal
-                    }
-                }
-                if (now.timeValue == 0 || seekOffset || absoluteTime) {
-                    OSAtomicCompareAndSwap64Barrier(sampleIndex, -1, &sampleIndex);
-                }
-                OSAtomicCompareAndSwap64(absoluteTime, 0, &absoluteTime);
-                OSAtomicCompareAndSwap64(seekOffset, 0, &seekOffset);
-                NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                                       [NSValue valueWithSize:self.size.nsSize],
-                                       QTMovieFrameImageSize,
-                                       QTMovieFrameImageTypeCGImageRef,
-                                       QTMovieFrameImageType,
-                                       [NSNumber numberWithBool:YES],
-                                       QTMovieFrameImageSessionMode,
-                                       nil];
-                pixelBuffer = (CGImageRef)[movie frameImageAtTime:now 
-                                                         withAttributes:attrs error:&error];
-                frame = [CIImage imageWithCGImage:pixelBuffer];
-
 
                 if (frame)
                     currentFrame = [frame retain];
@@ -327,22 +289,25 @@ JMXV8_EXPORT_NODE_CLASS(JMXQtMovieEntity);
                     NSLog(@"%@\n", error);
             } 
         }
-        [QTMovie exitQTKitOnThread];
+      //  [QTMovie exitQTKitOnThread];
     }
     [super tick:timeStamp]; // let super notify output pins
 }
 
 - (JMXAudioBuffer *)audio
 {
-    if (self.active && abs([self.fps doubleValue] - movieFrequency) < 0.1) {
+ //   if (self.active && abs([self.fps doubleValue] - movieFrequency) < 0.1) {
+        CMSampleBufferRef sampleBuffer = [audioOutput copyNextSampleBuffer];
+        if (sampleBuffer == nil)
+            return nil;
+   
+        CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer();
         if (sampleIndex == -1) {
-            [QTMovie enterQTKitOnThread];
-            QTTime now = [movie currentTime];
-            double nowSecs = now.timeValue / now.timeScale;
-            
+            CMTime now = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
+            double nowSecs = now.value / now.timescale;
             sampleIndex = 44100.0 * nowSecs / 512;
-            [QTMovie exitQTKitOnThread];
         }
+        
         //return currentAudioSample;
         @synchronized(samples) {
             if (samples && samples.count) {

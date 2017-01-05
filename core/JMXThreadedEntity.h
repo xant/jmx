@@ -61,7 +61,7 @@
 
 /*!
  @method tick:
- @param timeStamp the current timestamp
+ @param timeStamp the exact timestamp when the 'tick' was initiated
  @abstract execute the entity 'runcycle'. Any entity encapsulated in a threaded entity
             will have its 'tick:' method called at their configured 'frequency'
  */

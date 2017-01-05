@@ -51,9 +51,10 @@
     QTVisualContextRef    qtVisualContext;        // the context the movie is playing in
 #endif
     AVAssetReaderAudioMixOutput *audioOutput;
-    AVAssetReader *audioReader;
-    NSMutableArray *samples;
-    int64_t sampleIndex;
+    AVAssetReaderVideoCompositionOutput *videoOutput;
+    AVAssetReader *mediaReader;
+    //NSMutableArray *samples;
+    //int64_t sampleIndex;
 }
 
 @property (copy) NSString *moviePath;

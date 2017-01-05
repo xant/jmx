@@ -55,6 +55,7 @@
  
  */
 + (id)audioBufferWithCoreAudioBuffer:(AudioBuffer *)buffer andFormat:(AudioStreamBasicDescription *)format;
+
 /*!
  @method audioBufferWithCoreAudioBufferList:buffer andFormat:format;
  @abstract create a new autoreleased instance
@@ -65,6 +66,7 @@
  
  */
 + (id)audioBufferWithCoreAudioBufferList:(AudioBufferList *)buffer andFormat:(AudioStreamBasicDescription *)format;
+
 /*!
  @method audioBufferWithCoreAudioBufferList:andFormat:copy:freeOnRelease:
  @abstract create a new autoreleased instance
@@ -77,6 +79,7 @@
  
  */
 + (id)audioBufferWithCoreAudioBufferList:(AudioBufferList *)buffer andFormat:(AudioStreamBasicDescription *)format copy:(BOOL)wantsCopy freeOnRelease:(BOOL)wantsFree;
+
 /*!
  @method initWithCoreAudioBuffer:andFormat:
  @abstract initialize a newly created instance
@@ -87,6 +90,7 @@
  
  */
 - (id)initWithCoreAudioBuffer:(AudioBuffer *)buffer andFormat:(AudioStreamBasicDescription *)format;
+
 /*!
  @method initWithCoreAudioBufferList:andFormat:
  @abstract initialize a newly created instance
@@ -116,36 +120,43 @@
  @return the number of channels contained in the buffer
  */
 - (NSUInteger)numChannels;
+
 /*!
  @method data
  @return the raw audio buffer encapsulated in an NSData object
  */
 - (NSData *)data;
+
 /*!
  @method numFrames
  @return the number of frames contained in the buffer
  */
 - (NSUInteger)numFrames;
+
 /*!
  @method bytesPerFrame
  @return the number of bytes for each frame
  */
 - (NSUInteger)bytesPerFrame;
+
 /*!
  @method bitsPerChannel
  @return the number of bits for each channel
  */
 - (NSUInteger)bitsPerChannel;
+
 /*!
  @method channelsPerFrame
  @return the number of channels for each frame
  */
 - (NSUInteger)channelsPerFrame;
+
 /*!
  @method sampleRate
  @return the samplerate
  */
 - (NSUInteger)sampleRate;
+
 
 /*!
  @method fillComplexBuffer:countPointer:offset:
